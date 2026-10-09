@@ -143,7 +143,7 @@
 
 /* ---------- questions ---------- */
 .scr-qt { font-variant-numeric: tabular-nums; }
-.scr-qr { display: grid; grid-template-columns: minmax(0, 1fr) 76px 60px 54px 66px 84px 58px 140px; column-gap: 8px; align-items: center; padding: 9px 12px; border-bottom: 1px solid var(--scr-ln2); font-size: 12.5px; }
+.scr-qr { display: grid; grid-template-columns: minmax(0, 1fr) 72px 60px 54px 64px 80px 56px 152px; column-gap: 8px; align-items: center; padding: 9px 12px; border-bottom: 1px solid var(--scr-ln2); font-size: 12.5px; }
 .scr-qr > span { min-width: 0; }
 .scr-qh { padding-block: 7px; background: #f7f7f7; font-size: 11.5px; font-weight: 600; color: var(--scr-sub); white-space: nowrap; }
 .scr-qh .dot { width: 6px; height: 6px; margin-right: 4px; vertical-align: 1px; }
@@ -199,6 +199,7 @@
 .scr-legend .scr-st svg { width: 9px; height: 9px; }
 .scr-legend .scr-st-h { width: auto; min-width: 26px; }
 .scr-legend-r { margin-left: auto; }
+.scr-show-4 { display: none; }
 
 /* ---------- competitors & sources ---------- */
 .scr-strip { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 10px; background: #fff; box-shadow: inset 0 0 0 1px rgba(51, 85, 255, 0.16); font-size: 12.5px; color: var(--scr-tx); }
@@ -344,21 +345,24 @@
 }
 @container scrmain (max-width: 740px) {
   /* questions table → stacked cards */
-  .scr-qh { display: none; }
+  .scr-qr.scr-qh { display: none; }
   .scr-qr { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 12px; }
   .scr-qr::after { content: ""; order: 9; flex-basis: 100%; height: 0; }
   .scr-qq { order: 0; flex: 1 0 100%; font-size: 13px; }
   .scr-qv { order: 1; text-align: left; color: var(--scr-sub); white-space: nowrap; }
   .scr-qb { order: 2; white-space: nowrap; }
   .scr-qrv { order: 3; flex: 1 1 0; }
-  .scr-qe { order: 10; flex: 1 1 0; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 7px 2px; border-radius: 8px; background: #f8f8f8; box-shadow: inset 0 0 0 1px #efefef; }
+  .scr-qr.scr-q-extra { display: none; }
+  .scr-show-6 { display: none; }
+  .scr-show-4 { display: inline; }
+  .scr-qe { order: 10; flex: 1 1 0; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 5px 2px 6px; border-radius: 8px; background: #f8f8f8; box-shadow: inset 0 0 0 1px #efefef; }
   .scr-qr.is-open .scr-qe { background: #fff; }
   .scr-ml { display: inline; font-size: 11px; color: var(--scr-sub); }
   .scr-qe .scr-ml { font-size: 10px; font-weight: 600; white-space: nowrap; }
   .scr-qx { grid-template-columns: minmax(0, 1fr); padding: 0 12px 12px; }
   .scr-legend-r { margin-left: 0; }
   /* outreach table → cards */
-  .scr-oh { display: none; }
+  .scr-or.scr-oh { display: none; }
   .scr-or { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 12px; }
   .scr-oa { flex: 1 0 100%; }
   .scr-on { flex: 1 0 100%; white-space: normal; }
