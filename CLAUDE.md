@@ -32,7 +32,7 @@ Billing **must** use Shopify Billing API (`appSubscriptionCreate`), USD.
 ## 4. Stack
 
 - **App:** Shopify app scaffolded with `npm init @shopify/app@latest` (React Router template), embedded in Shopify admin, Polaris UI.
-- **DB:** Supabase Postgres (via Prisma — swap the template's SQLite session storage to Postgres).
+- **DB:** Supabase Postgres via Prisma. Lives in the existing **OneInbox** Supabase project (to avoid a paid extra project) but ONLY in the `geo` schema, using the `geo_app` login, which cannot see or change anything else. Never create or change anything outside the `geo` schema. Connection settings: `.env.example`.
 - **Hosting:** Vercel (or Fly/Render if long-running jobs need it). Jobs must be resumable and idempotent.
 - **Scheduled jobs:** Vercel Cron or Supabase `pg_cron` → hits internal job endpoints → work goes into a `jobs` table queue and is processed in small batches.
 - **External data:** **Treg** (single API gateway for all AI-answer scraping, keyword data, Reddit, email finding). See §8.
