@@ -15,6 +15,7 @@ import "./orders.server";
 import "./fixes.server";
 import "./outreach.server";
 import "./report.server";
+import { maybeRunSelftest } from "./selftest.server";
 
 const MAX_RUNNING = 4;
 let running = 0;
@@ -101,4 +102,5 @@ export function startWorker() {
   setInterval(tick, 3_000);
   setInterval(() => scheduleDueWork().catch((err) => console.error("[worker] schedule failed:", err.message)), 60_000);
   setTimeout(() => scheduleDueWork().catch(() => {}), 10_000);
+  setTimeout(() => maybeRunSelftest().catch((err) => console.error("[selftest] could not start:", err.message)), 5_000);
 }
