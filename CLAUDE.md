@@ -207,8 +207,8 @@ Perplexity (DataForSEO) and Google AI Overviews (litescrape) all work from Railw
 1. Anthropic key borrowed from Paperflower has no credit ("credit balance is too low"). Claude parts
    (brand profile, questions, answer reading, fixes, claims check, pitches) fall back or retry until topped up.
 2. `SHOPIFY_API_SECRET` not set on Railway (logins/webhooks disabled until it is).
-3. App URL in the Partner dashboard / `shopify.app.toml` still `https://example.com`; then `npm run deploy`
-   (pushes webhooks, the web pixel and the FAQ theme block).
+3. `shopify.app.toml` now points at the Railway URL, but Shopify only learns it when Ross runs
+   `npm run deploy` (pushes app URL, webhooks, the web pixel and the FAQ theme block). Needs a Partner login.
 4. Protected customer data access (Partner dashboard) for orders + `customerJourneySummary`.
 
 **Decisions made while building (change if needed):** Railway (not Vercel) because jobs are long-running;

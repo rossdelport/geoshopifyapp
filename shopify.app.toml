@@ -1,8 +1,8 @@
 # This file stores configurations for your Shopify app.
 client_id = "01ddabdd44a7ab79eaff0e7943ea6be4"
 name = "GEO"
-# Update to the Railway address once it's live (also update redirect_urls below).
-application_url = "https://example.com"
+# Live on Railway (Paperflower project, service geo-shopify-app).
+application_url = "https://geo-shopify-app-production.up.railway.app"
 embedded = true
 
 [build]
@@ -13,7 +13,7 @@ automatically_update_urls_on_dev = true
 scopes = "read_products,write_products,read_orders,write_content,write_pixels,read_customer_events"
 
 [auth]
-redirect_urls = [ "https://example.com/auth/callback" ]
+redirect_urls = [ "https://geo-shopify-app-production.up.railway.app/auth/callback" ]
 
 [webhooks]
 api_version = "2026-10"
