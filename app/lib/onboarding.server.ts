@@ -20,13 +20,30 @@ const PRODUCTS_QUERY = `#graphql
     }
   }`;
 
+interface ProductNode {
+  id: string;
+  title: string;
+  handle: string;
+  productType: string;
+  vendor: string;
+  tags: string[];
+  status: string;
+  description: string;
+  seo: { title: string | null; description: string | null } | null;
+  featuredMedia: { preview: { image: { url: string } | null } | null } | null;
+  priceRangeV2: { minVariantPrice: { amount: string; currencyCode: string } } | null;
+}
+interface ProductsPage {
+  products: { pageInfo: { hasNextPage: boolean; endCursor: string | null }; nodes: ProductNode[] };
+}
+
 /** Save up to `max` products (newest first) into our cache. */
 export async function syncCatalog(shopId: string, admin: AdminClient, max = 250): Promise<number> {
   let cursor: string | null = null;
   let count = 0;
   do {
-    const data: any = await gql(admin, PRODUCTS_QUERY, { cursor });
-    const page = data.products;
+    const data: ProductsPage = await gql<ProductsPage>(admin, PRODUCTS_QUERY, { cursor });
+    const page: ProductsPage["products"] = data.products;
     for (const p of page.nodes) {
       if (count >= max) break;
       const price = p.priceRangeV2?.minVariantPrice;

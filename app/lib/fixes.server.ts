@@ -15,14 +15,8 @@ import { adminFor } from "./onboard-job.server";
 import { countryName } from "./onboarding.server";
 import { parseFaq } from "./faq";
 
-export const FIX_TYPE_LABELS: Record<string, string> = {
-  product_description: "Clearer product description",
-  product_faq: "Product FAQs",
-  product_seo: "Search title & description",
-  product_title: "Clearer product title",
-  product_type: "Product type",
-  guide_page: "New buying guide page",
-};
+export { FIX_TYPE_LABELS } from "./fix-labels";
+import type { FixAfter, FixBefore } from "./fix-labels";
 
 // Autopilot only applies low-risk changes. Descriptions, titles and pages always need a human.
 const AUTOPILOT_SAFE = new Set(["product_faq", "product_seo", "product_type"]);
@@ -413,7 +407,7 @@ async function setFaq(admin: AdminClient, ownerId: string, faq: unknown) {
 export async function applyFix(fixId: string, admin: AdminClient) {
   const fix = await db.fix.findUniqueOrThrow({ where: { id: fixId }, include: { shop: true } });
   if (fix.status === "applied") return fix;
-  const after = fix.after as Record<string, any>;
+  const after = fix.after as FixAfter;
 
   try {
     if (fix.type === "guide_page") {
@@ -443,7 +437,7 @@ export async function applyFix(fixId: string, admin: AdminClient) {
 
     const live = (await gql(admin, PRODUCT_FOR_FIX, { id: fix.targetGid })).product;
     if (!live) throw new Error("This product no longer exists in your store.");
-    const before = {
+    const before: FixBefore = {
       title: live.title,
       descriptionHtml: live.descriptionHtml,
       productType: live.productType,
@@ -477,7 +471,7 @@ export async function applyFix(fixId: string, admin: AdminClient) {
     });
     return db.fix.update({
       where: { id: fix.id },
-      data: { status: "applied", appliedAt: new Date(), error: null, before, resultUrl: live.onlineStoreUrl ?? null },
+      data: { status: "applied", appliedAt: new Date(), error: null, before: before as object, resultUrl: live.onlineStoreUrl ?? null },
     });
   } catch (err) {
     await db.fix.update({ where: { id: fix.id }, data: { error: (err as Error).message.slice(0, 500) } });
@@ -488,7 +482,7 @@ export async function applyFix(fixId: string, admin: AdminClient) {
 export async function revertFix(fixId: string, admin: AdminClient) {
   const fix = await db.fix.findUniqueOrThrow({ where: { id: fixId } });
   if (fix.status !== "applied") return fix;
-  const before = (fix.before ?? {}) as Record<string, any>;
+  const before = (fix.before ?? {}) as FixBefore;
 
   switch (fix.type) {
     case "guide_page":

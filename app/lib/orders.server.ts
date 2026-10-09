@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- reads raw third-party JSON of many shapes */
 // Orders -> AI revenue. Backfills the last 60 days on install, then checks every new order.
 
 import db from "../db.server";

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- reads raw third-party JSON of many shapes */
 // Turns each provider's raw response into one simple shape. Pure functions (tested).
 
 export interface Source {

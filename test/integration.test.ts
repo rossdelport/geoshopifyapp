@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- reads raw third-party JSON of many shapes */
 // Full flow against a real Postgres (set TEST_DATABASE_URL), with AI engines and Claude faked.
 // Covers: scan job queue, answer parsing, scoring, competitors, fix apply + undo, plan limits.
 

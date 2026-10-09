@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- reads raw third-party JSON of many shapes */
 // Treg = one gateway for all outside data (AI answers, keyword volume, emails).
 // HTTP: POST/GET https://treg.to/call/<endpoint_id> with the X-Treg-Token header.
 // The provider's response comes back unchanged. One function per job below.

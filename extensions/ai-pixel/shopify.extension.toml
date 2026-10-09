@@ -1,0 +1,26 @@
+type = "web_pixel_extension"
+name = "ai-visit-tracker"
+uid = "b751d881-c61a-430c-9702-b173a486d644"
+runtime_context = "strict"
+
+# Only runs when the shopper allows analytics. No marketing or sale of data.
+[customer_privacy]
+analytics = true
+marketing = false
+preferences = false
+sale_of_data = "disabled"
+
+[settings]
+type = "object"
+
+[settings.fields.accountID]
+name = "Shop"
+description = "The shop's myshopify domain"
+type = "single_line_text_field"
+validations = [{ name = "min", value = "1" }]
+
+[settings.fields.endpoint]
+name = "Endpoint"
+description = "Where visit events are sent"
+type = "single_line_text_field"
+validations = [{ name = "min", value = "1" }]

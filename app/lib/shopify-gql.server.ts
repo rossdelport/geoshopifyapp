@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- reads raw third-party JSON of many shapes */
 // Small wrapper around the Admin GraphQL client: returns data, throws readable errors.
 
 export interface AdminClient {
