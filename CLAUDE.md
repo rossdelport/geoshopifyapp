@@ -189,3 +189,28 @@ Multi-tenant: every row scoped by `shop_id`; enable Supabase RLS or enforce in t
 - Dev account just created. Use a **development store** (not the trial store) for testing; seed it with a realistic grooming/skincare catalog.
 - Live test from planning: ChatGPT (AU) for "best beard oil for dry skin in Australia" named The Groomed Man Co, A Better, Bold & Bare, Milkman, and cited stuga.com.au's "best beard oil 2026" roundup, Chemist Warehouse, BIG W, Beard Guru. ChatGPT links include `?utm_source=chatgpt.com` — that's what attribution relies on.
 - Main competitors on the App Store: AgentIQ by 40rty (catalog/agent listing optimisation, $49–799), Kedra (tracking + fixes, free plan, ~47 reviews), Mento ($29–99). Our edge: **money dashboard first + fixes that push to Shopify + outreach**, all in one.
+
+## 18. Build status (updated by Claude, 2026-10-09)
+
+All 6 phases are built in code. See README.md for the map of files.
+
+**Live:** Railway service `geo-shopify-app` in the **Paperflower** Railway project (Singapore),
+https://geo-shopify-app-production.up.railway.app, auto-deploys from branch `claude/peaceful-cerf-xtpto5`.
+Keys are Railway references to the Paperflower `api` service (`${{api.TREG_API_KEY}}`, etc.).
+DB = Supabase OneInbox project, `geo` schema, login `geo_app` (password only in Railway + Ross's password manager).
+
+**Verified live (self-test, 2026-10-09):** Treg answers from ChatGPT (cloro), Gemini (cloro),
+Perplexity (DataForSEO) and Google AI Overviews (litescrape) all work from Railway; 24/24 answers,
+~US$0.003 per answer; job queue, scoring, competitors and outreach target finding work against Supabase.
+
+**Blocked / waiting on Ross:**
+1. Anthropic key borrowed from Paperflower has no credit ("credit balance is too low"). Claude parts
+   (brand profile, questions, answer reading, fixes, claims check, pitches) fall back or retry until topped up.
+2. `SHOPIFY_API_SECRET` not set on Railway (logins/webhooks disabled until it is).
+3. App URL in the Partner dashboard / `shopify.app.toml` still `https://example.com`; then `npm run deploy`
+   (pushes webhooks, the web pixel and the FAQ theme block).
+4. Protected customer data access (Partner dashboard) for orders + `customerJourneySummary`.
+
+**Decisions made while building (change if needed):** Railway (not Vercel) because jobs are long-running;
+Pro "daily" scans are light (1 run, no Claude) with a full scan weekly, to keep costs under the price;
+outreach v1 = copy / open in email; monthly reports send from Paperflower's Resend sender until GEO has its own domain.

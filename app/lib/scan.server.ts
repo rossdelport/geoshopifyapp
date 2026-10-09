@@ -10,7 +10,7 @@ import { enqueue, heartbeat, registerJob } from "./jobs.server";
 import { getPlan, scanSettings, type Engine } from "./plans";
 import { sameBrand } from "./match";
 
-const CONCURRENCY = 6;
+const CONCURRENCY = 10;
 const MAX_ANSWER_ATTEMPTS = 2;
 
 export async function startScan(shopId: string, kind: "free" | "baseline" | "weekly" | "daily" | "manual") {

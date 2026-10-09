@@ -156,7 +156,13 @@ export default function Dashboard() {
     }
 
     const stepIndex =
-      data.onboarding === "profiling" ? 0 : data.onboarding === "questions" ? 1 : data.scan && data.scan.done < data.scan.total ? 2 : 3;
+      data.onboarding === "profiling" || data.onboarding === "new"
+        ? 0
+        : data.onboarding === "questions"
+          ? 1
+          : !data.scan || data.scan.done < data.scan.total
+            ? 2
+            : 3;
     const pct = data.scan && data.scan.total ? data.scan.done / data.scan.total : 0;
     return (
       <s-page heading="Setting up">

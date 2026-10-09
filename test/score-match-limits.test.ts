@@ -111,3 +111,23 @@ describe("FAQ parsing", () => {
     expect(parseFaq("nothing here")).toBeNull();
   });
 });
+
+describe("fallbacks when Claude is unavailable", async () => {
+  const { simpleProfile, templateQuestions } = await import("../app/lib/fallbacks");
+  it("builds a plain profile from the catalog", () => {
+    const p = simpleProfile("Jericho", [
+      { productType: "Beard Oil", vendor: "Jericho Australia" },
+      { productType: "Beard Oil", vendor: "Jericho Australia" },
+      { productType: "Beard Balm", vendor: null },
+    ]);
+    expect(p.brand_name).toBe("Jericho Australia");
+    expect(p.aliases).toEqual(["Jericho"]);
+    expect(p.category).toBe("beard oil");
+    expect(p.summary).toBe("Jericho Australia sells beard oil, beard balm.");
+  });
+  it("writes template questions per product type", () => {
+    const qs = templateQuestions(["Beard Oil", "beard oil", null, "Beard Balm"], "Australia");
+    expect(qs).toHaveLength(10);
+    expect(qs[0]).toEqual({ question: "best beard oil in Australia", keyword: "best beard oil" });
+  });
+});

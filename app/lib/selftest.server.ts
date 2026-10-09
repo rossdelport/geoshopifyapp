@@ -93,6 +93,11 @@ registerJob("selftest", async () => {
 });
 
 export async function maybeRunSelftest() {
-  if (process.env.GEO_SELFTEST !== "1") return;
-  await enqueue("selftest", {}, { dedupeKey: "selftest" });
+  if (process.env.GEO_SELFTEST === "1") {
+    await enqueue("selftest", {}, { dedupeKey: "selftest" });
+    return;
+  }
+  // Self-test switched off: remove its test shop and data.
+  const removed = await db.shop.deleteMany({ where: { domain: SELFTEST_DOMAIN } });
+  if (removed.count) console.log("[selftest] removed the test shop");
 }

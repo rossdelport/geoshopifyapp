@@ -6,6 +6,7 @@ import { askJson } from "./ai.server";
 import { keywordVolumes } from "./treg.server";
 import { gql, type AdminClient } from "./shopify-gql.server";
 import { getPlan } from "./plans";
+import { simpleProfile, templateQuestions } from "./fallbacks";
 
 const PRODUCTS_QUERY = `#graphql
   query Products($cursor: String) {
@@ -143,6 +144,9 @@ Products:
 ${catalogDigest(products) || "(no products yet)"}
 
 Write the brand profile.`,
+  }).catch((err: Error) => {
+    console.error(`[profile] Claude unavailable, using a simple profile: ${err.message.slice(0, 200)}`);
+    return simpleProfile(shop.name ?? shop.domain, products);
   });
 
   return db.brandProfile.upsert({
@@ -215,6 +219,9 @@ Write 30 different buyer questions this store's products could answer. Mix:
 - comparison and gift questions
 - price questions ("affordable ... under $50")
 About half should mention ${where}. Keep each under 15 words.`,
+  }).catch((err: Error) => {
+    console.error(`[questions] Claude unavailable, using templates: ${err.message.slice(0, 200)}`);
+    return { questions: templateQuestions([...products.map((p) => p.productType), profile?.category ?? null], where) };
   });
 
   const unique = new Map<string, { question: string; keyword: string }>();
