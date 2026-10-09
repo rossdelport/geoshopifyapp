@@ -15,8 +15,8 @@
   content: ""; position: absolute; inset: 0; pointer-events: none;
   background: radial-gradient(120% 90% at 10% 0%, rgba(255, 255, 255, 0.14), transparent 55%);
 }
-.stats-item { position: relative; padding: 4px 24px 6px 0; min-width: 0; }
-.stats-item + .stats-item { padding-left: 60px; }
+.stats-item { position: relative; padding: 4px 16px 6px 0; min-width: 0; }
+.stats-item + .stats-item { padding-left: 48px; }
 .stats-item + .stats-item::before {
   content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 1px;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.34) 50%, transparent 0) left top / 1px 6px repeat-y;
@@ -31,7 +31,7 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.stats-txt { margin-top: 22px; max-width: 236px; font-size: 15px; line-height: 1.7; color: rgba(255, 255, 255, 0.82); text-wrap: balance; }
+.stats-txt { margin-top: 22px; max-width: 250px; font-size: 15px; line-height: 1.7; color: rgba(255, 255, 255, 0.82); text-wrap: balance; }
 
 @media (max-width: 1240px) {
   .stats-item + .stats-item { padding-left: 36px; }

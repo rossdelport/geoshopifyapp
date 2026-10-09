@@ -29,7 +29,7 @@
   box-shadow: 0 0 0 1px rgba(11, 12, 43, 0.05), var(--shadow-lg);
   text-align: left;
 }
-.hero-frame .sample-tag { top: 23px; right: 76px; background: rgba(255, 255, 255, 0.1); color: #d4d4d4; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16); font-size: 10px; padding: 4px 7px; }
+.hero-frame .sample-tag { top: 23px; right: 98px; background: rgba(255, 255, 255, 0.1); color: #d4d4d4; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16); font-size: 10px; padding: 4px 7px; }
 .hero-app { border-radius: 14px; box-shadow: 0 0 0 1px rgba(11, 12, 43, 0.06); }
 .hero-ic { width: 14px; height: 14px; flex: none; }
 
@@ -149,6 +149,7 @@
 /* responsive */
 @media (max-width: 1100px) {
   .hero { padding-top: 150px; }
+  .hero-app .app-top .search { max-width: 240px; }
   .hero-sec-s { display: none; }
 }
 @media (max-width: 960px) {
@@ -189,8 +190,7 @@
   .hero-eng li { grid-template-columns: 70px minmax(0, 1fr) 18px; }
   .hero-fix { align-items: start; }
   .hero-fix-t { white-space: normal; }
-  .hero-fix-m { flex-wrap: wrap; row-gap: 3px; }
-  .hero-fix-s { white-space: normal; }
+  .hero-fix-s { display: none; }
   .hero-approve { margin-top: 2px; }
   .hero-frame .sample-tag { top: 15px; right: 14px; }
   .hero-kpi-d { border-top: 0; padding-top: 0; }
