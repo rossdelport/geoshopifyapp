@@ -11,7 +11,7 @@ export const ENGINE_COLORS: Record<string, string> = {
   copilot: "#0078d4",
   meta_ai: "#0866ff",
   other_ai: "#8c9196",
-  ours: "#13724f",
+  ours: "#7c5cff",
   survey: "#b98900",
 };
 
