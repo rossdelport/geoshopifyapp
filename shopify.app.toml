@@ -1,9 +1,12 @@
 # This file stores configurations for your Shopify app.
-client_id = ""
+client_id = "01ddabdd44a7ab79eaff0e7943ea6be4"
+name = "GEO"
+application_url = "https://example.com"
+embedded = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products"
+scopes = "read_products,write_products,read_orders,write_content,write_pixels,read_customer_events"
 
 [webhooks]
 api_version = "2026-10"
@@ -59,3 +62,6 @@ api_version = "2026-10"
 #   }
 #   """
 #   query_filter = "product.status:'ACTIVE'"
+
+[auth]
+redirect_urls = [ "https://example.com/auth/callback" ]
