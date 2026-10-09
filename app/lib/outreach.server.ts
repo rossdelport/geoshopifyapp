@@ -109,7 +109,7 @@ export async function findContact(url: string, shopId: string, allowPaidLookup: 
   return { name, email, contactUrl };
 }
 
-const PitchSchema = z.object({
+export const PitchSchema = z.object({
   subject: z.string().describe("Under 60 characters, specific to their article"),
   body: z.string().describe("Plain text email, 90-140 words, signed '[Your name]'"),
   product_index: z.number().int().describe("Which product to suggest, from the list"),

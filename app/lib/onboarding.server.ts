@@ -1,6 +1,7 @@
 // Onboarding: pull the catalog, understand the brand, write the buyer questions.
 
 import { z } from "zod";
+import { oneOf, pick } from "./oneof";
 import db from "../db.server";
 import { askJson } from "./ai.server";
 import { keywordVolumes } from "./treg.server";
@@ -109,13 +110,13 @@ function catalogDigest(products: { title: string; productType: string | null; ve
     .join("\n");
 }
 
-const ProfileSchema = z.object({
+export const ProfileSchema = z.object({
   brand_name: z.string().describe("The brand name customers would use"),
   aliases: z.array(z.string()).describe("Other names or spellings of the brand, may be empty"),
   summary: z.string().describe("2-3 plain-English sentences: what they sell and who for"),
   category: z.string().describe("Short category, e.g. men's grooming"),
   audience: z.string().describe("Who buys, in a few words"),
-  price_point: z.enum(["budget", "mid", "premium"]),
+  price_point: oneOf(["budget", "mid", "premium"]),
 });
 
 export async function buildBrandProfile(shopId: string) {
@@ -158,7 +159,7 @@ Write the brand profile.`,
       summary: profile.summary,
       category: profile.category,
       audience: profile.audience,
-      pricePoint: profile.price_point,
+      pricePoint: pick(["budget", "mid", "premium"], profile.price_point, "mid"),
       country: shop.country,
     },
     update: {
@@ -167,7 +168,7 @@ Write the brand profile.`,
       summary: profile.summary,
       category: profile.category,
       audience: profile.audience,
-      pricePoint: profile.price_point,
+      pricePoint: pick(["budget", "mid", "premium"], profile.price_point, "mid"),
       country: shop.country,
     },
   });
@@ -178,7 +179,7 @@ const COUNTRY_NAMES: Record<string, string> = {
 };
 export const countryName = (code: string) => COUNTRY_NAMES[code] ?? code;
 
-const QuestionsSchema = z.object({
+export const QuestionsSchema = z.object({
   questions: z.array(
     z.object({
       question: z.string().describe("How a real shopper would ask an AI assistant"),

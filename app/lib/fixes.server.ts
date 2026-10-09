@@ -2,6 +2,7 @@
 // Shopify when the merchant approves. Every change keeps the old values for one-click undo.
 
 import { z } from "zod";
+import { oneOf, pick } from "./oneof";
 import type { Fix, Product } from "@prisma/client";
 import db from "../db.server";
 import { askJson } from "./ai.server";
@@ -31,19 +32,21 @@ const GUARDRAILS = `Rules you must follow:
 
 // ---------- Generation ----------
 
-const IdeasSchema = z.object({
+const FIX_TYPES = ["product_description", "product_faq", "product_seo", "product_title", "product_type", "guide_page"] as const;
+
+export const IdeasSchema = z.object({
   ideas: z.array(
     z.object({
-      type: z.enum(["product_description", "product_faq", "product_seo", "product_title", "product_type", "guide_page"]),
+      type: oneOf(FIX_TYPES),
       product_index: z.number().int().nullable().describe("Index from the product list; null for guide_page"),
       question_indexes: z.array(z.number().int()),
       reason: z.string().describe("One plain sentence a store owner understands: why this helps"),
-      impact: z.enum(["high", "medium", "low"]),
+      impact: oneOf(["high", "medium", "low"]),
     }),
   ),
 });
 
-const ProductWriteSchema = z.object({
+export const ProductWriteSchema = z.object({
   title: z.string().nullable(),
   description_html: z.string().nullable().describe("Simple HTML: <p>, <ul>, <li>, <strong> only"),
   seo_title: z.string().nullable().describe("Max 60 characters"),
@@ -53,14 +56,14 @@ const ProductWriteSchema = z.object({
   missing_info: z.array(z.string()),
 });
 
-const GuideSchema = z.object({
+export const GuideSchema = z.object({
   title: z.string(),
   handle: z.string().describe("url-friendly, lowercase, hyphens"),
   body_html: z.string().describe("Simple HTML. Link products using the exact URLs given."),
   missing_info: z.array(z.string()),
 });
 
-const ClaimsSchema = z.object({
+export const ClaimsSchema = z.object({
   ok: z.boolean(),
   problems: z.array(z.string()),
   fixed_text: z.string().nullable().describe("The same text with only the problem phrases softened; null if ok"),
@@ -178,7 +181,10 @@ Suggest up to ${budget} changes. Prefer: product FAQs and clearer descriptions o
   });
 
   let created = 0;
-  for (const idea of ideas.ideas.slice(0, budget)) {
+  const cleanIdeas = ideas.ideas
+    .map((i) => ({ ...i, type: pick([...FIX_TYPES, "skip"], i.type, "skip"), impact: pick(["high", "medium", "low"], i.impact, "medium") }))
+    .filter((i) => i.type !== "skip");
+  for (const idea of cleanIdeas.slice(0, budget)) {
     try {
       const questions = idea.question_indexes.map((i) => lost[i]).filter(Boolean);
       const fix = idea.type === "guide_page"

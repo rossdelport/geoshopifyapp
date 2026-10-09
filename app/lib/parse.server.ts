@@ -2,6 +2,7 @@
 // and what kind of sites it used as sources.
 
 import { z } from "zod";
+import { oneOf, pick } from "./oneof";
 import { askJson, aiConfigured } from "./ai.server";
 import { domainOf, type EngineAnswer } from "./answers";
 import { guessSourceType, type SourceType } from "./sources";
@@ -21,7 +22,9 @@ export interface ParsedAnswer {
   citations: { url: string; domain: string; title: string | null; type: SourceType; isOwn: boolean }[];
 }
 
-const ParseSchema = z.object({
+const SOURCE_TYPES = ["retailer", "editorial", "ugc", "brand", "marketplace", "other"] as const;
+
+export const ParseSchema = z.object({
   brands: z
     .array(z.object({ name: z.string(), product: z.string().nullable() }))
     .describe("Brands recommended or named as product options, in order of first appearance"),
@@ -30,7 +33,7 @@ const ParseSchema = z.object({
     .array(
       z.object({
         index: z.number().int(),
-        type: z.enum(["retailer", "editorial", "ugc", "brand", "marketplace", "other"]),
+        type: oneOf(SOURCE_TYPES),
       }),
     )
     .describe("A type for each numbered source in the list given"),
@@ -71,7 +74,7 @@ ${unknown.map((s) => `${s.i}. ${s.domain} — ${s.title ?? ""} ${s.url}`).join("
       });
       brands = result.brands.filter((b) => b.name.trim());
       claudeSaysNamed = result.merchant_named;
-      for (const t of result.source_types) claudeTypes.set(t.index, t.type);
+      for (const t of result.source_types) claudeTypes.set(t.index, pick(SOURCE_TYPES, t.type, "other"));
     } catch (err) {
       console.error(`[parse] Claude parse failed, using text matching: ${(err as Error).message}`);
     }
