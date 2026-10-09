@@ -43,11 +43,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   if (visit) {
     const clientKey = body.cid ? createHash("sha256").update(`${domain}:${body.cid}`).digest("hex").slice(0, 32) : null;
-    // Keep only the page path + query (no fragments), never personal data.
+    // Keep only the page path + utm_ tags. Other query values (e.g. email tracking ids) are dropped.
     let cleanLanding = landingUrl;
     try {
       const u = new URL(landingUrl);
-      cleanLanding = `${u.pathname}${u.search}`.slice(0, 500);
+      const utm = [...u.searchParams].filter(([k]) => k.startsWith("utm_"));
+      cleanLanding = `${u.pathname}${utm.length ? `?${new URLSearchParams(utm)}` : ""}`.slice(0, 500);
     } catch {
       /* keep as-is */
     }

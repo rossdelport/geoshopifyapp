@@ -16,6 +16,7 @@ import "./fixes.server";
 import "./outreach.server";
 import "./report.server";
 import { maybeRunSelftest } from "./selftest.server";
+import { purgeOldData } from "./retention.server";
 
 const MAX_RUNNING = 4;
 let running = 0;
@@ -51,8 +52,14 @@ async function tick() {
 
 const DAY = 86_400_000;
 
+let lastPurge = 0;
+
 export async function scheduleDueWork(now = new Date()) {
   await requeueStuckJobs();
+  if (now.getTime() - lastPurge > 86_400_000) {
+    lastPurge = now.getTime();
+    await purgeOldData(now).catch((err) => console.error("[retention] failed:", err.message));
+  }
   const shops = await db.shop.findMany({ where: { status: "installed", onboarding: "done" } });
 
   for (const shop of shops) {

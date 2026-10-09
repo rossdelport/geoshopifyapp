@@ -155,6 +155,21 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
     await db.shop.update({ where: { id: shopId }, data: { plan: "core" } });
   });
 
+  it("clears old visit ids and deletes long-uninstalled shops", async () => {
+    const { purgeOldData } = await import("../app/lib/retention.server");
+    const old = new Date(Date.now() - 120 * 86_400_000);
+    await db.aiSession.create({ data: { shopId, engine: "chatgpt", clientKey: "abc", landingUrl: "/old", occurredAt: old } });
+    await db.aiSession.create({ data: { shopId, engine: "chatgpt", clientKey: "def", landingUrl: "/new" } });
+    const gone = await db.shop.create({
+      data: { domain: "gone-test.myshopify.com", status: "uninstalled", uninstalledAt: new Date(Date.now() - 40 * 86_400_000) },
+    });
+    await purgeOldData();
+    const visits = await db.aiSession.findMany({ where: { shopId }, orderBy: { occurredAt: "asc" } });
+    expect(visits.map((v) => v.clientKey)).toEqual([null, "def"]);
+    expect(await db.shop.findUnique({ where: { id: gone.id } })).toBeNull();
+    expect(await db.shop.findUnique({ where: { id: shopId } })).not.toBeNull();
+  });
+
   it("schedules a weekly scan when one is due", async () => {
     const { scheduleDueWork } = await import("../app/lib/worker.server");
     await db.job.deleteMany({ where: { shopId } });
