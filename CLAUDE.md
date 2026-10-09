@@ -1,3 +1,5 @@
+@AGENTS.md
+
 # CLAUDE.md — AI Visibility app for Shopify (working name: TBD)
 
 Handoff from planning chat. Read this fully before writing code. Build in the phase order at the bottom. Ask Ross before changing scope, pricing or plan limits.
