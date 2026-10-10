@@ -130,7 +130,7 @@ export async function draftPitch(targetId: string) {
     maxTokens: 3000,
     system:
       "You write short, honest emails from a small store owner to the editor of an article, asking to be considered for it. Be warm and specific to their article. Never flatter falsely, never claim awards, reviews or facts that aren't given, never offer payment for a link, never pretend to be a customer. Include one product link exactly as given. Offer a free sample only as a question.",
-    prompt: `Article: ${target.title ?? "(no title)"} — ${target.url}
+    prompt: `Article: ${target.title ?? "(no title)"} | ${target.url}
 Brands the article (or AI answers citing it) already feature: ${(target.namedBrands as string[]).slice(0, 6).join(", ") || "unknown"}
 Author name: ${target.authorName ?? "unknown (use 'Hi there')"}
 

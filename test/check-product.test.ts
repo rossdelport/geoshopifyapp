@@ -22,8 +22,8 @@ const SHOPIFY_JS = {
   id: 1,
   title: "Sandalwood Beard Oil 50ml",
   handle: "sandalwood-beard-oil",
-  description: "<p>A light <strong>beard oil</strong> for dry skin.&nbsp;Made in Bondi.</p>",
-  vendor: "Bondi Beard Co",
+  description: "<p>A light <strong>beard oil</strong> for dry skin.&nbsp;Made in Australia.</p>",
+  vendor: "Coolabah Grooming Co",
   type: "Beard Oil",
   tags: ["beard", "oil", "sandalwood"],
   price: 3400,
@@ -31,31 +31,31 @@ const SHOPIFY_JS = {
 };
 
 const PAGE = `<!doctype html><html><head>
-<title>Sandalwood Beard Oil &ndash; Bondi Beard Co</title>
+<title>Sandalwood Beard Oil &ndash; Coolabah Grooming Co</title>
 <meta name="description" content="Light beard oil for dry skin.">
 <meta property="og:title" content="Sandalwood Beard Oil">
-<meta property="og:site_name" content="Bondi Beard Co">
-<meta content="https://bondibeardco.com.au/cdn/shop/files/og.jpg" property="og:image">
+<meta property="og:site_name" content="Coolabah Grooming Co">
+<meta content="https://coolabahgrooming.com.au/cdn/shop/files/og.jpg" property="og:image">
 <meta property="product:price:amount" content="34.00">
 <meta property="product:price:currency" content="AUD">
 <script type="application/ld+json">{ "broken": </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
-  {"@type":"Organization","name":"Bondi Beard Co"},
-  {"@type":"Product","name":"Sandalwood Beard Oil","brand":{"@type":"Brand","name":"Bondi Beard Co."},
+  {"@type":"Organization","name":"Coolabah Grooming Co"},
+  {"@type":"Product","name":"Sandalwood Beard Oil","brand":{"@type":"Brand","name":"Coolabah Grooming Co."},
    "description":"Light &amp; non-greasy.","image":["/cdn/shop/files/ld.jpg"],
    "offers":[{"@type":"Offer","price":"34.00","priceCurrency":"aud"}]}
 ]}
 </script>
-<script>var Shopify = Shopify || {}; Shopify.shop = "bondi-beard.myshopify.com"; Shopify.currency = {"active":"AUD","rate":"1.0"};</script>
+<script>var Shopify = Shopify || {}; Shopify.shop = "coolabah-grooming.myshopify.com"; Shopify.currency = {"active":"AUD","rate":"1.0"};</script>
 <link href="//cdn.shopify.com/s/files/1/theme.css" rel="stylesheet">
 </head><body></body></html>`;
 
 describe("link checks", () => {
   it("accepts product links, adds https and strips tracking", () => {
-    expect(normalizeCheckUrl("bondibeardco.com.au/products/oil?utm_source=chatgpt.com&variant=1")).toEqual({
+    expect(normalizeCheckUrl("coolabahgrooming.com.au/products/oil?utm_source=chatgpt.com&variant=1")).toEqual({
       ok: true,
-      url: "https://bondibeardco.com.au/products/oil?variant=1",
+      url: "https://coolabahgrooming.com.au/products/oil?variant=1",
     });
     expect(normalizeCheckUrl("  https://www.shop.com/products/x#reviews ")).toEqual({ ok: true, url: "https://www.shop.com/products/x" });
   });
@@ -78,7 +78,7 @@ describe("link checks", () => {
     ]) {
       expect(normalizeCheckUrl(link), link).toEqual({
         ok: false,
-        error: "That link is on a marketplace or big retailer. Please paste the product link from your own store's website.",
+        error: "That link is on a marketplace or big retailer. Please paste the product link from your own store’s website.",
       });
     }
   });
@@ -124,7 +124,7 @@ describe("link checks", () => {
     expect(isBlockedHostname("db.internal")).toBe(true);
     expect(isBlockedHostname("[::1]")).toBe(true);
     expect(isBlockedHostname("192.168.0.1")).toBe(true);
-    expect(isBlockedHostname("bondibeardco.com.au")).toBe(false);
+    expect(isBlockedHostname("coolabahgrooming.com.au")).toBe(false);
   });
 
   it("groups IPv6 visitors by their /64 network", () => {
@@ -147,12 +147,12 @@ describe("reading a product", () => {
   });
 
   it("reads Shopify's product JSON", () => {
-    expect(parseShopifyJs(SHOPIFY_JS, "https://bondibeardco.com.au/products/sandalwood-beard-oil")).toEqual({
+    expect(parseShopifyJs(SHOPIFY_JS, "https://coolabahgrooming.com.au/products/sandalwood-beard-oil")).toEqual({
       title: "Sandalwood Beard Oil 50ml",
-      vendor: "Bondi Beard Co",
+      vendor: "Coolabah Grooming Co",
       productType: "Beard Oil",
       tags: ["beard", "oil", "sandalwood"],
-      description: "A light beard oil for dry skin. Made in Bondi.",
+      description: "A light beard oil for dry skin. Made in Australia.",
       price: "34.00",
       image: "https://cdn.shopify.com/s/files/1/beard-oil.jpg",
     });
@@ -160,24 +160,24 @@ describe("reading a product", () => {
   });
 
   it("reads JSON-LD, Open Graph and Shopify hints from the HTML", () => {
-    const f = parseProductHtml(PAGE, "https://bondibeardco.com.au/products/sandalwood-beard-oil");
+    const f = parseProductHtml(PAGE, "https://coolabahgrooming.com.au/products/sandalwood-beard-oil");
     expect(f.ld).toEqual({
       name: "Sandalwood Beard Oil",
-      brand: "Bondi Beard Co.",
+      brand: "Coolabah Grooming Co.",
       description: "Light & non-greasy.",
       price: "34.00",
       currency: "AUD",
-      image: "https://bondibeardco.com.au/cdn/shop/files/ld.jpg",
+      image: "https://coolabahgrooming.com.au/cdn/shop/files/ld.jpg",
       category: null,
     });
     expect(f.ogTitle).toBe("Sandalwood Beard Oil");
-    expect(f.ogSiteName).toBe("Bondi Beard Co");
-    expect(f.ogImage).toBe("https://bondibeardco.com.au/cdn/shop/files/og.jpg");
+    expect(f.ogSiteName).toBe("Coolabah Grooming Co");
+    expect(f.ogImage).toBe("https://coolabahgrooming.com.au/cdn/shop/files/og.jpg");
     expect(f.ogPrice).toBe("34.00");
     expect(f.ogCurrency).toBe("AUD");
-    expect(f.title).toBe("Sandalwood Beard Oil – Bondi Beard Co");
+    expect(f.title).toBe("Sandalwood Beard Oil \u2013 Coolabah Grooming Co");
     expect(f.metaDescription).toBe("Light beard oil for dry skin.");
-    expect(f.shopDomain).toBe("bondi-beard.myshopify.com");
+    expect(f.shopDomain).toBe("coolabah-grooming.myshopify.com");
     expect(f.shopCurrency).toBe("AUD");
     expect(f.shopifyCdn).toBe(true);
   });
@@ -191,32 +191,32 @@ describe("reading a product", () => {
   });
 
   it("merges Shopify JSON and HTML, Shopify first", () => {
-    const url = "https://bondibeardco.com.au/products/sandalwood-beard-oil";
+    const url = "https://coolabahgrooming.com.au/products/sandalwood-beard-oil";
     const p = mergeProduct(url, parseShopifyJs(SHOPIFY_JS, url), parseProductHtml(PAGE, url))!;
     expect(p).toMatchObject({
       url,
-      domain: "bondibeardco.com.au",
+      domain: "coolabahgrooming.com.au",
       title: "Sandalwood Beard Oil 50ml",
-      brand: "Bondi Beard Co",
+      brand: "Coolabah Grooming Co",
       productType: "Beard Oil",
       price: "34.00",
       currency: "AUD",
       image: "https://cdn.shopify.com/s/files/1/beard-oil.jpg",
       isShopify: true,
-      shopDomain: "bondi-beard.myshopify.com",
+      shopDomain: "coolabah-grooming.myshopify.com",
       hasProductSchema: true,
       tags: ["beard", "oil", "sandalwood"],
       descriptionSource: "shopify",
       pageRead: true,
       looksLikeProduct: true,
     });
-    expect(p.description).toBe("A light beard oil for dry skin. Made in Bondi.");
+    expect(p.description).toBe("A light beard oil for dry skin. Made in Australia.");
   });
 
   it("only shows images from the shop's own site or Shopify's CDN", () => {
-    const url = "https://bondibeardco.com.au/products/oil";
+    const url = "https://coolabahgrooming.com.au/products/oil";
     const page = (img: string) => parseProductHtml(`<title>Oil</title><meta property="og:image" content="${img}">`, url);
-    expect(mergeProduct(url, null, page("https://images.bondibeardco.com.au/a.jpg"))!.image).toBe("https://images.bondibeardco.com.au/a.jpg");
+    expect(mergeProduct(url, null, page("https://images.coolabahgrooming.com.au/a.jpg"))!.image).toBe("https://images.coolabahgrooming.com.au/a.jpg");
     expect(mergeProduct(url, null, page("https://cdn.shopify.com/s/a.jpg"))!.image).toBe("https://cdn.shopify.com/s/a.jpg");
     expect(mergeProduct(url, null, page("https://tracker.example.com/pixel.gif"))!.image).toBeNull();
     expect(mergeProduct(url, null, page("https://otherco.com.au/a.jpg"))!.image).toBeNull();
@@ -224,11 +224,11 @@ describe("reading a product", () => {
 
   it("knows home pages and password pages aren't products", () => {
     const home = parseProductHtml(
-      `<title>Bondi Beard Co | Natural beard care</title><meta property="og:type" content="website"><script type="application/ld+json">{"@type":"Organization","name":"Bondi Beard Co"}</script>`,
-      "https://bondibeardco.com.au/",
+      `<title>Coolabah Grooming Co | Natural beard care</title><meta property="og:type" content="website"><script type="application/ld+json">{"@type":"Organization","name":"Coolabah Grooming Co"}</script>`,
+      "https://coolabahgrooming.com.au/",
     );
-    expect(mergeProduct("https://bondibeardco.com.au/", null, home)!.looksLikeProduct).toBe(false);
-    expect(mergeProduct("https://bondibeardco.com.au/collections/all", null, home)!.looksLikeProduct).toBe(false);
+    expect(mergeProduct("https://coolabahgrooming.com.au/", null, home)!.looksLikeProduct).toBe(false);
+    expect(mergeProduct("https://coolabahgrooming.com.au/collections/all", null, home)!.looksLikeProduct).toBe(false);
     const product = parseProductHtml(`<title>Beard Oil</title><meta property="og:type" content="product">`, "https://x.com/p/oil");
     expect(mergeProduct("https://x.com/p/oil", null, product)!.looksLikeProduct).toBe(true);
     // Even product data doesn't count on Shopify's password page.
@@ -258,32 +258,32 @@ describe("reading a product", () => {
   });
 
   it("picks the brand in order: vendor, JSON-LD, site name, domain", () => {
-    expect(pickBrand({ vendor: "Bondi Beard Co", ldBrand: "BBC", siteName: "Shop", domain: "x.com" })).toBe("Bondi Beard Co");
+    expect(pickBrand({ vendor: "Coolabah Grooming Co", ldBrand: "CGC", siteName: "Shop", domain: "x.com" })).toBe("Coolabah Grooming Co");
     expect(pickBrand({ vendor: "Default Vendor", ldBrand: "Hale Linen", siteName: "Shop", domain: "x.com" })).toBe("Hale Linen");
-    expect(pickBrand({ vendor: "bondi-beard.myshopify.com", ldBrand: null, siteName: "Bondi Beard", domain: "x.com" })).toBe("Bondi Beard");
+    expect(pickBrand({ vendor: "coolabah-grooming.myshopify.com", ldBrand: null, siteName: "Coolabah Grooming", domain: "x.com" })).toBe("Coolabah Grooming");
     expect(pickBrand({ domain: "shop.the-oil-store.com.au" })).toBe("The Oil Store");
     // A site name that is just a domain becomes a name.
     expect(pickBrand({ siteName: "Amazon.com.au", domain: "amazon.com.au" })).toBe("Amazon");
     expect(pickBrand({ siteName: "Dr.Jart+", domain: "drjart.com" })).toBe("Dr.Jart+");
-    expect(domainStem("bondi-beard.myshopify.com")).toBe("bondi-beard");
+    expect(domainStem("coolabah-grooming.myshopify.com")).toBe("coolabah-grooming");
   });
 });
 
 describe("questions without Claude", () => {
   it("guesses a short category from the title", () => {
-    expect(fallbackCategory("Bondi Beard Co Sandalwood Beard Oil 50ml", "Bondi Beard Co")).toBe("beard oil");
-    expect(fallbackCategory("Organic Face Serum (30 ml) – Glow Lab", "Glow Lab")).toBe("face serum");
+    expect(fallbackCategory("Coolabah Grooming Co Sandalwood Beard Oil 50ml", "Coolabah Grooming Co")).toBe("beard oil");
+    expect(fallbackCategory("Organic Face Serum (30 ml) \u2013 Glow Lab", "Glow Lab")).toBe("face serum");
     expect(fallbackCategory("123", "X")).toBe("product");
     // What it is comes before "with", "for", "in"...
     expect(fallbackCategory("Hydrating Face Serum with Hyaluronic Acid", "Glow Lab")).toBe("face serum");
-    expect(fallbackCategory("Beard Oil for Dry Skin", "Bondi Beard Co")).toBe("beard oil");
+    expect(fallbackCategory("Beard Oil for Dry Skin", "Coolabah Grooming Co")).toBe("beard oil");
     expect(fallbackCategory("Men's Daily Moisturiser SPF 30", "Aussie Man")).toBe("daily moisturiser");
     expect(fallbackCategory("Shampoo & Conditioner Set", "X")).toBe("shampoo");
-    expect(fallbackCategory("Bondi Beard Co - Beard Oil", "Bondi Beard Co")).toBe("beard oil");
+    expect(fallbackCategory("Coolabah Grooming Co - Beard Oil", "Coolabah Grooming Co")).toBe("beard oil");
   });
 
   it("prefers the shop's product type, then the page's category, ignoring vague types", () => {
-    const base = { title: "Beard Oil for Dry Skin", brand: "Bondi Beard Co" };
+    const base = { title: "Beard Oil for Dry Skin", brand: "Coolabah Grooming Co" };
     expect(pickCategory({ ...base, productType: "Beard Oil" })).toBe("beard oil");
     expect(pickCategory({ ...base, productType: "Default" })).toBe("beard oil");
     expect(pickCategory({ ...base, productType: "Gift Card" })).toBe("beard oil");
@@ -295,21 +295,21 @@ describe("questions without Claude", () => {
     expect(fallbackQuestions("beard oil", "AU").map((q) => q.text)).toEqual([
       "best beard oil in Australia",
       "what's the best beard oil to buy right now",
-      "is beard oil worth it, and which brand should I pick in Australia",
+      "which beard oil brand is worth it in Australia",
     ]);
   });
 
   it("drops branded questions, fills gaps and adds the country", () => {
     const qs = tidyQuestions(
       [
-        { question: "Is Bondi Beard Co any good?", keyword: "bondi beard co review" },
+        { question: "Is Coolabah Grooming Co any good?", keyword: "coolabah grooming co review" },
         { question: "What beard oil helps with itchy skin?", keyword: "beard oil itchy skin" },
         { question: "Which beard oil smells best?", keyword: "best smelling beard oil" },
       ],
-      { brandNames: ["Bondi Beard Co"], category: "beard oil", country: "NZ" },
+      { brandNames: ["Coolabah Grooming Co"], category: "beard oil", country: "NZ" },
     );
     expect(qs).toHaveLength(3);
-    expect(qs.some((q) => /bondi/i.test(q.text))).toBe(false);
+    expect(qs.some((q) => /coolabah/i.test(q.text))).toBe(false);
     expect(qs.filter((q) => /New Zealand/.test(q.text)).length).toBeGreaterThanOrEqual(2);
     expect(qs[0]).toEqual({ text: "What beard oil helps with itchy skin in New Zealand?", keyword: "beard oil itchy skin" });
   });

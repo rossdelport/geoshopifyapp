@@ -143,8 +143,8 @@ Google Fonts link for Geist + Inter. Works at 390px wide (no sideways scroll). H
   ChatGPT, Gemini and Perplexity · 3 questions, each asked twice".
 - Running: steps (Reading your product → Writing buyer questions → Asking ChatGPT, Gemini and
   Perplexity → Writing your report) with the current one highlighted, progress bar "11 of 18
-  answers in", the 3 questions once known, and "A check usually takes about 3 to 6 minutes. You can
-  leave this page and come back to this link."
+  answers in", the 3 questions once known, and "A check usually takes a few minutes. You can
+  leave this page and come back to this link." (No minute range until real check times are measured.)
 - Done: score ring (0–100 + label), sentence "AI named {brand} in X of Y answers"; per-engine row
   (named X of 6); "Who AI recommends instead" (ranked bars, share %); "Sites AI trusts for this"
   (domain, type chip, "you're on it" if isOwn); per question: the question, engine cells (named in

@@ -241,6 +241,9 @@ section[id], footer[id] { scroll-margin-top: 96px; }
   section[id], footer[id] { scroll-margin-top: 88px; }
 }
 
+/* Decorative loops pause while their part of the page is off screen (05-shared.js adds .is-off). */
+.is-off, .is-off *, .is-off *::before, .is-off *::after { animation-play-state: paused !important; }
+
 /* 10-nav.css */
 /* Floating nav bar (Qarin style) on the lilac hero. Height 0 wrapper so the hero gradient and grid run behind it. */
 .nav-wrap {
@@ -329,10 +332,11 @@ html { scroll-behavior: auto; }
 
 /* 11-hero.css */
 /* Hero: lilac gradient band with the faint grid, pill, h1, lead and the free check form, then three
-   small animated cards that explain the idea: shoppers ask AI, AI picks a few stores, you get the sale.
-   Card animations are CSS keyframes (transform and opacity only). 11-hero.js starts them when a card
-   scrolls into view and replays them on hover or focus. With reduced motion (or no JS) each card shows
-   its finished state, which is what the plain styles below describe. */
+   small animated cards that explain the idea: shoppers ask AI, AI picks a few brands, you get the sale.
+   Card animations are CSS keyframes (transform and opacity only) that start and end on the finished
+   picture. 11-hero.js starts them when the cards scroll into view; each story plays twice, then rests.
+   With reduced motion (or no JS) each card shows its finished state, which is what the plain styles
+   below describe. The cards are not links or buttons, so they don't lift on hover. */
 .hero { position: relative; padding-top: 170px; padding-bottom: 96px; background: var(--bg); isolation: isolate; overflow: hidden; overflow: clip; }
 .hero-bg {
   position: absolute; top: 16px; left: 16px; right: 16px; bottom: 0; z-index: -1; pointer-events: none;
@@ -403,10 +407,7 @@ html { scroll-behavior: auto; }
   position: relative; display: flex; flex-direction: column; min-width: 0;
   padding: 8px; border-radius: 20px; background: var(--white);
   box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.42), 0 28px 56px -32px rgba(56, 64, 160, 0.34), 0 10px 22px -14px rgba(56, 64, 160, 0.16);
-  outline: none; transition: transform .25s ease, box-shadow .25s ease;
 }
-.hw-card:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.6), 0 34px 60px -30px rgba(56, 64, 160, 0.4), 0 12px 24px -14px rgba(56, 64, 160, 0.2); }
-.hw-card:focus-visible { box-shadow: 0 0 0 2px var(--cobalt), 0 0 0 6px rgba(64, 80, 176, 0.18), 0 28px 56px -32px rgba(56, 64, 160, 0.34); }
 
 /* illustration panel: soft lilac gradient with a faint grid */
 .hw-art {
@@ -430,7 +431,7 @@ html { scroll-behavior: auto; }
 .hw-p a:hover { text-decoration-color: var(--cobalt); }
 
 /* card 1: question bubbles rise out of a chat box and stack (finished state: all three stacked) */
-.hw-c1 { --slot: 47px; --q-bottom: 60px; }
+.hw-c1 { --slot: 47px; --q-bottom: 57px; }
 .hw-feed {
   position: absolute; inset: 0;
   -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 14px);
@@ -444,7 +445,7 @@ html { scroll-behavior: auto; }
   border-radius: 13px 13px 4px 13px; background: var(--white);
   box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.38), 0 8px 18px -10px rgba(56, 64, 160, 0.38);
 }
-.hw-eng { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; line-height: 1.3; color: var(--text-2); }
+.hw-eng { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; line-height: 1.3; color: var(--text-2); }
 .hw-eng i { width: 6px; height: 6px; border-radius: 50%; flex: none; }
 .hw-e-gpt { background: var(--e-chatgpt); }
 .hw-e-gem { background: var(--e-gemini); }
@@ -461,7 +462,7 @@ html { scroll-behavior: auto; }
 .hw-send { width: 24px; height: 24px; flex: none; border-radius: 50%; display: grid; place-items: center; color: var(--white); background: linear-gradient(160deg, var(--cobalt-mid), var(--cobalt-deep)); box-shadow: 0 4px 10px -4px rgba(56, 64, 160, 0.6); }
 .hw-send svg { width: 12px; height: 12px; }
 
-/* card 2: an AI tile wired to three store tiles; dashes run down the wires and "You" gets picked */
+/* card 2: an AI tile wired to three store tiles (two plain shopping bags and "You"); dashes run down the wires and "You" gets picked */
 .hw-c2 { --net-s: 1.12; }
 .hw-net { position: absolute; left: 50%; top: 50%; width: 260px; height: 170px; margin: -85px 0 0 -130px; transform: scale(var(--net-s)); }
 .hw-lines { position: absolute; inset: 0; overflow: visible; }
@@ -486,6 +487,7 @@ html { scroll-behavior: auto; }
   box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.5), 0 8px 16px -10px rgba(56, 64, 160, 0.38);
   font-family: var(--font-head); font-size: 13px; font-weight: 600; letter-spacing: .02em; color: #6b6c86; line-height: 1;
 }
+.hw-store svg { width: 20px; height: 20px; color: #8a8ba6; }
 .hw-store-l { left: 14px; }
 .hw-store-r { left: 202px; }
 .hw-you { left: 108px; color: var(--cobalt); transform: scale(1.06); }
@@ -503,10 +505,10 @@ html { scroll-behavior: auto; }
 .hw-rec svg { width: 11px; height: 11px; color: var(--green-ink); }
 
 /* card 3: three result rows; the order row ends slightly larger */
-.hw-c3 { --row-h: 44px; --row-gap: 8px; --rows-top: 38px; }
+.hw-c3 { --row-h: 44px; --row-gap: 8px; --rows-top: 38px; --row3-pop: 1.09; --row3-rest: 1.045; }
 .hw-ex {
   position: absolute; top: 10px; right: 10px; z-index: 2; height: 18px; padding: 0 6px; border-radius: 5px;
-  display: inline-flex; align-items: center; font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; line-height: 1;
+  display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; line-height: 1;
   color: var(--text-2); background: rgba(255, 255, 255, 0.85); box-shadow: inset 0 0 0 1px var(--lav-line);
 }
 .hw-rows { position: absolute; left: 0; right: 0; top: var(--rows-top); margin: 0 auto; width: min(calc(100% - 28px), 300px); display: flex; flex-direction: column; gap: var(--row-gap); }
@@ -523,199 +525,297 @@ html { scroll-behavior: auto; }
 .hw-row-b { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
 .hw-row-t { font-size: 12.5px; font-weight: 600; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .hw-row-s { font-size: 11px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.hw-chip { height: 20px; padding: 0 7px; border-radius: 10px; display: inline-flex; align-items: center; background: var(--green-bg); color: var(--green-ink); font-size: 10.5px; font-weight: 600; line-height: 1; white-space: nowrap; }
+.hw-chip { height: 20px; padding: 0 7px; border-radius: 10px; display: inline-flex; align-items: center; background: var(--green-bg); color: var(--green-ink); font-size: 11px; font-weight: 600; line-height: 1; white-space: nowrap; }
 @media (max-width: 1240px) {
-  .hw-rows { width: min(calc(100% - 20px), 320px); }
-  .hw-row { grid-template-columns: 26px minmax(0, 1fr) auto; gap: 7px; padding: 0 7px; }
+  .hw-rows { width: min(calc(100% - 16px), 320px); }
+  .hw-row { grid-template-columns: 26px minmax(0, 1fr) auto; gap: 6px; padding: 0 6px; }
   .hw-row-ic { width: 26px; height: 26px; }
   .hw-row-t { font-size: 12px; }
-  .hw-row-s { font-size: 10.5px; }
-  .hw-chip { padding: 0 6px; font-size: 10px; }
+  .hw-chip { padding: 0 6px; }
 }
-.hw-row3 { transform: scale(1.045); box-shadow: 0 0 0 1px rgba(104, 120, 216, 0.5), 0 14px 26px -12px rgba(56, 64, 160, 0.45); }
+.hw-row3 { transform: scale(var(--row3-rest)); box-shadow: 0 0 0 1px rgba(104, 120, 216, 0.5), 0 14px 26px -12px rgba(56, 64, 160, 0.45); }
 
-/* ---------- animation (only when motion is welcome and 11-hero.js has armed the row) ---------- */
+/* ---------- animation (only when motion is welcome and 11-hero.js has armed the row) ----------
+   Every keyframe set starts and ends on the finished picture above, so a card is never blank: it holds
+   the finished picture for 1.2s, clears, rebuilds, and rests finished again. Each story plays twice
+   (10s each), then stops on the finished picture.
+   Wide screens (3 cards in a row): one shared timeline, started by 11-hero.js when the row is in view.
+   All three cards clear together at 1.2s, then the story runs left to right: card 1 sends three
+   questions (to 3.9s), card 2 picks "You" (3.5 to 5.2s), card 3 adds the rows (5 to 6.9s), and all three
+   hold the finished picture for over 4s. --hw-d2 and --hw-d3 shift cards 2 and 3 along that timeline,
+   and the "-d" keyframes clear those cards early, with card 1.
+   Stacked cards (1023px and below): each card starts on its own when it scrolls into view, so --hw-d2 and
+   --hw-d3 are 0 and every card clears just before it rebuilds. */
+.hw { --hw-d2: 0s; --hw-d3: 0s; --hw-ease: cubic-bezier(.3, .7, .2, 1); }
+@media (min-width: 1024px) { .hw { --hw-d2: 1.85s; --hw-d3: 3.45s; } }
+
 @media (prefers-reduced-motion: no-preference) {
-  /* card 1: 7.5s loop, a new question every 2.5s */
-  .hw-ready .hw-q { animation: hw-q 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
-  .hw-ready .hw-q1 { animation-delay: .4s; }
-  .hw-ready .hw-q2 { animation-delay: 2.9s; }
-  .hw-ready .hw-q3 { animation-delay: 5.4s; }
-  .hw-ready .hw-type i { animation: hw-type 2.5s linear .4s infinite both; }
-  .hw-ready .hw-send { animation: hw-send 2.5s ease-out .3s infinite both; }
+  /* card 1: the bubbles clear, then three questions are typed and sent */
+  .hw-ready .hw-q1 { animation: hw-q1 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-q2 { animation: hw-q2 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-q3 { animation: hw-q3 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-type i { animation: hw-type 10s linear 2 both; }
+  .hw-ready .hw-send { animation: hw-send 10s ease-out 2 both; }
 
-  /* card 2: 7s loop. Two waves down every wire, a third down the "You" wire, then "You" lights up */
-  .hw-ready .hw-dash { animation: 7s linear infinite both; }
+  /* card 2: two waves down every wire, a third down the "You" wire, then "You" lights up */
+  .hw-ready .hw-dash { animation: 10s linear 2 both; }
   .hw-ready .hw-dash-l { animation-name: hw-run-l; }
   .hw-ready .hw-dash-c { animation-name: hw-run-c; }
   .hw-ready .hw-dash-r { animation-name: hw-run-r; }
-  .hw-ready .hw-dash-l.hw-d1 { animation-delay: .2s; }
-  .hw-ready .hw-dash-c.hw-d1 { animation-delay: .3s; }
-  .hw-ready .hw-dash-r.hw-d1 { animation-delay: .35s; }
-  .hw-ready .hw-dash-l.hw-d2 { animation-delay: 1.6s; }
-  .hw-ready .hw-dash-c.hw-d2 { animation-delay: 1.7s; }
-  .hw-ready .hw-dash-r.hw-d2 { animation-delay: 1.75s; }
-  .hw-ready .hw-dash-c.hw-d3 { animation-delay: 3.1s; }
-  .hw-ready .hw-ai { animation: hw-ai 7s ease-out infinite both; }
-  .hw-ready .hw-ai::after { animation: hw-ai-glow 7s ease-out infinite both; }
-  .hw-ready .hw-you { animation: hw-you 7s cubic-bezier(.3, .7, .2, 1) infinite both; }
-  .hw-ready .hw-store-l { animation: hw-hit-l 7s ease-out infinite both; }
-  .hw-ready .hw-store-r { animation: hw-hit-r 7s ease-out infinite both; }
-  .hw-ready .hw-you-lit { animation: hw-lit 7s ease infinite both; }
-  .hw-ready .hw-ln-on { animation: hw-lit 7s ease infinite both; }
-  .hw-ready .hw-rec { animation: hw-rec 7s cubic-bezier(.3, .7, .2, 1) infinite both; }
+  .hw-ready .hw-dash-l.hw-d1 { animation-delay: calc(var(--hw-d2) + 1.65s); }
+  .hw-ready .hw-dash-c.hw-d1 { animation-delay: calc(var(--hw-d2) + 1.7s); }
+  .hw-ready .hw-dash-r.hw-d1 { animation-delay: calc(var(--hw-d2) + 1.72s); }
+  .hw-ready .hw-dash-l.hw-d2 { animation-delay: calc(var(--hw-d2) + 2s); }
+  .hw-ready .hw-dash-c.hw-d2 { animation-delay: calc(var(--hw-d2) + 2.05s); }
+  .hw-ready .hw-dash-r.hw-d2 { animation-delay: calc(var(--hw-d2) + 2.07s); }
+  .hw-ready .hw-dash-c.hw-d3 { animation-delay: calc(var(--hw-d2) + 2.4s); }
+  .hw-ready .hw-ai { animation: hw-ai 10s ease-out var(--hw-d2) 2 both; }
+  .hw-ready .hw-ai::after { animation: hw-ai-glow 10s ease-out var(--hw-d2) 2 both; }
+  .hw-ready .hw-store-l { animation: hw-hit-l 10s ease-out var(--hw-d2) 2 both; }
+  .hw-ready .hw-store-r { animation: hw-hit-r 10s ease-out var(--hw-d2) 2 both; }
+  .hw-ready .hw-you { animation: hw-you 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-you-lit,
+  .hw-ready .hw-ln-on { animation: hw-lit 10s ease 2 both; }
+  .hw-ready .hw-rec { animation: hw-rec 10s var(--hw-ease) 2 both; }
 
-  /* card 3: 7.5s loop, a row every second, the order row pops larger */
-  .hw-ready .hw-row1 { animation: hw-row1 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
-  .hw-ready .hw-row2 { animation: hw-row2 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
-  .hw-ready .hw-row3 { animation: hw-row3 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
-  .hw-ready .hw-row1 .hw-chip { animation: hw-chip1 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
-  .hw-ready .hw-row2 .hw-chip { animation: hw-chip2 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
-  .hw-ready .hw-row3 .hw-chip { animation: hw-chip3 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
-  .hw-ready .hw-row-coin img { animation: hw-coin 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
+  /* card 3: the rows clear, then come back one by one; the order row pops */
+  .hw-ready .hw-row1 { animation: hw-row1 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-row2 { animation: hw-row2 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-row3 { animation: hw-row3 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-row1 .hw-chip { animation: hw-chip1 10s var(--hw-ease) var(--hw-d3) 2 both; }
+  .hw-ready .hw-row2 .hw-chip { animation: hw-chip2 10s var(--hw-ease) var(--hw-d3) 2 both; }
+  .hw-ready .hw-row3 .hw-chip { animation: hw-chip3 10s var(--hw-ease) var(--hw-d3) 2 both; }
+  .hw-ready .hw-row-coin img { animation: hw-coin 10s var(--hw-ease) var(--hw-d3) 2 both; }
 
-  /* wait at the first frame until the card is in view (11-hero.js adds .is-on) */
+  /* wide screens: cards 2 and 3 clear together with card 1, then wait for their turn */
+  @media (min-width: 1024px) {
+    .hw-ready .hw-you { animation-name: hw-you-d; }
+    .hw-ready .hw-you-lit,
+    .hw-ready .hw-ln-on { animation-name: hw-lit-d; }
+    .hw-ready .hw-rec { animation-name: hw-rec-d; }
+    .hw-ready .hw-row1 { animation-name: hw-row1-d; }
+    .hw-ready .hw-row2 { animation-name: hw-row2-d; }
+    .hw-ready .hw-row3 { animation-name: hw-row3-d; }
+  }
+
+  /* wait on the finished picture until the card (or, on wide screens, the row) is in view */
   .hw-ready .hw-card:not(.is-on) .hw-art *,
   .hw-ready .hw-card:not(.is-on) .hw-art *::after { animation-play-state: paused; }
 }
 
-@keyframes hw-q {
-  0% { transform: translateY(26px) scale(.9); opacity: 0; }
-  6% { transform: translateY(-3px) scale(1.02); opacity: 1; }
-  10% { transform: translateY(0) scale(1); opacity: 1; }
-  33.3% { transform: translateY(0) scale(1); opacity: 1; }
-  40% { transform: translateY(calc(var(--slot) * -1)) scale(1); opacity: 1; }
-  66.6% { transform: translateY(calc(var(--slot) * -1)) scale(1); opacity: 1; }
-  73.3% { transform: translateY(calc(var(--slot) * -2)) scale(1); opacity: 1; }
-  88% { transform: translateY(calc(var(--slot) * -2)) scale(1); opacity: 1; }
-  96%, 100% { transform: translateY(calc(var(--slot) * -2 - 14px)) scale(.97); opacity: 0; }
+/* card 1 (all widths). Bubbles rise in from the input: +26px, overshoot, settle; the stack moves up one slot per question. */
+@keyframes hw-q1 {
+  0%, 12% { transform: translateY(calc(var(--slot) * -2)) scale(1); opacity: 1; }
+  15.5% { transform: translateY(calc(var(--slot) * -2 - 10px)) scale(.94); opacity: 0; }
+  15.6%, 20% { transform: translateY(26px) scale(.9); opacity: 0; }
+  23% { transform: translateY(-3px) scale(1.02); opacity: 1; }
+  24.5%, 27% { transform: translateY(0) scale(1); opacity: 1; }
+  31%, 34% { transform: translateY(calc(var(--slot) * -1)) scale(1); opacity: 1; }
+  38%, 100% { transform: translateY(calc(var(--slot) * -2)) scale(1); opacity: 1; }
 }
+@keyframes hw-q2 {
+  0%, 12% { transform: translateY(calc(var(--slot) * -1)) scale(1); opacity: 1; }
+  15.5% { transform: translateY(calc(var(--slot) * -1 - 10px)) scale(.94); opacity: 0; }
+  15.6%, 27% { transform: translateY(26px) scale(.9); opacity: 0; }
+  30% { transform: translateY(-3px) scale(1.02); opacity: 1; }
+  31.5%, 34% { transform: translateY(0) scale(1); opacity: 1; }
+  38%, 100% { transform: translateY(calc(var(--slot) * -1)) scale(1); opacity: 1; }
+}
+@keyframes hw-q3 {
+  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
+  15.5% { transform: translateY(-10px) scale(.94); opacity: 0; }
+  15.6%, 34% { transform: translateY(26px) scale(.9); opacity: 0; }
+  37% { transform: translateY(-3px) scale(1.02); opacity: 1; }
+  38.5%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+/* the typed text: clears, then fills before each send and empties when it is sent */
 @keyframes hw-type {
-  0% { transform: scaleX(.8); opacity: 1; }
-  5% { transform: scaleX(.8); opacity: 0; }
-  8% { transform: scaleX(0); opacity: 0; }
-  14% { transform: scaleX(0); opacity: 1; }
-  80%, 100% { transform: scaleX(.8); opacity: 1; }
+  0%, 12% { transform: scaleX(.55); opacity: 1; }
+  15.5% { transform: scaleX(0); opacity: 1; }
+  19.5% { transform: scaleX(.8); opacity: 1; }
+  20% { transform: scaleX(.8); opacity: 0; }
+  20.5% { transform: scaleX(0); opacity: 0; }
+  21% { transform: scaleX(0); opacity: 1; }
+  26.5% { transform: scaleX(.8); opacity: 1; }
+  27% { transform: scaleX(.8); opacity: 0; }
+  27.5% { transform: scaleX(0); opacity: 0; }
+  28% { transform: scaleX(0); opacity: 1; }
+  33.5% { transform: scaleX(.8); opacity: 1; }
+  34% { transform: scaleX(.8); opacity: 0; }
+  34.5% { transform: scaleX(0); opacity: 0; }
+  35% { transform: scaleX(0); opacity: 1; }
+  41%, 100% { transform: scaleX(.55); opacity: 1; }
 }
 @keyframes hw-send {
-  0%, 100% { transform: scale(1); }
-  3% { transform: scale(.82); }
-  10% { transform: scale(1.08); }
-  16% { transform: scale(1); }
+  0%, 19.5%, 22.5%, 26.5%, 29.5%, 33.5%, 36.5%, 100% { transform: scale(1); }
+  20%, 27%, 34% { transform: scale(.82); }
+  21%, 28%, 35% { transform: scale(1.08); }
 }
+
+/* card 2. Dash runs: the wave starts come from the animation delays above. */
 @keyframes hw-run-l {
   0% { transform: translate(120px, 49px) rotate(90deg); opacity: 0; }
-  1.7% { transform: translate(116px, 58.1px) rotate(135deg); opacity: 1; }
-  3.4% { transform: translate(107.5px, 63.8px) rotate(154deg); opacity: 1; }
-  5.1% { transform: translate(98px, 67.5px) rotate(162deg); opacity: 1; }
-  6.8% { transform: translate(88.1px, 70.3px) rotate(165deg); opacity: 1; }
-  8.5% { transform: translate(78.2px, 72.8px) rotate(166deg); opacity: 1; }
-  10.2% { transform: translate(68.3px, 75.3px) rotate(166deg); opacity: 1; }
-  11.9% { transform: translate(58.4px, 78.1px) rotate(163deg); opacity: 1; }
-  13.6% { transform: translate(48.8px, 81.6px) rotate(156deg); opacity: 1; }
-  15.3% { transform: translate(40.2px, 87px) rotate(137deg); opacity: 1; }
-  17% { transform: translate(36px, 96px) rotate(90deg); opacity: 0; }
-  100% { transform: translate(36px, 96px) rotate(90deg); opacity: 0; }
+  0.6% { transform: translate(116px, 58.1px) rotate(135deg); opacity: 1; }
+  1.2% { transform: translate(107.5px, 63.8px) rotate(154deg); opacity: 1; }
+  1.8% { transform: translate(98px, 67.5px) rotate(162deg); opacity: 1; }
+  2.4% { transform: translate(88.1px, 70.3px) rotate(165deg); opacity: 1; }
+  3% { transform: translate(78.2px, 72.8px) rotate(166deg); opacity: 1; }
+  3.6% { transform: translate(68.3px, 75.3px) rotate(166deg); opacity: 1; }
+  4.2% { transform: translate(58.4px, 78.1px) rotate(163deg); opacity: 1; }
+  4.8% { transform: translate(48.8px, 81.6px) rotate(156deg); opacity: 1; }
+  5.4% { transform: translate(40.2px, 87px) rotate(137deg); opacity: 1; }
+  6%, 100% { transform: translate(36px, 96px) rotate(90deg); opacity: 0; }
 }
 @keyframes hw-run-r {
   0% { transform: translate(140px, 49px) rotate(90deg); opacity: 0; }
-  1.7% { transform: translate(144px, 58.1px) rotate(45deg); opacity: 1; }
-  3.4% { transform: translate(152.5px, 63.8px) rotate(26deg); opacity: 1; }
-  5.1% { transform: translate(162px, 67.5px) rotate(18deg); opacity: 1; }
-  6.8% { transform: translate(171.9px, 70.3px) rotate(15deg); opacity: 1; }
-  8.5% { transform: translate(181.8px, 72.8px) rotate(14deg); opacity: 1; }
-  10.2% { transform: translate(191.7px, 75.3px) rotate(14deg); opacity: 1; }
-  11.9% { transform: translate(201.6px, 78.1px) rotate(17deg); opacity: 1; }
-  13.6% { transform: translate(211.2px, 81.6px) rotate(24deg); opacity: 1; }
-  15.3% { transform: translate(219.8px, 87px) rotate(43deg); opacity: 1; }
-  17% { transform: translate(224px, 96px) rotate(90deg); opacity: 0; }
-  100% { transform: translate(224px, 96px) rotate(90deg); opacity: 0; }
+  0.6% { transform: translate(144px, 58.1px) rotate(45deg); opacity: 1; }
+  1.2% { transform: translate(152.5px, 63.8px) rotate(26deg); opacity: 1; }
+  1.8% { transform: translate(162px, 67.5px) rotate(18deg); opacity: 1; }
+  2.4% { transform: translate(171.9px, 70.3px) rotate(15deg); opacity: 1; }
+  3% { transform: translate(181.8px, 72.8px) rotate(14deg); opacity: 1; }
+  3.6% { transform: translate(191.7px, 75.3px) rotate(14deg); opacity: 1; }
+  4.2% { transform: translate(201.6px, 78.1px) rotate(17deg); opacity: 1; }
+  4.8% { transform: translate(211.2px, 81.6px) rotate(24deg); opacity: 1; }
+  5.4% { transform: translate(219.8px, 87px) rotate(43deg); opacity: 1; }
+  6%, 100% { transform: translate(224px, 96px) rotate(90deg); opacity: 0; }
 }
 @keyframes hw-run-c {
   0% { transform: translate(130px, 49px) rotate(90deg); opacity: 0; }
-  2% { transform: translate(130px, 58.4px) rotate(90deg); opacity: 1; }
-  4% { transform: translate(130px, 67.8px) rotate(90deg); opacity: 1; }
-  6% { transform: translate(130px, 77.2px) rotate(90deg); opacity: 1; }
-  8% { transform: translate(130px, 86.6px) rotate(90deg); opacity: 1; }
-  10% { transform: translate(130px, 96px) rotate(90deg); opacity: 0; }
-  100% { transform: translate(130px, 96px) rotate(90deg); opacity: 0; }
+  0.9% { transform: translate(130px, 58.4px) rotate(90deg); opacity: 1; }
+  1.8% { transform: translate(130px, 67.8px) rotate(90deg); opacity: 1; }
+  2.7% { transform: translate(130px, 77.2px) rotate(90deg); opacity: 1; }
+  3.6% { transform: translate(130px, 86.6px) rotate(90deg); opacity: 1; }
+  4.5%, 100% { transform: translate(130px, 96px) rotate(90deg); opacity: 0; }
 }
+/* the AI tile pulses as each wave leaves; the store tiles bump as a dash arrives (times include --hw-d2) */
 @keyframes hw-ai {
-  0%, 9%, 20%, 29%, 41%, 50%, 100% { transform: scale(1); }
-  3%, 23%, 44% { transform: scale(1.07); }
+  0%, 16%, 19%, 19.5%, 22.5%, 23.5%, 27%, 100% { transform: scale(1); }
+  17%, 20.5%, 24.5% { transform: scale(1.07); }
 }
 @keyframes hw-ai-glow {
-  0%, 14%, 20%, 34%, 41%, 56%, 100% { opacity: 0; }
-  3%, 23%, 44% { opacity: 1; }
+  0%, 16%, 19.5%, 23.5%, 28%, 100% { opacity: 0; }
+  17%, 20.5%, 24.5% { opacity: 1; }
 }
 @keyframes hw-hit-l {
-  0%, 17%, 25%, 37%, 45%, 100% { transform: scale(1); }
-  20.5%, 40.5% { transform: scale(1.07); }
+  0%, 22.5%, 25.5%, 26%, 29%, 100% { transform: scale(1); }
+  23%, 26.5% { transform: scale(1.07); }
 }
 @keyframes hw-hit-r {
-  0%, 19%, 27%, 39%, 47%, 100% { transform: scale(1); }
-  22.5%, 42.5% { transform: scale(1.07); }
+  0%, 23.2%, 26.2%, 26.7%, 29.7%, 100% { transform: scale(1); }
+  23.7%, 27.2% { transform: scale(1.07); }
 }
+/* stacked cards: "You" clears just before its own rebuild */
 @keyframes hw-you {
-  0%, 11%, 19%, 31%, 39%, 53% { transform: scale(1); }
-  15%, 35% { transform: scale(1.07); }
-  57% { transform: scale(1.14); }
-  61%, 90% { transform: scale(1.06); }
-  96%, 100% { transform: scale(1); }
+  0%, 12% { transform: scale(1.06); }
+  15%, 21.5%, 24.5%, 25%, 28%, 28.5% { transform: scale(1); }
+  22%, 25.5% { transform: scale(1.07); }
+  30% { transform: scale(1.14); }
+  32%, 100% { transform: scale(1.06); }
 }
 @keyframes hw-lit {
-  0%, 53% { opacity: 0; }
-  57%, 90% { opacity: 1; }
-  96%, 100% { opacity: 0; }
+  0%, 12% { opacity: 1; }
+  15%, 28.5% { opacity: 0; }
+  30%, 100% { opacity: 1; }
 }
 @keyframes hw-rec {
-  0%, 56% { transform: translateY(6px) scale(.85); opacity: 0; }
-  60% { transform: translateY(-1px) scale(1.04); opacity: 1; }
-  64%, 90% { transform: translateY(0) scale(1); opacity: 1; }
-  96%, 100% { transform: translateY(3px) scale(.96); opacity: 0; }
+  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
+  15% { transform: translateY(3px) scale(.96); opacity: 0; }
+  15.1%, 29.5% { transform: translateY(6px) scale(.85); opacity: 0; }
+  32% { transform: translateY(-1px) scale(1.04); opacity: 1; }
+  34%, 100% { transform: translateY(0) scale(1); opacity: 1; }
 }
+/* wide screens: the same, but clearing at 1.2s with card 1 and rebuilding 1.85s (--hw-d2) later */
+@keyframes hw-you-d {
+  0%, 12% { transform: scale(1.06); }
+  15%, 40%, 43%, 43.5%, 46.5%, 47% { transform: scale(1); }
+  40.5%, 44% { transform: scale(1.07); }
+  48.5% { transform: scale(1.14); }
+  50.5%, 100% { transform: scale(1.06); }
+}
+@keyframes hw-lit-d {
+  0%, 12% { opacity: 1; }
+  15%, 47% { opacity: 0; }
+  48.5%, 100% { opacity: 1; }
+}
+@keyframes hw-rec-d {
+  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
+  15% { transform: translateY(3px) scale(.96); opacity: 0; }
+  15.1%, 48% { transform: translateY(6px) scale(.85); opacity: 0; }
+  50.5% { transform: translateY(-1px) scale(1.04); opacity: 1; }
+  52.5%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* card 3. Stacked cards: the rows clear and come back right away. */
 @keyframes hw-row1 {
-  0%, 4% { transform: translateY(10px) scale(.96); opacity: 0; }
-  10%, 88% { transform: translateY(0) scale(1); opacity: 1; }
-  95%, 100% { transform: translateY(-6px) scale(1); opacity: 0; }
+  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
+  14.5% { transform: translateY(-6px) scale(1); opacity: 0; }
+  14.6%, 15.5% { transform: translateY(10px) scale(.96); opacity: 0; }
+  19.5%, 100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 @keyframes hw-row2 {
-  0%, 17.3% { transform: translateY(10px) scale(.96); opacity: 0; }
-  23.3%, 88% { transform: translateY(0) scale(1); opacity: 1; }
-  95%, 100% { transform: translateY(-6px) scale(1); opacity: 0; }
+  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
+  14.5% { transform: translateY(-6px) scale(1); opacity: 0; }
+  14.6%, 20.5% { transform: translateY(10px) scale(.96); opacity: 0; }
+  24.5%, 100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 @keyframes hw-row3 {
-  0%, 30.7% { transform: translateY(12px) scale(.9); opacity: 0; }
-  35.5% { transform: translateY(-2px) scale(1.09); opacity: 1; }
-  40%, 88% { transform: translateY(0) scale(1.045); opacity: 1; }
-  95%, 100% { transform: translateY(-6px) scale(1.045); opacity: 0; }
+  0%, 12% { transform: translateY(0) scale(var(--row3-rest)); opacity: 1; }
+  14.5% { transform: translateY(-6px) scale(var(--row3-rest)); opacity: 0; }
+  14.6%, 25.5% { transform: translateY(12px) scale(.9); opacity: 0; }
+  30% { transform: translateY(-2px) scale(var(--row3-pop)); opacity: 1; }
+  33%, 100% { transform: translateY(0) scale(var(--row3-rest)); opacity: 1; }
 }
+/* wide screens: clear at 1.2s with card 1, come back 3.45s (--hw-d3) later */
+@keyframes hw-row1-d {
+  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
+  14.5% { transform: translateY(-6px) scale(1); opacity: 0; }
+  14.6%, 50% { transform: translateY(10px) scale(.96); opacity: 0; }
+  54%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes hw-row2-d {
+  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
+  14.5% { transform: translateY(-6px) scale(1); opacity: 0; }
+  14.6%, 55% { transform: translateY(10px) scale(.96); opacity: 0; }
+  59%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes hw-row3-d {
+  0%, 12% { transform: translateY(0) scale(var(--row3-rest)); opacity: 1; }
+  14.5% { transform: translateY(-6px) scale(var(--row3-rest)); opacity: 0; }
+  14.6%, 60% { transform: translateY(12px) scale(.9); opacity: 0; }
+  64.5% { transform: translateY(-2px) scale(var(--row3-pop)); opacity: 1; }
+  67.5%, 100% { transform: translateY(0) scale(var(--row3-rest)); opacity: 1; }
+}
+/* chips and the coin (times include --hw-d3); they hide while their row is hidden */
 @keyframes hw-chip1 {
-  0%, 9% { transform: scale(.6); opacity: 0; }
-  13% { transform: scale(1.12); opacity: 1; }
-  17%, 100% { transform: scale(1); opacity: 1; }
+  0%, 12% { transform: scale(1); opacity: 1; }
+  14.5%, 19% { transform: scale(.6); opacity: 0; }
+  21% { transform: scale(1.12); opacity: 1; }
+  23%, 100% { transform: scale(1); opacity: 1; }
 }
 @keyframes hw-chip2 {
-  0%, 22.5% { transform: scale(.6); opacity: 0; }
-  26.5% { transform: scale(1.12); opacity: 1; }
-  30.5%, 100% { transform: scale(1); opacity: 1; }
+  0%, 12% { transform: scale(1); opacity: 1; }
+  14.5%, 24% { transform: scale(.6); opacity: 0; }
+  26% { transform: scale(1.12); opacity: 1; }
+  28%, 100% { transform: scale(1); opacity: 1; }
 }
 @keyframes hw-chip3 {
-  0%, 38.5% { transform: scale(.6); opacity: 0; }
-  42.5% { transform: scale(1.14); opacity: 1; }
-  46.5%, 100% { transform: scale(1); opacity: 1; }
+  0%, 12% { transform: scale(1); opacity: 1; }
+  14.5%, 31% { transform: scale(.6); opacity: 0; }
+  33% { transform: scale(1.14); opacity: 1; }
+  35%, 100% { transform: scale(1); opacity: 1; }
 }
 @keyframes hw-coin {
-  0%, 31% { transform: rotate(-16deg) scale(.7); }
-  37% { transform: rotate(8deg) scale(1.12); }
-  42%, 100% { transform: rotate(0) scale(1); }
+  0%, 12% { transform: rotate(0) scale(1); }
+  14.5%, 25.5% { transform: rotate(-16deg) scale(.7); }
+  31% { transform: rotate(8deg) scale(1.12); }
+  34%, 100% { transform: rotate(0) scale(1); }
 }
 
 /* floating clay pieces beside the cards (white backgrounds multiplied away, behind the cards) */
 .hero-deco {
   position: absolute; z-index: 0; height: auto; pointer-events: none; user-select: none;
   mix-blend-mode: multiply;
-  animation: hero-float 8s ease-in-out infinite;
+  animation: hero-float 8s ease-in-out 3; /* a few slow floats, then still (also paused off screen: 05-shared.js) */
 }
 .hero-deco-bubble { width: 140px; left: -126px; top: -108px; --rot: -3deg; animation-delay: -1.5s; }
 .hero-deco-bag { width: 130px; right: -112px; bottom: -44px; --rot: 2.5deg; animation-duration: 10s; animation-delay: -6s; }
@@ -774,12 +874,13 @@ html { scroll-behavior: auto; }
   .hw-body { padding: 12px 12px 12px; }
   .hw-t { font-size: 18px; }
   .hw-p { margin-top: 3px; }
-  .hw-c1 { --slot: 43px; --q-bottom: 48px; }
+  .hw-c1 { --slot: 40px; --q-bottom: 46px; }
   .hw-feed { -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 8px); mask-image: linear-gradient(180deg, transparent 0, #000 8px); }
   .hw-c2 { --net-s: .96; }
-  .hw-bub { padding: 4px 11px 5px; }
+  .hw-bub { gap: 0; padding: 3px 10px 3px; }
   .hw-tray { bottom: 9px; height: 32px; }
-  .hw-c3 { --row-h: 40px; --row-gap: 7px; --rows-top: 32px; }
+  .hw-c3 { --row-h: 40px; --row-gap: 7px; --rows-top: 32px; --row3-pop: 1.05; --row3-rest: 1.03; }
+  .hw-row-s { font-size: 12px; }
   .hw-rows { width: min(calc(100% - 30px), 320px); }
 }
 
@@ -2850,22 +2951,25 @@ html { scroll-behavior: auto; }
 
 /* 43-faq.css */
 /* §18 FAQ: a chat window. The asked question is a cobalt bubble on the right, the answer comes from the
-   GEO assistant on the left, and the other questions wait as tappable bubbles under the conversation.
-   Without JavaScript every pair shows as one long conversation (the .is-live rules never apply). */
+   GEO assistant on the left, and the other questions wait as chips under the conversation (on phones, one
+   sideways-scrolling row, so the chat and the questions fit on one screen).
+   Without JavaScript every pair shows as one long conversation (the .is-live rules never apply).
+   Waiting pairs are hidden="until-found", which must not get display: none (find in page opens them). */
 .faq-sec { background: var(--bg); padding-top: 130px; }
-.faq-sec [hidden] { display: none !important; }
+.faq-sec [hidden]:not([hidden="until-found"]) { display: none !important; }
+.faq-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 .faq-head { margin-bottom: 56px; }
 .faq-lead { text-wrap: pretty; }
 
 .faq-main { position: relative; max-width: 860px; margin-inline: auto; }
 
 /* floating clay bubble beside the window (wide screens only; white PNG, so multiply over the white page) */
-.faq-deco { position: absolute; z-index: 0; top: -58px; right: -118px; width: 168px; height: auto; mix-blend-mode: multiply; pointer-events: none; transform: rotate(8deg); animation: faqFloat 7s ease-in-out infinite; }
+.faq-deco { position: absolute; z-index: 0; top: -58px; right: -118px; width: 168px; height: auto; mix-blend-mode: multiply; pointer-events: none; transform: rotate(8deg); animation: faqFloat 7s ease-in-out 4; }
 @keyframes faqFloat { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
 
 /* window */
 .faq-chat {
-  position: relative; z-index: 1; overflow: hidden;
+  position: relative; z-index: 1; overflow: hidden; scroll-margin-top: 96px;
   border-radius: var(--r-lg); background: var(--white);
   box-shadow: 0 0 0 1px var(--lav-line), 0 44px 80px -44px rgba(56, 64, 160, 0.38), 0 14px 28px -18px rgba(56, 64, 160, 0.18);
 }
@@ -2875,7 +2979,7 @@ html { scroll-behavior: auto; }
 .faq-bar-tx { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .faq-bar-name { font-family: var(--font-head); font-size: 16px; line-height: 1.2; font-weight: 600; color: var(--navy); letter-spacing: -0.2px; }
 .faq-bar-sub { display: flex; align-items: center; gap: 6px; font-size: 12.5px; line-height: 1.3; color: var(--text); }
-.faq-bar-sub::before { content: ""; width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--cobalt-mid); box-shadow: 0 0 0 3px var(--lilac-100); }
+.faq-bar-sub svg { width: 13px; height: 13px; flex: none; color: var(--cobalt-mid); }
 
 /* GEO avatar: the logo's two circles in a white disc */
 .faq-av { position: relative; flex: none; width: 32px; height: 32px; border-radius: 50%; background: var(--white); box-shadow: 0 0 0 1px var(--lilac-100), 0 4px 10px -6px rgba(56, 64, 160, 0.45); }
@@ -2892,7 +2996,10 @@ html { scroll-behavior: auto; }
 .faq-log:focus-visible { outline: 2px solid var(--cobalt); outline-offset: -4px; border-radius: 6px; }
 .faq-chat.is-live .faq-log { height: 432px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--lilac-deep) transparent; }
 .faq-chat.is-live .faq-log-in { min-height: 100%; display: flex; flex-direction: column; justify-content: flex-end; }
-.faq-log-in, .faq-thread { display: flex; flex-direction: column; gap: 26px; }
+.faq-log-in { display: flex; flex-direction: column; gap: 26px; }
+/* spacing by margin, not gap: waiting (until-found) pairs still take part in the layout at zero height */
+.faq-thread { display: flex; flex-direction: column; }
+.faq-thread > :not([hidden]) ~ :not([hidden]) { margin-top: 26px; }
 /* soft fade where messages scroll up under the top bar */
 .faq-chat.is-live::before { content: ""; position: absolute; z-index: 2; left: 0; right: 12px; top: 67px; height: 22px; background: linear-gradient(180deg, #f8f7fe 0%, rgba(248, 247, 254, 0) 100%); pointer-events: none; }
 .faq-hello .faq-bub { background: transparent; box-shadow: inset 0 0 0 1px var(--lilac-100); }
@@ -2935,7 +3042,7 @@ html { scroll-behavior: auto; }
 .faq-reset svg { width: 14px; height: 14px; }
 .faq-reset:hover { background: var(--lilac-50); }
 .faq-reset:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 1px; }
-.faq-sugg-list { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.faq-sugg-list { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: flex-start; gap: 8px; }
 .faq-sugg-list li { display: flex; max-width: 100%; }
 .faq-chip {
   display: inline-flex; align-items: center; gap: 10px; max-width: 100%; min-height: 40px; padding: 7px 7px 7px 16px;
@@ -2949,6 +3056,15 @@ html { scroll-behavior: auto; }
 .faq-chip:hover { background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-deep), 0 6px 14px -8px rgba(56, 64, 160, 0.45); transform: translateY(-1px); }
 .faq-chip:hover .faq-chip-ic { background: var(--cobalt); color: var(--white); box-shadow: none; }
 .faq-chip:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+/* answered: stays in place, dimmed, with a check */
+.faq-chip:disabled { cursor: default; color: var(--text-2); background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-100); transform: none; }
+.faq-chip:disabled .faq-chip-ic { background: var(--white); color: var(--green-ink); box-shadow: inset 0 0 0 1px var(--lilac-100); }
+/* "More questions (10)": a quieter, text-like chip */
+.faq-more { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 7px 12px 7px 14px; border-radius: 20px; font-size: 14px; line-height: 1.3; font-weight: 600; color: var(--cobalt-deep); white-space: nowrap; transition: background-color .2s ease; }
+.faq-more svg { width: 15px; height: 15px; transition: transform .2s ease; }
+.faq-more[aria-expanded="true"] svg { transform: rotate(180deg); }
+.faq-more:hover { background: var(--lilac-50); }
+.faq-more:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
 
 /* setup help, a slim strip under the window */
 .faq-help { position: relative; z-index: 1; display: flex; align-items: center; gap: 18px; margin-top: 20px; padding: 10px; border-radius: 20px; background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-100); }
@@ -2983,8 +3099,10 @@ html { scroll-behavior: auto; }
   .faq-bar-name { font-size: 15px; }
   .faq-bar-sub { font-size: 12px; }
   .faq-log { padding: 18px 12px 20px; }
-  .faq-chat.is-live .faq-log { height: clamp(400px, 62vh, 480px); }
-  .faq-log-in, .faq-thread { gap: 20px; }
+  .faq-chat { scroll-margin-top: 84px; }
+  .faq-chat.is-live .faq-log { height: clamp(320px, 54vh, 460px); }
+  .faq-log-in { gap: 20px; }
+  .faq-thread > :not([hidden]) ~ :not([hidden]) { margin-top: 20px; }
   .faq-hello .faq-bub p { font-size: 13.5px; }
   .faq-pair { gap: 10px; }
   .faq-msg-q { max-width: 88%; }
@@ -3000,8 +3118,15 @@ html { scroll-behavior: auto; }
   .faq-code { font-size: 12.5px; white-space: normal; word-break: break-all; }
   .faq-sugg { padding: 14px 12px 16px; }
   .faq-reset { margin-right: -6px; padding: 0 6px; }
-  .faq-sugg-list { gap: 7px; margin-top: 10px; }
+  /* one sideways row right under the chat, so the chat and the questions fit on one screen */
+  .faq-sugg-list {
+    flex-wrap: nowrap; align-items: stretch; gap: 7px; margin: 10px -12px 0; padding: 2px 12px 6px;
+    overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scroll-padding-inline: 12px; scrollbar-width: none;
+  }
+  .faq-sugg-list::-webkit-scrollbar { display: none; }
+  .faq-sugg-list li { flex: none; max-width: min(78vw, 280px); scroll-snap-align: start; }
   .faq-chip { font-size: 14px; min-height: 40px; padding: 6px 6px 6px 14px; gap: 8px; border-radius: 18px 18px 5px 18px; }
+  .faq-more { align-self: center; }
   .faq-chip-ic { width: 24px; height: 24px; }
   .faq-chip-ic svg { width: 13px; height: 13px; }
   .faq-help { align-items: flex-start; gap: 12px; margin-top: 14px; padding: 10px; border-radius: 18px; }
@@ -3202,7 +3327,7 @@ html { scroll-behavior: auto; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
     </a>
     <h1 class="h1 hero-title">The free sales channel <br class="hero-br">your store is missing</h1>
-    <p class="lead hero-lead">Shoppers now ask ChatGPT, Gemini and Perplexity what to buy. Each answer names a few stores and links to them. Those stores don’t pay for the click. AI picks them from what it can read about their products and the sites that mention them.</p>
+    <p class="lead hero-lead">Shoppers now ask ChatGPT, Gemini and Perplexity what to buy. Most answers name a few brands, many link to where to buy them, and those stores don’t pay for the click.</p>
     <form class="hero-check" id="check" method="post" action="/check">
       <div class="hero-check-box">
         <label class="hero-check-field">
@@ -3226,7 +3351,7 @@ html { scroll-behavior: auto; }
         </div>
       </div>
       <div class="hero-check-hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
-      <p class="hero-check-hint">Free. No sign-up. We ask ChatGPT, Gemini and Perplexity 3 questions a real buyer would ask, twice each, and show you who they recommend.</p>
+      <p class="hero-check-hint">Free. No sign-up. We ask ChatGPT, Gemini and Perplexity 3 questions a shopper might ask, twice each, and show you who they recommend.</p>
       <p class="hero-check-note" role="status" hidden>Live checks run on the GEO website. <a href="https://geo-shopify-app-production.up.railway.app/#check" target="_blank" rel="noopener">Open it and paste your link there</a></p>
       <a class="hero-check-alt" href="#decide">or first, see how AI picks what to recommend</a>
     </form>
@@ -3235,7 +3360,7 @@ html { scroll-behavior: auto; }
       <img class="hero-deco hero-deco-bubble" src="img/clay-bubble.png" alt="" aria-hidden="true" width="400" height="400" decoding="async">
       <img class="hero-deco hero-deco-bag" src="img/clay-bag.png" alt="" aria-hidden="true" width="400" height="400" decoding="async">
       <ol class="hw" role="list" aria-label="How a shopper’s question to AI becomes a sale">
-        <li class="hw-card hw-c1" tabindex="0" aria-labelledby="hw-t1" aria-describedby="hw-p1">
+        <li class="hw-card hw-c1">
           <div class="hw-art" aria-hidden="true">
             <div class="hw-feed">
               <div class="hw-q hw-q1"><span class="hw-bub"><span class="hw-eng"><i class="hw-e-gpt"></i>ChatGPT</span><span class="hw-qt">best beard oil for dry skin?</span></span></div>
@@ -3249,11 +3374,11 @@ html { scroll-behavior: auto; }
             </div>
           </div>
           <div class="hw-body">
-            <h2 class="hw-t" id="hw-t1">Shoppers ask AI</h2>
-            <p class="hw-p" id="hw-p1">Shoppers ask AI what to buy. About 50 million times a day on ChatGPT alone, by <a href="#why">our 2025 estimate</a>.</p>
+            <h3 class="hw-t">Shoppers ask AI</h3>
+            <p class="hw-p">About 50 million shopping questions a day on ChatGPT alone, by <a href="#why">our 2025 estimate</a>.</p>
           </div>
         </li>
-        <li class="hw-card hw-c2" tabindex="0" aria-labelledby="hw-t2" aria-describedby="hw-p2">
+        <li class="hw-card hw-c2">
           <div class="hw-art" aria-hidden="true">
             <div class="hw-net">
               <svg class="hw-lines" viewBox="0 0 260 170" width="260" height="170" fill="none">
@@ -3266,18 +3391,18 @@ html { scroll-behavior: auto; }
               <i class="hw-dash hw-dash-c hw-d1"></i><i class="hw-dash hw-dash-c hw-d2"></i><i class="hw-dash hw-dash-c hw-d3"></i>
               <i class="hw-dash hw-dash-r hw-d1"></i><i class="hw-dash hw-dash-r hw-d2"></i>
               <span class="hw-ai"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5c.6 5 4.5 8.9 9.5 9.5-5 .6-8.9 4.5-9.5 9.5-.6-5-4.5-8.9-9.5-9.5 5-.6 8.9-4.5 9.5-9.5Z"/></svg></span>
-              <span class="hw-store hw-store-l">RB</span>
+              <span class="hw-store hw-store-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span>
               <span class="hw-store hw-you"><span class="hw-you-tx">You</span><span class="hw-you-lit">You</span></span>
-              <span class="hw-store hw-store-r">SB</span>
+              <span class="hw-store hw-store-r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span>
               <span class="hw-rec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Recommended</span>
             </div>
           </div>
           <div class="hw-body">
-            <h2 class="hw-t" id="hw-t2">AI picks a few stores</h2>
-            <p class="hw-p" id="hw-p2">Each answer names just a few stores. GEO helps make yours one of them.</p>
+            <h3 class="hw-t">AI picks a few brands</h3>
+            <p class="hw-p">Each answer names just a few. GEO shows whether yours is one of them, and what could change that.</p>
           </div>
         </li>
-        <li class="hw-card hw-c3" tabindex="0" aria-labelledby="hw-t3" aria-describedby="hw-p3">
+        <li class="hw-card hw-c3">
           <div class="hw-art" aria-hidden="true">
             <span class="hw-ex">Example</span>
             <div class="hw-rows">
@@ -3299,8 +3424,8 @@ html { scroll-behavior: auto; }
             </div>
           </div>
           <div class="hw-body">
-            <h2 class="hw-t" id="hw-t3">You get the sale</h2>
-            <p class="hw-p" id="hw-p3">Shoppers click straight through. No cost per click, and GEO counts every order it can trace back to AI.</p>
+            <h3 class="hw-t">You get the sale</h3>
+            <p class="hw-p">Shoppers click straight through. No cost per click, and GEO counts every order it can trace back to AI.</p>
           </div>
         </li>
       </ol>
@@ -3972,10 +4097,10 @@ html { scroll-behavior: auto; }
                     </div>
                     <div class="scr-srcs">
                       <span class="scr-srcs-l">Sites it cited</span>
-                      <span class="scr-src"><i class="scr-fav" style="--c:#e0603c">S</i>stuga.com.au<em>Roundup</em></span>
-                      <span class="scr-src"><i class="scr-fav" style="--c:#d8262f">C</i>chemistwarehouse.com.au<em>Retailer</em></span>
-                      <span class="scr-src"><i class="scr-fav" style="--c:#0057b8">B</i>bigw.com.au<em>Retailer</em></span>
-                      <span class="scr-src"><i class="scr-fav" style="--c:#4b3b2f">B</i>beardguru.com.au<em>Brand</em></span>
+                      <span class="scr-src"><i class="scr-fav" style="--c:#e0603c">R</i>examplereviews.com.au<em>Roundup</em></span>
+                      <span class="scr-src"><i class="scr-fav" style="--c:#d8262f">C</i>examplechemist.com.au<em>Retailer</em></span>
+                      <span class="scr-src"><i class="scr-fav" style="--c:#0057b8">S</i>examplestore.com.au<em>Retailer</em></span>
+                      <span class="scr-src"><i class="scr-fav" style="--c:#4b3b2f">B</i>examplebeardshop.com.au<em>Retailer</em></span>
                     </div>
                   </div>
                   <div class="scr-side">
@@ -4100,11 +4225,11 @@ html { scroll-behavior: auto; }
                       <table class="scr-tbl scr-tbl-sites">
                         <thead><tr><th>Site</th><th class="scr-ty-col">Type</th><th class="scr-r">Cited</th><th class="scr-c">You on it?</th></tr></thead>
                         <tbody>
-                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#e0603c">S</i><span class="scr-site-d">stuga.com.au<em class="scr-site-ty">Roundup</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-roundup">Roundup</span></td><td class="scr-r">14×</td><td class="scr-c"><span class="pill pill-red scr-sm">No</span></td></tr>
-                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#d8262f">C</i><span class="scr-site-d">chemistwarehouse.com.au<em class="scr-site-ty">Retailer</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-retailer">Retailer</span></td><td class="scr-r">11×</td><td class="scr-c"><span class="pill pill-red scr-sm">No</span></td></tr>
-                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#ff4500">R</i><span class="scr-site-d">reddit.com/r/beards<em class="scr-site-ty">Reddit</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-reddit">Reddit</span></td><td class="scr-r">9×</td><td class="scr-c"><span class="scr-na" title="Not something you can be listed on">n/a</span></td></tr>
-                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#0057b8">B</i><span class="scr-site-d">bigw.com.au<em class="scr-site-ty">Retailer</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-retailer">Retailer</span></td><td class="scr-r">7×</td><td class="scr-c"><span class="pill pill-red scr-sm">No</span></td></tr>
-                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#4b3b2f">B</i><span class="scr-site-d">beardguru.com.au<em class="scr-site-ty">Brand</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-brand">Brand</span></td><td class="scr-r">5×</td><td class="scr-c"><span class="scr-na" title="Not something you can be listed on">n/a</span></td></tr>
+                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#e0603c">R</i><span class="scr-site-d">examplereviews.com.au<em class="scr-site-ty">Roundup</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-roundup">Roundup</span></td><td class="scr-r">14×</td><td class="scr-c"><span class="pill pill-red scr-sm">No</span></td></tr>
+                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#d8262f">C</i><span class="scr-site-d">examplechemist.com.au<em class="scr-site-ty">Retailer</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-retailer">Retailer</span></td><td class="scr-r">11×</td><td class="scr-c"><span class="pill pill-red scr-sm">No</span></td></tr>
+                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#ff4500">F</i><span class="scr-site-d">exampleforum.com.au<em class="scr-site-ty">Forum</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-reddit">Forum</span></td><td class="scr-r">9×</td><td class="scr-c"><span class="scr-na" title="Not something you can be listed on">n/a</span></td></tr>
+                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#0057b8">S</i><span class="scr-site-d">examplestore.com.au<em class="scr-site-ty">Retailer</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-retailer">Retailer</span></td><td class="scr-r">7×</td><td class="scr-c"><span class="pill pill-red scr-sm">No</span></td></tr>
+                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#4b3b2f">B</i><span class="scr-site-d">examplebeardshop.com.au<em class="scr-site-ty">Retailer</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-retailer">Retailer</span></td><td class="scr-r">5×</td><td class="scr-c"><span class="pill pill-green scr-sm">Yes</span></td></tr>
                         </tbody>
                       </table>
                     </div>
@@ -4659,7 +4784,7 @@ html { scroll-behavior: auto; }
   <div class="wrap">
     <div class="sec-head">
       <span class="label"><span class="chip-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/></svg></span><span class="chip-tx">How it works</span></span>
-      <h2 class="h2 how-h2" id="how-title">Live in about five minutes. Mostly automatic.</h2>
+      <h2 class="h2 how-h2" id="how-title">About five minutes of your time. The rest runs on its own.</h2>
       <p class="lead how-lead">Install GEO in Shopify and it does the setup. You pick the questions that matter, then approve the fixes you like.</p>
     </div>
 
@@ -4728,12 +4853,12 @@ html { scroll-behavior: auto; }
               </div>
               <p class="how-ans-p">For dry skin, shoppers in Australia often go for <span class="hl">Ridgeback Beard Co.</span>, <span class="hl">Wattlebird Grooming</span>, <span class="hl">Banksia Beard Co.</span> and <span class="hl">Saltbush Beard Co.</span> Look for jojoba or argan oil and a light finish…</p>
               <div class="how-cites">
-                <span>stuga.com.au</span><span>chemistwarehouse.com.au</span><span>bigw.com.au</span>
+                <span>examplereviews.com.au</span><span>examplechemist.com.au</span><span>examplestore.com.au</span>
               </div>
             </div>
           </div>
         </div>
-        <h3 class="how-t">Your first scan in a few minutes</h3>
+        <h3 class="how-t">Your first scan runs in the background</h3>
         <p class="how-p">We ask every AI assistant every question twice and average the results, so one odd answer doesn’t mislead you.</p>
       </article>
 
@@ -5021,7 +5146,7 @@ html { scroll-behavior: auto; }
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Your visibility score: how often AI names you, out of 100</li>
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Top competitors AI picks instead</li>
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>AI sales from your last 60 days</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Results in a few minutes</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Results the same day</li>
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>No card needed</li>
             <li class="price-no"><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></span>No fixes or ongoing tracking</li>
           </ul>
@@ -5086,13 +5211,14 @@ html { scroll-behavior: auto; }
           <span class="faq-av faq-av-lg" aria-hidden="true"><i></i><i></i></span>
           <div class="faq-bar-tx">
             <p class="faq-bar-name">GEO assistant</p>
-            <p class="faq-bar-sub">Answers written by the GEO team</p>
+            <p class="faq-bar-sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.38 3.62a1 1 0 0 1 3 3L7.37 18.63a2 2 0 0 1-.86.5l-2.87.84a.5.5 0 0 1-.62-.62l.84-2.87a2 2 0 0 1 .5-.86z"/></svg>Answers written by the GEO team</p>
           </div>
         </div>
 
         <!-- Every question and answer is real text in the page. Without JavaScript they all show as one
-             conversation (the greeting stays hidden). With it, the first pair shows and the rest wait in the
-             list below the chat; new messages land in the role="log" thread, which announces them. -->
+             conversation (the greeting stays hidden). With it, the first pair shows and the rest wait as
+             hidden="until-found" (find in page still opens them), listed as chips below the chat; new
+             messages land in the role="log" thread, which announces them. -->
         <div class="faq-log" role="region" aria-label="FAQ conversation">
           <div class="faq-log-in">
             <div class="faq-msg faq-msg-a faq-hello" hidden><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
@@ -5127,13 +5253,13 @@ html { scroll-behavior: auto; }
               <div class="faq-pair" id="faq-p5">
                 <div class="faq-msg faq-msg-q"><h3 class="faq-q">What is the visibility score?</h3></div>
                 <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
-                  <p>A score out of 100 for how often AI names you. It’s the share of AI answers that name you, across all your questions, every AI assistant and both runs, with a bonus when you’re in the top 3 and a little credit when AI links to your site. 0 means no AI named you. Higher means you’re named more often, and nearer the top.</p>
+                  <p>A score out of 100 for how often AI names you. For each answer you get full points when AI names you in its top 3, two-thirds when it names you lower down, and one-third when it only links to your website. We average that over every question and every run for each AI assistant, then across the assistants. 0 means no AI named or linked to you.</p>
                 </div></div>
               </div>
               <div class="faq-pair" id="faq-p6">
                 <div class="faq-msg faq-msg-q"><h3 class="faq-q">Will GEO change my store without asking?</h3></div>
                 <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
-                  <p>No. Every change waits for your approval. Autopilot on Pro is opt-in, and it still skips anything risky, like product claims.</p>
+                  <p>No. By default every change waits for your approval. Autopilot on Pro is opt-in, and it still skips risky changes like product claims.</p>
                 </div></div>
               </div>
               <div class="faq-pair" id="faq-p7">
@@ -5145,7 +5271,7 @@ html { scroll-behavior: auto; }
               <div class="faq-pair" id="faq-p8">
                 <div class="faq-msg faq-msg-q"><h3 class="faq-q">Will it write health or skin claims?</h3></div>
                 <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
-                  <p>No. Health, skin and supplement products get a claims check first, in line with Australia’s TGA rules. We only reword facts already in your catalogue. If something is missing, we ask you.</p>
+                  <p>We don’t add health claims. Health, skin and supplement copy goes through a claims check based on Australia’s TGA advertising rules, and we only reword facts already in your catalogue. If something is missing, we ask you.</p>
                 </div></div>
               </div>
               <div class="faq-pair" id="faq-p9">
@@ -5197,17 +5323,17 @@ html { scroll-behavior: auto; }
         <!-- Suggested questions: built by 43-faq.js from the pairs above, so it stays hidden without JavaScript. -->
         <div class="faq-sugg" hidden>
           <div class="faq-sugg-head">
-            <p class="faq-sugg-title" id="faq-sugg-title">More questions</p>
-            <button type="button" class="faq-reset" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Show all questions</button>
+            <p class="faq-sugg-title" id="faq-sugg-title">Choose a question</p>
+            <button type="button" class="faq-reset" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Start over</button>
           </div>
-          <ul class="faq-sugg-list" aria-labelledby="faq-sugg-title"></ul>
+          <ul class="faq-sugg-list" id="faq-sugg-list" aria-labelledby="faq-sugg-title"></ul>
         </div>
       </div>
 
       <div class="faq-help">
         <span class="faq-help-img"><img src="img/clay-support.jpg" alt="Clay headset beside two chat bubbles" width="1200" height="670" decoding="async"></span>
         <div class="faq-help-tx">
-          <p>Stuck on setup? It takes about five minutes, and most of it runs on its own.</p>
+          <p>Stuck on setup? It takes about five minutes of your time. Your first scan then runs in the background.</p>
           <a class="faq-help-link" href="#how">See the setup steps <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
         </div>
       </div>
@@ -5267,7 +5393,7 @@ html { scroll-behavior: auto; }
     <div class="foot-cta">
       <div class="foot-cta-tx">
         <h2 class="h2 foot-h2" id="foot-cta-title">Is AI recommending your store?</h2>
-        <p class="lead foot-lead">Paste one product link. In about 3 to 6 minutes you’ll see who AI recommends, which sites it trusts, and what to fix first. Free, no sign-up.</p>
+        <p class="lead foot-lead">Paste one product link. In a few minutes you’ll see who AI recommends, which sites it trusts, and what to fix first. Free, no sign-up.</p>
         <a class="btn btn-dark foot-btn" href="#check">Check my product <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
       </div>
       <div class="foot-cta-art">
@@ -5325,6 +5451,20 @@ html { scroll-behavior: auto; }
 </footer>
 </div>
 <script>
+// 05-shared.js
+// Decorative loops (the logo marquee, the scan pulse and spinner, the hub's lines and tiles, the floating
+// clay pieces) pause while their part of the page is off screen, so an idle page does no animation work.
+// The CSS for .is-off is in 05-shared.css. The hero cards and the FAQ manage their own motion as well.
+(function () {
+  if (!('IntersectionObserver' in window)) return;
+  var els = document.querySelectorAll('.eng-marquee, .how-grid, .hub-map, .hw-wrap, .faq-main');
+  if (!els.length) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) { en.target.classList.toggle('is-off', !en.isIntersecting); });
+  }, { rootMargin: '120px 0px' });
+  Array.prototype.forEach.call(els, function (el) { io.observe(el); });
+})();
+
 // 10-nav.js
 (function () {
   var nav = document.querySelector('.nav-wrap');
@@ -5412,41 +5552,47 @@ html { scroll-behavior: auto; }
   if (location.hash === '#check') focusSoon();
 })();
 
-// Hero cards: start each card's animation when it scrolls into view, pause it when it leaves, and
-// replay it from the start on hover or keyboard focus. With reduced motion the CSS shows the finished
-// state and nothing here runs.
+// Hero cards: their CSS stories start on the finished picture and wait (paused) until they're in view.
+// Wide screens (3 cards in a row): one shared timeline, so the whole row starts and pauses together and
+// the story runs left to right. Stacked cards (1023px and below): each card starts when it's in view.
+// Each story plays twice, then rests on the finished picture (see 11-hero.css). Hover and focus do nothing:
+// the cards aren't controls. With reduced motion the CSS shows the finished state and nothing here runs.
 (function () {
   var row = document.querySelector('.hw');
-  if (!row) return;
-  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (calm) return;
+  if (!row || !window.matchMedia) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var cards = [].slice.call(row.querySelectorAll('.hw-card'));
+  var wide = window.matchMedia('(min-width: 1024px)');
   row.classList.add('hw-ready');
 
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) { en.target.classList.toggle('is-on', en.isIntersecting); });
-    }, { threshold: 0.3 });
-    cards.forEach(function (c) { io.observe(c); });
-  } else {
+  if (!('IntersectionObserver' in window)) {
     cards.forEach(function (c) { c.classList.add('is-on'); });
+    return;
   }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      var on = en.isIntersecting;
+      if (en.target === row) cards.forEach(function (c) { c.classList.toggle('is-on', on); });
+      else en.target.classList.toggle('is-on', on);
+    });
+  }, { threshold: 0.3 });
 
-  function replay(card) {
-    var now = Date.now();
-    if (now - (card._hwAt || 0) < 1200) return; // ignore quick in-and-out
-    card._hwAt = now;
-    card.classList.add('is-on');
-    var art = card.querySelector('.hw-art');
-    if (art && art.getAnimations) {
-      // Only rewind: calling play() would stop the CSS from pausing it when it scrolls away.
-      art.getAnimations({ subtree: true }).forEach(function (a) { a.currentTime = 0; });
-    }
+  function watch() {
+    io.disconnect();
+    cards.forEach(function (c) { c.classList.remove('is-on'); });
+    if (wide.matches) io.observe(row);
+    else cards.forEach(function (c) { io.observe(c); });
   }
-  cards.forEach(function (c) {
-    c.addEventListener('mouseenter', function () { replay(c); });
-    c.addEventListener('focusin', function () { replay(c); });
-  });
+  watch();
+  // Crossing 1024px swaps some keyframes, so start every story again from the finished picture.
+  function restart() {
+    row.classList.remove('hw-ready');
+    void row.offsetWidth;
+    row.classList.add('hw-ready');
+    watch();
+  }
+  if (wide.addEventListener) wide.addEventListener('change', restart);
+  else if (wide.addListener) wide.addListener(restart);
 })();
 
 // 20w-worth.js
@@ -5582,9 +5728,11 @@ html { scroll-behavior: auto; }
 
 // 43-faq.js
 (function () {
-  // FAQ chat: the first question starts open, the rest become suggestion bubbles. Tapping one moves its
-  // question into the conversation, shows the assistant typing for a moment, then reveals the answer.
-  // Every pair is already real text in the HTML, so this only hides, moves and shows it.
+  // FAQ chat: the first question starts open; the others wait as question chips under the chat (the next
+  // few, plus "More questions"). Choosing one adds it to the conversation, shows the assistant typing for
+  // a moment, then the answer. The chip stays where it was, marked as answered, so nothing moves under
+  // the pointer. Every pair is real text in the HTML: this only hides, moves and shows it. Waiting pairs
+  // use hidden="until-found", so find in page still reaches them (and opens them).
   var root = document.getElementById('faq');
   if (!root) return;
   var chat = root.querySelector('.faq-chat');
@@ -5600,12 +5748,17 @@ html { scroll-behavior: auto; }
   var pairs = Array.prototype.slice.call(thread.querySelectorAll('.faq-pair'));
   if (pairs.length < 2) return;
 
+  var SHOW = 4; // chips shown before "More questions"
   var motion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
   function reduced() { return !!(motion && motion.matches); }
 
   var SEND_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>';
+  var DONE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+  var MORE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
   var asked = 0;
   var pending = null;
+  var expanded = false;
+  var chips = []; // { pair, li, btn }
 
   // the "typing" row reuses the avatar; screen readers skip it (the answer itself is announced)
   var typing = document.createElement('div');
@@ -5625,6 +5778,21 @@ html { scroll-behavior: auto; }
     else log.scrollTop = y;
   }
 
+  // If the conversation isn't fully on screen (a phone, with the question list below it), bring the
+  // page to it first, so the answer appears where the person is looking. The floating nav is measured.
+  function revealChat() {
+    var bar = document.querySelector('.nav-bar');
+    var top = (bar ? Math.max(0, bar.getBoundingClientRect().bottom) : 84) + 12;
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var lr = log.getBoundingClientRect();
+    if (lr.top >= top - 1 && lr.bottom <= vh + 1) return;
+    var cr = chat.getBoundingClientRect();
+    // The whole chat fits: line its bottom up with the bottom of the screen. Else put the conversation's top under the nav.
+    var dy = cr.height <= vh - top - 12 ? cr.bottom - (vh - 12) : lr.top - top;
+    if (Math.abs(dy) < 2) return;
+    try { window.scrollBy({ top: dy, behavior: reduced() ? 'auto' : 'smooth' }); } catch (e) { window.scrollBy(0, dy); }
+  }
+
   function makeChip(pair) {
     var li = document.createElement('li');
     var btn = document.createElement('button');
@@ -5632,30 +5800,89 @@ html { scroll-behavior: auto; }
     btn.className = 'faq-chip';
     btn.setAttribute('aria-controls', pair.id);
     var tx = document.createElement('span');
+    tx.className = 'faq-chip-tx';
     tx.textContent = questionText(pair);
     var ic = document.createElement('span');
     ic.className = 'faq-chip-ic';
     ic.innerHTML = SEND_ICON;
     btn.appendChild(tx);
     btn.appendChild(ic);
-    btn.addEventListener('click', function () { ask(pair, li); });
+    var chip = { pair: pair, li: li, btn: btn, ic: ic, done: false };
+    btn.addEventListener('click', function () { ask(chip, false); });
     li.appendChild(btn);
-    return li;
+    return chip;
   }
 
-  function fillList(skip) {
-    list.textContent = '';
-    pairs.forEach(function (pair) { if (pair !== skip) list.appendChild(makeChip(pair)); });
+  function markDone(chip, done) {
+    chip.done = done;
+    chip.li.classList.toggle('is-done', done);
+    chip.btn.disabled = done;
+    chip.ic.innerHTML = done ? DONE_ICON : SEND_ICON;
+    var note = chip.btn.querySelector('.faq-sr');
+    if (done && !note) {
+      note = document.createElement('span');
+      note.className = 'faq-sr';
+      note.textContent = ' (answered above)';
+      chip.btn.insertBefore(note, chip.ic);
+    } else if (!done && note) {
+      chip.btn.removeChild(note);
+    }
+  }
+
+  // "More questions (10)" shows the rest; the chips themselves never move.
+  var moreLi = document.createElement('li');
+  moreLi.className = 'faq-more-li';
+  var more = document.createElement('button');
+  more.type = 'button';
+  more.className = 'faq-more';
+  more.setAttribute('aria-expanded', 'false');
+  if (list.id) more.setAttribute('aria-controls', list.id);
+  more.addEventListener('click', function () {
+    expanded = !expanded;
+    layout();
+    // keep focus on the button; open, the first newly shown question is one Tab away
+  });
+  moreLi.appendChild(more);
+
+  function layout() {
+    chips.forEach(function (c, i) { c.li.hidden = !expanded && i >= SHOW; });
+    var rest = Math.max(0, chips.length - SHOW);
+    moreLi.hidden = rest === 0;
+    more.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    more.innerHTML = '<span>' + (expanded ? 'Fewer questions' : 'More questions (' + rest + ')') + '</span>' + MORE_ICON;
   }
 
   function syncState() {
-    var left = list.children.length;
+    var left = chips.filter(function (c) { return !c.done; }).length;
     if (reset) reset.hidden = asked === 0;
-    if (title) title.textContent = left ? titleText : 'That\u2019s every question';
-    list.hidden = left === 0;
+    if (title) title.textContent = left ? titleText : 'That’s every question';
   }
 
-  // show the waiting answer now (after the typing delay, or at once when another question is tapped)
+  // the next question to focus after `chip`: the next unanswered visible chip, else an earlier one
+  function nextTarget(chip) {
+    var at = chips.indexOf(chip);
+    var open = function (c) { return !c.done && !c.li.hidden; };
+    for (var i = at + 1; i < chips.length; i++) if (open(chips[i])) return chips[i].btn;
+    for (var j = at - 1; j >= 0; j--) if (open(chips[j])) return chips[j].btn;
+    if (!moreLi.hidden && !expanded) return more;
+    return reset && !reset.hidden ? reset : log;
+  }
+
+  // in the sideways row on phones, make sure a chip focused from the keyboard isn't cut off (after a tap
+  // the row stays put, so nothing moves under the finger)
+  function showInRow(el) {
+    if (!el || el.parentNode.parentNode !== list || list.scrollWidth <= list.clientWidth + 1) return;
+    var keyboard = false;
+    try { keyboard = el.matches(':focus-visible'); } catch (e) { keyboard = false; }
+    if (!keyboard) return;
+    var li = el.parentNode;
+    var left = li.offsetLeft - list.offsetLeft;
+    if (left < list.scrollLeft || left + li.offsetWidth > list.scrollLeft + list.clientWidth) {
+      try { list.scrollTo({ left: Math.max(0, left - 12), behavior: reduced() ? 'auto' : 'smooth' }); } catch (e) { list.scrollLeft = Math.max(0, left - 12); }
+    }
+  }
+
+  // show the waiting answer now (after the typing delay, or at once when another question is chosen)
   function finish() {
     if (!pending) return;
     var p = pending;
@@ -5667,26 +5894,34 @@ html { scroll-behavior: auto; }
     scrollLog(p.pair.offsetTop - 16);
   }
 
-  function ask(pair, li) {
+  // found: opened by find in page, so show it at once and leave focus and scrolling to the browser
+  function ask(chip, found) {
     finish();
-    var items = Array.prototype.slice.call(list.children);
-    var at = items.indexOf(li);
-    if (li.parentNode) li.parentNode.removeChild(li);
+    var pair = chip.pair;
+    if (chip.done && !found) return;
+    var wasFocused = document.activeElement === chip.btn;
+    markDone(chip, true);
     asked += 1;
 
     // the question joins the end of the conversation; the answer waits off the page until it is "typed"
-    var answer = pair.querySelector('.faq-msg-a');
+    var answer = found ? null : pair.querySelector('.faq-msg-a');
     if (answer) pair.removeChild(answer);
     pair.hidden = false;
-    pair.classList.add('is-new');
+    pair.classList.toggle('is-new', !found);
     thread.appendChild(pair);
     syncState();
+    if (found) return;
 
-    // keep keyboard focus in the list: the next question, else the reset button
-    var next = list.children[at] || list.children[at - 1];
-    var target = next ? next.querySelector('button') : (reset && !reset.hidden ? reset : log);
-    if (target) { try { target.focus({ preventScroll: true }); } catch (e) { target.focus(); } }
+    // keep keyboard focus in the list: the next question, else "More questions", else "Start over"
+    if (wasFocused || chip.btn.contains(document.activeElement) || document.activeElement === document.body) {
+      var target = nextTarget(chip);
+      if (target) {
+        try { target.focus({ preventScroll: true }); } catch (e) { target.focus(); }
+        showInRow(target);
+      }
+    }
 
+    revealChat();
     if (!answer) { scrollLog(pair.offsetTop - 16); return; }
     var wait = reduced() ? 0 : 600 + Math.min(300, Math.round(answer.textContent.length * 0.6));
     pending = { pair: pair, answer: answer, timer: 0 };
@@ -5696,23 +5931,46 @@ html { scroll-behavior: auto; }
     pending.timer = setTimeout(finish, wait);
   }
 
-  // start: first pair open, the rest hidden (still in the page) and listed as suggestions
+  function hideWaiting(pair) {
+    pair.setAttribute('hidden', 'until-found'); // plain hidden in browsers without find-in-page support
+  }
+
+  // start: first pair open, the rest waiting (still in the page) and listed as chips
   chat.classList.add('is-live');
   log.tabIndex = 0; // the conversation now scrolls on its own, so keyboard users can focus and scroll it
   if (hello) hello.hidden = false;
-  pairs.forEach(function (pair, i) { pair.hidden = i > 0; });
-  fillList(pairs[0]);
+  pairs.forEach(function (pair, i) {
+    pair.classList.remove('is-new');
+    if (i === 0) return;
+    hideWaiting(pair);
+    var chip = makeChip(pair);
+    chips.push(chip);
+    list.appendChild(chip.li);
+    pair.addEventListener('beforematch', function () { ask(chip, true); });
+  });
+  list.appendChild(moreLi);
+  layout();
   sugg.hidden = false;
   syncState();
   log.scrollTop = log.scrollHeight;
 
+  // "Start over": back to the first question only, every chip unanswered and the list folded
   if (reset) {
     reset.addEventListener('click', function () {
       finish();
       asked = 0;
-      fillList(null);
+      expanded = false;
+      pairs.forEach(function (pair, i) {
+        pair.classList.remove('is-new');
+        thread.appendChild(pair); // first-to-last: back in the page's own order
+        if (i > 0) hideWaiting(pair);
+      });
+      chips.forEach(function (c) { markDone(c, false); });
+      layout();
       syncState();
-      var first = list.querySelector('button');
+      list.scrollLeft = 0;
+      log.scrollTop = log.scrollHeight;
+      var first = chips[0] && chips[0].btn;
       if (first) { try { first.focus({ preventScroll: true }); } catch (e) { first.focus(); } }
     });
   }

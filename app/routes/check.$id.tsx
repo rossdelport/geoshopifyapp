@@ -25,7 +25,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 };
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => [
-  { title: data?.view.product ? `GEO free check: ${data.view.product.title}` : "GEO free check" },
+  { title: data?.view.product ? `Free product check: ${data.view.product.title} · GEO` : "Free product check · GEO" },
   { name: "description", content: "Does AI recommend this product? A free check across ChatGPT, Gemini and Perplexity." },
   { name: "robots", content: "noindex" },
 ];
@@ -46,10 +46,12 @@ export default function CheckPage() {
     return () => clearInterval(timer);
   }, [running, revalidator]);
 
+  // A check that failed before reading the page has no product to show: the message takes its place.
+  if (!view.product && !running) {
+    return <CheckShell hero={<CheckFailed view={view} url={url} asTitle />} />;
+  }
   return (
-    <CheckShell>
-      {/* A check that failed before reading the page has no product to show. */}
-      {view.product || running ? <ProductCard product={view.product} country={view.country} /> : null}
+    <CheckShell hero={<ProductCard product={view.product} country={view.country} />}>
       {view.status === "done" ? <CheckReport view={view} /> : view.status === "failed" ? <CheckFailed view={view} url={url} /> : <CheckRunning view={view} />}
     </CheckShell>
   );
@@ -60,16 +62,18 @@ export function ErrorBoundary() {
   const missing = isRouteErrorResponse(error) && error.status === 404;
   if (!missing) console.error("[check] page error", error);
   return (
-    <CheckShell>
-      <section className="ck-card ck-msg">
-        <h1 className="ck-h2">{missing ? "We couldn't find that check" : "Something went wrong"}</h1>
-        <p>
-          {missing
-            ? "The link may be wrong, or the check is more than 30 days old and was deleted. You can run a new one here."
-            : "Please try again in a minute, or start a new check."}
-        </p>
-        <CheckForm />
-      </section>
-    </CheckShell>
+    <CheckShell
+      hero={
+        <section className="ck-card ck-msg">
+          <h1 className="ck-h2">{missing ? "We couldn’t find that check" : "Something went wrong"}</h1>
+          <p>
+            {missing
+              ? "The link may be wrong, or the check is more than 30 days old and was deleted. You can run a new one here."
+              : "Please try again in a minute, or start a new check."}
+          </p>
+          <CheckForm />
+        </section>
+      }
+    />
   );
 }

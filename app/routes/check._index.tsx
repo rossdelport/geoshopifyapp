@@ -2,14 +2,18 @@ import type { ActionFunctionArgs, LinksFunction, MetaFunction } from "react-rout
 import { data, redirect, useActionData } from "react-router";
 import { createCheck } from "../lib/check.server";
 import { env } from "../lib/env.server";
-import { CHECK_FONT_LINKS, CheckForm, CheckShell } from "../components/check-ui";
+import { CHECK_FONT_LINKS, CheckIntro, CheckPerks, CheckShell } from "../components/check-ui";
 import styles from "../styles/check.css?url";
 
 // Free product check: the form. The home page hero posts here too (plain HTML form, works without JS).
 
 export const meta: MetaFunction = () => [
-  { title: "GEO free check: does AI recommend your product?" },
-  { name: "description", content: "Paste a product link and see if ChatGPT, Gemini and Perplexity recommend it. Free, no sign-up." },
+  { title: "Free product check: does AI recommend your product? · GEO" },
+  {
+    name: "description",
+    content:
+      "Paste a product link and see whether ChatGPT, Gemini and Perplexity recommend it, who they pick instead, and which sites they trust. Free, no sign-up.",
+  },
 ];
 
 export const links: LinksFunction = () => [...CHECK_FONT_LINKS, { rel: "stylesheet", href: styles }];
@@ -88,29 +92,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function CheckStart() {
   const data = useActionData<typeof action>();
   return (
-    <CheckShell>
-      <section className="ck-intro">
-        <h1 className="ck-h1">Does AI recommend your product?</h1>
-        <p className="ck-lead">
-          Paste a product link. We ask ChatGPT, Gemini and Perplexity questions shoppers typically ask, then show who
-          they recommend, which sites they link to, and what to fix first.
-        </p>
-        <CheckForm url={data?.url} country={data?.country} error={data?.error} />
-      </section>
-      <ul className="ck-perks">
-        <li className="ck-card ck-card-lav">
-          <h2 className="ck-h3">Are you recommended?</h2>
-          <p>A score out of 100 and how often each AI names your brand.</p>
-        </li>
-        <li className="ck-card ck-card-lav">
-          <h2 className="ck-h3">Who wins instead</h2>
-          <p>The brands AI picks for your buyers, and the sites it trusts.</p>
-        </li>
-        <li className="ck-card ck-card-lav">
-          <h2 className="ck-h3">Quick wins</h2>
-          <p>Plain-English next steps, based only on what the AI said.</p>
-        </li>
-      </ul>
+    <CheckShell hero={<CheckIntro url={data?.url} country={data?.country} error={data?.error} />}>
+      <CheckPerks />
     </CheckShell>
   );
 }

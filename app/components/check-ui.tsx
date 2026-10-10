@@ -61,7 +61,9 @@ export type Segment = { text: string; kind: "you" | "brand" | null };
 export function highlightSegments(text: string, names: string[], youNames: string[]): Segment[] {
   const clean = [...new Set(names.map((n) => n.trim()).filter((n) => n.length >= 3))].sort((a, b) => b.length - a.length);
   if (!clean.length || !text) return text ? [{ text, kind: null }] : [];
-  const re = new RegExp(clean.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"), "gi");
+  // A name ending in a full stop ("Ridgeback Beard Co.") also matches without it ("Ridgeback Beard Co: ...").
+  const esc = (n: string) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(clean.map((n) => (n.endsWith(".") ? `${esc(n.slice(0, -1))}\\.?` : esc(n))).join("|"), "gi");
   const word = /[a-z0-9]/i;
   const out: Segment[] = [];
   let last = 0;
@@ -102,6 +104,14 @@ const LinkIcon = () => (
   </svg>
 );
 
+// Clay illustrations, served from /home/img/ (design/overview/assemble.mjs copies them to public/home/img).
+/** The "checking" state. */
+export const CHECK_RUNNING_IMAGE = "/home/img/clay-magnifier.jpg";
+/** Floating decorations on the /check band (white backgrounds, multiplied away over the lilac). */
+const CHECK_DECOS = ["/home/img/clay-bubble.png", "/home/img/clay-bag.png"];
+/** The clay shop front on the closing card, as on the home page. */
+const CHECK_CTA_IMAGE = "/home/img/clay-storefront.jpg";
+
 const Tick = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="m5 12 5 5 9-10" />
@@ -110,21 +120,32 @@ const Tick = () => (
 
 // ---------- page frame ----------
 
-export function CheckShell({ children }: { children: ReactNode }) {
+/**
+ * The page: floating header over a lilac gradient band (like the home page hero). `hero` sits in the
+ * band (the intro, or the product card); `children` follow on white.
+ */
+export function CheckShell({ hero, children }: { hero?: ReactNode; children?: ReactNode }) {
   return (
     <div className="ck">
-      <div className="ck-grid" aria-hidden="true" />
-      <header className="ck-top">
-        <a className="ck-logo" href="/" aria-label="GEO home">
-          <span className="ck-mark" aria-hidden="true">
-            <i />
-            <i />
-          </span>
-          <span className="ck-word">GEO</span>
-        </a>
-        <span className="ck-pill">Free product check</span>
+      <header className="ck-top-wrap">
+        <div className="ck-top">
+          <a className="ck-logo" href="/" aria-label="GEO home">
+            <span className="ck-mark" aria-hidden="true">
+              <i />
+              <i />
+            </span>
+            <span className="ck-word">GEO</span>
+          </a>
+          <span className="ck-pill">Free product check</span>
+        </div>
       </header>
-      <main className="ck-main">{children}</main>
+      <main>
+        <div className="ck-band">
+          <div className="ck-band-grid" aria-hidden="true" />
+          <div className="ck-band-in">{hero}</div>
+        </div>
+        {children ? <div className="ck-main">{children}</div> : null}
+      </main>
       <footer className="ck-foot">
         GEO · Get recommended by ChatGPT &amp; co · <a href="/privacy">Privacy</a>
       </footer>
@@ -203,8 +224,72 @@ export function CheckForm({ url = "", country = "AU", error = null }: { url?: st
           {error}
         </p>
       ) : null}
-      <p className="ck-form-hint">Free. No sign-up. We ask ChatGPT, Gemini and Perplexity questions shoppers typically ask about products like yours.</p>
+      <p className="ck-form-hint">Free. No sign-up. We ask ChatGPT, Gemini and Perplexity 3 questions a shopper might ask, twice each.</p>
     </form>
+  );
+}
+
+// ---------- the /check start page ----------
+
+/** Headline, lead and the form, shown in the lilac band. */
+export function CheckIntro({ url, country, error }: { url?: string; country?: string; error?: string | null }) {
+  return (
+    <section className="ck-intro">
+      <img className="ck-deco ck-deco-a" src={CHECK_DECOS[0]} alt="" aria-hidden="true" width={180} height={180} loading="lazy" />
+      <img className="ck-deco ck-deco-b" src={CHECK_DECOS[1]} alt="" aria-hidden="true" width={170} height={170} loading="lazy" />
+      <h1 className="ck-h1">Does AI recommend your product?</h1>
+      <p className="ck-lead">
+        Paste a product link. We ask ChatGPT, Gemini and Perplexity 3 questions a shopper might ask, twice each.
+        Then we show who they recommend, which sites they trust, and what to fix first.
+      </p>
+      <CheckForm url={url} country={country} error={error} />
+    </section>
+  );
+}
+
+const PERK_ICONS: ReactNode[] = [
+  // a score dial
+  <svg key="score" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M4.5 16.5a8 8 0 1 1 15 0" />
+    <path d="m12 13 3.5-4" />
+    <circle cx="12" cy="13.5" r="1.2" />
+  </svg>,
+  // a ranked list
+  <svg key="rank" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M9 6h11M9 12h8M9 18h5" />
+    <path d="M4 5.5 5 5v3M4 11.5c.4-.5 1.6-.6 1.8.2.2.7-1.8 1.8-1.8 2.3h2M4 17h1.6c.6 0 .6 1.2 0 1.2H4.8c.8 0 .9 1.3 0 1.3H4" />
+  </svg>,
+  // a checklist
+  <svg key="fix" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="4" y="3.5" width="16" height="17" rx="3" />
+    <path d="m8 9 1.5 1.5L12.5 7.5M8 15l1.5 1.5 3-3M15 9.5h1.5M15 15.5h1.5" />
+  </svg>,
+];
+
+const PERKS: [string, string][] = [
+  ["Are you recommended?", "A score out of 100, and how often each AI names your brand."],
+  ["Who wins instead", "The brands AI picks for your buyers, and the websites it quotes."],
+  ["What to fix first", "Plain-English next steps, based only on the AI answers and your product page."],
+];
+
+/** What the report shows, and why we ask twice. Under the band on /check. */
+export function CheckPerks() {
+  return (
+    <>
+      <ul className="ck-perks">
+        {PERKS.map(([title, body], i) => (
+          <li key={title} className="ck-card ck-perk">
+            <span className="ck-perk-ic">{PERK_ICONS[i]}</span>
+            <h2 className="ck-h3">{title}</h2>
+            <p>{body}</p>
+          </li>
+        ))}
+      </ul>
+      <p className="ck-explain">
+        <b>Why we ask twice:</b> AI answers change from one run to the next. Two runs give a fairer picture than one
+        lucky, or unlucky, answer.
+      </p>
+    </>
   );
 }
 
@@ -256,56 +341,75 @@ export function CheckRunning({ view }: { view: CheckView }) {
   const share = view.total ? Math.min(1, view.done / view.total) : 0;
   return (
     <section className="ck-card ck-run">
-      <h2 className="ck-h2">Checking your product</h2>
-      <p className="ck-muted" aria-live="polite">
-        {view.step}
-      </p>
-      <ol className="ck-steps">
-        {CHECK_STEPS.map((s, i) => (
-          <li key={s} className={i < current ? "is-done" : i === current ? "is-now" : undefined}>
-            <span className="ck-step-dot">{i < current ? <Tick /> : i + 1}</span>
-            <span>{s}</span>
-          </li>
-        ))}
-      </ol>
-      <div
-        className="ck-bar"
-        role="progressbar"
-        aria-label="AI answers in"
-        aria-valuemin={0}
-        aria-valuemax={view.total}
-        aria-valuenow={view.done}
-      >
-        <i style={{ width: `${Math.max(2, share * 100)}%` }} />
-      </div>
-      <p className="ck-bar-tx">
-        <b>{view.done}</b> of {view.total} answers in
-      </p>
-      {view.questions.length ? (
-        <div className="ck-run-qs">
-          <h3 className="ck-h3">The questions we&apos;re asking</h3>
-          <ol>
-            {view.questions.map((q, i) => (
-              <li key={i}>{q.text}</li>
+      <div className="ck-run-head">
+        <img className="ck-run-img" src={CHECK_RUNNING_IMAGE} alt="" width={200} height={200} />
+        <div className="ck-run-body">
+          <h2 className="ck-h2">Checking your product</h2>
+          <p className="ck-muted" aria-live="polite">
+            {view.step}
+          </p>
+          <ol className="ck-steps">
+            {CHECK_STEPS.map((s, i) => (
+              <li key={s} className={i < current ? "is-done" : i === current ? "is-now" : undefined}>
+                <span className="ck-step-dot">{i < current ? <Tick /> : i + 1}</span>
+                <span>{s}</span>
+              </li>
             ))}
           </ol>
         </div>
-      ) : null}
-      <p className="ck-note">
-        This takes a few minutes. You can leave this page and come back to this link.{" "}
-        <a href={`/check/${view.id}`}>Refresh</a>
-      </p>
+      </div>
+      <div className="ck-progress">
+        <div
+          className="ck-bar"
+          role="progressbar"
+          aria-label="AI answers in"
+          aria-valuemin={0}
+          aria-valuemax={view.total}
+          aria-valuenow={view.done}
+        >
+          <i style={{ width: `${Math.max(2, share * 100)}%` }} />
+        </div>
+        <p className="ck-bar-tx">
+          <b>{view.done}</b> of {view.total} answers in
+        </p>
+      </div>
+      <div className="ck-run-boxes">
+        {view.questions.length ? (
+          <div className="ck-run-box">
+            <h3 className="ck-h3">The questions we’re asking</h3>
+            <ol className="ck-run-qs">
+              {view.questions.map((q, i) => (
+                <li key={i}>{q.text}</li>
+              ))}
+            </ol>
+          </div>
+        ) : null}
+        <div className="ck-run-box is-soft">
+          <h3 className="ck-h3">What’s happening now</h3>
+          <p>
+            Each AI assistant gets the same 3 questions, twice. For every answer we note which brands it names, in what
+            order, and which websites it links to. Those links show where AI gets its opinions.
+          </p>
+        </div>
+      </div>
+      <div className="ck-note">
+        <p>A check usually takes a few minutes. You can leave this page and come back to this link.</p>
+        <a className="ck-btn ck-btn-light ck-btn-sm" href={`/check/${view.id}`}>
+          Refresh
+        </a>
+      </div>
     </section>
   );
 }
 
 // ---------- failed ----------
 
-export function CheckFailed({ view, url = null }: { view: CheckView; url?: string | null }) {
+export function CheckFailed({ view, url = null, asTitle = false }: { view: CheckView; url?: string | null; asTitle?: boolean }) {
   const link = view.product?.url ?? url ?? "";
+  const Heading = asTitle ? "h1" : "h2";
   return (
     <section className="ck-card ck-msg">
-      <h2 className="ck-h2">We couldn&apos;t finish this check</h2>
+      <Heading className="ck-h2">We couldn’t finish this check</Heading>
       <p>{view.error || "Something went wrong on our side. Please try again."}</p>
       {link ? (
         <p className="ck-small ck-fail-url">
@@ -319,7 +423,8 @@ export function CheckFailed({ view, url = null }: { view: CheckView; url?: strin
 
 // ---------- the report ----------
 
-const TONES: Record<string, string> = { Invisible: "red", Weak: "amber", Growing: "blue", Strong: "green" };
+// Chip and ring colours for scoreLabel() labels. "Not named yet" is a plain fact, so it stays neutral.
+const TONES: Record<string, string> = { "Not named yet": "grey", "Rarely named": "amber", Weak: "amber", Growing: "blue", Strong: "green" };
 
 function ScoreRing({ score, label }: { score: number; label: string }) {
   const r = 52;
@@ -328,7 +433,7 @@ function ScoreRing({ score, label }: { score: number; label: string }) {
   return (
     <div className={`ck-ring is-${tone}`}>
       <svg viewBox="0 0 120 120" aria-hidden="true">
-        <circle cx="60" cy="60" r={r} fill="none" stroke="var(--lav-2)" strokeWidth="11" />
+        <circle cx="60" cy="60" r={r} fill="none" stroke="var(--lilac-100)" strokeWidth="11" />
         <circle
           cx="60"
           cy="60"
@@ -367,7 +472,7 @@ function Snippet({ answer, brand }: { answer: CheckAnswer; brand: string }) {
         {answer.named ? (
           <span className="ck-chip is-green">Names you{answer.position ? ` · #${answer.position}` : ""}</span>
         ) : (
-          <span className="ck-chip is-grey">Doesn&apos;t name you</span>
+          <span className="ck-chip is-grey">Doesn’t name you</span>
         )}
       </div>
       <p className="ck-snip-text">
@@ -388,7 +493,7 @@ function Snippet({ answer, brand }: { answer: CheckAnswer; brand: string }) {
 
 export function CheckReport({ view }: { view: CheckView }) {
   const report = view.report;
-  if (!report) return <CheckFailed view={{ ...view, error: view.error ?? "We couldn't write this report. Please try again." }} />;
+  if (!report) return <CheckFailed view={{ ...view, error: view.error ?? "We couldn’t write this report. Please try again." }} />;
   const brand = view.product?.brand || "your product";
   const youShare = report.answerCount ? report.namedCount / report.answerCount : 0;
   const topShare = Math.max(youShare, ...report.competitors.map((c) => c.share), 0.01);
@@ -420,19 +525,20 @@ export function CheckReport({ view }: { view: CheckView }) {
                     <span className="ck-track">
                       <i className={`is-${e}`} style={{ width: `${s.total ? Math.max(3, s.score) : 0}%` }} />
                     </span>
-                    <span className="ck-engine-v">{s.total ? `Named in ${s.named} of ${s.total}` : "Didn't answer"}</span>
+                    <span className="ck-engine-v">{s.total ? `Named in ${s.named} of ${s.total}` : "Didn’t answer"}</span>
                   </li>
                 );
               })}
             </ul>
-            <p className="ck-small">
-              The score is out of 100: full points when AI names you in its top 3, two-thirds lower down, one-third when it
-              only links to your website.
+            <p className="ck-small ck-score-note">
+              <b>What this means:</b> full points when AI names you in its top 3, two-thirds when it names you lower
+              down, one-third when it only links to your website, averaged across each AI assistant. 0 means no AI named
+              or linked to you.
             </p>
           </>
         ) : (
           <div>
-            <h2 className="ck-h2">The AI assistants didn&apos;t answer this time</h2>
+            <h2 className="ck-h2">The AI assistants didn’t answer this time</h2>
             <p className="ck-muted">This happens now and then. Please run the check again in a few minutes.</p>
           </div>
         )}
@@ -441,7 +547,7 @@ export function CheckReport({ view }: { view: CheckView }) {
       <div className="ck-two">
         <section className="ck-card">
           <h2 className="ck-h3">Who AI recommends instead</h2>
-          <p className="ck-small">Share of answers that named each brand.</p>
+          <p className="ck-small">Share of answers that named each brand. These are the names your buyers hear first.</p>
           <ol className="ck-rank">
             <li className="is-you">
               <span className="ck-rank-n">You</span>
@@ -462,12 +568,14 @@ export function CheckReport({ view }: { view: CheckView }) {
               </li>
             ))}
           </ol>
-          {report.competitors.length ? null : <p className="ck-small">AI didn&apos;t name any other brands for these questions.</p>}
+          {report.competitors.length ? null : <p className="ck-small">AI didn’t name any other brands for these questions.</p>}
         </section>
 
         <section className="ck-card">
           <h2 className="ck-h3">Sites AI trusts for this</h2>
-          <p className="ck-small">Websites the AI linked to for these questions. Being on these sites can help you get recommended.</p>
+          <p className="ck-small">
+            Websites the AI linked to in its answers. These are the sites it leaned on for these questions.
+          </p>
           {report.sources.length ? (
             <ul className="ck-sources">
               {report.sources.map((s) => (
@@ -475,10 +583,10 @@ export function CheckReport({ view }: { view: CheckView }) {
                   <a className="ck-source-d" href={safeHref(s.exampleUrl)} target="_blank" rel="noopener noreferrer nofollow">
                     {s.domain}
                   </a>
-                  <span className="ck-chip is-lav">
-                    {s.type === "brand" && !s.isOwn ? "Competitor site" : (SOURCE_CHIPS[s.type] ?? "Other")}
+                  <span className="ck-source-tags">
+                    <span className="ck-chip is-lav">{SOURCE_CHIPS[s.type] ?? "Other"}</span>
+                    {s.isOwn ? <span className="ck-chip is-green">You’re on it</span> : null}
                   </span>
-                  {s.isOwn ? <span className="ck-chip is-green">You&apos;re on it</span> : null}
                   <span className="ck-source-n">
                     {s.count} {s.count === 1 ? "answer" : "answers"}
                   </span>
@@ -486,7 +594,7 @@ export function CheckReport({ view }: { view: CheckView }) {
               ))}
             </ul>
           ) : (
-            <p className="ck-small">The AI answers didn&apos;t link to any websites.</p>
+            <p className="ck-small">The AI answers didn’t link to any websites.</p>
           )}
         </section>
       </div>
@@ -494,7 +602,8 @@ export function CheckReport({ view }: { view: CheckView }) {
       <section className="ck-card">
         <h2 className="ck-h3">What we asked</h2>
         <p className="ck-small">
-          Questions shoppers typically ask, each asked {CHECK_RUNS} times on every AI. Open one to read the answers.
+          Questions a shopper might ask, each asked {CHECK_RUNS === 2 ? "twice" : `${CHECK_RUNS} times`} on every AI
+          assistant. Open one to read the answers.
         </p>
         <div className="ck-qs">
           {view.questions.map((q, qi) => (
@@ -529,7 +638,7 @@ export function CheckReport({ view }: { view: CheckView }) {
 
       {report.tips.length ? (
         <section className="ck-card ck-card-lav">
-          <h2 className="ck-h3">Quick wins</h2>
+          <h2 className="ck-h3">What to fix first</h2>
           <ol className="ck-tips">
             {report.tips.map((t, i) => (
               <li key={i}>
@@ -545,25 +654,33 @@ export function CheckReport({ view }: { view: CheckView }) {
       ) : null}
 
       <section className="ck-cta">
-        <h2 className="ck-cta-h">Track this every week and fix it in one click</h2>
-        <p>
-          GEO checks up to {PLANS.core.questions} questions every week, writes the fixes for your product pages, and shows
-          the sales AI sends you. Weekly tracking and one-click fixes are on Core, US${PLANS.core.priceUsd}/mo after the
-          trial.
-        </p>
-        <div className="ck-cta-row">
-          <a className="ck-btn ck-btn-light" href={view.installUrl}>
-            Start your {PLANS.core.trialDays}-day free trial
-          </a>
-          <a className="ck-cta-link" href="/#check">
-            Check another product
-          </a>
+        <div className="ck-cta-tx">
+          <h2 className="ck-cta-h">See this every week, with the fixes written for you</h2>
+          <p>
+            GEO Core checks up to {PLANS.core.questions} buyer questions every week, writes fixes for your product pages for
+            you to approve, and shows the orders AI sends you.
+          </p>
+          <p className="ck-cta-price">
+            Your first scan is free. Core is US${PLANS.core.priceUsd} a month after a {PLANS.core.trialDays}-day free trial.
+          </p>
+          <div className="ck-cta-row">
+            <a className="ck-btn ck-btn-dark" href={view.installUrl}>
+              Install GEO: first scan free
+            </a>
+            <a className="ck-cta-link" href="/#check">
+              Check another product
+            </a>
+          </div>
+        </div>
+        <div className="ck-cta-art" aria-hidden="true">
+          <img src={CHECK_CTA_IMAGE} alt="" width={1200} height={896} loading="lazy" />
         </div>
       </section>
 
       <p className="ck-honest">
-        Answers change from run to run, so we ask twice. This quick check uses 3 questions; Core tracks{" "}
-        {PLANS.core.questions} every week.
+        Answers change from run to run, so we ask twice. This quick check uses 3 questions. The app tracks up to{" "}
+        {PLANS.core.questions} every week on Core, or {PLANS.pro.questions} every day on Pro (asked twice on the weekly
+        full scan).
       </p>
     </>
   );

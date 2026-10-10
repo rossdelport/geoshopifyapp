@@ -194,8 +194,8 @@
 .hw-row-s { font-size: 11px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .hw-chip { height: 20px; padding: 0 7px; border-radius: 10px; display: inline-flex; align-items: center; background: var(--green-bg); color: var(--green-ink); font-size: 11px; font-weight: 600; line-height: 1; white-space: nowrap; }
 @media (max-width: 1240px) {
-  .hw-rows { width: min(calc(100% - 20px), 320px); }
-  .hw-row { grid-template-columns: 26px minmax(0, 1fr) auto; gap: 7px; padding: 0 7px; }
+  .hw-rows { width: min(calc(100% - 16px), 320px); }
+  .hw-row { grid-template-columns: 26px minmax(0, 1fr) auto; gap: 6px; padding: 0 6px; }
   .hw-row-ic { width: 26px; height: 26px; }
   .hw-row-t { font-size: 12px; }
   .hw-chip { padding: 0 6px; }

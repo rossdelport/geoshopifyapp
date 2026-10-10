@@ -32,7 +32,10 @@ describe("visibility score", () => {
   });
 
   it("labels scores", () => {
-    expect(scoreLabel(0).label).toBe("Invisible");
+    expect(scoreLabel(0).label).toBe("Not named yet");
+    // named once but still under 10: say so, never "not named"
+    expect(scoreLabel(6, true).label).toBe("Rarely named");
+    expect(scoreLabel(6, false).label).toBe("Not named yet");
     expect(scoreLabel(75).tone).toBe("success");
   });
 });

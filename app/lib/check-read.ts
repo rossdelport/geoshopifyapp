@@ -14,7 +14,7 @@ import { CHECK_COUNTRIES, type CheckCountry, type CheckProduct, type CheckQuesti
 
 const BAD_LINK = "Please paste a product link, like https://yourstore.com/products/your-product.";
 export const NOT_YOUR_STORE =
-  "That link is on a marketplace or big retailer. Please paste the product link from your own store's website.";
+  "That link is on a marketplace or big retailer. Please paste the product link from your own store’s website.";
 
 // Query parameters that can pick the product. Everything else (tracking, preview keys, tokens) is dropped,
 // so "?x=1" can't dodge re-use and private keys never end up on a shareable report.
@@ -155,7 +155,7 @@ export function ipBucket(ip: string): string {
 
 // ---------- Text helpers ----------
 
-const ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ", ndash: "–", mdash: "—", rsquo: "’", lsquo: "‘", rdquo: "”", ldquo: "“", hellip: "…" };
+const ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ", ndash: "\u2013", mdash: "\u2014", rsquo: "’", lsquo: "‘", rdquo: "”", ldquo: "“", hellip: "…" };
 
 export function decodeEntities(s: string): string {
   return s.replace(/&(#x[0-9a-f]{1,6}|#\d{1,7}|[a-z]{2,8});/gi, (m, code: string) => {
@@ -402,7 +402,7 @@ export function parseProductHtml(html: string, pageUrl: string): PageFacts {
 
 const SUFFIX_LABELS = new Set(["com", "net", "org", "co", "au", "nz", "uk", "ca", "us", "io", "shop", "store", "online", "myshopify", "biz", "info", "ie", "gov", "edu", "ac", "id"]);
 
-/** "shop.bondi-beard-co.com.au" -> "Bondi Beard Co". */
+/** "shop.coolabah-grooming.com.au" -> "coolabah-grooming" (titleCase makes it "Coolabah Grooming"). */
 export function domainStem(domain: string): string {
   const labels = domain.toLowerCase().replace(/^www\./, "").split(".").filter(Boolean);
   while (labels.length > 1 && SUFFIX_LABELS.has(labels[labels.length - 1])) labels.pop();
@@ -455,7 +455,7 @@ export type ReadProduct = Omit<CheckProduct, "category"> & {
 /** Merge what Shopify's JSON and the HTML page told us. Null when there's nothing usable. */
 export function mergeProduct(url: string, js: ShopifyJsFacts | null, page: PageFacts | null): ReadProduct | null {
   const ld = page?.ld ?? null;
-  const pageTitle = page?.title?.split(/\s+[|–—-]\s+/)[0]?.trim() || null;
+  const pageTitle = page?.title?.split(/\s+[|\u2013\u2014-]\s+/)[0]?.trim() || null;
   const title = (js?.title || ld?.name || page?.ogTitle || pageTitle || "").trim();
   if (!title || title.length < 2) return null;
   const domain = domainOf(url);
@@ -520,10 +520,10 @@ const wordsOf = (s: string) =>
     .split(/\s+/)
     .filter((w) => w.length > 1 && !STOP_WORDS.has(w));
 
-/** "Sandalwood Beard Oil 50ml – Bondi Beard Co" -> "beard oil"; "Beard Oil for Dry Skin" -> "beard oil". */
+/** "Sandalwood Beard Oil 50ml | Coolabah Grooming Co" -> "beard oil"; "Beard Oil for Dry Skin" -> "beard oil". */
 export function fallbackCategory(title: string, brand: string): string {
   const b = brand.toLowerCase().trim();
-  for (const part of title.toLowerCase().split(/\s+[|–—-]\s+/)) {
+  for (const part of title.toLowerCase().split(/\s+[|\u2013\u2014-]\s+/)) {
     let t = ` ${part} `;
     if (b.length > 1) t = t.split(` ${b} `).join(" ");
     // What it is comes before "with", "for", "in"...: "Face Serum with Hyaluronic Acid" -> "face serum".
@@ -539,7 +539,7 @@ export function fallbackQuestions(category: string, country: CheckCountry): Chec
   return [
     { text: `best ${category} in ${where}`, keyword: `best ${category}` },
     { text: `what's the best ${category} to buy right now`, keyword: category },
-    { text: `is ${category} worth it, and which brand should I pick in ${where}`, keyword: `${category} brands` },
+    { text: `which ${category} brand is worth it in ${where}`, keyword: `${category} brands` },
   ];
 }
 

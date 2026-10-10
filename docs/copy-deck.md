@@ -181,12 +181,12 @@ Alternates (only for future tests):
 - AI recommends a few stores. Is yours one of them?
 
 **Sub-line (lead):**
-> Shoppers now ask ChatGPT, Gemini and Perplexity what to buy. Each answer names a few stores and links
-> to them. Those stores don't pay for the click. AI picks them from what it can read about their
-> products and the sites that mention them.
+> Shoppers now ask ChatGPT, Gemini and Perplexity what to buy. Most answers name a few brands, many link
+> to where to buy them, and those stores don't pay for the click.
 
-(Edit note: says who the clicks are free for and how stores get picked, without telling the reader
-they're missing out. They connect "a free click, going to someone else" themselves.)
+(Edit note: two sentences, so the cards below can show the rest. Not "each answer names a few stores and
+links to them": some answers name no brands or link nowhere, and AI mostly names brands, not stores. How AI
+picks is left to the "how AI picks" section, since nobody outside the AI companies knows for sure.)
 
 Alternates:
 - Every day, shoppers ask AI assistants what to buy, and each answer recommends a handful of stores. The
@@ -199,25 +199,28 @@ Alternates:
 - Placeholder: **Paste a product link, e.g. yourstore.com/products/...**
 - Country label (visually hidden): **Shopper country**. Options: Australia, New Zealand, USA, UK, Canada.
 - Button: **Check my product**. While sending: **Starting your check…**
-- Note under the form: **Free. No sign-up. We ask ChatGPT, Gemini and Perplexity 3 questions a real
-  buyer would ask, twice each, and show you who they recommend.** [source: FC]
-  (Was "3 real buyer questions": we write the questions, so "a real buyer would ask" is the honest
-  wording.)
+- Note under the form: **Free. No sign-up. We ask ChatGPT, Gemini and Perplexity 3 questions a shopper
+  might ask, twice each, and show you who they recommend.** [source: FC]
+  (Was "a real buyer would ask": we write the questions, they don't come from real buyer data.)
 - Preview-only message (design preview, no server): **Live checks run on the GEO website.** Link:
   **Open it and paste your link there**
 - Secondary link: **or first, see how AI picks what to recommend** (`#decide`)
 
 **Three animated cards** (under the form; they replace the old hero dashboard mockup). A list labelled
 **How a shopper's question to AI becomes a sale**. Each card has a small picture (hidden from screen
-readers), a title and one line. Each card can take keyboard focus; hover or focus replays it.
+readers), a title (an h3) and one line. The cards are not links or buttons: no Tab stop, no hover lift.
+Each picture starts and ends on its finished state, plays its story twice when it scrolls into view, then
+rests. On wide screens the three play as one story, left to right; stacked, each plays on its own.
 
-1. **Shoppers ask AI**: "Shoppers ask AI what to buy. About 50 million times a day on ChatGPT alone, by
-   our 2025 estimate." ("our 2025 estimate" links to `#why`.) [source: F2-est]
+1. **Shoppers ask AI**: "About 50 million shopping questions a day on ChatGPT alone, by our 2025
+   estimate." ("our 2025 estimate" links to `#why`.) [source: F2-est]
    Picture: three questions rise out of a chat box and stack up: ChatGPT **best beard oil for dry skin?**,
    Gemini **unscented beard oil in Australia?**, Perplexity **gift for a bearded man under $80?**
-2. **AI picks a few stores**: "Each answer names just a few stores. GEO helps make yours one of them."
-   Picture: an AI tile wired to three store tiles, **RB**, **You** and **SB** (sample monograms from section
-   0). Dashes run down the wires, then **You** lights up with a **Recommended** chip.
+2. **AI picks a few brands**: "Each answer names just a few. GEO shows whether yours is one of them, and what
+   could change that." (Not "GEO helps make yours one of them": a soft promise of results.)
+   Picture: an AI tile wired to three store tiles: two plain shopping-bag tiles and **You** (no initials:
+   the sample rivals aren't introduced yet). Dashes run down the wires, then **You** lights up with a
+   **Recommended** chip.
 3. **You get the sale**: "Shoppers click straight through. No cost per click, and GEO counts every order
    it can trace back to AI." (Not "every order": GEO can't see every AI order.)
    Picture, tagged **Example** [SAMPLE]: three rows pop in one by one: **Named by ChatGPT** / best beard oil
@@ -720,7 +723,9 @@ Designer notes:
 **Label pill:** How it works
 
 **Headline:**
-> Live in about five minutes. Mostly automatic. [source: P]
+> About five minutes of your time. The rest runs on its own. [source: P]
+(Not "Live in about five minutes": that's the merchant's clicks, not the scan. The scan runs in the
+background and takes longer.)
 
 Alternates:
 - Install, tick, approve
@@ -733,7 +738,7 @@ Alternates:
 **Three steps:**
 1. **Install, and we set things up** · We read your products and homepage, then suggest the questions
    shoppers ask AI. You tick the ones that matter.
-2. **Your first scan in a few minutes** · We ask every AI assistant every question twice and average the
+2. **Your first scan runs in the background** · We ask every AI assistant every question twice and average the
    results, so one odd answer doesn't mislead you. [source: P]
 3. **Approve fixes, track every AI order** · Approve the fixes you like. Then follow the clicks, orders
    and revenue AI sends you, against your baseline. (em dash removed; was "watch the money", which
@@ -856,8 +861,8 @@ Link after it: **Try the calculator** (`#worth`)
 - Line: **See where you stand with AI today, before you pay anything.**
 - Button: **Start free scan**
 - List: 10 buyer questions, one-time scan · 3 AI assistants · Your visibility score: how often AI names
-  you, out of 100 · Top competitors AI picks instead · AI sales from your last 60 days · Results in a few
-  minutes · No card needed · No fixes or ongoing tracking [source: P]
+  you, out of 100 · Top competitors AI picks instead · AI sales from your last 60 days · Results the
+  same day · No card needed · No fixes or ongoing tracking [source: P]
   (Was "10 buyer questions, checked once", which clashes with "every question asked twice".)
 
 **Core**
@@ -908,13 +913,16 @@ assistant**, and under it **Answers written by the GEO team**. Questions show as
 right, answers as white bubbles on the left.
 - Greeting (only with JavaScript): **Hi. Choose a question below and its answer appears here. Let's start
   with how AI picks stores.** Then question 1 and its answer.
-- The other questions wait below the chat under **More questions**. Tapping one adds it to the chat, shows
-  typing dots briefly, then the answer. **Show all questions** puts the full list back. When none are left,
-  the heading reads **That's every question**.
+- The other questions wait below the chat under **Choose a question**: the next 4, then **More questions
+  (10)** (shows the rest; then **Fewer questions**). On phones they sit in one sideways-scrolling row.
+  Tapping one adds it to the chat, shows typing dots briefly, then the answer; the chip stays in place,
+  dimmed with a check. **Start over** goes back to the first question. When every chip is answered, the
+  heading reads **That's every question**. Waiting answers stay findable with find in page.
 - Without JavaScript all 15 show as one conversation. With reduced motion there is no typing delay.
 
 **Help strip** (slim, under the chat): a small crop of `clay-support.jpg` (alt **Clay headset beside two
-chat bubbles**). Text: **Stuck on setup? It takes about five minutes, and most of it runs on its own.**
+chat bubbles**). Text: **Stuck on setup? It takes about five minutes of your time. Your first scan then runs in the
+background.**
 Button: **See the setup steps** (`#how`). (Not "We'll help you get your first scan running": the support
 contact is still marked Soon.) On screens 1240px and wider, `clay-bubble.png` floats beside the window.
 
@@ -945,20 +953,23 @@ contact is still marked Soon.) On screens 1240px and wider, `clay-bubble.png` fl
    claim every AI sale was caused by GEO.
 
 5. **What is the visibility score?**
-   A score out of 100 for how often AI names you. It's the share of AI answers that name you, across all
-   your questions, every AI assistant and both runs, with a bonus when you're in the top 3 and a little
-   credit when AI links to your site. 0 means no AI named you. Higher means you're named more often, and nearer the top. [source: P]
+   A score out of 100 for how often AI names you. For each answer you get full points when AI names you in
+   its top 3, two-thirds when it names you lower down, and one-third when it only links to your website. We
+   average that over every question and every run for each AI assistant, then across the assistants. 0
+   means no AI named or linked to you. [source: P] (Matches `app/lib/score.ts`: named at #4 in every
+   answer scores 67, not 100.)
 
 6. **Will GEO change my store without asking?**
-   No. Every change waits for your approval. Autopilot on Pro is opt-in, and it still skips anything risky,
-   like product claims.
+   No. By default every change waits for your approval. Autopilot on Pro is opt-in, and it still skips
+   risky changes like product claims.
 
 7. **Can I undo a change?**
    Yes. We keep the old version of everything we change, so undo is one click.
 
 8. **Will it write health or skin claims?**
-   No. Health, skin and supplement products get a claims check first, in line with Australia's TGA rules.
-   We only reword facts already in your catalogue. If something is missing, we ask you.
+   We don't add health claims. Health, skin and supplement copy goes through a claims check based on
+   Australia's TGA advertising rules, and we only reword facts already in your catalogue. If something is
+   missing, we ask you. (Not a flat "No ... in line with TGA rules": that reads as a compliance guarantee.)
 
 9. **Which AI assistants do you check?**
    ChatGPT, Gemini, Perplexity and Google AI Overviews. Pro adds Claude. Each question is asked twice per
@@ -1034,7 +1045,7 @@ Alternates:
 - Find out what AI says about your products
 
 **Sub-line:**
-> Paste one product link. In about 3 to 6 minutes you'll see who AI recommends, which sites it trusts, and what
+> Paste one product link. In a few minutes you'll see who AI recommends, which sites it trusts, and what
 > to fix first. Free, no sign-up. [source: FC]
 
 **Button:** **Check my product** (`#check`)
@@ -1087,7 +1098,7 @@ Alternates:
 - What does AI say when shoppers ask about your product?
 
 **Lead:**
-> Paste a product link. We ask ChatGPT, Gemini and Perplexity 3 questions a real buyer would ask, twice
+> Paste a product link. We ask ChatGPT, Gemini and Perplexity 3 questions a shopper might ask, twice
 > each. Then we show who they recommend, which sites they trust, and what to fix first. [source: FC]
 
 **Form:** same as the hero (Product link, Shopper country, **Check my product**, **Starting your
@@ -1097,8 +1108,8 @@ would ask, twice each.** [source: FC]
 **Three cards:**
 1. **Are you recommended?** · A score out of 100, and how often each AI names your brand.
 2. **Who wins instead** · The brands AI picks for your buyers, and the websites it quotes.
-3. **What to fix first** (was "Quick wins") · Plain-English next steps, based only on what the AI
-   said.
+3. **What to fix first** (was "Quick wins") · Plain-English next steps, based only on the AI answers
+   and your product page.
 
 **Explainer (new, small, under the cards):**
 > Why we ask twice: AI answers change from one run to the next. Two runs give a fairer picture than one
@@ -1118,7 +1129,8 @@ would ask, twice each.** [source: FC]
   Perplexity** → **Writing your report**
 - Progress: **{done} of {total} answers in** (aria-label: **AI answers in**)
 - **The questions we're asking** (list of the 3 questions once known)
-- Note: **A check usually takes about 3 to 6 minutes. You can leave this page and come back to this link.** Button:
+- Note: **A check usually takes a few minutes. You can leave this page and come back to this link.**
+  (No minute range until real check times are measured.) Button:
   **Refresh**
 - New "while you wait" box (educational):
   - Heading: **What's happening now**
@@ -1135,9 +1147,9 @@ Alt `""`. Progress bar fill cobalt on `#E2E2FC`.
   (it's shared with the app, so change both or neither).
 - Heading: **AI named {brand} in {n} of {m} answers**
 - Summary line under it (generated, keep the current logic).
-- New "what this means" line under the ring: **The score is the share of answers that named {brand}, with
-  extra credit for a top-3 spot. 0 means no AI named you. Higher means you're named more often, and nearer
-  the top.**
+- New "what this means" line under the ring: **Full points when AI names you in its top 3, two-thirds when it
+  names you lower down, one-third when it only links to your website, averaged across each AI assistant. 0
+  means no AI named or linked to you.**
 - Per AI assistant row: **Named in {x} of {total}** · when empty: **Didn't answer**
 - No answers at all: **The AI assistants didn't answer this time** · **This happens now and then. Please
   run the check again in a few minutes.**
@@ -1193,7 +1205,7 @@ Tip copy (in `buildTips`, keep the variables and the rules, no dashes):
 
 **Honesty note**
 > Answers change from run to run, so we ask twice. This quick check uses 3 questions. The app tracks up to
-> 25 every week on Core, or 100 every day on Pro. [source: FC, P]
+> 25 every week on Core, or 100 every day on Pro (asked twice on the weekly full scan). [source: FC, P]
 
 ### Failed, not found and limit messages
 
@@ -1205,9 +1217,11 @@ Tip copy (in `buildTips`, keep the variables and the rules, no dashes):
 - Route error: **Something went wrong** · **Please try again in a minute, or start a new check.**
 - Page unreadable: **We couldn't read that page. Please paste a public product page link.**
 - Visitor limit (change: the current text promises "unlimited tracking", which no plan has; and the limit
-  is a rolling 24 hours, not "today"): **You've run 3 free checks in the last 24 hours, which is the
-  limit. Try again later, or install GEO to track your questions every week.** [source: FC]
-- Busy: **We're very busy right now. Please try again in an hour.**
+  is a rolling 24 hours, not "today"; it counts per connection, failed tries included, and weekly tracking
+  needs Core): **This connection has reached the free check limit for now (3 checks in 24 hours). Try again
+  tomorrow, or install GEO for a free scan of 10 questions.** [source: FC]
+- Busy (both caps are rolling 24 hours, so no time promise): **We're very busy right now. Please try again
+  later.**
 - Honeypot / unknown: **Something went wrong. Please try again.**
 - Fallback buyer question in `app/lib/check-read.ts` contains an em dash ("is {category} worth it
   [em dash] which brand should I pick in {country}"). Use: **which {category} brand is worth it in

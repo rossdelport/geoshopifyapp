@@ -11,7 +11,9 @@ describe("home page", () => {
     expect(res.headers.get("content-type")).toContain("text/html");
     const html = await res.text();
     expect(html).toContain("<!doctype html>");
-    expect(html).toContain("Get your store recommended by ChatGPT");
+    expect(html).toContain("The free sales channel <br class=\"hero-br\">your store is missing");
+    expect(html).toContain("<title>GEO · The free sales channel your store is missing</title>");
+    expect(html).not.toContain("—");
     expect(html).toContain('src="/home/img/');
     expect(html).toContain('href="/auth/login"');
   });
@@ -23,7 +25,7 @@ describe("home page", () => {
     expect(html).toContain('name="country"');
     expect(html).toContain('name="website"');
     expect(html).toContain("<script>window.GEO_LIVE=true</script>");
-    expect(html).toContain('href="#check">Get your free scan');
+    expect(html).toContain('href="#check"><span class="nav-cta-long">Check a product free</span>');
   });
 
   it("sends Shopify app opens straight into the app", async () => {

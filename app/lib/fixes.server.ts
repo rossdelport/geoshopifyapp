@@ -106,7 +106,7 @@ async function lostQuestions(scanId: string): Promise<LostQuestion[]> {
 }
 
 const productLine = (p: Product, i: number) =>
-  `${i}. ${p.title}${p.productType ? ` [${p.productType}]` : " [no product type]"}${p.price ? ` (${p.price})` : ""} — ${(p.description ?? "no description").slice(0, 220)}`;
+  `${i}. ${p.title}${p.productType ? ` [${p.productType}]` : " [no product type]"}${p.price ? ` (${p.price})` : ""}: ${(p.description ?? "no description").slice(0, 220)}`;
 
 function storeUrl(shop: { primaryDomain: string | null; domain: string }) {
   return `https://${shop.primaryDomain ?? shop.domain}`;
@@ -166,11 +166,11 @@ export async function generateFixes(shopId: string, scanId: string) {
     maxTokens: 6000,
     system:
       "You help small online stores get recommended by AI shopping assistants (ChatGPT, Gemini, Perplexity, Google AI Overviews). AI assistants favour products whose pages clearly state who the product is for, key attributes, use cases and availability, and stores with helpful guides. Pick the few changes that most likely win the questions the store is losing.",
-    prompt: `Store: ${shop.profile.brandName} — ${shop.profile.summary}
+    prompt: `Store: ${shop.profile.brandName}. ${shop.profile.summary}
 Country: ${where}
 
 Questions where AI does NOT recommend this store yet (with who it recommends instead):
-${lost.map((q) => `${q.index}. "${q.text}"${q.volume ? ` (${q.volume} searches/mo)` : ""} — AI picks: ${q.winners.join(", ") || "various"}`).join("\n")}
+${lost.map((q) => `${q.index}. "${q.text}"${q.volume ? ` (${q.volume} searches/mo)` : ""}. AI picks: ${q.winners.join(", ") || "various"}`).join("\n")}
 
 Store products:
 ${products.map(productLine).join("\n")}
@@ -230,7 +230,7 @@ async function writeProductFix(
     shopId: shop.id,
     maxTokens: 6000,
     system: `You improve Shopify product pages so AI shopping assistants understand and recommend them.\n${GUARDRAILS}`,
-    prompt: `Store: ${shop.profile?.brandName} (${countryName(shop.country)}) — ${shop.profile?.summary}
+    prompt: `Store: ${shop.profile?.brandName} (${countryName(shop.country)}). ${shop.profile?.summary}
 
 Product data:
 Title: ${product.title}
@@ -339,7 +339,7 @@ async function writeGuide(
     shopId: shop.id,
     maxTokens: 8000,
     system: `You write helpful, honest buying guides for a store's own website. The guide explains how to choose, then shows the store's own suitable products. It must be genuinely useful even to someone who doesn't buy.\n${GUARDRAILS}`,
-    prompt: `Store: ${shop.profile?.brandName} (${where}) — ${shop.profile?.summary}
+    prompt: `Store: ${shop.profile?.brandName} (${where}). ${shop.profile?.summary}
 
 Write one guide page (400-700 words) that answers these shopper questions:
 ${questions.map((q) => `- ${q.text}`).join("\n")}

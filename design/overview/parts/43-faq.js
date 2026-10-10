@@ -139,9 +139,13 @@
     return reset && !reset.hidden ? reset : log;
   }
 
-  // in the sideways row on phones, make sure the focused chip isn't cut off
+  // in the sideways row on phones, make sure a chip focused from the keyboard isn't cut off (after a tap
+  // the row stays put, so nothing moves under the finger)
   function showInRow(el) {
     if (!el || el.parentNode.parentNode !== list || list.scrollWidth <= list.clientWidth + 1) return;
+    var keyboard = false;
+    try { keyboard = el.matches(':focus-visible'); } catch (e) { keyboard = false; }
+    if (!keyboard) return;
     var li = el.parentNode;
     var left = li.offsetLeft - list.offsetLeft;
     if (left < list.scrollLeft || left + li.offsetWidth > list.scrollLeft + list.clientWidth) {

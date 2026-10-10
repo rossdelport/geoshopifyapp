@@ -200,7 +200,7 @@ export default function Dashboard() {
   const { money, visibility, competitors } = data;
   const m = (n: number) => formatMoney(n, money.currency);
   const score = visibility.latest?.score ?? null;
-  const label = score !== null ? scoreLabel(score) : null;
+  const label = score !== null ? scoreLabel(score, (visibility.latest?.mentionRate ?? 0) > 0) : null;
   const byEngine = (visibility.latest?.byEngine ?? {}) as Record<string, number>;
   const scanning = Boolean(data.scan);
 
@@ -236,7 +236,7 @@ export default function Dashboard() {
         </s-banner>
       )}
 
-      {/* 1. Money from AI — always first. */}
+      {/* 1. Money from AI: always first. */}
       <s-section padding="none">
         <div className="geo-hero">
           <div className="geo-row">

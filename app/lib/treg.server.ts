@@ -7,6 +7,11 @@ import { env } from "./env.server";
 import { recordCost } from "./cost.server";
 import type { Engine } from "./plans";
 import { normalizeAnswer, type EngineAnswer } from "./answers";
+import { envLimit, gate } from "./gate";
+
+// At most this many Treg calls open at once in this process (free checks and stores' scans together).
+// The rest wait their turn; their timeout only starts once they're sent.
+export const tregGate = gate(() => envLimit("TREG_MAX_OPEN", 40));
 
 // Approximate prices (USD per call) from the Treg catalog, used for cost tracking
 // when the response doesn't report its own cost.
@@ -50,27 +55,7 @@ export async function tregCall<T = any>(endpointId: string, opts: CallOptions = 
     if (v !== undefined && v !== null) qs.set(k, String(v));
   }
   const url = `${env.tregBaseUrl}/call/${endpointId}${qs.size ? `?${qs}` : ""}`;
-
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), opts.timeoutMs ?? 100_000);
-  let res: Response;
-  try {
-    res = await fetch(url, {
-      method,
-      headers: {
-        "X-Treg-Token": env.tregToken,
-        ...(method === "POST" ? { "content-type": "application/json" } : {}),
-      },
-      body: method === "POST" ? JSON.stringify(opts.body ?? {}) : undefined,
-      signal: controller.signal,
-    });
-  } catch (err) {
-    throw new TregError(`Network error: ${(err as Error).message}`, 0, endpointId);
-  } finally {
-    clearTimeout(timer);
-  }
-
-  const text = await res.text();
+  const { res, text } = await tregGate.run(() => send(url, method, endpointId, opts));
   if (!res.ok) {
     throw new TregError(`HTTP ${res.status}: ${text.slice(0, 300)}`, res.status, endpointId);
   }
@@ -85,6 +70,28 @@ export async function tregCall<T = any>(endpointId: string, opts: CallOptions = 
   const cost = Number.isFinite(reported) && reported > 0 ? reported : PRICES[endpointId] ?? 0;
   await recordCost(opts.shopId, "treg", endpointId, cost).catch(() => {});
   return json as T;
+}
+
+/** One HTTP call to Treg, body read in full (the gate's slot is held until then). */
+async function send(url: string, method: "GET" | "POST", endpointId: string, opts: CallOptions): Promise<{ res: Response; text: string }> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), opts.timeoutMs ?? 100_000);
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        "X-Treg-Token": env.tregToken,
+        ...(method === "POST" ? { "content-type": "application/json" } : {}),
+      },
+      body: method === "POST" ? JSON.stringify(opts.body ?? {}) : undefined,
+      signal: controller.signal,
+    });
+    return { res, text: await res.text() };
+  } catch (err) {
+    throw new TregError(`Network error: ${(err as Error).message}`, 0, endpointId);
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 // ---------- Country helpers ----------

@@ -59,6 +59,7 @@ export async function parseAnswer(answer: EngineAnswer, ctx: MerchantContext): P
         schema: ParseSchema,
         tier: "fast",
         label: "parse-answer",
+        style: false, // only extracts data, writes nothing a person reads
         shopId: ctx.shopId,
         maxTokens: 3000,
         system:
@@ -72,7 +73,7 @@ ${answer.text}
 """${shopping}
 
 Numbered sources to classify (retailer = shop selling many brands, editorial = review/roundup/blog/news, ugc = reddit/forums/video/social, brand = a single brand's own site, marketplace = amazon/ebay style):
-${unknown.map((s) => `${s.i}. ${s.domain} — ${s.title ?? ""} ${s.url}`).join("\n") || "(none)"}`,
+${unknown.map((s) => `${s.i}. ${s.domain} | ${s.title ?? ""} | ${s.url}`).join("\n") || "(none)"}`,
       });
       brands = result.brands.filter((b) => b.name.trim());
       claudeSaysNamed = result.merchant_named;

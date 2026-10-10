@@ -47,9 +47,17 @@ export function visibilityScore(answers: ScoredAnswer[]): {
   return { score, byEngine, mentionRate };
 }
 
-export function scoreLabel(score: number): { label: string; tone: "critical" | "warning" | "info" | "success" } {
+/**
+ * A short label for a score. Under 10 it says plainly whether AI named you at all, so the label never
+ * contradicts "AI named you in 1 of 18 answers". Pass `named` when you know it (a score above 0 can
+ * also come from links to your site alone).
+ */
+export function scoreLabel(
+  score: number,
+  named: boolean = score > 0,
+): { label: string; tone: "critical" | "warning" | "info" | "success" } {
   if (score >= 60) return { label: "Strong", tone: "success" };
   if (score >= 30) return { label: "Growing", tone: "info" };
   if (score >= 10) return { label: "Weak", tone: "warning" };
-  return { label: "Invisible", tone: "critical" };
+  return named ? { label: "Rarely named", tone: "warning" } : { label: "Not named yet", tone: "critical" };
 }

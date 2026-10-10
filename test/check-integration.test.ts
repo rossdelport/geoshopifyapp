@@ -14,46 +14,59 @@ if (url) {
   process.env.DIRECT_URL = url;
 }
 
-const state = vi.hoisted(() => ({ ai: false, enginesDown: false }));
+const state = vi.hoisted(() => ({ ai: false, parse: false, enginesDown: false, open: 0, mostOpen: 0 }));
 
-// Fake engines: ChatGPT and Perplexity list us 2nd; Gemini only shows a Milkman shopping card.
+// Fake engines: ChatGPT and Perplexity list us 2nd (after a phrase that is not a brand, "Australian Made");
+// Gemini only shows a Milkman shopping card.
 // Perplexity fails on the second question (both runs).
-vi.mock("../app/lib/treg.server", () => ({
-  askEngine: vi.fn(async (engine: string, prompt: string) => {
-    if (state.enginesDown || (engine === "perplexity" && prompt.startsWith("what's"))) {
-      throw new Error("HTTP 500: provider exploded");
-    }
-    if (engine === "gemini") {
-      return {
-        provider: "fake.gemini",
-        products: [{ title: "Milkman Beard Oil 50ml", brand: "Milkman" }],
-        text: `Milkman is a popular pick for "${prompt}".`,
-        sources: [{ url: "https://stuga.com.au/blogs/journal/best-beard-oil", title: "Best beard oil" }],
-      };
-    }
+// Each call stays open a moment, so we can see how many run at once. Like the real tregCall, each call
+// holds a slot of the process-wide Treg gate while it is open.
+vi.mock("../app/lib/treg.server", async (importOriginal) => {
+  const real = await importOriginal<typeof import("../app/lib/treg.server")>();
+  return { ...real, askEngine: vi.fn((engine: string, prompt: string) => real.tregGate.run(() => fakeAnswer(engine, prompt))) };
+});
+async function fakeAnswer(engine: string, prompt: string) {
+  state.mostOpen = Math.max(state.mostOpen, ++state.open);
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  state.open--;
+  if (state.enginesDown || (engine === "perplexity" && prompt.startsWith("what's"))) {
+    throw new Error("HTTP 500: provider exploded");
+  }
+  if (engine === "gemini") {
     return {
-      provider: `fake.${engine}`,
-      products: [],
-      text: "Top picks:\n\n1. **Milkman Beard Oil** – light.\n2. **Bondi Beard Co Sandalwood Beard Oil** – Aussie made.\n3. **Bulldog Original Beard Oil** – easy to find.",
-      sources: [
-        { url: "https://stuga.com.au/blogs/journal/best-beard-oil", title: "Best beard oil" },
-        { url: "https://bondibeardco.com.au/products/sandalwood-beard-oil", title: "Sandalwood Beard Oil" },
-      ],
+      provider: "fake.gemini",
+      products: [{ title: "Milkman Beard Oil 50ml", brand: "Milkman" }],
+      text: `Milkman is a popular pick for "${prompt}".`,
+      sources: [{ url: "https://stuga.com.au/blogs/journal/best-beard-oil", title: "Best beard oil" }],
     };
-  }),
-}));
+  }
+  return {
+    provider: `fake.${engine}`,
+    products: [],
+    text: "Top picks:\n\n**Australian Made** oils are a good start.\n\n1. **Milkman Beard Oil** \u2013 light.\n2. **Coolabah Grooming Co Sandalwood Beard Oil** \u2013 Aussie made.\n3. **Bulldog Original Beard Oil** \u2013 easy to find.",
+    sources: [
+      { url: "https://stuga.com.au/blogs/journal/best-beard-oil", title: "Best beard oil" },
+      { url: "https://coolabahgrooming.com.au/products/sandalwood-beard-oil", title: "Sandalwood Beard Oil" },
+    ],
+  };
+}
 
-// Claude: off by default. When on, it writes the questions but can't read answers (text fallback).
+// Claude: off by default. When on, it writes the questions but can't read answers (text fallback),
+// unless state.parse is on too: then it reads every answer as a list with phrases and a shop in it.
 vi.mock("../app/lib/ai.server", () => ({
   aiConfigured: () => state.ai,
   askJson: vi.fn(async (opts: { label: string; prompt: string }) => {
+    if (opts.label === "parse-answer" && state.parse) {
+      const names = ["Best Beard Oil Australia", "Milkman", "Aussie", "Chemist Warehouse", "Coolabah Grooming Co.", "Made in Australia", "Cotton On", "Bulldog"];
+      return { brands: names.map((name) => ({ name, product: null })), merchant_named: true, source_types: [] };
+    }
     if (opts.label !== "check-understand") throw new Error("no AI in tests");
     return {
-      brand: "Bondi Beard Co",
+      brand: "Coolabah Grooming Co",
       category: "Beard Oil",
-      aliases: ["BBC"],
+      aliases: ["CGC"],
       questions: [
-        { question: "Is Bondi Beard Co better than Milkman?", keyword: "bondi beard co vs milkman" },
+        { question: "Is Coolabah Grooming Co beard oil better than Milkman?", keyword: "coolabah grooming co vs milkman" },
         { question: "What's the best beard oil for itchy skin?", keyword: "beard oil itchy skin" },
         { question: "Which beard oil do Australian barbers recommend?", keyword: "barber beard oil" },
       ],
@@ -105,35 +118,35 @@ vi.mock("../app/lib/http-get.server", () => ({
 
 const PRODUCT_JS = {
   title: "Sandalwood Beard Oil 50ml",
-  vendor: "Bondi Beard Co",
+  vendor: "Coolabah Grooming Co",
   type: "Beard Oil",
   tags: ["beard"],
   description: "<p>A light beard oil.</p>",
   price: 3400,
   featured_image: "//cdn.shopify.com/s/files/1/oil.jpg",
 };
-const PAGE = `<html><head><title>Sandalwood Beard Oil – Bondi Beard Co</title>
-<meta property="og:site_name" content="Bondi Beard Co">
-<script>Shopify.shop = "bondi-beard.myshopify.com"; Shopify.currency = {"active":"AUD","rate":"1.0"};</script>
+const PAGE = `<html><head><title>Sandalwood Beard Oil \u2013 Coolabah Grooming Co</title>
+<meta property="og:site_name" content="Coolabah Grooming Co">
+<script>Shopify.shop = "coolabah-grooming.myshopify.com"; Shopify.currency = {"active":"AUD","rate":"1.0"};</script>
 </head><body></body></html>`;
 
-const HOME = `<html><head><title>Bondi Beard Co | Natural beard care</title><meta property="og:type" content="website">
-<script type="application/ld+json">{"@type":"Organization","name":"Bondi Beard Co"}</script></head></html>`;
+const HOME = `<html><head><title>Coolabah Grooming Co | Natural beard care</title><meta property="og:type" content="website">
+<script type="application/ld+json">{"@type":"Organization","name":"Coolabah Grooming Co"}</script></head></html>`;
 const AMAZON = `<html><head><title>Beard Oil 50ml : Amazon.com.au</title><meta property="og:type" content="product">
 <meta property="og:site_name" content="Amazon.com.au"></head></html>`;
 let loops = 0;
 
 const fetchMock = vi.fn(async (input: string | URL, init?: RequestInit) => {
   const u = new URL(String(input));
-  if (u.hostname === "bondibeardco.com.au" && u.pathname === "/products/sandalwood-beard-oil.js") {
+  if (u.hostname === "coolabahgrooming.com.au" && /^\/products\/(sandalwood|cedar)-beard-oil\.js$/.test(u.pathname)) {
     return new Response(JSON.stringify(PRODUCT_JS), { headers: { "content-type": "application/javascript" } });
   }
-  if (u.hostname === "bondibeardco.com.au" && u.pathname === "/products/sandalwood-beard-oil") {
+  if (u.hostname === "coolabahgrooming.com.au" && /^\/products\/(sandalwood|cedar)-beard-oil$/.test(u.pathname)) {
     return new Response(PAGE, { headers: { "content-type": "text/html" } });
   }
   // A shop domain that bounces us to the real one.
-  if (u.hostname === "bondi-beard.myshopify.com") {
-    return new Response(null, { status: 301, headers: { location: `https://bondibeardco.com.au${u.pathname}` } });
+  if (u.hostname === "coolabah-grooming.myshopify.com") {
+    return new Response(null, { status: 301, headers: { location: `https://coolabahgrooming.com.au${u.pathname}` } });
   }
   // A link that redirects to a private address.
   if (u.hostname === "sneaky.example.com") {
@@ -165,7 +178,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
   let check: typeof import("../app/lib/check.server");
   let enqueue: ReturnType<typeof vi.fn>;
   let askEngine: ReturnType<typeof vi.fn>;
-  const LINK = "https://bondibeardco.com.au/products/sandalwood-beard-oil";
+  const LINK = "https://coolabahgrooming.com.au/products/sandalwood-beard-oil";
   const start = async (link: string, ip: string, country = "AU") => {
     const created = await check.createCheck({ url: link, country, ip });
     expect(created.ok, JSON.stringify(created)).toBe(true);
@@ -221,7 +234,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
     expect(third.ok).toBe(true);
     expect(await check.createCheck({ url: "https://shop-b.com.au/products/b", country: "AU", ip: "1.2.3.4" })).toEqual({
       ok: false,
-      error: "You've used your 3 free checks for today. Install GEO to track your products every week.",
+      error: "This connection has reached the free check limit for now (3 checks in 24 hours). Try again tomorrow, or install GEO for a free scan of 10 questions.",
     });
     // Re-using an existing report still works when the allowance is used up.
     expect((await check.createCheck({ url: LINK, country: "AU", ip: "1.2.3.4" })).ok).toBe(true);
@@ -234,7 +247,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
       Array.from({ length: 10 }, (_, i) => check.createCheck({ url: `https://rush-${i}.com.au/products/p`, country: "AU", ip: "2.2.2.2" })),
     );
     expect(results.filter((r) => r.ok)).toHaveLength(3);
-    expect(results.filter((r) => !r.ok).every((r) => !r.ok && r.error.startsWith("You've used your 3 free checks"))).toBe(true);
+    expect(results.filter((r) => !r.ok).every((r) => !r.ok && r.error.startsWith("This connection has reached the free check limit"))).toBe(true);
   });
 
   it("doesn't count failed checks against the visitor's 3, up to 10 tries a day", async () => {
@@ -250,7 +263,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
 
   it("stops everyone when the daily total is reached, and 0 turns checks off", async () => {
     process.env.GEO_CHECKS_PER_DAY = String(await db.publicCheck.count());
-    const busy = { ok: false, error: "We're very busy right now. Please try again later today." };
+    const busy = { ok: false, error: "We’re very busy right now. Please try again later." };
     expect(await check.createCheck({ url: "https://shop-c.com.au/products/c", country: "AU", ip: "7.7.7.7" })).toEqual(busy);
     process.env.GEO_CHECKS_PER_DAY = "0";
     expect(await check.createCheck({ url: "https://shop-c.com.au/products/c", country: "AU", ip: "7.7.7.7" })).toEqual(busy);
@@ -264,12 +277,12 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
       const quiet = vi.spyOn(console, "warn").mockImplementation(() => undefined);
       expect(await check.createCheck({ url: "https://capped-2.com.au/products/c", country: "AU", ip: "7.7.7.8" })).toEqual({
         ok: false,
-        error: "We're very busy right now. Please try again later today.",
+        error: "We’re very busy right now. Please try again later.",
       });
       const before = askEngine.mock.calls.length;
       await check.runCheck(id);
       expect(askEngine.mock.calls.length).toBe(before);
-      expect((await check.getCheckView(id))!.error).toBe("We're very busy right now. Please try again later today.");
+      expect((await check.getCheckView(id))!.error).toBe("We’re very busy right now. Please try again later.");
       quiet.mockRestore();
     } finally {
       delete process.env.GEO_CHECKS_USD_PER_DAY;
@@ -283,7 +296,9 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
     expect(queued).toMatchObject({ status: "queued", step: "Getting started", answers: [], report: null, installUrl: "/auth/login" });
 
     const { getHandler } = await import("../app/lib/jobs.server");
+    state.mostOpen = 0;
     await getHandler("check.run")!({ id: "job-1", payload: { id } } as never);
+    expect(state.mostOpen).toBe(18); // all 18 engine calls at once
 
     const view = (await check.getCheckView(id))!;
     expect(view.status).toBe("done");
@@ -291,35 +306,36 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
     expect(view.done).toBe(18);
     expect(view.product).toMatchObject({
       url: LINK,
-      domain: "bondibeardco.com.au",
+      domain: "coolabahgrooming.com.au",
       title: "Sandalwood Beard Oil 50ml",
-      brand: "Bondi Beard Co",
+      brand: "Coolabah Grooming Co",
       category: "beard oil",
       price: "34.00",
       currency: "AUD",
       image: "https://cdn.shopify.com/s/files/1/oil.jpg",
       isShopify: true,
-      shopDomain: "bondi-beard.myshopify.com",
+      shopDomain: "coolabah-grooming.myshopify.com",
       hasProductSchema: false,
     });
     expect(view.product).not.toHaveProperty("tags");
-    expect(view.installUrl).toBe("/auth/login?shop=bondi-beard.myshopify.com");
+    expect(view.installUrl).toBe("/auth/login?shop=coolabah-grooming.myshopify.com");
     expect(view.questions.map((q) => q.text)).toEqual([
       "best beard oil in Australia",
       "what's the best beard oil to buy right now",
-      "is beard oil worth it, and which brand should I pick in Australia",
+      "which beard oil brand is worth it in Australia",
     ]);
 
     expect(view.answers).toHaveLength(18);
     const failed = view.answers.filter((a) => !a.ok);
     expect(failed.map((a) => [a.engine, a.question])).toEqual([["perplexity", 1], ["perplexity", 1]]);
     const gpt = view.answers.find((a) => a.engine === "chatgpt")!;
-    expect(gpt).toMatchObject({ named: true, position: 2, brands: ["Milkman", "Bondi Beard Co", "Bulldog"] });
+    expect(gpt).toMatchObject({ named: true, position: 2, brands: ["Milkman", "Coolabah Grooming Co", "Bulldog"] });
     expect(gpt.sources.map((s) => [s.domain, s.type, s.isOwn])).toEqual([
       ["stuga.com.au", "editorial", false],
-      ["bondibeardco.com.au", "brand", true],
+      ["coolabahgrooming.com.au", "brand", true],
     ]);
-    expect(gpt.snippet).toContain("Milkman Beard Oil – light.");
+    expect(gpt.snippet).toContain("1. Milkman Beard Oil: light.");
+    expect(gpt.snippet).not.toMatch(/[\u2013\u2014]/);
     expect(gpt.snippet).not.toContain("**");
     expect(view.answers.find((a) => a.engine === "gemini")).toMatchObject({ named: false, position: null, brands: ["Milkman"] });
 
@@ -332,13 +348,37 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
       { name: "Bulldog", count: 10, share: 0.63 },
     ]);
     expect(r.sources[0]).toMatchObject({ domain: "stuga.com.au", count: 16, type: "editorial" });
-    expect(r.tips.map((t) => t.title)).toContain("Gemini doesn't mention you yet");
+    expect(r.tips.map((t) => t.title)).toContain("Gemini doesn’t mention you yet");
 
     expect(r.summary).toContain("simple text matching"); // no Claude in this test
 
     // Running the job again does nothing once done.
     await check.runCheck(id);
     expect((await db.publicCheck.findUniqueOrThrow({ where: { id } })).done).toBe(18);
+  });
+
+  it("never has more Treg calls open than TREG_MAX_OPEN, even with two checks running", async () => {
+    const { tregGate } = await import("../app/lib/treg.server");
+    const { getHandler } = await import("../app/lib/jobs.server");
+    const link = "https://coolabahgrooming.com.au/products/cedar-beard-oil";
+    const a = await start(link, "8.8.1.1", "AU");
+    const b = await start(link, "8.8.1.2", "NZ");
+    process.env.TREG_MAX_OPEN = "10";
+    state.mostOpen = 0;
+    tregGate.resetStats();
+    try {
+      // The worker runs up to 2 checks at once: run both jobs together, as it would.
+      await Promise.all([getHandler("check.run")!({ id: "job-a", payload: { id: a } } as never), getHandler("check.run")!({ id: "job-b", payload: { id: b } } as never)]);
+    } finally {
+      delete process.env.TREG_MAX_OPEN;
+    }
+    expect(state.mostOpen).toBe(10); // 36 calls, never more than 10 open
+    expect(tregGate.stats()).toMatchObject({ open: 0, waiting: 0, mostOpen: 10 });
+    for (const id of [a, b]) {
+      const view = (await check.getCheckView(id))!;
+      expect(view.status).toBe("done");
+      expect(view.done).toBe(18);
+    }
   });
 
   it("never re-runs (and pays again for) a check that was interrupted", async () => {
@@ -373,12 +413,14 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
     expect(await start("https://stuck-shop.com.au/products/p", "6.6.6.8")).not.toBe(old.id);
   });
 
-  it("moves on to writing questions once the product is read", async () => {
+  it("moves on to writing questions once the product is read, and says how long asking takes", async () => {
     const row = await db.publicCheck.create({
       data: { url: "https://step-shop.com.au/products/p", status: "reading", total: 18, product: { title: "Oil", brand: "Step Co" } },
     });
     expect((await check.getCheckView(row.id))!.step).toBe("Writing buyer questions");
-    await db.publicCheck.update({ where: { id: row.id }, data: { product: Prisma.DbNull } });
+    await db.publicCheck.update({ where: { id: row.id }, data: { status: "asking" } });
+    expect((await check.getCheckView(row.id))!.step).toBe("Asking ChatGPT, Gemini and Perplexity. This is the slowest step.");
+    await db.publicCheck.update({ where: { id: row.id }, data: { status: "reading", product: Prisma.DbNull } });
     expect((await check.getCheckView(row.id))!.step).toBe("Reading your product");
   });
 
@@ -388,7 +430,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
       const id = await start(link, "5.6.7.8");
       await check.runCheck(id);
       expect((await check.getCheckView(id))!.error, link).toBe(
-        "That looks like a home page, not a product. Please paste the link to one product's page.",
+        "That looks like a home page, not a product. Please paste the link to one product’s page.",
       );
     }
     expect(askEngine.mock.calls.length).toBe(before);
@@ -398,7 +440,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
     const id = await start("https://short-link.com.au/products/oil", "5.6.7.9");
     await check.runCheck(id);
     expect((await check.getCheckView(id))!.error).toBe(
-      "That link is on a marketplace or big retailer. Please paste the product link from your own store's website.",
+      "That link is on a marketplace or big retailer. Please paste the product link from your own store’s website.",
     );
   });
 
@@ -413,7 +455,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
       expect(view.product?.category).toBe("beard oil");
       const texts = view.questions.map((q) => q.text);
       expect(texts).toHaveLength(3);
-      expect(texts.some((t) => /bondi/i.test(t))).toBe(false);
+      expect(texts.some((t) => /coolabah/i.test(t))).toBe(false);
       expect(texts[0]).toBe("What's the best beard oil for itchy skin in the UK?");
       expect(texts.filter((t) => / the UK\b/.test(t)).length).toBeGreaterThanOrEqual(2);
     } finally {
@@ -421,11 +463,32 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
     }
   });
 
+  it("leaves phrases and shops out of Claude's brand lists before counting positions and competitors", async () => {
+    state.ai = true;
+    state.parse = true;
+    try {
+      const created = await check.createCheck({ url: LINK, country: "NZ", ip: "6.6.6.9" });
+      const id = (created as { id: string }).id;
+      await check.runCheck(id);
+      const view = (await check.getCheckView(id))!;
+      expect(view.status).toBe("done");
+      const gpt = view.answers.find((a) => a.engine === "chatgpt" && a.ok)!;
+      // "Best Beard Oil Australia", "Chemist Warehouse" and "Made in Australia" are gone: we're 3rd, not 5th.
+      // Real brands made of describing words ("Aussie", "Cotton On") stay, as brands and as competitors.
+      expect(gpt).toMatchObject({ named: true, position: 3, brands: ["Milkman", "Aussie", "Coolabah Grooming Co.", "Cotton On", "Bulldog"] });
+      expect(view.report!.competitors.map((c) => c.name).sort()).toEqual(["Aussie", "Bulldog", "Cotton On", "Milkman"]);
+      expect(view.report!.summary).not.toContain("text matching");
+    } finally {
+      state.ai = false;
+      state.parse = false;
+    }
+  });
+
   it("follows a shop's redirect to its real domain", async () => {
-    const product = await check.readProduct("https://bondi-beard.myshopify.com/products/sandalwood-beard-oil");
+    const product = await check.readProduct("https://coolabah-grooming.myshopify.com/products/sandalwood-beard-oil");
     expect(product.url).toBe(LINK);
-    expect(product.domain).toBe("bondibeardco.com.au");
-    expect(product.brand).toBe("Bondi Beard Co");
+    expect(product.domain).toBe("coolabahgrooming.com.au");
+    expect(product.brand).toBe("Coolabah Grooming Co");
   });
 
   it("never fetches private addresses, even after a redirect", async () => {
@@ -436,8 +499,8 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
     const view = (await check.getCheckView(id))!;
     expect(view).toMatchObject({
       status: "failed",
-      step: "This check didn't finish",
-      error: "We couldn't read that page. Please paste a public product page link.",
+      step: "This check didn’t finish",
+      error: "We couldn’t read that page. Please paste a public product page link.",
       report: null,
     });
     const fetched = fetchMock.mock.calls.map(([u]) => new URL(String(u)).hostname);
@@ -457,7 +520,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
       await check.runCheck(id);
       const view = (await check.getCheckView(id))!;
       expect(view.status).toBe("failed");
-      expect(view.error).toBe("We couldn't reach the AI assistants just now. Please try again in a few minutes.");
+      expect(view.error).toBe("We couldn’t reach the AI assistants just now. Please try again in a few minutes.");
       expect(view.error).not.toMatch(/HTTP|provider/);
       expect(view.done).toBe(18);
     } finally {
@@ -468,10 +531,10 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
   it("connects only to addresses it checked (DNS rebinding)", async () => {
     fetchMock.mockClear();
     // First answer public, second private: the connection's own lookup refuses.
-    await expect(check.safeFetch("https://rebind.example.com/products/x")).rejects.toThrow(/couldn't read that page/);
+    await expect(check.safeFetch("https://rebind.example.com/products/x")).rejects.toThrow(/couldn’t read that page/);
     expect(dns.calls.get("rebind.example.com")).toBe(2);
-    await expect(check.safeFetch("https://v6private.example.com/products/x")).rejects.toThrow(/couldn't read that page/);
-    await expect(check.safeFetch("https://nodns.example.com/products/x")).rejects.toThrow(/couldn't read that page/);
+    await expect(check.safeFetch("https://v6private.example.com/products/x")).rejects.toThrow(/couldn’t read that page/);
+    await expect(check.safeFetch("https://nodns.example.com/products/x")).rejects.toThrow(/couldn’t read that page/);
     expect(fetchMock).not.toHaveBeenCalled();
     // The lookup the connection uses gives back only checked addresses.
     const viaLookup = await new Promise((resolve, reject) =>
@@ -482,7 +545,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
 
   it("stops after 4 redirects, at 2 MB, and after 10 seconds", async () => {
     fetchMock.mockClear();
-    await expect(check.safeFetch("https://loop.example.com/start")).rejects.toThrow(/couldn't read that page/);
+    await expect(check.safeFetch("https://loop.example.com/start")).rejects.toThrow(/couldn’t read that page/);
     expect(fetchMock.mock.calls.filter(([u]) => new URL(String(u)).hostname === "loop.example.com")).toHaveLength(5);
 
     const big = await check.safeFetch("https://big.example.com/products/x");

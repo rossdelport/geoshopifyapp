@@ -32,7 +32,7 @@ export async function buildMonthlyReport(shopId: string) {
   </tr></table>
   ${engines ? `<p style="margin:20px 0 6px;font-weight:600">Where it came from</p><ul style="margin:0;padding-left:18px">${engines}</ul>` : ""}
   <p style="margin:20px 0 6px;font-weight:600">How often AI recommends you</p>
-  <p style="margin:0">Visibility score: <b>${vis.latest?.score ?? "–"}/100</b>${vis.sinceStart !== null ? ` (${vis.sinceStart >= 0 ? "+" : ""}${vis.sinceStart} since you joined)` : ""}</p>
+  <p style="margin:0">Visibility score: ${vis.latest ? `<b>${vis.latest.score}/100</b>` : "not measured yet"}${vis.sinceStart !== null ? ` (${vis.sinceStart >= 0 ? "+" : ""}${vis.sinceStart} since you joined)` : ""}</p>
   ${pending ? `<p style="margin:20px 0 0">You have <b>${pending} fix${pending === 1 ? "" : "es"}</b> ready to approve. Each one takes a click.</p>` : ""}
   <p style="margin:24px 0 0"><a href="${appUrl}" style="background:#202223;color:#fff;padding:10px 16px;border-radius:10px;text-decoration:none">Open the app</a></p>
   <p style="color:#8c9196;font-size:12px;margin-top:24px">AI sales are orders where the shopper arrived from an AI assistant like ChatGPT. Google AI Overviews can't be separated from normal Google traffic, so they aren't counted here.</p>

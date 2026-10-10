@@ -22,7 +22,7 @@ export type CheckStatus = "queued" | "reading" | "asking" | "writing" | "done" |
 
 export interface CheckProduct {
   url: string; // cleaned product URL
-  domain: string; // e.g. bondibeardco.com.au
+  domain: string; // e.g. coolabahgrooming.com.au
   title: string;
   brand: string; // the brand name shoppers know
   productType: string | null;
@@ -64,7 +64,7 @@ export interface CheckAnswer {
 
 export interface CheckReport {
   score: number; // 0-100, same formula as the app (score.ts)
-  label: string; // Invisible | Weak | Growing | Strong
+  label: string; // Not named yet | Rarely named | Weak | Growing | Strong
   namedCount: number; // ok answers that name the product
   answerCount: number; // answers that came back
   byEngine: Record<CheckEngine, { named: number; total: number; score: number }>;

@@ -9,7 +9,9 @@ vi.mock("../app/lib/check.server", () => ({ createCheck: vi.fn(), getCheckView: 
 const { createCheck, getCheckView, getCheckUrl } = await import("../app/lib/check.server");
 const { action } = await import("../app/routes/check._index");
 const { loader } = await import("../app/routes/check.$id");
-const { CheckFailed, CheckForm, CheckReport, CheckRunning, highlightSegments, stepIndex } = await import("../app/components/check-ui");
+const { CheckFailed, CheckForm, CheckIntro, CheckPerks, CheckReport, CheckRunning, highlightSegments, stepIndex } = await import(
+  "../app/components/check-ui"
+);
 
 const post = (fields: Record<string, string>, headers: Record<string, string> = {}) =>
   action({
@@ -39,10 +41,10 @@ const doneView: CheckView = {
   country: "AU",
   createdAt: "2026-10-10T00:00:00.000Z",
   product: {
-    url: "https://bondibeard.com.au/products/sandalwood-beard-oil",
-    domain: "bondibeard.com.au",
+    url: "https://coolabahgrooming.com.au/products/sandalwood-beard-oil",
+    domain: "coolabahgrooming.com.au",
     title: "Sandalwood Beard Oil",
-    brand: "Bondi Beard Co",
+    brand: "Coolabah Grooming Co",
     productType: "Beard oil",
     category: "beard oil",
     description: "A light beard oil.",
@@ -50,14 +52,14 @@ const doneView: CheckView = {
     currency: "AUD",
     image: "javascript:alert(1)",
     isShopify: true,
-    shopDomain: "bondi-beard.myshopify.com",
+    shopDomain: "coolabah-grooming.myshopify.com",
     hasProductSchema: false,
   },
   questions: [{ text: "best beard oil for dry skin in Australia", keyword: "beard oil dry skin" }],
   total: 18,
   done: 18,
   answers: [
-    answer({ named: true, position: 2, brands: ["Milkman", "Bondi Beard Co"], snippet: "Try Milkman or Bondi Beard Co. Boldly scented <script>x</script>." }),
+    answer({ named: true, position: 2, brands: ["Milkman", "Coolabah Grooming Co"], snippet: "Try Milkman or Coolabah Grooming Co. Boldly scented <script>x</script>." }),
     answer({ run: 2, brands: ["Milkman"], snippet: "Milkman is popular." }),
     answer({ engine: "gemini", ok: false }),
   ],
@@ -77,7 +79,7 @@ const doneView: CheckView = {
     summary: "ChatGPT named you once.",
   },
   error: null,
-  installUrl: "/auth/login?shop=bondi-beard.myshopify.com",
+  installUrl: "/auth/login?shop=coolabah-grooming.myshopify.com",
 };
 
 beforeEach(() => {
@@ -88,12 +90,12 @@ describe("POST /check", () => {
   it("starts a check with the visitor's IP and goes to the report page", async () => {
     vi.mocked(createCheck).mockResolvedValue({ ok: true, id: "ck1" });
     const res = (await post(
-      { url: " bondibeard.com.au/products/oil ", country: "NZ", website: "" },
+      { url: " coolabahgrooming.com.au/products/oil ", country: "NZ", website: "" },
       { "x-real-ip": "203.0.113.9", "x-forwarded-for": "6.6.6.6, 203.0.113.9" },
     )) as Response;
     expect(res.status).toBe(302);
     expect(res.headers.get("location")).toBe("/check/ck1");
-    expect(createCheck).toHaveBeenCalledWith({ url: "bondibeard.com.au/products/oil", country: "NZ", ip: "203.0.113.9", honeypot: "" });
+    expect(createCheck).toHaveBeenCalledWith({ url: "coolabahgrooming.com.au/products/oil", country: "NZ", ip: "203.0.113.9", honeypot: "" });
   });
 
   it("falls back to the last x-forwarded-for entry and passes the spam trap through", async () => {
@@ -158,14 +160,20 @@ describe("GET /check/:id", () => {
 
 describe("report page", () => {
   it("highlights brand names as whole words, marking the visitor's own brand", () => {
-    const segs = highlightSegments("Milkman, Bondi Beard Co and Boldly. bondi beard co again", ["Milkman", "Bondi Beard Co", "Bold"], ["Bondi Beard Co"]);
+    const segs = highlightSegments("Milkman, Coolabah Grooming Co and Boldly. coolabah grooming co again", ["Milkman", "Coolabah Grooming Co", "Bold"], ["Coolabah Grooming Co"]);
     expect(segs.filter((s) => s.kind)).toEqual([
       { text: "Milkman", kind: "brand" },
-      { text: "Bondi Beard Co", kind: "you" },
-      { text: "bondi beard co", kind: "you" },
+      { text: "Coolabah Grooming Co", kind: "you" },
+      { text: "coolabah grooming co", kind: "you" },
     ]);
-    expect(segs.map((s) => s.text).join("")).toBe("Milkman, Bondi Beard Co and Boldly. bondi beard co again");
+    expect(segs.map((s) => s.text).join("")).toBe("Milkman, Coolabah Grooming Co and Boldly. coolabah grooming co again");
     expect(highlightSegments("plain", [], [])).toEqual([{ text: "plain", kind: null }]);
+  });
+
+  it("matches a name that ends in a full stop with or without it", () => {
+    const segs = highlightSegments("Ridgeback Beard Co: a favourite. Ridgeback Beard Co. again", ["Ridgeback Beard Co."], []);
+    expect(segs.filter((s) => s.kind).map((s) => s.text)).toEqual(["Ridgeback Beard Co", "Ridgeback Beard Co."]);
+    expect(segs.map((s) => s.text).join("")).toBe("Ridgeback Beard Co: a favourite. Ridgeback Beard Co. again");
   });
 
   it("knows which step is running", () => {
@@ -177,49 +185,61 @@ describe("report page", () => {
 
   it("renders the finished report safely", () => {
     const html = renderToStaticMarkup(createElement(CheckReport, { view: doneView }));
-    expect(html).toContain("AI named Bondi Beard Co in 1 of 2 answers");
+    expect(html).toContain("AI named Coolabah Grooming Co in 1 of 2 answers");
     expect(html).toContain("Who AI recommends instead");
     expect(html).toContain("Named in 1 of 2");
-    expect(html).toContain('<mark class="ck-hl-you">Bondi Beard Co</mark>');
+    expect(html).toContain('<mark class="ck-hl-you">Coolabah Grooming Co</mark>');
     expect(html).toContain("&lt;script&gt;");
     expect(html).not.toContain("<script>");
-    expect(html).toContain('href="/auth/login?shop=bondi-beard.myshopify.com"');
+    expect(html).toContain('href="/auth/login?shop=coolabah-grooming.myshopify.com"');
     expect(html).toContain('href="/#check"');
-    // Honest about what's free: weekly tracking and fixes are the paid plan, after a trial.
-    expect(html).toContain("Start your 7-day free trial");
-    expect(html).toContain("Weekly tracking and one-click fixes are on Core, US$49/mo after the trial.");
+    // Honest about what's free: the first scan is; weekly tracking and fixes are the paid plan, after a trial.
+    expect(html).toContain("Install GEO: first scan free");
+    expect(html).toContain("Core is US$49 a month after a 7-day free trial.");
     expect(html).not.toContain("Install GEO free");
+    expect(html).toContain("What to fix first");
+    expect(html).not.toMatch(/[\u2014\u2013]/); // no em or en dashes in the copy
     expect(html).not.toMatch(/real buyer questions/i);
   });
 
-  it("labels other brands' websites as competitor sites", () => {
+  it("labels every brand's website as a brand site (we don't guess who is a rival)", () => {
     const view: CheckView = {
       ...doneView,
       report: {
         ...doneView.report!,
         sources: [
           { domain: "milkman.com.au", type: "brand", count: 2, isOwn: false, exampleUrl: "https://milkman.com.au/products/oil" },
-          { domain: "bondibeard.com.au", type: "brand", count: 1, isOwn: true, exampleUrl: "https://bondibeard.com.au/products/oil" },
+          { domain: "coolabahgrooming.com.au", type: "brand", count: 1, isOwn: true, exampleUrl: "https://coolabahgrooming.com.au/products/oil" },
         ],
       },
     };
     const html = renderToStaticMarkup(createElement(CheckReport, { view }));
-    expect(html).toContain("Competitor site");
-    expect(html).toContain("Brand site");
-    expect(html).toContain("You&#x27;re on it");
+    expect(html).not.toContain("Competitor site");
+    expect(html.match(/Brand site/g)).toHaveLength(2);
+    expect(html).toContain("You’re on it");
   });
 
   it("shows the form with the error on the /check page", () => {
-    const html = renderToStaticMarkup(createElement(CheckForm, { url: "x.com", error: "You've used your 3 free checks for today." }));
+    const html = renderToStaticMarkup(createElement(CheckForm, { url: "x.com", error: "This connection has reached the free check limit for now (3 checks in 24 hours)." }));
     expect(html).toContain('role="alert"');
-    expect(html).toContain("You&#x27;ve used your 3 free checks for today.");
+    expect(html).toContain("This connection has reached the free check limit for now (3 checks in 24 hours).");
     expect(html).toContain('value="x.com"');
   });
 
+  it("renders the /check start page: the form and what the report shows", () => {
+    const html = renderToStaticMarkup(createElement("div", null, createElement(CheckIntro, {}), createElement(CheckPerks)));
+    expect(html).toContain("Does AI recommend your product?");
+    expect(html).toContain('action="/check"');
+    for (const field of ['name="url"', 'name="country"', 'name="website"']) expect(html).toContain(field);
+    expect(html).toContain("What to fix first");
+    expect(html).toContain("Why we ask twice:");
+    expect(html).not.toMatch(/[\u2014\u2013]/);
+  });
+
   it("shows which link failed and lets the visitor try again", () => {
-    const failed: CheckView = { ...doneView, status: "failed", product: null, report: null, answers: [], error: "We couldn't read that page." };
+    const failed: CheckView = { ...doneView, status: "failed", product: null, report: null, answers: [], error: "We couldn’t read that page." };
     const html = renderToStaticMarkup(createElement(CheckFailed, { view: failed, url: "https://shop.com/products/typo" }));
-    expect(html).toContain("We couldn&#x27;t read that page.");
+    expect(html).toContain("We couldn’t read that page.");
     expect(html).toContain("<b>https://shop.com/products/typo</b>");
     expect(html).toContain('value="https://shop.com/products/typo"');
     expect(html).toContain('action="/check"');
@@ -229,6 +249,9 @@ describe("report page", () => {
     const html = renderToStaticMarkup(createElement(CheckRunning, { view: { ...doneView, status: "asking", done: 11, report: null } }));
     expect(html).toContain("<b>11</b> of 18 answers in");
     expect(html).toContain("best beard oil for dry skin in Australia");
-    expect(html).toContain("You can leave this page and come back to this link.");
+    expect(html).toContain("A check usually takes a few minutes. You can leave this page and come back to this link.");
+    expect(html).not.toMatch(/[\u2014\u2013]/);
+    expect(html).toContain("What’s happening now");
+    expect(html).toContain('src="/home/img/clay-magnifier.jpg"');
   });
 });
