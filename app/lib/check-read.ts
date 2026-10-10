@@ -1,14 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- reads product JSON of many shapes */
 // Free product check: pure helpers for reading a product page (tested, no network here).
 // URL checks, private-address checks (SSRF guard), Shopify .js + HTML/JSON-LD parsing,
-// brand and category fallbacks, and tidying the buyer questions.
+// brand and category fallbacks, where the store is (the shopper country), and tidying the buyer questions.
 // Strangers choose these pages (up to 2 MB), so every pattern here is bounded: none may scan to
 // the end of the page from many starting points, which could freeze the whole server.
 
 import { domainOf } from "./answers";
 import { textNamesBrand } from "./match";
 import { guessSourceType } from "./sources";
-import { CHECK_COUNTRIES, type CheckCountry, type CheckProduct, type CheckQuestion } from "./check-types";
+import {
+  CHECK_COUNTRIES,
+  isCheckCountry,
+  type CheckCountry,
+  type CheckProduct,
+  type CheckQuestion,
+  type CountryHow,
+} from "./check-types";
 
 // ---------- The link the visitor pasted ----------
 
@@ -277,6 +284,8 @@ export interface PageFacts {
   shopDomain: string | null; // xxx.myshopify.com
   shopCurrency: string | null;
   shopifyCdn: boolean;
+  ogLocale: string | null; // e.g. "en_AU"
+  htmlLang: string | null; // <html lang="en-AU">
 }
 
 const MAX_META_TAGS = 300; // real pages have well under 100
@@ -381,6 +390,8 @@ export function parseProductHtml(html: string, pageUrl: string): PageFacts {
   }
   const meta = metaTags(html);
   const title = html.match(/<title\b[^<>]{0,200}>([^<]{0,1000})<\/title>/i)?.[1];
+  // The <html> tag sits at the top of the page: only the first 5,000 characters are searched.
+  const htmlTag = /<html\b[^<>]{0,1000}>/i.exec(html.slice(0, 5000))?.[0] ?? "";
   return {
     ld,
     ogTitle: meta.get("og:title") || null,
@@ -395,7 +406,96 @@ export function parseProductHtml(html: string, pageUrl: string): PageFacts {
     shopDomain: near(html, "Shopify.shop", /^Shopify\.shop\s{0,5}=\s{0,5}["']([a-z0-9][a-z0-9-]{0,60}\.myshopify\.com)["']/i)?.toLowerCase() ?? null,
     shopCurrency: near(html, "Shopify.currency", /^Shopify\.currency\s{0,5}=\s{0,5}\{[^}]{0,300}?["']active["']\s{0,5}:\s{0,5}["']([A-Z]{3})["']/),
     shopifyCdn: /cdn\.shopify\.com|\/cdn\/shop\//i.test(html),
+    ogLocale: meta.get("og:locale")?.slice(0, 20) || null,
+    // lang= only as its own attribute (not data-lang= or xml:lang=)
+    htmlLang: /(?:^|\s)lang\s{0,5}=\s{0,5}["']?([a-z]{2,3}(?:[-_][a-z0-9]{1,8}){0,3})/i.exec(htmlTag)?.[1] ?? null,
   };
+}
+
+// ---------- Where the store is (we ask the AI assistants as a shopper there) ----------
+
+export interface ShopifyMeta {
+  country: string; // e.g. "AU"
+  myshopifyDomain: string | null; // the shop's own xxx.myshopify.com, to make sure it's the same shop
+}
+
+/** Shopify's public /meta.json: the shop's home country from its settings, the same for every visitor. */
+export function parseShopifyMeta(json: any): ShopifyMeta | null {
+  if (!json || typeof json !== "object") return null;
+  const c = typeof json.country === "string" ? json.country.trim() : "";
+  if (!/^[a-z]{2}$/i.test(c)) return null;
+  const d = typeof json.myshopify_domain === "string" ? json.myshopify_domain.trim().toLowerCase() : "";
+  return { country: c.toUpperCase(), myshopifyDomain: /^[a-z0-9][a-z0-9-]{0,60}\.myshopify\.com$/.test(d) ? d : null };
+}
+
+/**
+ * The store country from /meta.json, only when it is the same shop as the product page. /meta.json comes
+ * from the pasted link's site, but the page may have redirected to another shop, or only look like
+ * Shopify (a page that shows images from Shopify's CDN). So: when the page names its shop
+ * (Shopify.shop), the two must match; otherwise /meta.json must have ended up on the page's own host.
+ */
+export function storeCountryFromMeta(
+  meta: (ShopifyMeta & { host: string }) | null,
+  page: { shopDomain: string | null; host: string },
+): string | null {
+  if (!meta) return null;
+  if (page.shopDomain && meta.myshopifyDomain) return meta.myshopifyDomain === page.shopDomain.toLowerCase() ? meta.country : null;
+  if (page.shopDomain || !meta.myshopifyDomain) return null; // one side doesn't name its shop: not sure it's the same
+  return meta.host.toLowerCase() === page.host.toLowerCase() ? meta.country : null;
+}
+
+/** "shop.com.au" -> "AU". Only the endings of the countries we check: .co, .io or .me say nothing about where a shop is. */
+export function domainCountry(domain: string | null | undefined): CheckCountry | null {
+  const tld = (domain ?? "").toLowerCase().replace(/\.$/, "").split(".").pop() ?? "";
+  const byTld: Record<string, CheckCountry> = { au: "AU", nz: "NZ", uk: "GB", ca: "CA", us: "US" };
+  return byTld[tld] ?? null;
+}
+
+/** "en-AU", "en_au", "zh-Hant-TW" -> the region ("AU", "TW"); "en" -> null. "UK" counts as GB. */
+export function localeRegion(tag: string | null | undefined): string | null {
+  const m = /^[a-z]{2,3}(?:[-_][a-z]{4})?[-_]([a-z]{2})(?:$|[-_])/i.exec((tag ?? "").trim());
+  const region = m?.[1].toUpperCase() ?? null;
+  return region === "UK" ? "GB" : region;
+}
+
+const CURRENCY_COUNTRY: Record<string, CheckCountry> = { AUD: "AU", NZD: "NZ", GBP: "GB", CAD: "CA", USD: "US" };
+
+export interface CountrySignals {
+  override?: string | null; // a country an old form or link chose: it wins when it's one we check
+  storeCountry?: string | null; // Shopify's /meta.json country
+  domain?: string | null; // the product page's domain
+  locales?: (string | null | undefined)[]; // og:locale, <html lang>
+  currencies?: (string | null | undefined)[]; // the page's or shop's currency
+}
+
+/**
+ * The shopper country for a check: where the store is. In order:
+ * 1. a country an old form chose; 2. Shopify's store country; 3. the domain ending (.com.au, .co.nz...).
+ * Then signals a shop can change to suit the visitor (our server is in Singapore), so they only count
+ * when they name a country we check: 4. a currency other than USD (AUD, NZD, GBP or CAD prices are rarely
+ * shown to a visitor unless they are the shop's own); 5. a language region other than US; 6. USD prices;
+ * 7. en-US (many sites keep USD and en-US as their "international" default).
+ * A store in a country we don't check yet only looks at the domain and a non-USD currency, then uses
+ * Australia ("unsupported"). Nothing at all: Australia ("default"), our launch market.
+ */
+export function detectCountry(s: CountrySignals): { country: CheckCountry; how: CountryHow } {
+  const override = (s.override ?? "").trim().toUpperCase();
+  if (isCheckCountry(override)) return { country: override, how: "chosen" };
+  const store = (s.storeCountry ?? "").trim().toUpperCase();
+  const knownStore = /^[A-Z]{2}$/.test(store);
+  if (knownStore && isCheckCountry(store)) return { country: store, how: "store" };
+  const byDomain = domainCountry(s.domain);
+  if (byDomain) return { country: byDomain, how: "domain" };
+  const currencies = (s.currencies ?? []).map((c) => (c ?? "").trim().toUpperCase());
+  const byCurrency = currencies.map((c) => (c === "USD" ? undefined : CURRENCY_COUNTRY[c])).find(Boolean);
+  if (byCurrency) return { country: byCurrency, how: "currency" };
+  if (knownStore) return { country: "AU", how: "unsupported" };
+  const regions = (s.locales ?? []).map(localeRegion);
+  const byLanguage = regions.find((r): r is CheckCountry => r !== null && r !== "US" && isCheckCountry(r));
+  if (byLanguage) return { country: byLanguage, how: "language" };
+  if (currencies.includes("USD")) return { country: "US", how: "currency" };
+  if (regions.includes("US")) return { country: "US", how: "language" };
+  return { country: "AU", how: "default" };
 }
 
 // ---------- Putting it together ----------
@@ -450,6 +550,7 @@ export type ReadProduct = Omit<CheckProduct, "category"> & {
   descriptionSource: DescriptionSource; // "meta" = only the short og/meta summary
   pageRead: boolean; // we read the HTML page, not only Shopify's JSON
   looksLikeProduct: boolean; // Shopify product JSON, JSON-LD Product, og:type product or a price
+  countrySignals: Omit<CountrySignals, "override">; // check.server adds storeCountry from /meta.json
 };
 
 /** Merge what Shopify's JSON and the HTML page told us. Null when there's nothing usable. */
@@ -493,6 +594,12 @@ export function mergeProduct(url: string, js: ShopifyJsFacts | null, page: PageF
     descriptionSource,
     pageRead: Boolean(page),
     looksLikeProduct: productPage && Boolean(js || ld || /product/.test(page?.ogType ?? "") || page?.ogPrice),
+    countrySignals: {
+      storeCountry: null,
+      domain,
+      locales: [page?.ogLocale ?? null, page?.htmlLang ?? null],
+      currencies: [ld?.currency ?? null, page?.ogCurrency ?? null, page?.shopCurrency ?? null],
+    },
   };
 }
 

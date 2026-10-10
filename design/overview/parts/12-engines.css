@@ -23,9 +23,9 @@
   display: grid; place-items: center;
   background: var(--lilac-50); color: var(--cobalt-mid);
   box-shadow: inset 0 0 0 1px var(--lav-line);
-  transition: color .25s ease, background-color .25s ease;
+  transition: color .25s ease, background-color .25s ease, transform .35s cubic-bezier(.34, 1.56, .64, 1);
 }
-.eng-item:hover .eng-mono { color: var(--cobalt); background: var(--lilac-100); }
+.eng-item:hover .eng-mono { color: var(--cobalt); background: var(--lilac-100); transform: translateY(-2px) scale(1.08); }
 .eng-mono svg { width: 17px; height: 17px; }
 .eng-pro {
   margin-left: 2px; font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0;

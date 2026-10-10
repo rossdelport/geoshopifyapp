@@ -74,7 +74,7 @@ body { margin: 0; background: #fff; }
 .ck-logo { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; border-radius: 10px; }
 .ck-mark { position: relative; width: 34px; height: 34px; flex: none; }
 .ck-mark i { position: absolute; width: 23px; height: 23px; border-radius: 50%; display: block; }
-.ck-mark i:first-child { left: 0; top: 0; background: var(--peri-300); opacity: .92; mix-blend-mode: multiply; z-index: 1; }
+.ck-mark i:first-child { left: 0; top: 0; background: var(--peri-300); opacity: .92; mix-blend-mode: multiply; } /* behind the cobalt circle, as on the home page and the favicon */
 .ck-mark i:last-child { right: 0; bottom: 0; background: var(--cobalt); }
 .ck-word { font-family: var(--font-head); font-weight: 600; font-size: 25px; letter-spacing: -1px; line-height: 1; color: var(--navy); }
 .ck-pill { margin-left: auto; display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border-radius: 9px; background: var(--lilac-pedestal); color: var(--cobalt-deep); font-size: 13px; font-weight: 600; white-space: nowrap; }
@@ -135,11 +135,71 @@ body { margin: 0; background: #fff; }
 .ck-btn-sm { height: 36px; padding: 0 14px; font-size: 13.5px; border-radius: 10px; }
 .ck-ic { width: 20px; height: 20px; flex: none; color: var(--cobalt); }
 
-/* the check form (same as the home page hero form) */
+/* the check form (same as the home page hero form): the link box and the button, no country to pick */
 .ck-form { width: 100%; max-width: 820px; display: flex; flex-direction: column; align-items: center; }
+/* Glow round the link box, so the eye goes to it: the same light as the home page hero form
+   (design/overview/parts/11-hero.css, .hero-check). Both layers sit under the box, which covers their middle:
+   ::before is a still, soft halo (always there, painted once), and .ck-glow is a soft light that travels
+   slowly round the whole box: a pale bloom (.ck-halo) and a brighter copy clipped to a 2px band just outside
+   the edge (.ck-ring). Each light is a pre-softened blob moved by transform only (.ck-run is the size of its
+   layer, so translate(100%, 0) is the top right corner), and each side gets time to match its length, so the
+   speed stays even (the stacked phone box has its own keyframes). Brighter on hover and while typing.
+   check-ui.tsx adds .is-live when motion is allowed and .is-paused while the box is off screen. Without JS, or
+   with reduced motion: only the still halo. */
+.ck-form-glow { --ck-r: 20px; position: relative; isolation: isolate; width: 100%; border-radius: var(--ck-r); }
+.ck-form-box::before {
+  content: ""; position: absolute; z-index: -1; inset: -4px; border-radius: calc(var(--ck-r, 20px) + 4px); pointer-events: none;
+  filter: blur(14px); opacity: .5; background: linear-gradient(90deg, #b5a8e0, #bfc9fa 50%, #6878d8);
+  transition: opacity .35s ease;
+}
+.ck-form-box:hover::before { opacity: .65; }
+.ck-form-box:focus-within::before { opacity: .8; }
+.ck-glow { display: none; }
+.ck-halo, .ck-ring { position: absolute; z-index: -1; pointer-events: none; transition: opacity .35s ease; }
+.ck-halo { inset: 0; opacity: .75; }
+.ck-ring { inset: -2px; border-radius: calc(var(--ck-r, 20px) + 2px); overflow: hidden; opacity: .9; }
+.ck-run { position: absolute; inset: 0; }
+.ck-ring .ck-run { inset: 1px; }
+.ck-run > i { position: absolute; left: 0; top: 0; border-radius: 50%; }
+.ck-halo .ck-run > i {
+  width: 340px; height: 56px; margin: -28px 0 0 -170px;
+  background: radial-gradient(closest-side, rgba(238, 241, 255, 1) 0%, rgba(176, 186, 248, 0.92) 22%, rgba(138, 150, 240, 0.7) 42%, rgba(138, 150, 240, 0.42) 62%, rgba(160, 170, 244, 0.16) 82%, rgba(191, 201, 250, 0) 100%);
+}
+.ck-ring .ck-run > i {
+  width: 240px; height: 40px; margin: -20px 0 0 -120px;
+  background: radial-gradient(closest-side, #fff 0%, #dfe4ff 18%, #9ba6f3 42%, rgba(138, 150, 240, 0.55) 66%, rgba(191, 201, 250, 0) 100%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ck-form-glow.is-live .ck-glow { display: block; }
+  .ck-form-glow.is-live .ck-run { animation: ck-run 10.5s linear infinite; will-change: transform; }
+  .ck-form-glow.is-live .ck-form-box:hover .ck-halo { opacity: .95; }
+  .ck-form-glow.is-live .ck-form-box:focus-within .ck-halo { opacity: 1; }
+  .ck-form-glow.is-live .ck-form-box:hover .ck-ring, .ck-form-glow.is-live .ck-form-box:focus-within .ck-ring { opacity: 1; }
+  .ck-form-glow.is-paused .ck-run { animation-play-state: paused; }
+}
+/* one-row box (about 12:1): each long side takes 46% of the loop, each short end 4% */
+@keyframes ck-run {
+  0% { transform: translate(0, 0); }
+  46% { transform: translate(100%, 0); }
+  50% { transform: translate(100%, 100%); }
+  96% { transform: translate(0, 100%); }
+  100% { transform: translate(0, 0); }
+}
+/* stacked phone box (about 3:1): 37% per long side, 13% per end */
+@keyframes ck-run-tall {
+  0% { transform: translate(0, 0); }
+  37% { transform: translate(100%, 0); }
+  50% { transform: translate(100%, 100%); }
+  87% { transform: translate(0, 100%); }
+  100% { transform: translate(0, 0); }
+}
+/* the box stacks at 640px and below (see the phone rules further down) */
+@media (max-width: 640px) and (prefers-reduced-motion: no-preference) {
+  .ck-form-glow.is-live .ck-run { animation-name: ck-run-tall; }
+}
 .ck-form-box {
-  width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 20px; background: #fff;
-  box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.45), 0 28px 56px -28px rgba(56, 64, 160, 0.38), 0 8px 18px -12px rgba(56, 64, 160, 0.16);
+  position: relative; width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: var(--ck-r, 20px); background: #fff;
+  box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.3), 0 28px 56px -28px rgba(56, 64, 160, 0.38), 0 8px 18px -12px rgba(56, 64, 160, 0.16);
   transition: box-shadow .2s ease;
 }
 .ck-form-box:focus-within { box-shadow: 0 0 0 1px var(--cobalt-mid), 0 0 0 5px rgba(64, 80, 176, 0.16), 0 28px 56px -28px rgba(56, 64, 160, 0.38); }
@@ -149,15 +209,7 @@ body { margin: 0; background: #fff; }
   font-family: var(--font-body); font-size: 16px; font-weight: 500; color: var(--navy); text-overflow: ellipsis;
 }
 .ck-form-field input::placeholder { color: var(--placeholder); font-weight: 400; opacity: 1; }
-.ck-form-row { display: flex; align-items: center; gap: 8px; flex: none; }
-.ck-form-country { position: relative; display: flex; align-items: center; }
-.ck-form-country select {
-  -webkit-appearance: none; appearance: none; height: 48px; padding: 0 34px 0 14px; border: 0; border-radius: 12px;
-  background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lav-line); color: var(--navy);
-  font-family: var(--font-body); font-size: 14px; font-weight: 500; cursor: pointer;
-}
-.ck-form-country select:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
-.ck-form-country svg { position: absolute; right: 12px; width: 14px; height: 14px; color: var(--text); pointer-events: none; }
+.ck-form-btn { flex: none; }
 .ck-form-error { margin-top: 14px; padding: 10px 14px; border-radius: 12px; background: var(--red-bg); color: #9b2f2f; font-size: 14px; font-weight: 500; line-height: 1.5; text-align: center; box-shadow: inset 0 0 0 1px rgba(239, 90, 90, 0.18); }
 .ck-form-hint { margin-top: 14px; max-width: 640px; font-size: 13.5px; line-height: 1.55; color: var(--text-lilac); text-align: center; text-wrap: balance; }
 .ck-card .ck-form-hint { color: var(--text); }
@@ -195,6 +247,18 @@ body { margin: 0; background: #fff; }
 .ck-product-meta a { color: var(--cobalt); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--lilac-deep); overflow-wrap: anywhere; }
 .ck-product-meta a:hover { color: var(--cobalt-deep); text-decoration-color: currentColor; }
 .ck-product-line { margin-top: 6px; font-size: 13.5px; line-height: 1.55; color: var(--text); }
+/* "Wrong country?": the same link, asked again as a shopper in another country (only for guessed countries) */
+.ck-country { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 6px; font-size: 13px; color: var(--text); }
+.ck-country-q { font-weight: 500; color: var(--navy-3); }
+.ck-country-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+.ck-country-btn {
+  height: 30px; padding: 0 11px; border: 0; border-radius: 9px; cursor: pointer;
+  font: 600 12.5px/1 var(--font-body); color: var(--cobalt-deep); background: #fff;
+  box-shadow: inset 0 0 0 1px var(--lav-line), 0 1px 2px rgba(56, 64, 160, 0.08);
+  transition: box-shadow .2s ease, background .2s ease;
+}
+.ck-country-btn:hover { background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-deep); }
+.ck-country-btn:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
 
 /* running: clay magnifier beside the steps, progress, what's happening */
 .ck-run { display: flex; flex-direction: column; gap: 22px; }
@@ -367,10 +431,9 @@ body { margin: 0; background: #fff; }
   .ck-h3 { font-size: 18px; }
   .ck-lead { font-size: 16px; }
   .ck-intro { padding: 12px 4px 8px; gap: 16px; }
-  .ck-form-box { flex-direction: column; align-items: stretch; gap: 6px; border-radius: 18px; }
+  .ck-form-glow { --ck-r: 18px; }
+  .ck-form-box { flex-direction: column; align-items: stretch; gap: 6px; }
   .ck-form-field { height: 50px; padding-left: 10px; }
-  .ck-form-row { width: 100%; }
-  .ck-form-row .ck-btn { flex: 1; }
   .ck-perk { padding: 20px 16px; }
   .ck-explain { padding: 12px 14px; font-size: 13.5px; text-align: left; }
   .ck-product { align-items: flex-start; gap: 14px; }
@@ -417,4 +480,5 @@ body { margin: 0; background: #fff; }
 }
 @media (prefers-reduced-motion: reduce) {
   .ck *, .ck *::before, .ck *::after { animation: none !important; transition: none !important; }
+  /* the form keeps its still, soft halo (.ck-form-box::before above) */
 }

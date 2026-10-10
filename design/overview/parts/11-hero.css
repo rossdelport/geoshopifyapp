@@ -56,64 +56,66 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .hero-check-note { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.85); box-shadow: inset 0 0 0 1px var(--lav-line); color: var(--navy); font-size: 14px; line-height: 1.5; }
 .hero-check-note a { color: var(--cobalt-deep); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 
-/* Glow around the link box, so the eye goes to it. A soft light travels slowly round the whole box:
-   ::after is the light on a 2px ring just outside the box's edge, ::before is a blurred copy under the
-   box for a gentle halo. Both sit outside or under the box, so they never cover the text. The light is
-   a radial gradient whose centre (--hc-x, --hc-y) runs round the edge at an even speed: each side gets
-   time to match its length, so the stacked phone box has its own keyframes (bottom of this file).
-   Brighter on hover and while typing. 11-hero.js adds .hc-live where @property works (a smooth
-   animation needs it) and .hc-off while the form is off screen, which pauses it. Without JS, or with
-   reduced motion, it is a still, soft halo. Self-contained, so /check can reuse it as is. */
-@property --hc-x { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
-@property --hc-y { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
-.hero-check { position: relative; isolation: isolate; } /* the halo sits under the box, over the page */
-.hero-check-box::before, .hero-check-box::after {
-  content: ""; position: absolute; inset: -2px; border-radius: 22px; pointer-events: none;
+/* Glow around the link box, so the eye goes to it. Two layers, both under the box (it covers their
+   middle, so they never sit over the text):
+   1. ::before, a still, soft halo: lilac to cobalt, blurred. Always there (also without JS and with
+      reduced motion). It never changes, so it is painted once.
+   2. .hc-glow, a soft light that travels slowly round the whole box: a big pale bloom (.hc-halo) that
+      spreads past the edge, and a brighter copy clipped to a 2px band just outside the edge (.hc-ring).
+      Each light is a pre-softened blob (a radial gradient, no filter) moved by transform only: .hc-run is
+      the size of its layer, so translate(100%, 0) is the top right corner, and the blob sits on its top
+      left corner. Each side gets time to match its length, so the speed stays even (the stacked phone box
+      has its own keyframes, bottom of this file). One loop takes 10.5s.
+   Brighter on hover and while typing. 11-hero.js adds .hc-live (motion welcome) and .hc-off while the form
+   is off screen, which pauses it. Self-contained, so /check can reuse it as is. */
+.hero-check { position: relative; isolation: isolate; } /* the glow sits under the box, over the page */
+.hero-check-box::before {
+  content: ""; position: absolute; z-index: -1; inset: -4px; border-radius: 24px; pointer-events: none;
+  filter: blur(14px); opacity: .5; background: linear-gradient(90deg, #b5a8e0, #bfc9fa 50%, #6878d8);
   transition: opacity .35s ease;
 }
-/* still halo (no JS, reduced motion) */
-.hero-check-box::before { z-index: -1; inset: -4px; border-radius: 24px; filter: blur(14px); opacity: .55; background: linear-gradient(90deg, #b5a8e0, #bfc9fa 50%, #6878d8); }
-.hero-check-box::after { display: none; }
-.hero-check-box:hover::before { opacity: .7; }
-.hero-check-box:focus-within::before { opacity: .85; }
+.hero-check-box:hover::before { opacity: .65; }
+.hero-check-box:focus-within::before { opacity: .8; }
+.hc-glow { display: none; }
+.hc-halo, .hc-ring { position: absolute; z-index: -1; pointer-events: none; transition: opacity .35s ease; }
+.hc-halo { inset: 0; opacity: .75; }
+.hc-ring { inset: -2px; border-radius: 22px; overflow: hidden; opacity: .9; }
+.hc-run { position: absolute; inset: 0; }
+.hc-ring .hc-run { inset: 1px; } /* runs along the middle of the 2px band */
+.hc-run > i { position: absolute; left: 0; top: 0; border-radius: 50%; }
+/* the bloom: a soft light that fades out about 24px past the edge (gaussian-like falloff, no rim) */
+.hc-halo .hc-run > i {
+  width: 340px; height: 56px; margin: -28px 0 0 -170px;
+  background: radial-gradient(closest-side, rgba(238, 241, 255, 1) 0%, rgba(176, 186, 248, 0.92) 22%, rgba(138, 150, 240, 0.7) 42%, rgba(138, 150, 240, 0.42) 62%, rgba(160, 170, 244, 0.16) 82%, rgba(191, 201, 250, 0) 100%);
+}
+/* the bright edge: a white spark with periwinkle either side, clipped to the 2px band */
+.hc-ring .hc-run > i {
+  width: 240px; height: 40px; margin: -20px 0 0 -120px;
+  background: radial-gradient(closest-side, #fff 0%, #dfe4ff 18%, #9ba6f3 42%, rgba(138, 150, 240, 0.55) 66%, rgba(191, 201, 250, 0) 100%);
+}
 @media (prefers-reduced-motion: no-preference) {
-  .hero-check.hc-live .hero-check-box::before, .hero-check.hc-live .hero-check-box::after {
-    display: block; animation: hc-run 7s linear infinite;
-  }
-  /* halo: a bigger, softer copy of the light over a faint even glow, blurred, under the box */
-  .hero-check.hc-live .hero-check-box::before {
-    inset: -6px; border-radius: 26px; filter: blur(14px); opacity: .7;
-    background:
-      radial-gradient(240px 72px at var(--hc-x) var(--hc-y), rgba(64, 80, 176, 0.95) 0%, rgba(104, 120, 216, 0.8) 30%, rgba(191, 201, 250, 0.5) 62%, rgba(181, 168, 224, 0) 100%),
-      linear-gradient(rgba(104, 120, 216, 0.3), rgba(104, 120, 216, 0.3));
-  }
-  /* ring: the light itself, on the 2px band just outside the box */
-  .hero-check.hc-live .hero-check-box::after {
-    padding: 2px; opacity: .85;
-    background: radial-gradient(150px 34px at var(--hc-x) var(--hc-y), #4050b0 0%, #6878d8 22%, #bfc9fa 52%, rgba(181, 168, 224, 0.55) 70%, rgba(181, 168, 224, 0) 100%);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor; mask-composite: exclude;
-  }
-  .hero-check.hc-live .hero-check-box:hover::before { opacity: .9; }
-  .hero-check.hc-live .hero-check-box:focus-within::before { opacity: 1; }
-  .hero-check.hc-live .hero-check-box:hover::after, .hero-check.hc-live .hero-check-box:focus-within::after { opacity: 1; }
-  .hero-check.hc-off .hero-check-box::before, .hero-check.hc-off .hero-check-box::after { animation-play-state: paused; }
+  .hero-check.hc-live .hc-glow { display: block; }
+  .hero-check.hc-live .hc-run { animation: hc-run 10.5s linear infinite; will-change: transform; }
+  .hero-check.hc-live .hero-check-box:hover .hc-halo { opacity: .95; }
+  .hero-check.hc-live .hero-check-box:focus-within .hc-halo { opacity: 1; }
+  .hero-check.hc-live .hero-check-box:hover .hc-ring, .hero-check.hc-live .hero-check-box:focus-within .hc-ring { opacity: 1; }
+  .hero-check.hc-off .hc-run { animation-play-state: paused; }
 }
 /* one-row box (about 11:1): each long side takes 46% of the loop, each short end 4% */
 @keyframes hc-run {
-  0% { --hc-x: 0%; --hc-y: 0%; }
-  46% { --hc-x: 100%; --hc-y: 0%; }
-  50% { --hc-x: 100%; --hc-y: 100%; }
-  96% { --hc-x: 0%; --hc-y: 100%; }
-  100% { --hc-x: 0%; --hc-y: 0%; }
+  0% { transform: translate(0, 0); }
+  46% { transform: translate(100%, 0); }
+  50% { transform: translate(100%, 100%); }
+  96% { transform: translate(0, 100%); }
+  100% { transform: translate(0, 0); }
 }
-/* stacked phone box (about 4:1): 40% per long side, 10% per end */
+/* stacked phone box (about 3:1): 37% per long side, 13% per end */
 @keyframes hc-run-tall {
-  0% { --hc-x: 0%; --hc-y: 0%; }
-  40% { --hc-x: 100%; --hc-y: 0%; }
-  50% { --hc-x: 100%; --hc-y: 100%; }
-  90% { --hc-x: 0%; --hc-y: 100%; }
-  100% { --hc-x: 0%; --hc-y: 0%; }
+  0% { transform: translate(0, 0); }
+  37% { transform: translate(100%, 0); }
+  50% { transform: translate(100%, 100%); }
+  87% { transform: translate(0, 100%); }
+  100% { transform: translate(0, 0); }
 }
 
 /* ---------- three animated cards ---------- */
@@ -251,15 +253,15 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 
 /* ---------- animation (only when motion is welcome and 11-hero.js has armed the row) ----------
    Every keyframe set starts and ends on the finished picture above, so a card is never blank: it holds
-   the finished picture for 1.2s, clears, rebuilds, and rests finished again. Each story plays twice
-   (10s each), then stops on the finished picture.
+   the finished picture, fades out quickly just before its own turn, rebuilds, and rests finished again.
+   Each story plays twice (10s each), then stops on the finished picture.
    Wide screens (3 cards in a row): one shared timeline, started by 11-hero.js when the row is in view.
-   All three cards clear together at 1.2s, then the story runs left to right: card 1 sends three
-   questions (to 3.9s), card 2 picks "You" (3.5 to 5.2s), card 3 adds the rows (5 to 6.9s), and all three
-   hold the finished picture for over 4s. --hw-d2 and --hw-d3 shift cards 2 and 3 along that timeline,
-   and the "-d" keyframes clear those cards early, with card 1.
+   The story runs left to right and only the card being told is ever empty: card 1 clears at 1.2s and
+   sends three questions (to 3.9s), card 2 clears at 3.05s and picks "You" (to 5.2s), card 3 clears at
+   4.65s and adds the rows (to 6.9s). --hw-d2 and --hw-d3 delay every part of cards 2 and 3, so until
+   their turn they keep showing the finished picture (the first keyframe).
    Narrower screens (1023px and below: stacked on tablets, a sideways row on phones): each card starts on
-   its own when it comes into view, so --hw-d2 and --hw-d3 are 0 and every card clears just before it rebuilds. */
+   its own when it comes into view, so --hw-d2 and --hw-d3 are 0. */
 .hw { --hw-d2: 0s; --hw-d3: 0s; --hw-ease: cubic-bezier(.3, .7, .2, 1); }
 @media (min-width: 1024px) { .hw { --hw-d2: 1.85s; --hw-d3: 3.45s; } }
 
@@ -287,30 +289,19 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .hw-ready .hw-ai::after { animation: hw-ai-glow 10s ease-out var(--hw-d2) 2 both; }
   .hw-ready .hw-store-l { animation: hw-hit-l 10s ease-out var(--hw-d2) 2 both; }
   .hw-ready .hw-store-r { animation: hw-hit-r 10s ease-out var(--hw-d2) 2 both; }
-  .hw-ready .hw-you { animation: hw-you 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-you { animation: hw-you 10s var(--hw-ease) var(--hw-d2) 2 both; }
   .hw-ready .hw-you-lit,
-  .hw-ready .hw-ln-on { animation: hw-lit 10s ease 2 both; }
-  .hw-ready .hw-rec { animation: hw-rec 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-ln-on { animation: hw-lit 10s ease var(--hw-d2) 2 both; }
+  .hw-ready .hw-rec { animation: hw-rec 10s var(--hw-ease) var(--hw-d2) 2 both; }
 
   /* card 3: the rows clear, then come back one by one; the order row pops */
-  .hw-ready .hw-row1 { animation: hw-row1 10s var(--hw-ease) 2 both; }
-  .hw-ready .hw-row2 { animation: hw-row2 10s var(--hw-ease) 2 both; }
-  .hw-ready .hw-row3 { animation: hw-row3 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-row1 { animation: hw-row1 10s var(--hw-ease) var(--hw-d3) 2 both; }
+  .hw-ready .hw-row2 { animation: hw-row2 10s var(--hw-ease) var(--hw-d3) 2 both; }
+  .hw-ready .hw-row3 { animation: hw-row3 10s var(--hw-ease) var(--hw-d3) 2 both; }
   .hw-ready .hw-row1 .hw-chip { animation: hw-chip1 10s var(--hw-ease) var(--hw-d3) 2 both; }
   .hw-ready .hw-row2 .hw-chip { animation: hw-chip2 10s var(--hw-ease) var(--hw-d3) 2 both; }
   .hw-ready .hw-row3 .hw-chip { animation: hw-chip3 10s var(--hw-ease) var(--hw-d3) 2 both; }
   .hw-ready .hw-row-coin img { animation: hw-coin 10s var(--hw-ease) var(--hw-d3) 2 both; }
-
-  /* wide screens: cards 2 and 3 clear together with card 1, then wait for their turn */
-  @media (min-width: 1024px) {
-    .hw-ready .hw-you { animation-name: hw-you-d; }
-    .hw-ready .hw-you-lit,
-    .hw-ready .hw-ln-on { animation-name: hw-lit-d; }
-    .hw-ready .hw-rec { animation-name: hw-rec-d; }
-    .hw-ready .hw-row1 { animation-name: hw-row1-d; }
-    .hw-ready .hw-row2 { animation-name: hw-row2-d; }
-    .hw-ready .hw-row3 { animation-name: hw-row3-d; }
-  }
 
   /* wait on the finished picture until the card (or, on wide screens, the row) is in view */
   .hw-ready .hw-card:not(.is-on) .hw-art *,
@@ -418,7 +409,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   0%, 23.2%, 26.2%, 26.7%, 29.7%, 100% { transform: scale(1); }
   23.7%, 27.2% { transform: scale(1.07); }
 }
-/* stacked cards: "You" clears just before its own rebuild */
+/* "You" clears just before its own rebuild (times include --hw-d2) */
 @keyframes hw-you {
   0%, 12% { transform: scale(1.06); }
   15%, 21.5%, 24.5%, 25%, 28%, 28.5% { transform: scale(1); }
@@ -438,28 +429,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   32% { transform: translateY(-1px) scale(1.04); opacity: 1; }
   34%, 100% { transform: translateY(0) scale(1); opacity: 1; }
 }
-/* wide screens: the same, but clearing at 1.2s with card 1 and rebuilding 1.85s (--hw-d2) later */
-@keyframes hw-you-d {
-  0%, 12% { transform: scale(1.06); }
-  15%, 40%, 43%, 43.5%, 46.5%, 47% { transform: scale(1); }
-  40.5%, 44% { transform: scale(1.07); }
-  48.5% { transform: scale(1.14); }
-  50.5%, 100% { transform: scale(1.06); }
-}
-@keyframes hw-lit-d {
-  0%, 12% { opacity: 1; }
-  15%, 47% { opacity: 0; }
-  48.5%, 100% { opacity: 1; }
-}
-@keyframes hw-rec-d {
-  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
-  15% { transform: translateY(3px) scale(.96); opacity: 0; }
-  15.1%, 48% { transform: translateY(6px) scale(.85); opacity: 0; }
-  50.5% { transform: translateY(-1px) scale(1.04); opacity: 1; }
-  52.5%, 100% { transform: translateY(0) scale(1); opacity: 1; }
-}
-
-/* card 3. Stacked cards: the rows clear and come back right away. */
+/* card 3: the rows clear and come back right away (times include --hw-d3) */
 @keyframes hw-row1 {
   0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
   14.5% { transform: translateY(-6px) scale(1); opacity: 0; }
@@ -478,26 +448,6 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   14.6%, 25.5% { transform: translateY(12px) scale(.9); opacity: 0; }
   30% { transform: translateY(-2px) scale(var(--row3-pop)); opacity: 1; }
   33%, 100% { transform: translateY(0) scale(var(--row3-rest)); opacity: 1; }
-}
-/* wide screens: clear at 1.2s with card 1, come back 3.45s (--hw-d3) later */
-@keyframes hw-row1-d {
-  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
-  14.5% { transform: translateY(-6px) scale(1); opacity: 0; }
-  14.6%, 50% { transform: translateY(10px) scale(.96); opacity: 0; }
-  54%, 100% { transform: translateY(0) scale(1); opacity: 1; }
-}
-@keyframes hw-row2-d {
-  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
-  14.5% { transform: translateY(-6px) scale(1); opacity: 0; }
-  14.6%, 55% { transform: translateY(10px) scale(.96); opacity: 0; }
-  59%, 100% { transform: translateY(0) scale(1); opacity: 1; }
-}
-@keyframes hw-row3-d {
-  0%, 12% { transform: translateY(0) scale(var(--row3-rest)); opacity: 1; }
-  14.5% { transform: translateY(-6px) scale(var(--row3-rest)); opacity: 0; }
-  14.6%, 60% { transform: translateY(12px) scale(.9); opacity: 0; }
-  64.5% { transform: translateY(-2px) scale(var(--row3-pop)); opacity: 1; }
-  67.5%, 100% { transform: translateY(0) scale(var(--row3-rest)); opacity: 1; }
 }
 /* chips and the coin (times include --hw-d3); they hide while their row is hidden */
 @keyframes hw-chip1 {
@@ -601,10 +551,10 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 /* phones: the link box and the button stack, so the whole link fits and the button is easy to tap */
 @media (max-width: 560px) {
   .hero-check-box { flex-direction: column; align-items: stretch; gap: 6px; border-radius: 18px; }
-  .hero-check-box::after { border-radius: 20px; }
   .hero-check-box::before { border-radius: 22px; }
+  .hc-ring { border-radius: 20px; }
   .hero-check-field { height: 50px; padding-left: 10px; }
 }
 @media (max-width: 560px) and (prefers-reduced-motion: no-preference) {
-  .hero-check.hc-live .hero-check-box::before, .hero-check.hc-live .hero-check-box::after { animation-name: hc-run-tall; }
+  .hero-check.hc-live .hc-run { animation-name: hc-run-tall; }
 }

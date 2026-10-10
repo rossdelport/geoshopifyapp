@@ -80,5 +80,13 @@
   .nav-cta-short { display: inline; }
 }
 
+/* The logo's two circles: the lilac one slides out from behind the cobalt one as the page opens,
+   and they ease apart a touch on hover. */
+.nav-mark i { transition: transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+.nav-mark-a { animation: nav-mark-in .9s cubic-bezier(.22, 1.2, .36, 1) .15s backwards; }
+.nav-logo:hover .nav-mark-a { transform: translate(-2px, -2px); }
+.nav-logo:hover .nav-mark-b { transform: translate(2px, 2px); }
+@keyframes nav-mark-in { from { opacity: 0; transform: translate(6px, 6px) scale(.8); } to { opacity: .92; transform: none; } }
+
 /* Smooth scrolling for in-page links lives in 10-nav.js, so other scrolls (and page captures) stay instant. */
 html { scroll-behavior: auto; }

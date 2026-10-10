@@ -1,6 +1,7 @@
 // Free product check (public, no install). See docs/free-check.md.
-// A visitor pastes a product link; we read the page, write 3 buyer questions, ask ChatGPT,
-// Gemini and Perplexity each question twice, and build a report. Runs as the "check.run" job.
+// A visitor pastes a product link; we read the page, work out where the store is, write 3 buyer
+// questions, ask ChatGPT, Gemini and Perplexity each question twice, and build a report.
+// Runs as the "check.run" job.
 
 import { createHmac, randomBytes } from "node:crypto";
 import { Resolver } from "node:dns/promises";
@@ -21,6 +22,7 @@ import { pool } from "./pool";
 import {
   NOT_YOUR_STORE,
   cleanCheckUrl,
+  detectCountry,
   domainStem,
   fetchableUrl,
   isIpLiteral,
@@ -31,6 +33,9 @@ import {
   normalizeCheckUrl,
   parseProductHtml,
   parseShopifyJs,
+  parseShopifyMeta,
+  storeCountryFromMeta,
+  type ShopifyMeta,
   pickCategory,
   screenQuestions,
   shopifyHandle,
@@ -53,6 +58,7 @@ import {
   type CheckReport,
   type CheckStatus,
   type CheckView,
+  type CountryHow,
   type CreateCheckResult,
 } from "./check-types";
 
@@ -67,6 +73,9 @@ const TOTAL = CHECK_QUESTIONS * CHECK_ENGINES.length * CHECK_RUNS; // 18
 // processes (a deploy overlap, or more replicas) can have twice as many open.
 const ASK_AT_ONCE = TOTAL;
 const STALE_MS = 30 * 60_000; // a check still "running" after this never will
+// A new check's country until the job reads the page and works out where the store is.
+// Any value that isn't a country we check means "find it" (detectCountry in check-read.ts).
+const DETECT = "auto";
 
 /** An error whose message is safe to show the visitor. */
 class CheckError extends Error {}
@@ -128,7 +137,8 @@ async function overSpendCap(since: Date, client?: Pick<Prisma.TransactionClient,
 
 export async function createCheck(input: {
   url: string;
-  country: string;
+  /** Optional: a country we check wins over detection (old forms and links sent one). */
+  country?: string | null;
   ip: string | null;
   honeypot?: string | null;
 }): Promise<CreateCheckResult> {
@@ -136,7 +146,7 @@ export async function createCheck(input: {
   const link = normalizeCheckUrl(input.url);
   if (!link.ok) return link;
   const code = (input.country ?? "").trim().toUpperCase();
-  const country: CheckCountry = isCheckCountry(code) ? code : "AU";
+  const chosen: CheckCountry | null = isCheckCountry(code) ? code : null;
   const since = new Date(Date.now() - DAY);
   // Visitors with no address share one allowance, so a missing header can't skip the limit.
   const ipHash = hashIp(input.ip || "unknown");
@@ -147,11 +157,12 @@ export async function createCheck(input: {
     async (tx): Promise<{ ok: true; id: string; fresh: boolean } | { ok: false; error: string }> => {
       await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext('geo:public-check'))`;
 
-      // Same link checked in the last day (or still running): show that report (costs nothing).
+      // Same link checked in the last day (or still running): show that report (costs nothing),
+      // whatever country it found. Only a chosen country that differs makes a new check.
       const recent = await tx.publicCheck.findFirst({
         where: {
           url: link.url,
-          country,
+          ...(chosen ? { country: chosen } : {}),
           OR: [
             { status: "done", createdAt: { gte: since } },
             { status: { notIn: ["done", "failed"] }, createdAt: { gte: new Date(Date.now() - STALE_MS) } },
@@ -169,7 +180,7 @@ export async function createCheck(input: {
       if (everyone >= envNumber("GEO_CHECKS_PER_DAY", 150)) return { ok: false, error: BUSY };
       if (await overSpendCap(since, tx)) return { ok: false, error: BUSY };
 
-      const row = await tx.publicCheck.create({ data: { url: link.url, country, status: "queued", total: TOTAL, ipHash } });
+      const row = await tx.publicCheck.create({ data: { url: link.url, country: chosen ?? DETECT, status: "queued", total: TOTAL, ipHash } });
       return { ok: true, id: row.id, fresh: true };
     },
     { maxWait: 10_000, timeout: 15_000 },
@@ -223,7 +234,8 @@ export async function getCheckView(id: string): Promise<CheckView | null> {
     id: row.id,
     status,
     step: stepText(status, Boolean(product)),
-    country: isCheckCountry(row.country) ? row.country : "AU",
+    // Not shown until the job has worked it out (it's saved with the product).
+    country: isCheckCountry(row.country) ? row.country : null,
     createdAt: row.createdAt.toISOString(),
     product,
     questions: (row.questions as unknown as CheckQuestion[]) ?? [],
@@ -297,15 +309,23 @@ async function readCapped(res: RawResponse): Promise<string> {
   return new TextDecoder().decode(Buffer.concat(chunks));
 }
 
-/** GET a public page: no private addresses, redirects checked hop by hop, 10 s and 2 MB max. */
-export async function safeFetch(url: string, accept = "text/html,application/xhtml+xml"): Promise<{ status: number; url: string; text: string }> {
+/**
+ * GET a public page: no private addresses, redirects checked hop by hop, 10 s per hop and 2 MB max.
+ * Optional extras (/meta.json) can ask for a shorter wait and fewer redirects.
+ */
+export async function safeFetch(
+  url: string,
+  accept = "text/html,application/xhtml+xml",
+  opts: { timeoutMs?: number; maxRedirects?: number } = {},
+): Promise<{ status: number; url: string; text: string }> {
   let current = new URL(url);
-  for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+  const maxRedirects = Math.min(opts.maxRedirects ?? MAX_REDIRECTS, MAX_REDIRECTS);
+  for (let hop = 0; hop <= maxRedirects; hop++) {
     if (!fetchableUrl(current)) throw new CheckError(CANT_READ);
     await publicAddresses(current.hostname); // a clear early "no"; the connection checks again itself
     const res = await httpGet(current, {
       headers: { "user-agent": "Mozilla/5.0 (compatible; GEO-check/1.0)", accept, "accept-language": "en" },
-      signal: AbortSignal.timeout(10_000),
+      signal: AbortSignal.timeout(opts.timeoutMs ?? 10_000),
       lookup: safeLookup,
     });
     if (res.status >= 300 && res.status < 400 && res.location) {
@@ -318,14 +338,40 @@ export async function safeFetch(url: string, accept = "text/html,application/xht
   throw new CheckError(CANT_READ);
 }
 
-const okText = async (url: string, accept?: string) => {
-  const res = await safeFetch(url, accept);
+const okText = async (url: string, accept?: string, opts?: { timeoutMs?: number; maxRedirects?: number }) => {
+  const res = await safeFetch(url, accept, opts);
   return res.status >= 200 && res.status < 300 ? res : null;
 };
 
-export async function readProduct(url: string): Promise<ReadProduct> {
+// /meta.json is a nice-to-have: it may hold up reading the product by 4 s at most.
+const META_WAIT_MS = 4_000;
+/** Shopify's /meta.json for a shop (the store country), or null: slow, missing, broken or blocked. */
+async function readShopMeta(origin: string): Promise<(ShopifyMeta & { host: string }) | null> {
+  const meta = okText(`${origin}/meta.json`, "application/json", { timeoutMs: META_WAIT_MS, maxRedirects: 1 })
+    .then((r) => {
+      const parsed = r ? parseShopifyMeta(JSON.parse(r.text)) : null;
+      return parsed ? { ...parsed, host: new URL(r!.url).hostname } : null;
+    })
+    .catch(() => null);
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const late = new Promise<null>((resolve) => {
+    timer = setTimeout(() => resolve(null), META_WAIT_MS);
+  });
+  try {
+    return await Promise.race([meta, late]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/**
+ * Read the product page (and Shopify's product JSON). With `storeCountry`, Shopify links also get
+ * the shop's /meta.json, for the country the shop is based in. It never fails the check: no
+ * country there just means detectCountry looks at the domain, language and currency instead.
+ */
+export async function readProduct(url: string, opts: { storeCountry?: boolean } = {}): Promise<ReadProduct> {
   const handle = shopifyHandle(url);
-  const [js, page] = await Promise.all([
+  const [js, page, storeCountry] = await Promise.all([
     handle
       ? okText(`${new URL(url).origin}/products/${handle}.js`, "application/json")
           .then((r) => (r ? parseShopifyJs(JSON.parse(r.text), r.url) : null))
@@ -334,15 +380,23 @@ export async function readProduct(url: string): Promise<ReadProduct> {
     okText(url)
       .then((r) => (r ? { facts: parseProductHtml(r.text, r.url), url: r.url } : null))
       .catch(() => null),
+    // Only for links that look like Shopify (/products/<handle>), and only used if it's the page's own shop.
+    handle && opts.storeCountry ? readShopMeta(new URL(url).origin) : null,
   ]);
   // If the shop redirected us (e.g. myshopify.com -> its own domain), report the final address.
   const product = mergeProduct(cleanCheckUrl(page?.url ?? url), js, page?.facts ?? null);
   if (!product) throw new CheckError(CANT_READ);
+  if (product.isShopify) {
+    product.countrySignals.storeCountry = storeCountryFromMeta(storeCountry, {
+      shopDomain: product.shopDomain,
+      host: new URL(page?.url ?? url).hostname,
+    });
+  }
   return product;
 }
 
 /** The product as the report shows it (no tags or reading notes). */
-function toCheckProduct(p: ReadProduct, brand: string, category: string): CheckProduct {
+function toCheckProduct(p: ReadProduct, brand: string, category: string, countryFrom: CountryHow): CheckProduct {
   return {
     url: p.url,
     domain: p.domain,
@@ -357,6 +411,7 @@ function toCheckProduct(p: ReadProduct, brand: string, category: string): CheckP
     isShopify: p.isShopify,
     shopDomain: p.shopDomain,
     hasProductSchema: p.hasProductSchema,
+    countryFrom,
   };
 }
 
@@ -381,6 +436,7 @@ const plainName = (s: string, max: number) => {
 export async function understandProduct(
   product: ReadProduct,
   country: CheckCountry,
+  countryFrom: CountryHow = "chosen",
 ): Promise<{ product: CheckProduct; questions: CheckQuestion[]; names: string[] }> {
   const where = CHECK_COUNTRIES[country];
   let brand = product.brand;
@@ -432,7 +488,7 @@ Write exactly 3 natural, unbranded buyer questions a shopper in ${where} would a
     (n, i, all) => n.trim().length >= 2 && all.findIndex((x) => x.toLowerCase() === n.toLowerCase()) === i,
   );
   const questions = tidyQuestions(raw, { brandNames: names, category, country });
-  return { product: toCheckProduct(product, brand, category), questions, names };
+  return { product: toCheckProduct(product, brand, category, countryFrom), questions, names };
 }
 
 // ---------- Ask the AI assistants ----------
@@ -516,14 +572,17 @@ export async function runCheck(id: string, jobId?: string, attempt = 1) {
       .count === 1;
   if (!claimed) return failCheck(id, INTERRUPTED);
   if (jobId) await heartbeat(jobId);
-  const country: CheckCountry = isCheckCountry(row.country) ? row.country : "AU";
+  // A country we check was chosen (old forms and links), or "auto": find where the store is.
+  const chosen = isCheckCountry(row.country) ? row.country : null;
   try {
-    const read = await readProduct(row.url);
+    const read = await readProduct(row.url, { storeCountry: !chosen });
     if (!read.looksLikeProduct) throw new CheckError(NOT_A_PRODUCT);
     if (isMarketplaceLink(read.url)) throw new CheckError(NOT_YOUR_STORE); // the link redirected to one
-    // Show the product while Claude writes the questions (the page moves on to step 2).
-    await setStatus(id, { product: json(toCheckProduct(read, read.brand, pickCategory(read))) }, jobId);
-    const { product, questions, names } = await understandProduct(read, country);
+    // Before the questions are written: they name the country.
+    const { country, how } = detectCountry({ override: chosen, ...read.countrySignals });
+    // Show the product (and the country) while Claude writes the questions (the page moves on to step 2).
+    await setStatus(id, { country, product: json(toCheckProduct(read, read.brand, pickCategory(read), how)) }, jobId);
+    const { product, questions, names } = await understandProduct(read, country, how);
     if (product.category === "product") throw new CheckError(NOT_A_PRODUCT);
     if (await overSpendCap(new Date(Date.now() - DAY))) throw new CheckError(BUSY);
     await setStatus(id, { status: "asking", product: json(product), questions: json(questions) }, jobId);

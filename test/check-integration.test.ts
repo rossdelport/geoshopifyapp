@@ -1,7 +1,8 @@
 // Free product check against a real Postgres (set TEST_DATABASE_URL), with the shop's website,
 // DNS, AI engines and Claude faked. Covers: createCheck limits and re-use (also under parallel
-// posts), the full check.run job, the SSRF guard (redirects, DNS rebinding, size and time caps),
-// no paid re-runs, non-product and marketplace links, stale checks and the clean-up.
+// posts), working out where the store is, the full check.run job, the SSRF guard (redirects, DNS
+// rebinding, size and time caps), no paid re-runs, non-product and marketplace links, stale checks
+// and the clean-up.
 // Only touches the PublicCheck table (the job queue is faked so this can run beside integration.test.ts).
 
 import type { LookupFunction } from "node:net";
@@ -136,6 +137,15 @@ const AMAZON = `<html><head><title>Beard Oil 50ml : Amazon.com.au</title><meta p
 <meta property="og:site_name" content="Amazon.com.au"></head></html>`;
 let loops = 0;
 
+// Where the store is: a Shopify shop on a .com whose settings say New Zealand (its page looks American
+// to our server), a Shopify shop whose /meta.json is broken (its prices are in GBP), and a shop that
+// isn't Shopify but answers /meta.json anyway (ignored: its prices are in CAD).
+const shopifyPage = (extra: string) => `<html lang="en-US"><head><title>Beard Balm</title><meta property="og:locale" content="en_US">
+<script>Shopify.shop = "x.myshopify.com";</script>${extra}</head><body></body></html>`;
+const BALM_JS = { ...PRODUCT_JS, title: "Beard Balm 60g", vendor: "Wattlebird Grooming", type: "Beard Balm" };
+const WOO_PAGE = `<html><head><title>Beard Wax</title><script type="application/ld+json">{"@type":"Product","name":"Beard Wax","brand":"Banksia Beard Co.",
+"offers":{"price":"22.00","priceCurrency":"CAD"}}</script></head><body></body></html>`;
+
 const fetchMock = vi.fn(async (input: string | URL, init?: RequestInit) => {
   const u = new URL(String(input));
   if (u.hostname === "coolabahgrooming.com.au" && /^\/products\/(sandalwood|cedar)-beard-oil\.js$/.test(u.pathname)) {
@@ -167,6 +177,42 @@ const fetchMock = vi.fn(async (input: string | URL, init?: RequestInit) => {
   // Endless redirects, a huge page, and a server that never answers.
   if (u.hostname === "loop.example.com") return new Response(null, { status: 302, headers: { location: `/r${++loops}` } });
   if (u.hostname === "big.example.com") return new Response("a".repeat(3_000_000));
+  if (u.hostname === "wattlebird.com" || u.hostname === "brokenmeta.com") {
+    if (u.pathname === "/products/beard-balm.js") return new Response(JSON.stringify(BALM_JS), { headers: { "content-type": "application/javascript" } });
+    if (u.pathname === "/products/beard-balm") {
+      const currency = u.hostname === "wattlebird.com" ? "USD" : "GBP";
+      return new Response(shopifyPage(`<meta property="og:price:currency" content="${currency}">`), { headers: { "content-type": "text/html" } });
+    }
+    if (u.pathname === "/meta.json" && u.hostname === "wattlebird.com") {
+      return new Response(JSON.stringify({ name: "Wattlebird Grooming", country: "NZ", currency: "NZD", myshopify_domain: "x.myshopify.com" }));
+    }
+    if (u.pathname === "/meta.json") return new Response("<html>oops</html>", { status: 200 });
+  }
+  // /meta.json that bounces to a private address, one that never answers, and a link that moved to
+  // another shop (whose /meta.json, on the old site, names a different shop).
+  if (["privmeta.com", "hangmeta.co.nz", "movedshop.com", "othershop.com"].includes(u.hostname)) {
+    if (u.pathname === "/products/beard-balm.js") return new Response(JSON.stringify(BALM_JS), { headers: { "content-type": "application/javascript" } });
+    if (u.hostname === "movedshop.com" && u.pathname === "/products/beard-balm") {
+      return new Response(null, { status: 301, headers: { location: "https://othershop.com/products/beard-balm" } });
+    }
+    if (u.pathname === "/products/beard-balm") {
+      const page = shopifyPage('<meta property="og:price:currency" content="GBP">');
+      return new Response(u.hostname === "othershop.com" ? page.replace("x.myshopify.com", "othershop.myshopify.com") : page, { headers: { "content-type": "text/html" } });
+    }
+    if (u.pathname === "/meta.json" && u.hostname === "privmeta.com") {
+      return new Response(null, { status: 302, headers: { location: "http://127.0.0.1/meta.json" } });
+    }
+    if (u.pathname === "/meta.json" && u.hostname === "hangmeta.co.nz") {
+      return new Promise<Response>((_, reject) => init?.signal?.addEventListener("abort", () => reject(new Error("aborted"))));
+    }
+    if (u.pathname === "/meta.json" && u.hostname === "movedshop.com") {
+      return new Response(JSON.stringify({ country: "NZ", myshopify_domain: "movedshop.myshopify.com" }));
+    }
+  }
+  if (u.hostname === "banksia-wax.com") {
+    if (u.pathname === "/products/beard-wax") return new Response(WOO_PAGE, { headers: { "content-type": "text/html" } });
+    if (u.pathname === "/meta.json") return new Response(JSON.stringify({ country: "NZ" }));
+  }
   if (u.hostname === "slow.example.com") {
     return new Promise<Response>((_, reject) => init?.signal?.addEventListener("abort", () => reject(new Error("aborted"))));
   }
@@ -179,7 +225,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
   let enqueue: ReturnType<typeof vi.fn>;
   let askEngine: ReturnType<typeof vi.fn>;
   const LINK = "https://coolabahgrooming.com.au/products/sandalwood-beard-oil";
-  const start = async (link: string, ip: string, country = "AU") => {
+  const start = async (link: string, ip: string, country: string | null = "AU") => {
     const created = await check.createCheck({ url: link, country, ip });
     expect(created.ok, JSON.stringify(created)).toBe(true);
     return (created as { id: string }).id;
@@ -212,24 +258,24 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
   });
 
   it("creates a check, queues the job, and re-uses it for the same link", async () => {
-    const first = await check.createCheck({ url: `${LINK}?utm_source=chatgpt.com`, country: "au", ip: "1.2.3.4" });
+    // No country: the job works out where the store is, and the page doesn't name one until then.
+    const first = await check.createCheck({ url: `${LINK}?utm_source=chatgpt.com`, ip: "1.2.3.4" });
     expect(first.ok).toBe(true);
     const id = (first as { id: string }).id;
     const row = await db.publicCheck.findUniqueOrThrow({ where: { id } });
-    expect(row).toMatchObject({ url: LINK, country: "AU", status: "queued", total: 18, done: 0 });
+    expect(row).toMatchObject({ url: LINK, country: "auto", status: "queued", total: 18, done: 0 });
     expect(row.ipHash).toMatch(/^[0-9a-f]{64}$/);
     expect(row.ipHash).not.toContain("1.2.3.4");
     expect(enqueue).toHaveBeenCalledWith("check.run", { id }, { dedupeKey: `check:${id}` });
+    expect((await check.getCheckView(id))!.country).toBeNull();
 
-    // Same link from anyone within a day: same report, no new check.
-    expect(await check.createCheck({ url: LINK, country: "AU", ip: "9.9.9.9" })).toEqual({ ok: true, id });
-    // Another country is a different check; an unknown country means Australia.
-    const nz = await check.createCheck({ url: LINK, country: "NZ", ip: "1.2.3.4" });
-    expect(nz.ok && nz.id !== id).toBe(true);
+    // Same link from anyone within a day: same report, no new check. A country we don't check is ignored.
+    expect(await check.createCheck({ url: LINK, ip: "9.9.9.9" })).toEqual({ ok: true, id });
     expect(await check.createCheck({ url: LINK, country: "XX", ip: "5.5.5.5" })).toEqual({ ok: true, id });
   });
 
   it("allows 3 new checks per visitor per day, then says so", async () => {
+    expect((await check.createCheck({ url: "https://shop-a0.com.au/products/a", ip: "1.2.3.4" })).ok).toBe(true);
     const third = await check.createCheck({ url: "https://shop-a.com.au/products/a", country: "AU", ip: "1.2.3.4" });
     expect(third.ok).toBe(true);
     expect(await check.createCheck({ url: "https://shop-b.com.au/products/b", country: "AU", ip: "1.2.3.4" })).toEqual({
@@ -237,7 +283,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
       error: "This connection has reached the free check limit for now (3 checks in 24 hours). Try again tomorrow, or install GEO for a free scan of 10 questions.",
     });
     // Re-using an existing report still works when the allowance is used up.
-    expect((await check.createCheck({ url: LINK, country: "AU", ip: "1.2.3.4" })).ok).toBe(true);
+    expect((await check.createCheck({ url: LINK, ip: "1.2.3.4" })).ok).toBe(true);
     // Someone else is fine.
     expect((await check.createCheck({ url: "https://shop-b.com.au/products/b", country: "AU", ip: "8.8.4.4" })).ok).toBe(true);
   });
@@ -290,13 +336,14 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
   });
 
   it("runs the whole check: reads the product, asks 18 times, writes the report", async () => {
-    const created = await check.createCheck({ url: LINK, country: "AU", ip: "1.2.3.4" });
+    const created = await check.createCheck({ url: LINK, ip: "1.2.3.4" });
     const id = (created as { id: string }).id;
     const queued = await check.getCheckView(id);
-    expect(queued).toMatchObject({ status: "queued", step: "Getting started", answers: [], report: null, installUrl: "/auth/login" });
+    expect(queued).toMatchObject({ status: "queued", step: "Getting started", country: null, answers: [], report: null, installUrl: "/auth/login" });
 
     const { getHandler } = await import("../app/lib/jobs.server");
     state.mostOpen = 0;
+    fetchMock.mockClear();
     await getHandler("check.run")!({ id: "job-1", payload: { id } } as never);
     expect(state.mostOpen).toBe(18); // all 18 engine calls at once
 
@@ -304,6 +351,10 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
     expect(view.status).toBe("done");
     expect(view.error).toBeNull();
     expect(view.done).toBe(18);
+    // The shop's /meta.json isn't there (404), so the .com.au address says Australia.
+    expect(fetchMock.mock.calls.map(([u]) => String(u))).toContain("https://coolabahgrooming.com.au/meta.json");
+    expect(view.country).toBe("AU");
+    expect(view.product?.countryFrom).toBe("domain");
     expect(view.product).toMatchObject({
       url: LINK,
       domain: "coolabahgrooming.com.au",
@@ -355,6 +406,17 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
     // Running the job again does nothing once done.
     await check.runCheck(id);
     expect((await db.publicCheck.findUniqueOrThrow({ where: { id } })).done).toBe(18);
+
+    // The report is re-used whatever country it found, and when an old form chose that same country.
+    expect(await check.createCheck({ url: LINK, ip: "9.9.9.9" })).toEqual({ ok: true, id });
+    expect(await check.createCheck({ url: LINK, country: "AU", ip: "9.9.9.9" })).toEqual({ ok: true, id });
+    // An old form that chose another country gets its own check, and that one is re-used too.
+    const nz = await check.createCheck({ url: LINK, country: "NZ", ip: "9.9.9.9" });
+    expect(nz.ok && nz.id !== id).toBe(true);
+    const nzId = (nz as { id: string }).id;
+    expect(await db.publicCheck.findUniqueOrThrow({ where: { id: nzId } })).toMatchObject({ country: "NZ" });
+    expect((await check.getCheckView(nzId))!.country).toBe("NZ");
+    expect(await check.createCheck({ url: LINK, country: "nz", ip: "5.5.5.6" })).toEqual({ ok: true, id: nzId });
   });
 
   it("never has more Treg calls open than TREG_MAX_OPEN, even with two checks running", async () => {
@@ -366,6 +428,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
     process.env.TREG_MAX_OPEN = "10";
     state.mostOpen = 0;
     tregGate.resetStats();
+    fetchMock.mockClear();
     try {
       // The worker runs up to 2 checks at once: run both jobs together, as it would.
       await Promise.all([getHandler("check.run")!({ id: "job-a", payload: { id: a } } as never), getHandler("check.run")!({ id: "job-b", payload: { id: b } } as never)]);
@@ -379,6 +442,80 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
       expect(view.status).toBe("done");
       expect(view.done).toBe(18);
     }
+    // A chosen country (old forms) is kept as it is: no need to ask the shop where it is.
+    expect((await check.getCheckView(b))!).toMatchObject({ country: "NZ", product: { countryFrom: "chosen" } });
+    expect(fetchMock.mock.calls.some(([u]) => String(u).endsWith("/meta.json"))).toBe(false);
+  });
+
+  it("works out where the store is from Shopify's settings, before writing the questions", async () => {
+    const link = "https://wattlebird.com/products/beard-balm";
+    const before = askEngine.mock.calls.length;
+    const id = await start(link, "8.8.2.1", null);
+    expect(await db.publicCheck.findUniqueOrThrow({ where: { id } })).toMatchObject({ country: "auto" });
+    await check.runCheck(id);
+    const view = (await check.getCheckView(id))!;
+    expect(view.status).toBe("done");
+    // The page looks American (en_US, USD), but the shop's settings say New Zealand.
+    expect(view.country).toBe("NZ");
+    expect(view.product?.countryFrom).toBe("store");
+    expect(view.questions.filter((q) => q.text.includes("New Zealand")).length).toBeGreaterThanOrEqual(2);
+    const calls = askEngine.mock.calls.slice(before);
+    expect(calls).toHaveLength(18);
+    expect(calls.every((c) => c[2] === "NZ")).toBe(true);
+
+    // The same link is re-used whatever country was found, and when an old form chose that same country.
+    expect(await check.createCheck({ url: link, ip: "8.8.2.2" })).toEqual({ ok: true, id });
+    expect(await check.createCheck({ url: link, country: "NZ", ip: "8.8.2.2" })).toEqual({ ok: true, id });
+    // A different chosen country is a new check.
+    const au = await check.createCheck({ url: link, country: "AU", ip: "8.8.2.2" });
+    expect(au.ok && au.id !== id).toBe(true);
+  });
+
+  it("never fails a check over the shop's /meta.json, and ignores it on shops that aren't Shopify", async () => {
+    const broken = await start("https://brokenmeta.com/products/beard-balm", "8.8.3.1", null);
+    await check.runCheck(broken);
+    expect((await check.getCheckView(broken))!).toMatchObject({ status: "done", country: "GB", product: { countryFrom: "currency" } });
+
+    const woo = await start("https://banksia-wax.com/products/beard-wax", "8.8.3.2", null);
+    await check.runCheck(woo);
+    expect((await check.getCheckView(woo))!).toMatchObject({ status: "done", country: "CA", product: { countryFrom: "currency", isShopify: false } });
+  });
+
+  it("keeps the shop's /meta.json behind the SSRF guard and never waits long for it", async () => {
+    fetchMock.mockClear();
+    // A redirect to a private address is refused; the page's GBP prices decide.
+    const priv = await start("https://privmeta.com/products/beard-balm", "8.8.4.1", null);
+    await check.runCheck(priv);
+    expect((await check.getCheckView(priv))!).toMatchObject({ status: "done", country: "GB", product: { countryFrom: "currency" } });
+    expect(fetchMock.mock.calls.map(([u]) => String(u))).toContain("https://privmeta.com/meta.json");
+    expect(fetchMock.mock.calls.some(([u]) => new URL(String(u)).hostname === "127.0.0.1")).toBe(false);
+
+    // A /meta.json that never answers holds the reading step up by 4 seconds at most; the .co.nz address decides.
+    const hang = await start("https://hangmeta.co.nz/products/beard-balm", "8.8.4.2", null);
+    const t0 = Date.now();
+    const read = await check.readProduct("https://hangmeta.co.nz/products/beard-balm", { storeCountry: true });
+    expect(Date.now() - t0).toBeLessThan(6_000);
+    expect(read.countrySignals.storeCountry).toBeNull();
+    await check.runCheck(hang);
+    expect((await check.getCheckView(hang))!).toMatchObject({ status: "done", country: "NZ", product: { countryFrom: "domain" } });
+  }, 30_000);
+
+  it("ignores /meta.json when the link moved to another shop", async () => {
+    const moved = await start("https://movedshop.com/products/beard-balm", "8.8.4.3", null);
+    await check.runCheck(moved);
+    // The old site's /meta.json says New Zealand for movedshop.myshopify.com, but the page is othershop's (GBP).
+    expect((await check.getCheckView(moved))!).toMatchObject({
+      status: "done",
+      country: "GB",
+      product: { countryFrom: "currency", url: "https://othershop.com/products/beard-balm" },
+    });
+  });
+
+  it("doesn't name a country while it's still reading the page", async () => {
+    const reading = await db.publicCheck.create({ data: { url: "https://reading-shop.com.au/products/p", country: "auto", status: "reading", total: 18 } });
+    expect((await check.getCheckView(reading.id))!).toMatchObject({ country: null, step: "Reading your product" });
+    await db.publicCheck.update({ where: { id: reading.id }, data: { country: "NZ", product: { title: "Oil", brand: "Step Co", countryFrom: "domain" } } });
+    expect((await check.getCheckView(reading.id))!).toMatchObject({ country: "NZ", step: "Writing buyer questions" });
   });
 
   it("never re-runs (and pays again for) a check that was interrupted", async () => {

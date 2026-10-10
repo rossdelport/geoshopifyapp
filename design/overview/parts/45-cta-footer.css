@@ -41,6 +41,25 @@
   mask-image: linear-gradient(90deg, transparent 0%, #000 24%);
 }
 
+/* The shop front is four layers of one render (same size, same crop): the shop, two sets of sparkles that
+   take turns to twinkle, and the speech bubble with its star, which floats. Paused off screen by
+   05-shared.js; with reduced motion it is the still picture. */
+.foot-art-bubble { --bob: -9px; transform-origin: 50% 20%; animation: foot-bob 6.5s ease-in-out infinite; }
+.foot-art-spark-a { animation: foot-twinkle 3.8s ease-in-out infinite; }
+.foot-art-spark-b { animation: foot-twinkle 3.8s ease-in-out -1.9s infinite; }
+@keyframes foot-bob {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, var(--bob), 0) rotate(-1.5deg); }
+}
+@keyframes foot-twinkle { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+
+/* the arrow on the button nudges forward on hover; the footer logo's circles ease apart */
+.foot-btn svg { transition: transform .3s cubic-bezier(.34, 1.56, .64, 1); }
+.foot-btn:hover svg { transform: translateX(3px); }
+.foot-mark i { transition: transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+.foot-logo:hover .foot-mark-a { transform: translate(-2px, -2px); }
+.foot-logo:hover .foot-mark-b { transform: translate(2px, 2px); }
+
 .foot-main {
   margin-top: 72px;
   display: flex; align-items: center; justify-content: space-between; gap: 32px;
@@ -83,6 +102,8 @@
     -webkit-mask-image: radial-gradient(closest-side, #000 70%, transparent 100%);
     mask-image: radial-gradient(closest-side, #000 70%, transparent 100%);
   }
+  .foot-cta-art .foot-art-layer { position: absolute; inset: 0; height: 100%; }
+  .foot-art-bubble { --bob: -4px; }
   .foot-cta-tx { align-items: center; text-align: center; padding: 12px 0 0; }
   .foot-lead { margin-top: 14px; font-size: 15px; }
   .foot-btn { margin-top: 26px; }

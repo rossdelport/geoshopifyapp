@@ -17,6 +17,15 @@ export const CHECK_COUNTRIES = {
   CA: "Canada",
 } as const;
 export type CheckCountry = keyof typeof CHECK_COUNTRIES;
+/** Where a check's country came from (see detectCountry in check-read.ts). */
+export type CountryHow =
+  | "chosen" // an old form or link picked it
+  | "store" // Shopify's /meta.json: the shop's home country
+  | "domain" // the web address, e.g. .com.au
+  | "language" // og:locale or <html lang>, e.g. en-NZ (can follow the visitor's location)
+  | "currency" // the page's prices, e.g. GBP (can follow the visitor's location)
+  | "unsupported" // the store is in a country we don't check yet: Australia, our launch market
+  | "default"; // nothing usable: Australia, our launch market
 
 export type CheckStatus = "queued" | "reading" | "asking" | "writing" | "done" | "failed";
 
@@ -34,6 +43,7 @@ export interface CheckProduct {
   isShopify: boolean;
   shopDomain: string | null; // xxx.myshopify.com when the page shows it
   hasProductSchema: boolean; // page has JSON-LD Product data
+  countryFrom?: CountryHow; // how we picked the shopper country (checks from before Oct 2026 have none)
 }
 
 export interface CheckQuestion {
@@ -78,7 +88,7 @@ export interface CheckView {
   id: string;
   status: CheckStatus;
   step: string; // plain-English progress line
-  country: CheckCountry;
+  country: CheckCountry | null; // null until we know where the store is (while reading the page)
   createdAt: string; // ISO date
   product: CheckProduct | null;
   questions: CheckQuestion[];

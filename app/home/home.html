@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO helps AI recommend your Shopify store, then counts the orders it can trace back to AI.">
-<link rel="icon" href="/favicon.ico">
+<meta name="description" content="Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO helps your Shopify products get recommended in those AI answers, then counts the orders it can trace back to AI.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>[hidden]:not([hidden="until-found"]){display:none!important}</style>
 <script>window.GEO_LIVE=true</script>
 <title>GEO · The free sales channel your store is missing</title>
@@ -253,6 +255,15 @@ section[id], footer[id] { scroll-margin-top: 96px; }
 /* Decorative loops pause while their part of the page is off screen (05-shared.js adds .is-off). */
 .is-off, .is-off *, .is-off *::before, .is-off *::after { animation-play-state: paused !important; }
 
+/* Rise on scroll (05-shared.js): fade in and rise 12px, once, with a small stagger (--rise-d).
+   Only elements the script marks get the hidden state: never without JavaScript, never for reduced motion,
+   never for anything already on screen at load. Parts add their own touches inside (.rise-go ...). */
+.rise { opacity: 0; transform: translate3d(0, 12px, 0); }
+.rise.rise-go {
+  opacity: 1; transform: none;
+  transition: opacity .7s cubic-bezier(.2, .7, .2, 1) var(--rise-d, 0ms), transform .8s cubic-bezier(.2, .7, .2, 1) var(--rise-d, 0ms);
+}
+
 /* 10-nav.css */
 /* Floating nav bar (Qarin style) on the lilac hero. Height 0 wrapper so the hero gradient and grid run behind it. */
 .nav-wrap {
@@ -336,6 +347,14 @@ section[id], footer[id] { scroll-margin-top: 96px; }
   .nav-cta-short { display: inline; }
 }
 
+/* The logo's two circles: the lilac one slides out from behind the cobalt one as the page opens,
+   and they ease apart a touch on hover. */
+.nav-mark i { transition: transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+.nav-mark-a { animation: nav-mark-in .9s cubic-bezier(.22, 1.2, .36, 1) .15s backwards; }
+.nav-logo:hover .nav-mark-a { transform: translate(-2px, -2px); }
+.nav-logo:hover .nav-mark-b { transform: translate(2px, 2px); }
+@keyframes nav-mark-in { from { opacity: 0; transform: translate(6px, 6px) scale(.8); } to { opacity: .92; transform: none; } }
+
 /* Smooth scrolling for in-page links lives in 10-nav.js, so other scrolls (and page captures) stay instant. */
 html { scroll-behavior: auto; }
 
@@ -374,10 +393,11 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .hero-title { margin-top: 28px; max-width: 900px; }
 .hero-lead { margin-top: 24px; max-width: 610px; font-size: 17px; line-height: 1.65; color: var(--navy-3); text-wrap: balance; }
 
-/* free product check form (posts to /check on the live site) */
-.hero-check { margin-top: 36px; width: 100%; max-width: 820px; display: flex; flex-direction: column; align-items: center; scroll-margin-top: 150px; }
+/* free product check form (posts to /check on the live site). The server works out the store's
+   country itself, so the form is just the product link and the button. */
+.hero-check { margin-top: 36px; width: 100%; max-width: 700px; display: flex; flex-direction: column; align-items: center; scroll-margin-top: 150px; }
 .hero-check-box {
-  width: 100%; display: flex; align-items: center; gap: 8px;
+  position: relative; width: 100%; display: flex; align-items: center; gap: 8px;
   padding: 8px; border-radius: 20px; background: var(--white);
   box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.45), 0 28px 56px -28px rgba(56, 64, 160, 0.38), 0 8px 18px -12px rgba(56, 64, 160, 0.16);
   transition: box-shadow .2s ease;
@@ -390,21 +410,74 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   font-family: var(--font-body); font-size: 16px; font-weight: 500; color: var(--navy); text-align: left; text-overflow: ellipsis;
 }
 .hero-check-input::placeholder { color: #8586a0; font-weight: 400; opacity: 1; }
-.hero-check-row { display: flex; align-items: center; gap: 8px; flex: none; }
-.hero-check-country { position: relative; display: flex; align-items: center; }
-.hero-check-country select {
-  -webkit-appearance: none; appearance: none; height: 48px; padding: 0 34px 0 14px; border: 0; border-radius: 12px;
-  background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lav-line); color: var(--navy);
-  font-family: var(--font-body); font-size: 14px; font-weight: 500; cursor: pointer;
-}
-.hero-check-country select:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
-.hero-check-country svg { position: absolute; right: 12px; width: 14px; height: 14px; color: var(--text); pointer-events: none; }
-.hero-check-btn { height: 48px; padding: 0 22px; border-radius: 12px; }
+.hero-check-btn { flex: none; height: 48px; padding: 0 24px; border-radius: 12px; }
 .hero-check.is-busy .hero-check-btn { opacity: .75; pointer-events: none; }
 .hero-check-sr, .hero-check-hp { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 .hero-check-hint { margin-top: 14px; max-width: 640px; font-size: 13.5px; line-height: 1.55; color: var(--text-lilac); text-wrap: balance; }
 .hero-check-note { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.85); box-shadow: inset 0 0 0 1px var(--lav-line); color: var(--navy); font-size: 14px; line-height: 1.5; }
 .hero-check-note a { color: var(--cobalt-deep); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Glow around the link box, so the eye goes to it. Two layers, both under the box (it covers their
+   middle, so they never sit over the text):
+   1. ::before, a still, soft halo: lilac to cobalt, blurred. Always there (also without JS and with
+      reduced motion). It never changes, so it is painted once.
+   2. .hc-glow, a soft light that travels slowly round the whole box: a big pale bloom (.hc-halo) that
+      spreads past the edge, and a brighter copy clipped to a 2px band just outside the edge (.hc-ring).
+      Each light is a pre-softened blob (a radial gradient, no filter) moved by transform only: .hc-run is
+      the size of its layer, so translate(100%, 0) is the top right corner, and the blob sits on its top
+      left corner. Each side gets time to match its length, so the speed stays even (the stacked phone box
+      has its own keyframes, bottom of this file). One loop takes 10.5s.
+   Brighter on hover and while typing. 11-hero.js adds .hc-live (motion welcome) and .hc-off while the form
+   is off screen, which pauses it. Self-contained, so /check can reuse it as is. */
+.hero-check { position: relative; isolation: isolate; } /* the glow sits under the box, over the page */
+.hero-check-box::before {
+  content: ""; position: absolute; z-index: -1; inset: -4px; border-radius: 24px; pointer-events: none;
+  filter: blur(14px); opacity: .5; background: linear-gradient(90deg, #b5a8e0, #bfc9fa 50%, #6878d8);
+  transition: opacity .35s ease;
+}
+.hero-check-box:hover::before { opacity: .65; }
+.hero-check-box:focus-within::before { opacity: .8; }
+.hc-glow { display: none; }
+.hc-halo, .hc-ring { position: absolute; z-index: -1; pointer-events: none; transition: opacity .35s ease; }
+.hc-halo { inset: 0; opacity: .75; }
+.hc-ring { inset: -2px; border-radius: 22px; overflow: hidden; opacity: .9; }
+.hc-run { position: absolute; inset: 0; }
+.hc-ring .hc-run { inset: 1px; } /* runs along the middle of the 2px band */
+.hc-run > i { position: absolute; left: 0; top: 0; border-radius: 50%; }
+/* the bloom: a soft light that fades out about 24px past the edge (gaussian-like falloff, no rim) */
+.hc-halo .hc-run > i {
+  width: 340px; height: 56px; margin: -28px 0 0 -170px;
+  background: radial-gradient(closest-side, rgba(238, 241, 255, 1) 0%, rgba(176, 186, 248, 0.92) 22%, rgba(138, 150, 240, 0.7) 42%, rgba(138, 150, 240, 0.42) 62%, rgba(160, 170, 244, 0.16) 82%, rgba(191, 201, 250, 0) 100%);
+}
+/* the bright edge: a white spark with periwinkle either side, clipped to the 2px band */
+.hc-ring .hc-run > i {
+  width: 240px; height: 40px; margin: -20px 0 0 -120px;
+  background: radial-gradient(closest-side, #fff 0%, #dfe4ff 18%, #9ba6f3 42%, rgba(138, 150, 240, 0.55) 66%, rgba(191, 201, 250, 0) 100%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-check.hc-live .hc-glow { display: block; }
+  .hero-check.hc-live .hc-run { animation: hc-run 10.5s linear infinite; will-change: transform; }
+  .hero-check.hc-live .hero-check-box:hover .hc-halo { opacity: .95; }
+  .hero-check.hc-live .hero-check-box:focus-within .hc-halo { opacity: 1; }
+  .hero-check.hc-live .hero-check-box:hover .hc-ring, .hero-check.hc-live .hero-check-box:focus-within .hc-ring { opacity: 1; }
+  .hero-check.hc-off .hc-run { animation-play-state: paused; }
+}
+/* one-row box (about 11:1): each long side takes 46% of the loop, each short end 4% */
+@keyframes hc-run {
+  0% { transform: translate(0, 0); }
+  46% { transform: translate(100%, 0); }
+  50% { transform: translate(100%, 100%); }
+  96% { transform: translate(0, 100%); }
+  100% { transform: translate(0, 0); }
+}
+/* stacked phone box (about 3:1): 37% per long side, 13% per end */
+@keyframes hc-run-tall {
+  0% { transform: translate(0, 0); }
+  37% { transform: translate(100%, 0); }
+  50% { transform: translate(100%, 100%); }
+  87% { transform: translate(0, 100%); }
+  100% { transform: translate(0, 0); }
+}
 
 /* ---------- three animated cards ---------- */
 .hw-wrap { position: relative; width: 100%; max-width: 1100px; margin-top: 72px; }
@@ -541,15 +614,15 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 
 /* ---------- animation (only when motion is welcome and 11-hero.js has armed the row) ----------
    Every keyframe set starts and ends on the finished picture above, so a card is never blank: it holds
-   the finished picture for 1.2s, clears, rebuilds, and rests finished again. Each story plays twice
-   (10s each), then stops on the finished picture.
+   the finished picture, fades out quickly just before its own turn, rebuilds, and rests finished again.
+   Each story plays twice (10s each), then stops on the finished picture.
    Wide screens (3 cards in a row): one shared timeline, started by 11-hero.js when the row is in view.
-   All three cards clear together at 1.2s, then the story runs left to right: card 1 sends three
-   questions (to 3.9s), card 2 picks "You" (3.5 to 5.2s), card 3 adds the rows (5 to 6.9s), and all three
-   hold the finished picture for over 4s. --hw-d2 and --hw-d3 shift cards 2 and 3 along that timeline,
-   and the "-d" keyframes clear those cards early, with card 1.
+   The story runs left to right and only the card being told is ever empty: card 1 clears at 1.2s and
+   sends three questions (to 3.9s), card 2 clears at 3.05s and picks "You" (to 5.2s), card 3 clears at
+   4.65s and adds the rows (to 6.9s). --hw-d2 and --hw-d3 delay every part of cards 2 and 3, so until
+   their turn they keep showing the finished picture (the first keyframe).
    Narrower screens (1023px and below: stacked on tablets, a sideways row on phones): each card starts on
-   its own when it comes into view, so --hw-d2 and --hw-d3 are 0 and every card clears just before it rebuilds. */
+   its own when it comes into view, so --hw-d2 and --hw-d3 are 0. */
 .hw { --hw-d2: 0s; --hw-d3: 0s; --hw-ease: cubic-bezier(.3, .7, .2, 1); }
 @media (min-width: 1024px) { .hw { --hw-d2: 1.85s; --hw-d3: 3.45s; } }
 
@@ -577,30 +650,19 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .hw-ready .hw-ai::after { animation: hw-ai-glow 10s ease-out var(--hw-d2) 2 both; }
   .hw-ready .hw-store-l { animation: hw-hit-l 10s ease-out var(--hw-d2) 2 both; }
   .hw-ready .hw-store-r { animation: hw-hit-r 10s ease-out var(--hw-d2) 2 both; }
-  .hw-ready .hw-you { animation: hw-you 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-you { animation: hw-you 10s var(--hw-ease) var(--hw-d2) 2 both; }
   .hw-ready .hw-you-lit,
-  .hw-ready .hw-ln-on { animation: hw-lit 10s ease 2 both; }
-  .hw-ready .hw-rec { animation: hw-rec 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-ln-on { animation: hw-lit 10s ease var(--hw-d2) 2 both; }
+  .hw-ready .hw-rec { animation: hw-rec 10s var(--hw-ease) var(--hw-d2) 2 both; }
 
   /* card 3: the rows clear, then come back one by one; the order row pops */
-  .hw-ready .hw-row1 { animation: hw-row1 10s var(--hw-ease) 2 both; }
-  .hw-ready .hw-row2 { animation: hw-row2 10s var(--hw-ease) 2 both; }
-  .hw-ready .hw-row3 { animation: hw-row3 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-row1 { animation: hw-row1 10s var(--hw-ease) var(--hw-d3) 2 both; }
+  .hw-ready .hw-row2 { animation: hw-row2 10s var(--hw-ease) var(--hw-d3) 2 both; }
+  .hw-ready .hw-row3 { animation: hw-row3 10s var(--hw-ease) var(--hw-d3) 2 both; }
   .hw-ready .hw-row1 .hw-chip { animation: hw-chip1 10s var(--hw-ease) var(--hw-d3) 2 both; }
   .hw-ready .hw-row2 .hw-chip { animation: hw-chip2 10s var(--hw-ease) var(--hw-d3) 2 both; }
   .hw-ready .hw-row3 .hw-chip { animation: hw-chip3 10s var(--hw-ease) var(--hw-d3) 2 both; }
   .hw-ready .hw-row-coin img { animation: hw-coin 10s var(--hw-ease) var(--hw-d3) 2 both; }
-
-  /* wide screens: cards 2 and 3 clear together with card 1, then wait for their turn */
-  @media (min-width: 1024px) {
-    .hw-ready .hw-you { animation-name: hw-you-d; }
-    .hw-ready .hw-you-lit,
-    .hw-ready .hw-ln-on { animation-name: hw-lit-d; }
-    .hw-ready .hw-rec { animation-name: hw-rec-d; }
-    .hw-ready .hw-row1 { animation-name: hw-row1-d; }
-    .hw-ready .hw-row2 { animation-name: hw-row2-d; }
-    .hw-ready .hw-row3 { animation-name: hw-row3-d; }
-  }
 
   /* wait on the finished picture until the card (or, on wide screens, the row) is in view */
   .hw-ready .hw-card:not(.is-on) .hw-art *,
@@ -708,7 +770,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   0%, 23.2%, 26.2%, 26.7%, 29.7%, 100% { transform: scale(1); }
   23.7%, 27.2% { transform: scale(1.07); }
 }
-/* stacked cards: "You" clears just before its own rebuild */
+/* "You" clears just before its own rebuild (times include --hw-d2) */
 @keyframes hw-you {
   0%, 12% { transform: scale(1.06); }
   15%, 21.5%, 24.5%, 25%, 28%, 28.5% { transform: scale(1); }
@@ -728,28 +790,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   32% { transform: translateY(-1px) scale(1.04); opacity: 1; }
   34%, 100% { transform: translateY(0) scale(1); opacity: 1; }
 }
-/* wide screens: the same, but clearing at 1.2s with card 1 and rebuilding 1.85s (--hw-d2) later */
-@keyframes hw-you-d {
-  0%, 12% { transform: scale(1.06); }
-  15%, 40%, 43%, 43.5%, 46.5%, 47% { transform: scale(1); }
-  40.5%, 44% { transform: scale(1.07); }
-  48.5% { transform: scale(1.14); }
-  50.5%, 100% { transform: scale(1.06); }
-}
-@keyframes hw-lit-d {
-  0%, 12% { opacity: 1; }
-  15%, 47% { opacity: 0; }
-  48.5%, 100% { opacity: 1; }
-}
-@keyframes hw-rec-d {
-  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
-  15% { transform: translateY(3px) scale(.96); opacity: 0; }
-  15.1%, 48% { transform: translateY(6px) scale(.85); opacity: 0; }
-  50.5% { transform: translateY(-1px) scale(1.04); opacity: 1; }
-  52.5%, 100% { transform: translateY(0) scale(1); opacity: 1; }
-}
-
-/* card 3. Stacked cards: the rows clear and come back right away. */
+/* card 3: the rows clear and come back right away (times include --hw-d3) */
 @keyframes hw-row1 {
   0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
   14.5% { transform: translateY(-6px) scale(1); opacity: 0; }
@@ -768,26 +809,6 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   14.6%, 25.5% { transform: translateY(12px) scale(.9); opacity: 0; }
   30% { transform: translateY(-2px) scale(var(--row3-pop)); opacity: 1; }
   33%, 100% { transform: translateY(0) scale(var(--row3-rest)); opacity: 1; }
-}
-/* wide screens: clear at 1.2s with card 1, come back 3.45s (--hw-d3) later */
-@keyframes hw-row1-d {
-  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
-  14.5% { transform: translateY(-6px) scale(1); opacity: 0; }
-  14.6%, 50% { transform: translateY(10px) scale(.96); opacity: 0; }
-  54%, 100% { transform: translateY(0) scale(1); opacity: 1; }
-}
-@keyframes hw-row2-d {
-  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
-  14.5% { transform: translateY(-6px) scale(1); opacity: 0; }
-  14.6%, 55% { transform: translateY(10px) scale(.96); opacity: 0; }
-  59%, 100% { transform: translateY(0) scale(1); opacity: 1; }
-}
-@keyframes hw-row3-d {
-  0%, 12% { transform: translateY(0) scale(var(--row3-rest)); opacity: 1; }
-  14.5% { transform: translateY(-6px) scale(var(--row3-rest)); opacity: 0; }
-  14.6%, 60% { transform: translateY(12px) scale(.9); opacity: 0; }
-  64.5% { transform: translateY(-2px) scale(var(--row3-pop)); opacity: 1; }
-  67.5%, 100% { transform: translateY(0) scale(var(--row3-rest)); opacity: 1; }
 }
 /* chips and the coin (times include --hw-d3); they hide while their row is hidden */
 @keyframes hw-chip1 {
@@ -866,10 +887,6 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .hero-title { margin-top: 22px; }
   .hero-lead { margin-top: 16px; font-size: 15.5px; }
   .hero-check { margin-top: 28px; }
-  .hero-check-box { flex-direction: column; align-items: stretch; gap: 6px; border-radius: 18px; }
-  .hero-check-field { height: 50px; padding-left: 10px; }
-  .hero-check-row { width: 100%; }
-  .hero-check-btn { flex: 1; }
   .hero-pill { font-size: 12.5px; }
   /* one sideways row that runs to the edges of the lilac band: swipe for the next card, which peeks in */
   .hw-wrap { max-width: none; width: calc(100% + 16px); margin: 32px -8px 0; }
@@ -890,6 +907,17 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .hw-tray { bottom: 9px; height: 32px; }
   .hw-c3 { --row-h: 40px; --row-gap: 7px; --rows-top: 32px; --row3-pop: 1.05; --row3-rest: 1.03; }
   .hw-rows { width: min(calc(100% - 30px), 320px); }
+}
+
+/* phones: the link box and the button stack, so the whole link fits and the button is easy to tap */
+@media (max-width: 560px) {
+  .hero-check-box { flex-direction: column; align-items: stretch; gap: 6px; border-radius: 18px; }
+  .hero-check-box::before { border-radius: 22px; }
+  .hc-ring { border-radius: 20px; }
+  .hero-check-field { height: 50px; padding-left: 10px; }
+}
+@media (max-width: 560px) and (prefers-reduced-motion: no-preference) {
+  .hero-check.hc-live .hc-run { animation-name: hc-run-tall; }
 }
 
 /* 12-engines.css */
@@ -918,9 +946,9 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   display: grid; place-items: center;
   background: var(--lilac-50); color: var(--cobalt-mid);
   box-shadow: inset 0 0 0 1px var(--lav-line);
-  transition: color .25s ease, background-color .25s ease;
+  transition: color .25s ease, background-color .25s ease, transform .35s cubic-bezier(.34, 1.56, .64, 1);
 }
-.eng-item:hover .eng-mono { color: var(--cobalt); background: var(--lilac-100); }
+.eng-item:hover .eng-mono { color: var(--cobalt); background: var(--lilac-100); transform: translateY(-2px) scale(1.08); }
 .eng-mono svg { width: 17px; height: 17px; }
 .eng-pro {
   margin-left: 2px; font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0;
@@ -967,6 +995,24 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 
 .why-what { font-family: var(--font-head); font-weight: 500; font-size: 20px; line-height: 1.35; letter-spacing: -0.4px; color: var(--navy); text-wrap: balance; }
 .why-src { margin-top: auto; padding-top: 14px; border-top: 1px dashed rgba(56, 64, 160, 0.22); font-size: 12.5px; line-height: 1.55; color: var(--text-lilac); }
+
+/* Rolling counter (12w-why.js): each digit is a column. The real digit stays in place, transparent, to hold
+   the width and the baseline; a strip of digits (drawn by ::before) slides up to it. The column's mask shows
+   one digit and fades the ones rolling past at its top and bottom edge (Geist digits sit between 12.5% and
+   87.5% of the line, so a digit at rest is never faded). Padding with matching negative margins widens the
+   masked area so the tight letter spacing never clips a digit's side; the layout doesn't move. */
+.why-dg {
+  position: relative; display: inline-block; padding: 0 .12em; margin: 0 -.12em;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 11%, #000 89%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 11%, #000 89%, transparent 100%);
+}
+.why-roll .why-dg-hold { color: transparent; }
+.why-dg-strip {
+  position: absolute; left: .12em; right: .12em; top: 0;
+  transition: transform 1.9s cubic-bezier(.16, 1, .3, 1);
+  pointer-events: none;
+}
+.why-dg-strip::before { content: attr(data-seq); display: block; white-space: pre; line-height: 1; }
 
 @media (max-width: 1100px) {
   .why-stat { padding: 32px 26px 24px; }
@@ -1016,6 +1062,24 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 }
 .how-chips svg { width: 14px; height: 14px; flex: none; color: var(--cobalt); }
 
+/* Motion. The clay renders float gently inside their frames (slow, offset per card; 05-shared.js pauses them
+   off screen). When a card rises in (05-shared.js), its step number pops in just after it; the safeguard chips
+   rise one by one and their ticks pop. With reduced motion base.css stops it all and the finished state shows. */
+.how-img > img { --bob: -7px; transform: scale(1.06); animation: how-bob 7s ease-in-out infinite; }
+.how-step:nth-child(2) .how-img > img { animation-duration: 7.8s; animation-delay: -2.6s; }
+.how-step:nth-child(3) .how-img > img { animation-duration: 8.6s; animation-delay: -5.2s; }
+@keyframes how-bob {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.06); }
+  50% { transform: translate3d(0, var(--bob), 0) scale(1.06); }
+}
+.how-step.rise .how-n { opacity: 0; transform: scale(.4); }
+.how-step.rise-go .how-n {
+  opacity: 1; transform: none;
+  transition: opacity .3s ease calc(var(--rise-d, 0ms) + 380ms), transform .6s cubic-bezier(.34, 1.56, .64, 1) calc(var(--rise-d, 0ms) + 380ms);
+}
+.how-chips li.rise svg { transform: scale(0) rotate(-45deg); }
+.how-chips li.rise-go svg { transform: none; transition: transform .55s cubic-bezier(.34, 1.56, .64, 1) calc(var(--rise-d, 0ms) + 260ms); }
+
 @media (max-width: 1100px) {
   .how-steps { gap: 16px; }
   .how-tx { padding: 18px 10px 10px; }
@@ -1034,53 +1098,102 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .how-chips { margin-top: 16px; gap: 6px; }
   .how-chips li { height: 30px; padding: 0 11px 0 9px; gap: 6px; font-size: 13px; }
   .how-chips svg { width: 12px; height: 12px; }
+  .how-img > img { --bob: -2.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .how-img > img { transform: none; }
 }
 
 /* 20m-money.css */
-/* See the money: one lean GEO dashboard mockup (sample data) on a faint grid. */
+/* "See the sales you can trace back to AI": a small clickable GEO app (sample data) on a faint grid.
+   Four tabs (Money, Questions, Fixes, Rivals). All four screens share one grid cell at every width, so
+   switching tabs never changes the height of the page; the Money screen gets compact as the app narrows,
+   so the other screens don't sit on much empty space. Motion is transform and opacity only, and only runs
+   once the app is in view (20m-money.js adds the classes). With reduced motion, base.css turns all of it off.
+   Without JavaScript the app is a still picture: 20m-money.js adds .scr-js to the section, and until then
+   the "Try the app" hint is hidden and the app's buttons ignore the pointer. */
 .scr-sec { position: relative; overflow: hidden; }
+.scr-sec:not(.scr-js) .scr-hint { visibility: hidden; }
+.scr-sec:not(.scr-js) .scr-app button { pointer-events: none; }
+
+/* "Try the app" hint under the heading */
+.scr-hint { display: inline-flex; align-items: center; gap: 8px; padding: 6px 13px 6px 10px; border-radius: 100px; background: var(--lilac-50); color: var(--text-lilac); font-size: 13.5px; font-weight: 500; line-height: 1.2; }
+.scr-hint svg { width: 16px; height: 16px; flex: none; color: var(--cobalt); }
 
 /* stage + frame */
 .scr-stage { position: relative; }
 .scr-grid { position: absolute; left: 50%; top: -60px; width: min(1500px, 140%); height: 640px; transform: translateX(-50%); pointer-events: none; z-index: 0; }
-.scr-frame { position: relative; z-index: 1; max-width: 920px; margin-inline: auto; padding: 12px; border-radius: var(--r-lg); background: var(--white); box-shadow: 0 0 0 1px rgba(11, 12, 43, 0.05), var(--shadow-lg); }
+.scr-frame { position: relative; z-index: 1; max-width: 960px; margin-inline: auto; padding: 12px; border-radius: var(--r-lg); background: var(--white); box-shadow: 0 0 0 1px rgba(11, 12, 43, 0.05), var(--shadow-lg); transform-origin: 50% 0; transition: transform 1.1s cubic-bezier(.2, .7, .2, 1); }
+/* before it scrolls into view: tipped back a little, then it settles flat */
+.scr-wait .scr-frame { transform: perspective(1600px) rotateX(8deg) translateY(28px) scale(.97); }
 
 /* app chrome */
-.scr-app { --scr-tx: #303030; --scr-sub: #616161; --scr-ln2: #ebebeb; border-radius: 14px; box-shadow: 0 0 0 1px rgba(11, 12, 43, 0.06); color: var(--scr-tx); }
+.scr-app { container: scrapp / inline-size; --scr-tx: #303030; --scr-sub: #616161; --scr-ln2: #ebebeb; border-radius: 14px; box-shadow: 0 0 0 1px rgba(11, 12, 43, 0.06); color: var(--scr-tx); }
 .scr-app .app-top { height: 44px; padding: 0 12px; justify-content: space-between; }
 .scr-app .app-top .store i.scr-store-ic { display: grid; place-items: center; font-style: normal; font-size: 9px; font-weight: 700; letter-spacing: .02em; color: #0b3d1d; background: #7fdc9a; }
 .scr-store-n { font-weight: 600; color: #f1f1f1; font-size: 12.5px; white-space: nowrap; }
 .scr-app .app-top .sample-tag { position: static; background: rgba(255, 255, 255, 0.1); color: #d4d4d4; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16); font-size: 10px; padding: 4px 7px; line-height: 1; border-radius: 6px; white-space: nowrap; }
 .scr-ic14 { width: 14px; height: 14px; flex: none; }
+.scr-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-.scr-main { container: scrmain / inline-size; padding: 20px 20px 22px; gap: 14px; font-size: 13px; }
-.scr-title { flex-wrap: wrap; row-gap: 8px; min-height: 30px; }
-.scr-title h5 { white-space: nowrap; }
+.scr-body { display: grid; grid-template-columns: 172px minmax(0, 1fr); }
+
+/* left nav: the GEO mark, then the four tabs. A white pill slides behind the chosen tab (--n is its index). */
+.scr-nav { background: #ebebeb; padding: 14px 8px; display: flex; flex-direction: column; gap: 8px; }
+.scr-brand { display: flex; align-items: center; gap: 8px; padding: 2px 10px 4px; font-size: 12px; font-weight: 700; letter-spacing: .03em; color: #303030; }
+.scr-gmark { position: relative; width: 18px; height: 18px; flex: none; }
+.scr-gmark i { position: absolute; width: 12px; height: 12px; border-radius: 50%; }
+.scr-gmark i:first-child { left: 0; top: 0; background: var(--peri-300); }
+.scr-gmark i:last-child { right: 0; bottom: 0; background: var(--cobalt); mix-blend-mode: multiply; }
+.scr-tabs { position: relative; display: flex; flex-direction: column; gap: 2px; }
+.scr-tab { position: relative; z-index: 1; display: flex; align-items: center; gap: 9px; width: 100%; height: 36px; padding: 0 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #4a4a4a; text-align: left; white-space: nowrap; }
+.scr-tab svg { width: 16px; height: 16px; flex: none; }
+.scr-tab:hover { background: rgba(0, 0, 0, 0.04); }
+.scr-tab[aria-selected="true"] { color: #1a1a1a; font-weight: 650; background: none; }
+.scr-tab[aria-selected="true"] svg { color: var(--cobalt); }
+.scr-tab:focus-visible, .scr-seg button:focus-visible, .scr-q:focus-visible, .scr-go:focus-visible, .scr-approve:focus-visible, .scr-undo:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+.scr-q:focus-visible { outline-offset: -2px; }
+.scr-panel:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 4px; border-radius: 6px; }
+.scr-ind { position: absolute; left: 0; top: 0; width: 100%; height: 36px; border-radius: 8px; background: #fff; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03); transform: translateY(calc(var(--n, 0) * (100% + 2px))); transition: transform .4s cubic-bezier(.3, .8, .25, 1); }
+.scr-badge { margin-left: auto; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--cobalt); color: #fff; font-size: 10.5px; font-weight: 700; line-height: 18px; text-align: center; transition: transform .3s cubic-bezier(.3, 1.5, .5, 1), opacity .2s ease; }
+.scr-badge.is-bump { animation: scr-pop .4s cubic-bezier(.3, 1.6, .5, 1); }
+/* "click me" ring on the next tab until someone clicks anything in the app */
+.scr-tab.is-nudge::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: rgba(104, 120, 216, 0.08); box-shadow: 0 0 0 2px var(--cobalt-mid); opacity: 0; pointer-events: none; animation: scr-ping 2.4s ease-out infinite; }
+
+/* screens: all in one grid cell (the tallest sets the height); only the chosen one is visible */
+.scr-main { container: scrmain / inline-size; display: grid; min-width: 0; padding: 20px 20px 22px; background: #f1f1f1; font-size: 13px; }
+.scr-panel { grid-area: 1 / 1; min-width: 0; display: flex; flex-direction: column; gap: 14px; visibility: hidden; }
+.scr-panel.is-on { visibility: inherit; }
+.scr-title { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px; min-height: 32px; }
+.scr-title h5 { margin: 0; font-family: var(--font-body); font-size: 18px; font-weight: 700; color: #303030; letter-spacing: -0.2px; white-space: nowrap; }
 .scr-mut { color: var(--scr-sub); font-size: 12px; line-height: 1.4; }
-/* the period, as a plain label (not a switch: nothing on this mockup is clickable) */
-.scr-period { font-size: 12.5px; font-weight: 500; color: var(--scr-sub); white-space: nowrap; }
 .scr-main .panel { border-radius: 12px; padding: 16px 18px; }
 .scr-main .panel h6 { margin-bottom: 12px; }
-.scr-g2 { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 14px; align-items: stretch; }
 
-/* money block */
+/* Money: period switch (a white pill slides between the two options) */
+.scr-seg { position: relative; display: inline-grid; grid-template-columns: 1fr 1fr; padding: 2px; border-radius: 9px; background: #e3e3e3; }
+.scr-seg button { position: relative; z-index: 1; padding: 6px 12px; border-radius: 7px; font-size: 12px; font-weight: 600; line-height: 1.15; color: #616161; white-space: nowrap; }
+.scr-seg button[aria-pressed="true"] { color: #303030; }
+.scr-seg-ind { position: absolute; top: 2px; bottom: 2px; left: 2px; width: calc(50% - 2px); border-radius: 7px; background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.14), 0 0 0 .5px rgba(0, 0, 0, 0.06); transition: transform .35s cubic-bezier(.3, .8, .25, 1); }
+.scr-seg[data-p="all"] .scr-seg-ind { transform: translateX(100%); }
+
 .scr-money { padding-block: 18px 14px; background: linear-gradient(180deg, #f6f5fe 0%, #fff 70%); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.07), inset 0 0 0 1px rgba(64, 80, 176, 0.12); }
 .scr-kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.scr-kpi { min-width: 0; padding-right: 16px; }
+.scr-kpi { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; padding-right: 16px; }
 .scr-kpi + .scr-kpi { border-left: 1px solid var(--scr-ln2); padding-left: 18px; }
 .scr-kl { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--scr-sub); }
-.scr-kv { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; margin-top: 6px; }
-.scr-kv .kpi { font-size: 32px; }
-.scr-kv .delta-up { font-size: 13px; }
+.scr-kpi .kpi { font-size: 32px; margin-top: 2px; white-space: nowrap; }
+.scr-kpi .delta-up { font-size: 12.5px; font-variant-numeric: tabular-nums; }
 .scr-vs { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--scr-ln2); font-size: 12px; color: var(--scr-sub); }
+.scr-g2 { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 14px; align-items: stretch; }
 
-/* split by source */
+/* split by source: each bar is full width and slides in from the left (--w is its share, 0 to 1) */
 .scr-srcbars { display: flex; flex-direction: column; gap: 11px; }
-.scr-sb { display: grid; grid-template-columns: 96px minmax(0, 1fr) 62px; align-items: center; gap: 10px; font-size: 12.5px; }
+.scr-sb { display: grid; grid-template-columns: 96px minmax(0, 1fr) 66px; align-items: center; gap: 10px; font-size: 12.5px; }
 .scr-sb-n { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
-.scr-sb-t { height: 8px; border-radius: 4px; background: #f0f0f4; overflow: hidden; }
-.scr-sb-t i { display: block; height: 100%; border-radius: 4px; }
-.scr-sb-v { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.scr-sb-t, .scr-rv-t { height: 8px; border-radius: 4px; background: #f0f0f4; overflow: hidden; }
+.scr-grow { display: block; height: 100%; border-radius: inherit; transform: translateX(calc((var(--w, 1) - 1) * 100%)); }
+.scr-sb-v { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .scr-sb-tot { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--scr-ln2); font-size: 12.5px; color: var(--scr-sub); }
 .scr-sb-tot b { font-size: 13px; font-weight: 650; color: var(--scr-tx); font-variant-numeric: tabular-nums; }
 
@@ -1090,27 +1203,214 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .scr-vis-k .kpi { font-size: 32px; }
 .scr-vis-of { font-size: 13px; color: var(--scr-sub); margin-right: 6px; }
 .scr-spark { display: block; width: 100%; height: auto; margin: auto 0 6px; padding-top: 6px; overflow: visible; }
+.scr-sp-rv { transform-box: view-box; transform-origin: 0 0; }
+.scr-sp-dot, .scr-sp-halo { transform-box: fill-box; transform-origin: center; }
+/* soft "live" ping round today's score: three times once the app is in view, on the same 2.4s beat as the
+   Questions nudge, so the two never drift against each other */
+.scr-sp-halo { opacity: 0; }
+.scr-seen .scr-sp-halo { animation: scr-halo 2.4s 1.6s ease-out 3; }
 
-/* inner layout follows the app's own width */
+/* Questions: a row per question, a dot per AI (tick = named you). The chosen row's answer shows below. */
+.scr-qs { padding: 4px 0; }
+.scr-qr { display: grid; grid-template-columns: minmax(0, 1fr) repeat(3, 66px); align-items: center; column-gap: 4px; padding: 0 14px 0 16px; }
+.scr-qh { padding-block: 8px; font-size: 11.5px; font-weight: 600; line-height: 1.2; color: var(--scr-sub); text-align: center; border-bottom: 1px solid var(--scr-ln2); }
+.scr-qh-q { text-align: left; font-weight: 500; }
+.scr-q { position: relative; width: 100%; min-height: 50px; padding-block: 9px; text-align: left; border-bottom: 1px solid var(--scr-ln2); }
+.scr-q:last-child { border-bottom: 0; }
+.scr-q:hover { background: #fafafb; }
+.scr-q[aria-pressed="true"] { background: var(--lav); }
+.scr-q[aria-pressed="true"]::before { content: ""; position: absolute; left: 0; top: 7px; bottom: 7px; width: 3px; border-radius: 0 3px 3px 0; background: var(--cobalt); }
+.scr-q-t { font-size: 13px; font-weight: 500; line-height: 1.35; color: #303030; }
+.scr-q[aria-pressed="true"] .scr-q-t { font-weight: 600; color: var(--navy); }
+/* "Fix live" chip under a question once its fix is approved (sample) */
+.scr-q-live { grid-column: 1; grid-row: 2; display: flex; width: fit-content; align-items: center; gap: 5px; margin-top: 5px; padding: 3px 8px; border-radius: 100px; background: var(--green-bg); color: var(--green-ink); font-size: 11.5px; font-weight: 600; line-height: 1.2; box-shadow: inset 0 0 0 1px rgba(31, 157, 85, 0.22); }
+.scr-q-live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex: none; }
+.scr-q-live.is-enter { animation: scr-pop .45s cubic-bezier(.3, 1.6, .5, 1); }
+.scr-st { position: relative; justify-self: center; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: #fff; box-shadow: inset 0 0 0 1.5px #d9d9e0; }
+.scr-st::after { content: ""; width: 8px; height: 2px; border-radius: 1px; background: #c4c4cc; }
+.scr-st.is-y { background: var(--green-bg); color: var(--green-ink); box-shadow: inset 0 0 0 1px rgba(31, 157, 85, 0.3); }
+.scr-st.is-y::after { display: none; }
+.scr-st svg { width: 12px; height: 12px; }
+/* each dot opens that AI's answer; the one being shown gets a ring */
+.scr-q .scr-st { cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; }
+.scr-q .scr-st:hover { transform: scale(1.12); }
+.scr-q[aria-pressed="true"] .scr-st.is-sel { box-shadow: inset 0 0 0 1.5px #d9d9e0, 0 0 0 2px #fff, 0 0 0 3.5px var(--cobalt); }
+.scr-q[aria-pressed="true"] .scr-st.is-y.is-sel { box-shadow: inset 0 0 0 1px rgba(31, 157, 85, 0.3), 0 0 0 2px #fff, 0 0 0 3.5px var(--cobalt); }
+
+.scr-ans { display: grid; padding: 14px 16px; }
+.scr-an { grid-area: 1 / 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; visibility: hidden; }
+.scr-an.is-on { visibility: inherit; }
+.scr-an-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; }
+.scr-an-e { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 650; color: var(--scr-sub); }
+.scr-an p { font-size: 13.5px; line-height: 1.65; color: #303030; }
+.scr-an .hl, .scr-an .hl-you { display: inline-block; font-weight: 600; white-space: nowrap; }
+/* "See GEO's fix" sits under every answer's place and shows for the question GEO has a fix for */
+.scr-go { grid-area: 2 / 1; justify-self: start; display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 2px 0; font-size: 12.5px; font-weight: 600; color: var(--cobalt); visibility: hidden; }
+.scr-go.is-shown { visibility: inherit; }
+.scr-go svg { width: 14px; height: 14px; transition: transform .2s ease; }
+.scr-go:hover svg { transform: translateX(3px); }
+
+/* Fixes: one suggested change, Approve pushes it (sample), Undo puts it back */
+.scr-fix { display: flex; flex-direction: column; gap: 12px; }
+.scr-fix-h { display: flex; align-items: center; gap: 10px; }
+.scr-tile { width: 32px; height: 32px; border-radius: 8px; flex: none; display: grid; place-items: center; background: var(--lav); color: var(--blue); box-shadow: inset 0 0 0 1px var(--lav-line); }
+.scr-tile svg { width: 16px; height: 16px; }
+.scr-fix-t { display: flex; flex-direction: column; min-width: 0; margin-right: auto; line-height: 1.3; }
+.scr-fix-t b { font-size: 13px; color: #303030; }
+.scr-fix-t em { font-style: normal; font-size: 12px; color: var(--scr-sub); }
+.scr-fs { display: grid; justify-items: end; }
+/* the hidden pill fades out, then leaves the accessibility tree (visibility), like the Approve labels */
+.scr-fs > .pill { grid-area: 1 / 1; transition: opacity .25s ease, transform .3s cubic-bezier(.3, 1.4, .5, 1), visibility 0s .3s; }
+.scr-fs-done, .is-done .scr-fs-todo { opacity: 0; transform: scale(.7); visibility: hidden; }
+.scr-fs-todo, .is-done .scr-fs-done { visibility: inherit; transition-delay: 0s; }
+.is-done .scr-fs-done { opacity: 1; transform: none; }
+.scr-ba { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.scr-ba-c { position: relative; overflow: hidden; border-radius: 10px; padding: 30px 12px 12px; font-size: 13px; line-height: 1.55; }
+.scr-ba-l { position: absolute; top: 9px; left: 12px; font-size: 10.5px; font-weight: 700; letter-spacing: .04em; line-height: 1.2; text-transform: uppercase; }
+.scr-before { background: #f7f7f7; box-shadow: inset 0 0 0 1px #e8e8e8; color: #707070; transition: opacity .4s ease; }
+.scr-before .scr-ba-l { color: #8a8a8a; }
+.scr-after { background: #fbfffc; box-shadow: inset 0 0 0 1px rgba(31, 157, 85, 0.28); color: #303030; }
+.scr-after .scr-ba-l { color: var(--green-ink); }
+.scr-after::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 25%, rgba(108, 214, 140, 0.32) 50%, transparent 75%); opacity: 0; transform: translateX(-100%); pointer-events: none; }
+.is-done .scr-before { opacity: .5; }
+.is-done .scr-after::after { animation: scr-sweep 1s .15s ease-out; }
+.scr-why { font-size: 12.5px; line-height: 1.5; color: var(--scr-sub); }
+.scr-why b { color: #303030; font-weight: 650; }
+.scr-acts { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+/* both labels share one cell, so the button keeps its width when it changes */
+.scr-approve { position: relative; isolation: isolate; overflow: hidden; display: inline-grid; align-items: center; height: 36px; padding: 0 16px; border-radius: 9px; color: #fff; font-size: 13px; font-weight: 600; background: var(--grad-btn); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 0 0 1px #15163c, 0 2px 4px -1px rgba(21, 22, 60, 0.4); }
+.scr-approve::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--green-ink); opacity: 0; transition: opacity .35s ease; }
+.scr-approve > span { grid-area: 1 / 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; transition: opacity .25s ease, transform .35s cubic-bezier(.3, .8, .25, 1), visibility 0s .35s; }
+.scr-approve svg { width: 15px; height: 15px; flex: none; }
+.scr-ap-b, .is-done .scr-ap-a { opacity: 0; transform: translateY(10px); visibility: hidden; }
+.is-done .scr-ap-a { transform: translateY(-10px); }
+.scr-ap-a, .is-done .scr-ap-b { visibility: inherit; transition-delay: 0s; }
+.is-done .scr-ap-b { opacity: 1; transform: none; }
+.is-done .scr-approve { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 0 0 1px #0f5c32, 0 2px 4px -1px rgba(15, 92, 50, 0.4); cursor: default; }
+.is-done .scr-approve::before { opacity: 1; }
+.is-done .scr-ap-b svg { animation: scr-pop .45s .15s cubic-bezier(.3, 1.6, .5, 1) backwards; }
+.scr-undo { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 9px; font-size: 13px; font-weight: 600; color: #303030; background: #fff; box-shadow: inset 0 0 0 1px #d4d4d4, 0 1px 0 rgba(0, 0, 0, 0.05); opacity: 0; transform: translateX(-8px); visibility: hidden; transition: opacity .25s ease, transform .3s ease, visibility 0s .3s; }
+.scr-undo svg { width: 14px; height: 14px; }
+.scr-undo:hover { background: #fafafa; }
+.is-done .scr-undo { opacity: 1; transform: none; visibility: inherit; transition-delay: .2s, .2s, 0s; }
+/* after Approve: when GEO checks again (space kept, so nothing moves) */
+.scr-next { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 500; color: var(--green-ink); opacity: 0; transform: translateY(4px); visibility: hidden; transition: opacity .3s ease, transform .35s ease, visibility 0s .35s; }
+.scr-next::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex: none; }
+.is-done .scr-next { opacity: 1; transform: none; visibility: inherit; transition-delay: .35s, .35s, 0s; }
+/* the next fix in the queue */
+.scr-fix2 { display: flex; align-items: center; gap: 10px; padding-block: 12px; }
+
+/* Rivals: how often AI names each brand, you highlighted */
+.scr-rv { display: flex; flex-direction: column; gap: 14px; }
+.scr-rvl { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.scr-rvl li { display: grid; grid-template-columns: 210px minmax(0, 1fr) 40px; align-items: center; gap: 12px; padding: 9px 10px; border-radius: 9px; font-size: 13px; color: #303030; }
+.scr-rvl li.is-you { background: var(--lav); box-shadow: inset 0 0 0 1px var(--lav-line); font-weight: 600; }
+.scr-rv-n { display: inline-flex; align-items: center; gap: 6px; min-width: 0; white-space: nowrap; }
+.scr-rv-n em { font-style: normal; padding: 2px 6px; border-radius: 5px; background: var(--cobalt); color: #fff; font-size: 10.5px; font-weight: 700; line-height: 1.3; }
+.scr-rv-t { height: 10px; border-radius: 5px; }
+.scr-rv-t i { background: #8f91a8; }
+.is-you .scr-rv-t i { background: var(--cobalt); }
+.scr-rvl b { text-align: right; font-weight: 650; font-variant-numeric: tabular-nums; }
+.scr-rv-note { padding-top: 12px; border-top: 1px solid var(--scr-ln2); font-size: 12.5px; color: var(--scr-sub); }
+@container scrmain (min-width: 641px) {
+  .scr-rvl { gap: 8px; }
+  .scr-rvl li { padding-block: 12px; }
+}
+
+/* ---- motion (classes added by 20m-money.js; never with reduced motion) ---- */
+@keyframes scr-up { from { opacity: 0; transform: translateY(10px); } }
+@keyframes scr-grow { from { transform: translateX(calc((var(--from, 0) - 1) * 100%)); } }
+@keyframes scr-wipe { from { transform: scaleX(0); } }
+@keyframes scr-pop { from { transform: scale(0); } }
+@keyframes scr-ping { 0% { opacity: .7; transform: scale(.94); } 70%, 100% { opacity: 0; transform: scale(1.1, 1.3); } }
+@keyframes scr-halo { 0% { opacity: .35; transform: scale(1); } 60%, 100% { opacity: 0; transform: scale(3); } }
+@keyframes scr-sweep { 0% { opacity: 1; transform: translateX(-100%); } 100% { opacity: 1; transform: translateX(100%); } }
+
+/* waiting to scroll into view: bars empty, line not drawn (then entrances play to the end, even off screen;
+   only the loops pause off screen, .scr-off) */
+.scr-off .scr-sp-halo, .scr-off .scr-tab.is-nudge::after { animation-play-state: paused; }
+.scr-wait .scr-grow { transform: translateX(-100%); }
+.scr-wait .scr-sp-rv, .scr-wait .scr-sp-dot { transform: scale(0); }
+/* a screen opening: its parts rise in one after another */
+.scr-panel.is-enter > * { animation: scr-up .45s cubic-bezier(.2, .7, .2, 1) backwards; }
+.scr-panel.is-enter > :nth-child(2) { animation-delay: .07s; }
+.scr-panel.is-enter > :nth-child(3) { animation-delay: .14s; }
+/* bars grow from --from (0, or the old value when the period changes), one after another */
+.is-grow .scr-grow { animation: scr-grow .8s cubic-bezier(.25, .8, .25, 1) backwards; animation-delay: var(--d, .1s); }
+.is-grow > :nth-child(2) .scr-grow { --d: .17s; }
+.is-grow > :nth-child(3) .scr-grow { --d: .24s; }
+.is-grow > :nth-child(4) .scr-grow { --d: .31s; }
+.scr-spark.is-draw .scr-sp-rv { animation: scr-wipe 1.1s .15s cubic-bezier(.45, 0, .25, 1) backwards; }
+.scr-spark.is-draw .scr-sp-dot { animation: scr-pop .45s 1.15s cubic-bezier(.3, 1.6, .5, 1) backwards; }
+/* question dots pop in row by row; an answer slides in with its rank */
+.is-pop .scr-st { animation: scr-pop .4s cubic-bezier(.3, 1.6, .5, 1) backwards; animation-delay: calc(.15s + var(--r, 0s) + var(--c, 0s)); }
+.is-pop .scr-q:nth-child(3) { --r: .1s; }
+.is-pop .scr-q:nth-child(4) { --r: .2s; }
+.is-pop .scr-st:nth-child(3) { --c: .05s; }
+.is-pop .scr-st:nth-child(4) { --c: .1s; }
+.scr-an.is-enter { animation: scr-up .35s cubic-bezier(.2, .7, .2, 1) backwards; }
+.scr-an.is-enter .pill, .scr-an.is-enter .hl-you { animation: scr-pop .4s .18s cubic-bezier(.3, 1.5, .5, 1) backwards; }
+
+/* inner layout follows the app's own width. Up to 860px the nav is a row of tabs on top, so the screens
+   get the full width (the Money cards stay side by side down to tablet size). */
+@container scrapp (max-width: 860px) {
+  .scr-body { grid-template-columns: minmax(0, 1fr); }
+  .scr-nav { padding: 6px; gap: 0; box-shadow: inset 0 -1px 0 #e0e0e0; }
+  .scr-brand { display: none; }
+  .scr-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+  .scr-tab { justify-content: center; gap: 6px; height: 34px; padding: 0 4px; font-size: 12.5px; }
+  .scr-ind { width: calc((100% - 12px) / 4); height: 34px; transform: translateX(calc(var(--n, 0) * (100% + 4px))); }
+  .scr-badge { margin: 0; min-width: 16px; height: 16px; padding: 0 4px; font-size: 10.5px; line-height: 16px; }
+}
+@container scrapp (max-width: 420px) {
+  .scr-tab svg { display: none; }
+}
+/* Money stacks: the visibility score becomes one compact row with a small trend line beside it */
 @container scrmain (max-width: 640px) {
   .scr-g2 { grid-template-columns: minmax(0, 1fr); }
+  .scr-vis { display: grid; grid-template-columns: minmax(0, 1fr) minmax(96px, 38%); column-gap: 14px; align-items: center; }
+  .scr-vis > :not(.scr-spark) { grid-column: 1; }
+  .scr-vis h6 { margin-bottom: 4px; }
+  .scr-vis .scr-mut { margin-top: 2px; }
+  .scr-spark { grid-column: 2; grid-row: 1 / span 3; margin: 0; padding: 0; }
+  .scr-ba { grid-template-columns: minmax(0, 1fr); }
+  .scr-rvl li { grid-template-columns: minmax(0, 1fr) 40px; row-gap: 7px; }
+  .scr-rv-t { grid-column: 1 / -1; grid-row: 2; }
 }
+/* phones: the three numbers in one compact row; the "vs your starting point" line goes (each number keeps its ▲) */
 @container scrmain (max-width: 520px) {
-  .scr-kpis { grid-template-columns: minmax(0, 1fr); }
-  .scr-kpi { padding: 10px 0 0; }
-  .scr-kpi + .scr-kpi { border-left: 0; padding-left: 0; border-top: 1px solid var(--scr-ln2); margin-top: 10px; }
-  .scr-kpi:first-child { padding-top: 0; }
-  .scr-kv { justify-content: space-between; }
-  .scr-sb { grid-template-columns: 92px minmax(0, 1fr) 58px; gap: 8px; }
+  .scr-money { padding-block: 14px 12px; }
+  .scr-kpi { gap: 2px; padding-right: 8px; }
+  .scr-kpi + .scr-kpi { padding-left: 10px; }
+  .scr-kl { gap: 4px; font-size: 11.5px; }
+  .scr-kl .scr-ic14 { display: none; }
+  .scr-kpi .kpi { font-size: 21px; letter-spacing: -0.6px; }
+  .scr-kpi .delta-up { font-size: 11.5px; }
+  .scr-vs { display: none; }
+  .scr-vis-k .kpi { font-size: 26px; }
+  .scr-sb { grid-template-columns: 88px minmax(0, 1fr) 62px; gap: 8px; }
+  .scr-qr { grid-template-columns: minmax(0, 1fr) repeat(3, 54px); column-gap: 2px; padding: 0 6px 0 12px; }
+  .scr-qh { letter-spacing: -0.2px; }
+  .scr-q-live { grid-column: 1 / -1; }
+}
+
+/* very narrow (small phones): each question gets its own line, its dots sit under the AI names */
+@container scrmain (max-width: 300px) {
+  .scr-q { row-gap: 6px; padding-block: 10px; }
+  .scr-q-t { grid-column: 1 / -1; }
+  .scr-q .scr-st:nth-child(2) { grid-column: 2; }
+  .scr-q-live { grid-row: 3; }
 }
 
 @media (max-width: 760px) {
   .scr-frame { padding: 6px; border-radius: 18px; }
   .scr-app { border-radius: 13px; }
   .scr-app .app-top { height: 40px; }
-  .scr-main { padding: 14px 10px 16px; gap: 12px; }
+  .scr-main { padding: 14px 10px 16px; }
   .scr-main .panel { padding: 14px; }
+  .scr-ans { padding: 12px 14px; }
   .scr-grid { height: 520px; }
+  .scr-wait .scr-frame { transform: translateY(24px) scale(.98); }
 }
 
 /* 20w-worth.css */
@@ -1143,6 +1443,10 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .worth-art { grid-area: art; align-self: end; justify-self: center; width: 100%; max-width: 400px; aspect-ratio: 1; margin: -24px 0 -48px; }
 .worth-art > img { display: block; width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply;
   -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent 100%); mask-image: radial-gradient(closest-side, #000 62%, transparent 100%); }
+
+/* the coins drift up and down slowly (paused off screen by 05-shared.js; still with reduced motion) */
+.worth-art > img { animation: worth-bob 8s ease-in-out infinite; }
+@keyframes worth-bob { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -10px, 0); } }
 
 /* calculator card */
 .worth-card {
@@ -1192,7 +1496,11 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .worth-ends { display: flex; justify-content: space-between; margin-top: 2px; font-size: 12px; line-height: 1.4; color: var(--text-2); font-variant-numeric: tabular-nums; }
 
 /* output */
-.worth-out { margin-top: 28px; padding: 20px 22px 18px; border-radius: 18px; background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-100); }
+.worth-out { position: relative; margin-top: 28px; padding: 20px 22px 18px; border-radius: 18px; background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-100); }
+/* when a slider is let go, the result numbers swell a touch and a soft cobalt ring glows for a moment
+   (20w-worth.js, Web Animations; nothing happens with reduced motion) */
+.worth-out::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; box-shadow: inset 0 0 0 1.5px rgba(64, 80, 176, 0.45), 0 0 0 5px rgba(104, 120, 216, 0.14); }
+.worth-m, .worth-y { transform-origin: 50% 80%; }
 .worth-nums { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px 20px; }
 .worth-big, .worth-yr { display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
 .worth-m { font-family: var(--font-head); font-size: 52px; font-weight: 500; letter-spacing: -2px; line-height: 1; color: var(--cobalt); }
@@ -1300,6 +1608,49 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   font-size: 12.5px; line-height: 1; font-weight: 600; color: var(--indigo-900);
   background: var(--lilac-pedestal); border-radius: 7px; padding: 7px 9px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Motion. Cards lift a little on hover (the deeper shadow is a pseudo-element that fades in, so only
+   transform and opacity change). Core's edge light only fades in and turns while it is hovered or has focus,
+   so the hero's link box keeps the page's one travelling light. 05-shared.js also pauses it off screen;
+   reduced motion turns it off. */
+.price-card { transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
+.price-card::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  opacity: 0; transition: opacity .35s ease;
+  box-shadow: 0 46px 72px -38px rgba(43, 50, 130, 0.5);
+}
+@media (hover: hover) {
+  .price-card:hover { transform: translateY(-6px); }
+  .price-card:hover::after { opacity: 1; }
+}
+.price-card:focus-within { transform: translateY(-6px); }
+.price-card:focus-within::after { opacity: 1; }
+
+/* the edge light: a ring 2px wide (masked) with a slowly turning conic gradient inside it */
+.price-glow {
+  position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none;
+  padding: 2px; opacity: 0; transition: opacity .45s ease;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.price-glow::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 200%; aspect-ratio: 1;
+  background: conic-gradient(from 0deg, transparent 0 56%, rgba(191, 201, 250, 0.9) 70%, #fff 77%, rgba(225, 204, 247, 0.9) 83%, transparent 92%);
+  transform: translate(-50%, -50%);
+  animation: price-spin 10s linear infinite paused;
+}
+@media (hover: hover) {
+  .price-card-dark:hover .price-glow { opacity: 1; }
+  .price-card-dark:hover .price-glow::before { animation-play-state: running; }
+}
+.price-card-dark:focus-within .price-glow { opacity: 1; }
+.price-card-dark:focus-within .price-glow::before { animation-play-state: running; }
+@keyframes price-spin { from { transform: translate(-50%, -50%) rotate(0turn); } to { transform: translate(-50%, -50%) rotate(1turn); } }
+@media (prefers-reduced-motion: reduce) {
+  .price-glow { display: none; }
+  .price-card:focus-within, .price-card:hover { transform: none; }
 }
 
 /* focus rings: the shared rule makes them white on this band; cobalt reads on lilac and white cards */
@@ -1533,6 +1884,25 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   mask-image: linear-gradient(90deg, transparent 0%, #000 24%);
 }
 
+/* The shop front is four layers of one render (same size, same crop): the shop, two sets of sparkles that
+   take turns to twinkle, and the speech bubble with its star, which floats. Paused off screen by
+   05-shared.js; with reduced motion it is the still picture. */
+.foot-art-bubble { --bob: -9px; transform-origin: 50% 20%; animation: foot-bob 6.5s ease-in-out infinite; }
+.foot-art-spark-a { animation: foot-twinkle 3.8s ease-in-out infinite; }
+.foot-art-spark-b { animation: foot-twinkle 3.8s ease-in-out -1.9s infinite; }
+@keyframes foot-bob {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, var(--bob), 0) rotate(-1.5deg); }
+}
+@keyframes foot-twinkle { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+
+/* the arrow on the button nudges forward on hover; the footer logo's circles ease apart */
+.foot-btn svg { transition: transform .3s cubic-bezier(.34, 1.56, .64, 1); }
+.foot-btn:hover svg { transform: translateX(3px); }
+.foot-mark i { transition: transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+.foot-logo:hover .foot-mark-a { transform: translate(-2px, -2px); }
+.foot-logo:hover .foot-mark-b { transform: translate(2px, 2px); }
+
 .foot-main {
   margin-top: 72px;
   display: flex; align-items: center; justify-content: space-between; gap: 32px;
@@ -1575,6 +1945,8 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
     -webkit-mask-image: radial-gradient(closest-side, #000 70%, transparent 100%);
     mask-image: radial-gradient(closest-side, #000 70%, transparent 100%);
   }
+  .foot-cta-art .foot-art-layer { position: absolute; inset: 0; height: 100%; }
+  .foot-art-bubble { --bob: -4px; }
   .foot-cta-tx { align-items: center; text-align: center; padding: 12px 0 0; }
   .foot-lead { margin-top: 14px; font-size: 15px; }
   .foot-btn { margin-top: 26px; }
@@ -1614,32 +1986,20 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
       <span class="hero-pill-tx">For Shopify stores</span>
     </p>
     <h1 class="h1 hero-title">The free sales channel <br class="hero-br">your store is missing</h1>
-    <p class="lead hero-lead">GEO helps ChatGPT &amp; co recommend your products, then shows the sales you can trace back to AI.</p>
+    <p class="lead hero-lead">GEO helps your products get recommended in ChatGPT, Gemini and Perplexity answers, then shows the sales you can trace back to AI.</p>
     <form class="hero-check" id="check" method="post" action="/check">
       <div class="hero-check-box">
+        <span class="hc-glow" aria-hidden="true"><span class="hc-halo"><span class="hc-run"><i></i></span></span><span class="hc-ring"><span class="hc-run"><i></i></span></span></span>
         <label class="hero-check-field">
           <svg class="hero-check-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
           <span class="hero-check-sr">Product link</span>
-          <input class="hero-check-input" type="text" name="url" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" maxlength="2000" required placeholder="Paste a product link, e.g. yourstore.com/products/...">
+          <input class="hero-check-input" type="text" name="url" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" maxlength="2000" required placeholder="Paste your product link">
         </label>
-        <div class="hero-check-row">
-          <label class="hero-check-country">
-            <span class="hero-check-sr">Shopper country</span>
-            <select name="country">
-              <option value="AU" selected>Australia</option>
-              <option value="NZ">New Zealand</option>
-              <option value="US">USA</option>
-              <option value="GB">UK</option>
-              <option value="CA">Canada</option>
-            </select>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-          </label>
-          <button class="btn btn-dark hero-check-btn" type="submit">Check my product</button>
-        </div>
+        <button class="btn btn-dark hero-check-btn" type="submit">Check my product</button>
       </div>
       <div class="hero-check-hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
-      <p class="hero-check-hint">Free check. No sign-up. Results usually in a few minutes.</p>
-      <p class="hero-check-note" role="status" hidden>Checks run on the live site. <a href="https://geo-shopify-app-production.up.railway.app/#check" target="_blank" rel="noopener">Open it here</a></p>
+      <p class="hero-check-hint">See if AI recommends your product. Free, no sign-up, usually a few minutes.</p>
+      <p class="hero-check-note" role="status" hidden>Checks run on <a href="https://geo-shopify-app-production.up.railway.app/#check" target="_blank" rel="noopener">the live site</a>.</p>
     </form>
 
     <div class="hw-wrap">
@@ -1722,7 +2082,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 <!-- 12-engines.html -->
 <section class="eng" aria-labelledby="eng-title">
   <div class="wrap">
-    <p class="eng-title" id="eng-title">Checks the AI your shoppers ask, right inside Shopify</p>
+    <p class="eng-title" id="eng-title">The AI your shoppers ask, checked every week</p>
     <div class="eng-marquee">
       <div class="eng-track">
         <ul class="eng-group">
@@ -1782,7 +2142,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 <section class="section alt how" id="how" aria-labelledby="how-title">
   <div class="wrap">
     <div class="sec-head">
-      <h2 class="h2" id="how-title">How GEO helps you earn from AI</h2>
+      <h2 class="h2" id="how-title">How GEO helps you get recommended</h2>
     </div>
 
     <ol class="how-steps">
@@ -1790,7 +2150,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
         <div class="clay-tile how-img"><img src="/home/img/clay-magnifier.jpg" alt="Clay magnifying glass over a bottle of beard oil" width="1024" height="1024" loading="lazy" decoding="async"></div>
         <div class="how-tx">
           <span class="how-n" aria-hidden="true">1</span>
-          <h3 class="how-t">See who AI picks instead</h3>
+          <h3 class="how-t">See if AI recommends you</h3>
           <p class="how-p">We ask ChatGPT, Gemini and Perplexity your buyers’ questions every week.</p>
         </div>
       </li>
@@ -1799,7 +2159,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
         <div class="how-tx">
           <span class="how-n" aria-hidden="true">2</span>
           <h3 class="how-t">Fix it in one click</h3>
-          <p class="how-p">GEO writes clearer product pages that AI can quote.</p>
+          <p class="how-p">GEO writes clearer product pages, so AI can pick you.</p>
         </div>
       </li>
       <li class="how-step">
@@ -1824,64 +2184,206 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 <section class="section scr-sec" id="money" aria-labelledby="money-title">
   <div class="wrap">
     <div class="sec-head">
-      <h2 class="h2" id="money-title">Your AI sales, in one screen</h2>
+      <h2 class="h2" id="money-title">See the sales you can trace back to AI</h2>
+      <p class="scr-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.1 12 6"/><path d="m5.1 8-2.9-.8"/><path d="m6 12-1.9 2"/><path d="M7.2 2.2 8 5.1"/><path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z"/></svg>Try the app</p>
     </div>
 
     <div class="scr-stage">
       <div class="scr-grid grid-bg grid-fade" aria-hidden="true"></div>
       <div class="scr-frame">
-        <div class="app scr-app" role="group" aria-label="GEO dashboard, sample data">
+        <div class="app scr-app" role="group" aria-label="GEO app, sample data">
           <div class="app-top">
             <span class="store"><i class="scr-store-ic" aria-hidden="true">CG</i><span class="scr-store-n">Coolabah Grooming Co.</span></span>
             <span class="sample-tag">Sample data</span>
           </div>
-          <div class="app-main scr-main">
-            <div class="app-title scr-title"><h5>Money from AI</h5><span class="scr-period">Last 4 weeks</span></div>
 
-            <div class="panel scr-money">
-              <div class="scr-kpis">
-                <div class="scr-kpi">
-                  <span class="scr-kl"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M15.5 8.5h-5a2 2 0 1 0 0 4h3a2 2 0 1 1 0 4h-5"/><path d="M12 6.5v11"/></svg>AI revenue</span>
-                  <div class="scr-kv"><span class="kpi">A$4,820</span><span class="delta-up">▲ 38%</span></div>
-                </div>
-                <div class="scr-kpi">
-                  <span class="scr-kl"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>AI orders</span>
-                  <div class="scr-kv"><span class="kpi">61</span><span class="delta-up">▲ 22%</span></div>
-                </div>
-                <div class="scr-kpi">
-                  <span class="scr-kl"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.586 12.586 19 19"/><path d="M3.688 3.037a.497.497 0 0 0-.651.651l6.5 15.999a.501.501 0 0 0 .947-.062l1.569-6.083a2 2 0 0 1 1.448-1.479l6.124-1.579a.5.5 0 0 0 .063-.947z"/></svg>AI clicks</span>
-                  <div class="scr-kv"><span class="kpi">1,940</span><span class="delta-up">▲ 51%</span></div>
-                </div>
+          <div class="scr-body">
+            <div class="scr-nav">
+              <span class="scr-brand"><span class="scr-gmark" aria-hidden="true"><i></i><i></i></span>GEO</span>
+              <div class="scr-tabs" role="tablist" aria-label="App screens">
+                <i class="scr-ind" aria-hidden="true"></i>
+                <button type="button" class="scr-tab" role="tab" id="scr-t-money" aria-controls="scr-p-money" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M15.5 8.5h-5a2 2 0 1 0 0 4h3a2 2 0 1 1 0 4h-5"/><path d="M12 6.5v11"/></svg><span>Money</span></button>
+                <button type="button" class="scr-tab" role="tab" id="scr-t-q" aria-controls="scr-p-q" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg><span>Questions</span></button>
+                <button type="button" class="scr-tab" role="tab" id="scr-t-fix" aria-controls="scr-p-fix" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg><span>Fixes</span><b class="scr-badge" aria-hidden="true">2</b></button>
+                <button type="button" class="scr-tab" role="tab" id="scr-t-riv" aria-controls="scr-p-riv" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Rivals</span></button>
               </div>
-              <p class="scr-vs">Change vs your starting point</p>
             </div>
 
-            <div class="scr-g2">
-              <div class="panel">
-                <h6>By source</h6>
-                <div class="scr-srcbars">
-                  <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:var(--e-chatgpt)"></i>ChatGPT</span><span class="scr-sb-t"><i style="width:100%;background:var(--e-chatgpt)"></i></span><span class="scr-sb-v">A$2,640</span></div>
-                  <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:var(--e-perplexity)"></i>Perplexity</span><span class="scr-sb-t"><i style="width:33.3%;background:var(--e-perplexity)"></i></span><span class="scr-sb-v">A$880</span></div>
-                  <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:var(--e-gemini)"></i>Gemini</span><span class="scr-sb-t"><i style="width:28.8%;background:var(--e-gemini)"></i></span><span class="scr-sb-v">A$760</span></div>
-                  <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:#a3a3b5"></i>Other</span><span class="scr-sb-t"><i style="width:20.5%;background:#a3a3b5"></i></span><span class="scr-sb-v">A$540</span></div>
+            <div class="scr-main">
+              <!-- Money -->
+              <div class="scr-panel is-on" role="tabpanel" id="scr-p-money" aria-labelledby="scr-t-money" tabindex="0">
+                <div class="scr-title">
+                  <h5>Money from AI</h5>
+                  <div class="scr-seg" role="group" aria-label="Time period">
+                    <i class="scr-seg-ind" aria-hidden="true"></i>
+                    <button type="button" aria-pressed="true" data-period="m">Last 4 weeks</button>
+                    <button type="button" aria-pressed="false" data-period="all">Since joining</button>
+                  </div>
                 </div>
-                <div class="scr-sb-tot"><span>Total</span><b>A$4,820</b></div>
+
+                <div class="panel scr-money">
+                  <div class="scr-kpis">
+                    <div class="scr-kpi scr-kpi-rev">
+                      <span class="scr-kl"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M15.5 8.5h-5a2 2 0 1 0 0 4h3a2 2 0 1 1 0 4h-5"/><path d="M12 6.5v11"/></svg>AI revenue</span>
+                      <span class="kpi" data-k="rev">A$4,820</span>
+                      <span class="delta-up">▲ <span data-k="revd">38%</span></span>
+                    </div>
+                    <div class="scr-kpi">
+                      <span class="scr-kl"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>AI orders</span>
+                      <span class="kpi" data-k="ord">61</span>
+                      <span class="delta-up">▲ <span data-k="ordd">22%</span></span>
+                    </div>
+                    <div class="scr-kpi">
+                      <span class="scr-kl"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.586 12.586 19 19"/><path d="M3.688 3.037a.497.497 0 0 0-.651.651l6.5 15.999a.501.501 0 0 0 .947-.062l1.569-6.083a2 2 0 0 1 1.448-1.479l6.124-1.579a.5.5 0 0 0 .063-.947z"/></svg>AI clicks</span>
+                      <span class="kpi" data-k="clk">1,940</span>
+                      <span class="delta-up">▲ <span data-k="clkd">51%</span></span>
+                    </div>
+                  </div>
+                  <p class="scr-vs">▲ Change vs your starting point</p>
+                </div>
+
+                <div class="scr-g2">
+                  <div class="panel">
+                    <h6>By source</h6>
+                    <div class="scr-srcbars">
+                      <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:var(--e-chatgpt)"></i>ChatGPT</span><span class="scr-sb-t"><i class="scr-grow" style="--w:1;background:var(--e-chatgpt)"></i></span><span class="scr-sb-v" data-k="s0">A$2,640</span></div>
+                      <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:var(--e-perplexity)"></i>Perplexity</span><span class="scr-sb-t"><i class="scr-grow" style="--w:.333;background:var(--e-perplexity)"></i></span><span class="scr-sb-v" data-k="s1">A$880</span></div>
+                      <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:var(--e-gemini)"></i>Gemini</span><span class="scr-sb-t"><i class="scr-grow" style="--w:.288;background:var(--e-gemini)"></i></span><span class="scr-sb-v" data-k="s2">A$760</span></div>
+                      <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:#a3a3b5"></i>Other</span><span class="scr-sb-t"><i class="scr-grow" style="--w:.205;background:#a3a3b5"></i></span><span class="scr-sb-v" data-k="s3">A$540</span></div>
+                    </div>
+                    <div class="scr-sb-tot"><span>Total</span><b data-k="tot">A$4,820</b></div>
+                  </div>
+                  <div class="panel scr-vis">
+                    <h6>Visibility score</h6>
+                    <div class="scr-vis-k"><span class="kpi">38</span><span class="scr-vis-of">/100</span><span class="delta-up" data-k="visd">▲ 4 in 4 weeks</span></div>
+                    <svg class="scr-spark" viewBox="0 0 300 72" aria-hidden="true">
+                      <defs>
+                        <linearGradient id="scr-g-spark" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4050b0" stop-opacity=".18"/><stop offset="1" stop-color="#4050b0" stop-opacity="0"/></linearGradient>
+                        <clipPath id="scr-sp-clip"><rect class="scr-sp-rv" x="-6" y="-6" width="312" height="84"/></clipPath>
+                      </defs>
+                      <path d="M0 24H300M0 48H300" stroke="#eeeef4" stroke-width="1"/>
+                      <line x1="0" x2="300" y1="52.2" y2="52.2" stroke="#9a9bab" stroke-width="1" stroke-dasharray="3 4"/>
+                      <g clip-path="url(#scr-sp-clip)">
+                        <path class="scr-sp-area" d="M0,29.2 L75,24.6 L150,24.6 L225,15.4 L300,10.8 L300,72 L0,72 Z" fill="url(#scr-g-spark)"/>
+                        <path class="scr-sp-line" d="M0,29.2 L75,24.6 L150,24.6 L225,15.4 L300,10.8" fill="none" stroke="#4050b0" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                      </g>
+                      <circle class="scr-sp-halo" cx="300" cy="10.8" r="4" fill="#4050b0"/>
+                      <circle class="scr-sp-dot" cx="300" cy="10.8" r="4" fill="#fff" stroke="#4050b0" stroke-width="2"/>
+                    </svg>
+                    <p class="scr-mut">How often AI names you</p>
+                  </div>
+                </div>
               </div>
-              <div class="panel scr-vis">
-                <h6>Visibility score</h6>
-                <div class="scr-vis-k"><span class="kpi">38</span><span class="scr-vis-of">/100</span><span class="delta-up">▲ 9 since joining</span></div>
-                <svg class="scr-spark" viewBox="0 0 300 72" aria-hidden="true">
-                  <defs><linearGradient id="scr-g-spark" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4050b0" stop-opacity=".18"/><stop offset="1" stop-color="#4050b0" stop-opacity="0"/></linearGradient></defs>
-                  <path d="M0 24H300M0 48H300" stroke="#eeeef4" stroke-width="1"/>
-                  <path d="M0.0,52.2 L42.9,47.6 L85.7,52.2 L128.6,38.4 L171.4,33.8 L214.3,24.6 L257.1,20.0 L300.0,10.8 L300,72 L0,72 Z" fill="url(#scr-g-spark)"/>
-                  <polyline points="0.0,52.2 42.9,47.6 85.7,52.2 128.6,38.4 171.4,33.8 214.3,24.6 257.1,20.0 300.0,10.8" fill="none" stroke="#4050b0" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-                  <line x1="0" x2="300" y1="52.2" y2="52.2" stroke="#9a9bab" stroke-width="1" stroke-dasharray="3 4"/>
-                  <circle cx="300" cy="10.8" r="4" fill="#fff" stroke="#4050b0" stroke-width="2"/>
-                </svg>
-                <p class="scr-mut">How often AI names you</p>
+
+              <!-- Questions -->
+              <div class="scr-panel" role="tabpanel" id="scr-p-q" aria-labelledby="scr-t-q" tabindex="0">
+                <div class="scr-title"><h5>Does AI name you?</h5><span class="scr-mut">Asked every week</span></div>
+                <div class="panel scr-qs">
+                  <div class="scr-qr scr-qh" aria-hidden="true"><span class="scr-qh-q">Pick a question</span><span>ChatGPT</span><span>Gemini</span><span>Perplexity</span></div>
+                  <button type="button" class="scr-qr scr-q" aria-pressed="true" aria-controls="scr-ans" data-e="0">
+                    <span class="scr-q-t">best beard oil for dry skin in Australia</span>
+                    <span class="scr-st is-y" data-e="0" role="img" aria-label="ChatGPT: named"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+                    <span class="scr-st is-y" data-e="1" role="img" aria-label="Gemini: named"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+                    <span class="scr-st" data-e="2" role="img" aria-label="Perplexity: not named"></span>
+                  </button>
+                  <button type="button" class="scr-qr scr-q" aria-pressed="false" aria-controls="scr-ans" data-e="1">
+                    <span class="scr-q-t">beard balm that isn’t greasy</span>
+                    <span class="scr-st" data-e="0" role="img" aria-label="ChatGPT: not named"></span>
+                    <span class="scr-st is-y" data-e="1" role="img" aria-label="Gemini: named"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+                    <span class="scr-st is-y" data-e="2" role="img" aria-label="Perplexity: named"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+                  </button>
+                  <button type="button" class="scr-qr scr-q" aria-pressed="false" aria-controls="scr-ans" data-e="0" data-fix>
+                    <span class="scr-q-t">gentle beard wash for sensitive skin</span>
+                    <span class="scr-st" data-e="0" role="img" aria-label="ChatGPT: not named"></span>
+                    <span class="scr-st" data-e="1" role="img" aria-label="Gemini: not named"></span>
+                    <span class="scr-st" data-e="2" role="img" aria-label="Perplexity: not named"></span>
+                    <span class="scr-q-live" hidden>Fix live. Re-checked Monday</span>
+                  </button>
+                </div>
+                <div class="panel scr-ans" id="scr-ans" aria-live="polite">
+                  <div class="scr-an is-on" id="scr-an-0-0">
+                    <div class="scr-an-h"><span class="scr-an-e"><i class="dot" style="background:var(--e-chatgpt)"></i>ChatGPT</span><span class="pill pill-lav">You’re #3</span></div>
+                    <p>Try <span class="hl">Ridgeback Beard Co.</span>, <span class="hl">Saltbush Beard Co.</span> or <span class="hl-you">Coolabah Grooming Co.</span></p>
+                  </div>
+                  <div class="scr-an" id="scr-an-0-1">
+                    <div class="scr-an-h"><span class="scr-an-e"><i class="dot" style="background:var(--e-gemini)"></i>Gemini</span><span class="pill pill-green">You’re #1</span></div>
+                    <p><span class="hl-you">Coolabah Grooming Co.</span> suits dry skin.</p>
+                  </div>
+                  <div class="scr-an" id="scr-an-0-2">
+                    <div class="scr-an-h"><span class="scr-an-e"><i class="dot" style="background:var(--e-perplexity)"></i>Perplexity</span><span class="pill pill-amber">Not named</span></div>
+                    <p>Try <span class="hl">Ridgeback Beard Co.</span></p>
+                  </div>
+                  <div class="scr-an" id="scr-an-1-0">
+                    <div class="scr-an-h"><span class="scr-an-e"><i class="dot" style="background:var(--e-chatgpt)"></i>ChatGPT</span><span class="pill pill-amber">Not named</span></div>
+                    <p>Try <span class="hl">Saltbush Beard Co.</span></p>
+                  </div>
+                  <div class="scr-an" id="scr-an-1-1">
+                    <div class="scr-an-h"><span class="scr-an-e"><i class="dot" style="background:var(--e-gemini)"></i>Gemini</span><span class="pill pill-green">You’re #1</span></div>
+                    <p>Try <span class="hl-you">Coolabah Grooming Co.</span> or <span class="hl">Banksia Beard Co.</span></p>
+                  </div>
+                  <div class="scr-an" id="scr-an-1-2">
+                    <div class="scr-an-h"><span class="scr-an-e"><i class="dot" style="background:var(--e-perplexity)"></i>Perplexity</span><span class="pill pill-lav">You’re #2</span></div>
+                    <p><span class="hl">Ridgeback Beard Co.</span> or <span class="hl-you">Coolabah Grooming Co.</span></p>
+                  </div>
+                  <div class="scr-an" id="scr-an-2-0">
+                    <div class="scr-an-h"><span class="scr-an-e"><i class="dot" style="background:var(--e-chatgpt)"></i>ChatGPT</span><span class="pill pill-amber">Not named</span></div>
+                    <p><span class="hl">Wattlebird Grooming</span> makes a gentle, soap-free wash.</p>
+                  </div>
+                  <div class="scr-an" id="scr-an-2-1">
+                    <div class="scr-an-h"><span class="scr-an-e"><i class="dot" style="background:var(--e-gemini)"></i>Gemini</span><span class="pill pill-amber">Not named</span></div>
+                    <p><span class="hl">Wattlebird Grooming</span> has one.</p>
+                  </div>
+                  <div class="scr-an" id="scr-an-2-2">
+                    <div class="scr-an-h"><span class="scr-an-e"><i class="dot" style="background:var(--e-perplexity)"></i>Perplexity</span><span class="pill pill-amber">Not named</span></div>
+                    <p><span class="hl">Banksia Beard Co.</span> makes one.</p>
+                  </div>
+                  <button type="button" class="scr-go" data-go="scr-t-fix" tabindex="-1" aria-hidden="true">See GEO’s fix<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+                </div>
+              </div>
+
+              <!-- Fixes -->
+              <div class="scr-panel" role="tabpanel" id="scr-p-fix" aria-labelledby="scr-t-fix" tabindex="0">
+                <div class="scr-title"><h5>Fixes</h5></div>
+                <div class="panel scr-fix">
+                  <div class="scr-fix-h">
+                    <span class="scr-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span>
+                    <span class="scr-fix-t"><b>Product description</b><em>Gentle Beard Wash 200ml</em></span>
+                    <span class="scr-fs"><span class="pill pill-amber scr-fs-todo">Waiting</span><span class="pill pill-green scr-fs-done" aria-hidden="true">Live</span></span>
+                  </div>
+                  <div class="scr-ba">
+                    <div class="scr-ba-c scr-before"><span class="scr-ba-l">Before</span><p>Our best seller. Smells amazing.</p></div>
+                    <div class="scr-ba-c scr-after"><span class="scr-ba-l">After</span><p>Soap-free beard wash for sensitive skin. Made in Australia. 200ml.</p></div>
+                  </div>
+                  <p class="scr-why"><b>Why:</b> AI can now tell who it’s for. Only facts from your page.</p>
+                  <div class="scr-acts">
+                    <button type="button" class="scr-approve"><span class="scr-ap-a">Approve</span><span class="scr-ap-b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Pushed to Shopify</span></button>
+                    <button type="button" class="scr-undo" tabindex="-1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>Undo</button>
+                    <span class="scr-next" aria-hidden="true">GEO asks AI again on Monday.</span>
+                  </div>
+                </div>
+                <div class="panel scr-fix2">
+                  <span class="scr-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+                  <span class="scr-fix-t"><b>FAQ block</b><em>Beard Balm 60g</em></span>
+                  <span class="pill pill-amber">Waiting</span>
+                </div>
+              </div>
+
+              <!-- Rivals -->
+              <div class="scr-panel" role="tabpanel" id="scr-p-riv" aria-labelledby="scr-t-riv" tabindex="0">
+                <div class="scr-title"><h5>Rivals</h5><span class="scr-mut">How often AI names each brand</span></div>
+                <div class="panel scr-rv">
+                  <ol class="scr-rvl">
+                    <li><span class="scr-rv-n">Ridgeback Beard Co.</span><span class="scr-rv-t"><i class="scr-grow" style="--w:.62"></i></span><b>62%</b></li>
+                    <li><span class="scr-rv-n">Saltbush Beard Co.</span><span class="scr-rv-t"><i class="scr-grow" style="--w:.47"></i></span><b>47%</b></li>
+                    <li class="is-you"><span class="scr-rv-n">Coolabah Grooming Co. <em>You</em></span><span class="scr-rv-t"><i class="scr-grow" style="--w:.38"></i></span><b>38%</b></li>
+                    <li><span class="scr-rv-n">Banksia Beard Co.</span><span class="scr-rv-t"><i class="scr-grow" style="--w:.29"></i></span><b>29%</b></li>
+                  </ol>
+                  <p class="scr-rv-note">Ridgeback is on 4 sites AI quotes. You’re on 1.</p>
+                </div>
               </div>
             </div>
           </div>
+          <p class="scr-sr" id="scr-live" aria-live="polite"></p>
         </div>
       </div>
     </div>
@@ -1951,22 +2453,23 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
         <article class="price-card" aria-labelledby="price-n-free">
           <h3 class="price-name" id="price-n-free">Free scan</h3>
           <p class="price-amt"><span class="price-num">$0</span><span class="price-per">one-time</span></p>
-          <p class="price-desc">After install: see where you stand.</p>
+          <p class="price-desc">After install: see if AI recommends you.</p>
           <a class="btn btn-light price-btn price-btn-line" href="/auth/login">Install and scan free</a>
           <ul class="price-list">
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>10 buyer questions on 3 AI assistants</li>
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Who AI recommends instead</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>AI sales from your last 60 days</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>AI sales we can trace, last 60 days</li>
             <li class="price-no"><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></span>No fixes or ongoing tracking</li>
           </ul>
         </article>
 
         <!-- Core -->
         <article class="price-card price-card-dark" aria-labelledby="price-n-core">
+          <span class="price-glow" aria-hidden="true"></span>
           <span class="price-badge">Our pick</span>
           <h3 class="price-name" id="price-n-core">Core</h3>
           <p class="price-amt"><span class="price-num">US$49</span><span class="price-per">a month · 7-day free trial</span></p>
-          <p class="price-desc">Track, fix and see the money.</p>
+          <p class="price-desc">Help AI recommend you, and see the money.</p>
           <a class="btn price-btn price-btn-white" href="/auth/login">Start 7-day trial</a>
           <ul class="price-list">
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>25 buyer questions, tracked weekly</li>
@@ -2021,21 +2524,21 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
           <div class="faq-log-in">
             <div class="faq-thread" role="log" aria-label="Questions and answers">
               <div class="faq-pair" id="faq-p1">
+                <div class="faq-msg faq-msg-q"><h3 class="faq-q">What does GEO actually do?</h3></div>
+                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                  <p>It helps ChatGPT, Gemini and Perplexity recommend your products. It checks their answers, writes fixes you approve and counts the sales it can trace back to them.</p>
+                </div></div>
+              </div>
+              <div class="faq-pair" id="faq-p2">
                 <div class="faq-msg faq-msg-q"><h3 class="faq-q">How do you know a sale came from AI?</h3></div>
                 <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
                   <p>ChatGPT usually adds <code class="faq-code">utm_source=chatgpt.com</code> to its links. We spot other AI visits too. Google AI Overviews can’t be cleanly separated.</p>
                 </div></div>
               </div>
-              <div class="faq-pair" id="faq-p2">
-                <div class="faq-msg faq-msg-q"><h3 class="faq-q">How does AI decide which stores to recommend?</h3></div>
-                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
-                  <p>AI repeats facts from product pages and quotes sites it trusts. GEO helps with both.</p>
-                </div></div>
-              </div>
               <div class="faq-pair" id="faq-p3">
                 <div class="faq-msg faq-msg-q"><h3 class="faq-q">Can I pay to appear in AI answers?</h3></div>
                 <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
-                  <p>Not on ChatGPT. OpenAI says ads can’t shape its answers. Google does sell ads inside AI Overviews in Australia and New Zealand.</p>
+                  <p>Not on ChatGPT. OpenAI says ads can’t shape its answers. Google sells ads in AI Overviews in Australia and New Zealand. GEO helps you earn the unpaid ones.</p>
                   <p class="faq-src">Sources: <a class="src-link" href="https://help.openai.com/en/articles/20001047-ads-in-chatgpt" target="_blank" rel="noopener">OpenAI</a> and <a class="src-link" href="https://support.google.com/google-ads/answer/16297775?hl=en" target="_blank" rel="noopener">Google Ads Help</a>.</p>
                 </div></div>
               </div>
@@ -2048,7 +2551,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
               <div class="faq-pair" id="faq-p5">
                 <div class="faq-msg faq-msg-q"><h3 class="faq-q">If GEO costs money, what’s free?</h3></div>
                 <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
-                  <p>The product check, the free scan and the clicks AI sends you. GEO Core is US$49 a month after a 7-day free trial.</p>
+                  <p>AI recommendations and the clicks they send, plus the product check and free scan. Core is US$49 a month after a 7-day free trial.</p>
                 </div></div>
               </div>
               <div class="faq-pair" id="faq-p6">
@@ -2079,12 +2582,16 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   <div class="foot-cta-card">
     <div class="foot-cta">
       <div class="foot-cta-tx">
-        <h2 class="h2 foot-h2" id="foot-cta-title">Is AI recommending your store?</h2>
-        <p class="lead foot-lead">Paste a product link and see who AI recommends. Free, no sign-up.</p>
+        <h2 class="h2 foot-h2" id="foot-cta-title">Is AI recommending your products?</h2>
+        <p class="lead foot-lead">Paste a product link to see if AI picks you. Free, no sign-up.</p>
         <a class="btn btn-dark foot-btn" href="#check">Check my product <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
       </div>
-      <div class="foot-cta-art">
-        <img src="/home/img/clay-storefront.jpg" alt="" width="1200" height="896" decoding="async">
+      <!-- the clay shop front in layers: the speech bubble floats and the sparkles twinkle (45-cta-footer.css) -->
+      <div class="foot-cta-art" aria-hidden="true">
+        <img src="/home/img/cta-shop-base.jpg" alt="" width="1200" height="896" loading="lazy" decoding="async">
+        <img class="foot-art-layer foot-art-spark-a" src="/home/img/cta-shop-spark-a.webp" alt="" width="1200" height="896" loading="lazy" decoding="async">
+        <img class="foot-art-layer foot-art-spark-b" src="/home/img/cta-shop-spark-b.webp" alt="" width="1200" height="896" loading="lazy" decoding="async">
+        <img class="foot-art-layer foot-art-bubble" src="/home/img/cta-shop-bubble.webp" alt="" width="1200" height="896" loading="lazy" decoding="async">
       </div>
     </div>
   </div>
@@ -2096,7 +2603,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
           <span class="foot-mark" aria-hidden="true"><i class="foot-mark-a"></i><i class="foot-mark-b"></i></span>
           <span class="foot-word">GEO</span>
         </a>
-        <p class="foot-line">Help AI recommend you, and see the sales.</p>
+        <p class="foot-line">Helps AI recommend your products, and counts the sales it can trace.</p>
       </div>
       <nav class="foot-links" aria-label="Footer">
         <a href="#how">How it works</a>
@@ -2113,17 +2620,85 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 </div>
 <script>
 // 05-shared.js
-// Decorative loops (the logo marquee, the hero cards and floating clay pieces, the FAQ chat) pause while
-// their part of the page is off screen, so an idle page does no animation work. Missing parts are skipped.
+// Decorative loops (the logo marquee, the hero cards and floating clay pieces, the FAQ chat, the how-it-works
+// renders, the coins, the Core card's border light (hover only), the closing shop front) pause while their part of the page
+// is off screen, so an idle page does no animation work. Missing parts are skipped.
 // The CSS for .is-off is in 05-shared.css. The hero cards and the FAQ manage their own motion as well.
 (function () {
   if (!('IntersectionObserver' in window)) return;
-  var els = document.querySelectorAll('.eng-marquee, .hw-wrap, .faq-main');
+  var els = document.querySelectorAll('.eng-marquee, .hw-wrap, .faq-main, .how-steps, .worth-art, .price-card-dark, .foot-cta-art');
   if (!els.length) return;
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (en) { en.target.classList.toggle('is-off', !en.isIntersecting); });
   }, { rootMargin: '120px 0px' });
   Array.prototype.forEach.call(els, function (el) { io.observe(el); });
+})();
+
+// Rise on scroll: headings and cards below the fold fade in and rise 12px the first time they come into view,
+// a few at a time with a small stagger. Content is never hidden without JavaScript, for reduced motion, for
+// crawlers, or when it is already on screen as the page loads (so nothing flashes). The hidden state only
+// exists on elements this script marks with .rise, and the marks come off once the motion is done, so each
+// element goes back to its own styles (hover lifts and so on). Other parts can opt in with data-rise.
+(function () {
+  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var bot = /bot|crawl|spider|slurp|lighthouse|facebookexternalhit|embedly|preview/i.test(navigator.userAgent || '');
+  if (calm || bot || !('IntersectionObserver' in window)) return;
+
+  // [selector, stagger in ms between items that come into view together]
+  var groups = [
+    ['.eng-title, .eng-marquee', 90],
+    ['.why .sec-head, .how .sec-head, .faq-head', 0],
+    ['.why-stat', 110],
+    ['.how-step', 120],
+    ['.how-chips li', 140],
+    ['.worth-head, .worth-art, .worth-card', 120],
+    ['.price-head', 0],
+    ['.price-card', 110],
+    ['.faq-main', 0],
+    ['.foot-cta-tx > *', 90],
+    ['.foot-cta-art', 0],
+    ['[data-rise]', 90]
+  ];
+  var vh = window.innerHeight || document.documentElement.clientHeight;
+  var step = new Map();
+  var marked = [];
+  groups.forEach(function (g) {
+    Array.prototype.forEach.call(document.querySelectorAll(g[0]), function (el) {
+      if (step.has(el)) return;
+      step.set(el, g[1]);
+      marked.push(el);
+    });
+  });
+  // One layout read for all of them, then the writes.
+  var below = marked.filter(function (el) { return el.getBoundingClientRect().top > vh - 8; });
+  if (!below.length) return;
+  below.forEach(function (el) { el.classList.add('rise'); });
+
+  function done(el) { el.classList.remove('rise', 'rise-go'); el.style.removeProperty('--rise-d'); }
+  function go(el, delay) {
+    el.style.setProperty('--rise-d', delay + 'ms');
+    el.classList.add('rise-go');
+    // the longest motion inside (a step number or a tick popping in) ends about 1.1s after the delay
+    setTimeout(function () { done(el); }, delay + 1300);
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    var hits = entries.filter(function (en) { return en.isIntersecting; });
+    if (!hits.length) return;
+    // stagger in reading order: top to bottom (rows within 40px count as one), then left to right
+    hits.sort(function (a, b) {
+      var ra = a.boundingClientRect, rb = b.boundingClientRect;
+      return Math.round(ra.top / 40) - Math.round(rb.top / 40) || ra.left - rb.left;
+    });
+    hits.forEach(function (en, n) {
+      io.unobserve(en.target);
+      go(en.target, Math.min(n, 5) * (step.get(en.target) || 0));
+    });
+  }, { rootMargin: '0px 0px -10% 0px', threshold: 0 });
+  below.forEach(function (el) { io.observe(el); });
+
+  // Printing or saving the page shows everything at once.
+  window.addEventListener('beforeprint', function () { below.forEach(done); });
 })();
 
 // 10-nav.js
@@ -2197,10 +2772,10 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
     btn.textContent = 'Check my product';
   });
 
-  // A shorter placeholder on phones so it isn't cut off.
-  var long = input.getAttribute('placeholder');
-  var narrow = window.matchMedia ? window.matchMedia('(max-width: 480px)') : null;
-  function fit() { input.setAttribute('placeholder', narrow && narrow.matches ? 'Paste your product link' : long); }
+  // The page ships the short placeholder (it fits phones, also without JS); wider screens get the example.
+  var short = input.getAttribute('placeholder');
+  var narrow = window.matchMedia ? window.matchMedia('(max-width: 760px)') : null;
+  function fit() { input.setAttribute('placeholder', narrow && narrow.matches ? short : 'Paste a product link, e.g. yourstore.com/products/...'); }
   if (narrow) { fit(); if (narrow.addEventListener) narrow.addEventListener('change', fit); }
 
   // "Check a product free" links scroll here; put the cursor in the box on desktop.
@@ -2211,6 +2786,20 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
     if (a) focusSoon();
   });
   if (location.hash === '#check') focusSoon();
+})();
+
+// Glow round the link box (CSS in 11-hero.css): the travelling light runs once this adds .hc-live, and
+// pauses while the form is off screen (.hc-off). Reduced motion: the CSS keeps the still halo, so
+// nothing here runs.
+(function () {
+  var form = document.getElementById('check');
+  if (!form || !window.matchMedia) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  form.classList.add('hc-live');
+  if (!('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function (entries) {
+    form.classList.toggle('hc-off', !entries[0].isIntersecting);
+  }, { rootMargin: '60px 0px' }).observe(form);
 })();
 
 // Hero cards: their CSS stories start on the finished picture and wait (paused) until they're in view.
@@ -2257,6 +2846,380 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   else if (wide.addListener) wide.addListener(restart);
 })();
 
+// 12w-why.js
+(function () {
+  // Why now: each big number rolls up like a counter the first time its card comes into view. The digits
+  // stay real text in the page (they hold the width, and copy and find in page use them); the rolling strips
+  // are a visual layer on top, hidden from screen readers, which get a plain copy of the number instead.
+  // Skipped without IntersectionObserver, for reduced motion, for crawlers, and for numbers already on screen
+  // at load. The strips' digits are drawn by CSS (::before), so the page text stays just the real numbers.
+  var root = document.getElementById('why');
+  if (!root || !('IntersectionObserver' in window)) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (/bot|crawl|spider|slurp|lighthouse|facebookexternalhit|embedly|preview/i.test(navigator.userAgent || '')) return;
+  var vh = window.innerHeight || document.documentElement.clientHeight;
+  var nums = Array.prototype.slice.call(root.querySelectorAll('.why-num'));
+  var todo = nums.filter(function (p) { return p.getBoundingClientRect().top > vh - 8; });
+  if (!todo.length) return;
+
+  function digitsNode(el) {
+    var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        if (n.parentNode.closest && n.parentNode.closest('.why-sr')) return NodeFilter.FILTER_REJECT;
+        return /^\s*\d+\s*$/.test(n.data) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+      }
+    });
+    return w.nextNode();
+  }
+  // "nearly 60×", "60%": the words before the number get a space, the unit sits on it.
+  function plain(p) {
+    return Array.prototype.map.call(p.childNodes, function (n) {
+      var t = n.textContent.trim();
+      return n.nodeType === 1 && n.classList.contains('why-pre') ? t + ' ' : t;
+    }).join('').replace(/\s+/g, ' ').trim();
+  }
+
+  var cards = [];
+  todo.forEach(function (p) {
+    var t = digitsNode(p);
+    if (!t) return;
+    var digits = t.data.trim();
+    if (!p.querySelector('.why-sr')) {
+      var sr = document.createElement('span');
+      sr.className = 'why-sr';
+      sr.textContent = plain(p);
+      var vis = document.createElement('span');
+      vis.setAttribute('aria-hidden', 'true');
+      while (p.firstChild) vis.appendChild(p.firstChild);
+      p.appendChild(vis);
+      p.appendChild(sr);
+    }
+    var frag = document.createDocumentFragment();
+    var cols = [];
+    digits.split('').forEach(function (d, i) {
+      var last = i === digits.length - 1;
+      var seq = last ? '01234567890123456789' : '0123456789';
+      var col = document.createElement('span');
+      col.className = 'why-dg';
+      var hold = document.createElement('span');
+      hold.className = 'why-dg-hold';
+      hold.textContent = d;
+      var strip = document.createElement('span');
+      strip.className = 'why-dg-strip';
+      strip.setAttribute('data-seq', seq.split('').join('\n'));
+      col.appendChild(hold);
+      col.appendChild(strip);
+      frag.appendChild(col);
+      // the last digit spins one full turn before it lands; the others count straight up
+      cols.push({ strip: strip, to: (last ? 10 : 0) + Number(d), i: i });
+    });
+    t.parentNode.replaceChild(frag, t);
+    p.classList.add('why-roll');
+    cards.push({ el: p.closest('.why-stat') || p, cols: cols });
+  });
+  if (!cards.length) return;
+
+  var io = new IntersectionObserver(function (entries) {
+    var n = 0;
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      io.unobserve(en.target);
+      cards.forEach(function (c) {
+        if (c.el !== en.target) return;
+        var base = 250 + n++ * 120; // just after the card has risen in
+        c.cols.forEach(function (col) {
+          col.strip.style.transitionDelay = (base + col.i * 70) + 'ms';
+          col.strip.style.transform = 'translate3d(0, ' + -col.to + 'em, 0)';
+        });
+      });
+    });
+  }, { rootMargin: '0px 0px -10% 0px', threshold: 0.45 });
+  cards.forEach(function (c) { io.observe(c.el); });
+})();
+
+// 20m-money.js
+// "See the sales you can trace back to AI": the clickable sample app (CSS in 20m-money.css).
+// Tabs (arrow keys, Home, End), a period switch whose numbers count to the new values, questions whose
+// rows and AI dots show that AI's answer (left and right arrows on a row switch AI), and a fix that can be
+// approved and undone: approving also marks the question it helps in Questions. Motion starts when the app
+// scrolls into view; with reduced motion every change is instant and nothing animates.
+(function () {
+  var root = document.getElementById('money');
+  if (!root) return;
+  root.classList.add('scr-js'); // the app works: show the hint, let the buttons take clicks
+  var stage = root.querySelector('.scr-stage');
+  var app = root.querySelector('.scr-app');
+  var list = root.querySelector('.scr-tabs');
+  if (!stage || !app || !list) return;
+  var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+  var live = root.querySelector('#scr-live');
+  var rm = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  function still() { return !!(rm && rm.matches); }
+  function $(sel, el) { return (el || root).querySelector(sel); }
+  function $$(sel, el) { return Array.prototype.slice.call((el || root).querySelectorAll(sel)); }
+
+  // Restart a CSS animation class (remove, force a reflow, add back).
+  function play(el, cls) {
+    if (!el || still()) return;
+    el.classList.remove(cls);
+    void el.offsetWidth;
+    el.classList.add(cls);
+  }
+  // Screen readers hear changes once, in plain words.
+  function say(text) {
+    if (!live) return;
+    live.textContent = '';
+    setTimeout(function () { live.textContent = text; }, 60);
+  }
+
+  // ---------- numbers ----------
+  function commas(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  var fmt = {
+    aud: function (n) { return 'A$' + commas(n); },
+    int: function (n) { return commas(n); },
+    pct: function (n) { return Math.round(n) + '%'; }
+  };
+  // Sample data. Sources add up to the revenue in both periods.
+  var periods = {
+    m: { rev: 4820, ord: 61, clk: 1940, revd: 38, ordd: 22, clkd: 51, src: [2640, 880, 760, 540], visd: '▲ 4 in 4 weeks', spark: [34, 35, 35, 37, 38], label: 'Last 4 weeks' },
+    all: { rev: 17350, ord: 224, clk: 7310, revd: 29, ordd: 18, clkd: 44, src: [10960, 2740, 2190, 1460], visd: '▲ 9 since joining', spark: [29, 30, 29, 32, 33, 35, 36, 38], label: 'Since joining' }
+  };
+  var fields = [
+    { k: 'rev', f: fmt.aud }, { k: 'ord', f: fmt.int }, { k: 'clk', f: fmt.int },
+    { k: 'revd', f: fmt.pct }, { k: 'ordd', f: fmt.pct }, { k: 'clkd', f: fmt.pct },
+    { k: 's0', f: fmt.aud, i: 0 }, { k: 's1', f: fmt.aud, i: 1 }, { k: 's2', f: fmt.aud, i: 2 }, { k: 's3', f: fmt.aud, i: 3 },
+    { k: 'tot', f: fmt.aud, from: 'rev' }
+  ];
+  fields.forEach(function (d) { d.el = $('[data-k="' + d.k + '"]'); d.cur = 0; });
+  function valueOf(d, p) { return d.i !== undefined ? p.src[d.i] : p[d.from || d.k]; }
+
+  var raf = 0;
+  // Count every number from where it is now to period p (instant with reduced motion).
+  function countTo(p, ms, fromZero) {
+    cancelAnimationFrame(raf);
+    var from = fields.map(function (d) { return fromZero ? 0 : d.cur; });
+    var to = fields.map(function (d) { return valueOf(d, p); });
+    function paint(t) {
+      fields.forEach(function (d, i) {
+        d.cur = from[i] + (to[i] - from[i]) * t;
+        if (d.el) d.el.textContent = d.f(d.cur);
+      });
+    }
+    if (still() || !ms) { paint(1); return; }
+    var t0 = 0;
+    function step(now) {
+      if (!t0) t0 = now;
+      var x = Math.min(1, (now - t0) / ms);
+      paint(1 - Math.pow(1 - x, 3));
+      if (x < 1) raf = requestAnimationFrame(step);
+    }
+    raf = requestAnimationFrame(step);
+  }
+
+  // Bars: --w is the share of the biggest source; --from is where the bar starts its animation.
+  var bars = $$('.scr-srcbars .scr-grow');
+  function setBars(p, fromOld) {
+    var max = Math.max.apply(null, p.src);
+    bars.forEach(function (b, i) {
+      var w = (p.src[i] / max).toFixed(3);
+      b.style.setProperty('--from', fromOld ? (b.style.getPropertyValue('--w') || '0') : '0');
+      b.style.setProperty('--w', w);
+    });
+  }
+
+  // Sparkline: same scale in both periods, so the dashed starting line (score 29) never moves.
+  var spark = $('.scr-spark');
+  var line = $('.scr-sp-line');
+  var area = $('.scr-sp-area');
+  var dots = $$('.scr-sp-dot, .scr-sp-halo');
+  function y(s) { return (52.2 - (s - 29) * 4.6).toFixed(1); }
+  function setSpark(p) {
+    var n = p.spark.length - 1;
+    var pts = p.spark.map(function (s, i) { return (i * 300 / n).toFixed(1) + ',' + y(s); });
+    var d = 'M' + pts.join(' L');
+    if (line) line.setAttribute('d', d);
+    if (area) area.setAttribute('d', d + ' L300,72 L0,72 Z');
+    dots.forEach(function (c) { c.setAttribute('cy', y(p.spark[n])); });
+  }
+
+  var seg = $('.scr-seg');
+  var segBtns = $$('.scr-seg button');
+  var visd = $('[data-k="visd"]');
+  var period = 'm';
+  function setPeriod(key) {
+    if (key === period || !periods[key]) return;
+    period = key;
+    var p = periods[key];
+    segBtns.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-period') === key ? 'true' : 'false'); });
+    if (seg) seg.setAttribute('data-p', key);
+    $('#scr-p-money').classList.remove('is-enter');
+    countTo(p, 700);
+    setBars(p, true);
+    play($('.scr-srcbars'), 'is-grow');
+    setSpark(p);
+    play(spark, 'is-draw');
+    if (visd) visd.textContent = p.visd;
+    say(p.label + ': ' + fmt.aud(p.rev) + ' from ' + p.ord + ' AI orders and ' + commas(p.clk) + ' AI clicks.');
+  }
+  segBtns.forEach(function (b) {
+    b.addEventListener('click', function () { setPeriod(b.getAttribute('data-period')); });
+  });
+
+  // ---------- tabs ----------
+  function panelOf(tab) { return document.getElementById(tab.getAttribute('aria-controls')); }
+  function enter(panel) {
+    if (still() || !panel) return;
+    play(panel, 'is-enter');
+    if (panel.id === 'scr-p-money') {
+      setBars(periods[period], false);
+      play($('.scr-srcbars'), 'is-grow');
+      play(spark, 'is-draw');
+    } else if (panel.id === 'scr-p-q') {
+      play($('.scr-qs'), 'is-pop');
+    } else if (panel.id === 'scr-p-riv') {
+      play($('.scr-rvl'), 'is-grow');
+    }
+  }
+  function select(tab, focus) {
+    var idx = tabs.indexOf(tab);
+    if (idx < 0) return;
+    var changed = tab.getAttribute('aria-selected') !== 'true';
+    tabs.forEach(function (t, i) {
+      var on = i === idx;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      var p = panelOf(t);
+      if (p) p.classList.toggle('is-on', on);
+    });
+    list.style.setProperty('--n', idx);
+    if (focus) tab.focus();
+    if (changed) enter(panelOf(tab));
+  }
+  tabs.forEach(function (tab, i) {
+    tab.addEventListener('click', function () { select(tab, false); });
+    tab.addEventListener('keydown', function (e) {
+      var next = null;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = tabs[(i + 1) % tabs.length];
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = tabs[(i - 1 + tabs.length) % tabs.length];
+      else if (e.key === 'Home') next = tabs[0];
+      else if (e.key === 'End') next = tabs[tabs.length - 1];
+      if (next) { e.preventDefault(); select(next, true); }
+    });
+  });
+  // The nav is a column in a wide app and a row of tabs in a narrower one (same 860px as the CSS).
+  function orient() { list.setAttribute('aria-orientation', app.offsetWidth > 860 ? 'vertical' : 'horizontal'); }
+  orient();
+  window.addEventListener('resize', orient);
+
+  // ---------- questions ----------
+  // A row shows its first AI's answer; a dot shows that AI's answer (#scr-an-<question>-<AI>).
+  var qs = $$('.scr-q');
+  var answers = $$('.scr-an');
+  var go = $('.scr-go');
+  var curQ = 0, curE = 0;
+  function showAnswer(qi, e, animate) {
+    var id = 'scr-an-' + qi + '-' + e;
+    qs.forEach(function (o, j) {
+      o.setAttribute('aria-pressed', j === qi ? 'true' : 'false');
+      $$('.scr-st', o).forEach(function (c) { c.classList.toggle('is-sel', j === qi && +c.getAttribute('data-e') === e); });
+    });
+    answers.forEach(function (a) { a.classList.toggle('is-on', a.id === id); });
+    if (go) {
+      var fixable = qs[qi].hasAttribute('data-fix');
+      go.classList.toggle('is-shown', fixable);
+      go.tabIndex = fixable ? 0 : -1;
+      if (fixable) go.removeAttribute('aria-hidden'); else go.setAttribute('aria-hidden', 'true');
+    }
+    if (animate) play(document.getElementById(id), 'is-enter');
+    curQ = qi; curE = e;
+  }
+  qs.forEach(function (q, i) {
+    var first = +q.getAttribute('data-e') || 0;
+    q.addEventListener('click', function (ev) {
+      var dot = ev.target && ev.target.closest ? ev.target.closest('.scr-st') : null;
+      var e = dot ? +dot.getAttribute('data-e') : (i === curQ ? curE : first);
+      if (i !== curQ || e !== curE) showAnswer(i, e, true);
+    });
+    q.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'ArrowRight' && ev.key !== 'ArrowLeft') return;
+      ev.preventDefault();
+      var e = i === curQ ? curE : first;
+      showAnswer(i, (e + (ev.key === 'ArrowRight' ? 1 : 2)) % 3, true);
+    });
+  });
+  if (qs.length) showAnswer(0, +qs[0].getAttribute('data-e') || 0, false);
+  $$('[data-go]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = document.getElementById(b.getAttribute('data-go'));
+      if (t) select(t, true);
+    });
+  });
+
+  // ---------- fix: approve and undo ----------
+  // Approving shows the fix as live, says when GEO asks AI again, takes one off the Fixes count and marks
+  // the question it helps in Questions. Undo puts all of it back.
+  var fix = $('.scr-fix');
+  var approve = $('.scr-approve');
+  var undo = $('.scr-undo');
+  var badge = $('.scr-badge');
+  var chip = $('.scr-q-live');
+  var hideable = [undo, $('.scr-next'), $('.scr-fs-done')];
+  var todo = $('.scr-fs-todo');
+  function setDone(done) {
+    fix.classList.toggle('is-done', done);
+    approve.disabled = done;
+    undo.tabIndex = done ? 0 : -1;
+    hideable.forEach(function (el) { if (!el) return; if (done) el.removeAttribute('aria-hidden'); else el.setAttribute('aria-hidden', 'true'); });
+    if (todo) { if (done) todo.setAttribute('aria-hidden', 'true'); else todo.removeAttribute('aria-hidden'); }
+    if (badge) { badge.textContent = done ? '1' : '2'; play(badge, 'is-bump'); }
+    if (chip) { chip.hidden = !done; if (done) play(chip, 'is-enter'); }
+    (done ? undo : approve).focus();
+    say(done ? 'Pushed to Shopify. GEO asks AI again on Monday. You can undo it.' : 'Undone. The old description is back.');
+  }
+  if (fix && approve && undo) {
+    approve.addEventListener('click', function () { if (!fix.classList.contains('is-done')) setDone(true); });
+    undo.addEventListener('click', function () { if (fix.classList.contains('is-done')) setDone(false); });
+  }
+
+  // ---------- first look + nudge ----------
+  // Before the app is in view: frame tipped back, numbers at zero, bars empty. In view: it all plays once.
+  // Then a soft ring on the Questions tab asks for a click, until anyone clicks or types in the app.
+  var touched = false;
+  var nudgeTimer = 0;
+  function stopNudge() {
+    touched = true;
+    clearTimeout(nudgeTimer);
+    tabs.forEach(function (t) { t.classList.remove('is-nudge'); });
+  }
+  app.addEventListener('pointerdown', stopNudge);
+  app.addEventListener('keydown', stopNudge);
+
+  countTo(periods.m, 0);
+  // Crawlers and link previews get the finished screen straight away.
+  var bot = /bot|crawl|spider|slurp|lighthouse|facebookexternalhit|embedly|preview/i.test(navigator.userAgent || '');
+  if (still() || bot || !('IntersectionObserver' in window)) return;
+  stage.classList.add('scr-wait');
+  fields.forEach(function (d) { d.cur = 0; if (d.el) d.el.textContent = d.f(0); });
+
+  var seen = false;
+  new IntersectionObserver(function (entries) {
+    var en = entries[0];
+    // Only the loops (nudge ring, score ping) pause while the app is off screen; entrances play to the end.
+    stage.classList.toggle('scr-off', !en.isIntersecting);
+    var enough = en.intersectionRatio >= 0.3 || en.intersectionRect.height > window.innerHeight * 0.4;
+    if (seen || !en.isIntersecting || !enough) return;
+    seen = true;
+    stage.classList.remove('scr-wait');
+    stage.classList.add('scr-seen');
+    play($('.scr-srcbars'), 'is-grow');
+    play(spark, 'is-draw');
+    countTo(periods[period], 1100, true);
+    nudgeTimer = setTimeout(function () {
+      if (!touched && tabs[1] && tabs[1].getAttribute('aria-selected') !== 'true') tabs[1].classList.add('is-nudge');
+    }, 2600);
+  }, { threshold: [0, 0.15, 0.3, 0.45, 0.6] }).observe(stage);
+})();
+
 // 20w-worth.js
 (function () {
   var root = document.getElementById('worth');
@@ -2268,8 +3231,10 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   var ordersOut = root.querySelector('#worth-orders-out');
   var month = root.querySelector('#worth-month');
   var year = root.querySelector('#worth-year');
+  var out = root.querySelector('.worth-out');
   var sum = root.querySelector('#worth-sum');
   var sumYr = root.querySelector('#worth-sum-yr');
+  var calm = !window.requestAnimationFrame || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
   // Plain "$" with thousands commas ($12,000). No currency conversion.
   function money(n) {
@@ -2285,6 +3250,26 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
     input.parentNode.style.setProperty('--p', p.toFixed(4));
   }
 
+  // The big monthly and yearly numbers glide to their new values (about 0.4s) instead of jumping.
+  // Screen readers get the final sum straight away from the live region below.
+  var shown = null, from = null, to = null, t0 = 0, raf = 0;
+  function draw(v) { setText(month, money(v.m)); setText(year, money(v.y)); }
+  function frame(now) {
+    if (!t0) t0 = now;
+    var k = Math.min(1, (now - t0) / 420);
+    var e = 1 - Math.pow(1 - k, 3);
+    shown = { m: from.m + (to.m - from.m) * e, y: from.y + (to.y - from.y) * e };
+    draw(k < 1 ? shown : to);
+    raf = k < 1 ? requestAnimationFrame(frame) : 0;
+  }
+  function show(m, y) {
+    to = { m: m, y: y };
+    if (calm || !shown) { shown = to; draw(to); return; }
+    from = shown;
+    t0 = 0;
+    if (!raf) raf = requestAnimationFrame(frame);
+  }
+
   function update() {
     var a = Number(aov.value);
     var o = Number(orders.value);
@@ -2295,8 +3280,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
     orders.setAttribute('aria-valuetext', o + ' ' + word + ' a month');
     setText(aovOut, money(a));
     setText(ordersOut, String(o));
-    setText(month, money(m));
-    setText(year, money(y));
+    show(m, y);
     fill(aov);
     fill(orders);
     // Only changes when the numbers change, so the live region never repeats itself.
@@ -2305,8 +3289,20 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
     setText(sumYr, ', or ' + money(y) + ' a year.');
   }
 
+  // When a slider is let go (or stepped with the keyboard), the result swells a touch and its ring glows.
+  function bump() {
+    if (calm || !out || typeof out.animate !== 'function') return;
+    var ease = 'cubic-bezier(.3, .7, .3, 1)';
+    [month, year].forEach(function (el) {
+      if (el) el.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.035)' }, { transform: 'scale(1)' }], { duration: 480, easing: ease });
+    });
+    try { out.animate([{ opacity: 0 }, { opacity: 1, offset: 0.25 }, { opacity: 0 }], { duration: 720, easing: 'ease-out', pseudoElement: '::after' }); } catch (e) { /* older browsers: no ring */ }
+  }
+
   aov.addEventListener('input', update);
   orders.addEventListener('input', update);
+  aov.addEventListener('change', bump);
+  orders.addEventListener('change', bump);
   // The browser can restore slider positions on back/forward, so sync once on load.
   update();
 })();

@@ -22,14 +22,34 @@ describe("home page", () => {
     expect(html).toContain('href="/auth/login"');
   });
 
+  it("uses the GEO logo as its icon (svg, ico and the home screen icon)", async () => {
+    const html = await (await call("https://geo.test/")).text();
+    expect(html).toContain('<link rel="icon" href="/favicon.svg" type="image/svg+xml">');
+    expect(html).toContain('<link rel="icon" href="/favicon.ico" sizes="any">');
+    expect(html).toContain('<link rel="apple-touch-icon" href="/apple-touch-icon.png">');
+    for (const f of ["favicon.svg", "favicon.ico", "apple-touch-icon.png"]) {
+      expect(existsSync(join(imgDir, "..", "..", f)), `public/${f} is missing`).toBe(true);
+    }
+  });
+
   it("has the free product check form, which posts to /check on the live site", async () => {
     const html = await (await call("https://geo.test/")).text();
     expect(html).toContain('<form class="hero-check" id="check" method="post" action="/check">');
     expect(html).toContain('name="url"');
-    expect(html).toContain('name="country"');
     expect(html).toContain('name="website"');
+    expect(html).toContain(">Check my product</button>");
     expect(html).toContain("<script>window.GEO_LIVE=true</script>");
     expect(html).toContain('href="#check"><span class="nav-cta-long">Check a product free</span>');
+  });
+
+  it("has no country picker on the hero form (the server works out the store's country)", async () => {
+    const html = await (await call("https://geo.test/")).text();
+    const start = html.indexOf('<form class="hero-check" id="check"');
+    expect(start).toBeGreaterThan(-1);
+    const form = html.slice(start, html.indexOf("</form>", start));
+    expect(form).toContain('name="url"');
+    expect(form).not.toContain("<select");
+    expect(form).not.toContain('name="country"');
   });
 
   it("has no dead in-page links, keeps its honesty labels and only uses images that ship", async () => {

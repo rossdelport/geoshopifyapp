@@ -6,6 +6,8 @@ import { CHECK_FONT_LINKS, CheckIntro, CheckPerks, CheckShell } from "../compone
 import styles from "../styles/check.css?url";
 
 // Free product check: the form. The home page hero posts here too (plain HTML form, works without JS).
+// The form is just the product link: the check works out where the store is. An old form or link
+// that still sends `country` gets that country (createCheck checks it).
 
 export const meta: MetaFunction = () => [
   { title: "Free product check: does AI recommend your product? · GEO" },
@@ -46,7 +48,7 @@ function fromAnotherSite(request: Request): boolean {
   return !ours.includes(origin);
 }
 
-const MAX_FORM_BYTES = 8_192; // the form has 3 short fields
+const MAX_FORM_BYTES = 8_192; // the form has 2 short fields (3 on old forms)
 
 /** The posted form, or null when the body is too big to be our form. Never buffers more than the cap. */
 async function readSmallForm(request: Request): Promise<URLSearchParams | null> {
@@ -70,29 +72,29 @@ async function readSmallForm(request: Request): Promise<URLSearchParams | null> 
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   if (fromAnotherSite(request)) {
-    return data({ error: "Please start your check from the GEO website.", url: "", country: "AU" }, { status: 403 });
+    return data({ error: "Please start your check from the GEO website.", url: "" }, { status: 403 });
   }
   const form = await readSmallForm(request);
-  if (!form) return data({ error: "That was too much to send. Please paste just the product link.", url: "", country: "AU" }, { status: 413 });
+  if (!form) return data({ error: "That was too much to send. Please paste just the product link.", url: "" }, { status: 413 });
   const url = String(form.get("url") ?? "").trim();
-  const country = String(form.get("country") ?? "AU");
+  const country = form.get("country"); // old forms only
   const honeypot = String(form.get("website") ?? "");
 
   let result;
   try {
-    result = await createCheck({ url, country, ip: clientIp(request), honeypot });
+    result = await createCheck({ url, country: country ? String(country) : null, ip: clientIp(request), honeypot });
   } catch (err) {
     console.error("[check] could not start a check", err);
     result = { ok: false as const, error: "Something went wrong. Please try again." };
   }
   if (result.ok) return redirect(`/check/${result.id}`);
-  return { error: result.error, url, country };
+  return { error: result.error, url };
 };
 
 export default function CheckStart() {
   const data = useActionData<typeof action>();
   return (
-    <CheckShell hero={<CheckIntro url={data?.url} country={data?.country} error={data?.error} />}>
+    <CheckShell hero={<CheckIntro url={data?.url} error={data?.error} />}>
       <CheckPerks />
     </CheckShell>
   );

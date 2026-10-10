@@ -28,6 +28,10 @@
 .worth-art > img { display: block; width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply;
   -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent 100%); mask-image: radial-gradient(closest-side, #000 62%, transparent 100%); }
 
+/* the coins drift up and down slowly (paused off screen by 05-shared.js; still with reduced motion) */
+.worth-art > img { animation: worth-bob 8s ease-in-out infinite; }
+@keyframes worth-bob { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -10px, 0); } }
+
 /* calculator card */
 .worth-card {
   grid-area: card;
@@ -76,7 +80,11 @@
 .worth-ends { display: flex; justify-content: space-between; margin-top: 2px; font-size: 12px; line-height: 1.4; color: var(--text-2); font-variant-numeric: tabular-nums; }
 
 /* output */
-.worth-out { margin-top: 28px; padding: 20px 22px 18px; border-radius: 18px; background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-100); }
+.worth-out { position: relative; margin-top: 28px; padding: 20px 22px 18px; border-radius: 18px; background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-100); }
+/* when a slider is let go, the result numbers swell a touch and a soft cobalt ring glows for a moment
+   (20w-worth.js, Web Animations; nothing happens with reduced motion) */
+.worth-out::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; box-shadow: inset 0 0 0 1.5px rgba(64, 80, 176, 0.45), 0 0 0 5px rgba(104, 120, 216, 0.14); }
+.worth-m, .worth-y { transform-origin: 50% 80%; }
 .worth-nums { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px 20px; }
 .worth-big, .worth-yr { display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
 .worth-m { font-family: var(--font-head); font-size: 52px; font-weight: 500; letter-spacing: -2px; line-height: 1; color: var(--cobalt); }

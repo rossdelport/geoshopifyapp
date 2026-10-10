@@ -9,9 +9,8 @@ vi.mock("../app/lib/check.server", () => ({ createCheck: vi.fn(), getCheckView: 
 const { createCheck, getCheckView, getCheckUrl } = await import("../app/lib/check.server");
 const { action } = await import("../app/routes/check._index");
 const { loader } = await import("../app/routes/check.$id");
-const { CheckFailed, CheckForm, CheckIntro, CheckPerks, CheckReport, CheckRunning, highlightSegments, stepIndex } = await import(
-  "../app/components/check-ui"
-);
+const { CheckFailed, CheckForm, CheckIntro, CheckPerks, CheckReport, CheckRunning, ProductCard, checkedLine, highlightSegments, stepIndex } =
+  await import("../app/components/check-ui");
 
 const post = (fields: Record<string, string>, headers: Record<string, string> = {}) =>
   action({
@@ -87,22 +86,28 @@ beforeEach(() => {
 });
 
 describe("POST /check", () => {
-  it("starts a check with the visitor's IP and goes to the report page", async () => {
+  it("starts a check with the visitor's IP and goes to the report page (no country: the check finds it)", async () => {
     vi.mocked(createCheck).mockResolvedValue({ ok: true, id: "ck1" });
     const res = (await post(
-      { url: " coolabahgrooming.com.au/products/oil ", country: "NZ", website: "" },
+      { url: " coolabahgrooming.com.au/products/oil ", website: "" },
       { "x-real-ip": "203.0.113.9", "x-forwarded-for": "6.6.6.6, 203.0.113.9" },
     )) as Response;
     expect(res.status).toBe(302);
     expect(res.headers.get("location")).toBe("/check/ck1");
+    expect(createCheck).toHaveBeenCalledWith({ url: "coolabahgrooming.com.au/products/oil", country: null, ip: "203.0.113.9", honeypot: "" });
+  });
+
+  it("still passes on the country an old form sends", async () => {
+    vi.mocked(createCheck).mockResolvedValue({ ok: true, id: "ck1" });
+    await post({ url: "coolabahgrooming.com.au/products/oil", country: "NZ", website: "" }, { "x-real-ip": "203.0.113.9" });
     expect(createCheck).toHaveBeenCalledWith({ url: "coolabahgrooming.com.au/products/oil", country: "NZ", ip: "203.0.113.9", honeypot: "" });
   });
 
   it("falls back to the last x-forwarded-for entry and passes the spam trap through", async () => {
     vi.mocked(createCheck).mockResolvedValue({ ok: false, error: "Something went wrong. Please try again." });
     const res = await post({ url: "x.com/products/a", website: "spam" }, { "x-forwarded-for": "6.6.6.6, 198.51.100.4" });
-    expect(createCheck).toHaveBeenCalledWith({ url: "x.com/products/a", country: "AU", ip: "198.51.100.4", honeypot: "spam" });
-    expect(res).toEqual({ error: "Something went wrong. Please try again.", url: "x.com/products/a", country: "AU" });
+    expect(createCheck).toHaveBeenCalledWith({ url: "x.com/products/a", country: null, ip: "198.51.100.4", honeypot: "spam" });
+    expect(res).toEqual({ error: "Something went wrong. Please try again.", url: "x.com/products/a" });
   });
 
   it("refuses posts from other websites", async () => {
@@ -195,6 +200,10 @@ describe("report page", () => {
     expect(html).toContain('href="/#check"');
     // Honest about what's free: the first scan is; weekly tracking and fixes are the paid plan, after a trial.
     expect(html).toContain("Install GEO: first scan free");
+    // The closing card says what GEO is for, and only claims the orders it can trace.
+    expect(html).toContain("Help AI recommend you, every week");
+    expect(html).toContain("counts the orders it can trace back to AI");
+    expect(html).not.toContain("orders AI sends you");
     expect(html).toContain("Core is US$49 a month after a 7-day free trial.");
     expect(html).not.toContain("Install GEO free");
     expect(html).toContain("What to fix first");
@@ -226,13 +235,58 @@ describe("report page", () => {
     expect(html).toContain('value="x.com"');
   });
 
-  it("renders the /check start page: the form and what the report shows", () => {
+  it("renders the /check start page: the link box, the button and what the report shows", () => {
     const html = renderToStaticMarkup(createElement("div", null, createElement(CheckIntro, {}), createElement(CheckPerks)));
     expect(html).toContain("Does AI recommend your product?");
     expect(html).toContain('action="/check"');
-    for (const field of ['name="url"', 'name="country"', 'name="website"']) expect(html).toContain(field);
+    for (const field of ['name="url"', 'name="website"']) expect(html).toContain(field);
+    // No country to pick: the check works out where the store is.
+    expect(html).not.toContain("<select");
+    expect(html).not.toContain('name="country"');
+    expect(html).toContain('class="ck-form-glow"');
+    expect(html).toContain('<span class="ck-sr">Product link</span>');
     expect(html).toContain("What to fix first");
     expect(html).toContain("Why we ask twice:");
+    expect(html).not.toMatch(/[\u2014\u2013]/);
+  });
+
+  it("names the shopper country only once the check knows it", () => {
+    const reading = renderToStaticMarkup(createElement(ProductCard, { product: null, country: null }));
+    expect(reading).toContain("Checked on ChatGPT, Gemini and Perplexity · 3 questions, each asked twice");
+    expect(reading).not.toContain("shopper in");
+    const store = renderToStaticMarkup(createElement(ProductCard, { product: { ...doneView.product!, countryFrom: "store" }, country: "NZ", done: true }));
+    expect(store).toContain("Checked on ChatGPT, Gemini and Perplexity as a shopper in New Zealand (where your store is) · 3 questions, each asked twice");
+    expect(store).not.toContain("Wrong country?"); // the shop's own settings: nothing to correct
+    expect(checkedLine("GB", "domain")).toContain("as a shopper in the UK (where your store is)");
+    // A guess says so; a weak sign or an old check: just the country.
+    expect(checkedLine("AU", "default")).toBe(
+      "Checked on ChatGPT, Gemini and Perplexity as a shopper in Australia (we couldn’t tell where your store is) · 3 questions, each asked twice",
+    );
+    expect(checkedLine("AU", "unsupported")).toBe(
+      "Your store is in a country we don’t check yet, so we asked ChatGPT, Gemini and Perplexity as a shopper in Australia · 3 questions, each asked twice",
+    );
+    expect(checkedLine("US", "currency")).toBe("Checked on ChatGPT, Gemini and Perplexity as a shopper in the US · 3 questions, each asked twice");
+    expect(checkedLine("CA")).toBe("Checked on ChatGPT, Gemini and Perplexity as a shopper in Canada · 3 questions, each asked twice");
+  });
+
+  it("lets the visitor correct a guessed country on the finished report", () => {
+    const product = { ...doneView.product!, countryFrom: "default" as const };
+    const html = renderToStaticMarkup(createElement(ProductCard, { product, country: "AU", done: true }));
+    expect(html).toContain("Wrong country? Check again as a shopper in");
+    expect(html).toContain('<form class="ck-country" method="post" action="/check">');
+    expect(html).toContain(`<input type="hidden" name="url" value="${product.url}"/>`);
+    for (const c of ["NZ", "US", "GB", "CA"]) expect(html).toContain(`name="country" value="${c}"`);
+    expect(html).not.toContain('value="AU"'); // not the country it already used
+    for (const how of ["unsupported", "language", "currency"] as const) {
+      const guess = renderToStaticMarkup(createElement(ProductCard, { product: { ...product, countryFrom: how }, country: "GB", done: true }));
+      expect(guess).toContain("Wrong country?");
+      expect(guess).not.toContain('value="GB"');
+    }
+    // Not while the check is running, not for the shop's own settings or web address, not for a chosen country.
+    expect(renderToStaticMarkup(createElement(ProductCard, { product, country: "AU" }))).not.toContain("Wrong country?");
+    for (const how of ["store", "domain", "chosen"] as const) {
+      expect(renderToStaticMarkup(createElement(ProductCard, { product: { ...product, countryFrom: how }, country: "AU", done: true }))).not.toContain("Wrong country?");
+    }
     expect(html).not.toMatch(/[\u2014\u2013]/);
   });
 
@@ -243,6 +297,7 @@ describe("report page", () => {
     expect(html).toContain("<b>https://shop.com/products/typo</b>");
     expect(html).toContain('value="https://shop.com/products/typo"');
     expect(html).toContain('action="/check"');
+    expect(html).not.toContain("<select");
   });
 
   it("renders progress while running", () => {

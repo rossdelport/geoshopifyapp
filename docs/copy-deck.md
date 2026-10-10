@@ -2,7 +2,8 @@
 
 Written for the redesign in `docs/redesign-brief.md`. External facts come only from `docs/facts.md`.
 Product facts come from `CLAUDE.md`. Sections 1 to 12 are the lean home page as built in
-`design/overview/parts/*.html` (rewritten 10 Oct 2026: about 750 words, down from 5,716).
+`design/overview/parts/*.html` (rewritten 10 Oct 2026: about 750 words, down from 5,716; copy pass the same day for the
+"recommended in AI answers" message, now about 920 words with the clickable sample app).
 
 > ### Copy rules (every writer, every line)
 >
@@ -29,12 +30,19 @@ Product facts come from `CLAUDE.md`. Sections 1 to 12 are the lean home page as 
 >    Say "the recommendation inside the answer isn't for sale".
 > 10. **No promises.** Use "can", "helps", "if". Never "will get you", "more sales" or a date. Never say
 >     AI growth was caused by GEO. Sample numbers sit in frames tagged "Sample data".
-> 11. **Keep it lean.** The whole home page stays under 1,600 words. Headlines up to about 8 words,
+> 11. **Keep it lean.** The whole home page stays under 1,000 words. Headlines up to about 8 words,
 >     supporting lines up to about 15. GEO "counts the orders it can trace back to AI", never "every order".
 
 ---
 
 ## 0. Read this first
+
+### The one thing a skimmer must get
+
+GEO helps get **your products and brand recommended** when shoppers ask ChatGPT, Gemini, Perplexity
+and Google's AI what to buy, and counts the sales it can trace back to AI. Every section heading carries part of
+this. Vary the verb (recommend, name, pick, suggest) so it never reads like a slogan. Always "helps" or
+"can": never "guarantees", "will rank" or "#1".
 
 ### The big message (one paragraph)
 
@@ -148,8 +156,8 @@ live test (The Groomed Man Co, A Better, Bold & Bare, Milkman) in sample data.
 ## 1. Page meta (`assemble.mjs`)
 
 - **Title:** GEO · The free sales channel your store is missing
-- **Meta description:** Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO helps AI recommend
-  your Shopify store, then counts the orders it can trace back to AI.
+- **Meta description:** Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO helps your Shopify
+  products get recommended in those AI answers, then counts the orders it can trace back to AI.
 - **Logo aria-label (nav and footer):** GEO, back to top
 
 ---
@@ -157,7 +165,7 @@ live test (The Groomed Man Co, A Better, Bold & Bare, Milkman) in sample data.
 ## 2. Page outline (lean page, 10 Oct 2026)
 
 Ross: "Remove like 70% of the words. It needs to be super easy to skim and see how it makes my users more
-money." The page went from 5,716 visible words to about 750. **Budget: 1,600 words for the whole page.**
+money." The page went from 5,716 visible words to about 750. **Budget: 1,000 words for the whole page.**
 Headlines up to about 8 words, supporting lines up to about 15. Prefer numbers, pictures and white space
 to sentences. Each section says one thing; don't repeat another section's job.
 
@@ -167,11 +175,11 @@ to sentences. Each section says one thing; don't repeat another section's job.
 | 2 | Hero | `11-hero.html` | `overview`, form `check` | Headline, one line, free check, 3 story cards |
 | 3 | Engines strip | `12-engines.html` | | Which AI we check |
 | 4 | Why now | `12w-why.html` | `why` | Three big numbers with sources |
-| 5 | How it works | `20-how.html` | `how` | See it, fix it, see the money |
-| 6 | See the money | `20m-money.html` | `money` | One dashboard mockup |
+| 5 | How it works | `20-how.html` | `how` | How GEO helps you get recommended: see it, fix it, see the money |
+| 6 | See the sales | `20m-money.html` | `money` | Clickable sample app: Money, Questions, Fixes, Rivals |
 | 7 | What's it worth | `20w-worth.html` | `worth` | Two sliders and the sum |
 | 8 | Pricing | `42-pricing.html` | `pricing` | Three cards, 4 bullets each |
-| 9 | FAQ | `43-faq.html` | `faq` | Six questions in the chat |
+| 9 | FAQ | `43-faq.html` | `faq` | Six questions in the chat, "What does GEO actually do?" first |
 | 10 | Closing CTA + footer | `45-cta-footer.html` | `contact` | Back to the free check |
 
 Removed on 10 Oct 2026 (don't bring back without asking Ross): How AI decides (`12y-decide`), Meet GEO
@@ -181,7 +189,7 @@ now three chips in How it works), fix engine (`31-fixengine`), the old How it wo
 
 No eyebrow label chips above the section headings (they repeated the H2). Each message is said once:
 the ~50M number only in Why now; "no cost per click" in hero card 3 (and FAQ 5 lists the clicks as free);
-"the sales you can trace back to AI" only in the hero line (FAQ and the dashboard don't repeat it).
+"counts the orders it can trace back to AI" in the meta description; FAQ 2 explains how we trace them.
 
 ---
 
@@ -196,11 +204,14 @@ the ~50M number only in Why now; "no cost per click" in hero card 3 (and FAQ 5 l
 
 - **Pill** (plain label, not a link): **AU & NZ** For Shopify stores
 - **H1 (fixed):** The free sales channel `<br class="hero-br">` your store is missing
-- **Line:** GEO helps ChatGPT & co recommend your products, then shows the sales you can trace back to AI.
-- **Free check form** (`#check`, posts to `/check`): placeholder "Paste a product link, e.g.
-  yourstore.com/products/..." (phones: "Paste your product link"), country (Australia, New Zealand, USA,
-  UK, Canada), button **Check my product** (busy: "Starting your check…").
-- **Under the form:** Free check. No sign-up. Results usually in a few minutes.
+- **Line:** GEO helps your products get recommended in ChatGPT, Gemini and Perplexity answers, then shows the
+  sales you can trace back to AI. (Honesty rule: every line about sales keeps "can trace", never "the sales
+  AI sends".)
+- **Free check form** (`#check`, posts to `/check`): placeholder "Paste your product link" in the page (it
+  fits phones, also without JavaScript); wider screens swap in "Paste a product link, e.g.
+  yourstore.com/products/...". Button **Check my product** (busy: "Starting your check…"). No country
+  picker: the check works out where the store is. A soft light travels slowly round the link box.
+- **Under the form:** See if AI recommends your product. Free, no sign-up, usually a few minutes.
 - **Cards:**
 
 | Card | Title | Line |
@@ -217,7 +228,7 @@ Card lines stay at 8 words or fewer. On phones (760px and below) the cards sit i
 
 ## 5. Engines strip (`12-engines.html`)
 
-- **Title:** Checks the AI your shoppers ask, right inside Shopify
+- **Title:** The AI your shoppers ask, checked every week
 - **Logos:** ChatGPT, Gemini, Perplexity, Google AI Overviews, Claude (tag "GEO Pro", so it doesn't read as
   Anthropic's Claude Pro). Shopify is not in the row: it isn't an AI shoppers ask.
 
@@ -237,12 +248,12 @@ Card lines stay at 8 words or fewer. On phones (760px and below) the cards sit i
 
 ## 7. How it works (`20-how.html`, id `how`)
 
-- **H2:** How GEO helps you earn from AI
+- **H2:** How GEO helps you get recommended
 
 | Step | Image | Title | Line |
 |---|---|---|---|
-| 1 | `clay-magnifier.jpg` | See who AI picks instead | We ask ChatGPT, Gemini and Perplexity your buyers' questions every week. |
-| 2 | `clay-shield.jpg` | Fix it in one click | GEO writes clearer product pages that AI can quote. |
+| 1 | `clay-magnifier.jpg` | See if AI recommends you | We ask ChatGPT, Gemini and Perplexity your buyers' questions every week. |
+| 2 | `clay-shield.jpg` | Fix it in one click | GEO writes clearer product pages, so AI can pick you. |
 | 3 | `clay-money.jpg` | See the money | Orders, revenue and clicks from AI, against your starting point. |
 
 Safeguard chips, one centred row under the three cards (they replace the guardrails section):
@@ -250,14 +261,23 @@ Safeguard chips, one centred row under the three cards (they replace the guardra
 
 ---
 
-## 8. See the money (`20m-money.html`, id `money`)
+## 8. See the sales (`20m-money.html`, id `money`)
 
-- **H2:** Your AI sales, in one screen (no lead line: the Sample data tag and the dashboard make the point)
-- **Mockup** [SAMPLE], tag **Sample data**: Coolabah Grooming Co. · "Money from AI" · "Last 4 weeks" (a plain
-  label, not a switch)
-  - AI revenue **A$4,820** ▲ 38% · AI orders **61** ▲ 22% · AI clicks **1,940** ▲ 51% · "Change vs your starting point"
-  - By source: ChatGPT A$2,640 · Perplexity A$880 · Gemini A$760 · Other A$540 · Total A$4,820
-  - Visibility score **38**/100 ▲ 9 since joining · "How often AI names you"
+- **H2:** See the sales you can trace back to AI · hint chip **Try the app** (shown only when the app works,
+  i.e. with JavaScript)
+- **Clickable sample app** [SAMPLE], tag **Sample data**, store Coolabah Grooming Co. Four tabs:
+  - **Money** ("Money from AI", switch "Last 4 weeks / Since joining"): AI revenue A$4,820 / A$17,350,
+    AI orders 61 / 224, AI clicks 1,940 / 7,310, "▲ Change vs your starting point" (not on phones); By
+    source bars; Visibility score 38/100, "How often AI names you".
+  - **Questions** (panel title **Does AI name you?**, "Asked every week", first column header "Pick a
+    question"): three buyer questions with a named / not named mark per AI. A row shows its first AI's
+    answer; each mark shows that AI's answer (9 short sample answers) with "You're #1/#2/#3" or "Not
+    named". The beard wash question has **See GEO's fix**.
+  - **Fixes** (badge 2): before/after product description, "Why: AI can now tell who it's for. Only
+    facts from your page." **Approve** turns into "Pushed to Shopify" with Undo and "GEO asks AI again on
+    Monday."; the badge drops to 1 and the beard wash question in Questions gets "Fix live. Re-checked
+    Monday". Undo puts it all back. Under it, the next fix waiting: FAQ block · Beard Balm 60g · Waiting.
+  - **Rivals** ("How often AI names each brand"): Ridgeback, Saltbush, you, Banksia.
 
 ---
 
@@ -280,11 +300,11 @@ Safeguard chips, one centred row under the three cards (they replace the guardra
 | | Free scan | Core (badge "Our pick") | Pro |
 |---|---|---|---|
 | Price | $0 one-time | US$49 a month · 7-day free trial | US$149 a month |
-| Line | After install: see where you stand. | Track, fix and see the money. | Everything in Core, for bigger catalogues. |
+| Line | After install: see if AI recommends you. | Help AI recommend you, and see the money. | Everything in Core, for bigger catalogues. |
 | Button | Install and scan free | Start 7-day trial | Choose Pro |
 | 1 | 10 buyer questions on 3 AI assistants | 25 buyer questions, tracked weekly | 100 buyer questions, scanned daily |
 | 2 | Who AI recommends instead | ChatGPT, Gemini, Perplexity + Google | Adds Claude |
-| 3 | AI sales from your last 60 days | 100 products, 30 fixes a month | 1,000 products, unlimited fixes |
+| 3 | AI sales we can trace, last 60 days | 100 products, 30 fixes a month | 1,000 products, unlimited fixes |
 | 4 | No fixes or ongoing tracking (dash, not tick) | Revenue dashboard and monthly report | Autopilot mode (opt-in) |
 
 - The Free scan card says "After install" and "Install and scan free", so it can't be mixed up with the
@@ -298,34 +318,30 @@ Safeguard chips, one centred row under the three cards (they replace the guardra
 ## 11. FAQ (`43-faq.html`, id `faq`)
 
 - **H2:** Questions store owners ask
-- Chat header: GEO assistant · "Answers written by the GEO team". No greeting. The money question starts
-  open; the other five wait as question buttons, all five on show at once. Answers stay at 25 words or fewer.
+- Chat header: GEO assistant · "Answers written by the GEO team". No greeting. "What does GEO actually
+  do?" starts open; the other five wait as question buttons, all five on show at once. Answers stay at
+  about 25 words or fewer.
 
 | Question | Answer |
 |---|---|
-| How do you know a sale came from AI? (starts open) | ChatGPT usually adds `utm_source=chatgpt.com` to its links. We spot other AI visits too. Google AI Overviews can't be cleanly separated. |
-| How does AI decide which stores to recommend? | AI repeats facts from product pages and quotes sites it trusts. GEO helps with both. |
-| Can I pay to appear in AI answers? | Not on ChatGPT. OpenAI says ads can't shape its answers. Google does sell ads inside AI Overviews in Australia and New Zealand. Sources: OpenAI and Google Ads Help [F6] |
+| What does GEO actually do? (starts open) | It helps ChatGPT, Gemini and Perplexity recommend your products. It checks their answers, writes fixes you approve and counts the sales it can trace back to them. |
+| How do you know a sale came from AI? | ChatGPT usually adds `utm_source=chatgpt.com` to its links. We spot other AI visits too. Google AI Overviews can't be cleanly separated. |
+| Can I pay to appear in AI answers? | Not on ChatGPT. OpenAI says ads can't shape its answers. Google sells ads in AI Overviews in Australia and New Zealand. GEO helps you earn the unpaid ones. Sources: OpenAI and Google Ads Help [F6] |
 | Will GEO change my store without asking? | No. Every change waits for your approval unless you turn on autopilot (Pro). Even then it skips risky changes, like product claims. |
-| If GEO costs money, what's free? | The product check, the free scan and the clicks AI sends you. GEO Core is US$49 a month after a 7-day free trial. |
+| If GEO costs money, what's free? | AI recommendations and the clicks they send, plus the product check and free scan. Core is US$49 a month after a 7-day free trial. |
 | How long does setup take? | About five minutes. Install from Shopify and tick the questions you care about. Your first scan runs in the background. |
 
----|---|
-| How does AI decide which stores to recommend? | Nobody outside the AI companies knows the exact recipe. But the answers show their working: AI repeats facts from product pages and quotes sites it trusts, like roundups, retailers and forums. GEO helps with both. |
-| Can I pay to appear in AI answers? | Not on ChatGPT. Its ads are labelled and sit below the answer, and OpenAI says advertisers can't shape it. Google does sell ads inside AI Overviews in Australia and New Zealand. GEO helps with the unpaid part. Sources: OpenAI and Google Ads Help [F6] |
-| How do you know a sale came from AI? | ChatGPT links carry `utm_source=chatgpt.com`. We also spot visits from Perplexity, Gemini and other AI, plus AI sales channels. We count the orders we can trace. Google AI Overviews can't be cleanly separated, so we label them. |
-| Will GEO change my store without asking? | No. By default every change waits for your approval, and undo is one click. Autopilot on Pro is opt-in, and it still skips risky changes like product claims. |
-| If GEO costs money, what's free? | The product check on this page, the free scan after you install, and the clicks AI sends you: no cost per click. GEO Core is US$49 a month after a 7-day free trial. |
-| How long does setup take? | About five minutes. Install from Shopify and tick the buyer questions you care about. Your first scan then runs in the background. No technical skills needed. |
+Dropped in the copy pass: "How does AI decide which stores to recommend?" (it overlapped with the new
+first question; How it works step 2 now carries "so AI can pick you").
 
 ---
 
 ## 12. Closing CTA and footer (`45-cta-footer.html`, id `contact`)
 
-- **H2:** Is AI recommending your store?
-- **Line:** Paste a product link and see who AI recommends. Free, no sign-up.
+- **H2:** Is AI recommending your products?
+- **Line:** Paste a product link to see if AI picks you. Free, no sign-up.
 - **Button:** Check my product → `#check`
-- **Footer:** logo · "Help AI recommend you, and see the sales." · links How it works, Pricing, FAQ,
+- **Footer:** logo · "Helps AI recommend your products, and counts the sales it can trace." · links How it works, Pricing, FAQ,
   Privacy (`/privacy` on the live site) · "© 2026 GEO · Made for Shopify stores in Australia & New Zealand"
 
 ---
@@ -349,7 +365,7 @@ and `app/lib/check-report.ts` / `check.server.ts` (owned by the app team; this i
 ### Header and footer
 
 - Logo **GEO** (links to `/`), pill **Free product check**
-- Footer: **GEO · Get recommended by ChatGPT & co · Privacy**
+- Footer: **GEO · Helps ChatGPT & co recommend your products · Privacy**
 
 ### Start page (`/check`)
 
@@ -361,18 +377,19 @@ Alternates:
 - What does AI say when shoppers ask about your product?
 
 **Lead:**
-> Paste a product link. We ask ChatGPT, Gemini and Perplexity 3 questions a shopper might ask, twice
-> each. Then we show who they recommend, which sites they trust, and what to fix first. [source: FC]
+> Shoppers ask ChatGPT, Gemini and Perplexity what to buy. Paste a product link to see if they
+> recommend yours, and who they pick instead.
 
-**Form:** same as the hero (Product link, Shopper country, **Check my product**, **Starting your
-check…**). Note: **Free. No sign-up. We ask ChatGPT, Gemini and Perplexity 3 questions a real buyer
-would ask, twice each.** [source: FC]
+**Form:** same as the hero (Product link, **Check my product**, **Starting your check…**; no country
+picker). Note: **Free. No sign-up. We ask ChatGPT, Gemini and Perplexity 3 questions, twice each, as a
+shopper where your store is.**
+[source: FC]
 
 **Three cards:**
 1. **Are you recommended?** · A score out of 100, and how often each AI names your brand.
 2. **Who wins instead** · The brands AI picks for your buyers, and the websites it quotes.
-3. **What to fix first** (was "Quick wins") · Plain-English next steps, based only on the AI answers
-   and your product page.
+3. **What to fix first** (was "Quick wins") · Plain-English steps to help AI recommend you, based only
+   on its answers and your page.
 
 **Explainer (new, small, under the cards):**
 > Why we ask twice: AI answers change from one run to the next. Two runs give a fairer picture than one
@@ -459,10 +476,9 @@ Tip copy (in `buildTips`, keep the variables and the rules, no dashes):
   AI many more, and you may be missing from some of them.
 
 **CTA card**
-- Heading: **See this every week, with the fixes written for you** (alternate: **Track this every week and
-  fix it in one click**, current)
-- Text: **GEO Core checks up to 25 buyer questions every week, writes fixes for your product pages for you
-  to approve, and shows the orders AI sends you.** [source: P]
+- Heading: **Help AI recommend you, every week**
+- Text: **GEO Core checks up to 25 buyer questions every week, writes fixes that help AI recommend your
+  products (you approve each one), and counts the orders it can trace back to AI.** [source: P]
 - Button: **Install GEO: first scan free** (was "Install GEO free", which implies GEO itself is free)
 - Link: **Check another product** (`/#check`)
 
@@ -511,7 +527,7 @@ No longer used on the home page: `clay-answer.jpg`, `clay-support.jpg`, `guide-*
 
 ## 15. Final checks before shipping
 
-- [ ] Whole page 1,600 words or fewer (`wordcount.py` over the parts).
+- [ ] Whole page 1,000 words or fewer (`wordcount.py` over the parts).
 - [ ] Headline reads exactly "The free sales channel your store is missing".
 - [ ] No em dashes and no spaced en dashes in `design/overview/index.html` or `app/home/home.html`.
 - [ ] Every `href="#..."` points at an id on the page.

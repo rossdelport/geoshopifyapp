@@ -1,7 +1,7 @@
 // Free product check pages (/check and /check/:id): the public, no-install report.
 // Plain presentational components; the routes load the data. Styles: app/styles/check.css (ck-*).
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   CHECK_COUNTRIES,
   CHECK_ENGINES,
@@ -9,20 +9,13 @@ import {
   type CheckAnswer,
   type CheckCountry,
   type CheckEngine,
+  type CountryHow,
   type CheckProduct,
   type CheckView,
 } from "../lib/check-types";
 import { ENGINE_LABELS, PLANS } from "../lib/plans";
 import type { SourceType } from "../lib/sources";
 import { sameBrand } from "../lib/match";
-
-const COUNTRY_OPTIONS: [CheckCountry, string][] = [
-  ["AU", "Australia"],
-  ["NZ", "New Zealand"],
-  ["US", "USA"],
-  ["GB", "UK"],
-  ["CA", "Canada"],
-];
 
 const SOURCE_CHIPS: Record<SourceType, string> = {
   editorial: "Review site",
@@ -147,7 +140,7 @@ export function CheckShell({ hero, children }: { hero?: ReactNode; children?: Re
         {children ? <div className="ck-main">{children}</div> : null}
       </main>
       <footer className="ck-foot">
-        GEO · Get recommended by ChatGPT &amp; co · <a href="/privacy">Privacy</a>
+        GEO · Helps ChatGPT &amp; co recommend your products · <a href="/privacy">Privacy</a>
       </footer>
     </div>
   );
@@ -156,59 +149,76 @@ export function CheckShell({ hero, children }: { hero?: ReactNode; children?: Re
 // ---------- the form (same fields as the home page hero form) ----------
 
 const LONG_HINT = "Paste a product link, e.g. yourstore.com/products/...";
+const SHORT_HINT = "Paste your product link";
 
-export function CheckForm({ url = "", country = "AU", error = null }: { url?: string; country?: string; error?: string | null }) {
+/**
+ * The product link box and button. No country to pick: the check works out where the store is.
+ * A soft light travels round the box (check.css, .ck-form-glow); it pauses while off screen.
+ */
+export function CheckForm({ url = "", error = null }: { url?: string; error?: string | null }) {
   const [busy, setBusy] = useState(false);
-  const [hint, setHint] = useState(LONG_HINT);
+  // The page ships the short placeholder (it fits phones, also without JS); wider screens get the example.
+  const [hint, setHint] = useState(SHORT_HINT);
+  const glow = useRef<HTMLDivElement>(null);
   // Coming back with the browser's back button: make the button usable again.
   useEffect(() => {
     const reset = () => setBusy(false);
     window.addEventListener("pageshow", reset);
     return () => window.removeEventListener("pageshow", reset);
   }, []);
-  // A shorter placeholder on phones so it isn't cut off (same as the home page form).
+  // The short placeholder up to 760px wide so it is never cut off (same as the home page form).
   useEffect(() => {
-    const narrow = window.matchMedia("(max-width: 480px)");
-    const fit = () => setHint(narrow.matches ? "Paste your product link" : LONG_HINT);
+    const narrow = window.matchMedia("(max-width: 760px)");
+    const fit = () => setHint(narrow.matches ? SHORT_HINT : LONG_HINT);
     fit();
     narrow.addEventListener("change", fit);
     return () => narrow.removeEventListener("change", fit);
   }, []);
+  // The travelling light runs only when motion is allowed, and pauses while the box is off screen.
+  useEffect(() => {
+    const el = glow.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    el.classList.add("is-live");
+    if (typeof IntersectionObserver === "undefined") return;
+    const watch = new IntersectionObserver(([entry]) => el.classList.toggle("is-paused", !entry.isIntersecting));
+    watch.observe(el);
+    return () => watch.disconnect();
+  }, []);
 
   return (
     <form className="ck-form" method="post" action="/check" onSubmit={() => setBusy(true)}>
-      <div className="ck-form-box">
-        <label className="ck-form-field">
-          <LinkIcon />
-          <span className="ck-sr">Product link</span>
-          <input
-            type="text"
-            name="url"
-            inputMode="url"
-            autoComplete="url"
-            autoCapitalize="off"
-            spellCheck={false}
-            maxLength={2000}
-            required
-            defaultValue={url}
-            placeholder={hint}
-          />
-        </label>
-        <div className="ck-form-row">
-          <label className="ck-form-country">
-            <span className="ck-sr">Shopper country</span>
-            <select name="country" defaultValue={country in CHECK_COUNTRIES ? country : "AU"}>
-              {COUNTRY_OPTIONS.map(([code, name]) => (
-                <option key={code} value={code}>
-                  {name}
-                </option>
-              ))}
-            </select>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="m6 9 6 6 6-6" />
-            </svg>
+      <div className="ck-form-glow" ref={glow}>
+        <div className="ck-form-box">
+          <span className="ck-glow" aria-hidden="true">
+            <span className="ck-halo">
+              <span className="ck-run">
+                <i />
+              </span>
+            </span>
+            <span className="ck-ring">
+              <span className="ck-run">
+                <i />
+              </span>
+            </span>
+          </span>
+          <label className="ck-form-field">
+            <LinkIcon />
+            <span className="ck-sr">Product link</span>
+            <input
+              type="text"
+              name="url"
+              inputMode="url"
+              autoComplete="url"
+              autoCapitalize="off"
+              spellCheck={false}
+              maxLength={2000}
+              required
+              defaultValue={url}
+              placeholder={hint}
+            />
           </label>
-          <button className="ck-btn ck-btn-dark" type="submit" disabled={busy}>
+          <button className="ck-btn ck-btn-dark ck-form-btn" type="submit" disabled={busy}>
             {busy ? "Starting your check…" : "Check my product"}
           </button>
         </div>
@@ -224,7 +234,9 @@ export function CheckForm({ url = "", country = "AU", error = null }: { url?: st
           {error}
         </p>
       ) : null}
-      <p className="ck-form-hint">Free. No sign-up. We ask ChatGPT, Gemini and Perplexity 3 questions a shopper might ask, twice each.</p>
+      <p className="ck-form-hint">
+        Free. No sign-up. We ask ChatGPT, Gemini and Perplexity 3 questions, twice each, as a shopper where your store is.
+      </p>
     </form>
   );
 }
@@ -232,17 +244,17 @@ export function CheckForm({ url = "", country = "AU", error = null }: { url?: st
 // ---------- the /check start page ----------
 
 /** Headline, lead and the form, shown in the lilac band. */
-export function CheckIntro({ url, country, error }: { url?: string; country?: string; error?: string | null }) {
+export function CheckIntro({ url, error }: { url?: string; error?: string | null }) {
   return (
     <section className="ck-intro">
       <img className="ck-deco ck-deco-a" src={CHECK_DECOS[0]} alt="" aria-hidden="true" width={180} height={180} loading="lazy" />
       <img className="ck-deco ck-deco-b" src={CHECK_DECOS[1]} alt="" aria-hidden="true" width={170} height={170} loading="lazy" />
       <h1 className="ck-h1">Does AI recommend your product?</h1>
       <p className="ck-lead">
-        Paste a product link. We ask ChatGPT, Gemini and Perplexity 3 questions a shopper might ask, twice each.
-        Then we show who they recommend, which sites they trust, and what to fix first.
+        Shoppers ask ChatGPT, Gemini and Perplexity what to buy. Paste a product link to see if they recommend
+        yours, and who they pick instead.
       </p>
-      <CheckForm url={url} country={country} error={error} />
+      <CheckForm url={url} error={error} />
     </section>
   );
 }
@@ -269,7 +281,7 @@ const PERK_ICONS: ReactNode[] = [
 const PERKS: [string, string][] = [
   ["Are you recommended?", "A score out of 100, and how often each AI names your brand."],
   ["Who wins instead", "The brands AI picks for your buyers, and the websites it quotes."],
-  ["What to fix first", "Plain-English next steps, based only on the AI answers and your product page."],
+  ["What to fix first", "Plain-English steps to help AI recommend you, based only on its answers and your page."],
 ];
 
 /** What the report shows, and why we ask twice. Under the band on /check. */
@@ -295,8 +307,53 @@ export function CheckPerks() {
 
 // ---------- product card ----------
 
-export function ProductCard({ product, country }: { product: CheckProduct | null; country: CheckCountry }) {
-  const line = `Checked as a shopper in ${CHECK_COUNTRIES[country]} on ChatGPT, Gemini and Perplexity · 3 questions, each asked twice`;
+/** Store settings and a country web address tell us where the store is; weaker signals only suggest it. */
+const SURE_OF_STORE: CountryHow[] = ["store", "domain"];
+/** Guesses the visitor may want to correct ("Wrong country?" on the report). */
+const UNSURE: CountryHow[] = ["default", "unsupported", "language", "currency"];
+const COUNTRY_BUTTONS: Record<CheckCountry, string> = { AU: "Australia", NZ: "New Zealand", US: "US", GB: "UK", CA: "Canada" };
+
+/** "Checked on ChatGPT, Gemini and Perplexity as a shopper in Australia (where your store is) · ..." (no country until we know it). */
+export function checkedLine(country: CheckCountry | null, how?: CountryHow): string {
+  const tail = " · 3 questions, each asked twice";
+  if (country && how === "unsupported") {
+    return `Your store is in a country we don’t check yet, so we asked ChatGPT, Gemini and Perplexity as a shopper in ${CHECK_COUNTRIES[country]}${tail}`;
+  }
+  const note = how && SURE_OF_STORE.includes(how) ? " (where your store is)" : how === "default" ? " (we couldn’t tell where your store is)" : "";
+  const where = country ? ` as a shopper in ${CHECK_COUNTRIES[country]}${note}` : "";
+  return `Checked on ChatGPT, Gemini and Perplexity${where}${tail}`;
+}
+
+/** A guessed country can be corrected: the same link, asked again as a shopper in another country. */
+function WrongCountry({ url, country }: { url: string; country: CheckCountry }) {
+  return (
+    <form className="ck-country" method="post" action="/check">
+      <input type="hidden" name="url" value={url} />
+      <span className="ck-country-q">Wrong country? Check again as a shopper in</span>
+      <span className="ck-country-btns">
+        {(Object.keys(COUNTRY_BUTTONS) as CheckCountry[])
+          .filter((c) => c !== country)
+          .map((c) => (
+            <button key={c} className="ck-country-btn" type="submit" name="country" value={c}>
+              {COUNTRY_BUTTONS[c]}
+            </button>
+          ))}
+      </span>
+    </form>
+  );
+}
+
+export function ProductCard({
+  product,
+  country,
+  done = false,
+}: {
+  product: CheckProduct | null;
+  country: CheckCountry | null;
+  /** The report is ready: a guessed country can be corrected. */
+  done?: boolean;
+}) {
+  const line = checkedLine(country, product?.countryFrom);
   if (!product) {
     return (
       <section className="ck-card ck-product">
@@ -329,6 +386,9 @@ export function ProductCard({ product, country }: { product: CheckProduct | null
           </a>
         </p>
         <p className="ck-product-line">{line}</p>
+        {done && country && product.countryFrom && UNSURE.includes(product.countryFrom) && safeHref(product.url) ? (
+          <WrongCountry url={product.url} country={country} />
+        ) : null}
       </div>
     </section>
   );
@@ -416,7 +476,7 @@ export function CheckFailed({ view, url = null, asTitle = false }: { view: Check
           The link we checked: <b>{link}</b>
         </p>
       ) : null}
-      <CheckForm url={link} country={view.country} />
+      <CheckForm url={link} />
     </section>
   );
 }
@@ -655,10 +715,10 @@ export function CheckReport({ view }: { view: CheckView }) {
 
       <section className="ck-cta">
         <div className="ck-cta-tx">
-          <h2 className="ck-cta-h">See this every week, with the fixes written for you</h2>
+          <h2 className="ck-cta-h">Help AI recommend you, every week</h2>
           <p>
-            GEO Core checks up to {PLANS.core.questions} buyer questions every week, writes fixes for your product pages for
-            you to approve, and shows the orders AI sends you.
+            GEO Core checks up to {PLANS.core.questions} buyer questions every week, writes fixes that help AI recommend
+            your products (you approve each one), and counts the orders it can trace back to AI.
           </p>
           <p className="ck-cta-price">
             Your first scan is free. Core is US${PLANS.core.priceUsd} a month after a {PLANS.core.trialDays}-day free trial.

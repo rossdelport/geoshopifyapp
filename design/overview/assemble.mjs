@@ -43,7 +43,7 @@ if (!only && outName === 'index.html') {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO helps AI recommend your Shopify store, then counts the orders it can trace back to AI.">
+<meta name="description" content="Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO helps your Shopify products get recommended in those AI answers, then counts the orders it can trace back to AI.">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">

@@ -51,7 +51,7 @@ export default function CheckPage() {
     return <CheckShell hero={<CheckFailed view={view} url={url} asTitle />} />;
   }
   return (
-    <CheckShell hero={<ProductCard product={view.product} country={view.country} />}>
+    <CheckShell hero={<ProductCard product={view.product} country={view.country} done={view.status === "done"} />}>
       {view.status === "done" ? <CheckReport view={view} /> : view.status === "failed" ? <CheckFailed view={view} url={url} /> : <CheckRunning view={view} />}
     </CheckShell>
   );

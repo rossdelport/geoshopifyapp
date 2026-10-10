@@ -22,10 +22,10 @@
     btn.textContent = 'Check my product';
   });
 
-  // A shorter placeholder on phones so it isn't cut off.
-  var long = input.getAttribute('placeholder');
+  // The page ships the short placeholder (it fits phones, also without JS); wider screens get the example.
+  var short = input.getAttribute('placeholder');
   var narrow = window.matchMedia ? window.matchMedia('(max-width: 760px)') : null;
-  function fit() { input.setAttribute('placeholder', narrow && narrow.matches ? 'Paste your product link' : long); }
+  function fit() { input.setAttribute('placeholder', narrow && narrow.matches ? short : 'Paste a product link, e.g. yourstore.com/products/...'); }
   if (narrow) { fit(); if (narrow.addEventListener) narrow.addEventListener('change', fit); }
 
   // "Check a product free" links scroll here; put the cursor in the box on desktop.
@@ -38,12 +38,12 @@
   if (location.hash === '#check') focusSoon();
 })();
 
-// Glow round the link box (CSS in 11-hero.css). It needs @property for a smooth light, so it only
-// travels where that works (.hc-live), and pauses while the form is off screen (.hc-off). Reduced
-// motion: the CSS keeps the still halo, so nothing here runs.
+// Glow round the link box (CSS in 11-hero.css): the travelling light runs once this adds .hc-live, and
+// pauses while the form is off screen (.hc-off). Reduced motion: the CSS keeps the still halo, so
+// nothing here runs.
 (function () {
   var form = document.getElementById('check');
-  if (!form || !window.matchMedia || !window.CSS || !CSS.registerProperty) return;
+  if (!form || !window.matchMedia) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   form.classList.add('hc-live');
   if (!('IntersectionObserver' in window)) return;
