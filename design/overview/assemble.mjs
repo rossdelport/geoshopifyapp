@@ -1,3 +1,4 @@
+/* eslint-env node */
 // Build index.html from base.css + parts/*.css + parts/*.html + parts/*.js (sorted by file name).
 // Run: node design/overview/assemble.mjs
 import fs from 'fs';
@@ -31,8 +32,8 @@ fs.writeFileSync(path.join(dir, outName), out);
 console.log(`${outName}: ${(out.length / 1024).toFixed(0)} KB from ${files.length} part files`);
 
 // Full build only: also write the live home page served at "/" by app/routes/_index/route.tsx.
-// Same page as a proper HTML document; images come from /home/img/ and the sign-up buttons
-// go to the Shopify install (log in) page.
+// Same page as a proper HTML document; images come from /home/img/, the sign-up buttons
+// go to the Shopify install (log in) page, and window.GEO_LIVE lets the hero check form post to /check.
 if (!only && outName === 'index.html') {
   const root = path.join(dir, '..', '..');
   const head = out.slice(0, out.indexOf('<div class="page">')).trim();
@@ -45,6 +46,7 @@ if (!only && outName === 'index.html') {
 <meta name="description" content="GEO shows where ChatGPT and other AI shopping assistants recommend your Shopify store, fixes your product pages in one click, and shows the sales AI sends you.">
 <link rel="icon" href="/favicon.ico">
 <style>[hidden]{display:none!important}</style>
+<script>window.GEO_LIVE=true</script>
 ${head.replace('<title>GEO Overview</title>', '<title>GEO · Get your store recommended by ChatGPT &amp; co</title>')}
 </head>
 <body>

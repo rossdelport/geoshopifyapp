@@ -8,10 +8,33 @@
     </a>
     <h1 class="h1 hero-title">Get your store recommended <br class="hero-br">by ChatGPT &amp; co</h1>
     <p class="lead hero-lead">GEO shows where AI shopping assistants recommend you, fixes your product pages in one click, and shows the sales AI sends your way.</p>
-    <div class="hero-cta">
-      <a class="btn btn-dark" href="#pricing">Get your free scan</a>
-      <a class="btn btn-light" href="#screens">See every screen</a>
-    </div>
+    <form class="hero-check" id="check" method="post" action="/check">
+      <div class="hero-check-box">
+        <label class="hero-check-field">
+          <svg class="hero-check-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          <span class="hero-check-sr">Product link</span>
+          <input class="hero-check-input" type="text" name="url" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" maxlength="2000" required placeholder="Paste a product link, e.g. yourstore.com/products/...">
+        </label>
+        <div class="hero-check-row">
+          <label class="hero-check-country">
+            <span class="hero-check-sr">Shopper country</span>
+            <select name="country">
+              <option value="AU" selected>Australia</option>
+              <option value="NZ">New Zealand</option>
+              <option value="US">USA</option>
+              <option value="GB">UK</option>
+              <option value="CA">Canada</option>
+            </select>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </label>
+          <button class="btn btn-dark hero-check-btn" type="submit">Check my product</button>
+        </div>
+      </div>
+      <div class="hero-check-hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+      <p class="hero-check-hint">Free. No sign-up. We ask ChatGPT, Gemini and Perplexity questions shoppers typically ask about products like yours.</p>
+      <p class="hero-check-note" role="status" hidden>Live checks run on the GEO website. <a href="https://geo-shopify-app-production.up.railway.app/#check" target="_blank" rel="noopener">Open it and paste your link there</a></p>
+      <a class="hero-check-alt" href="#screens">or see every screen</a>
+    </form>
 
     <div class="hero-frame">
       <span class="sample-tag">Sample data</span>

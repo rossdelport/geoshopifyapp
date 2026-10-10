@@ -178,4 +178,20 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
     const job = await db.job.findFirst({ where: { shopId, type: "scan.start" } });
     expect(job?.payload).toEqual({ kind: "weekly" });
   });
+
+  it("stops a job that dies on every attempt, and claims free checks separately", async () => {
+    const jobs = await import("../app/lib/jobs.server");
+    await db.job.deleteMany({});
+    const old = new Date(Date.now() - 20 * 60_000);
+    const dying = await db.job.create({ data: { type: "scan.run", status: "running", attempts: jobs.MAX_ATTEMPTS, lockedAt: old } });
+    const stuck = await db.job.create({ data: { type: "scan.run", status: "running", attempts: 1, lockedAt: old } });
+    await jobs.requeueStuckJobs();
+    expect((await db.job.findUniqueOrThrow({ where: { id: dying.id } })).status).toBe("failed");
+    expect((await db.job.findUniqueOrThrow({ where: { id: stuck.id } })).status).toBe("queued");
+
+    await db.job.create({ data: { type: "check.run" } });
+    expect((await jobs.claimJobs(5, { notTypes: ["check.run"] })).map((j) => j.type)).toEqual(["scan.run"]);
+    expect((await jobs.claimJobs(5, { types: ["check.run"] })).map((j) => j.type)).toEqual(["check.run"]);
+    await db.job.deleteMany({});
+  });
 });

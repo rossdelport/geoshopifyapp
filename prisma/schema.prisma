@@ -362,3 +362,26 @@ model ApiCost {
 
   @@index([shopId, createdAt])
 }
+
+// Free product check from the public home page (no install). Not tied to a shop.
+// Deleted after 30 days (retention.server.ts). ipHash = sha256(ip + server secret), only to stop abuse.
+model PublicCheck {
+  id         String    @id @default(cuid())
+  url        String
+  country    String    @default("AU")
+  status     String    @default("queued") // queued | reading | asking | writing | done | failed
+  product    Json?
+  questions  Json      @default("[]")
+  answers    Json      @default("[]")
+  report     Json?
+  total      Int       @default(0)
+  done       Int       @default(0)
+  error      String?
+  ipHash     String?
+  createdAt  DateTime  @default(now())
+  finishedAt DateTime?
+
+  @@index([url, country, createdAt])
+  @@index([ipHash, createdAt])
+  @@index([createdAt])
+}

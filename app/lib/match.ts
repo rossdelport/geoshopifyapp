@@ -21,6 +21,14 @@ export function textNamesBrand(text: string, names: string[]): boolean {
     .some((n) => new RegExp(`(^|[^a-z0-9])${escape(n.toLowerCase())}([^a-z0-9]|$)`).test(lower));
 }
 
+/** Short names like "BBC" or "Ego": whole word and exact case only, so ordinary words don't count. */
+export function textNamesShortBrand(text: string, names: string[]): boolean {
+  return names
+    .map((n) => n.trim())
+    .filter((n) => n.length >= 2)
+    .some((n) => new RegExp(`(^|[^A-Za-z0-9])${escape(n)}([^A-Za-z0-9]|$)`).test(text));
+}
+
 /** Does any source URL belong to one of the merchant's domains? */
 export function sourcesIncludeDomain(sourceDomains: string[], merchantDomains: string[]): boolean {
   const mine = merchantDomains.map((d) => d.replace(/^www\./, "").toLowerCase()).filter(Boolean);

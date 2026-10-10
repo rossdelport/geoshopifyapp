@@ -15,11 +15,17 @@ import "./orders.server";
 import "./fixes.server";
 import "./outreach.server";
 import "./report.server";
+import "./check.server";
 import { maybeRunSelftest } from "./selftest.server";
 import { purgeOldData } from "./retention.server";
 
-const MAX_RUNNING = 4;
+const MAX_RUNNING = 4; // store jobs: onboarding, scans, orders, fixes...
+// Free checks from the public website get their own small share, so a rush of them never holds up
+// stores' jobs (and stores' jobs never stall a visitor's check).
+const CHECK_JOB = "check.run";
+const MAX_CHECKS = 2;
 let running = 0;
+let runningChecks = 0;
 let started = false;
 
 async function runJob(job: Awaited<ReturnType<typeof claimJobs>>[number]) {
@@ -38,12 +44,18 @@ async function runJob(job: Awaited<ReturnType<typeof claimJobs>>[number]) {
 }
 
 async function tick() {
-  if (running >= MAX_RUNNING) return;
   try {
-    const jobs = await claimJobs(MAX_RUNNING - running);
-    for (const job of jobs) {
-      running++;
-      runJob(job).finally(() => running--);
+    if (running < MAX_RUNNING) {
+      for (const job of await claimJobs(MAX_RUNNING - running, { notTypes: [CHECK_JOB] })) {
+        running++;
+        runJob(job).finally(() => running--);
+      }
+    }
+    if (runningChecks < MAX_CHECKS) {
+      for (const job of await claimJobs(MAX_CHECKS - runningChecks, { types: [CHECK_JOB] })) {
+        runningChecks++;
+        runJob(job).finally(() => runningChecks--);
+      }
     }
   } catch (err) {
     console.error("[worker] tick failed:", (err as Error).message);
@@ -56,7 +68,8 @@ let lastPurge = 0;
 
 export async function scheduleDueWork(now = new Date()) {
   await requeueStuckJobs();
-  if (now.getTime() - lastPurge > 86_400_000) {
+  // Hourly, so hashed IPs on free checks are gone within about a day (see retention.server.ts).
+  if (now.getTime() - lastPurge > 3_600_000) {
     lastPurge = now.getTime();
     await purgeOldData(now).catch((err) => console.error("[retention] failed:", err.message));
   }

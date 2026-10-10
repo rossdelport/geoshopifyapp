@@ -16,6 +16,16 @@ describe("home page", () => {
     expect(html).toContain('href="/auth/login"');
   });
 
+  it("has the free product check form, which posts to /check on the live site", async () => {
+    const html = await (await call("https://geo.test/")).text();
+    expect(html).toContain('<form class="hero-check" id="check" method="post" action="/check">');
+    expect(html).toContain('name="url"');
+    expect(html).toContain('name="country"');
+    expect(html).toContain('name="website"');
+    expect(html).toContain("<script>window.GEO_LIVE=true</script>");
+    expect(html).toContain('href="#check">Get your free scan');
+  });
+
   it("sends Shopify app opens straight into the app", async () => {
     const res = await call("https://geo.test/?shop=demo.myshopify.com&host=abc").catch((r: Response) => r);
     expect(res.status).toBe(302);

@@ -6,10 +6,10 @@ import { oneOf, pick } from "./oneof";
 import { askJson, aiConfigured } from "./ai.server";
 import { domainOf, type EngineAnswer } from "./answers";
 import { guessSourceType, type SourceType } from "./sources";
-import { merchantPosition, sameBrand, sourcesIncludeDomain, textNamesBrand } from "./match";
+import { merchantPosition, sameBrand, sourcesIncludeDomain, textNamesBrand, textNamesShortBrand } from "./match";
 
 export interface MerchantContext {
-  shopId: string;
+  shopId: string | null; // null for the public free check (no shop yet)
   brandNames: string[]; // brand name + aliases
   domains: string[]; // primary domain + myshopify domain
   productTitles: string[];
@@ -20,6 +20,7 @@ export interface ParsedAnswer {
   mentioned: boolean;
   position: number | null;
   citations: { url: string; domain: string; title: string | null; type: SourceType; isOwn: boolean }[];
+  byClaude: boolean; // false when Claude couldn't read it (no key, or an error) and we fell back to text matching
 }
 
 const SOURCE_TYPES = ["retailer", "editorial", "ugc", "brand", "marketplace", "other"] as const;
@@ -46,6 +47,7 @@ export async function parseAnswer(answer: EngineAnswer, ctx: MerchantContext): P
 
   let brands: { name: string; product: string | null }[] = [];
   let claudeSaysNamed: boolean | null = null;
+  let byClaude = false;
   const claudeTypes = new Map<number, SourceType>();
 
   if (aiConfigured() && answer.text.trim()) {
@@ -74,6 +76,7 @@ ${unknown.map((s) => `${s.i}. ${s.domain} — ${s.title ?? ""} ${s.url}`).join("
       });
       brands = result.brands.filter((b) => b.name.trim());
       claudeSaysNamed = result.merchant_named;
+      byClaude = true;
       for (const t of result.source_types) claudeTypes.set(t.index, pick(SOURCE_TYPES, t.type, "other"));
     } catch (err) {
       console.error(`[parse] Claude parse failed, using text matching: ${(err as Error).message}`);
@@ -92,6 +95,7 @@ ${unknown.map((s) => `${s.i}. ${s.domain} — ${s.title ?? ""} ${s.url}`).join("
   let position = merchantPosition(ordered.map((b) => b.name), ctx.brandNames);
   const textMatch =
     textNamesBrand(answer.text, ctx.brandNames.filter((n) => n.length >= 4)) ||
+    textNamesShortBrand(answer.text, ctx.brandNames.filter((n) => n.trim().length === 3)) ||
     textNamesBrand(answer.text, ctx.productTitles.filter((t) => t.length >= 12));
   const mentioned = position !== null || (claudeSaysNamed ?? textMatch);
   if (mentioned && position === null) {
@@ -107,5 +111,5 @@ ${unknown.map((s) => `${s.i}. ${s.domain} — ${s.title ?? ""} ${s.url}`).join("
     isOwn: sourcesIncludeDomain([s.domain], ctx.domains),
   }));
 
-  return { brands: ordered.slice(0, 25), mentioned, position, citations };
+  return { brands: ordered.slice(0, 25), mentioned, position, citations, byClaude };
 }

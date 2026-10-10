@@ -10,13 +10,15 @@ export const loader = async () => ({
   contact: process.env.SUPPORT_EMAIL ?? null,
   visitIdDays: RETENTION.visitIdDays,
   uninstalledDays: RETENTION.uninstalledDays,
+  publicCheckDays: RETENTION.publicCheckDays,
+  checkIpHours: RETENTION.checkIpHours,
 });
 
 const page = { maxWidth: 720, margin: "0 auto", padding: "48px 20px 80px", fontFamily: "Inter, system-ui, sans-serif", color: "#30313d", lineHeight: 1.7 };
 const h2 = { fontSize: 20, margin: "36px 0 8px", color: "#0b0c2b" };
 
 export default function Privacy() {
-  const { contact, visitIdDays, uninstalledDays } = useLoaderData<typeof loader>();
+  const { contact, visitIdDays, uninstalledDays, publicCheckDays, checkIpHours } = useLoaderData<typeof loader>();
   return (
     <main style={page}>
       <h1 style={{ fontSize: 34, color: "#0b0c2b", marginBottom: 4 }}>GEO privacy policy</h1>
@@ -48,6 +50,19 @@ export default function Privacy() {
       <p>
         <b>We never collect customer names, email addresses, phone numbers or addresses.</b> We do not sell any data, and we
         never use one store&apos;s data for another store.
+      </p>
+
+      <h2 style={h2}>Free product check</h2>
+      <p>
+        Anyone can check a product on our website without installing GEO. To run the check we send the text of that
+        public product page to Claude (Anthropic) and the questions to ChatGPT, Gemini and Perplexity through our data
+        provider. We keep the product link, what we read from the page and the AI answers, and delete them after{" "}
+        {publicCheckDays} days. We also keep a scrambled (hashed) version of your IP address so we can limit how many
+        free checks one person runs, and delete it after {checkIpHours === 24 ? "a day" : `${checkIpHours} hours`}.
+      </p>
+      <p>
+        Each report has its own link that isn&apos;t listed anywhere, but anyone you share the link with can see the
+        report.
       </p>
 
       <h2 style={h2}>Why we use it</h2>

@@ -6,6 +6,7 @@
 <meta name="description" content="GEO shows where ChatGPT and other AI shopping assistants recommend your Shopify store, fixes your product pages in one click, and shows the sales AI sends you.">
 <link rel="icon" href="/favicon.ico">
 <style>[hidden]{display:none!important}</style>
+<script>window.GEO_LIVE=true</script>
 <title>GEO · Get your store recommended by ChatGPT &amp; co</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -318,7 +319,40 @@ html { scroll-behavior: auto; }
 
 .hero-title { margin-top: 28px; max-width: 900px; }
 .hero-lead { margin-top: 22px; max-width: 540px; font-size: 16px; text-wrap: balance; }
-.hero-cta { margin-top: 36px; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+
+/* free product check form (replaces the hero buttons; posts to /check on the live site) */
+.hero-check { margin-top: 36px; width: 100%; max-width: 820px; display: flex; flex-direction: column; align-items: center; scroll-margin-top: 150px; }
+.hero-check-box {
+  width: 100%; display: flex; align-items: center; gap: 8px;
+  padding: 8px; border-radius: 20px; background: var(--white);
+  box-shadow: 0 0 0 1px rgba(11, 12, 43, 0.08), 0 28px 56px -28px rgba(11, 12, 43, 0.28), 0 8px 18px -12px rgba(11, 12, 43, 0.12);
+  transition: box-shadow .2s ease;
+}
+.hero-check-box:focus-within { box-shadow: 0 0 0 1px var(--blue-3), 0 0 0 5px rgba(51, 85, 255, 0.12), 0 28px 56px -28px rgba(11, 12, 43, 0.28); }
+.hero-check-field { flex: 1; min-width: 0; height: 48px; display: flex; align-items: center; gap: 10px; padding-left: 12px; cursor: text; }
+.hero-check-ic { width: 20px; height: 20px; flex: none; color: var(--blue); }
+.hero-check-input {
+  flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent; padding: 0;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500; color: var(--navy); text-align: left; text-overflow: ellipsis;
+}
+.hero-check-input::placeholder { color: var(--muted); font-weight: 400; opacity: 1; }
+.hero-check-row { display: flex; align-items: center; gap: 8px; flex: none; }
+.hero-check-country { position: relative; display: flex; align-items: center; }
+.hero-check-country select {
+  -webkit-appearance: none; appearance: none; height: 48px; padding: 0 34px 0 14px; border: 0; border-radius: 12px;
+  background: var(--lav); box-shadow: inset 0 0 0 1px var(--lav-line); color: var(--navy);
+  font-family: var(--font-body); font-size: 14px; font-weight: 500; cursor: pointer;
+}
+.hero-check-country select:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.hero-check-country svg { position: absolute; right: 12px; width: 14px; height: 14px; color: var(--text); pointer-events: none; }
+.hero-check-btn { height: 48px; padding: 0 22px; border-radius: 12px; }
+.hero-check.is-busy .hero-check-btn { opacity: .75; pointer-events: none; }
+.hero-check-sr, .hero-check-hp { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+.hero-check-hint { margin-top: 14px; font-size: 13.5px; line-height: 1.55; color: var(--text); text-wrap: balance; }
+.hero-check-note { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: var(--lav); box-shadow: inset 0 0 0 1px var(--lav-line); color: var(--navy); font-size: 14px; line-height: 1.5; }
+.hero-check-note a { color: var(--blue); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.hero-check-alt { margin-top: 8px; font-size: 14px; font-weight: 500; color: var(--navy); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--lav-chip); }
+.hero-check-alt:hover { text-decoration-color: var(--blue); }
 
 /* frame around the mockup */
 .hero-frame {
@@ -466,8 +500,11 @@ html { scroll-behavior: auto; }
   .hero-br { display: none; }
   .hero-title { margin-top: 22px; }
   .hero-lead { margin-top: 16px; font-size: 15.5px; }
-  .hero-cta { margin-top: 28px; gap: 10px; }
-  .hero-cta .btn { height: 46px; padding: 0 18px; }
+  .hero-check { margin-top: 28px; }
+  .hero-check-box { flex-direction: column; align-items: stretch; gap: 6px; border-radius: 18px; }
+  .hero-check-field { height: 50px; padding-left: 10px; }
+  .hero-check-row { width: 100%; }
+  .hero-check-btn { flex: 1; }
   .hero-pill { font-size: 12.5px; }
   .hero-frame { margin-top: 48px; padding: 6px; border-radius: 18px; }
   .hero-app { border-radius: 13px; }
@@ -2457,7 +2494,7 @@ html { scroll-behavior: auto; }
         <li><a href="#pricing">Pricing</a></li>
         <li><a href="#faq">FAQ</a></li>
       </ul>
-      <a class="btn btn-dark nav-cta" href="/auth/login">Get your free scan</a>
+      <a class="btn btn-dark nav-cta" href="#check">Get your free scan</a>
     </nav>
   </div>
 </header>
@@ -2473,10 +2510,33 @@ html { scroll-behavior: auto; }
     </a>
     <h1 class="h1 hero-title">Get your store recommended <br class="hero-br">by ChatGPT &amp; co</h1>
     <p class="lead hero-lead">GEO shows where AI shopping assistants recommend you, fixes your product pages in one click, and shows the sales AI sends your way.</p>
-    <div class="hero-cta">
-      <a class="btn btn-dark" href="/auth/login">Get your free scan</a>
-      <a class="btn btn-light" href="#screens">See every screen</a>
-    </div>
+    <form class="hero-check" id="check" method="post" action="/check">
+      <div class="hero-check-box">
+        <label class="hero-check-field">
+          <svg class="hero-check-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          <span class="hero-check-sr">Product link</span>
+          <input class="hero-check-input" type="text" name="url" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" maxlength="2000" required placeholder="Paste a product link, e.g. yourstore.com/products/...">
+        </label>
+        <div class="hero-check-row">
+          <label class="hero-check-country">
+            <span class="hero-check-sr">Shopper country</span>
+            <select name="country">
+              <option value="AU" selected>Australia</option>
+              <option value="NZ">New Zealand</option>
+              <option value="US">USA</option>
+              <option value="GB">UK</option>
+              <option value="CA">Canada</option>
+            </select>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </label>
+          <button class="btn btn-dark hero-check-btn" type="submit">Check my product</button>
+        </div>
+      </div>
+      <div class="hero-check-hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+      <p class="hero-check-hint">Free. No sign-up. We ask ChatGPT, Gemini and Perplexity questions shoppers typically ask about products like yours.</p>
+      <p class="hero-check-note" role="status" hidden>Live checks run on the GEO website. <a href="https://geo-shopify-app-production.up.railway.app/#check" target="_blank" rel="noopener">Open it and paste your link there</a></p>
+      <a class="hero-check-alt" href="#screens">or see every screen</a>
+    </form>
 
     <div class="hero-frame">
       <span class="sample-tag">Sample data</span>
@@ -4279,7 +4339,7 @@ html { scroll-behavior: auto; }
     <div class="foot-cta">
       <h2 class="h2 foot-h2" id="foot-cta-title">See where you stand with AI today</h2>
       <p class="lead foot-lead">Free scan. Results in minutes. No card needed.</p>
-      <a class="btn btn-light foot-btn" href="/auth/login">Get your free scan</a>
+      <a class="btn btn-light foot-btn" href="#check">Get your free scan</a>
     </div>
   </div>
 
@@ -4354,6 +4414,47 @@ html { scroll-behavior: auto; }
     e.preventDefault();
     el.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
   });
+})();
+
+// 11-hero.js
+// Hero check form. The live site (window.GEO_LIVE) posts it to /check; the design preview has no
+// server, so it shows a note pointing to the live site instead.
+(function () {
+  var form = document.getElementById('check');
+  if (!form) return;
+  var input = form.querySelector('.hero-check-input');
+  var note = form.querySelector('.hero-check-note');
+  var btn = form.querySelector('.hero-check-btn');
+
+  form.addEventListener('submit', function (e) {
+    if (window.GEO_LIVE !== true) {
+      e.preventDefault();
+      note.hidden = false;
+      return;
+    }
+    form.classList.add('is-busy');
+    btn.textContent = 'Starting your check…';
+  });
+  // Coming back with the browser's back button: make the button usable again.
+  window.addEventListener('pageshow', function () {
+    form.classList.remove('is-busy');
+    btn.textContent = 'Check my product';
+  });
+
+  // A shorter placeholder on phones so it isn't cut off.
+  var long = input.getAttribute('placeholder');
+  var narrow = window.matchMedia ? window.matchMedia('(max-width: 480px)') : null;
+  function fit() { input.setAttribute('placeholder', narrow && narrow.matches ? 'Paste your product link' : long); }
+  if (narrow) { fit(); if (narrow.addEventListener) narrow.addEventListener('change', fit); }
+
+  // "Get your free scan" buttons scroll here; put the cursor in the box on desktop.
+  var desktop = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+  function focusSoon() { if (desktop) setTimeout(function () { input.focus({ preventScroll: true }); }, 450); }
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href="#check"]') : null;
+    if (a) focusSoon();
+  });
+  if (location.hash === '#check') focusSoon();
 })();
 
 // 21-screens.js

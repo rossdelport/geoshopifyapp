@@ -9,6 +9,7 @@ import { visibilityScore } from "./score";
 import { enqueue, heartbeat, registerJob } from "./jobs.server";
 import { getPlan, scanSettings, type Engine } from "./plans";
 import { sameBrand } from "./match";
+import { pool } from "./pool";
 
 const CONCURRENCY = 10;
 const MAX_ANSWER_ATTEMPTS = 2;
@@ -67,7 +68,7 @@ async function processAnswer(
   country: string,
 ) {
   try {
-    const result = await askEngine(answer.engine as Engine, answer.question.text, country, ctx.shopId);
+    const result = await askEngine(answer.engine as Engine, answer.question.text, country, ctx.shopId ?? undefined);
     if (result.empty) {
       await db.aiAnswer.update({
         where: { id: answer.id },
@@ -117,15 +118,6 @@ async function processAnswer(
     }
     console.error(`[scan] ${answer.engine} failed (${answer.attempts + 1}): ${message}`);
   }
-}
-
-async function pool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>) {
-  let i = 0;
-  await Promise.all(
-    Array.from({ length: Math.min(limit, items.length) }, async () => {
-      while (i < items.length) await fn(items[i++]);
-    }),
-  );
 }
 
 export async function runScan(scanId: string, jobId?: string) {

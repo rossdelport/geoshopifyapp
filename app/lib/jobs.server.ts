@@ -1,6 +1,6 @@
 // Tiny Postgres job queue. Jobs are idempotent: safe to run twice, safe to resume.
 
-import type { Job, Prisma } from "@prisma/client";
+import { Prisma, type Job } from "@prisma/client";
 import db from "../db.server";
 
 export type JobHandler = (job: Job) => Promise<void>;
@@ -45,13 +45,18 @@ export async function enqueue(
   }
 }
 
-/** Atomically claim jobs that are ready to run. */
-export async function claimJobs(limit: number): Promise<Job[]> {
+/** Atomically claim jobs that are ready to run (optionally only some types, or all but some). */
+export async function claimJobs(limit: number, filter: { types?: string[]; notTypes?: string[] } = {}): Promise<Job[]> {
+  const only = filter.types?.length
+    ? Prisma.sql`AND type IN (${Prisma.join(filter.types)})`
+    : filter.notTypes?.length
+      ? Prisma.sql`AND type NOT IN (${Prisma.join(filter.notTypes)})`
+      : Prisma.empty;
   return db.$queryRaw<Job[]>`
     UPDATE "Job" SET status = 'running', "lockedAt" = now(), attempts = attempts + 1, "updatedAt" = now()
     WHERE id IN (
       SELECT id FROM "Job"
-      WHERE status = 'queued' AND "runAfter" <= now()
+      WHERE status = 'queued' AND "runAfter" <= now() ${only}
       ORDER BY "runAfter" ASC
       LIMIT ${limit}
       FOR UPDATE SKIP LOCKED
@@ -79,9 +84,16 @@ export async function finishJob(job: Job, error?: unknown) {
   });
 }
 
-/** Jobs whose worker died (deploy, crash) go back in the queue. */
+/**
+ * Jobs whose worker died (deploy, crash) go back in the queue, up to MAX_ATTEMPTS tries in all.
+ * A job that kills the worker every time is stopped instead of looping forever.
+ */
 export async function requeueStuckJobs(olderThanMs = 10 * 60_000) {
   const cutoff = new Date(Date.now() - olderThanMs);
+  await db.job.updateMany({
+    where: { status: "running", lockedAt: { lt: cutoff }, attempts: { gte: MAX_ATTEMPTS } },
+    data: { status: "failed", lockedAt: null, error: "Stopped: the worker stopped during every attempt" },
+  });
   await db.job.updateMany({
     where: { status: "running", lockedAt: { lt: cutoff } },
     data: { status: "queued", lockedAt: null },

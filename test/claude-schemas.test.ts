@@ -9,6 +9,7 @@ describe("Claude output formats", async () => {
   const parse = await import("../app/lib/parse.server");
   const fixes = await import("../app/lib/fixes.server");
   const outreach = await import("../app/lib/outreach.server");
+  const check = await import("../app/lib/check.server");
   const schemas = {
     ProfileSchema: onboarding.ProfileSchema,
     QuestionsSchema: onboarding.QuestionsSchema,
@@ -18,6 +19,7 @@ describe("Claude output formats", async () => {
     GuideSchema: fixes.GuideSchema,
     ClaimsSchema: fixes.ClaimsSchema,
     PitchSchema: outreach.PitchSchema,
+    UnderstandSchema: check.UnderstandSchema,
   };
   for (const [name, schema] of Object.entries(schemas)) {
     it(name, () => {

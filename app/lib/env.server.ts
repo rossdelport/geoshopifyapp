@@ -15,6 +15,8 @@ export const env = {
   runWorker: process.env.RUN_WORKER !== "false",
   utmSource: process.env.GEO_UTM_SOURCE || "geo-app",
   jobsSecret: process.env.JOBS_SECRET || "",
+  // Key for scrambling free-check visitors' IPs. Unset: a random key per process (limits reset on deploy).
+  checkIpSecret: process.env.CHECK_IP_SECRET || "",
 };
 
 export const isProd = process.env.NODE_ENV === "production";
