@@ -1,54 +1,19 @@
 import type { LoaderFunctionArgs } from "react-router";
-import { redirect, Form, useLoaderData } from "react-router";
+import { redirect } from "react-router";
 
-import { login } from "../../shopify.server";
+// The public home page. It is built from design/overview by `node design/overview/assemble.mjs`.
+import home from "../../home/home.html?raw";
 
-import styles from "./styles.module.css";
-
+// No component: this route sends the finished HTML page as-is.
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
 
+  // Shopify opens the app with ?shop=...; send those visits straight into the app.
   if (url.searchParams.get("shop")) {
     throw redirect(`/app?${url.searchParams.toString()}`);
   }
 
-  return { showForm: Boolean(login) };
+  return new Response(home, {
+    headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=300" },
+  });
 };
-
-export default function App() {
-  const { showForm } = useLoaderData<typeof loader>();
-
-  return (
-    <div className={styles.index}>
-      <div className={styles.content}>
-        <h1 className={styles.heading}>Get recommended by ChatGPT, Gemini and Perplexity</h1>
-        <p className={styles.text}>
-          See how often AI shopping assistants recommend your store, fix what holds you back, and track the sales AI sends you.
-        </p>
-        {showForm && (
-          <Form className={styles.form} method="post" action="/auth/login">
-            <label className={styles.label}>
-              <span>Shop domain</span>
-              <input className={styles.input} type="text" name="shop" />
-              <span>e.g: my-shop-domain.myshopify.com</span>
-            </label>
-            <button className={styles.button} type="submit">
-              Log in
-            </button>
-          </Form>
-        )}
-        <ul className={styles.list}>
-          <li>
-            <strong>Money from AI</strong>. See the orders, visits and revenue that came from AI assistants.
-          </li>
-          <li>
-            <strong>Who AI recommends</strong>. Real answers to your shoppers&apos; questions, and who wins instead of you.
-          </li>
-          <li>
-            <strong>One-click fixes</strong>. Clearer product pages, FAQs and guides, published when you approve.
-          </li>
-        </ul>
-      </div>
-    </div>
-  );
-}

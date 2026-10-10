@@ -29,3 +29,38 @@ ${js ? `<script>\n${js}\n</script>` : ''}
 `;
 fs.writeFileSync(path.join(dir, outName), out);
 console.log(`${outName}: ${(out.length / 1024).toFixed(0)} KB from ${files.length} part files`);
+
+// Full build only: also write the live home page served at "/" by app/routes/_index/route.tsx.
+// Same page as a proper HTML document; images come from /home/img/ and the sign-up buttons
+// go to the Shopify install (log in) page.
+if (!only && outName === 'index.html') {
+  const root = path.join(dir, '..', '..');
+  const head = out.slice(0, out.indexOf('<div class="page">')).trim();
+  const body = out.slice(out.indexOf('<div class="page">'));
+  const site = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="GEO shows where ChatGPT and other AI shopping assistants recommend your Shopify store, fixes your product pages in one click, and shows the sales AI sends you.">
+<link rel="icon" href="/favicon.ico">
+<style>[hidden]{display:none!important}</style>
+${head.replace('<title>GEO Overview</title>', '<title>GEO · Get your store recommended by ChatGPT &amp; co</title>')}
+</head>
+<body>
+${body}</body>
+</html>
+`
+    .replaceAll('src="img/', 'src="/home/img/')
+    .replace(/(<a class="btn[^"]*" href=)"#pricing"/g, '$1"/auth/login"')
+    .replace('href="https://geo-shopify-app-production.up.railway.app/privacy" target="_blank" rel="noopener"', 'href="/privacy"');
+  fs.mkdirSync(path.join(root, 'app', 'home'), { recursive: true });
+  fs.writeFileSync(path.join(root, 'app', 'home', 'home.html'), site);
+
+  const imgOut = path.join(root, 'public', 'home', 'img');
+  fs.rmSync(imgOut, { recursive: true, force: true });
+  fs.mkdirSync(imgOut, { recursive: true });
+  const used = [...new Set([...out.matchAll(/src="img\/([^"]+)"/g)].map((m) => m[1]))];
+  for (const f of used) fs.copyFileSync(path.join(dir, 'img', f), path.join(imgOut, f));
+  console.log(`app/home/home.html: ${(site.length / 1024).toFixed(0)} KB, ${used.length} images copied to public/home/img`);
+}
