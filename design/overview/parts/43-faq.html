@@ -1,110 +1,143 @@
 <section class="section faq-sec" id="faq" aria-labelledby="faq-title">
-  <div class="wrap faq-grid">
-    <div class="faq-left">
+  <div class="wrap">
+    <div class="sec-head faq-head">
       <span class="label"><span class="chip-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg></span><span class="chip-tx">FAQs</span></span>
-      <h2 class="h2 faq-h2" id="faq-title">Questions store owners ask</h2>
+      <h2 class="h2" id="faq-title">Questions store owners ask</h2>
       <p class="lead faq-lead">Plain answers about how AI picks stores, how we count sales, and what changes in your store.</p>
+    </div>
+
+    <div class="faq-main">
+      <img class="faq-deco" src="img/clay-bubble.png" alt="" width="400" height="400" decoding="async">
+
+      <div class="faq-chat">
+        <div class="faq-bar">
+          <span class="faq-av faq-av-lg" aria-hidden="true"><i></i><i></i></span>
+          <div class="faq-bar-tx">
+            <p class="faq-bar-name">GEO assistant</p>
+            <p class="faq-bar-sub">Answers written by the GEO team</p>
+          </div>
+        </div>
+
+        <!-- Every question and answer is real text in the page. Without JavaScript they all show as one
+             conversation. With it, the first pair shows and the rest wait in the list below the chat. -->
+        <div class="faq-log" role="region" aria-label="FAQ conversation" tabindex="0">
+          <div class="faq-log-in">
+            <div class="faq-msg faq-msg-a faq-hello" hidden><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+              <p>Hi. Choose a question below and its answer appears here. Let’s start with how AI picks stores.</p>
+            </div></div>
+            <div class="faq-thread" role="log" aria-label="Questions and answers">
+            <div class="faq-pair" id="faq-p1">
+              <div class="faq-msg faq-msg-q"><h3 class="faq-q">How does AI decide which stores to recommend?</h3></div>
+              <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                <p>Nobody outside the AI companies knows the exact recipe. But the answers show their working. AI repeats facts it can read on your product pages, picks pages that answer the exact question asked, and quotes sources it trusts, like roundup articles, retailers and forums. GEO tracks all three for the questions your buyers ask.</p>
+              </div></div>
+            </div>
+            <div class="faq-pair" id="faq-p2">
+              <div class="faq-msg faq-msg-q"><h3 class="faq-q">Can I pay to appear in AI answers?</h3></div>
+              <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                <p>You can buy ads next to some answers, but not the recommendation itself. ChatGPT shows ads on its Free and Go plans. They sit below the answer, they’re labelled, and OpenAI says advertisers can’t shape or rank the answer. Google can place ads above, below or within its AI Overviews in Australia and New Zealand. The recommendation inside the answer isn’t for sale.</p>
+                <p class="faq-src">Sources: <a class="src-link" href="https://help.openai.com/en/articles/20001047-ads-in-chatgpt" target="_blank" rel="noopener">OpenAI, Ads in ChatGPT</a>, <a class="src-link" href="https://openai.com/index/chatgpt-ads-expands-southeast-asia-taiwan/" target="_blank" rel="noopener">OpenAI, Sep 2026</a> and <a class="src-link" href="https://support.google.com/google-ads/answer/16297775?hl=en" target="_blank" rel="noopener">Google Ads Help</a>.</p>
+              </div></div>
+            </div>
+            <div class="faq-pair" id="faq-p3">
+              <div class="faq-msg faq-msg-q"><h3 class="faq-q">If GEO costs money, what’s “free” about it?</h3></div>
+              <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                <p>The traffic. When AI names your store and a shopper clicks through, you don’t pay for that click the way you would for an ad. GEO itself is a paid monthly plan. You can start with a $0 first scan, and Core has a 7-day free trial.</p>
+              </div></div>
+            </div>
+            <div class="faq-pair" id="faq-p4">
+              <div class="faq-msg faq-msg-q"><h3 class="faq-q">How do you know a sale came from AI?</h3></div>
+              <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                <p>ChatGPT adds <code class="faq-code">utm_source=chatgpt.com</code> to the links it shows. We also check where each visit came from (Perplexity, Gemini, Copilot, Claude and others), and we count sales from the pages we build for you with our own link tag. Google’s AI Overviews can’t be cleanly separated from normal Google, so we label them. We compare everything with your baseline, your numbers from before you joined, and we never claim every AI sale was caused by GEO.</p>
+              </div></div>
+            </div>
+            <div class="faq-pair" id="faq-p5">
+              <div class="faq-msg faq-msg-q"><h3 class="faq-q">What is the visibility score?</h3></div>
+              <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                <p>A score out of 100 for how often AI names you. It’s the share of AI answers that name you, across all your questions, every AI assistant and both runs, with a bonus when you’re in the top 3 and a little credit when AI links to your site. 0 means no AI named you. Higher means you’re named more often, and nearer the top.</p>
+              </div></div>
+            </div>
+            <div class="faq-pair" id="faq-p6">
+              <div class="faq-msg faq-msg-q"><h3 class="faq-q">Will GEO change my store without asking?</h3></div>
+              <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                <p>No. Every change waits for your approval. Autopilot on Pro is opt-in, and it still skips anything risky, like product claims.</p>
+              </div></div>
+            </div>
+            <div class="faq-pair" id="faq-p7">
+              <div class="faq-msg faq-msg-q"><h3 class="faq-q">Can I undo a change?</h3></div>
+              <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                <p>Yes. We keep the old version of everything we change, so undo is one click.</p>
+              </div></div>
+            </div>
+            <div class="faq-pair" id="faq-p8">
+              <div class="faq-msg faq-msg-q"><h3 class="faq-q">Will it write health or skin claims?</h3></div>
+              <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                <p>No. Health, skin and supplement products get a claims check first, in line with Australia’s TGA rules. We only reword facts already in your catalogue. If something is missing, we ask you.</p>
+              </div></div>
+            </div>
+            <div class="faq-pair" id="faq-p9">
+              <div class="faq-msg faq-msg-q"><h3 class="faq-q">Which AI assistants do you check?</h3></div>
+              <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                <p>ChatGPT, Gemini, Perplexity and Google AI Overviews. Pro adds Claude. Each question is asked twice per assistant on every full scan, and we show the average.</p>
+              </div></div>
+            </div>
+            <div class="faq-pair" id="faq-p10">
+              <div class="faq-msg faq-msg-q"><h3 class="faq-q">How soon will I see results?</h3></div>
+              <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                <p>We can’t promise a date, and we won’t. AI assistants refresh what they know at different speeds, and getting into a roundup depends on its editor. That’s why GEO tracks the same questions every week against your baseline, so you can see what’s moving and what isn’t.</p>
+              </div></div>
+            </div>
+            <div class="faq-pair" id="faq-p11">
+              <div class="faq-msg faq-msg-q"><h3 class="faq-q">Is this the same as SEO?</h3></div>
+              <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                <p>They overlap. Good SEO helps, because many AI answers draw on the web. The difference is the question you ask. SEO asks where you rank on a page of links. GEO asks whether AI names you in its answer, and which sites it quotes when it does.</p>
+              </div></div>
+            </div>
+            <div class="faq-pair" id="faq-p12">
+              <div class="faq-msg faq-msg-q"><h3 class="faq-q">Do I need to be technical?</h3></div>
+              <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                <p>No. Install from Shopify, tick the questions you care about, and approve fixes with one click. GEO writes the changes and pushes them to your store for you.</p>
+              </div></div>
+            </div>
+            <div class="faq-pair" id="faq-p13">
+              <div class="faq-msg faq-msg-q"><h3 class="faq-q">What’s in the free scan? And how is it different from the free product check?</h3></div>
+              <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                <p>The free product check on this page needs no install: one product, 3 questions, ChatGPT, Gemini and Perplexity, each asked twice. The free scan runs inside Shopify after you install: 10 buyer questions on 3 AI assistants, your visibility score (how often AI names you, out of 100), who AI recommends instead, and any AI sales from your last 60 days. Both cost $0.</p>
+              </div></div>
+            </div>
+            <div class="faq-pair" id="faq-p14">
+              <div class="faq-msg faq-msg-q"><h3 class="faq-q">Does it work outside Australia?</h3></div>
+              <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                <p>GEO is built for stores in Australia and New Zealand first, and asks each question as a local shopper would. The free product check also works for shoppers in the US, UK and Canada.</p>
+              </div></div>
+            </div>
+            <div class="faq-pair" id="faq-p15">
+              <div class="faq-msg faq-msg-q"><h3 class="faq-q">What do you do with my store’s data?</h3></div>
+              <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                <p>We read your products and homepage to write fixes, and your orders to find sales from AI. Click tracking counts visits from AI answers, follows your store’s consent settings and keeps no personal details. We never use one store’s data for another store.</p>
+              </div></div>
+            </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Suggested questions: built by 43-faq.js from the pairs above, so it stays hidden without JavaScript. -->
+        <div class="faq-sugg" hidden>
+          <div class="faq-sugg-head">
+            <p class="faq-sugg-title" id="faq-sugg-title">More questions</p>
+            <button type="button" class="faq-reset" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Show all questions</button>
+          </div>
+          <ul class="faq-sugg-list" aria-labelledby="faq-sugg-title"></ul>
+          <p class="faq-sugg-done" hidden>That’s every question. Choose “Show all questions” to ask one again.</p>
+        </div>
+      </div>
 
       <div class="faq-help">
-        <div class="faq-help-img"><img src="img/clay-support.jpg" alt="Clay headset beside two chat bubbles" width="1200" height="670" decoding="async"></div>
+        <span class="faq-help-img"><img src="img/clay-support.jpg" alt="Clay headset beside two chat bubbles" width="1200" height="670" decoding="async"></span>
         <div class="faq-help-tx">
           <p>Stuck on setup? It takes about five minutes, and most of it runs on its own.</p>
           <a class="faq-help-link" href="#how">See the setup steps <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
         </div>
-      </div>
-    </div>
-
-    <div class="faq-list">
-      <div class="faq-item faq-open">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b1" aria-expanded="true" aria-controls="faq-a1">How does AI decide which stores to recommend?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a1" role="region" aria-labelledby="faq-b1"><div class="faq-a-in">
-            <p>Nobody outside the AI companies knows the exact recipe. But the answers show their working. AI repeats facts it can read on your product pages, picks pages that answer the exact question asked, and quotes sources it trusts, like roundup articles, retailers and forums. GEO tracks all three for the questions your buyers ask.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b2" aria-expanded="false" aria-controls="faq-a2">Can I pay to appear in AI answers?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a2" role="region" aria-labelledby="faq-b2"><div class="faq-a-in">
-            <p>You can buy ads next to some answers, but not the recommendation itself. ChatGPT shows ads on its Free and Go plans. They sit below the answer, they’re labelled, and OpenAI says advertisers can’t shape or rank the answer. Google can place ads above, below or within its AI Overviews in Australia and New Zealand. The recommendation inside the answer isn’t for sale.</p>
-            <p class="faq-src">Sources: <a class="src-link" href="https://help.openai.com/en/articles/20001047-ads-in-chatgpt" target="_blank" rel="noopener">OpenAI, Ads in ChatGPT</a>, <a class="src-link" href="https://openai.com/index/chatgpt-ads-expands-southeast-asia-taiwan/" target="_blank" rel="noopener">OpenAI, Sep 2026</a> and <a class="src-link" href="https://support.google.com/google-ads/answer/16297775?hl=en" target="_blank" rel="noopener">Google Ads Help</a>.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b3" aria-expanded="false" aria-controls="faq-a3">If GEO costs money, what’s “free” about it?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a3" role="region" aria-labelledby="faq-b3"><div class="faq-a-in">
-            <p>The traffic. When AI names your store and a shopper clicks through, you don’t pay for that click the way you would for an ad. GEO itself is a paid monthly plan. You can start with a $0 first scan, and Core has a 7-day free trial.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b4" aria-expanded="false" aria-controls="faq-a4">How do you know a sale came from AI?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a4" role="region" aria-labelledby="faq-b4"><div class="faq-a-in">
-            <p>ChatGPT adds <code class="faq-code">utm_source=chatgpt.com</code> to the links it shows. We also check where each visit came from (Perplexity, Gemini, Copilot, Claude and others), and we count sales from the pages we build for you with our own link tag. Google’s AI Overviews can’t be cleanly separated from normal Google, so we label them. We compare everything with your baseline, your numbers from before you joined, and we never claim every AI sale was caused by GEO.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b5" aria-expanded="false" aria-controls="faq-a5">What is the visibility score?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a5" role="region" aria-labelledby="faq-b5"><div class="faq-a-in">
-            <p>A score out of 100 for how often AI names you. It’s the share of AI answers that name you, across all your questions, every AI assistant and both runs, with a bonus when you’re in the top 3 and a little credit when AI links to your site. 0 means no AI named you. Higher means you’re named more often, and nearer the top.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b6" aria-expanded="false" aria-controls="faq-a6">Will GEO change my store without asking?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a6" role="region" aria-labelledby="faq-b6"><div class="faq-a-in">
-            <p>No. Every change waits for your approval. Autopilot on Pro is opt-in, and it still skips anything risky, like product claims.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b7" aria-expanded="false" aria-controls="faq-a7">Can I undo a change?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a7" role="region" aria-labelledby="faq-b7"><div class="faq-a-in">
-            <p>Yes. We keep the old version of everything we change, so undo is one click.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b8" aria-expanded="false" aria-controls="faq-a8">Will it write health or skin claims?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a8" role="region" aria-labelledby="faq-b8"><div class="faq-a-in">
-            <p>No. Health, skin and supplement products get a claims check first, in line with Australia’s TGA rules. We only reword facts already in your catalogue. If something is missing, we ask you.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b9" aria-expanded="false" aria-controls="faq-a9">Which AI assistants do you check?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a9" role="region" aria-labelledby="faq-b9"><div class="faq-a-in">
-            <p>ChatGPT, Gemini, Perplexity and Google AI Overviews. Pro adds Claude. Each question is asked twice per assistant on every full scan, and we show the average.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b10" aria-expanded="false" aria-controls="faq-a10">How soon will I see results?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a10" role="region" aria-labelledby="faq-b10"><div class="faq-a-in">
-            <p>We can’t promise a date, and we won’t. AI assistants refresh what they know at different speeds, and getting into a roundup depends on its editor. That’s why GEO tracks the same questions every week against your baseline, so you can see what’s moving and what isn’t.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b11" aria-expanded="false" aria-controls="faq-a11">Is this the same as SEO?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a11" role="region" aria-labelledby="faq-b11"><div class="faq-a-in">
-            <p>They overlap. Good SEO helps, because many AI answers draw on the web. The difference is the question you ask. SEO asks where you rank on a page of links. GEO asks whether AI names you in its answer, and which sites it quotes when it does.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b12" aria-expanded="false" aria-controls="faq-a12">Do I need to be technical?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a12" role="region" aria-labelledby="faq-b12"><div class="faq-a-in">
-            <p>No. Install from Shopify, tick the questions you care about, and approve fixes with one click. GEO writes the changes and pushes them to your store for you.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b13" aria-expanded="false" aria-controls="faq-a13">What’s in the free scan? And how is it different from the free product check?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a13" role="region" aria-labelledby="faq-b13"><div class="faq-a-in">
-            <p>The free product check on this page needs no install: one product, 3 questions, ChatGPT, Gemini and Perplexity, each asked twice. The free scan runs inside Shopify after you install: 10 buyer questions on 3 AI assistants, your visibility score (how often AI names you, out of 100), who AI recommends instead, and any AI sales from your last 60 days. Both cost $0.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b14" aria-expanded="false" aria-controls="faq-a14">Does it work outside Australia?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a14" role="region" aria-labelledby="faq-b14"><div class="faq-a-in">
-            <p>GEO is built for stores in Australia and New Zealand first, and asks each question as a local shopper would. The free product check also works for shoppers in the US, UK and Canada.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b15" aria-expanded="false" aria-controls="faq-a15">What do you do with my store’s data?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a15" role="region" aria-labelledby="faq-b15"><div class="faq-a-in">
-            <p>We read your products and homepage to write fixes, and your orders to find sales from AI. Click tracking counts visits from AI answers, follows your store’s consent settings and keeps no personal details. We never use one store’s data for another store.</p>
-        </div></div>
       </div>
     </div>
   </div>
