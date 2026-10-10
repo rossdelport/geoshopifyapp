@@ -57,7 +57,7 @@
 .meet-s3 { background: var(--cobalt-deep); }
 .meet-x { font-size: 9.5px; color: #6f7085; line-height: 1; white-space: nowrap; letter-spacing: -0.1px; }
 .meet-hatch { background: repeating-linear-gradient(135deg, #7b7c8c 0 4px, transparent 4px 9px); }
-.meet-col-pro .meet-x { color: #7d7e92; }
+.meet-col-pro .meet-x { color: #6f7085; }
 .meet-pro { position: absolute; left: 0; right: 0; text-align: center; font-size: 9.5px; color: #6f7085; line-height: 1; }
 .meet-tip {
   position: absolute; z-index: 2; top: 0; left: 50%; transform: translateX(-50%);
@@ -74,6 +74,8 @@
 .meet-q { display: flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 7px; box-shadow: inset 0 0 0 1px #ececf1; font-size: 10.5px; color: #6b6c80; white-space: nowrap; overflow: hidden; }
 .meet-q svg { width: 11px; height: 11px; flex: none; color: #9a9bab; }
 .meet-q span { overflow: hidden; text-overflow: ellipsis; }
+/* the sample tag sits in the list's top-right corner, so the query stops short of it */
+.meet-shot-down .meet-q { margin-right: 88px; }
 .meet-row { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 8px; background: #f9f9fb; }
 .meet-av { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: #e9e9ef; color: #5d5e70; font-size: 8.5px; font-weight: 700; letter-spacing: .02em; }
 .meet-av-sm { font-size: 7.5px; letter-spacing: 0; }
@@ -91,10 +93,10 @@
 .meet-tall .meet-text { padding: 40px 34px 0; }
 .meet-tall .meet-p { max-width: 540px; }
 .meet-tall .sample-tag { top: 18px; right: 18px; }
-.meet-shot .meet-tag { top: -8px; right: 12px; font-size: 9.5px; padding: 3px 6px; background: rgba(255, 255, 255, 0.92); box-shadow: inset 0 0 0 1px #e6e6ef, 0 2px 6px -3px rgba(11, 12, 43, 0.18); }
+.meet-shot .meet-tag { top: 10px; right: 10px; font-size: 9.5px; padding: 3px 6px; background: rgba(255, 255, 255, 0.92); box-shadow: inset 0 0 0 1px #e6e6ef, 0 2px 6px -3px rgba(11, 12, 43, 0.18); }
 /* card 2 list fills the card and fades out at the bottom edge */
 .meet-shot-down { align-self: stretch; padding-bottom: 0; border-radius: 16px 16px 0 0; }
-.meet-shot-down .meet-list { height: 100%; overflow: hidden; border-radius: 12px 12px 0 0; -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 64px), transparent 96%); mask-image: linear-gradient(180deg, #000 calc(100% - 64px), transparent 96%); }
+.meet-shot-down .meet-list { height: 100%; overflow: hidden; border-radius: 12px 12px 0 0; -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 84px), transparent calc(100% - 12px)); mask-image: linear-gradient(180deg, #000 calc(100% - 84px), transparent calc(100% - 12px)); }
 .meet-shot-bleed { margin: auto -40px -40px 18px; padding: 12px; align-self: stretch; }
 .meet-rev { padding: 20px 56px 56px 18px; border-radius: 12px; }
 .meet-rev-h { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: var(--navy); }

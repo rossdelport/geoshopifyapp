@@ -1,8 +1,5 @@
 /* Page-wide polish shared by every part (tokens and primitives live in base.css). */
 
-/* Darker green for small text: 4.6:1 on --green-bg, about 5:1 on white. */
-:root { --green-ink: #15803d; }
-
 /* In-page jumps land below the floating nav. */
 section[id], footer[id] { scroll-margin-top: 96px; }
 

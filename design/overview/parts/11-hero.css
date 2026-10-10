@@ -2,8 +2,8 @@
    mockup with three floating clay decorations around it. */
 .hero { position: relative; padding-top: 170px; padding-bottom: 104px; background: var(--bg); isolation: isolate; overflow: hidden; overflow: clip; }
 .hero-bg {
-  position: absolute; top: 12px; left: 12px; right: 12px; bottom: 0; z-index: -1; pointer-events: none;
-  border-radius: 32px; overflow: hidden;
+  position: absolute; top: 16px; left: 16px; right: 16px; bottom: 0; z-index: -1; pointer-events: none;
+  border-radius: var(--r-xl); overflow: hidden;
   background:
     radial-gradient(ellipse 60% 42% at 50% 0%, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 70%),
     var(--grad-main);
@@ -22,7 +22,7 @@
 }
 .hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep), 0 8px 18px -8px rgba(56, 64, 160, 0.45); transform: translateY(-1px); }
 .hero-pill-new { flex: none; display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 7px; background: var(--lilac-pedestal); color: var(--cobalt-deep); font-weight: 650; font-size: 12.5px; font-variant-numeric: tabular-nums; letter-spacing: -0.1px; }
-.hero-pill-est { color: var(--text-2); font-weight: 450; }
+.hero-pill-est { color: var(--text-2); font-weight: 450; white-space: nowrap; }
 .hero-pill svg { flex: none; width: 14px; height: 14px; color: var(--cobalt); }
 
 .hero-title { margin-top: 28px; max-width: 900px; }
@@ -104,7 +104,7 @@
 .hero-store-n { font-weight: 600; color: #f1f1f1; font-size: 12.5px; }
 .hero-app .app-top .search { gap: 8px; font-size: 12px; max-width: 380px; height: 28px; background: #2b2b2b; box-shadow: inset 0 0 0 1px #3a3a3a; }
 .hero-search-tx { flex: 1; }
-.hero-kbd { font-size: 10.5px; color: #9a9a9a; background: #3a3a3a; border-radius: 4px; padding: 2px 5px; }
+.hero-kbd { font-size: 10.5px; color: #b0b0b0; background: #3a3a3a; border-radius: 4px; padding: 2px 5px; }
 .hero-top-r { display: inline-flex; align-items: center; gap: 12px; color: #cfcfcf; }
 .hero-top-r .hero-ic { width: 16px; height: 16px; }
 .hero-avatar { width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; background: var(--cobalt); color: #fff; font-size: 10px; font-weight: 700; }
@@ -225,10 +225,11 @@
   .hero { padding-top: 150px; padding-bottom: 88px; }
   .hero-app .app-top .search { max-width: 240px; }
   .hero-sec-s { display: none; }
-  /* little room at the sides: bubble and coin float above the frame's top corners, bag below its corner */
+  /* little room at the sides: bubble and coin float above the frame's top corners; the bag would hide
+     behind the frame, so it goes */
   .hero-deco-bubble { width: 130px; left: -30px; top: -98px; }
   .hero-deco-coin { width: 112px; right: -14px; left: auto; top: -88px; }
-  .hero-deco-bag { width: 130px; left: -44px; bottom: -66px; }
+  .hero-deco-bag { display: none; }
 }
 @media (max-width: 960px) {
   .hero-app .app-body { grid-template-columns: 1fr; }
@@ -246,13 +247,15 @@
   .hero-check-row { width: 100%; }
   .hero-check-btn { flex: 1; }
   .hero-pill { font-size: 12.5px; }
-  .hero-stage { margin-top: 88px; }
+  .hero-stage { margin-top: 56px; }
   .hero-frame { padding: 6px; border-radius: 18px; }
   .hero-stage::before { border-radius: 18px; }
   .hero-deco { animation-name: hero-float-sm; }
   .hero-deco-bag { display: none; }
-  .hero-deco-bubble { width: 104px; left: -4px; top: -82px; }
-  .hero-deco-coin { width: 92px; right: 2px; top: -78px; }
+  .hero-deco-bubble { width: 96px; left: -4px; top: -72px; }
+  .hero-deco-coin { width: 84px; right: 0; top: -66px; }
+  /* phones: keep the money (KPIs and where it came from); the score and fixes panels come later on the page */
+  .hero-row2 { display: none; }
   .hero-app { border-radius: 13px; }
   .hero-app .app-top { height: 40px; }
   .hero-store-n { font-size: 12px; }
@@ -294,8 +297,8 @@
   0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
   50% { transform: translate3d(0, -6px, 0) rotate(var(--rot, -3deg)); }
 }
-/* phones: one decoration only, so nothing crowds the form */
+/* phones: one decoration only, so nothing crowds the form; the coin sits on the frame's top-right corner */
 @media (max-width: 600px) {
   .hero-deco-bubble { display: none; }
-  .hero-deco-coin { width: 84px; right: 6px; top: -72px; }
+  .hero-deco-coin { z-index: 2; width: 80px; right: -4px; top: -64px; }
 }

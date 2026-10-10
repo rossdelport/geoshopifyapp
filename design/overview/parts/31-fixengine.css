@@ -39,7 +39,7 @@
 .fx-row-p { font-size: 16px; line-height: 1.7; color: var(--text); max-width: 320px; }
 
 /* right: stage with the mockup anchored top-left, bleeding off the right and bottom edges */
-.fx-stage { position: relative; min-width: 0; overflow: hidden; background: var(--grad-main); }
+.fx-stage { position: relative; min-width: 0; overflow: hidden; background: var(--lilac-100); }
 .fx-stage > .sample-tag { top: 6px; right: 16px; }
 .fx-pane { position: absolute; inset: 32px 0 0 32px; }
 .fx-pane[hidden] { display: none; }
@@ -108,7 +108,7 @@
 .fx-hist-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
 .fx-hist-t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fx-hist-t b { font-weight: 600; color: #303030; }
-.fx-hist-when { font-size: 11px; color: #8a8a8a; white-space: nowrap; }
+.fx-hist-when { font-size: 11px; color: #6b6b6b; white-space: nowrap; }
 .fx-hist-undo { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 600; color: var(--blue); white-space: nowrap; }
 .fx-hist-undo svg { width: 12px; height: 12px; }
 
@@ -117,12 +117,12 @@
 .fx-kv { display: flex; flex-direction: column; gap: 4px; }
 .fx-kv + .fx-kv { margin-top: 10px; }
 .fx-k { font-size: 11.5px; color: #616161; }
-.fx-was { font-size: 10.5px; color: #8a8a8a; text-decoration: line-through; }
+.fx-was { font-size: 10.5px; color: #6b6b6b; text-decoration: line-through; }
 .fx-mf { display: grid; grid-template-columns: 62px minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid #f0f0f0; }
 .fx-mf:first-of-type { border-top: 0; padding-top: 2px; }
 .fx-v { font-size: 12px; font-weight: 600; color: #303030; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fx-new { font-size: 10px; font-weight: 600; color: var(--green-ink); }
-.fx-mf-note { margin-top: 6px; font-size: 11px; line-height: 1.45; color: #7a7a7a; }
+.fx-mf-note { margin-top: 6px; font-size: 11px; line-height: 1.45; color: #6b6b6b; }
 
 /* ---------- shared browser chrome for storefront panes ---------- */
 .fx-shot-web { background: var(--white); }

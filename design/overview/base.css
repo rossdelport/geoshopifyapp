@@ -40,7 +40,8 @@
   --line: #eeeeee;
   --line-2: #e8e8e8;
   --green: #6cd68c;
-  --green-ink: #1f9d55;
+  /* small green text (deltas, "Done"): 5.4:1 on white, 4.9:1 on --green-bg */
+  --green-ink: #167a43;
   --green-bg: #e9f9ee;
   --amber: #f0b150;
   --amber-bg: #fdf3e2;
@@ -171,7 +172,7 @@ p { margin: 0; }
 .app-top { height: 40px; display: flex; align-items: center; gap: 10px; padding: 0 14px; background: #1a1a1a; color: #e3e3e3; font-size: 12px; }
 .app-top .store { display: inline-flex; align-items: center; gap: 8px; }
 .app-top .store i { width: 20px; height: 20px; border-radius: 6px; background: var(--green); display: inline-block; }
-.app-top .search { flex: 1; max-width: 420px; height: 26px; border-radius: 8px; background: #303030; margin-inline: auto; display: flex; align-items: center; padding: 0 10px; color: #8a8a8a; }
+.app-top .search { flex: 1; max-width: 420px; height: 26px; border-radius: 8px; background: #303030; margin-inline: auto; display: flex; align-items: center; padding: 0 10px; color: #a3a3a3; }
 .app-body { display: grid; grid-template-columns: 200px 1fr; min-height: 0; }
 .app-nav { background: #ebebeb; padding: 12px 8px; display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: #303030; }
 .app-nav .grp { font-size: 11px; color: #616161; padding: 10px 10px 4px; font-weight: 600; }

@@ -1,5 +1,5 @@
 /* §16 CTA + footer: one big light rounded block (Qarin). */
-.foot-sec { background: var(--bg); padding: 8px 32px 32px; }
+.foot-sec { background: var(--bg); padding: 8px 16px 16px; }
 /* Closing CTA: lilac gradient card (navy text, navy button) with the clay shop front on the right,
    sitting over the top edge of the light footer block (Qarin). */
 .foot-cta-card {
@@ -18,12 +18,14 @@
 }
 .foot-block {
   position: relative; isolation: isolate; overflow: hidden;
-  max-width: 1376px; margin: -220px auto 0;
+  margin: -220px auto 0;
   border-radius: var(--r-xl);
   background: var(--lav);
   box-shadow: inset 0 0 0 1px var(--lav-line);
   padding: 220px 80px 0;
 }
+/* the block runs edge to edge (16px inset, like the other bands); its content keeps the page width */
+.foot-main, .foot-bottom { max-width: 1216px; margin-inline: auto; }
 
 .foot-cta { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 520px); align-items: stretch; min-height: 440px; }
 .foot-cta-tx { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; text-align: left; padding: 88px 24px 88px 80px; }
@@ -77,17 +79,17 @@
   .foot-cols { justify-content: start; grid-template-columns: repeat(3, minmax(0, 200px)); }
 }
 @media (max-width: 760px) {
-  .foot-sec { padding: 4px 16px 16px; }
+  .foot-sec { padding: 4px 8px 8px; }
   .foot-block { border-radius: 24px; padding: 120px 20px 0; margin-top: -120px; }
-  .foot-cta-card { margin-inline: 12px; border-radius: var(--r-lg); }
+  .foot-cta-card { margin-inline: 0; border-radius: var(--r-lg); }
   .foot-cta-card::before { background-size: 44px 44px; -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 25%, transparent 80%); mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 25%, transparent 80%); }
   /* phones: shop front above the headline, centred */
   .foot-cta { grid-template-columns: minmax(0, 1fr); min-height: 0; padding: 28px 20px 52px; }
-  .foot-cta-art { order: -1; justify-self: center; width: 100%; max-width: 220px; min-height: 0; margin-bottom: 4px; }
+  .foot-cta-art { order: -1; justify-self: center; width: 100%; max-width: 260px; min-height: 0; margin-bottom: 4px; }
   .foot-cta-art img {
     position: static; height: auto; aspect-ratio: 4 / 3;
-    -webkit-mask-image: radial-gradient(closest-side, #000 58%, transparent 100%);
-    mask-image: radial-gradient(closest-side, #000 58%, transparent 100%);
+    -webkit-mask-image: radial-gradient(closest-side, #000 70%, transparent 100%);
+    mask-image: radial-gradient(closest-side, #000 70%, transparent 100%);
   }
   .foot-cta-tx { align-items: center; text-align: center; padding: 12px 0 0; }
   .foot-lead { margin-top: 14px; font-size: 15px; }

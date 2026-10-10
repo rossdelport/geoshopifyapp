@@ -2,20 +2,10 @@
 .section.alt + .proof-sec.alt { padding-top: 40px; }
 
 .proof-head { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 72px; }
-.proof-kicker { display: inline-flex; align-items: center; gap: 12px; font-size: 15px; line-height: 1.4; font-weight: 600; color: var(--navy); }
-.proof-dots { display: inline-flex; align-items: center; gap: 4px; }
-.proof-dot {
-  width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center;
-  background: var(--white); box-shadow: inset 0 0 0 1px var(--lav-line), 0 1px 2px rgba(56, 64, 160, 0.08);
-}
-.proof-dot svg { width: 13px; height: 13px; }
-.proof-dot-gpt { color: var(--e-chatgpt); }
-.proof-dot-gem { color: var(--e-gemini); }
-.proof-dot-ppx { color: var(--e-perplexity); }
-.proof-dot-goo { color: var(--e-google); }
-.proof-sub { margin-top: 10px; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; line-height: 1.5; color: var(--navy); }
+.proof-kicker { display: inline-flex; align-items: center; gap: 10px; margin: 0; }
+.proof-sub { margin-top: 12px; display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; line-height: 1.5; color: var(--text); }
 .proof-sep { width: 1px; height: 14px; background: var(--lilac-deep); display: inline-block; }
-.proof-h2 { margin-top: 28px; max-width: 900px; }
+.proof-h2 { margin-top: 18px; max-width: 900px; }
 .proof-lead { margin-top: 18px; max-width: 600px; text-wrap: pretty; }
 
 .proof-list { display: flex; flex-direction: column; gap: 24px; }
@@ -112,9 +102,8 @@
 @media (max-width: 760px) {
   .section.alt + .proof-sec.alt { padding-top: 24px; }
   .proof-head { margin-bottom: 40px; }
-  .proof-kicker { font-size: 14px; gap: 10px; }
   .proof-sub { font-size: 13px; flex-wrap: wrap; justify-content: center; }
-  .proof-h2 { margin-top: 20px; }
+  .proof-h2 { margin-top: 16px; }
   .proof-lead { margin-top: 14px; }
   .proof-list { gap: 16px; }
   .proof-card { grid-template-columns: minmax(0, 1fr); padding: 12px; border-radius: var(--r-md); }
