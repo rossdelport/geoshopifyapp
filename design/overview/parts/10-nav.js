@@ -9,7 +9,7 @@
   window.addEventListener('scroll', check, { passive: true });
   check();
 
-  // Smooth scroll for in-page links (#screens, #pricing, ...), unless the viewer prefers less motion.
+  // Smooth scroll for in-page links (#how, #pricing, ...), unless the viewer prefers less motion.
   var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.addEventListener('click', function (e) {
     var a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;

@@ -9,6 +9,7 @@
   var month = root.querySelector('#worth-month');
   var year = root.querySelector('#worth-year');
   var sum = root.querySelector('#worth-sum');
+  var sumYr = root.querySelector('#worth-sum-yr');
 
   // Plain "$" with thousands commas ($12,000). No currency conversion.
   function money(n) {
@@ -39,7 +40,9 @@
     fill(aov);
     fill(orders);
     // Only changes when the numbers change, so the live region never repeats itself.
-    setText(sum, o + ' ' + word + ' × ' + money(a) + ' = ' + money(m) + ' a month, or ' + money(y) + ' a year.');
+    // The yearly figure is shown big on screen; screen readers get it from the hidden tail.
+    setText(sum, o + ' ' + word + ' × ' + money(a) + ' = ' + money(m) + ' a month');
+    setText(sumYr, ', or ' + money(y) + ' a year.');
   }
 
   aov.addEventListener('input', update);

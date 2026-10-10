@@ -7,7 +7,6 @@
 .faq-sec [hidden]:not([hidden="until-found"]) { display: none !important; }
 .faq-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 .faq-head { margin-bottom: 56px; }
-.faq-lead { text-wrap: pretty; }
 
 .faq-main { position: relative; max-width: 860px; margin-inline: auto; }
 
@@ -42,7 +41,7 @@
 /* conversation (faint lilac). With JavaScript it becomes a fixed-height scroll area, newest at the bottom. */
 .faq-log { position: relative; padding: 28px 30px 30px; background: linear-gradient(180deg, #f8f7fe 0%, #f1effd 100%); }
 .faq-log:focus-visible { outline: 2px solid var(--cobalt); outline-offset: -4px; border-radius: 6px; }
-.faq-chat.is-live .faq-log { height: 432px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--lilac-deep) transparent; }
+.faq-chat.is-live .faq-log { height: 290px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--lilac-deep) transparent; }
 .faq-chat.is-live .faq-log-in { min-height: 100%; display: flex; flex-direction: column; justify-content: flex-end; }
 .faq-log-in { display: flex; flex-direction: column; gap: 26px; }
 /* spacing by margin, not gap: waiting (until-found) pairs still take part in the layout at zero height */
@@ -50,8 +49,6 @@
 .faq-thread > :not([hidden]) ~ :not([hidden]) { margin-top: 26px; }
 /* soft fade where messages scroll up under the top bar */
 .faq-chat.is-live::before { content: ""; position: absolute; z-index: 2; left: 0; right: 12px; top: 67px; height: 22px; background: linear-gradient(180deg, #f8f7fe 0%, rgba(248, 247, 254, 0) 100%); pointer-events: none; }
-.faq-hello .faq-bub { background: transparent; box-shadow: inset 0 0 0 1px var(--lilac-100); }
-.faq-hello .faq-bub p { font-size: 14.5px; color: var(--text); }
 
 .faq-pair { display: flex; flex-direction: column; gap: 14px; }
 .faq-msg-q { align-self: flex-end; max-width: min(78%, 560px); }
@@ -107,26 +104,7 @@
 /* answered: stays in place, dimmed, with a check */
 .faq-chip:disabled { cursor: default; color: var(--text-2); background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-100); transform: none; }
 .faq-chip:disabled .faq-chip-ic { background: var(--white); color: var(--green-ink); box-shadow: inset 0 0 0 1px var(--lilac-100); }
-/* "More questions (10)": a quieter, text-like chip */
-.faq-more { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 7px 12px 7px 14px; border-radius: 20px; font-size: 14px; line-height: 1.3; font-weight: 600; color: var(--cobalt-deep); white-space: nowrap; transition: background-color .2s ease; }
-.faq-more svg { width: 15px; height: 15px; transition: transform .2s ease; }
-.faq-more[aria-expanded="true"] svg { transform: rotate(180deg); }
-.faq-more:hover { background: var(--lilac-50); }
-.faq-more:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
 
-/* setup help, a slim strip under the window */
-.faq-help { position: relative; z-index: 1; display: flex; align-items: center; gap: 18px; margin-top: 20px; padding: 10px; border-radius: 20px; background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-100); }
-.faq-help-img { flex: none; width: 116px; aspect-ratio: 16 / 10; border-radius: 12px; overflow: hidden; background: var(--lilac-100); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.8); }
-.faq-help-img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 52%; transform: scale(1.5); }
-.faq-help-tx { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; padding-right: 6px; }
-.faq-help-tx p { max-width: 400px; font-size: 15px; line-height: 1.5; font-weight: 500; color: var(--navy); text-wrap: pretty; }
-.faq-help-link {
-  display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 16px; border-radius: 10px;
-  font-size: 14.5px; font-weight: 600; color: var(--white); line-height: 1; white-space: nowrap;
-  background: var(--grad-btn); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 6px 14px -6px rgba(21, 22, 60, 0.6);
-}
-.faq-help-link svg { width: 16px; height: 16px; transition: transform .2s ease; }
-.faq-help-link:hover svg { transform: translateX(3px); }
 
 @media (max-width: 1240px) {
   .faq-deco { display: none; }
@@ -148,10 +126,9 @@
   .faq-bar-sub { font-size: 12px; }
   .faq-log { padding: 18px 12px 20px; }
   .faq-chat { scroll-margin-top: 84px; }
-  .faq-chat.is-live .faq-log { height: clamp(320px, 54vh, 460px); }
+  .faq-chat.is-live .faq-log { height: clamp(280px, 38vh, 340px); }
   .faq-log-in { gap: 20px; }
   .faq-thread > :not([hidden]) ~ :not([hidden]) { margin-top: 20px; }
-  .faq-hello .faq-bub p { font-size: 13.5px; }
   .faq-pair { gap: 10px; }
   .faq-msg-q { max-width: 88%; }
   .faq-q { padding: 10px 14px; font-size: 15px; border-radius: 18px 18px 5px 18px; }
@@ -174,14 +151,8 @@
   .faq-sugg-list::-webkit-scrollbar { display: none; }
   .faq-sugg-list li { flex: none; max-width: min(78vw, 280px); scroll-snap-align: start; }
   .faq-chip { font-size: 14px; min-height: 40px; padding: 6px 6px 6px 14px; gap: 8px; border-radius: 18px 18px 5px 18px; }
-  .faq-more { align-self: center; }
   .faq-chip-ic { width: 24px; height: 24px; }
   .faq-chip-ic svg { width: 13px; height: 13px; }
-  .faq-help { align-items: flex-start; gap: 12px; margin-top: 14px; padding: 10px; border-radius: 18px; }
-  .faq-help-img { width: 84px; border-radius: 10px; }
-  .faq-help-tx { flex-direction: column; align-items: flex-start; gap: 10px; padding: 2px 0 2px; }
-  .faq-help-tx p { font-size: 14px; }
-  .faq-help-link { height: 40px; font-size: 14px; padding: 0 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .faq-deco { animation: none; }

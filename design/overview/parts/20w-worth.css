@@ -1,5 +1,6 @@
-/* What's it worth to you: a lilac gradient band with a white calculator card and the clay coins. Two real range inputs, vanilla JS. */
-.worth-sec { background: var(--white); }
+/* What's it worth to you: a lilac gradient band with a white calculator card and the clay coins. Two real range inputs, vanilla JS.
+   It follows the dashboard straight on, so it adds no top padding of its own (one normal section gap, not two). */
+.worth-sec { background: var(--white); padding-top: 0; }
 .worth-band {
   position: relative;
   overflow: hidden;
@@ -20,12 +21,12 @@
 }
 .worth-head, .worth-art, .worth-card { position: relative; min-width: 0; }
 .worth-head { grid-area: head; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
-.worth-head .label .chip-tx { background: var(--white); box-shadow: 0 1px 2px rgba(11, 12, 43, 0.04); }
 .worth-h2 { max-width: 460px; }
-.worth-lead { max-width: 440px; color: #4a4b66; }
 
-/* clay coins: a .clay-tile (05-shared.css), the same frame as the other clay renders */
-.worth-art { grid-area: art; align-self: end; width: 100%; max-width: 300px; aspect-ratio: 1; }
+/* clay coins: no frame, the render floats on the band (its edges fade out); hidden on phones */
+.worth-art { grid-area: art; align-self: end; justify-self: center; width: 100%; max-width: 400px; aspect-ratio: 1; margin: -24px 0 -48px; }
+.worth-art > img { display: block; width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply;
+  -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent 100%); mask-image: radial-gradient(closest-side, #000 62%, transparent 100%); }
 
 /* calculator card */
 .worth-card {
@@ -73,7 +74,6 @@
 .worth-range input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--cobalt), 0 0 0 7px rgba(64, 80, 176, 0.2); }
 .worth-range input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(--cobalt), 0 0 0 7px rgba(64, 80, 176, 0.2); }
 .worth-ends { display: flex; justify-content: space-between; margin-top: 2px; font-size: 12px; line-height: 1.4; color: var(--text-2); font-variant-numeric: tabular-nums; }
-.worth-help { margin-top: 8px; font-size: 13px; line-height: 1.5; color: var(--text); }
 
 /* output */
 .worth-out { margin-top: 28px; padding: 20px 22px 18px; border-radius: 18px; background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-100); }
@@ -82,30 +82,26 @@
 .worth-m { font-family: var(--font-head); font-size: 52px; font-weight: 500; letter-spacing: -2px; line-height: 1; color: var(--cobalt); }
 .worth-y { font-family: var(--font-head); font-size: 26px; font-weight: 500; letter-spacing: -0.8px; line-height: 1; color: var(--cobalt-deep); }
 .worth-unit { font-size: 15px; font-weight: 500; color: var(--navy); }
-.worth-sum { margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(181, 168, 224, 0.5); font-size: 15px; line-height: 1.5; font-weight: 500; color: var(--navy); }
+/* the "5 orders × $80 = $400 a month" sum: screen readers only (it is the live region; the big numbers say it on screen) */
+.worth-sum { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 
 .worth-core { margin-top: 22px; font-size: 15px; line-height: 1.55; color: var(--navy); }
-.worth-fine { margin-top: 8px; font-size: 12.5px; line-height: 1.55; color: var(--text); }
-.worth-next { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 14px; line-height: 1.5; color: var(--navy); }
-.worth-link { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--cobalt); text-decoration: underline; text-decoration-color: rgba(64, 80, 176, 0.35); text-underline-offset: 3px; }
-.worth-link:hover { color: var(--cobalt-deep); text-decoration-color: currentColor; }
-.worth-link svg { width: 15px; height: 15px; flex: none; transition: transform .2s ease; }
-.worth-link:hover svg { transform: translateX(2px); }
+/* screen-reader-only tail of the live sum (the yearly figure is already shown big) */
+.worth-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 @media (max-width: 1240px) {
   .worth-band { column-gap: 48px; padding: 64px 48px; grid-template-columns: minmax(0, 1fr) minmax(0, 560px); }
 }
 @media (max-width: 1100px) {
   .worth-band { grid-template-columns: minmax(0, 1fr) 200px; grid-template-areas: "head art" "card card"; grid-template-rows: auto auto; row-gap: 36px; padding: 56px 40px; }
-  .worth-art { align-self: center; }
+  .worth-art { align-self: center; margin: -16px 0; }
   .worth-card { align-self: stretch; }
 }
 @media (max-width: 760px) {
-  .worth-band { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "art" "card"; row-gap: 24px; padding: 40px 18px 18px; border-radius: var(--r-lg); }
+  .worth-band { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "card"; row-gap: 24px; padding: 40px 18px 18px; border-radius: var(--r-lg); }
   .worth-head { align-items: center; text-align: center; gap: 14px; }
-  .worth-h2, .worth-lead { margin-inline: auto; }
-  .worth-art { justify-self: center; }
-  .worth-art { max-width: 200px; border-radius: 20px; }
+  .worth-h2 { margin-inline: auto; }
+  .worth-art { display: none; }
   .worth-card { padding: 24px 18px 20px; border-radius: 20px; }
   .worth-lab { font-size: 14.5px; }
   .worth-val { font-size: 18px; min-width: 56px; }
@@ -113,7 +109,6 @@
   .worth-nums { flex-direction: column; align-items: flex-start; gap: 8px; }
   .worth-m { font-size: 42px; letter-spacing: -1.5px; }
   .worth-y { font-size: 22px; }
-  .worth-sum { font-size: 14.5px; }
   .worth-core { font-size: 14.5px; }
 }
 /* touch screens: a 44px tall hit area and a bigger thumb */

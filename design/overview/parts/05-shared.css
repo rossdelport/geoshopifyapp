@@ -5,13 +5,13 @@ section[id], footer[id] { scroll-margin-top: 96px; }
 
 /* Clear keyboard focus on links and buttons (the browser default is faint on navy and lilac). */
 .page a:focus-visible, .page .btn:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 3px; border-radius: 10px; }
-.page .price-band a:focus-visible, .page .on-dark a:focus-visible { outline-color: var(--white); }
+.page .price-card-dark a:focus-visible { outline-color: var(--white); }
 
 /* Source links under numbers: small, cobalt, underlined (every number links to where it came from). */
 .src-link { color: var(--cobalt-deep); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; text-decoration-color: rgba(56, 64, 160, 0.45); transition: text-decoration-color .2s ease; }
 .src-link:hover { text-decoration-color: currentColor; }
 
-/* One frame for the clay renders shown as tiles (money, worth, proof): rounded, a thin white inner ring
+/* One frame for the clay renders shown as tiles (how it works, worth): rounded, a thin white inner ring
    and the soft lilac clay shadow. The ring sits on top of the image, so it shows on every render. */
 .clay-tile { position: relative; overflow: hidden; border-radius: var(--r-lg); background: var(--lilac-100); box-shadow: var(--shadow-clay); }
 .clay-tile > img { display: block; width: 100%; height: 100%; object-fit: cover; }

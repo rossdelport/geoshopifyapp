@@ -1,5 +1,6 @@
 /* Hero: lilac gradient band with the faint grid, pill, h1, lead and the free check form, then three
    small animated cards that explain the idea: shoppers ask AI, AI picks a few brands, you get the sale.
+   Phones show the cards as one sideways row (swipe, the next card peeking in) so the hero stays short.
    Card animations are CSS keyframes (transform and opacity only) that start and end on the finished
    picture. 11-hero.js starts them when the cards scroll into view; each story plays twice, then rests.
    With reduced motion (or no JS) each card shows its finished state, which is what the plain styles
@@ -24,13 +25,12 @@
   font-size: 13px; font-weight: 500; line-height: 1.3; color: var(--navy); text-align: left;
   transition: box-shadow .2s ease, transform .2s ease;
 }
-.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep), 0 8px 18px -8px rgba(56, 64, 160, 0.45); transform: translateY(-1px); }
+a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep), 0 8px 18px -8px rgba(56, 64, 160, 0.45); transform: translateY(-1px); }
 .hero-pill-new { flex: none; display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 7px; background: var(--lilac-pedestal); color: var(--cobalt-deep); font-weight: 650; font-size: 12.5px; font-variant-numeric: tabular-nums; letter-spacing: -0.1px; }
-.hero-pill-est { color: var(--text-2); font-weight: 450; white-space: nowrap; }
 .hero-pill svg { flex: none; width: 14px; height: 14px; color: var(--cobalt); }
 
 .hero-title { margin-top: 28px; max-width: 900px; }
-.hero-lead { margin-top: 24px; max-width: 610px; font-size: 17px; line-height: 1.65; color: var(--navy-3); text-wrap: pretty; }
+.hero-lead { margin-top: 24px; max-width: 610px; font-size: 17px; line-height: 1.65; color: var(--navy-3); text-wrap: balance; }
 
 /* free product check form (posts to /check on the live site) */
 .hero-check { margin-top: 36px; width: 100%; max-width: 820px; display: flex; flex-direction: column; align-items: center; scroll-margin-top: 150px; }
@@ -63,8 +63,6 @@
 .hero-check-hint { margin-top: 14px; max-width: 640px; font-size: 13.5px; line-height: 1.55; color: var(--text-lilac); text-wrap: balance; }
 .hero-check-note { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.85); box-shadow: inset 0 0 0 1px var(--lav-line); color: var(--navy); font-size: 14px; line-height: 1.5; }
 .hero-check-note a { color: var(--cobalt-deep); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
-.hero-check-alt { margin-top: 10px; font-size: 14px; font-weight: 500; color: var(--navy); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--lilac-deep); transition: text-decoration-color .2s ease, color .2s ease; }
-.hero-check-alt:hover { color: var(--cobalt-deep); text-decoration-color: var(--cobalt); }
 
 /* ---------- three animated cards ---------- */
 .hw-wrap { position: relative; width: 100%; max-width: 1100px; margin-top: 72px; }
@@ -93,9 +91,7 @@
 }
 .hw-body { padding: 18px 14px 14px; }
 .hw-t { font-family: var(--font-head); font-size: 19px; font-weight: 500; letter-spacing: -0.4px; line-height: 1.3; color: var(--navy); }
-.hw-p { margin-top: 6px; font-size: 14px; line-height: 1.55; color: var(--text); text-wrap: pretty; }
-.hw-p a { color: var(--cobalt-deep); text-decoration: underline; text-decoration-color: var(--lilac-deep); text-underline-offset: 3px; transition: text-decoration-color .2s ease; }
-.hw-p a:hover { text-decoration-color: var(--cobalt); }
+.hw-p { margin-top: 6px; font-size: 14px; line-height: 1.55; color: var(--text); text-wrap: balance; }
 
 /* card 1: question bubbles rise out of a chat box and stack (finished state: all three stacked) */
 .hw-c1 { --slot: 47px; --q-bottom: 57px; }
@@ -190,14 +186,13 @@
 /* centred on the slot and kept inside the white row, so multiply never shows the PNG's white square */
 .hw-row-coin img { position: absolute; left: 50%; top: 50%; width: 36px; height: 36px; margin: -18px 0 0 -18px; max-width: none; mix-blend-mode: multiply; }
 .hw-row-b { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
-.hw-row-t { font-size: 12.5px; font-weight: 600; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.hw-row-s { font-size: 11px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hw-row-t { font-size: 13px; font-weight: 600; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .hw-chip { height: 20px; padding: 0 7px; border-radius: 10px; display: inline-flex; align-items: center; background: var(--green-bg); color: var(--green-ink); font-size: 11px; font-weight: 600; line-height: 1; white-space: nowrap; }
 @media (max-width: 1240px) {
   .hw-rows { width: min(calc(100% - 16px), 320px); }
   .hw-row { grid-template-columns: 26px minmax(0, 1fr) auto; gap: 6px; padding: 0 6px; }
   .hw-row-ic { width: 26px; height: 26px; }
-  .hw-row-t { font-size: 12px; }
+  .hw-row-t { font-size: 12.5px; }
   .hw-chip { padding: 0 6px; }
 }
 .hw-row3 { transform: scale(var(--row3-rest)); box-shadow: 0 0 0 1px rgba(104, 120, 216, 0.5), 0 14px 26px -12px rgba(56, 64, 160, 0.45); }
@@ -211,8 +206,8 @@
    questions (to 3.9s), card 2 picks "You" (3.5 to 5.2s), card 3 adds the rows (5 to 6.9s), and all three
    hold the finished picture for over 4s. --hw-d2 and --hw-d3 shift cards 2 and 3 along that timeline,
    and the "-d" keyframes clear those cards early, with card 1.
-   Stacked cards (1023px and below): each card starts on its own when it scrolls into view, so --hw-d2 and
-   --hw-d3 are 0 and every card clears just before it rebuilds. */
+   Narrower screens (1023px and below: stacked on tablets, a sideways row on phones): each card starts on
+   its own when it comes into view, so --hw-d2 and --hw-d3 are 0 and every card clears just before it rebuilds. */
 .hw { --hw-d2: 0s; --hw-d3: 0s; --hw-ease: cubic-bezier(.3, .7, .2, 1); }
 @media (min-width: 1024px) { .hw { --hw-d2: 1.85s; --hw-d3: 3.45s; } }
 
@@ -508,7 +503,7 @@
   .hw { gap: 16px; }
 }
 @media (max-width: 1023px) {
-  /* one column: the cards stack (sideways on tablets, upright and at most 460px wide on phones) */
+  /* tablets: one column of cards (phones: one sideways row, below) */
   .hw-wrap { max-width: 460px; margin-top: 56px; }
   .hw { grid-template-columns: minmax(0, 1fr); gap: 14px; }
   .hero-deco { display: none; }
@@ -523,7 +518,7 @@
   .hw-rows { width: min(calc(100% - 30px), 320px); }
 }
 @media (max-width: 760px) {
-  .hero { padding-top: 116px; padding-bottom: 44px; }
+  .hero { padding-top: 116px; padding-bottom: 28px; }
   .hero-bg { top: 8px; left: 8px; right: 8px; border-radius: 24px; }
   .hero-br { display: none; }
   .hero-title { margin-top: 22px; }
@@ -534,9 +529,14 @@
   .hero-check-row { width: 100%; }
   .hero-check-btn { flex: 1; }
   .hero-pill { font-size: 12.5px; }
-  .hw-wrap { margin-top: 36px; }
-  .hw { gap: 10px; }
-  .hw-card { --art-h: 180px; padding: 6px; border-radius: 18px; }
+  /* one sideways row that runs to the edges of the lilac band: swipe for the next card, which peeks in */
+  .hw-wrap { max-width: none; width: calc(100% + 16px); margin: 32px -8px 0; }
+  .hw {
+    display: flex; gap: 10px; padding: 2px 8px 22px; overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; scroll-padding-inline: 8px; scrollbar-width: none;
+  }
+  .hw::-webkit-scrollbar { display: none; }
+  .hw-card { --art-h: 180px; flex: none; width: min(82%, 300px); scroll-snap-align: start; padding: 6px; border-radius: 18px; }
   .hw-art { border-radius: 13px; }
   .hw-body { padding: 12px 12px 12px; }
   .hw-t { font-size: 18px; }
@@ -547,12 +547,6 @@
   .hw-bub { gap: 0; padding: 3px 10px 3px; }
   .hw-tray { bottom: 9px; height: 32px; }
   .hw-c3 { --row-h: 40px; --row-gap: 7px; --rows-top: 32px; --row3-pop: 1.05; --row3-rest: 1.03; }
-  .hw-row-s { font-size: 12px; }
   .hw-rows { width: min(calc(100% - 30px), 320px); }
 }
 
-.hero-pill-short { display: none; }
-@media (max-width: 760px) {
-  .hero-pill-long { display: none; }
-  .hero-pill-short { display: inline; }
-}

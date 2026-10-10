@@ -40,7 +40,8 @@
 
 // Hero cards: their CSS stories start on the finished picture and wait (paused) until they're in view.
 // Wide screens (3 cards in a row): one shared timeline, so the whole row starts and pauses together and
-// the story runs left to right. Stacked cards (1023px and below): each card starts when it's in view.
+// the story runs left to right. 1023px and below (stacked on tablets, a sideways row on phones): each card
+// starts when it's in view, including when it is swiped into view.
 // Each story plays twice, then rests on the finished picture (see 11-hero.css). Hover and focus do nothing:
 // the cards aren't controls. With reduced motion the CSS shows the finished state and nothing here runs.
 (function () {

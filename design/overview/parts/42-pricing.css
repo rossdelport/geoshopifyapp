@@ -1,4 +1,5 @@
-/* §13 Pricing: full-width lilac gradient block (Qarin layout), navy text, white cards, indigo featured card. */
+/* Pricing: full-width lilac gradient block, navy text, white cards, indigo featured card. Only Core's
+   "Start 7-day trial" is a filled button; Free scan and Pro use a quieter outline button. */
 .price-sec { background: var(--bg); padding-top: 24px; }
 .price-band {
   margin-inline: 16px;
@@ -16,27 +17,11 @@
 }
 
 .price-head { display: flex; flex-direction: column; align-items: center; text-align: center; }
-.price-band .label .chip-tx { background: var(--white); color: var(--navy); box-shadow: 0 1px 2px rgba(56, 64, 160, 0.08); }
-.price-h2 { margin-top: 18px; color: var(--navy); }
-.price-lead { margin-top: 16px; max-width: 560px; color: var(--text-lilac); text-wrap: pretty; }
-.price-calc { margin-top: 14px; display: inline-flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--cobalt-deep); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: rgba(56, 64, 160, 0.4); }
-.price-calc svg { width: 16px; height: 16px; transition: transform .2s ease; }
-.price-calc:hover { text-decoration-color: currentColor; }
-.price-calc:hover svg { transform: translateX(3px); }
-
-.price-seg {
-  margin-top: 40px;
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 0 4px; border-radius: 12px;
-  background: var(--white);
-  box-shadow: inset 0 0 0 1px rgba(181, 168, 224, 0.35), 0 10px 24px -14px rgba(56, 64, 160, 0.4);
-}
-.price-seg > span { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px; border-radius: 10px; font-size: 15px; font-weight: 500; line-height: 1; white-space: nowrap; }
-.price-seg-info { color: var(--navy); }
-.price-seg-info svg { width: 16px; height: 16px; color: var(--cobalt); flex: none; }
+.price-h2 { color: var(--navy); }
+.price-lead { margin-top: 16px; max-width: 560px; color: var(--text-lilac); text-wrap: balance; }
 
 .price-grid {
-  margin: 40px auto 0;
+  margin: 48px auto 0;
   max-width: 1218px;
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px;
   align-items: stretch;
@@ -54,8 +39,10 @@
 .price-amt { margin-top: 22px; display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 8px; row-gap: 2px; }
 .price-num { font-family: var(--font-head); font-size: 34px; line-height: 1.1; font-weight: 600; letter-spacing: -1.4px; color: var(--navy); font-variant-numeric: tabular-nums; }
 .price-per { font-size: 15px; line-height: 1.4; color: var(--text); }
-.price-desc { margin-top: 16px; font-size: 14px; line-height: 1.6; color: var(--text); min-height: 45px; }
+.price-desc { margin-top: 14px; font-size: 14px; line-height: 1.6; color: var(--text); }
 .price-btn { margin-top: 30px; width: 100%; height: 50px; font-size: 15px; }
+.price-btn-line { color: var(--navy); background: var(--white); box-shadow: inset 0 0 0 1.5px rgba(56, 64, 160, 0.3); }
+.price-btn-line:hover { background: var(--lilac-50); box-shadow: inset 0 0 0 1.5px var(--cobalt-mid); }
 .price-list { list-style: none; margin: 34px 0 0; padding: 0; display: flex; flex-direction: column; gap: 15px; }
 .price-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; line-height: 22px; color: var(--text); }
 .price-list .check-chip { margin-top: 0; background: var(--lilac-100); color: var(--cobalt); }
@@ -80,8 +67,6 @@
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
-.price-fine { display: table; margin: 36px auto 0; padding: 7px 14px; border-radius: 999px; text-align: center; font-size: 13.5px; line-height: 1.5; font-weight: 500; color: var(--navy); background: rgba(255, 255, 255, 0.92); box-shadow: 0 6px 16px -10px rgba(56, 64, 160, 0.4); }
-
 /* focus rings: the shared rule makes them white on this band; cobalt reads on lilac and white cards */
 .page .price-sec .price-band a:focus-visible { outline-color: var(--cobalt); }
 .page .price-sec .price-card-dark a:focus-visible { outline-color: var(--white); }
@@ -94,18 +79,16 @@
 }
 @media (max-width: 900px) {
   .price-grid { grid-template-columns: minmax(0, 1fr); max-width: 520px; }
-  .price-desc { min-height: 0; }
 }
 @media (max-width: 760px) {
-  .price-band { margin-inline: 8px; border-radius: 24px; padding: 64px 0 56px; }
+  .price-band { margin-inline: 8px; border-radius: 24px; padding: 56px 0 36px; }
   .price-band .wrap { padding-inline: 12px; }
-  .price-lead { font-size: 15px; }
-  .price-seg { margin-top: 28px; border-radius: 11px; }
-  .price-seg > span { height: 40px; padding: 0 12px; font-size: 13.5px; border-radius: 9px; }
-  .price-grid { margin-top: 28px; gap: 14px; }
-  .price-card { padding: 24px 20px 26px; border-radius: var(--r-md); }
+  .price-lead { margin-top: 12px; font-size: 15px; }
+  .price-grid { margin-top: 28px; gap: 12px; }
+  .price-card { padding: 22px 20px 22px; border-radius: var(--r-md); }
+  .price-amt { margin-top: 14px; }
   .price-num { font-size: 30px; }
-  .price-btn { margin-top: 22px; }
-  .price-list { margin-top: 24px; gap: 13px; }
-  .price-fine { margin-top: 28px; font-size: 12.5px; padding: 8px 14px; border-radius: 14px; }
+  .price-desc { margin-top: 8px; }
+  .price-btn { margin-top: 18px; height: 48px; }
+  .price-list { margin-top: 20px; gap: 11px; }
 }

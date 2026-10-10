@@ -2,12 +2,10 @@
   <div class="wrap">
     <div class="worth-band">
       <div class="worth-head">
-        <span class="label"><span class="chip-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2.5" width="16" height="19" rx="2.5"/><path d="M8 7h8"/><path d="M8 11.5h.01"/><path d="M12 11.5h.01"/><path d="M16 11.5h.01"/><path d="M8 15h.01"/><path d="M12 15h.01"/><path d="M16 15v3"/><path d="M8 18h.01"/><path d="M12 18h.01"/></svg></span><span class="chip-tx">Do the maths</span></span>
-        <h2 class="h2 worth-h2" id="worth-title">What’s it worth to you?</h2>
-        <p class="lead worth-lead">You know your store better than we do. Set your average order value and the number of extra orders a month you think is realistic. Here’s the sum.</p>
+        <h2 class="h2 worth-h2" id="worth-title">What are extra AI orders worth?</h2>
       </div>
 
-      <div class="worth-art clay-tile">
+      <div class="worth-art" aria-hidden="true">
         <img src="img/clay-coins.jpg" alt="" width="1024" height="1024" decoding="async">
       </div>
 
@@ -18,10 +16,9 @@
             <span class="worth-val tnum" id="worth-aov-out" aria-hidden="true">$80</span>
           </div>
           <div class="worth-range" style="--p:0.2143">
-            <input type="range" id="worth-aov" name="aov" min="20" max="300" step="5" value="80" aria-valuetext="$80" aria-describedby="worth-aov-help">
+            <input type="range" id="worth-aov" name="aov" min="20" max="300" step="5" value="80" aria-valuetext="$80">
           </div>
           <div class="worth-ends" aria-hidden="true"><span>$20</span><span>$300</span></div>
-          <p class="worth-help" id="worth-aov-help">Not sure? Shopify shows it in Analytics.</p>
         </div>
 
         <div class="worth-field">
@@ -40,12 +37,10 @@
             <p class="worth-big"><span class="worth-m tnum" id="worth-month">$400</span><span class="worth-unit">a month</span></p>
             <p class="worth-yr"><span class="worth-y tnum" id="worth-year">$4,800</span><span class="worth-unit">a year</span></p>
           </div>
-          <p class="worth-sum tnum" id="worth-sum" aria-live="polite" aria-atomic="true">5 orders × $80 = $400 a month, or $4,800 a year.</p>
+          <p class="worth-sum tnum" aria-live="polite" aria-atomic="true"><span id="worth-sum">5 orders × $80 = $400 a month</span><span class="worth-sr" id="worth-sum-yr"></span></p>
         </div>
 
         <p class="worth-core">GEO Core is US$49 a month. You decide what’s realistic for your store.</p>
-        <p class="worth-fine">This is a calculator, not a forecast. We can’t promise extra orders. It uses a plain $ so you can think in your own currency. GEO is billed in US dollars.</p>
-        <p class="worth-next"><span>Your free check shows whether AI names you today.</span> <a class="worth-link" href="#check">Run a free product check<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a></p>
       </div>
     </div>
   </div>

@@ -1,0 +1,75 @@
+/* See the money: one lean GEO dashboard mockup (sample data) on a faint grid. */
+.scr-sec { position: relative; overflow: hidden; }
+
+/* stage + frame */
+.scr-stage { position: relative; }
+.scr-grid { position: absolute; left: 50%; top: -60px; width: min(1500px, 140%); height: 640px; transform: translateX(-50%); pointer-events: none; z-index: 0; }
+.scr-frame { position: relative; z-index: 1; max-width: 920px; margin-inline: auto; padding: 12px; border-radius: var(--r-lg); background: var(--white); box-shadow: 0 0 0 1px rgba(11, 12, 43, 0.05), var(--shadow-lg); }
+
+/* app chrome */
+.scr-app { --scr-tx: #303030; --scr-sub: #616161; --scr-ln2: #ebebeb; border-radius: 14px; box-shadow: 0 0 0 1px rgba(11, 12, 43, 0.06); color: var(--scr-tx); }
+.scr-app .app-top { height: 44px; padding: 0 12px; justify-content: space-between; }
+.scr-app .app-top .store i.scr-store-ic { display: grid; place-items: center; font-style: normal; font-size: 9px; font-weight: 700; letter-spacing: .02em; color: #0b3d1d; background: #7fdc9a; }
+.scr-store-n { font-weight: 600; color: #f1f1f1; font-size: 12.5px; white-space: nowrap; }
+.scr-app .app-top .sample-tag { position: static; background: rgba(255, 255, 255, 0.1); color: #d4d4d4; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16); font-size: 10px; padding: 4px 7px; line-height: 1; border-radius: 6px; white-space: nowrap; }
+.scr-ic14 { width: 14px; height: 14px; flex: none; }
+
+.scr-main { container: scrmain / inline-size; padding: 20px 20px 22px; gap: 14px; font-size: 13px; }
+.scr-title { flex-wrap: wrap; row-gap: 8px; min-height: 30px; }
+.scr-title h5 { white-space: nowrap; }
+.scr-mut { color: var(--scr-sub); font-size: 12px; line-height: 1.4; }
+/* the period, as a plain label (not a switch: nothing on this mockup is clickable) */
+.scr-period { font-size: 12.5px; font-weight: 500; color: var(--scr-sub); white-space: nowrap; }
+.scr-main .panel { border-radius: 12px; padding: 16px 18px; }
+.scr-main .panel h6 { margin-bottom: 12px; }
+.scr-g2 { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 14px; align-items: stretch; }
+
+/* money block */
+.scr-money { padding-block: 18px 14px; background: linear-gradient(180deg, #f6f5fe 0%, #fff 70%); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.07), inset 0 0 0 1px rgba(64, 80, 176, 0.12); }
+.scr-kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.scr-kpi { min-width: 0; padding-right: 16px; }
+.scr-kpi + .scr-kpi { border-left: 1px solid var(--scr-ln2); padding-left: 18px; }
+.scr-kl { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--scr-sub); }
+.scr-kv { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; margin-top: 6px; }
+.scr-kv .kpi { font-size: 32px; }
+.scr-kv .delta-up { font-size: 13px; }
+.scr-vs { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--scr-ln2); font-size: 12px; color: var(--scr-sub); }
+
+/* split by source */
+.scr-srcbars { display: flex; flex-direction: column; gap: 11px; }
+.scr-sb { display: grid; grid-template-columns: 96px minmax(0, 1fr) 62px; align-items: center; gap: 10px; font-size: 12.5px; }
+.scr-sb-n { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+.scr-sb-t { height: 8px; border-radius: 4px; background: #f0f0f4; overflow: hidden; }
+.scr-sb-t i { display: block; height: 100%; border-radius: 4px; }
+.scr-sb-v { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.scr-sb-tot { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--scr-ln2); font-size: 12.5px; color: var(--scr-sub); }
+.scr-sb-tot b { font-size: 13px; font-weight: 650; color: var(--scr-tx); font-variant-numeric: tabular-nums; }
+
+/* visibility score */
+.scr-vis { display: flex; flex-direction: column; }
+.scr-vis-k { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 4px; }
+.scr-vis-k .kpi { font-size: 32px; }
+.scr-vis-of { font-size: 13px; color: var(--scr-sub); margin-right: 6px; }
+.scr-spark { display: block; width: 100%; height: auto; margin: auto 0 6px; padding-top: 6px; overflow: visible; }
+
+/* inner layout follows the app's own width */
+@container scrmain (max-width: 640px) {
+  .scr-g2 { grid-template-columns: minmax(0, 1fr); }
+}
+@container scrmain (max-width: 520px) {
+  .scr-kpis { grid-template-columns: minmax(0, 1fr); }
+  .scr-kpi { padding: 10px 0 0; }
+  .scr-kpi + .scr-kpi { border-left: 0; padding-left: 0; border-top: 1px solid var(--scr-ln2); margin-top: 10px; }
+  .scr-kpi:first-child { padding-top: 0; }
+  .scr-kv { justify-content: space-between; }
+  .scr-sb { grid-template-columns: 92px minmax(0, 1fr) 58px; gap: 8px; }
+}
+
+@media (max-width: 760px) {
+  .scr-frame { padding: 6px; border-radius: 18px; }
+  .scr-app { border-radius: 13px; }
+  .scr-app .app-top { height: 40px; }
+  .scr-main { padding: 14px 10px 16px; gap: 12px; }
+  .scr-main .panel { padding: 14px; }
+  .scr-grid { height: 520px; }
+}

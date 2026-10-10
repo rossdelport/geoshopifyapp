@@ -43,7 +43,7 @@ if (!only && outName === 'index.html') {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO shows whether AI recommends your Shopify store, writes the fixes, and counts the orders AI sends you.">
+<meta name="description" content="Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO helps AI recommend your Shopify store, then counts the orders it can trace back to AI.">
 <link rel="icon" href="/favicon.ico">
 <style>[hidden]:not([hidden="until-found"]){display:none!important}</style>
 <script>window.GEO_LIVE=true</script>
