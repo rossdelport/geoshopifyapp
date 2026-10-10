@@ -2,63 +2,174 @@
   <div class="wrap">
     <div class="sec-head">
       <h2 class="h2" id="money-title">Your AI sales, in one screen</h2>
+      <p class="scr-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.1 12 6"/><path d="m5.1 8-2.9-.8"/><path d="m6 12-1.9 2"/><path d="M7.2 2.2 8 5.1"/><path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z"/></svg>Click around the app</p>
     </div>
 
     <div class="scr-stage">
       <div class="scr-grid grid-bg grid-fade" aria-hidden="true"></div>
       <div class="scr-frame">
-        <div class="app scr-app" role="group" aria-label="GEO dashboard, sample data">
+        <div class="app scr-app" role="group" aria-label="GEO app, sample data">
           <div class="app-top">
             <span class="store"><i class="scr-store-ic" aria-hidden="true">CG</i><span class="scr-store-n">Coolabah Grooming Co.</span></span>
             <span class="sample-tag">Sample data</span>
           </div>
-          <div class="app-main scr-main">
-            <div class="app-title scr-title"><h5>Money from AI</h5><span class="scr-period">Last 4 weeks</span></div>
 
-            <div class="panel scr-money">
-              <div class="scr-kpis">
-                <div class="scr-kpi">
-                  <span class="scr-kl"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M15.5 8.5h-5a2 2 0 1 0 0 4h3a2 2 0 1 1 0 4h-5"/><path d="M12 6.5v11"/></svg>AI revenue</span>
-                  <div class="scr-kv"><span class="kpi">A$4,820</span><span class="delta-up">▲ 38%</span></div>
-                </div>
-                <div class="scr-kpi">
-                  <span class="scr-kl"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>AI orders</span>
-                  <div class="scr-kv"><span class="kpi">61</span><span class="delta-up">▲ 22%</span></div>
-                </div>
-                <div class="scr-kpi">
-                  <span class="scr-kl"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.586 12.586 19 19"/><path d="M3.688 3.037a.497.497 0 0 0-.651.651l6.5 15.999a.501.501 0 0 0 .947-.062l1.569-6.083a2 2 0 0 1 1.448-1.479l6.124-1.579a.5.5 0 0 0 .063-.947z"/></svg>AI clicks</span>
-                  <div class="scr-kv"><span class="kpi">1,940</span><span class="delta-up">▲ 51%</span></div>
-                </div>
+          <div class="scr-body">
+            <div class="scr-nav">
+              <span class="scr-brand"><span class="scr-gmark" aria-hidden="true"><i></i><i></i></span>GEO</span>
+              <div class="scr-tabs" role="tablist" aria-label="App screens">
+                <i class="scr-ind" aria-hidden="true"></i>
+                <button type="button" class="scr-tab" role="tab" id="scr-t-money" aria-controls="scr-p-money" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M15.5 8.5h-5a2 2 0 1 0 0 4h3a2 2 0 1 1 0 4h-5"/><path d="M12 6.5v11"/></svg><span>Money</span></button>
+                <button type="button" class="scr-tab" role="tab" id="scr-t-q" aria-controls="scr-p-q" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg><span>Questions</span></button>
+                <button type="button" class="scr-tab" role="tab" id="scr-t-fix" aria-controls="scr-p-fix" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg><span>Fixes</span><b class="scr-badge" aria-hidden="true">1</b></button>
+                <button type="button" class="scr-tab" role="tab" id="scr-t-riv" aria-controls="scr-p-riv" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Rivals</span></button>
               </div>
-              <p class="scr-vs">Change vs your starting point</p>
             </div>
 
-            <div class="scr-g2">
-              <div class="panel">
-                <h6>By source</h6>
-                <div class="scr-srcbars">
-                  <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:var(--e-chatgpt)"></i>ChatGPT</span><span class="scr-sb-t"><i style="width:100%;background:var(--e-chatgpt)"></i></span><span class="scr-sb-v">A$2,640</span></div>
-                  <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:var(--e-perplexity)"></i>Perplexity</span><span class="scr-sb-t"><i style="width:33.3%;background:var(--e-perplexity)"></i></span><span class="scr-sb-v">A$880</span></div>
-                  <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:var(--e-gemini)"></i>Gemini</span><span class="scr-sb-t"><i style="width:28.8%;background:var(--e-gemini)"></i></span><span class="scr-sb-v">A$760</span></div>
-                  <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:#a3a3b5"></i>Other</span><span class="scr-sb-t"><i style="width:20.5%;background:#a3a3b5"></i></span><span class="scr-sb-v">A$540</span></div>
+            <div class="scr-main">
+              <!-- Money -->
+              <div class="scr-panel is-on" role="tabpanel" id="scr-p-money" aria-labelledby="scr-t-money" tabindex="0">
+                <div class="scr-title">
+                  <h5>Money from AI</h5>
+                  <div class="scr-seg" role="group" aria-label="Time period">
+                    <i class="scr-seg-ind" aria-hidden="true"></i>
+                    <button type="button" aria-pressed="true" data-period="m">Last 4 weeks</button>
+                    <button type="button" aria-pressed="false" data-period="all">Since joining</button>
+                  </div>
                 </div>
-                <div class="scr-sb-tot"><span>Total</span><b>A$4,820</b></div>
+
+                <div class="panel scr-money">
+                  <div class="scr-kpis">
+                    <div class="scr-kpi scr-kpi-rev">
+                      <span class="scr-kl"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M15.5 8.5h-5a2 2 0 1 0 0 4h3a2 2 0 1 1 0 4h-5"/><path d="M12 6.5v11"/></svg>AI revenue</span>
+                      <span class="kpi" data-k="rev">A$4,820</span>
+                      <span class="delta-up">▲ <span data-k="revd">38%</span></span>
+                    </div>
+                    <div class="scr-kpi">
+                      <span class="scr-kl"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>AI orders</span>
+                      <span class="kpi" data-k="ord">61</span>
+                      <span class="delta-up">▲ <span data-k="ordd">22%</span></span>
+                    </div>
+                    <div class="scr-kpi">
+                      <span class="scr-kl"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.586 12.586 19 19"/><path d="M3.688 3.037a.497.497 0 0 0-.651.651l6.5 15.999a.501.501 0 0 0 .947-.062l1.569-6.083a2 2 0 0 1 1.448-1.479l6.124-1.579a.5.5 0 0 0 .063-.947z"/></svg>AI clicks</span>
+                      <span class="kpi" data-k="clk">1,940</span>
+                      <span class="delta-up">▲ <span data-k="clkd">51%</span></span>
+                    </div>
+                  </div>
+                  <p class="scr-vs">▲ Change vs your starting point</p>
+                </div>
+
+                <div class="scr-g2">
+                  <div class="panel">
+                    <h6>By source</h6>
+                    <div class="scr-srcbars">
+                      <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:var(--e-chatgpt)"></i>ChatGPT</span><span class="scr-sb-t"><i class="scr-grow" style="--w:1;background:var(--e-chatgpt)"></i></span><span class="scr-sb-v" data-k="s0">A$2,640</span></div>
+                      <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:var(--e-perplexity)"></i>Perplexity</span><span class="scr-sb-t"><i class="scr-grow" style="--w:.333;background:var(--e-perplexity)"></i></span><span class="scr-sb-v" data-k="s1">A$880</span></div>
+                      <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:var(--e-gemini)"></i>Gemini</span><span class="scr-sb-t"><i class="scr-grow" style="--w:.288;background:var(--e-gemini)"></i></span><span class="scr-sb-v" data-k="s2">A$760</span></div>
+                      <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:#a3a3b5"></i>Other</span><span class="scr-sb-t"><i class="scr-grow" style="--w:.205;background:#a3a3b5"></i></span><span class="scr-sb-v" data-k="s3">A$540</span></div>
+                    </div>
+                    <div class="scr-sb-tot"><span>Total</span><b data-k="tot">A$4,820</b></div>
+                  </div>
+                  <div class="panel scr-vis">
+                    <h6>Visibility score</h6>
+                    <div class="scr-vis-k"><span class="kpi">38</span><span class="scr-vis-of">/100</span><span class="delta-up" data-k="visd">▲ 4 in 4 weeks</span></div>
+                    <svg class="scr-spark" viewBox="0 0 300 72" aria-hidden="true">
+                      <defs>
+                        <linearGradient id="scr-g-spark" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4050b0" stop-opacity=".18"/><stop offset="1" stop-color="#4050b0" stop-opacity="0"/></linearGradient>
+                        <clipPath id="scr-sp-clip"><rect class="scr-sp-rv" x="-6" y="-6" width="312" height="84"/></clipPath>
+                      </defs>
+                      <path d="M0 24H300M0 48H300" stroke="#eeeef4" stroke-width="1"/>
+                      <line x1="0" x2="300" y1="52.2" y2="52.2" stroke="#9a9bab" stroke-width="1" stroke-dasharray="3 4"/>
+                      <g clip-path="url(#scr-sp-clip)">
+                        <path class="scr-sp-area" d="M0,29.2 L75,24.6 L150,24.6 L225,15.4 L300,10.8 L300,72 L0,72 Z" fill="url(#scr-g-spark)"/>
+                        <path class="scr-sp-line" d="M0,29.2 L75,24.6 L150,24.6 L225,15.4 L300,10.8" fill="none" stroke="#4050b0" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                      </g>
+                      <circle class="scr-sp-dot" cx="300" cy="10.8" r="4" fill="#fff" stroke="#4050b0" stroke-width="2"/>
+                    </svg>
+                    <p class="scr-mut">How often AI names you</p>
+                  </div>
+                </div>
               </div>
-              <div class="panel scr-vis">
-                <h6>Visibility score</h6>
-                <div class="scr-vis-k"><span class="kpi">38</span><span class="scr-vis-of">/100</span><span class="delta-up">▲ 9 since joining</span></div>
-                <svg class="scr-spark" viewBox="0 0 300 72" aria-hidden="true">
-                  <defs><linearGradient id="scr-g-spark" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4050b0" stop-opacity=".18"/><stop offset="1" stop-color="#4050b0" stop-opacity="0"/></linearGradient></defs>
-                  <path d="M0 24H300M0 48H300" stroke="#eeeef4" stroke-width="1"/>
-                  <path d="M0.0,52.2 L42.9,47.6 L85.7,52.2 L128.6,38.4 L171.4,33.8 L214.3,24.6 L257.1,20.0 L300.0,10.8 L300,72 L0,72 Z" fill="url(#scr-g-spark)"/>
-                  <polyline points="0.0,52.2 42.9,47.6 85.7,52.2 128.6,38.4 171.4,33.8 214.3,24.6 257.1,20.0 300.0,10.8" fill="none" stroke="#4050b0" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-                  <line x1="0" x2="300" y1="52.2" y2="52.2" stroke="#9a9bab" stroke-width="1" stroke-dasharray="3 4"/>
-                  <circle cx="300" cy="10.8" r="4" fill="#fff" stroke="#4050b0" stroke-width="2"/>
-                </svg>
-                <p class="scr-mut">How often AI names you</p>
+
+              <!-- Questions -->
+              <div class="scr-panel" role="tabpanel" id="scr-p-q" aria-labelledby="scr-t-q" tabindex="0">
+                <div class="scr-title"><h5>Questions</h5><span class="scr-mut">Asked every week</span></div>
+                <div class="panel scr-qs">
+                  <div class="scr-qr scr-qh" aria-hidden="true"><span>Tap a question</span><span>ChatGPT</span><span>Gemini</span><span>Perplexity</span></div>
+                  <button type="button" class="scr-qr scr-q" aria-pressed="true" aria-controls="scr-ans">
+                    <span class="scr-q-t">best beard oil for dry skin in Australia</span>
+                    <span class="scr-st is-y" role="img" aria-label="ChatGPT: named"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+                    <span class="scr-st is-y" role="img" aria-label="Gemini: named"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+                    <span class="scr-st" role="img" aria-label="Perplexity: not named"></span>
+                  </button>
+                  <button type="button" class="scr-qr scr-q" aria-pressed="false" aria-controls="scr-ans">
+                    <span class="scr-q-t">beard balm that isn’t greasy</span>
+                    <span class="scr-st" role="img" aria-label="ChatGPT: not named"></span>
+                    <span class="scr-st is-y" role="img" aria-label="Gemini: named"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+                    <span class="scr-st is-y" role="img" aria-label="Perplexity: named"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+                  </button>
+                  <button type="button" class="scr-qr scr-q" aria-pressed="false" aria-controls="scr-ans">
+                    <span class="scr-q-t">gentle beard wash for sensitive skin</span>
+                    <span class="scr-st" role="img" aria-label="ChatGPT: not named"></span>
+                    <span class="scr-st" role="img" aria-label="Gemini: not named"></span>
+                    <span class="scr-st" role="img" aria-label="Perplexity: not named"></span>
+                  </button>
+                </div>
+                <div class="panel scr-ans" id="scr-ans" aria-live="polite">
+                  <div class="scr-an is-on">
+                    <div class="scr-an-h"><span class="scr-an-e"><i class="dot" style="background:var(--e-chatgpt)"></i>ChatGPT said</span><span class="pill pill-lav">You’re #3</span></div>
+                    <p>For dry skin, pick a light oil that soaks in fast: <span class="hl">Ridgeback Beard Co.</span>, <span class="hl">Saltbush Beard Co.</span> or <span class="hl-you">Coolabah Grooming Co.</span></p>
+                  </div>
+                  <div class="scr-an">
+                    <div class="scr-an-h"><span class="scr-an-e"><i class="dot" style="background:var(--e-gemini)"></i>Gemini said</span><span class="pill pill-green">You’re #1</span></div>
+                    <p>Try <span class="hl-you">Coolabah Grooming Co.</span> or <span class="hl">Banksia Beard Co.</span> Both soak in with no shine.</p>
+                  </div>
+                  <div class="scr-an">
+                    <div class="scr-an-h"><span class="scr-an-e"><i class="dot" style="background:var(--e-chatgpt)"></i>ChatGPT said</span><span class="pill pill-amber">Not named</span></div>
+                    <p><span class="hl">Wattlebird Grooming</span> and <span class="hl">Ridgeback Beard Co.</span> both make soap-free washes for sensitive skin.</p>
+                    <button type="button" class="scr-go" data-go="scr-t-fix">See the fix GEO wrote<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Fixes -->
+              <div class="scr-panel" role="tabpanel" id="scr-p-fix" aria-labelledby="scr-t-fix" tabindex="0">
+                <div class="scr-title"><h5>Fixes</h5></div>
+                <div class="panel scr-fix">
+                  <div class="scr-fix-h">
+                    <span class="scr-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span>
+                    <span class="scr-fix-t"><b>Product description</b><em>Gentle Beard Wash 200ml</em></span>
+                    <span class="scr-fix-st"><span class="pill pill-amber scr-st-todo">Waiting</span><span class="pill pill-green scr-st-done">Live</span></span>
+                  </div>
+                  <div class="scr-ba">
+                    <div class="scr-ba-c scr-before"><span class="scr-ba-l">Before</span><p>Our best seller. Smells amazing.</p></div>
+                    <div class="scr-ba-c scr-after"><span class="scr-ba-l">After</span><p>Soap-free beard wash for sensitive skin. Made in Australia. 200ml.</p></div>
+                  </div>
+                  <p class="scr-why"><b>Why:</b> AI couldn’t tell who it’s for. Every fact comes from your page.</p>
+                  <div class="scr-acts">
+                    <button type="button" class="scr-approve"><span class="scr-ap-a">Approve</span><span class="scr-ap-b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Pushed to Shopify</span></button>
+                    <button type="button" class="scr-undo" tabindex="-1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>Undo</button>
+                  </div>
+                </div>
+                <p class="scr-note"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>You approve every change.</p>
+              </div>
+
+              <!-- Rivals -->
+              <div class="scr-panel" role="tabpanel" id="scr-p-riv" aria-labelledby="scr-t-riv" tabindex="0">
+                <div class="scr-title"><h5>Rivals</h5><span class="scr-mut">How often AI names each brand</span></div>
+                <div class="panel scr-rv">
+                  <ol class="scr-rvl">
+                    <li><span class="scr-rv-n">Ridgeback Beard Co.</span><span class="scr-rv-t"><i class="scr-grow" style="--w:.62"></i></span><b>62%</b></li>
+                    <li><span class="scr-rv-n">Saltbush Beard Co.</span><span class="scr-rv-t"><i class="scr-grow" style="--w:.47"></i></span><b>47%</b></li>
+                    <li class="is-you"><span class="scr-rv-n">Coolabah Grooming Co. <em>You</em></span><span class="scr-rv-t"><i class="scr-grow" style="--w:.38"></i></span><b>38%</b></li>
+                    <li><span class="scr-rv-n">Banksia Beard Co.</span><span class="scr-rv-t"><i class="scr-grow" style="--w:.29"></i></span><b>29%</b></li>
+                  </ol>
+                  <p class="scr-rv-note">Ridgeback is on 4 review sites AI quotes. You’re on 1.</p>
+                </div>
               </div>
             </div>
           </div>
+          <p class="scr-sr" id="scr-live" aria-live="polite"></p>
         </div>
       </div>
     </div>

@@ -24,7 +24,7 @@
 
   // A shorter placeholder on phones so it isn't cut off.
   var long = input.getAttribute('placeholder');
-  var narrow = window.matchMedia ? window.matchMedia('(max-width: 480px)') : null;
+  var narrow = window.matchMedia ? window.matchMedia('(max-width: 760px)') : null;
   function fit() { input.setAttribute('placeholder', narrow && narrow.matches ? 'Paste your product link' : long); }
   if (narrow) { fit(); if (narrow.addEventListener) narrow.addEventListener('change', fit); }
 
@@ -36,6 +36,20 @@
     if (a) focusSoon();
   });
   if (location.hash === '#check') focusSoon();
+})();
+
+// Glow round the link box (CSS in 11-hero.css). It needs @property for a smooth light, so it only
+// travels where that works (.hc-live), and pauses while the form is off screen (.hc-off). Reduced
+// motion: the CSS keeps the still halo, so nothing here runs.
+(function () {
+  var form = document.getElementById('check');
+  if (!form || !window.matchMedia || !window.CSS || !CSS.registerProperty) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  form.classList.add('hc-live');
+  if (!('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function (entries) {
+    form.classList.toggle('hc-off', !entries[0].isIntersecting);
+  }, { rootMargin: '60px 0px' }).observe(form);
 })();
 
 // Hero cards: their CSS stories start on the finished picture and wait (paused) until they're in view.

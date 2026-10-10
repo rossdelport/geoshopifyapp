@@ -365,10 +365,11 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .hero-title { margin-top: 28px; max-width: 900px; }
 .hero-lead { margin-top: 24px; max-width: 610px; font-size: 17px; line-height: 1.65; color: var(--navy-3); text-wrap: balance; }
 
-/* free product check form (posts to /check on the live site) */
-.hero-check { margin-top: 36px; width: 100%; max-width: 820px; display: flex; flex-direction: column; align-items: center; scroll-margin-top: 150px; }
+/* free product check form (posts to /check on the live site). The server works out the store's
+   country itself, so the form is just the product link and the button. */
+.hero-check { margin-top: 36px; width: 100%; max-width: 700px; display: flex; flex-direction: column; align-items: center; scroll-margin-top: 150px; }
 .hero-check-box {
-  width: 100%; display: flex; align-items: center; gap: 8px;
+  position: relative; width: 100%; display: flex; align-items: center; gap: 8px;
   padding: 8px; border-radius: 20px; background: var(--white);
   box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.45), 0 28px 56px -28px rgba(56, 64, 160, 0.38), 0 8px 18px -12px rgba(56, 64, 160, 0.16);
   transition: box-shadow .2s ease;
@@ -381,21 +382,72 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   font-family: var(--font-body); font-size: 16px; font-weight: 500; color: var(--navy); text-align: left; text-overflow: ellipsis;
 }
 .hero-check-input::placeholder { color: #8586a0; font-weight: 400; opacity: 1; }
-.hero-check-row { display: flex; align-items: center; gap: 8px; flex: none; }
-.hero-check-country { position: relative; display: flex; align-items: center; }
-.hero-check-country select {
-  -webkit-appearance: none; appearance: none; height: 48px; padding: 0 34px 0 14px; border: 0; border-radius: 12px;
-  background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lav-line); color: var(--navy);
-  font-family: var(--font-body); font-size: 14px; font-weight: 500; cursor: pointer;
-}
-.hero-check-country select:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
-.hero-check-country svg { position: absolute; right: 12px; width: 14px; height: 14px; color: var(--text); pointer-events: none; }
-.hero-check-btn { height: 48px; padding: 0 22px; border-radius: 12px; }
+.hero-check-btn { flex: none; height: 48px; padding: 0 24px; border-radius: 12px; }
 .hero-check.is-busy .hero-check-btn { opacity: .75; pointer-events: none; }
 .hero-check-sr, .hero-check-hp { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 .hero-check-hint { margin-top: 14px; max-width: 640px; font-size: 13.5px; line-height: 1.55; color: var(--text-lilac); text-wrap: balance; }
 .hero-check-note { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.85); box-shadow: inset 0 0 0 1px var(--lav-line); color: var(--navy); font-size: 14px; line-height: 1.5; }
 .hero-check-note a { color: var(--cobalt-deep); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Glow around the link box, so the eye goes to it. A soft light travels slowly round the whole box:
+   ::after is the light on a 2px ring just outside the box's edge, ::before is a blurred copy under the
+   box for a gentle halo. Both sit outside or under the box, so they never cover the text. The light is
+   a radial gradient whose centre (--hc-x, --hc-y) runs round the edge at an even speed: each side gets
+   time to match its length, so the stacked phone box has its own keyframes (bottom of this file).
+   Brighter on hover and while typing. 11-hero.js adds .hc-live where @property works (a smooth
+   animation needs it) and .hc-off while the form is off screen, which pauses it. Without JS, or with
+   reduced motion, it is a still, soft halo. Self-contained, so /check can reuse it as is. */
+@property --hc-x { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+@property --hc-y { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+.hero-check { position: relative; isolation: isolate; } /* the halo sits under the box, over the page */
+.hero-check-box::before, .hero-check-box::after {
+  content: ""; position: absolute; inset: -2px; border-radius: 22px; pointer-events: none;
+  transition: opacity .35s ease;
+}
+/* still halo (no JS, reduced motion) */
+.hero-check-box::before { z-index: -1; inset: -4px; border-radius: 24px; filter: blur(14px); opacity: .55; background: linear-gradient(90deg, #b5a8e0, #bfc9fa 50%, #6878d8); }
+.hero-check-box::after { display: none; }
+.hero-check-box:hover::before { opacity: .7; }
+.hero-check-box:focus-within::before { opacity: .85; }
+@media (prefers-reduced-motion: no-preference) {
+  .hero-check.hc-live .hero-check-box::before, .hero-check.hc-live .hero-check-box::after {
+    display: block; animation: hc-run 7s linear infinite;
+  }
+  /* halo: a bigger, softer copy of the light over a faint even glow, blurred, under the box */
+  .hero-check.hc-live .hero-check-box::before {
+    inset: -6px; border-radius: 26px; filter: blur(14px); opacity: .7;
+    background:
+      radial-gradient(240px 72px at var(--hc-x) var(--hc-y), rgba(64, 80, 176, 0.95) 0%, rgba(104, 120, 216, 0.8) 30%, rgba(191, 201, 250, 0.5) 62%, rgba(181, 168, 224, 0) 100%),
+      linear-gradient(rgba(104, 120, 216, 0.3), rgba(104, 120, 216, 0.3));
+  }
+  /* ring: the light itself, on the 2px band just outside the box */
+  .hero-check.hc-live .hero-check-box::after {
+    padding: 2px; opacity: .85;
+    background: radial-gradient(150px 34px at var(--hc-x) var(--hc-y), #4050b0 0%, #6878d8 22%, #bfc9fa 52%, rgba(181, 168, 224, 0.55) 70%, rgba(181, 168, 224, 0) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+  }
+  .hero-check.hc-live .hero-check-box:hover::before { opacity: .9; }
+  .hero-check.hc-live .hero-check-box:focus-within::before { opacity: 1; }
+  .hero-check.hc-live .hero-check-box:hover::after, .hero-check.hc-live .hero-check-box:focus-within::after { opacity: 1; }
+  .hero-check.hc-off .hero-check-box::before, .hero-check.hc-off .hero-check-box::after { animation-play-state: paused; }
+}
+/* one-row box (about 11:1): each long side takes 46% of the loop, each short end 4% */
+@keyframes hc-run {
+  0% { --hc-x: 0%; --hc-y: 0%; }
+  46% { --hc-x: 100%; --hc-y: 0%; }
+  50% { --hc-x: 100%; --hc-y: 100%; }
+  96% { --hc-x: 0%; --hc-y: 100%; }
+  100% { --hc-x: 0%; --hc-y: 0%; }
+}
+/* stacked phone box (about 4:1): 40% per long side, 10% per end */
+@keyframes hc-run-tall {
+  0% { --hc-x: 0%; --hc-y: 0%; }
+  40% { --hc-x: 100%; --hc-y: 0%; }
+  50% { --hc-x: 100%; --hc-y: 100%; }
+  90% { --hc-x: 0%; --hc-y: 100%; }
+  100% { --hc-x: 0%; --hc-y: 0%; }
+}
 
 /* ---------- three animated cards ---------- */
 .hw-wrap { position: relative; width: 100%; max-width: 1100px; margin-top: 72px; }
@@ -857,10 +909,6 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .hero-title { margin-top: 22px; }
   .hero-lead { margin-top: 16px; font-size: 15.5px; }
   .hero-check { margin-top: 28px; }
-  .hero-check-box { flex-direction: column; align-items: stretch; gap: 6px; border-radius: 18px; }
-  .hero-check-field { height: 50px; padding-left: 10px; }
-  .hero-check-row { width: 100%; }
-  .hero-check-btn { flex: 1; }
   .hero-pill { font-size: 12.5px; }
   /* one sideways row that runs to the edges of the lilac band: swipe for the next card, which peeks in */
   .hw-wrap { max-width: none; width: calc(100% + 16px); margin: 32px -8px 0; }
@@ -881,6 +929,17 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .hw-tray { bottom: 9px; height: 32px; }
   .hw-c3 { --row-h: 40px; --row-gap: 7px; --rows-top: 32px; --row3-pop: 1.05; --row3-rest: 1.03; }
   .hw-rows { width: min(calc(100% - 30px), 320px); }
+}
+
+/* phones: the link box and the button stack, so the whole link fits and the button is easy to tap */
+@media (max-width: 560px) {
+  .hero-check-box { flex-direction: column; align-items: stretch; gap: 6px; border-radius: 18px; }
+  .hero-check-box::after { border-radius: 20px; }
+  .hero-check-box::before { border-radius: 22px; }
+  .hero-check-field { height: 50px; padding-left: 10px; }
+}
+@media (max-width: 560px) and (prefers-reduced-motion: no-preference) {
+  .hero-check.hc-live .hero-check-box::before, .hero-check.hc-live .hero-check-box::after { animation-name: hc-run-tall; }
 }
 
 /* 12-engines.css */
@@ -1612,20 +1671,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
           <span class="hero-check-sr">Product link</span>
           <input class="hero-check-input" type="text" name="url" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" maxlength="2000" required placeholder="Paste a product link, e.g. yourstore.com/products/...">
         </label>
-        <div class="hero-check-row">
-          <label class="hero-check-country">
-            <span class="hero-check-sr">Shopper country</span>
-            <select name="country">
-              <option value="AU" selected>Australia</option>
-              <option value="NZ">New Zealand</option>
-              <option value="US">USA</option>
-              <option value="GB">UK</option>
-              <option value="CA">Canada</option>
-            </select>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-          </label>
-          <button class="btn btn-dark hero-check-btn" type="submit">Check my product</button>
-        </div>
+        <button class="btn btn-dark hero-check-btn" type="submit">Check my product</button>
       </div>
       <div class="hero-check-hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
       <p class="hero-check-hint">Free check. No sign-up. Results usually in a few minutes.</p>
@@ -2189,7 +2235,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 
   // A shorter placeholder on phones so it isn't cut off.
   var long = input.getAttribute('placeholder');
-  var narrow = window.matchMedia ? window.matchMedia('(max-width: 480px)') : null;
+  var narrow = window.matchMedia ? window.matchMedia('(max-width: 760px)') : null;
   function fit() { input.setAttribute('placeholder', narrow && narrow.matches ? 'Paste your product link' : long); }
   if (narrow) { fit(); if (narrow.addEventListener) narrow.addEventListener('change', fit); }
 
@@ -2201,6 +2247,20 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
     if (a) focusSoon();
   });
   if (location.hash === '#check') focusSoon();
+})();
+
+// Glow round the link box (CSS in 11-hero.css). It needs @property for a smooth light, so it only
+// travels where that works (.hc-live), and pauses while the form is off screen (.hc-off). Reduced
+// motion: the CSS keeps the still halo, so nothing here runs.
+(function () {
+  var form = document.getElementById('check');
+  if (!form || !window.matchMedia || !window.CSS || !CSS.registerProperty) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  form.classList.add('hc-live');
+  if (!('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function (entries) {
+    form.classList.toggle('hc-off', !entries[0].isIntersecting);
+  }, { rootMargin: '60px 0px' }).observe(form);
 })();
 
 // Hero cards: their CSS stories start on the finished picture and wait (paused) until they're in view.
