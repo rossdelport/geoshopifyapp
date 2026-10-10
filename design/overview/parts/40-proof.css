@@ -1,0 +1,134 @@
+/* §11 Real answers — Qarin testimonial layout, honest content (live tests only). */
+.section.alt + .proof-sec.alt { padding-top: 40px; }
+
+.proof-head { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 80px; }
+.proof-kicker { display: inline-flex; align-items: center; gap: 12px; font-size: 15px; line-height: 1.4; font-weight: 600; color: var(--navy); }
+.proof-dots { display: inline-flex; align-items: center; gap: 4px; }
+.proof-dot {
+  width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center;
+  background: var(--white); box-shadow: inset 0 0 0 1px var(--line-2);
+}
+.proof-dot svg { width: 13px; height: 13px; }
+.proof-dot-gpt { color: var(--e-chatgpt); }
+.proof-dot-gem { color: var(--e-gemini); }
+.proof-dot-ppx { color: var(--e-perplexity); }
+.proof-dot-goo { color: var(--e-google); }
+.proof-sub { margin-top: 10px; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; line-height: 1.5; color: var(--navy); }
+.proof-sep { width: 1px; height: 14px; background: #c9c9d3; display: inline-block; }
+.proof-h2 { margin-top: 28px; max-width: 900px; }
+
+.proof-list { display: flex; flex-direction: column; gap: 24px; }
+
+.proof-card {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr) 272px;
+  padding: 24px;
+  background: var(--white);
+  border-radius: var(--r-md);
+  box-shadow: 0 0 0 1px var(--line);
+  transition: box-shadow .3s ease;
+}
+.proof-card:hover { box-shadow: 0 0 0 1px var(--line-2), var(--shadow); }
+
+.proof-media { position: relative; margin: 0; width: 100%; height: 368px; border-radius: var(--r); overflow: hidden; background: var(--lav-2); }
+.proof-media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; transition: transform .6s ease; }
+.proof-media-2 img { object-position: 52% 38%; }
+.proof-card:hover .proof-media img { transform: scale(1.03); }
+.proof-tag {
+  position: absolute; left: 12px; bottom: 12px;
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 28px; padding: 0 10px; border-radius: 8px;
+  font-size: 12px; font-weight: 600; line-height: 1; color: var(--navy);
+  background: rgba(255, 255, 255, 0.88);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6), 0 6px 16px -8px rgba(11, 12, 43, 0.3);
+}
+.proof-tag svg { width: 13px; height: 13px; color: var(--blue); flex: none; }
+
+.proof-body { display: flex; flex-direction: column; min-width: 0; padding: 40px 56px 16px 40px; }
+.proof-quote { margin: 0; }
+.proof-q { font-family: var(--font-body); font-size: 20px; line-height: 1.5; font-weight: 400; color: var(--navy); letter-spacing: -0.2px; max-width: 520px; text-wrap: pretty; }
+.proof-p { margin-top: 14px; font-size: 15px; line-height: 1.7; color: var(--text); max-width: 520px; text-wrap: pretty; }
+.proof-p b { color: var(--navy); font-weight: 600; }
+
+.proof-srcs { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.proof-srcs li {
+  display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 9px 0 4px;
+  border-radius: 7px; background: var(--bg-2); box-shadow: inset 0 0 0 1px var(--line);
+  font-size: 12px; line-height: 1; font-weight: 500; color: var(--text-2); white-space: nowrap;
+}
+.proof-fav { width: 18px; height: 18px; border-radius: 5px; display: grid; place-items: center; background: var(--lav-chip); color: var(--blue); font-size: 10px; font-weight: 700; }
+
+.proof-by { margin-top: auto; padding-top: 28px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+.proof-name { font-size: 18px; line-height: 1.4; font-weight: 600; color: var(--navy); }
+.proof-meta { margin-top: 4px; font-size: 16px; line-height: 1.4; color: var(--text); }
+.proof-mono {
+  width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex: none;
+  background: var(--white); box-shadow: 0 0 0 1px var(--line-2), 0 4px 10px -6px rgba(11, 12, 43, 0.18);
+}
+.proof-mono svg { width: 20px; height: 20px; }
+.proof-mono-gpt { color: var(--e-chatgpt); }
+.proof-mono-gem { color: var(--e-gemini); }
+.proof-mono-ppx { color: var(--e-perplexity); }
+.proof-mono-goo { color: var(--e-google); }
+.proof-stack { display: inline-flex; align-items: center; }
+.proof-stack .proof-mono { width: 36px; height: 36px; border-radius: 50%; box-shadow: 0 0 0 2px var(--white), 0 0 0 3px var(--line-2); }
+.proof-stack .proof-mono + .proof-mono { margin-left: -8px; }
+.proof-stack .proof-mono svg { width: 17px; height: 17px; }
+
+.proof-stats {
+  display: flex; flex-direction: column; justify-content: space-around; gap: 24px;
+  margin-block: 0; padding: 8px 12px 8px 24px;
+  border-left: 1px solid var(--line);
+  text-align: right;
+}
+.proof-num {
+  font-family: var(--font-head); font-size: 56px; line-height: 1.05; font-weight: 500; letter-spacing: -2.4px;
+  color: var(--navy); font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.proof-of { color: var(--muted); }
+.proof-unit { font-size: 26px; letter-spacing: -0.6px; color: var(--muted); margin-right: 3px; vertical-align: 0.62em; }
+.proof-lbl { margin-top: 10px; font-size: 15px; line-height: 1.5; font-weight: 600; color: var(--text); }
+
+@media (max-width: 1100px) {
+  .proof-card { grid-template-columns: 260px minmax(0, 1fr) 210px; }
+  .proof-media { height: 340px; }
+  .proof-body { padding: 24px 28px 8px 28px; }
+  .proof-q { font-size: 18px; }
+  .proof-num { font-size: 46px; letter-spacing: -1.8px; }
+  .proof-unit { font-size: 21px; }
+}
+@media (max-width: 860px) {
+  .proof-card { grid-template-columns: 220px minmax(0, 1fr); }
+  .proof-media { height: 100%; min-height: 300px; }
+  .proof-stats { grid-column: 1 / -1; flex-direction: row; justify-content: flex-start; gap: 0; margin-top: 24px; padding: 20px 0 0; border-left: 0; border-top: 1px solid var(--line); text-align: left; }
+  .proof-stat { flex: 1; }
+  .proof-stat + .proof-stat { padding-left: 20px; border-left: 1px solid var(--line); }
+}
+@media (max-width: 760px) {
+  .section.alt + .proof-sec.alt { padding-top: 24px; }
+  .proof-head { margin-bottom: 40px; }
+  .proof-kicker { font-size: 14px; gap: 10px; }
+  .proof-sub { font-size: 13px; flex-wrap: wrap; justify-content: center; }
+  .proof-h2 { margin-top: 20px; }
+  .proof-list { gap: 16px; }
+  .proof-card { grid-template-columns: minmax(0, 1fr); padding: 12px; }
+  .proof-media { height: auto; min-height: 0; aspect-ratio: 4 / 3; }
+  .proof-media img { object-position: 50% 66%; }
+  .proof-media-2 img { object-position: 50% 32%; }
+  .proof-body { padding: 20px 8px 0; }
+  .proof-q { font-size: 18px; }
+  .proof-p { font-size: 14px; }
+  .proof-srcs { margin-top: 14px; }
+  .proof-by { padding-top: 20px; align-items: center; }
+  .proof-name { font-size: 16px; }
+  .proof-meta { font-size: 14px; margin-top: 2px; }
+  .proof-mono { width: 36px; height: 36px; border-radius: 10px; }
+  .proof-stack .proof-mono { width: 30px; height: 30px; }
+  .proof-stack .proof-mono svg { width: 14px; height: 14px; }
+  .proof-stats { margin: 20px 8px 8px; padding-top: 18px; }
+  .proof-num { font-size: 36px; letter-spacing: -1.4px; }
+  .proof-unit { font-size: 16px; letter-spacing: -0.3px; margin-right: 2px; }
+  .proof-lbl { font-size: 13px; margin-top: 6px; }
+  .proof-stat + .proof-stat { padding-left: 16px; }
+}

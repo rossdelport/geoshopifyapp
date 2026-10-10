@@ -1,4 +1,4 @@
-<section class="section alt scr-sec" id="screens" aria-labelledby="scr-title">
+<section class="section scr-sec" id="screens" aria-labelledby="scr-title">
   <div class="wrap">
     <div class="sec-head">
       <span class="label"><span class="chip-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></span><span class="chip-tx">The app</span></span>
@@ -74,6 +74,7 @@
                       <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:var(--blue)"></i>Pages we built</span><span class="scr-sb-t"><i style="width:15.5%;background:var(--blue)"></i></span><span class="scr-sb-v">A$410</span></div>
                       <div class="scr-sb"><span class="scr-sb-n"><i class="dot" style="background:#a3a3b5"></i>Other AI</span><span class="scr-sb-t"><i style="width:12.5%;background:#a3a3b5"></i></span><span class="scr-sb-v">A$330</span></div>
                     </div>
+                    <div class="scr-sb-tot"><span>Total from AI · 61 orders</span><b>A$4,820</b></div>
                   </div>
                   <div class="panel scr-vis">
                     <div class="scr-ph"><h6>Visibility score</h6><span class="scr-mut"><svg class="scr-ic13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>How often AI names you</span></div>
@@ -98,7 +99,7 @@
                   <div class="panel scr-flush">
                     <div class="scr-ph scr-pad"><h6>Top products bought via AI</h6><span class="scr-mut">This month</span></div>
                     <div class="scr-tscroll">
-                      <table class="scr-tbl">
+                      <table class="scr-tbl scr-tbl-prod">
                         <thead><tr><th>Product</th><th class="scr-r">Orders</th><th class="scr-r">Revenue</th></tr></thead>
                         <tbody>
                           <tr><td><span class="scr-prod"><i class="scr-thumb" style="--c:#b07a3c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2h4"/><path d="M10.5 2v3.5"/><path d="M13.5 2v3.5"/><path d="M8.5 9.5a4 4 0 0 1 2-3.4V5.5h3v.6a4 4 0 0 1 2 3.4V20a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2z"/><path d="M8.5 13h7"/></svg></i>Sandalwood Beard Oil 30ml</span></td><td class="scr-r">23</td><td class="scr-r"><b>A$782</b></td></tr>
@@ -308,11 +309,11 @@
                   <div class="panel">
                     <div class="scr-ph"><h6>Who AI recommends most</h6><span class="scr-mut">Share of answers that name them</span></div>
                     <ol class="scr-rk">
-                      <li><span class="scr-rk-i">1</span><span class="scr-rk-n"><i class="scr-mono" style="--c:#2f3150">G</i><span>The Groomed Man Co</span></span><span class="scr-rk-b"><i style="width:71%"></i></span><span class="scr-rk-v">71%</span></li>
-                      <li><span class="scr-rk-i">2</span><span class="scr-rk-n"><i class="scr-mono" style="--c:#9a6b3f">M</i><span>Milkman</span></span><span class="scr-rk-b"><i style="width:54%"></i></span><span class="scr-rk-v">54%</span></li>
-                      <li><span class="scr-rk-i">3</span><span class="scr-rk-n"><i class="scr-mono" style="--c:#3f7a5a">B</i><span>Bold &amp; Bare</span></span><span class="scr-rk-b"><i style="width:48%"></i></span><span class="scr-rk-v">48%</span></li>
-                      <li><span class="scr-rk-i">4</span><span class="scr-rk-n"><i class="scr-mono" style="--c:#6b5ba5">A</i><span>A Better</span></span><span class="scr-rk-b"><i style="width:33%"></i></span><span class="scr-rk-v">33%</span></li>
-                      <li class="scr-rk-you"><span class="scr-rk-i">5</span><span class="scr-rk-n"><i class="scr-mono" style="--c:var(--blue)">B</i><span>Bondi Beard Co. <em>you</em></span></span><span class="scr-rk-b"><i style="width:21%"></i></span><span class="scr-rk-v">21%</span></li>
+                      <li><span class="scr-rk-i">1</span><div class="scr-rk-c"><div class="scr-rk-t"><span class="scr-rk-n"><i class="scr-mono" style="--c:#2f3150">G</i><span>The Groomed Man Co</span></span><span class="scr-rk-cnt">102 of 144</span><span class="scr-rk-v">71%</span></div><span class="scr-rk-b"><i style="width:71%"></i></span></div></li>
+                      <li><span class="scr-rk-i">2</span><div class="scr-rk-c"><div class="scr-rk-t"><span class="scr-rk-n"><i class="scr-mono" style="--c:#9a6b3f">M</i><span>Milkman</span></span><span class="scr-rk-cnt">78 of 144</span><span class="scr-rk-v">54%</span></div><span class="scr-rk-b"><i style="width:54%"></i></span></div></li>
+                      <li><span class="scr-rk-i">3</span><div class="scr-rk-c"><div class="scr-rk-t"><span class="scr-rk-n"><i class="scr-mono" style="--c:#3f7a5a">B</i><span>Bold &amp; Bare</span></span><span class="scr-rk-cnt">69 of 144</span><span class="scr-rk-v">48%</span></div><span class="scr-rk-b"><i style="width:48%"></i></span></div></li>
+                      <li><span class="scr-rk-i">4</span><div class="scr-rk-c"><div class="scr-rk-t"><span class="scr-rk-n"><i class="scr-mono" style="--c:#6b5ba5">A</i><span>A Better</span></span><span class="scr-rk-cnt">48 of 144</span><span class="scr-rk-v">33%</span></div><span class="scr-rk-b"><i style="width:33%"></i></span></div></li>
+                      <li class="scr-rk-you"><span class="scr-rk-i">5</span><div class="scr-rk-c"><div class="scr-rk-t"><span class="scr-rk-n"><i class="scr-mono" style="--c:var(--blue)">B</i><span>Bondi Beard Co.</span> <em>you</em></span><span class="scr-rk-cnt">30 of 144</span><span class="scr-rk-v">21%</span></div><span class="scr-rk-b"><i style="width:21%"></i></span></div></li>
                     </ol>
                     <p class="scr-foot"><span class="delta-up">▲ 8 pts</span> for you since joining (was 13%).</p>
                   </div>
@@ -320,27 +321,38 @@
                     <div class="scr-ph scr-pad"><h6>Sites AI trusts</h6><span class="scr-mut">Times cited</span></div>
                     <div class="scr-tscroll">
                       <table class="scr-tbl scr-tbl-sites">
-                        <thead><tr><th>Site</th><th>Type</th><th class="scr-r">Cited</th><th class="scr-c">You on it?</th></tr></thead>
+                        <thead><tr><th>Site</th><th class="scr-ty-col">Type</th><th class="scr-r">Cited</th><th class="scr-c">You on it?</th></tr></thead>
                         <tbody>
-                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#e0603c">S</i>stuga.com.au</span></td><td><span class="scr-type scr-type-roundup">Roundup</span></td><td class="scr-r">14×</td><td class="scr-c"><span class="pill pill-red scr-sm">No</span></td></tr>
-                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#d8262f">C</i>chemistwarehouse.com.au</span></td><td><span class="scr-type scr-type-retailer">Retailer</span></td><td class="scr-r">11×</td><td class="scr-c"><span class="pill pill-red scr-sm">No</span></td></tr>
-                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#ff4500">R</i>reddit.com/r/beards</span></td><td><span class="scr-type scr-type-reddit">Reddit</span></td><td class="scr-r">9×</td><td class="scr-c"><span class="scr-na" title="Not something you can be listed on">—</span></td></tr>
-                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#0057b8">B</i>bigw.com.au</span></td><td><span class="scr-type scr-type-retailer">Retailer</span></td><td class="scr-r">7×</td><td class="scr-c"><span class="pill pill-green scr-sm">Yes</span></td></tr>
-                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#4b3b2f">B</i>beardguru.com.au</span></td><td><span class="scr-type scr-type-brand">Brand</span></td><td class="scr-r">5×</td><td class="scr-c"><span class="scr-na" title="Not something you can be listed on">—</span></td></tr>
+                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#e0603c">S</i><span class="scr-site-d">stuga.com.au<em class="scr-site-ty">Roundup</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-roundup">Roundup</span></td><td class="scr-r">14×</td><td class="scr-c"><span class="pill pill-red scr-sm">No</span></td></tr>
+                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#d8262f">C</i><span class="scr-site-d">chemistwarehouse.com.au<em class="scr-site-ty">Retailer</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-retailer">Retailer</span></td><td class="scr-r">11×</td><td class="scr-c"><span class="pill pill-red scr-sm">No</span></td></tr>
+                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#ff4500">R</i><span class="scr-site-d">reddit.com/r/beards<em class="scr-site-ty">Reddit</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-reddit">Reddit</span></td><td class="scr-r">9×</td><td class="scr-c"><span class="scr-na" title="Not something you can be listed on">—</span></td></tr>
+                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#0057b8">B</i><span class="scr-site-d">bigw.com.au<em class="scr-site-ty">Retailer</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-retailer">Retailer</span></td><td class="scr-r">7×</td><td class="scr-c"><span class="pill pill-green scr-sm">Yes</span></td></tr>
+                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#4b3b2f">B</i><span class="scr-site-d">beardguru.com.au<em class="scr-site-ty">Brand</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-brand">Brand</span></td><td class="scr-r">5×</td><td class="scr-c"><span class="scr-na" title="Not something you can be listed on">—</span></td></tr>
                         </tbody>
                       </table>
                     </div>
                     <p class="scr-tfoot">Roundups that name rivals but not you go straight to <b>Outreach</b>. We never post on Reddit for you.</p>
                   </div>
                 </div>
-                <div class="panel">
-                  <div class="scr-ph"><h6>What kind of sites AI leans on</h6><span class="scr-mut">All cited links this scan</span></div>
-                  <div class="scr-stack" aria-hidden="true"><i style="width:41%;--c:#3355ff"></i><i style="width:32%;--c:#8599ff"></i><i style="width:16%;--c:#ff8a5c"></i><i style="width:11%;--c:#c9cbe0"></i></div>
-                  <div class="scr-stack-l">
-                    <span><i class="dot" style="background:#3355ff"></i>Roundups &amp; blogs <b>41%</b></span>
-                    <span><i class="dot" style="background:#8599ff"></i>Retailers <b>32%</b></span>
-                    <span><i class="dot" style="background:#ff8a5c"></i>Reddit &amp; forums <b>16%</b></span>
-                    <span><i class="dot" style="background:#c9cbe0"></i>Brand sites <b>11%</b></span>
+                <div class="scr-g2 scr-g2-even">
+                  <div class="panel">
+                    <div class="scr-ph"><h6>What kind of sites AI leans on</h6><span class="scr-mut">All cited links this scan</span></div>
+                    <div class="scr-stack" aria-hidden="true"><i style="width:41%;--c:#3355ff"></i><i style="width:32%;--c:#8599ff"></i><i style="width:16%;--c:#ff8a5c"></i><i style="width:11%;--c:#c9cbe0"></i></div>
+                    <div class="scr-stack-l">
+                      <span><i class="dot" style="background:#3355ff"></i>Roundups &amp; blogs <b>41%</b></span>
+                      <span><i class="dot" style="background:#8599ff"></i>Retailers <b>32%</b></span>
+                      <span><i class="dot" style="background:#ff8a5c"></i>Reddit &amp; forums <b>16%</b></span>
+                      <span><i class="dot" style="background:#c9cbe0"></i>Brand sites <b>11%</b></span>
+                    </div>
+                    <p class="scr-foot scr-foot-tip">Roundups and blogs are the easiest to get onto. That's what Outreach is for.</p>
+                  </div>
+                  <div class="panel">
+                    <div class="scr-ph"><h6>Since your last scan</h6><span class="scr-mut">30 Sep → 7 Oct</span></div>
+                    <ul class="scr-chg">
+                      <li><span class="scr-chg-ic scr-chg-up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg></span><span><b>You moved up to 5th</b> — named in 30 answers, up from 24.</span></li>
+                      <li><span class="scr-chg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><span><b>stuga.com.au</b> was cited 3 more times. It's in Outreach.</span></li>
+                      <li><span class="scr-chg-ic scr-chg-down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></span><span><b>Bold &amp; Bare</b> was named less often (−4 pts).</span></li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -384,6 +396,7 @@
                       <li><span class="scr-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg></span><span class="scr-ql-t"><b>Guide page</b><em>Best beard oil for dry skin</em></span><span class="pill pill-amber scr-sm">Needs info</span></li>
                       <li><span class="scr-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r="1"/></svg></span><span class="scr-ql-t"><b>Product type cleanup</b><em>14 products</em></span><span class="pill pill-lav scr-sm">Ready</span></li>
                     </ul>
+                    <p class="scr-ql-f"><svg class="scr-ic13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Nothing changes until you approve. Autopilot is off.</span></p>
                   </div>
                   <div class="panel scr-fd">
                     <div class="scr-fd-h">
@@ -483,7 +496,8 @@
                       <div class="scr-mf"><span>Subject</span><b>A dry-skin beard oil for your 2026 roundup?</b></div>
                       <div class="scr-mb">
                         <p>Hi Sam,</p>
-                        <p>I enjoyed your Best beard oil 2026 roundup. We're Bondi Beard Co., a small Australian brand, and we make a sandalwood beard oil for men whose skin gets dry under the beard.</p>
+                        <p>I enjoyed your Best beard oil 2026 roundup. We're Bondi Beard Co., a small Australian brand. We make a sandalwood beard oil for men whose skin gets dry under the beard.</p>
+                        <p>Here it is: <span class="scr-mlink">bondibeardco.com.au/sandalwood</span></p>
                         <p>If it's useful for your next update, I'd be glad to send a bottle to try. No strings attached.</p>
                         <p>Thanks,<br>[Your name]<br>Bondi Beard Co.</p>
                       </div>
@@ -564,6 +578,7 @@
                       <div class="scr-meter"><div class="scr-meter-t"><span>Outreach targets this month</span><b>4 <em>of 10</em></b></div><span class="scr-meter-b"><i style="width:40%"></i></span></div>
                       <div class="scr-meter"><div class="scr-meter-t"><span>Products optimised</span><b>23 <em>of 100</em></b></div><span class="scr-meter-b"><i style="width:23%"></i></span></div>
                     </div>
+                    <p class="scr-meter-n"><svg class="scr-ic13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span>Hit a limit? We pause and tell you. Your price never changes without you choosing a new plan.</span></p>
                   </div>
                   <div class="panel scr-flush">
                     <div class="scr-ph scr-pad"><h6>Settings</h6></div>
@@ -571,6 +586,7 @@
                       <li class="scr-set-off"><div><b><svg class="scr-ic13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Autopilot <span class="pill pill-grey scr-sm">Pro</span></b><p>Applies safe fixes for you. Never touches claims.</p></div><span class="scr-tog" role="img" aria-label="Off, Pro plan only"></span></li>
                       <li><div><b>Monthly email report</b><p>Sent on the 1st to <span class="scr-chip"><svg class="scr-ic12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>owner@bondibeardco.com.au</span> <span class="scr-add">+ Add</span></p></div><span class="scr-tog scr-tog-on" role="img" aria-label="On"></span></li>
                       <li><div><b>Scan schedule</b><p>Every Monday · 2 runs per AI assistant. Daily on Pro.</p></div><span class="scr-select">Weekly<svg class="scr-ic13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></li>
+                      <li class="scr-set-comp"><div><b>Competitors we watch</b><p class="scr-chips"><span class="scr-chip">The Groomed Man Co</span><span class="scr-chip">Milkman</span><span class="scr-chip">Bold &amp; Bare</span><span class="scr-chip">A Better</span></p></div><span class="scr-link">Edit</span></li>
                       <li><div><b>Shopper country</b><p>We ask each question as a shopper in this country.</p></div><span class="scr-select">Australia · AUD<svg class="scr-ic13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></li>
                     </ul>
                   </div>

@@ -1,5 +1,7 @@
 /* §6 See the money (Qarin "Visibility into every sales action"): copy left, photo + blue card + chart card right. */
-.money-sec { background: var(--bg); overflow: hidden; }
+.money-sec { overflow: hidden; }
+/* Same grey block as Meet + Stats (like Qarin), so a shorter gap above. */
+.section.alt + .money-sec.alt { padding-top: calc(var(--section-y) * 0.6); }
 .money-grid { display: grid; grid-template-columns: minmax(0, 480px) minmax(0, 690px); justify-content: space-between; align-items: center; gap: 56px; }
 
 .money-copy .h2 { max-width: 480px; }
@@ -40,7 +42,7 @@
 .money-chart-p { align-self: center; height: 22px; padding: 0 8px; font-size: 11.5px; font-variant-numeric: tabular-nums; }
 .money-chart-p svg { width: 11px; height: 11px; }
 
-.money-plot { position: relative; height: 164px; margin-top: 18px; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; align-items: end; border-bottom: 1px solid var(--line); background-image: linear-gradient(var(--line) 1px, transparent 1px); background-size: 100% 41px; background-position: 0 0; }
+.money-plot { position: relative; height: 180px; margin-top: 18px; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; align-items: end; border-bottom: 1px solid var(--line); background-image: linear-gradient(var(--line) 1px, transparent 1px); background-size: 100% 45px; background-position: 0 0; }
 .money-bar { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
 .money-bar i { display: block; width: 100%; max-width: 26px; border-radius: 6px 6px 2px 2px; background: var(--lav-chip); }
 .money-bar-after i { background: #c3cbff; }
@@ -51,6 +53,15 @@
 .money-base span { position: absolute; left: 0; bottom: 4px; font-size: 10.5px; font-weight: 600; color: var(--text); background: rgba(255, 255, 255, 0.92); border-radius: 4px; padding: 1px 5px; line-height: 1.3; box-shadow: inset 0 0 0 1px var(--line); }
 .money-join { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1px dotted #b5b6c6; z-index: 1; pointer-events: none; }
 .money-join span { position: absolute; top: -2px; left: 6px; font-size: 10px; font-weight: 600; color: var(--blue); white-space: nowrap; line-height: 1.2; }
+.money-foot { display: grid; grid-template-columns: 1fr 1fr; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.money-foot-i { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.money-foot-i + .money-foot-i { padding-left: 16px; border-left: 1px solid var(--line); }
+.money-foot-i span { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text); white-space: nowrap; }
+.money-foot-i b { font-family: var(--font-head); font-size: 22px; font-weight: 500; letter-spacing: -0.6px; line-height: 1.1; color: var(--navy); font-variant-numeric: tabular-nums; }
+.money-foot-i em { font-family: var(--font-body); font-style: normal; font-size: 12px; font-weight: 400; letter-spacing: 0; color: var(--text); }
+.money-sw { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+.money-sw-a { background: var(--lav-chip); box-shadow: inset 0 0 0 1px #cfd2f7; }
+.money-sw-b { background: var(--blue); }
 .money-x { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; margin-top: 8px; font-size: 10px; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 @media (max-width: 1100px) {

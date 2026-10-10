@@ -1,0 +1,135 @@
+/* How it works (Qarin "A smarter way to manage your work"): 3 lavender cards with mini UIs, title + text below, then a 5-step journey. */
+/* Follows the white Fix engine section (same background, like Qarin), so a shorter gap above. */
+.how { padding-top: calc(var(--section-y) * 0.25); }
+.how-h2 { max-width: 560px; }
+.how-lead { max-width: 540px; text-wrap: balance; }
+
+.how-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.how-step { display: flex; flex-direction: column; min-width: 0; }
+.how-card {
+  position: relative; height: 336px; overflow: hidden;
+  border-radius: 16px 16px 0 0;
+  padding: 24px 24px 0;
+  background: linear-gradient(180deg, #f1f1fd 0%, #f4f4fd 55%, rgba(246, 246, 252, 0) 100%);
+  box-shadow: inset 0 1px 0 var(--lav-line), inset 1px 0 0 var(--lav-line), inset -1px 0 0 var(--lav-line);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 72%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 72%, transparent 100%);
+  font-family: var(--font-body); color: var(--navy); text-align: left;
+}
+.how-t { margin-top: 36px; font-size: 22px; letter-spacing: -0.5px; line-height: 1.3; font-weight: 500; }
+.how-p { margin-top: 12px; font-size: 15px; line-height: 1.6; color: var(--text); max-width: 400px; text-wrap: pretty; }
+.how-ui { display: flex; flex-direction: column; gap: 8px; }
+.how-card svg { flex: none; }
+
+/* ---- card 1: setup list (like Qarin's integrations list) ---- */
+.how-li { display: flex; align-items: center; gap: 12px; padding: 0 14px 0 14px; height: 58px; border-radius: 8px; background: var(--white); box-shadow: 0 1px 2px rgba(11, 12, 43, 0.04), 0 0 0 1px rgba(232, 230, 250, 0.6); }
+.how-li-on { height: 56px; margin-inline: 0; box-shadow: 0 10px 22px -12px rgba(11, 12, 43, 0.22), 0 0 0 1px var(--lav-line); }
+.how-li-sm { height: 48px; margin-inline: 0; }
+.how-ic { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: var(--white); }
+.how-ic svg { width: 14px; height: 14px; }
+.how-ic-blue { background: var(--blue); }
+.how-ic-violet { background: #8a63f0; }
+.how-ic-teal { background: var(--e-perplexity); }
+.how-ic-amber { background: #f08a3c; }
+.how-ic-grey { background: #c6c7d4; }
+.how-li-sm .how-ic { width: 24px; height: 24px; }
+.how-li-sm .how-ic svg { width: 12px; height: 12px; }
+.how-li-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.3; }
+.how-li-tx b { font-size: 15px; font-weight: 500; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.1px; }
+.how-li-tx small { font-size: 11.5px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.how-li-on .how-li-tx b { font-size: 14.5px; }
+.how-li-sm .how-li-tx b { font-size: 13px; color: #45465e; }
+.how-done { display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 9px; border-radius: 7px; background: var(--white); box-shadow: inset 0 0 0 1px var(--line-2); font-size: 12px; font-weight: 500; color: var(--green-ink); white-space: nowrap; }
+.how-done svg { width: 12px; height: 12px; }
+.how-choose { display: inline-flex; align-items: center; height: 30px; padding: 0 13px; border-radius: 7px; background: #18191b; color: var(--white); font-size: 13px; font-weight: 500; white-space: nowrap; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14); }
+.how-next { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--line-2); font-size: 11px; color: var(--text-2); }
+
+/* ---- card 2: scan in progress ---- */
+.how-scan, .how-ans { background: var(--white); border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(11, 12, 43, 0.04), 0 0 0 1px rgba(232, 230, 250, 0.6); }
+.how-scan-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.how-q { display: inline-flex; align-items: center; gap: 7px; min-width: 0; font-size: 13px; font-weight: 600; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.how-q svg { width: 13px; height: 13px; color: var(--muted); }
+.how-live { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 100px; background: var(--blue); color: var(--white); font-size: 10.5px; font-weight: 600; white-space: nowrap; flex: none; }
+.how-live i { width: 6px; height: 6px; border-radius: 50%; background: var(--white); animation: how-pulse 1.4s ease-in-out infinite; }
+@keyframes how-pulse { 50% { opacity: .35; } }
+.how-engines { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
+.how-eng { display: flex; align-items: center; gap: 6px; height: 26px; padding: 0 9px; min-width: 0; border-radius: 7px; background: var(--bg-2); box-shadow: inset 0 0 0 1px var(--line); font-size: 11px; font-weight: 500; color: var(--navy); white-space: nowrap; }
+.how-eng i { width: 7px; height: 7px; border-radius: 50%; }
+.how-eng svg { width: 11px; height: 11px; color: var(--green-ink); margin-left: auto; }
+.how-eng-wait svg { color: var(--muted); }
+.how-spin { animation: how-rot 1s linear infinite; }
+@keyframes how-rot { to { transform: rotate(360deg); } }
+.how-prog { margin-top: 12px; }
+.how-prog-l { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-2); }
+.how-prog-l b { color: var(--navy); font-weight: 600; }
+.how-bar { margin-top: 6px; height: 6px; border-radius: 100px; background: var(--lav-2); overflow: hidden; }
+.how-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #5c77ff, #3355ff); }
+.how-ans-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.how-ans-src { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: var(--navy); white-space: nowrap; }
+.how-ans-src i { width: 16px; height: 16px; border-radius: 5px; }
+.how-notyet { font-size: 10.5px; font-weight: 600; color: #b33a3a; background: var(--red-bg); border-radius: 100px; padding: 3px 8px; white-space: nowrap; }
+.how-ans-p { margin-top: 8px; font-size: 12px; line-height: 1.65; color: #45465e; }
+.how-ans-p .hl { color: var(--navy); font-weight: 500; }
+.how-cites { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.how-cites span { font-size: 10.5px; color: var(--text-2); background: var(--bg-2); box-shadow: inset 0 0 0 1px var(--line); border-radius: 6px; padding: 2px 7px; white-space: nowrap; }
+
+/* ---- card 3: statistics ---- */
+.how-card-3 { -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 90%, rgba(0, 0, 0, 0.25) 100%); mask-image: linear-gradient(180deg, #000 0%, #000 90%, rgba(0, 0, 0, 0.25) 100%); }
+.how-card-3 .sample-tag { top: 20px; right: 20px; }
+.how-stat-h { display: flex; flex-direction: column; gap: 4px; }
+.how-stat-t { font-family: var(--font-body); font-size: 17px; font-weight: 600; color: var(--navy); letter-spacing: -0.2px; }
+.how-stat-s { font-size: 12.5px; color: var(--text-2); }
+.how-chart { position: relative; height: 140px; margin-top: 30px; }
+.how-chart-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.how-dot { position: absolute; left: 62.64%; top: 30.67%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--white); box-shadow: 0 0 0 2.5px var(--blue), 0 2px 6px rgba(51, 85, 255, 0.35); }
+.how-tip { position: absolute; left: 62.64%; top: 30.67%; transform: translate(-50%, calc(-100% - 12px)); display: inline-flex; align-items: baseline; gap: 6px; padding: 5px 8px; border-radius: 6px; background: #18191b; color: var(--white); white-space: nowrap; box-shadow: 0 6px 14px -6px rgba(11, 12, 43, 0.5); }
+.how-tip::after { content: ""; position: absolute; left: 50%; bottom: -4px; width: 8px; height: 8px; margin-left: -4px; background: #18191b; transform: rotate(45deg); border-radius: 1px; }
+.how-tip b { font-size: 11.5px; font-weight: 600; }
+.how-tip small { font-size: 10px; color: rgba(255, 255, 255, 0.6); }
+.how-mini { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+.how-mini-i { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.how-chip { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+.how-chip svg { width: 17px; height: 17px; }
+.how-chip-blue { background: var(--lav-chip); color: var(--blue); box-shadow: 0 0 0 4px rgba(225, 226, 252, 0.45); }
+.how-chip-green { background: #dcf3e3; color: var(--green-ink); box-shadow: 0 0 0 4px rgba(220, 243, 227, 0.45); }
+.how-mini-tx { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+.how-mini-tx small { font-size: 11px; color: var(--text-2); }
+.how-mini-tx b { font-size: 17px; font-weight: 500; color: var(--navy); letter-spacing: -0.3px; }
+
+/* ---- journey ---- */
+.how-journey { list-style: none; margin: 72px 0 0; padding: 26px 32px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; position: relative; background: var(--white); border-radius: var(--r-md); box-shadow: var(--ring); }
+.how-j { position: relative; display: flex; align-items: center; gap: 12px; min-width: 0; }
+.how-j:not(:last-child)::after { content: ""; position: absolute; top: 50%; left: 46px; right: 0; border-top: 1.5px dashed #c9cfff; z-index: 0; }
+.how-j-n { position: relative; z-index: 1; width: 34px; height: 34px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--white); color: var(--blue); font-family: var(--font-head); font-size: 14px; font-weight: 600; box-shadow: inset 0 0 0 1px var(--lav-line), 0 0 0 4px var(--lav); font-variant-numeric: tabular-nums; }
+.how-j:first-child .how-j-n { background: var(--blue); color: var(--white); box-shadow: 0 0 0 4px var(--lav-2); }
+.how-j-tx { position: relative; z-index: 1; display: flex; flex-direction: column; line-height: 1.3; padding-right: 10px; background: var(--white); min-width: 0; }
+.how-j-tx b { font-size: 14px; font-weight: 600; color: var(--navy); white-space: nowrap; }
+.how-j-tx small { font-size: 12px; color: var(--text-2); }
+
+@media (max-width: 1100px) {
+  .how-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .how-step { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: 1fr auto auto 1fr; grid-template-areas: "card ." "card t" "card p" "card ."; column-gap: 48px; }
+  .how-card { grid-area: card; }
+  .how-t { grid-area: t; margin-top: 0; }
+  .how-p { grid-area: p; }
+  .how-journey { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 20px; }
+  .how-j:nth-child(3)::after { display: none; }
+}
+@media (max-width: 760px) {
+  .how-grid { gap: 48px; }
+  .how-step { display: flex; }
+  .how-t { margin-top: 24px; }
+  .how-card { height: auto; max-height: 340px; padding: 18px 16px 0; }
+  .how-card-1 { padding-bottom: 8px; }
+  .how-card-3 { padding-bottom: 24px; }
+  .how-card-3 .sample-tag { top: 14px; right: 14px; }
+  .how-t { margin-top: 24px; font-size: 20px; }
+  .how-li { height: 54px; padding: 0 12px; gap: 10px; }
+  .how-li-tx b { font-size: 14px; }
+  .how-scan, .how-ans { padding: 12px; }
+  .how-chart { height: 130px; }
+  .how-journey { grid-template-columns: minmax(0, 1fr); gap: 18px; margin-top: 48px; padding: 22px 20px; }
+  .how-j:not(:last-child)::after { top: 34px; bottom: -18px; left: 16px; right: auto; border-top: 0; border-left: 1.5px dashed #c9cfff; }
+  .how-j:nth-child(3)::after { display: block; }
+  .how-j-tx b { white-space: normal; }
+}
