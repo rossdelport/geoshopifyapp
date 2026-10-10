@@ -51,7 +51,7 @@ Shared shapes: `app/lib/check-types.ts` (do not change them without updating bot
 - Job `check.run` runs once: only a `queued` check on the job's first attempt starts (a re-run would
   pay for every answer again), otherwise it is marked failed ("This check was interrupted. Please run
   it again."). The handler never throws. The worker gives free checks their own 2 slots, apart from
-  the 4 for store jobs, and one check runs at most 9 engine calls at a time.
+  the 4 for store jobs, and one check runs all 18 engine calls at once (so at most 36 open).
   1. `reading`: `readProduct(url)`.
      - SSRF guard (required): only http/https, ports 80/443, resolve DNS (c-ares `Resolver`, 3 s
        timeout; the connection itself uses the same checked lookup, so DNS rebinding can't redirect
@@ -143,8 +143,8 @@ Google Fonts link for Geist + Inter. Works at 390px wide (no sideways scroll). H
   ChatGPT, Gemini and Perplexity · 3 questions, each asked twice".
 - Running: steps (Reading your product → Writing buyer questions → Asking ChatGPT, Gemini and
   Perplexity → Writing your report) with the current one highlighted, progress bar "11 of 18
-  answers in", the 3 questions once known, and "This takes a few minutes. You can leave this page
-  and come back to this link."
+  answers in", the 3 questions once known, and "A check usually takes about 3 to 6 minutes. You can
+  leave this page and come back to this link."
 - Done: score ring (0–100 + label), sentence "AI named {brand} in X of Y answers"; per-engine row
   (named X of 6); "Who AI recommends instead" (ranked bars, share %); "Sites AI trusts for this"
   (domain, type chip, "you're on it" if isOwn); per question: the question, engine cells (named in

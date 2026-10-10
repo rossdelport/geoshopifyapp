@@ -158,7 +158,7 @@ estimate from OpenAI's numbers.
 - **Date:** 27 April 2026
 - **Quotes:** "Data is drawn from a proprietary survey of 1,009 US consumers." "77.6% of consumers have used AI to shop in the past six months, with 43.21% using it weekly or more" "Most shoppers are using AI for product research (68.5%)" "AI has directly influenced 68.64% of users to buy something they otherwise wouldn’t have purchased"
 - Note: 68.5% and 68.64% are shares of **people who use AI to shop** (the 77.6%), not of all consumers.
-- **Copy lines:** In a survey of 1,009 US shoppers, 77% had used AI to help them shop in the last six months, and 43% use it every week. Of those AI shoppers, 69% have bought something they wouldn't have bought otherwise.
+- **Copy lines:** In a survey of 1,009 US shoppers, 77% had used AI to help them shop in the last six months, and 43% use it every week. Of those AI shoppers, 68% have bought something they wouldn't have bought otherwise.
 
 ---
 

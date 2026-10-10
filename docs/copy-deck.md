@@ -115,6 +115,32 @@ Every number in this deck has a `[source: X]` tag. For the designer:
 | baseline | Always explained: "your numbers from before you joined". |
 | fixes, guide pages, outreach | As in the app. |
 
+### Sample data names (all fictional, checked 10 Oct 2026)
+
+Mockups tagged "Sample data" use made-up businesses only. Real brand names appear only where we show
+real data with a source: the live ChatGPT test and the self-test (Proof section, T1 and T2).
+
+| In mockups | Use | Monogram |
+|---|---|---|
+| Sample store | **Coolabah Grooming Co.** | CG (single letter: C) |
+| Store domain and email | **coolabahgrooming.com.au**, **owner@coolabahgrooming.com.au** | |
+| Rival 1 (named most) | **Ridgeback Beard Co.** | RB (R) |
+| Rival 2 | **Saltbush Beard Co.** | SB (S) |
+| Rival 3 | **Banksia Beard Co.** | BA (B) |
+| Rival 4 | **Wattlebird Grooming** | WG (W) |
+| Outreach articles | **examplereviews.com.au**, **examplegiftguide.com.au**, **examplebeardblog.com.au**, **examplegrooming.com.au** | |
+
+Order when an answer lists all four: Ridgeback Beard Co., Wattlebird Grooming, Banksia Beard Co. and
+Saltbush Beard Co. Rankings by share of answers: Ridgeback, Saltbush, Banksia, you (4th), Wattlebird.
+
+Real sites ChatGPT really cited in the live test (stuga.com.au, chemistwarehouse.com.au, bigw.com.au,
+beardguru.com.au, reddit.com/r/beards) may appear in mockups as cited sites or "Sites AI trusts". Never
+show a real site naming a sample brand or saying anything specific: no outreach target on a real site,
+and no citation numbers that tie a sample brand to a real site.
+
+Never use "Bondi Beard Co." (ChatGPT now names a real brand with that name) or the real brands from the
+live test (The Groomed Man Co, A Better, Bold & Bare, Milkman) in sample data.
+
 ---
 
 ## 1. Page meta (`assemble.mjs`)
@@ -181,16 +207,34 @@ Alternates:
   **Open it and paste your link there**
 - Secondary link: **or first, see how AI picks what to recommend** (`#decide`)
 
-**Hero dashboard mockup:** keep all sample data as is [SAMPLE] (A$4,820, 61 orders, 1,940 clicks, score
-62, the three fixes). No label changes needed. Keep the "Sample data" tag.
+**Three animated cards** (under the form; they replace the old hero dashboard mockup). A list labelled
+**How a shopper's question to AI becomes a sale**. Each card has a small picture (hidden from screen
+readers), a title and one line. Each card can take keyboard focus; hover or focus replays it.
+
+1. **Shoppers ask AI**: "Shoppers ask AI what to buy. About 50 million times a day on ChatGPT alone, by
+   our 2025 estimate." ("our 2025 estimate" links to `#why`.) [source: F2-est]
+   Picture: three questions rise out of a chat box and stack up: ChatGPT **best beard oil for dry skin?**,
+   Gemini **unscented beard oil in Australia?**, Perplexity **gift for a bearded man under $80?**
+2. **AI picks a few stores**: "Each answer names just a few stores. GEO helps make yours one of them."
+   Picture: an AI tile wired to three store tiles, **RB**, **You** and **SB** (sample monograms from section
+   0). Dashes run down the wires, then **You** lights up with a **Recommended** chip.
+3. **You get the sale**: "Shoppers click straight through. No cost per click, and GEO counts every order
+   it can trace back to AI." (Not "every order": GEO can't see every AI order.)
+   Picture, tagged **Example** [SAMPLE]: three rows pop in one by one: **Named by ChatGPT** / best beard oil
+   for dry skin? / chip **Top 3** · **Visit from chatgpt.com** / Lands on your product page / chip **No ad
+   cost** · **New order $34** / Sandalwood Beard Oil 30ml / chip **Tracked** (with `clay-coin.png`; the
+   price matches the fix engine sample).
 
 Designer notes:
 - Background: main gradient `linear-gradient(180deg, #EFECFD 0%, #E2E2FC 50%, #BFC9FA 100%)` with the faint
   grid on top. Headline and lead navy `#0B0C2B`. Pill badge cobalt on `#E1CCF7`.
-- Floating clay decorations around the dashboard, small, `alt=""` and `aria-hidden="true"`,
-  `mix-blend-mode: multiply`: `clay-bubble.png` above the top-left corner, `clay-coin.png` on the right
-  edge next to the Money from AI block, `clay-bag.png` below the bottom-left corner. Hide two of the three
-  under 600px so they don't crowd the form.
+- Cards: 3 columns from 1024px (max 1100px wide), sideways cards on tablets (761 to 1023px), one column
+  on phones. Animations are CSS keyframes (transform and opacity only), 7 to 7.5 second loops; a card
+  starts when it scrolls into view and pauses when it leaves. With reduced motion each card shows its
+  finished state.
+- Floating clay decorations, `alt=""` and `aria-hidden="true"`, `mix-blend-mode: multiply`:
+  `clay-bubble.png` above the first card's top-left corner and `clay-bag.png` beside the last card.
+  Both are hidden below 1024px. The coin now sits inside card 3.
 
 ---
 
@@ -384,7 +428,7 @@ Alternates:
 **Card 1: How often each AI names you** (was "Visibility by AI assistant")
 > See how often ChatGPT, Gemini, Perplexity and Google's AI Overviews name your store, scan after scan.
 
-Mockup unchanged [SAMPLE]: "Named in answers", "Last 4 scans", Perplexity 64%.
+Mockup unchanged [SAMPLE]: "Named in answers", "Last 4 scans", Perplexity 41%.
 
 **Tall card: Money from AI, live**
 > The orders and revenue that came from ChatGPT & co, next to your baseline: your numbers from before
@@ -395,8 +439,10 @@ Mockup unchanged [SAMPLE]: A$4,820, ChatGPT A$412 Thu 8 Oct, "Your baseline".
 **Card 2: Who AI recommends instead**
 > The brands named when you aren't, how often, and where you rank against them.
 
-Mockup unchanged [SAMPLE]: "best beard oil for dry skin in Australia", The Groomed Man Co 7 of 8 ... A
-Better 3 of 8.
+Mockup [SAMPLE]: "best beard oil for dry skin in Australia". Rows: #1 Ridgeback Beard Co. (RB), named in
+7 of 8 answers · #2 Saltbush Beard Co. (SB), 6 of 8 · #3 Banksia Beard Co. (BA), 5 of 8 · #4 **Coolabah
+Grooming Co. (you)** (CG), 4 of 8 · #5 Wattlebird Grooming (WG), 3 of 8. Your own row never truncates:
+on narrower cards "(you)" wraps to a second line.
 
 Designer notes: section background white (or `#EFECFD` if Why now is white and Decide is lilac; alternate
 so neighbours differ). Tall card gets the main gradient. Sample tags stay.
@@ -550,13 +596,33 @@ Outreach · Plans & settings (short: Settings)
 |---|---|---|
 | Dashboard note | Google AI Overviews can't be split cleanly from normal Google [em dash] shown separately. | Google AI Overviews can't be split cleanly from normal Google, so we show them separately. |
 | Dashboard, top products | Gift Set [en dash] The Essentials | The Essentials Gift Set |
-| Questions, your row position | [en dash] (Bondi Beard Co., not named) | Leave the position cell empty; "not named" already says it |
+| Questions, your row position | [en dash] (Coolabah Grooming Co., not named) | Leave the position cell empty; "not named" already says it (on its own line under the name) |
 | Questions, "Best spot" | Best spot [en dash] | Best spot: none |
 | Competitors strip | 144 answers [em dash] 18 questions × 4 AI assistants × 2 runs each. | 144 answers: 18 questions × 4 AI assistants × 2 runs each. |
-| Competitors, change list | You moved up to 4th [em dash] named in 30 answers, up from 24. | You moved up to 4th: named in 30 answers, up from 24. |
+| Competitors, change list | You moved up to 4th [em dash] named in 52 answers, up from 41. | You moved up to 4th: named in 52 answers, up from 41. You passed Wattlebird Grooming. |
 | Competitors, "You on it?" for reddit.com/r/beards and beardguru.com.au | [em dash] | n/a (keep the tooltip "Not something you can be listed on") |
 | Fixes, after text and facts chips | 3[en dash]4 drops | 3 to 4 drops |
 | Fixes, history | Beard Balm [en dash] Cedar; Gift Set [en dash] The Essentials | Cedar Beard Balm; The Essentials Gift Set |
+
+**Sample names on every screen** (fictional, see section 0): store bar **Coolabah Grooming Co.** with
+**CG** badge and avatar.
+- Questions: top rivals Ridgeback Beard Co. (R), Saltbush Beard Co. (S), Banksia Beard Co. (B),
+  Wattlebird Grooming (W). The open ChatGPT answer lists Ridgeback Beard Co., Wattlebird Grooming,
+  Banksia Beard Co. and Saltbush Beard Co. with no citation numbers, then "Sites it cited": stuga.com.au,
+  chemistwarehouse.com.au, bigw.com.au, beardguru.com.au.
+- Competitors: Ridgeback 102 of 144 (71%) · Saltbush 78 (54%) · Banksia 69 (48%) · Coolabah Grooming Co.
+  "you" 52 (36%) · Wattlebird 45 (31%). Change list: "examplereviews.com.au was cited 3 more times. It's
+  in Outreach." and "Banksia Beard Co. was named less often (minus 4 pts)." "Sites AI trusts": "You on it?" is **No** for
+  stuga.com.au, chemistwarehouse.com.au and bigw.com.au, and **n/a** for reddit.com/r/beards and
+  beardguru.com.au. Never show a real site as stocking or naming the sample store.
+- Outreach: Best beard oil 2026 (examplereviews.com.au · Roundup, names Ridgeback Beard Co. +3) ·
+  15 gifts for bearded blokes (names Wattlebird Grooming, Banksia Beard Co.) · Beard care for beginners
+  (names Saltbush Beard Co. +1) · The best beard balms, tried (names Banksia Beard Co.). Pitch to
+  **Editor, examplereviews.com.au**: "We're Coolabah Grooming Co., a small Australian brand." Link
+  **coolabahgrooming.com.au/sandalwood**, signed Coolabah Grooming Co. "Why this article: Names 4 rivals,
+  but not you" (Ridgeback +3 = 4).
+- Settings: report to **owner@coolabahgrooming.com.au**; "Competitors we watch": Ridgeback Beard Co.,
+  Saltbush Beard Co., Banksia Beard Co., Wattlebird Grooming.
 
 Designer notes: white section. Active tab cobalt underline, tab text navy. Mockup frames unchanged.
 
@@ -633,6 +699,10 @@ Alternates:
 - "3[en dash]4 drops" becomes **3 to 4 drops** (diff and FAQ answer).
 - History: "Beard Balm [en dash] Cedar" becomes **Cedar Beard Balm**. Guide pane: "Gift Set [en dash] The
   Essentials" becomes **The Essentials Gift Set**.
+- Sample store (fictional): vendor **Coolabah Grooming Co.**; storefront URL
+  **coolabahgrooming.com.au/products/sandalwood-beard-oil**; guide URL
+  **coolabahgrooming.com.au/pages/best-beard-oil-dry-skin**; guide byline **CG** · **Coolabah Grooming Co.
+  · 4 min read**.
 - Everything else unchanged ("Every detail comes from your catalogue", "Question for you: how long does a
   bottle last?", "Claims check passed", "Old version saved", "Adds FAQ data search engines read", "Every
   link carries utm_source=geo, so sales from this page show up on your dashboard.").
@@ -670,7 +740,9 @@ Alternates:
    implies the money arrives)
 
 **Mockups:** unchanged [SAMPLE] (214 products, Men's grooming · Australia, 7 of 8 answers in, A$1,240,
-A$4,820, 12 fixes live).
+A$4,820, 12 fixes live). Scan answer snippet (fictional brands): "For dry skin, shoppers in Australia
+often go for Ridgeback Beard Co., Wattlebird Grooming, Banksia Beard Co. and Saltbush Beard Co. Look for
+jojoba or argan oil and a light finish..."
 
 **Timeline (five dots):**
 1. **Install** · One click in Shopify
@@ -831,9 +903,20 @@ Alternates:
 **Sub-line:**
 > Plain answers about how AI picks stores, how we count sales, and what changes in your store.
 
-**Help card:** image `clay-support.jpg` (16:9) replaces `support.jpg`. Alt: **Clay headset beside two chat
-bubbles**. Text: **Stuck on setup? We'll help you get your first scan running.** Link: **See the setup
-steps** (`#how`)
+**Layout: a chat window** (centred, max 860px). Top bar: GEO avatar (the logo's two circles), **GEO
+assistant**, and under it **Answers written by the GEO team**. Questions show as cobalt bubbles on the
+right, answers as white bubbles on the left.
+- Greeting (only with JavaScript): **Hi. Choose a question below and its answer appears here. Let's start
+  with how AI picks stores.** Then question 1 and its answer.
+- The other questions wait below the chat under **More questions**. Tapping one adds it to the chat, shows
+  typing dots briefly, then the answer. **Show all questions** puts the full list back. When none are left,
+  the heading reads **That's every question**.
+- Without JavaScript all 15 show as one conversation. With reduced motion there is no typing delay.
+
+**Help strip** (slim, under the chat): a small crop of `clay-support.jpg` (alt **Clay headset beside two
+chat bubbles**). Text: **Stuck on setup? It takes about five minutes, and most of it runs on its own.**
+Button: **See the setup steps** (`#how`). (Not "We'll help you get your first scan running": the support
+contact is still marked Soon.) On screens 1240px and wider, `clay-bubble.png` floats beside the window.
 
 **Questions and full answers** (order matters: the first four teach, the rest reassure):
 
@@ -863,8 +946,8 @@ steps** (`#how`)
 
 5. **What is the visibility score?**
    A score out of 100 for how often AI names you. It's the share of AI answers that name you, across all
-   your questions, every AI assistant and both runs, with a bonus when you're in the top 3. 0 means no AI
-   named you. Higher means you're named more often, and nearer the top. [source: P]
+   your questions, every AI assistant and both runs, with a bonus when you're in the top 3 and a little
+   credit when AI links to your site. 0 means no AI named you. Higher means you're named more often, and nearer the top. [source: P]
 
 6. **Will GEO change my store without asking?**
    No. Every change waits for your approval. Autopilot on Pro is opt-in, and it still skips anything risky,
@@ -910,8 +993,8 @@ steps** (`#how`)
     tracking counts visits from AI answers, follows your store's consent settings and keeps no personal
     details. We never use one store's data for another store.
 
-Designer notes: white section; open item `#EFECFD`; plus/minus icon cobalt. If 15 is too many for the
-layout, keep 1 to 9 plus 10 and 13, and move the rest to a help page.
+Designer notes: white section; chat window white with 24px corners and a soft lilac shadow, faint lilac
+inside; question bubbles cobalt. The first four questions teach, the rest reassure, so keep this order.
 
 ---
 
@@ -951,7 +1034,7 @@ Alternates:
 - Find out what AI says about your products
 
 **Sub-line:**
-> Paste one product link. In a few minutes you'll see who AI recommends, which sites it trusts, and what
+> Paste one product link. In about 3 to 6 minutes you'll see who AI recommends, which sites it trusts, and what
 > to fix first. Free, no sign-up. [source: FC]
 
 **Button:** **Check my product** (`#check`)
@@ -1035,7 +1118,7 @@ would ask, twice each.** [source: FC]
   Perplexity** → **Writing your report**
 - Progress: **{done} of {total} answers in** (aria-label: **AI answers in**)
 - **The questions we're asking** (list of the 3 questions once known)
-- Note: **This takes a few minutes. You can leave this page and come back to this link.** Button:
+- Note: **A check usually takes about 3 to 6 minutes. You can leave this page and come back to this link.** Button:
   **Refresh**
 - New "while you wait" box (educational):
   - Heading: **What's happening now**
@@ -1177,6 +1260,8 @@ Em dashes, plus spaced en dashes that read as dashes. Unspaced ranges like "3[en
 - [ ] Every F-tagged number shows a visible source link to the URL in section 0.
 - [ ] No number is rounded up (68%, not 69%; "nearly 60×", not "~60×").
 - [ ] Every mockup with numbers has the "Sample data" tag.
+- [ ] Sample data uses only the fictional names in section 0. Search the parts for Bondi, bondibeard,
+      "Groomed Man", Milkman, "Bold &" and "A Better": only the Proof section (real live test) may match.
 - [ ] "Free" only describes the free product check, the free scan, the trial, or the AI traffic. GEO is
       "no ad spend".
 - [ ] US data is labelled US (Adobe, Exploding Topics). Triple Whale is labelled "its own merchants".

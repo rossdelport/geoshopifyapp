@@ -37,10 +37,12 @@ The page doubles as a **UI/UX overview**: every app screen appears as a crisp, r
     never claim all AI revenue was caused by the app.
 - **Plain English.** Never say GEO/AEO/LLM as jargon in copy (the product name "GEO" is fine). Say "AI
   search", "ChatGPT & co", "AI shopping assistants". Short sentences.
-- Sample brand for mockups: **"Bondi Beard Co."** (fictional, men's grooming, Australia, AUD). Sample
-  competitors are the real ones from the live test above. Sample products: "Sandalwood Beard Oil 30ml"
-  (A$34), "Daily Beard Wash 200ml" (A$26), "Beard Balm – Cedar" (A$29), "Sensitive Skin Beard Oil" (A$36),
-  "Gift Set – The Essentials" (A$79).
+- Sample store for mockups: **"Coolabah Grooming Co."** (fictional, men's grooming, Australia, AUD). Sample
+  rivals are fictional too: **Ridgeback Beard Co., Saltbush Beard Co., Banksia Beard Co. and Wattlebird
+  Grooming** (names table in `docs/copy-deck.md` section 0). Sample sites use example domains
+  (examplereviews.com.au and the like). Real brands and real sites only appear with real data, in the
+  Proof section. Sample products: "Sandalwood Beard Oil 30ml" (A$34), "Daily Beard Wash 200ml" (A$26),
+  "Cedar Beard Balm" (A$29), "Sensitive Skin Beard Oil" (A$36), "The Essentials Gift Set" (A$79).
 
 ## Artifact contract (the page is published as a claude.ai Artifact)
 
