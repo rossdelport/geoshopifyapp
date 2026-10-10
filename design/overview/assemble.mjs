@@ -65,7 +65,7 @@ ${body}</body>
   const used = [...new Set([...out.matchAll(/src="img\/([^"]+)"/g)].map((m) => m[1]))];
   // Images other pages load from /home/img/ even when the home page doesn't use them
   // (the free product check pages: app/components/check-ui.tsx).
-  const extra = ['clay-magnifier.jpg', 'clay-bubble.png', 'clay-bag.png'].filter((f) => !used.includes(f));
+  const extra = ['clay-magnifier.jpg', 'clay-bubble.png', 'clay-bag.png', 'clay-storefront.jpg'].filter((f) => !used.includes(f));
   for (const f of [...used, ...extra]) fs.copyFileSync(path.join(dir, 'img', f), path.join(imgOut, f));
   console.log(`app/home/home.html: ${(site.length / 1024).toFixed(0)} KB, ${used.length} images used, ${used.length + extra.length} copied to public/home/img`);
 }

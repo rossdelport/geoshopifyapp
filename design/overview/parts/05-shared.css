@@ -11,6 +11,12 @@ section[id], footer[id] { scroll-margin-top: 96px; }
 .src-link { color: var(--cobalt-deep); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; text-decoration-color: rgba(56, 64, 160, 0.45); transition: text-decoration-color .2s ease; }
 .src-link:hover { text-decoration-color: currentColor; }
 
+/* One frame for the clay renders shown as tiles (money, worth, proof): rounded, a thin white inner ring
+   and the soft lilac clay shadow. The ring sits on top of the image, so it shows on every render. */
+.clay-tile { position: relative; overflow: hidden; border-radius: var(--r-lg); background: var(--lilac-100); box-shadow: var(--shadow-clay); }
+.clay-tile > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.clay-tile::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9); pointer-events: none; }
+
 /* Selection in the brand colours. */
 ::selection { background: var(--lilac-pedestal); color: var(--navy); }
 

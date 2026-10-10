@@ -24,9 +24,8 @@
 .worth-h2 { max-width: 460px; }
 .worth-lead { max-width: 440px; color: #4a4b66; }
 
-/* clay coins: rounded tile with a soft white rim (the render has its own lilac background) */
-.worth-art { grid-area: art; align-self: end; }
-.worth-art img { width: 100%; max-width: 320px; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--r-lg); background: var(--lilac-100); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 0 6px rgba(255, 255, 255, 0.35), 0 28px 50px -30px rgba(64, 80, 176, 0.55); }
+/* clay coins: a .clay-tile (05-shared.css), the same frame as the other clay renders */
+.worth-art { grid-area: art; align-self: end; width: 100%; max-width: 300px; aspect-ratio: 1; }
 
 /* calculator card */
 .worth-card {
@@ -106,7 +105,7 @@
   .worth-head { align-items: center; text-align: center; gap: 14px; }
   .worth-h2, .worth-lead { margin-inline: auto; }
   .worth-art { justify-self: center; }
-  .worth-art img { max-width: 160px; border-radius: 20px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 0 5px rgba(255, 255, 255, 0.35), 0 20px 40px -24px rgba(64, 80, 176, 0.55); }
+  .worth-art { max-width: 200px; border-radius: 20px; }
   .worth-card { padding: 24px 18px 20px; border-radius: 20px; }
   .worth-lab { font-size: 14.5px; }
   .worth-val { font-size: 18px; min-width: 56px; }

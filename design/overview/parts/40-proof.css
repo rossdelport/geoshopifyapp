@@ -12,7 +12,7 @@
 
 .proof-card {
   display: grid;
-  grid-template-columns: 320px minmax(0, 1fr) 272px;
+  grid-template-columns: 300px minmax(0, 1fr) 272px;
   padding: 24px;
   background: var(--white);
   border-radius: var(--r-lg);
@@ -23,6 +23,8 @@
 
 /* the clay renders sit on the same lilac gradient as the frame, so the frame never shows an edge */
 .proof-media { position: relative; margin: 0; width: 100%; height: 368px; border-radius: var(--r-md); overflow: hidden; background: var(--grad-main); }
+/* card 1's clay render uses the shared tile frame */
+.proof-media.clay-tile { border-radius: var(--r-lg); }
 .proof-media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; transition: transform .6s ease; }
 .proof-card:hover .proof-media img { transform: scale(1.03); }
 .proof-tag {
@@ -107,7 +109,7 @@
   .proof-lead { margin-top: 14px; }
   .proof-list { gap: 16px; }
   .proof-card { grid-template-columns: minmax(0, 1fr); padding: 12px; border-radius: var(--r-md); }
-  .proof-media { height: auto; min-height: 0; aspect-ratio: 4 / 3; border-radius: var(--r); }
+  .proof-media, .proof-media.clay-tile { height: auto; min-height: 0; aspect-ratio: 4 / 3; border-radius: var(--r-md); }
   .proof-media img { object-position: 50% 52%; }
   .proof-body { padding: 20px 8px 0; }
   .proof-q { font-size: 18px; }

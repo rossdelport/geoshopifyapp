@@ -228,6 +228,12 @@ section[id], footer[id] { scroll-margin-top: 96px; }
 .src-link { color: var(--cobalt-deep); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; text-decoration-color: rgba(56, 64, 160, 0.45); transition: text-decoration-color .2s ease; }
 .src-link:hover { text-decoration-color: currentColor; }
 
+/* One frame for the clay renders shown as tiles (money, worth, proof): rounded, a thin white inner ring
+   and the soft lilac clay shadow. The ring sits on top of the image, so it shows on every render. */
+.clay-tile { position: relative; overflow: hidden; border-radius: var(--r-lg); background: var(--lilac-100); box-shadow: var(--shadow-clay); }
+.clay-tile > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.clay-tile::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9); pointer-events: none; }
+
 /* Selection in the brand colours. */
 ::selection { background: var(--lilac-pedestal); color: var(--navy); }
 
@@ -346,7 +352,7 @@ html { scroll-behavior: auto; }
 }
 .hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep), 0 8px 18px -8px rgba(56, 64, 160, 0.45); transform: translateY(-1px); }
 .hero-pill-new { flex: none; display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 7px; background: var(--lilac-pedestal); color: var(--cobalt-deep); font-weight: 650; font-size: 12.5px; font-variant-numeric: tabular-nums; letter-spacing: -0.1px; }
-.hero-pill-est { color: var(--text-2); font-weight: 450; }
+.hero-pill-est { color: var(--text-2); font-weight: 450; white-space: nowrap; }
 .hero-pill svg { flex: none; width: 14px; height: 14px; color: var(--cobalt); }
 
 .hero-title { margin-top: 28px; max-width: 900px; }
@@ -954,9 +960,11 @@ html { scroll-behavior: auto; }
 
 /* card 2: competitor list (bleeds off the bottom) */
 .meet-list { display: flex; flex-direction: column; gap: 5px; }
-.meet-q { display: flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 7px; box-shadow: inset 0 0 0 1px #ececf1; font-size: 10.5px; color: #6b6c80; white-space: nowrap; overflow: hidden; }
+.meet-q { display: flex; flex: none; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 7px; box-shadow: inset 0 0 0 1px #ececf1; font-size: 10.5px; color: #6b6c80; white-space: nowrap; overflow: hidden; }
 .meet-q svg { width: 11px; height: 11px; flex: none; color: #9a9bab; }
 .meet-q span { overflow: hidden; text-overflow: ellipsis; }
+/* the sample tag sits in the list's top-right corner, so the query stops short of it */
+.meet-shot-down .meet-q { margin-right: 88px; }
 .meet-row { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 8px; background: #f9f9fb; }
 .meet-av { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: #e9e9ef; color: #5d5e70; font-size: 8.5px; font-weight: 700; letter-spacing: .02em; }
 .meet-av-sm { font-size: 7.5px; letter-spacing: 0; }
@@ -1019,7 +1027,7 @@ html { scroll-behavior: auto; }
   .meet-wide, .meet-wide-b { height: auto; grid-template-columns: 1fr; gap: 0; padding: 0 14px 0 20px; }
   .meet-wide .meet-text { padding: 24px 6px 2px 0; }
   .meet-wide .meet-shot { margin: 18px 0 16px; }
-  .meet-wide .meet-shot-down { margin-bottom: 0; height: 232px; }
+  .meet-wide .meet-shot-down { margin-bottom: 0; height: 266px; }
   .meet-x, .meet-pro, .meet-tip { font-size: 10.5px; }
   .meet-shot .meet-tag { font-size: 10px; }
   .meet-rb small { font-size: 10.5px; }
@@ -1122,8 +1130,9 @@ html { scroll-behavior: auto; }
 .money-comp { display: grid; grid-template-columns: minmax(0, 305fr) minmax(0, 335fr); column-gap: 44px; width: 100%; max-width: 690px; justify-self: end; align-items: start; }
 .money-col-a { display: flex; flex-direction: column; min-width: 0; }
 /* clay image: rounded tile on a lilac panel with a soft white rim */
-.money-photo { position: relative; padding: 10px; border-radius: var(--r-lg); background: rgba(255, 255, 255, 0.5); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.95), 0 24px 44px -28px rgba(64, 80, 176, 0.45); }
-.money-photo img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 16px; background: var(--lilac-100); }
+/* the clay render is a .clay-tile (05-shared.css); the toast floats over its top edge */
+.money-photo { position: relative; }
+.money-img { aspect-ratio: 4 / 5; }
 .money-toast { position: absolute; left: -10px; top: 26px; right: 24px; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 12px; background: rgba(255, 255, 255, 0.94); box-shadow: 0 10px 24px -10px rgba(11, 12, 43, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.6); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 .money-toast-ic { width: 30px; height: 30px; border-radius: 8px; flex: none; display: grid; place-items: center; background: #e7f6f1; color: var(--e-chatgpt); }
 .money-toast-ic svg { width: 16px; height: 16px; }
@@ -1183,8 +1192,7 @@ html { scroll-behavior: auto; }
   .money-list { margin-top: 32px; }
   .money-list li { padding: 18px 0; }
   .money-comp { grid-template-columns: minmax(0, 1fr); row-gap: 16px; }
-  .money-photo { padding: 8px; border-radius: 22px; }
-  .money-photo img { border-radius: 15px; }
+  .money-img { border-radius: 20px; }
   .money-toast { left: 12px; right: 12px; top: 18px; }
   .money-blue { margin: -40px 0 0; padding: 20px 20px 22px; }
   .money-note { margin-top: 26px; }
@@ -1219,9 +1227,8 @@ html { scroll-behavior: auto; }
 .worth-h2 { max-width: 460px; }
 .worth-lead { max-width: 440px; color: #4a4b66; }
 
-/* clay coins: rounded tile with a soft white rim (the render has its own lilac background) */
-.worth-art { grid-area: art; align-self: end; }
-.worth-art img { width: 100%; max-width: 320px; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--r-lg); background: var(--lilac-100); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 0 6px rgba(255, 255, 255, 0.35), 0 28px 50px -30px rgba(64, 80, 176, 0.55); }
+/* clay coins: a .clay-tile (05-shared.css), the same frame as the other clay renders */
+.worth-art { grid-area: art; align-self: end; width: 100%; max-width: 300px; aspect-ratio: 1; }
 
 /* calculator card */
 .worth-card {
@@ -1301,7 +1308,7 @@ html { scroll-behavior: auto; }
   .worth-head { align-items: center; text-align: center; gap: 14px; }
   .worth-h2, .worth-lead { margin-inline: auto; }
   .worth-art { justify-self: center; }
-  .worth-art img { max-width: 160px; border-radius: 20px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 0 5px rgba(255, 255, 255, 0.35), 0 20px 40px -24px rgba(64, 80, 176, 0.55); }
+  .worth-art { max-width: 200px; border-radius: 20px; }
   .worth-card { padding: 24px 18px 20px; border-radius: 20px; }
   .worth-lab { font-size: 14.5px; }
   .worth-val { font-size: 18px; min-width: 56px; }
@@ -2315,7 +2322,7 @@ html { scroll-behavior: auto; }
 
 .proof-card {
   display: grid;
-  grid-template-columns: 320px minmax(0, 1fr) 272px;
+  grid-template-columns: 300px minmax(0, 1fr) 272px;
   padding: 24px;
   background: var(--white);
   border-radius: var(--r-lg);
@@ -2326,6 +2333,8 @@ html { scroll-behavior: auto; }
 
 /* the clay renders sit on the same lilac gradient as the frame, so the frame never shows an edge */
 .proof-media { position: relative; margin: 0; width: 100%; height: 368px; border-radius: var(--r-md); overflow: hidden; background: var(--grad-main); }
+/* card 1's clay render uses the shared tile frame */
+.proof-media.clay-tile { border-radius: var(--r-lg); }
 .proof-media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; transition: transform .6s ease; }
 .proof-card:hover .proof-media img { transform: scale(1.03); }
 .proof-tag {
@@ -2410,7 +2419,7 @@ html { scroll-behavior: auto; }
   .proof-lead { margin-top: 14px; }
   .proof-list { gap: 16px; }
   .proof-card { grid-template-columns: minmax(0, 1fr); padding: 12px; border-radius: var(--r-md); }
-  .proof-media { height: auto; min-height: 0; aspect-ratio: 4 / 3; border-radius: var(--r); }
+  .proof-media, .proof-media.clay-tile { height: auto; min-height: 0; aspect-ratio: 4 / 3; border-radius: var(--r-md); }
   .proof-media img { object-position: 50% 52%; }
   .proof-body { padding: 20px 8px 0; }
   .proof-q { font-size: 18px; }
@@ -2992,9 +3001,9 @@ html { scroll-behavior: auto; }
     </form>
 
     <div class="hero-stage">
-    <img class="hero-deco hero-deco-bubble" src="img/clay-bubble.png" alt="" aria-hidden="true" width="800" height="800" decoding="async">
-    <img class="hero-deco hero-deco-coin" src="img/clay-coin.png" alt="" aria-hidden="true" width="720" height="720" decoding="async">
-    <img class="hero-deco hero-deco-bag" src="img/clay-bag.png" alt="" aria-hidden="true" width="800" height="800" decoding="async">
+    <img class="hero-deco hero-deco-bubble" src="img/clay-bubble.png" alt="" aria-hidden="true" width="400" height="400" decoding="async">
+    <img class="hero-deco hero-deco-coin" src="img/clay-coin.png" alt="" aria-hidden="true" width="400" height="400" decoding="async">
+    <img class="hero-deco hero-deco-bag" src="img/clay-bag.png" alt="" aria-hidden="true" width="400" height="400" decoding="async">
     <div class="hero-frame">
       <span class="sample-tag">Sample data</span>
       <div class="fit hero-fit">
@@ -3107,7 +3116,7 @@ html { scroll-behavior: auto; }
                       <li><span>AI Overviews</span><i class="hero-track"><i style="width:30%;background:var(--e-google)"></i></i><b>30</b></li>
                     </ul>
                   </div>
-                  <p class="hero-note">Share of AI answers that name you, across your 18 questions, with a bonus for top-3 spots. Started at 29.</p>
+                  <p class="hero-note">Share of AI answers that name you, across your 18 questions, with a top-3 bonus. Started at 29.</p>
                 </div>
 
                 <div class="panel hero-next">
@@ -3403,11 +3412,11 @@ html { scroll-behavior: auto; }
                 <span class="meet-sel">Last 4 scans<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
               </div>
               <div class="meet-bars">
-                <span class="meet-tip"><i></i>Perplexity<b>64%</b></span>
-                <div class="meet-col"><span class="meet-ba"><span class="meet-stack" style="height:89%"><i class="meet-s1" style="flex:12"></i><i class="meet-s2" style="flex:21"></i><i class="meet-s3" style="flex:38"></i></span></span><span class="meet-x">ChatGPT</span></div>
-                <div class="meet-col"><span class="meet-ba"><span class="meet-stack" style="height:72%"><i class="meet-s1" style="flex:10"></i><i class="meet-s2" style="flex:22"></i><i class="meet-s3" style="flex:26"></i></span></span><span class="meet-x">Gemini</span></div>
-                <div class="meet-col"><span class="meet-ba"><span class="meet-stack" style="height:80%"><i class="meet-s1" style="flex:14"></i><i class="meet-s2" style="flex:20"></i><i class="meet-s3" style="flex:30"></i></span></span><span class="meet-x">Perplexity</span></div>
-                <div class="meet-col"><span class="meet-ba"><span class="meet-stack" style="height:69%"><i class="meet-s1" style="flex:9"></i><i class="meet-s2" style="flex:24"></i><i class="meet-s3" style="flex:22"></i></span></span><span class="meet-x">Google</span></div>
+                <span class="meet-tip"><i></i>Perplexity<b>41%</b></span>
+                <div class="meet-col"><span class="meet-ba"><span class="meet-stack" style="height:89%"><i class="meet-s1" style="flex:8"></i><i class="meet-s2" style="flex:14"></i><i class="meet-s3" style="flex:24"></i></span></span><span class="meet-x">ChatGPT</span></div>
+                <div class="meet-col"><span class="meet-ba"><span class="meet-stack" style="height:68%"><i class="meet-s1" style="flex:6"></i><i class="meet-s2" style="flex:13"></i><i class="meet-s3" style="flex:16"></i></span></span><span class="meet-x">Gemini</span></div>
+                <div class="meet-col"><span class="meet-ba"><span class="meet-stack" style="height:80%"><i class="meet-s1" style="flex:9"></i><i class="meet-s2" style="flex:13"></i><i class="meet-s3" style="flex:19"></i></span></span><span class="meet-x">Perplexity</span></div>
+                <div class="meet-col"><span class="meet-ba"><span class="meet-stack" style="height:58%"><i class="meet-s1" style="flex:5"></i><i class="meet-s2" style="flex:13"></i><i class="meet-s3" style="flex:12"></i></span></span><span class="meet-x">Google</span></div>
                 <div class="meet-col meet-col-pro"><span class="meet-ba"><span class="meet-pro" style="bottom:calc(76% + 5px)">Pro</span><span class="meet-stack meet-hatch" style="height:76%"></span></span><span class="meet-x">Claude</span></div>
               </div>
             </div>
@@ -3515,7 +3524,7 @@ html { scroll-behavior: auto; }
     <div class="money-comp">
       <div class="money-col-a">
         <div class="money-photo">
-          <img src="img/clay-money.jpg" alt="Clay illustration of a chat bubble with shopping bags and gold coins spilling out" width="928" height="1152" decoding="async">
+          <div class="clay-tile money-img"><img src="img/clay-money.jpg" alt="Clay illustration of a chat bubble with shopping bags and gold coins spilling out" width="928" height="1152" decoding="async"></div>
           <div class="money-toast" aria-hidden="true">
             <span class="money-toast-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span>
             <span class="money-toast-tx"><b>New order from ChatGPT</b><em>utm_source=chatgpt.com</em></span>
@@ -3563,7 +3572,7 @@ html { scroll-behavior: auto; }
         <p class="lead worth-lead">You know your store better than we do. Set your average order value and the number of extra orders a month you think is realistic. Here’s the sum.</p>
       </div>
 
-      <div class="worth-art">
+      <div class="worth-art clay-tile">
         <img src="img/clay-coins.jpg" alt="" width="1024" height="1024" decoding="async">
       </div>
 
@@ -4659,7 +4668,7 @@ html { scroll-behavior: auto; }
     <div class="proof-list">
       <!-- Card 1: live ChatGPT answer -->
       <article class="proof-card" aria-label="Live ChatGPT test in Australia">
-        <figure class="proof-media">
+        <figure class="proof-media clay-tile">
           <img src="img/clay-answer.jpg" alt="Clay illustration of a phone showing a chat with a small dropper bottle card" width="928" height="1152" decoding="async">
           <figcaption class="proof-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>Asked in Australia</figcaption>
         </figure>
