@@ -1,0 +1,119 @@
+/* What's it worth to you: a lilac gradient band with a white calculator card and the clay coins. Two real range inputs, vanilla JS. */
+.worth-sec { background: var(--white); }
+.worth-band {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 600px);
+  grid-template-areas: "head card" "art card";
+  grid-template-rows: auto 1fr;
+  column-gap: 72px;
+  row-gap: 40px;
+  padding: 72px 64px;
+  border-radius: var(--r-xl);
+  background: var(--grad-main);
+  box-shadow: inset 0 0 0 1px rgba(181, 168, 224, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 32px 64px -44px rgba(64, 80, 176, 0.45);
+}
+.worth-band::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(90% 70% at 0% 0%, rgba(255, 255, 255, 0.6), transparent 60%);
+}
+.worth-head, .worth-art, .worth-card { position: relative; min-width: 0; }
+.worth-head { grid-area: head; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
+.worth-head .label .chip-tx { background: var(--white); box-shadow: 0 1px 2px rgba(11, 12, 43, 0.04); }
+.worth-h2 { max-width: 460px; }
+.worth-lead { max-width: 440px; color: #4a4b66; }
+
+/* clay coins: rounded tile with a soft white rim (the render has its own lilac background) */
+.worth-art { grid-area: art; align-self: end; }
+.worth-art img { width: 100%; max-width: 320px; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--r-lg); background: var(--lilac-100); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 0 6px rgba(255, 255, 255, 0.35), 0 28px 50px -30px rgba(64, 80, 176, 0.55); }
+
+/* calculator card */
+.worth-card {
+  grid-area: card;
+  align-self: center;
+  padding: 32px 32px 28px;
+  border-radius: var(--r-lg);
+  background: var(--white);
+  box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.35), 0 30px 60px -30px rgba(43, 50, 130, 0.35), 0 8px 18px -10px rgba(43, 50, 130, 0.12);
+  color: var(--navy);
+}
+.worth-field + .worth-field { margin-top: 26px; }
+.worth-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.worth-lab { font-size: 15px; font-weight: 600; line-height: 1.35; color: var(--navy); cursor: pointer; }
+.worth-val { flex: none; min-width: 64px; text-align: right; padding: 5px 10px; border-radius: 9px; background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-100); font-family: var(--font-head); font-size: 20px; font-weight: 600; letter-spacing: -0.4px; line-height: 1.1; color: var(--cobalt); }
+
+/* range: the wrapper draws the track and the filled part; the input on top keeps the real control and the thumb */
+.worth-range { --thumb: 24px; position: relative; height: 32px; margin-top: 10px; }
+.worth-range::before, .worth-range::after { content: ""; position: absolute; left: 0; top: 50%; height: 8px; margin-top: -4px; border-radius: 100px; pointer-events: none; }
+.worth-range::before { right: 0; background: var(--lilac-100); box-shadow: inset 0 1px 2px rgba(56, 64, 160, 0.12); }
+.worth-range::after { width: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--p, 0)); background: linear-gradient(90deg, var(--cobalt-mid) 0%, var(--cobalt) 100%); }
+.worth-range input {
+  position: relative; z-index: 1; display: block; width: 100%; height: 32px; margin: 0; padding: 0;
+  background: transparent; cursor: pointer; -webkit-appearance: none; appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.worth-range input:focus { outline: none; }
+.worth-range input::-webkit-slider-runnable-track { height: 32px; background: transparent; border: 0; }
+.worth-range input::-moz-range-track { height: 32px; background: transparent; border: 0; }
+.worth-range input::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: var(--thumb); height: var(--thumb); margin-top: 4px; border-radius: 50%;
+  background: var(--navy); border: 3px solid var(--white);
+  box-shadow: 0 0 0 1px rgba(56, 64, 160, 0.25), 0 4px 10px -2px rgba(11, 12, 43, 0.35);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.worth-range input::-moz-range-thumb {
+  width: var(--thumb); height: var(--thumb); box-sizing: border-box; border-radius: 50%;
+  background: var(--navy); border: 3px solid var(--white);
+  box-shadow: 0 0 0 1px rgba(56, 64, 160, 0.25), 0 4px 10px -2px rgba(11, 12, 43, 0.35);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.worth-range input:hover::-webkit-slider-thumb { transform: scale(1.08); }
+.worth-range input:hover::-moz-range-thumb { transform: scale(1.08); }
+.worth-range input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--cobalt), 0 0 0 7px rgba(64, 80, 176, 0.2); }
+.worth-range input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(--cobalt), 0 0 0 7px rgba(64, 80, 176, 0.2); }
+.worth-ends { display: flex; justify-content: space-between; margin-top: 2px; font-size: 12px; line-height: 1.4; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.worth-help { margin-top: 8px; font-size: 13px; line-height: 1.5; color: var(--text); }
+
+/* output */
+.worth-out { margin-top: 28px; padding: 20px 22px 18px; border-radius: 18px; background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-100); }
+.worth-nums { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px 20px; }
+.worth-big, .worth-yr { display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
+.worth-m { font-family: var(--font-head); font-size: 52px; font-weight: 500; letter-spacing: -2px; line-height: 1; color: var(--cobalt); }
+.worth-y { font-family: var(--font-head); font-size: 26px; font-weight: 500; letter-spacing: -0.8px; line-height: 1; color: var(--cobalt-deep); }
+.worth-unit { font-size: 15px; font-weight: 500; color: var(--navy); }
+.worth-sum { margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(181, 168, 224, 0.5); font-size: 15px; line-height: 1.5; font-weight: 500; color: var(--navy); }
+
+.worth-core { margin-top: 22px; font-size: 15px; line-height: 1.55; color: var(--navy); }
+.worth-fine { margin-top: 8px; font-size: 12.5px; line-height: 1.55; color: var(--text); }
+.worth-next { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 14px; line-height: 1.5; color: var(--navy); }
+.worth-link { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--cobalt); text-decoration: underline; text-decoration-color: rgba(64, 80, 176, 0.35); text-underline-offset: 3px; }
+.worth-link:hover { color: var(--cobalt-deep); text-decoration-color: currentColor; }
+.worth-link svg { width: 15px; height: 15px; flex: none; transition: transform .2s ease; }
+.worth-link:hover svg { transform: translateX(2px); }
+
+@media (max-width: 1240px) {
+  .worth-band { column-gap: 48px; padding: 64px 48px; grid-template-columns: minmax(0, 1fr) minmax(0, 560px); }
+}
+@media (max-width: 1100px) {
+  .worth-band { grid-template-columns: minmax(0, 1fr) 200px; grid-template-areas: "head art" "card card"; grid-template-rows: auto auto; row-gap: 36px; padding: 56px 40px; }
+  .worth-art { align-self: center; }
+  .worth-card { align-self: stretch; }
+}
+@media (max-width: 760px) {
+  .worth-band { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "art" "card"; row-gap: 24px; padding: 40px 18px 18px; border-radius: var(--r-lg); }
+  .worth-head { align-items: center; text-align: center; gap: 14px; }
+  .worth-h2, .worth-lead { margin-inline: auto; }
+  .worth-art { justify-self: center; }
+  .worth-art img { max-width: 160px; border-radius: 20px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 0 5px rgba(255, 255, 255, 0.35), 0 20px 40px -24px rgba(64, 80, 176, 0.55); }
+  .worth-card { padding: 24px 18px 20px; border-radius: 20px; }
+  .worth-lab { font-size: 14.5px; }
+  .worth-val { font-size: 18px; min-width: 56px; }
+  .worth-out { margin-top: 24px; padding: 16px 16px 14px; }
+  .worth-nums { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .worth-m { font-size: 42px; letter-spacing: -1.5px; }
+  .worth-y { font-size: 22px; }
+  .worth-sum { font-size: 14.5px; }
+  .worth-core { font-size: 14.5px; }
+}

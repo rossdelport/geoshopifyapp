@@ -1,5 +1,5 @@
-/* Engines marquee (replaces Qarin's "Trusted by" logo strip). */
-.eng { background: var(--bg); padding: 200px 0 120px; }
+/* Engines marquee (replaces Qarin's "Trusted by" logo strip). Sits on white just under the lilac hero band. */
+.eng { background: var(--bg); padding: 88px 0 112px; }
 .eng-title { text-align: center; font-size: 16px; font-weight: 500; color: var(--navy); line-height: 1.5; }
 .eng-marquee {
   margin-top: 36px;
@@ -14,28 +14,28 @@
 .eng-item {
   display: inline-flex; align-items: center; gap: 10px;
   font-family: var(--font-head); font-weight: 500; font-size: 19px; letter-spacing: -0.4px;
-  color: #6f7085; white-space: nowrap; line-height: 1;
+  color: #5f6078; white-space: nowrap; line-height: 1;
   transition: color .25s ease;
 }
 .eng-item:hover { color: var(--navy); }
 .eng-mono {
   width: 34px; height: 34px; border-radius: 50%; flex: none;
   display: grid; place-items: center;
-  background: #f3f3f6; color: #6f7085;
-  box-shadow: inset 0 0 0 1px #e9e9ee;
+  background: var(--lilac-50); color: var(--cobalt-mid);
+  box-shadow: inset 0 0 0 1px var(--lav-line);
   transition: color .25s ease, background-color .25s ease;
 }
-.eng-item:hover .eng-mono { color: var(--blue); background: var(--lav); }
+.eng-item:hover .eng-mono { color: var(--cobalt); background: var(--lilac-100); }
 .eng-mono svg { width: 17px; height: 17px; }
 .eng-pro {
   margin-left: 2px; font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0;
-  color: var(--blue); background: var(--lav-2); border-radius: 6px; padding: 4px 6px; line-height: 1;
+  color: var(--cobalt-deep); background: var(--lilac-pedestal); border-radius: 6px; padding: 4px 6px; line-height: 1;
 }
 @keyframes eng-scroll { from { transform: translateX(0); } to { transform: translateX(-33.3333%); } }
 
-@media (max-width: 1100px) { .eng { padding: 160px 0 96px; } }
+@media (max-width: 1100px) { .eng { padding: 80px 0 96px; } }
 @media (max-width: 760px) {
-  .eng { padding: 96px 0 72px; }
+  .eng { padding: 56px 0 64px; }
   .eng-title { font-size: 15px; max-width: 300px; margin-inline: auto; text-wrap: balance; }
   .eng-marquee { margin-top: 26px; }
   .eng-group { gap: 44px; padding-right: 44px; }

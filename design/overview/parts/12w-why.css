@@ -1,50 +1,123 @@
+/* Why now: the education block. White section; lead card on the main gradient, the rest white with lilac hairlines. */
 .why { padding-top: 40px; }
-.why-num { font-family: var(--font-head); font-weight: 500; font-size: 56px; line-height: 1; letter-spacing: -2.4px; color: var(--navy); font-variant-numeric: tabular-nums; }
-.why-num span { color: var(--blue); margin-left: 2px; }
-.why-num-xl { font-size: 112px; letter-spacing: -5px; }
-.why-src { font-size: 12px; line-height: 1.5; color: var(--text-2); }
-.why-src a { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; }
+.why-lead-p { max-width: 600px; }
+.why-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+.why-kicker { font-size: 13px; font-weight: 600; letter-spacing: .02em; color: var(--cobalt-deep); }
+.why-soft { color: var(--text-lilac); font-weight: 450; }
+.why-src { font-size: 12px; line-height: 1.55; color: var(--text-2); }
 
-/* the big 60x card */
-.why-hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 48px; align-items: stretch; padding: 44px 48px 36px; border-radius: var(--r-lg); background: var(--grad-lav); box-shadow: inset 0 0 0 1px var(--lav-line), var(--shadow); }
-.why-hero-tx { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
-.why-hero-what { font-family: var(--font-head); font-weight: 500; font-size: 26px; line-height: 1.3; letter-spacing: -0.8px; color: var(--navy); max-width: 22ch; text-wrap: balance; }
-.why-hero-tx .why-src { margin-top: auto; padding-top: 16px; border-top: 1px dashed var(--lav-line); max-width: 52ch; }
-.why-hero-chart { display: flex; flex-direction: column; justify-content: flex-end; min-width: 0; padding: 20px 20px 16px; border-radius: var(--r-md); background: var(--white); box-shadow: 0 0 0 1px var(--lav-line); }
+/* numbers: cobalt, tabular */
+.why-num { font-family: var(--font-head); font-weight: 500; font-size: 56px; line-height: 1; letter-spacing: -2.4px; color: var(--cobalt); font-variant-numeric: tabular-nums; }
+.why-unit { color: var(--cobalt-mid); margin-left: 2px; }
+.why-num-l { font-size: 88px; letter-spacing: -4px; display: flex; align-items: baseline; }
+.why-num-pre { font-size: 22px; letter-spacing: -0.4px; font-weight: 500; color: var(--navy); margin-right: 10px; }
+
+/* ---------- lead card (main gradient) ---------- */
+.why-lead {
+  position: relative; overflow: hidden;
+  padding: 48px 48px 20px; border-radius: var(--r-xl);
+  background: radial-gradient(ellipse 50% 70% at 0% 0%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 70%), var(--grad-main);
+  box-shadow: var(--shadow-clay), inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+.why-lead-top { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 48px; align-items: center; }
+.why-lead-tx { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.why-big { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 14px; font-family: var(--font-head); font-weight: 500; color: var(--cobalt); line-height: .95; font-variant-numeric: tabular-nums; }
+.why-big-n { font-size: 128px; letter-spacing: -6px; }
+.why-big-u { font-size: 48px; letter-spacing: -1.8px; color: var(--cobalt-deep); }
+.why-lead-what { font-family: var(--font-head); font-weight: 500; font-size: 24px; line-height: 1.3; letter-spacing: -0.6px; color: var(--navy); max-width: 22ch; text-wrap: balance; }
+.why-lead-what .why-soft { font-family: var(--font-body); font-size: 16px; letter-spacing: 0; white-space: nowrap; }
+
+/* the working: chips joined by x and = */
+.why-sum { min-width: 0; padding: 22px; border-radius: var(--r-lg); background: rgba(255, 255, 255, 0.62); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 0 1px rgba(181, 168, 224, 0.35), 0 18px 36px -24px rgba(56, 64, 160, 0.3); }
+.why-sum-h { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-2); margin-bottom: 14px; }
+.why-sum-row { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr); align-items: stretch; gap: 10px; }
+.why-chip { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 16px 16px 14px; border-radius: 16px; background: var(--lilac-pedestal); color: var(--navy); }
+.why-chip b { font-family: var(--font-head); font-size: 24px; font-weight: 600; letter-spacing: -0.8px; line-height: 1.1; color: var(--navy); font-variant-numeric: tabular-nums; }
+.why-chip span { font-size: 14px; line-height: 1.4; color: var(--navy); }
+.why-chip .src-link { margin-top: auto; padding-top: 8px; font-size: 12px; line-height: 1.4; }
+.why-chip-res { background: var(--cobalt); box-shadow: 0 14px 28px -16px rgba(56, 64, 160, 0.8); }
+.why-chip-res b, .why-chip-res span { color: var(--white); }
+.why-chip-res .src-link { color: var(--white); text-decoration-color: rgba(255, 255, 255, 0.6); }
+.why-op { align-self: center; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--white); color: var(--cobalt); font-size: 20px; font-weight: 600; line-height: 1; box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.5); }
+
+.why-foot { margin-top: 28px; padding-top: 18px; border-top: 1px dashed rgba(56, 64, 160, 0.22); font-size: 13px; line-height: 1.6; color: var(--text-lilac); max-width: 920px; }
+
+/* reach row: three mini stats */
+.why-reach { list-style: none; margin: 20px -28px 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.why-reach li { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 16px 18px 14px; border-radius: 18px; background: rgba(255, 255, 255, 0.7); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9); }
+.why-reach b { font-family: var(--font-head); font-size: 22px; font-weight: 600; letter-spacing: -0.6px; line-height: 1.15; color: var(--cobalt); font-variant-numeric: tabular-nums; }
+.why-reach span { font-size: 14px; line-height: 1.45; color: var(--navy); }
+.why-reach small { margin-top: auto; padding-top: 6px; font-size: 12px; line-height: 1.45; color: var(--text-2); }
+
+/* ---------- growth card + small cards (bento) ---------- */
+.why-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; margin-top: 20px; align-items: stretch; }
+.why-growth { display: flex; flex-direction: column; gap: 14px; min-width: 0; padding: 32px 32px 24px; border-radius: var(--r-lg); background: var(--white); box-shadow: 0 0 0 1px var(--lilac-deep), var(--shadow); box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.55), var(--shadow); }
+.why-growth-what { font-size: 16px; line-height: 1.55; color: var(--navy); max-width: 46ch; }
+.why-chart { margin-top: 6px; padding: 18px 18px 14px; border-radius: var(--r-md); background: var(--lilac-50); }
+.why-growth .why-src { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--lav-line); }
 
 /* bars, drawn to scale: height = 1 for the biggest value */
-.why-bars { display: flex; align-items: flex-end; gap: 24px; height: 132px; padding: 0 12px; border-bottom: 1px solid var(--lav-line); }
-.why-bars-xl { height: 250px; }
+.why-bars { display: flex; align-items: flex-end; gap: 24px; height: 196px; padding: 0 12px; border-bottom: 1px solid var(--lilac-deep); }
 .why-bar { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; }
 .why-bar b { font-size: 13px; font-weight: 600; color: var(--text-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.why-bar i { display: block; width: 100%; max-width: 96px; height: calc(104px * var(--f)); min-height: 3px; border-radius: 8px 8px 0 0; background: #b9bff5; }
-.why-bars-xl .why-bar i { height: calc(212px * var(--f)); }
-.why-bar.is-now b { color: var(--blue); }
-.why-bar.is-now i { background: var(--grad-blue); box-shadow: 0 12px 24px -14px rgba(51, 85, 255, 0.75); }
+.why-bar i { display: block; width: 100%; max-width: 104px; height: calc(160px * var(--f)); min-height: 3px; border-radius: 8px 8px 0 0; background: var(--peri-300); }
+.why-bar.is-now b { color: var(--cobalt); }
+.why-bar.is-now i { background: linear-gradient(180deg, var(--cobalt-mid) 0%, #7d8ce0 100%); box-shadow: 0 14px 26px -16px rgba(64, 80, 176, 0.8); }
 .why-axis { display: flex; gap: 24px; padding: 10px 12px 0; }
 .why-axis span { flex: 1; text-align: center; font-size: 13px; font-weight: 500; line-height: 1.35; color: var(--navy); }
-.why-axis small { font-size: 11.5px; font-weight: 400; color: var(--text-2); }
+.why-axis small { font-size: 12px; font-weight: 400; color: var(--text-2); }
 
-/* four small stat cards */
-.why-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; margin-top: 20px; }
-.why-card { display: flex; flex-direction: column; gap: 12px; min-width: 0; padding: 28px 24px 20px; border-radius: var(--r-md); background: var(--white); box-shadow: var(--ring), var(--shadow); }
+.why-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; min-width: 0; }
+.why-card { display: flex; flex-direction: column; gap: 12px; min-width: 0; padding: 26px 24px 20px; border-radius: var(--r-lg); background: var(--white); box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.55), var(--shadow); }
 .why-what { font-size: 15px; line-height: 1.5; color: var(--navy); }
 .why-card .why-src { margin-top: auto; padding-top: 12px; border-top: 1px dashed var(--lav-line); }
-.why-note { margin: 24px auto 0; max-width: 680px; text-align: center; font-size: 13px; line-height: 1.6; color: var(--text-2); }
+
+/* ---------- questions strip ---------- */
+.why-qs { margin-top: 20px; padding: 28px; border-radius: var(--r-lg); background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lav-line); }
+.why-qs-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.why-qs-h { font-size: 20px; letter-spacing: -0.5px; line-height: 1.3; }
+.why-qs-link { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--cobalt-deep); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(56, 64, 160, 0.35); }
+.why-qs-link:hover { text-decoration-color: currentColor; }
+.why-qs-link svg { width: 15px; height: 15px; flex: none; }
+.why-qs-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.why-qs-list li { display: flex; align-items: flex-start; gap: 12px; min-width: 0; padding: 18px; border-radius: 18px; background: var(--white); box-shadow: 0 1px 2px rgba(56, 64, 160, 0.06), 0 0 0 1px rgba(181, 168, 224, 0.3); }
+.why-qs-ic { flex: none; width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; background: var(--lilac-pedestal); color: var(--cobalt-deep); font-family: var(--font-head); font-weight: 600; font-size: 16px; line-height: 1; }
+.why-qs-list p { font-family: var(--font-head); font-weight: 500; font-size: 16px; line-height: 1.4; letter-spacing: -0.2px; color: var(--navy); padding-top: 3px; }
+
+.why-note { margin: 24px auto 0; max-width: 720px; text-align: center; font-size: 13px; line-height: 1.6; color: var(--text-2); }
 
 @media (max-width: 1100px) {
-  .why-hero { grid-template-columns: 1fr; gap: 28px; padding: 36px 32px 28px; }
-  .why-hero-what { max-width: 30ch; }
-  .why-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .why-lead { padding: 40px 32px 18px; }
+  .why-lead-top { grid-template-columns: 1fr; gap: 28px; }
+  .why-lead-what { max-width: 30ch; }
+  .why-reach { margin-inline: -14px; }
+  .why-row { grid-template-columns: 1fr; }
 }
 @media (max-width: 760px) {
   .why { padding-top: 24px; }
-  .why-hero { padding: 28px 20px 20px; border-radius: var(--r-md); }
-  .why-num-xl { font-size: 80px; letter-spacing: -3.5px; }
-  .why-hero-what { font-size: 21px; letter-spacing: -0.5px; }
-  .why-bars-xl { height: 200px; }
-  .why-bars-xl .why-bar i { height: calc(164px * var(--f)); }
-  .why-grid { grid-template-columns: 1fr; }
-  .why-card { padding: 24px 20px 18px; }
+  .why-lead { padding: 28px 20px 14px; border-radius: var(--r-lg); }
+  .why-big-n { font-size: 88px; letter-spacing: -4px; }
+  .why-big-u { font-size: 34px; letter-spacing: -1px; }
+  .why-lead-what { font-size: 20px; letter-spacing: -0.4px; }
+  .why-sum { padding: 16px; border-radius: 20px; }
+  .why-sum-row { grid-template-columns: 1fr; gap: 8px; }
+  .why-op { justify-self: center; width: 28px; height: 28px; font-size: 18px; }
+  .why-chip { padding: 14px 16px 12px; }
+  .why-chip b { font-size: 22px; }
+  .why-foot { margin-top: 22px; font-size: 12.5px; }
+  .why-reach { margin: 16px -8px 0; grid-template-columns: 1fr; gap: 8px; }
+  .why-growth { padding: 24px 20px 18px; border-radius: var(--r-md); }
+  .why-num-l { font-size: 68px; letter-spacing: -3px; }
+  .why-num-pre { font-size: 18px; margin-right: 8px; }
+  .why-chart { padding: 14px 10px 12px; }
+  .why-bars { height: 176px; gap: 16px; padding: 0 6px; }
+  .why-bar i { height: calc(140px * var(--f)); }
+  .why-axis { gap: 16px; padding-inline: 6px; }
+  .why-grid { grid-template-columns: 1fr; gap: 14px; }
+  .why-card { padding: 22px 20px 18px; border-radius: var(--r-md); }
   .why-num { font-size: 48px; letter-spacing: -2px; }
+  .why-qs { padding: 20px 16px; border-radius: var(--r-md); }
+  .why-qs-list { grid-template-columns: 1fr; gap: 8px; }
+  .why-qs-list li { padding: 14px; }
+  .why-qs-list p { font-size: 15px; }
 }
