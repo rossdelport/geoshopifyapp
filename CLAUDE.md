@@ -22,13 +22,15 @@ A self-serve Shopify app that gets ecommerce brands **recommended by AI shopping
 
 Billing **must** use Shopify Billing API (`appSubscriptionCreate`), USD.
 
-| Plan | Price | Limits |
+| Plan (internal id) | Price (USD) | Limits |
 |---|---|---|
-| Free scan | $0 | One-time scan: 10 questions × 3 engines, visibility score, top competitors, AI revenue so far (last 60 days of orders). No fixes, no ongoing tracking. |
-| Core | **US$49/mo**, 7-day trial | 25 questions · ChatGPT + Gemini + Perplexity + AI Overviews · weekly scans · 100 products optimised · 30 AI fixes/mo · outreach finder (10 targets/mo) · revenue dashboard · monthly email report |
-| Pro | US$149/mo | 100 questions · daily scans · + Claude · 1,000 products · unlimited fixes · autopilot mode · 40 outreach targets/mo |
+| Free scan (`free`) | $0 | In-app safety net for stores that install without starting a trial (not shown on the website). One-time scan: 10 questions × 3 engines, visibility score, top competitors, AI revenue so far (last 60 days of orders). No fixes, no ongoing tracking. |
+| Standard (`core`) | **US$97/mo**, or **US$873/yr** (3 months free, shown as about US$73 a month), 7-day free trial | You click approve, AI does the rest. 50 questions scanned weekly (2 runs) · ChatGPT + Gemini + Perplexity + AI Overviews · unlimited one-click fixes · 500 products optimised · 2 guide pages/mo (merchant approves) · 10 outreach targets/mo with drafted pitches · revenue dashboard · monthly email report |
+| Done-for-you (`pro`) | **US$497/mo**, or **US$4,473/yr** (about US$373 a month), 7-day free trial | AI does it; Ross or a VA handles directory and roundup outreach by hand. 100 questions scanned daily (light daily scan: 1 run, no Claude; full 2-run scan with Claude weekly) · + Claude · fixes applied for you (autopilot on, still skips risky claim types; the store can switch it off and undo any change) · 2,000 products optimised · 8 guide pages/mo written and published for you · 40 pitches/mo sent and followed up for you (incl. directories and roundups) · monthly report + 30-minute call |
 
-**Unit-cost budget:** Core must run under **US$8/store/month** all-in (data + AI writing + email). Track cost per shop in the DB and alert if exceeded.
+No cheaper starter plan. The website's free product check is the entry point; the website shows only the two paid plans. Shopify's built-in trial only (no paid trial). Internal ids stay `core` and `pro` so stored data keeps working. Billing plan names: "GEO Standard", "GEO Standard yearly", "GEO Done-for-you", "GEO Done-for-you yearly" (old test names "GEO Core" / "GEO Pro" still map). All limits live in `app/lib/plans.ts`.
+
+**Unit-cost budget:** Standard must run under about **US$15/store/month** in data and AI costs; Done-for-you under about **US$150/store/month** (plus human time). Track cost per shop in the DB and alert if exceeded.
 
 ## 4. Stack
 
@@ -64,7 +66,7 @@ Billing **must** use Shopify Billing API (`appSubscriptionCreate`), USD.
    - Claude proposes **30 buyer questions** (natural-language, how people actually ask AI, include country e.g. "in Australia"). Score each with keyword volume (Treg). Merchant ticks the ones to track (default top 25).
    - Auto-detect **competitors** from the first scan (brands named in answers); merchant can edit.
 3. **Baseline scan** runs immediately → "Here's where you stand today". Store as baseline (needed for "growth since joining").
-4. **Weekly (or daily on Pro):** scan → score → generate fixes → find outreach targets → update dashboard.
+4. **Weekly (or daily on Done-for-you):** scan → score → generate fixes → find outreach targets → update dashboard.
 5. **Monthly:** email report via Resend.
 
 ## 7. Screens (Polaris, embedded)
@@ -77,7 +79,7 @@ Billing **must** use Shopify Billing API (`appSubscriptionCreate`), USD.
 3. **Competitors & Sources** — who wins most often; which sites AI cites (roundups, retailers, Reddit, blogs) and whether you're on them.
 4. **Fixes** — queue of suggested changes with before/after preview. Approve / edit / reject. Approve = push to Shopify. Log every change with one-click undo (store previous values).
 5. **Outreach** — list of targets (article URL, site, who's named, author, email if found), AI-drafted pitch, status. v1: copy pitch / open mailto. v2: send from merchant's connected Gmail with follow-ups.
-6. **Settings** — plan & billing, questions, competitors, autopilot toggle (Pro), email report recipients.
+6. **Settings**: plan & billing, questions, competitors, autopilot toggle (Done-for-you), email report recipients.
 
 ## 8. Treg (data gateway)
 
@@ -91,7 +93,7 @@ Endpoint IDs (verified in planning, prices approx. Oct 2026):
 | Gemini answer + sources | `cloro.ai-search.gemini.scrape` | `dataforseo.x.ai-optimization-gemini-llm-scraper-live-advanced` | 0.002–0.004 |
 | Perplexity answer + sources | `dataforseo.x.ai-optimization-perplexity-llm-responses-live` | `cloro.ai-search.perplexity.answer` | 0.003–0.006 |
 | Google AI Overview | `anyapi.google.serp.ai_overview` | `litescrape.google.serp.ai_overview` | 0.0002–0.002 |
-| Claude answer (Pro only, API model not consumer app) | `dataforseo.x.ai-optimization-claude-llm-responses-live` | — | 0.025 |
+| Claude answer (Done-for-you only, API model not consumer app) | `dataforseo.x.ai-optimization-claude-llm-responses-live` | none | 0.025 |
 | Keyword volume | `dataforseo.google.keywords.volume` | — | ~0.09 per batch of up to 1,000 |
 | Keyword/question ideas | `dataforseo.google.keywords.ideas` | — | small |
 | Reddit search in a subreddit | `scrapecreators.x.v1-reddit-subreddit-search` | — | ~0.002 |
@@ -141,7 +143,7 @@ Outputs (one row per suggestion, with `type`, `target`, `before`, `after`, `reas
 - llms.txt / structured data checks (low priority; label as hygiene).
 
 **Guardrails (non-negotiable):**
-- Approval required by default. Autopilot is opt-in (Pro) and still skips risky types (claims).
+- Approval required by default (Standard). Done-for-you turns autopilot on (the store can switch it off), and autopilot still skips risky types (claims).
 - Never invent facts (ingredients, certifications, awards, reviews, stats). Only rephrase what's in the catalog/site; flag missing info as a question for the merchant.
 - Health/skin/supplement products: no therapeutic or medical claims (AU TGA rules) — run a claims check prompt before showing a fix.
 - Never generate fake reviews, fake Reddit posts or astroturf content. Outreach must be honest pitches from the merchant.
@@ -162,12 +164,12 @@ Multi-tenant: every row scoped by `shop_id`; enable Supabase RLS or enforce in t
 
 ## 14. Build phases (do in order; each phase ends shippable)
 
-1. **Shell** — scaffold app, Postgres session storage, install/uninstall, GDPR webhooks, Polaris layout with nav, Shopify Billing (Free scan / Core / Pro) with trial. ✅ when it installs on the dev store and plans can be selected.
+1. **Shell**: scaffold app, Postgres session storage, install/uninstall, GDPR webhooks, Polaris layout with nav, Shopify Billing (Free scan / Standard / Done-for-you) with trial. ✅ when it installs on the dev store and plans can be selected.
 2. **Onboarding + first scan** — catalog pull, brand profile, question generation + volume, Treg wrapper, scan job (2 runs × engines), parsing, visibility score, Questions + Competitors screens. ✅ when the dev store shows a real baseline from live AI answers.
 3. **Money tracking** — 60-day order backfill + attribution, `orders/create` webhook, Web Pixel, dashboard money block with baseline/growth. ✅ when a test order with `utm_source=chatgpt.com` shows up as AI revenue.
 4. **Fix engine** — generation, guardrails, approval queue, push to Shopify, undo. ✅ when an approved fix updates a product and can be reverted.
 5. **Outreach v1** — target finding, emails, pitch drafts. ✅ when targets + drafts appear for a real niche.
-6. **Polish** — weekly cron, monthly Resend report, cost caps & alerts, post-purchase survey, Pro autopilot, App Store listing assets, "Built for Shopify" checklist.
+6. **Polish**: weekly cron, monthly Resend report, cost caps & alerts, post-purchase survey, Done-for-you autopilot, App Store listing assets, "Built for Shopify" checklist.
 
 ## 15. Quality bar
 
@@ -213,5 +215,11 @@ Perplexity (DataForSEO) and Google AI Overviews (litescrape) all work from Railw
 4. Protected customer data access (Partner dashboard) for orders + `customerJourneySummary`.
 
 **Decisions made while building (change if needed):** Railway (not Vercel) because jobs are long-running;
-Pro "daily" scans are light (1 run, no Claude) with a full scan weekly, to keep costs under the price;
+Done-for-you (`pro`) "daily" scans are light (1 run, no Claude) with a full scan weekly, to keep costs under the price;
 outreach v1 = copy / open in email; monthly reports send from Paperflower's Resend sender until GEO has its own domain.
+
+**Pricing changed 2026-10-10 by Ross:** Core US$49 and Pro US$149 are replaced by Standard (`core`, US$97/mo or US$873/yr) and Done-for-you (`pro`, US$497/mo or US$4,473/yr), both with a 7-day free trial; see §3 and `app/lib/plans.ts`. Built: four Shopify billing plans (monthly + yearly, replace the old subscription immediately), Monthly / Yearly switch on the Plans page, monthly guide page allowance (2 / 8), outreach up to 10 / 40, cost caps US$15 / US$150 (every scan a paid store starts checks the cap, including "check AI now" and the scan after an upgrade), 110 questions written at onboarding so upgrades reach 50 / 100 (a `questions.topup` job writes more for older stores). One free trial per store: `Shop.trialEndsAt` is saved when it starts, and any later subscription (switch, cancel and come back, reinstall) only gets the whole days left. Done-for-you turns autopilot on unless the store switched it off (`autopilotOptOut`, see §11). Autopilot applies every fix type after an always-on claims check; anything the check softened or that needs facts from the store waits for the store. A store starting or leaving Done-for-you (including by uninstalling) queues a `founder.notice` job that emails `GEO_ALERT_EMAIL` with the trial end date; hand outreach and the call start after the first charge. If email isn't set up the job fails and stays in the jobs table. Website pricing buttons go to `/auth/login?plan=..&cycle=..`; the choice is saved by shop domain (`PlanIntent`) and offered on the dashboard after the free scan.
+
+**Launch checklist (Railway variables):** `SHOPIFY_BILLING_TEST=false` (otherwise every subscription is a test charge and nobody is billed; the server logs a warning at start-up), `GEO_ALERT_EMAIL` set to Ross's or the VA's inbox (otherwise nobody hears about Done-for-you stores), `RESEND_API_KEY` and `GEO_EMAIL_FROM`.
+
+**For Ross to decide:** yearly plans replace immediately (a yearly to monthly switch or a downgrade ends the year straight away, with Shopify crediting unused time). Shopify's `STANDARD` replacement would keep the year until it ends; say if you want that.

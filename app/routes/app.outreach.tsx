@@ -31,6 +31,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return {
     planId: plan.id,
     perMonth: plan.outreachPerMonth,
+    doneForYou: plan.doneForYou,
     remaining: remainingOutreach(plan, usage),
     finding: Boolean(running),
     targets: targets
@@ -206,7 +207,10 @@ export default function Outreach() {
       <s-section>
         <s-paragraph>
           These articles are used by AI assistants when they answer your shoppers&apos; questions, and they mention other brands
-          but not you. A friendly note to the writer can get you included. You send the emails yourself, from your own inbox.
+          but not you. A friendly note to the writer can get you included.{" "}
+          {data.doneForYou
+            ? "On Done-for-you, our team sends these pitches and follows up for you, including directories and roundups."
+            : "You send the emails yourself, from your own inbox."}
         </s-paragraph>
         <div className="geo-small" style={{ marginTop: 8 }}>
           {data.remaining} of {data.perMonth} new targets left this month.

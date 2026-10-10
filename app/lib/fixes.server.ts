@@ -8,8 +8,8 @@ import db from "../db.server";
 import { askJson } from "./ai.server";
 import { env } from "./env.server";
 import { getPlan } from "./plans";
-import { canOptimiseProduct, remainingFixes } from "./limits";
-import { getUsageFor } from "./usage.server";
+import { canOptimiseProduct, guidePageDue, remainingFixes, remainingGuidePages } from "./limits";
+import { countGuidePagesThisMonth, getUsageFor } from "./usage.server";
 import { assertNoUserErrors, gql, type AdminClient } from "./shopify-gql.server";
 import { enqueue, registerJob } from "./jobs.server";
 import { adminFor } from "./onboard-job.server";
@@ -19,8 +19,10 @@ import { parseFaq } from "./faq";
 export { FIX_TYPE_LABELS } from "./fix-labels";
 import type { FixAfter, FixBefore } from "./fix-labels";
 
-// Autopilot only applies low-risk changes. Descriptions, titles and pages always need a human.
-const AUTOPILOT_SAFE = new Set(["product_faq", "product_seo", "product_type"]);
+// Autopilot (Done-for-you, on unless the store switches it off) applies every kind of fix: "fixes applied
+// for you, still skipping risky claims". Before it applies one, it runs the claims check on the text that
+// would go live; anything the check had to soften waits for the store, as does any fix that needs facts
+// from the store (missingInfo). Every change keeps its old values for one-click undo.
 const HEALTH_WORDS = /skin|beauty|groom|beard|hair|supplement|vitamin|health|cosmetic|wellness|baby|pet|food|nutrition|protein|tea|oil|cream|serum|balm/i;
 
 const GUARDRAILS = `Rules you must follow:
@@ -131,17 +133,33 @@ async function claimsCheck(shopId: string, text: string): Promise<{ text: string
       "You check Australian store copy against TGA and ACL rules. Flag therapeutic or medical claims (treats, cures, heals, prevents, relieves, clinically proven without evidence), invented facts, and misleading superlatives. Cosmetic claims like 'softens' or 'moisturises' are fine.",
     prompt: `Check this copy:\n"""\n${text}\n"""`,
   });
-  if (result.ok || !result.fixed_text) return { text, note: null };
-  return { text: result.fixed_text, note: `We softened some wording to stay clear of health claims: ${result.problems.join("; ")}` };
+  if (result.ok) return { text, note: null };
+  const problems = result.problems.join("; ") || "wording that may be a claim";
+  // Flagged but not rewritten: keep the text and say what to check.
+  if (!result.fixed_text) return { text, note: `Please check this wording before it goes live: ${problems}` };
+  return { text: result.fixed_text, note: `We softened some wording to stay clear of health or other claims: ${problems}` };
 }
 
 export async function generateFixes(shopId: string, scanId: string) {
   const shop = await db.shop.findUniqueOrThrow({ where: { id: shopId }, include: { profile: true } });
   const plan = getPlan(shop.plan);
   const usage = await getUsageFor(shopId);
-  const waiting = await db.fix.count({ where: { shopId, status: "pending" } });
-  const budget = Math.min(remainingFixes(plan, usage), 6, Math.max(0, 10 - waiting));
+  // Unlimited fixes, but never past the month's data + AI budget.
+  if (usage.costThisMonth >= plan.costCapUsd) return 0;
+  const autopilotOn = plan.autopilot && shop.autopilot;
+  // Fixes waiting for the store: at most 10 at a time, so the queue stays reviewable. With autopilot only
+  // the ones it held back count (claims softened or facts missing); the rest go live by themselves, so
+  // FAQs, guide pages and the rest keep coming even when a few wait for the store.
+  const waiting = await db.fix.count({
+    where: { shopId, status: "pending", ...(autopilotOn ? { missingInfo: { not: null } } : {}) },
+  });
+  const room = Math.max(0, 10 - waiting);
+  const budget = Math.min(remainingFixes(plan, usage), 6, autopilotOn ? 6 : room);
   if (budget <= 0 || !shop.profile) return 0;
+  // Guide pages have their own monthly allowance (Standard 2, Done-for-you 8). Done-for-you promises its
+  // 8, so when the month's pace is behind, ask for exactly one.
+  const guidesLeft = remainingGuidePages(plan, usage);
+  const guideDue = guidePageDue(plan, usage);
 
   const lost = await lostQuestions(scanId);
   if (!lost.length) return 0;
@@ -177,29 +195,38 @@ ${products.map(productLine).join("\n")}
 
 Changes already suggested (don't repeat): ${open.map((o) => `${o.type}:${products.findIndex((p) => p.gid === o.targetGid)}`).join(", ") || "none"}
 
-Suggest up to ${budget} changes. Prefer: product FAQs and clearer descriptions on the most relevant products; a product type where it's missing; at most one guide_page when several questions share a theme.`,
+Suggest up to ${budget} changes. Prefer: product FAQs and clearer descriptions on the most relevant products; a product type where it's missing; ${guideDue ? "exactly one guide_page, built around the questions that share the clearest theme" : guidesLeft > 0 ? "at most one guide_page when several questions share a theme" : "no guide_page (this month's guide pages are used up)"}.${autopilotOn && room === 0 ? " Only suggest changes you can make fully from the product data shown: skip anything that would need facts the store hasn't given." : ""}`,
   });
 
   let created = 0;
+  let heldRoom = room; // with autopilot: how many more fixes may wait for the store
+  let guideSlots = guidesLeft;
   const cleanIdeas = ideas.ideas
     .map((i) => ({ ...i, type: pick([...FIX_TYPES, "skip"], i.type, "skip"), impact: pick(["high", "medium", "low"], i.impact, "medium") }))
-    .filter((i) => i.type !== "skip");
+    .filter((i) => i.type !== "skip")
+    // Drop guide pages past the month's allowance so they don't use up the other slots.
+    .filter((i) => i.type !== "guide_page" || guideSlots-- > 0);
   for (const idea of cleanIdeas.slice(0, budget)) {
     try {
       const questions = idea.question_indexes.map((i) => lost[i]).filter(Boolean);
+      // With autopilot and a full queue for the store, drop fixes that would only wait (facts missing).
+      const skipIfHeld = autopilotOn && heldRoom <= 0;
       const fix = idea.type === "guide_page"
-        ? await writeGuide(shop, products, questions, idea.reason, idea.impact)
-        : await writeProductFix(shop, products[idea.product_index ?? -1], idea, questions, plan, usage);
+        ? await writeGuide(shop, products, questions, idea.reason, idea.impact, plan, skipIfHeld)
+        : await writeProductFix(shop, products[idea.product_index ?? -1], idea, questions, plan, usage, skipIfHeld);
       if (fix) created++;
+      if (fix?.missingInfo) heldRoom--;
     } catch (err) {
       console.error(`[fixes] could not write ${idea.type}: ${(err as Error).message}`);
     }
   }
 
-  if (plan.autopilot && shop.autopilot && created) {
-    await enqueue("fixes.autopilot", {}, { shopId, dedupeKey: `autopilot:${shopId}` });
-  }
   return created;
+}
+
+/** Run autopilot for a shop (it checks the plan and the store's switch itself). */
+export function queueAutopilot(shopId: string) {
+  return enqueue("fixes.autopilot", {}, { shopId, dedupeKey: `autopilot:${shopId}` });
 }
 
 async function writeProductFix(
@@ -209,6 +236,7 @@ async function writeProductFix(
   questions: LostQuestion[],
   plan: ReturnType<typeof getPlan>,
   usage: Awaited<ReturnType<typeof getUsageFor>>,
+  skipIfHeld = false,
 ): Promise<Fix | null> {
   if (!product) return null;
   if (!canOptimiseProduct(plan, usage, Boolean(product.optimisedAt))) return null;
@@ -286,6 +314,7 @@ Task: ${want[idea.type]}`,
   }
 
   const missing = [note, ...out.missing_info].filter(Boolean).join("\n");
+  if (missing && skipIfHeld) return null;
   return db.fix.create({
     data: {
       shopId: shop.id,
@@ -324,10 +353,12 @@ async function writeGuide(
   questions: LostQuestion[],
   reason: string,
   impact: string,
+  plan: ReturnType<typeof getPlan>,
+  skipIfHeld = false,
 ): Promise<Fix | null> {
   if (!questions.length) return null;
-  const existing = await db.fix.count({ where: { shopId: shop.id, type: "guide_page", status: { in: ["pending", "applied"] } } });
-  if (existing >= 3) return null;
+  // The month's allowance counts every guide written since the 1st (UTC), whatever happened to it.
+  if ((await countGuidePagesThisMonth(shop.id)) >= plan.guidePagesPerMonth) return null;
   const where = countryName(shop.country);
   const slug = questions[0].text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 50);
   const list = products.slice(0, 15).map((p) => `- ${p.title} | ${trackedProductUrl(shop, p.handle, "ai-guide", slug)} | ${(p.description ?? "").slice(0, 200)}`);
@@ -351,6 +382,8 @@ ${list.join("\n")}`,
   });
 
   const checked = HEALTH_WORDS.test(`${shop.profile?.summary}`) ? await claimsCheck(shop.id, out.body_html) : { text: out.body_html, note: null };
+  const missing = [checked.note, ...out.missing_info].filter(Boolean).join("\n");
+  if (missing && skipIfHeld) return null;
   return db.fix.create({
     data: {
       shopId: shop.id,
@@ -362,7 +395,7 @@ ${list.join("\n")}`,
       reason,
       impact: impact as string,
       questionIds: questions.map((q) => q.id),
-      missingInfo: [checked.note, ...out.missing_info].filter(Boolean).join("\n") || null,
+      missingInfo: missing || null,
     },
   });
 }
@@ -524,14 +557,62 @@ registerJob("fixes.generate", async (job) => {
   if (!scan) return;
   const n = await generateFixes(job.shopId!, scan.id);
   console.log(`[fixes] ${n} new suggestions for shop ${job.shopId}`);
+  // Autopilot runs after every round, new fixes or not (earlier ones may be waiting on a retry).
+  const shop = await db.shop.findUnique({ where: { id: job.shopId! } });
+  if (shop?.autopilot && getPlan(shop.plan).autopilot) await queueAutopilot(shop.id);
 });
+
+/** The text a fix would put live, by field (what the claims check reads before autopilot applies it). */
+function liveText(fix: Fix): { key: string; text: string }[] {
+  const a = fix.after as Record<string, unknown>;
+  const fields: Record<string, string[]> = {
+    guide_page: ["bodyHtml"],
+    product_description: ["descriptionHtml"],
+    product_title: ["title"],
+    product_seo: ["seoTitle", "seoDescription"],
+  };
+  if (fix.type === "product_faq") {
+    const faq = Array.isArray(a.faq) ? (a.faq as { q: string; a: string }[]) : [];
+    return faq.length ? [{ key: "faq", text: faq.map((f) => `Q: ${f.q}\nA: ${f.a}`).join("\n\n") }] : [];
+  }
+  return (fields[fix.type] ?? [])
+    .map((key) => ({ key, text: typeof a[key] === "string" ? (a[key] as string) : "" }))
+    .filter((f) => f.text.trim());
+}
+
+/**
+ * Autopilot's claims check: always run, whatever the store sells (health words or not). If anything had
+ * to be softened, save the softer wording, explain it and leave the fix waiting for the store. Returns
+ * true when the fix is clear to go live. Throws if the check can't run (the fix then waits for a retry).
+ */
+export async function clearForAutopilot(fix: Fix): Promise<boolean> {
+  const after = { ...(fix.after as Record<string, unknown>) };
+  const notes: string[] = [];
+  for (const { key, text } of liveText(fix)) {
+    const checked = await claimsCheck(fix.shopId, text);
+    if (!checked.note) continue;
+    notes.push(checked.note);
+    after[key] = key === "faq" ? (parseFaq(checked.text) ?? after.faq) : checked.text;
+  }
+  if (!notes.length) return true;
+  await db.fix.update({
+    where: { id: fix.id },
+    data: { after: after as object, missingInfo: [fix.missingInfo, ...notes].filter(Boolean).join("\n") },
+  });
+  return false;
+}
 
 registerJob("fixes.autopilot", async (job) => {
   const shop = await db.shop.findUniqueOrThrow({ where: { id: job.shopId! } });
   if (!shop.autopilot || !getPlan(shop.plan).autopilot) return;
   const admin = await adminFor(shop.domain);
+  // Fixes that need facts from the store (or that the claims check softened before) wait for a person.
   const pending = await db.fix.findMany({ where: { shopId: shop.id, status: "pending", missingInfo: null } });
-  for (const fix of pending.filter((f) => AUTOPILOT_SAFE.has(f.type))) {
-    await applyFix(fix.id, admin).catch((err) => console.error(`[autopilot] ${fix.id}: ${err.message}`));
+  for (const fix of pending) {
+    try {
+      if (await clearForAutopilot(fix)) await applyFix(fix.id, admin);
+    } catch (err) {
+      console.error(`[autopilot] ${fix.id}: ${(err as Error).message}`);
+    }
   }
 });

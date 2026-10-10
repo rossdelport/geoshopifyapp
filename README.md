@@ -47,7 +47,8 @@ Postgres (Supabase, "geo" schema only)  ◄──  background worker (same proce
 | `TREG_API_KEY` | Treg token (sent as `X-Treg-Token` to `https://treg.to/call/<endpoint>`). |
 | `ANTHROPIC_API_KEY` | Claude. `AI_MODEL_FAST` / `AI_MODEL_SMART` override the models. |
 | `RESEND_API_KEY`, `GEO_EMAIL_FROM` | Monthly report emails. |
-| `SHOPIFY_BILLING_TEST` | `true` = test charges (use for development stores). |
+| `GEO_ALERT_EMAIL` | Who is emailed when a store starts or leaves Done-for-you (hand outreach and the monthly call). Must be set at launch. |
+| `SHOPIFY_BILLING_TEST` | `true` = test charges (use for development stores). Not set = test charges too: set `false` at launch. |
 | `RUN_WORKER` | `false` to run a web-only process. |
 | `GEO_SELFTEST` | `1` = run a live end-to-end check at start-up and print it to the logs. |
 

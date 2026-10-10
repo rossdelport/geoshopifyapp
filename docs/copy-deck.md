@@ -3,7 +3,8 @@
 Written for the redesign in `docs/redesign-brief.md`. External facts come only from `docs/facts.md`.
 Product facts come from `CLAUDE.md`. Sections 1 to 12 are the lean home page as built in
 `design/overview/parts/*.html` (rewritten 10 Oct 2026: about 750 words, down from 5,716; copy pass the same day for the
-"recommended in AI answers" message, now about 920 words with the clickable sample app).
+"recommended in AI answers" message, now about 920 words with the clickable sample app; the two-plan pricing with
+the Monthly / Yearly switch, the same day, keeps it under 1,000).
 
 > ### Copy rules (every writer, every line)
 >
@@ -92,7 +93,7 @@ Every number in this deck has a `[source: X]` tag. For the designer:
 | F5c | Adobe, US retail: AI visits convert 60% higher, 53% more revenue per visit; AI traffic +1,219% since Oct 2024 | Jul 2026 data | https://www.digitalcommerce360.com/2026/08/19/adobe-ai-referral-traffic-data-july-2026/ |
 | F5d | Exploding Topics, 1,009 US consumers: 77.6% used AI to shop in 6 months (say 77%), 43.21% weekly (say 43%); 68.64% of AI shoppers bought something they otherwise wouldn't have (say 68%, rounded down) | Apr 2026 | https://searchengineland.com/new-data-77-use-ai-to-shop-nearly-1-in-3-wont-let-it-spend-475614 |
 | F6 | ChatGPT ads (Free and Go plans, below the answer, labelled, live in AU/NZ; advertisers can't shape the answer). Google ads can show within AI Overviews in AU/NZ | 2026 | https://help.openai.com/en/articles/20001047-ads-in-chatgpt, https://openai.com/index/chatgpt-ads-expands-southeast-asia-taiwan/, https://support.google.com/google-ads/answer/16297775?hl=en |
-| P | Plans, limits, setup time, how scans and attribution work, billing | CLAUDE.md §3, §6, §8, §10, §15 | not shown |
+| P | Plans, prices, limits, setup time, how scans and attribution work, billing | `app/lib/plans.ts` (Standard and Done-for-you, Oct 2026; same as CLAUDE.md §3), CLAUDE.md §6, §8, §10, §15 | not shown |
 | T1 | Live test: ChatGPT, Australia, "best beard oil for dry skin in Australia" | Oct 2026 | CLAUDE.md §17 (not on the home page) |
 | T2 | Self-test: 24 of 24 answers back | 9 Oct 2026 | CLAUDE.md §18 (not on the home page) |
 | FC | Free product check: 3 questions × 3 AI assistants × 2 runs = 18 answers, 3 new checks per visitor per 24 hours, kept 30 days | spec | `docs/free-check.md` |
@@ -116,10 +117,10 @@ Every number in this deck has a `[source: X]` tag. For the designer:
 | Name | First use on a page or screen |
 |---|---|
 | GEO | Our product. Never a method. |
-| Core, Pro | Plan names. "GEO Core" is fine in the slider line. |
+| Standard, Done-for-you | Plan names (the app's internal ids stay `core` and `pro`). "GEO Standard" is fine in the slider line. The one-time Free scan is only inside the app, after install; the website shows the two paid plans. |
 | free product check | The check on the website (no install). Short form in tight spots: "free check". |
 | free scan | The one-time scan inside Shopify after install. Never mix it up with the free product check. |
-| AI assistants | ChatGPT, Gemini, Perplexity, Google AI Overviews (and Claude on Pro). |
+| AI assistants | ChatGPT, Gemini, Perplexity, Google AI Overviews (and Claude on Done-for-you). |
 | Google AI Overviews | First use: "Google's AI Overviews, the AI answer at the top of Google". |
 | visibility score | Always explained: "a score out of 100 for how often AI names you". |
 | baseline | Always explained: "your numbers from before you joined". |
@@ -155,7 +156,7 @@ live test (The Groomed Man Co, A Better, Bold & Bare, Milkman) in sample data.
 
 ## 1. Page meta (`assemble.mjs`)
 
-- **Title:** GEO · The free sales channel your store is missing
+- **Title:** GEO · Get your products recommended by AI (not the headline: next to "GEO" in a tab or search result, "free sales channel" would read as GEO being free)
 - **Meta description:** Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO helps your Shopify
   products get recommended in those AI answers, then counts the orders it can trace back to AI.
 - **Logo aria-label (nav and footer):** GEO, back to top
@@ -178,7 +179,7 @@ to sentences. Each section says one thing; don't repeat another section's job.
 | 5 | How it works | `20-how.html` | `how` | How GEO helps you get recommended: see it, fix it, see the money |
 | 6 | See the sales | `20m-money.html` | `money` | Clickable sample app: Money, Questions, Fixes, Rivals |
 | 7 | What's it worth | `20w-worth.html` | `worth` | Two sliders and the sum |
-| 8 | Pricing | `42-pricing.html` | `pricing` | Three cards, 4 bullets each |
+| 8 | Pricing | `42-pricing.html` | `pricing` | Monthly / Yearly switch, two cards, 6 bullets each |
 | 9 | FAQ | `43-faq.html` | `faq` | Six questions in the chat, "What does GEO actually do?" first |
 | 10 | Closing CTA + footer | `45-cta-footer.html` | `contact` | Back to the free check |
 
@@ -229,8 +230,8 @@ Card lines stay at 8 words or fewer. On phones (760px and below) the cards sit i
 ## 5. Engines strip (`12-engines.html`)
 
 - **Title:** The AI your shoppers ask, checked every week
-- **Logos:** ChatGPT, Gemini, Perplexity, Google AI Overviews, Claude (tag "GEO Pro", so it doesn't read as
-  Anthropic's Claude Pro). Shopify is not in the row: it isn't an AI shoppers ask.
+- **Logos:** ChatGPT, Gemini, Perplexity, Google AI Overviews, Claude (tag "Done-for-you", the plan that adds it).
+  Shopify is not in the row: it isn't an AI shoppers ask.
 
 ---
 
@@ -257,7 +258,9 @@ Card lines stay at 8 words or fewer. On phones (760px and below) the cards sit i
 | 3 | `clay-money.jpg` | See the money | Orders, revenue and clicks from AI, against your starting point. |
 
 Safeguard chips, one centred row under the three cards (they replace the guardrails section):
-**You approve every change** · **One-click undo** · **Never invents facts**.
+**You stay in control** · **One-click undo** · **Never invents facts**. (Was "You approve every change", which
+isn't true on Done-for-you, where fixes are applied for the store. Standard approves each one; Done-for-you can be
+switched off, and every change can be undone.)
 
 ---
 
@@ -284,34 +287,53 @@ Safeguard chips, one centred row under the three cards (they replace the guardra
 ## 9. What's it worth (`20w-worth.html`, id `worth`)
 
 - **H2:** What are extra AI orders worth?
-- **Sliders:** Average order value ($20 to $300, default $80) · Extra orders a month from AI (1 to 50, default 5)
-- **Result:** **$400** a month · **$4,800** a year. The sum "5 orders × $80 = $400 a month, or $4,800 a
+- **Sliders:** Average order value ($20 to $300, default $80) · Extra orders a month from AI (1 to 50, default 2,
+  kept low so the default never reads as a promised return next to the price)
+- **Result:** **$160** a month in sales · **$1,920** a year. The sum "2 orders × $80 = $160 a month, or $1,920 a
   year." is for screen readers only (the live region). The clay coins are hidden on phones.
-- **Line:** GEO Core is US$49 a month. You decide what's realistic for your store.
+- **Line:** GEO Standard is US$97 a month. You decide what's realistic for your store. [source: P]
 
 ---
 
 ## 10. Pricing (`42-pricing.html`, id `pricing`)
 
-- **H2:** Simple pricing · **Line:** Billed in US dollars through Shopify. Cancel any time.
-- Buttons link to `#pricing` in the design; the live build turns them into `/auth/login`. Only Core's
-  button is filled; Free scan and Pro have outline buttons.
+Prices decided by Ross, Oct 2026 [source: P]. Two paid plans only: no cheaper starter plan, and no Free scan card
+(the free product check is the website's way in; the one-time Free scan still exists inside the app as a safety
+net for stores that install without starting a trial).
 
-| | Free scan | Core (badge "Our pick") | Pro |
-|---|---|---|---|
-| Price | $0 one-time | US$49 a month · 7-day free trial | US$149 a month |
-| Line | After install: see if AI recommends you. | Help AI recommend you, and see the money. | Everything in Core, for bigger catalogues. |
-| Button | Install and scan free | Start 7-day trial | Choose Pro |
-| 1 | 10 buyer questions on 3 AI assistants | 25 buyer questions, tracked weekly | 100 buyer questions, scanned daily |
-| 2 | Who AI recommends instead | ChatGPT, Gemini, Perplexity + Google | Adds Claude |
-| 3 | AI sales we can trace, last 60 days | 100 products, 30 fixes a month | 1,000 products, unlimited fixes |
-| 4 | No fixes or ongoing tracking (dash, not tick) | Revenue dashboard and monthly report | Autopilot mode (opt-in) |
+- **H2:** Simple pricing
+- **Switch:** Monthly | Yearly, with a small "3 months free" badge inside the Yearly button. Two real buttons with
+  `aria-pressed` in a frosted pill; `42-pricing.js` swaps each card's price, period and the small line under it
+  (both texts live in `data-m` and `data-y`), and a hidden live region says "Yearly prices shown". Without
+  JavaScript the switch stays hidden and the cards show monthly prices with the yearly price as a small line.
+- Buttons link to `#pricing` in the design; the live build turns them into `/auth/login`. Only Standard's button is
+  filled; Done-for-you has an outline button.
 
-- The Free scan card says "After install" and "Install and scan free", so it can't be mixed up with the
-  free product check (no install) in the hero and closing CTA.
-- No line under the cards (the free clicks are already in hero card 3 and FAQ 5).
-- Left off to keep 4 bullets: the visibility score (Free scan), the outreach finder (10 targets a month on
-  Core, 40 on Pro). Both are still in the app and in CLAUDE.md §3.
+| | Standard (indigo card, badge "For most stores", edge light on hover) | Done-for-you (white card) |
+|---|---|---|
+| Monthly | **US$97** a month · small line: Or US$873 a year. | **US$497** a month · small line: Or US$4,473 a year. |
+| Yearly (switch) | **US$873** a year · small line: About US$73 a month. 3 months free. | **US$4,473** a year · small line: About US$373 a month. 3 months free. |
+| Line | You approve, AI does the work. | AI and our team do it for you. |
+| Button | Start 7-day free trial (live: `/auth/login?plan=core&cycle=monthly`, cycle follows the switch) | Start 7-day free trial (`plan=pro`) |
+| 1 | 50 buyer questions, scanned weekly | 100 buyer questions, scanned daily |
+| 2 | ChatGPT, Gemini, Perplexity, Google AI Overviews | Also checks Claude |
+| 3 | Unlimited fixes, one-click approve | Fixes applied for you, undo any time |
+| 4 | 500 products, 2 guide pages a month | 2,000 products, 8 guide pages a month |
+| 5 | Up to 10 pitches a month, drafted | Up to 40 pitches a month, sent and followed up |
+| 6 | Monthly email report | Monthly report and a 30-minute call |
+
+- **Under the cards:** Not sure yet? **Run a free product check first.** (link to `#check`) · Billed in US dollars
+  through Shopify. Cancel any time.
+- Yearly is exactly 9 times the monthly price (12 months for the price of 9), so "3 months free" is true. "About
+  US$73" and "about US$373" are 873 ÷ 12 = 72.75 and 4,473 ÷ 12 = 372.75, rounded to the dollar.
+- Honesty: no struck-through or "was" prices (Australian Consumer Law: only a price we really charged can be
+  struck through), no "10x value", no savings claim beyond "3 months free", no promised results. The trial is
+  Shopify's built-in 7-day free trial on both plans. GEO itself is never called free.
+- Done-for-you's daily scan is the light one (1 run, no Claude); the full 2-run scan with Claude runs weekly. Its
+  fixes are applied for the store, but risky claim types still wait for approval, and the store can switch this
+  off and undo any change. A person (Ross or a VA) handles directory and roundup outreach where needed.
+- Left off the cards to keep them short: the visibility score, the revenue dashboard (both plans have it) and the
+  person behind Done-for-you outreach. All are in the app and in `app/lib/plans.ts`.
 
 ---
 
@@ -324,12 +346,12 @@ Safeguard chips, one centred row under the three cards (they replace the guardra
 
 | Question | Answer |
 |---|---|
-| What does GEO actually do? (starts open) | It helps ChatGPT, Gemini and Perplexity recommend your products. It checks their answers, writes fixes you approve and counts the sales it can trace back to them. |
+| What does GEO actually do? (starts open) | It helps ChatGPT, Gemini and Perplexity recommend your products. It checks their answers, writes fixes and counts the sales it can trace back to them. |
 | How do you know a sale came from AI? | ChatGPT usually adds `utm_source=chatgpt.com` to its links. We spot other AI visits too. Google AI Overviews can't be cleanly separated. |
 | Can I pay to appear in AI answers? | Not on ChatGPT. OpenAI says ads can't shape its answers. Google sells ads in AI Overviews in Australia and New Zealand. GEO helps you earn the unpaid ones. Sources: OpenAI and Google Ads Help [F6] |
-| Will GEO change my store without asking? | No. Every change waits for your approval unless you turn on autopilot (Pro). Even then it skips risky changes, like product claims. |
-| If GEO costs money, what's free? | AI recommendations and the clicks they send, plus the product check and free scan. Core is US$49 a month after a 7-day free trial. |
-| How long does setup take? | About five minutes. Install from Shopify and tick the questions you care about. Your first scan runs in the background. |
+| Will GEO change my store without asking? | Not on Standard: you approve every change. Done-for-you makes them for you, except risky ones like product claims. Undo takes one click. |
+| If GEO costs money, what's free? | The product check, the free scan after install, the 7-day free trial and AI's clicks. After that, Standard is US$97 a month. |
+| How long does setup take? | About five minutes. Install from Shopify, tick your questions and the first scan starts. |
 
 Dropped in the copy pass: "How does AI decide which stores to recommend?" (it overlapped with the new
 first question; How it works step 2 now carries "so AI can pick you").
@@ -477,14 +499,16 @@ Tip copy (in `buildTips`, keep the variables and the rules, no dashes):
 
 **CTA card**
 - Heading: **Help AI recommend you, every week**
-- Text: **GEO Core checks up to 25 buyer questions every week, writes fixes that help AI recommend your
+- Text: **GEO Standard checks up to 50 buyer questions every week, writes fixes that help AI recommend your
   products (you approve each one), and counts the orders it can trace back to AI.** [source: P]
+- Price line: **Your first scan is free. Standard is US$97 a month after a 7-day free trial.** [source: P]
+  (Plan name, price, questions and trial come from `app/lib/plans.ts`, so they follow any change there.)
 - Button: **Install GEO: first scan free** (was "Install GEO free", which implies GEO itself is free)
 - Link: **Check another product** (`/#check`)
 
 **Honesty note**
 > Answers change from run to run, so we ask twice. This quick check uses 3 questions. The app tracks up to
-> 25 every week on Core, or 100 every day on Pro (asked twice on the weekly full scan). [source: FC, P]
+> 50 every week on Standard, or 100 every day on Done-for-you (asked twice on the weekly full scan). [source: FC, P]
 
 ### Failed, not found and limit messages
 
@@ -497,7 +521,7 @@ Tip copy (in `buildTips`, keep the variables and the rules, no dashes):
 - Page unreadable: **We couldn't read that page. Please paste a public product page link.**
 - Visitor limit (change: the current text promises "unlimited tracking", which no plan has; and the limit
   is a rolling 24 hours, not "today"; it counts per connection, failed tries included, and weekly tracking
-  needs Core): **This connection has reached the free check limit for now (3 checks in 24 hours). Try again
+  needs Standard): **This connection has reached the free check limit for now (3 checks in 24 hours). Try again
   tomorrow, or install GEO for a free scan of 10 questions.** [source: FC]
 - Busy (both caps are rolling 24 hours, so no time promise): **We're very busy right now. Please try again
   later.**
@@ -535,8 +559,9 @@ No longer used on the home page: `clay-answer.jpg`, `clay-support.jpg`, `guide-*
 - [ ] 50 million is "our 2025 estimate". Triple Whale is "nearly 60×, Q4 2025 vs all of 2024", its own
       stores. Adobe is US retail.
 - [ ] The dashboard mockup has "Sample data" and hero card 3 has "Example". Only fictional names.
-- [ ] "Free" only describes the free product check, the free scan, the trial, or the AI clicks. GEO Core is
-      US$49 a month after a 7-day trial.
+- [ ] "Free" only describes the free product check, the free scan, the trial, or the AI clicks. GEO Standard is
+      US$97 a month (or US$873 a year) after a 7-day free trial; Done-for-you is US$497 a month (or US$4,473 a year).
+- [ ] No struck-through or "was" prices, no "10x", no savings claim beyond "3 months free".
 - [ ] "Can't be bought" is said about ChatGPT only (Google sells ads inside AI Overviews in AU/NZ).
 - [ ] No promises; GEO counts the orders it can trace back to AI.
 - [ ] 390px wide: no sideways scroll. Reduced motion: the hero cards show their finished picture.

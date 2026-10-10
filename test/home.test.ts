@@ -16,10 +16,14 @@ describe("home page", () => {
     const html = await res.text();
     expect(html).toContain("<!doctype html>");
     expect(html).toContain("The free sales channel <br class=\"hero-br\">your store is missing");
-    expect(html).toContain("<title>GEO · The free sales channel your store is missing</title>");
+    // The headline calls the AI channel free; the title sits next to "GEO", so it never says "free".
+    expect(html).toContain("<title>GEO · Get your products recommended by AI</title>");
+    expect(html).not.toMatch(/<title>[^<]*free/i);
     expect(html).not.toContain("—");
     expect(html).toContain('src="/home/img/');
-    expect(html).toContain('href="/auth/login"');
+    // Each pricing card's trial button carries its plan to the login page (the toggle switches the cycle).
+    expect(html).toContain('href="/auth/login?plan=core&amp;cycle=monthly" data-plan="core"');
+    expect(html).toContain('href="/auth/login?plan=pro&amp;cycle=monthly" data-plan="pro"');
   });
 
   it("uses the GEO logo as its icon (svg, ico and the home screen icon)", async () => {

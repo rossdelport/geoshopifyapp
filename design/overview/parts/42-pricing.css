@@ -1,5 +1,6 @@
-/* Pricing: full-width lilac gradient block, navy text, white cards, indigo featured card. Only Core's
-   "Start 7-day trial" is a filled button; Free scan and Pro use a quieter outline button. */
+/* Pricing: full-width lilac gradient block, navy text, a Monthly / Yearly switch and two cards: Standard
+   (plan id "core", our pick: the indigo card with the filled button and the edge light) and Done-for-you
+   (plan id "pro", white card, quieter outline button). 42-pricing.js runs the switch. */
 .price-sec { background: var(--bg); padding-top: 24px; }
 .price-band {
   margin-inline: 16px;
@@ -18,12 +19,40 @@
 
 .price-head { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .price-h2 { color: var(--navy); }
-.price-lead { margin-top: 16px; max-width: 560px; color: var(--text-lilac); text-wrap: balance; }
+
+/* Monthly / Yearly: two real buttons with aria-pressed in a frosted pill. Hidden until 42-pricing.js runs,
+   so without JavaScript the cards simply show monthly prices with the yearly price under them. */
+.price-toggle {
+  margin-top: 28px;
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 5px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.95), 0 10px 24px -14px rgba(56, 64, 160, 0.45);
+}
+.price-tg {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 42px; padding: 0 18px; border-radius: 999px;
+  font-size: 15px; line-height: 1; font-weight: 600; color: var(--text-lilac);
+  transition: background-color .25s ease, color .25s ease, box-shadow .25s ease;
+}
+.price-tg:hover { color: var(--navy); }
+.price-tg[aria-pressed="true"] {
+  background: var(--white); color: var(--navy);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 0 0 1px rgba(56, 64, 160, 0.08), 0 6px 14px -8px rgba(56, 64, 160, 0.55);
+}
+.price-save {
+  font-size: 12px; line-height: 1; font-weight: 600; color: var(--indigo-900);
+  background: var(--lilac-pedestal); border-radius: 999px; padding: 6px 8px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.page .price-sec .price-tg:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+/* screen readers hear "Yearly prices shown" after a switch */
+.price-status { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 .price-grid {
-  margin: 48px auto 0;
-  max-width: 1218px;
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px;
+  margin: 40px auto 0;
+  max-width: 880px;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px;
   align-items: stretch;
 }
 .price-card {
@@ -39,6 +68,11 @@
 .price-amt { margin-top: 22px; display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 8px; row-gap: 2px; }
 .price-num { font-family: var(--font-head); font-size: 34px; line-height: 1.1; font-weight: 600; letter-spacing: -1.4px; color: var(--navy); font-variant-numeric: tabular-nums; }
 .price-per { font-size: 15px; line-height: 1.4; color: var(--text); }
+.price-alt { margin-top: 6px; font-size: 14px; line-height: 1.5; color: var(--text); font-variant-numeric: tabular-nums; }
+/* a short fade and rise on the amounts when the switch changes them (42-pricing.js adds .is-swap) */
+.price-amt.is-swap, .price-alt.is-swap { animation: price-swap .45s cubic-bezier(.2, .7, .2, 1) both; }
+.price-alt.is-swap { animation-delay: .06s; }
+@keyframes price-swap { from { opacity: 0; transform: translate3d(0, 6px, 0); } to { opacity: 1; transform: none; } }
 .price-desc { margin-top: 14px; font-size: 14px; line-height: 1.6; color: var(--text); }
 .price-btn { margin-top: 30px; width: 100%; height: 50px; font-size: 15px; }
 .price-btn-line { color: var(--navy); background: var(--white); box-shadow: inset 0 0 0 1.5px rgba(56, 64, 160, 0.3); }
@@ -46,15 +80,14 @@
 .price-list { list-style: none; margin: 34px 0 0; padding: 0; display: flex; flex-direction: column; gap: 15px; }
 .price-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; line-height: 22px; color: var(--text); }
 .price-list .check-chip { margin-top: 0; background: var(--lilac-100); color: var(--cobalt); }
-.price-list .price-no { color: var(--text); }
-.price-list .price-no .check-chip { color: #8a8b9c; background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); }
 
-/* Core: deep indigo card */
+/* Standard: deep indigo card */
 .price-card-dark { background: var(--grad-indigo); color: var(--on-dark); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 36px 64px -28px rgba(21, 22, 60, 0.6); }
 .price-card-dark .price-name,
 .price-card-dark .price-num { color: var(--white); }
 /* --lilac-100 on indigo: about 12:1 */
 .price-card-dark .price-per,
+.price-card-dark .price-alt,
 .price-card-dark .price-desc { color: var(--lilac-100); }
 .price-card-dark .price-list li { color: var(--white); }
 .price-card-dark .check-chip { background: rgba(191, 201, 250, 0.14); color: var(--peri-300); box-shadow: inset 0 0 0 1px rgba(191, 201, 250, 0.16); }
@@ -68,7 +101,7 @@
 }
 
 /* Motion. Cards lift a little on hover (the deeper shadow is a pseudo-element that fades in, so only
-   transform and opacity change). Core's edge light only fades in and turns while it is hovered or has focus,
+   transform and opacity change). Standard's edge light only fades in and turns while it is hovered or has focus,
    so the hero's link box keeps the page's one travelling light. 05-shared.js also pauses it off screen;
    reduced motion turns it off. */
 .price-card { transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
@@ -110,6 +143,11 @@
   .price-card:focus-within, .price-card:hover { transform: none; }
 }
 
+/* Under the cards: the free check for anyone not ready yet, then billing in one line. */
+.price-foot { margin: 36px auto 0; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; font-size: 15px; line-height: 1.6; color: var(--text-lilac); text-wrap: balance; }
+.price-foot-link { color: var(--cobalt-deep); font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: rgba(56, 64, 160, 0.45); transition: text-decoration-color .2s ease; }
+.price-foot-link:hover { text-decoration-color: currentColor; }
+
 /* focus rings: the shared rule makes them white on this band; cobalt reads on lilac and white cards */
 .page .price-sec .price-band a:focus-visible { outline-color: var(--cobalt); }
 .page .price-sec .price-card-dark a:focus-visible { outline-color: var(--white); }
@@ -120,18 +158,21 @@
   .price-card { padding: 28px 22px 30px; }
   .price-list li { font-size: 14px; }
 }
-@media (max-width: 900px) {
-  .price-grid { grid-template-columns: minmax(0, 1fr); max-width: 520px; }
-}
 @media (max-width: 760px) {
   .price-band { margin-inline: 8px; border-radius: 24px; padding: 56px 0 36px; }
   .price-band .wrap { padding-inline: 12px; }
-  .price-lead { margin-top: 12px; font-size: 15px; }
-  .price-grid { margin-top: 28px; gap: 12px; }
+  .price-toggle { margin-top: 20px; }
+  .price-tg { height: 44px; padding: 0 14px; font-size: 14.5px; gap: 7px; }
+  .price-grid { grid-template-columns: minmax(0, 1fr); max-width: 520px; margin-top: 24px; gap: 20px; }
   .price-card { padding: 22px 20px 22px; border-radius: var(--r-md); }
   .price-amt { margin-top: 14px; }
   .price-num { font-size: 30px; }
   .price-desc { margin-top: 8px; }
   .price-btn { margin-top: 18px; height: 48px; }
   .price-list { margin-top: 20px; gap: 11px; }
+  .price-foot { margin-top: 24px; font-size: 14.5px; }
+}
+@media (max-width: 360px) {
+  .price-tg { padding: 0 11px; }
+  .price-save { padding: 5px 7px; font-size: 11.5px; }
 }

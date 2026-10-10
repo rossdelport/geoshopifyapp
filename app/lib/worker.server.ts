@@ -15,6 +15,7 @@ import "./orders.server";
 import "./fixes.server";
 import "./outreach.server";
 import "./report.server";
+import "./billing.server";
 import "./check.server";
 import { maybeRunSelftest } from "./selftest.server";
 import { purgeOldData } from "./retention.server";
@@ -88,7 +89,8 @@ export async function scheduleDueWork(now = new Date()) {
           let kind: "weekly" | "daily" = "weekly";
           if (plan.id === "pro") {
             const lastDeep = await db.scan.findFirst({
-              where: { shopId: shop.id, kind: { in: ["weekly", "baseline", "manual"] }, status: "done" },
+              // "Check AI now" is a light scan (1 run, no Claude), so it doesn't count as the weekly full one.
+              where: { shopId: shop.id, kind: { in: ["weekly", "baseline"] }, status: "done" },
               orderBy: { startedAt: "desc" },
             });
             kind = lastDeep && now.getTime() - lastDeep.startedAt.getTime() < 7 * DAY ? "daily" : "weekly";

@@ -6,7 +6,9 @@ import db from "../db.server";
 import { askJson } from "./ai.server";
 import { keywordVolumes } from "./treg.server";
 import { gql, type AdminClient } from "./shopify-gql.server";
-import { getPlan } from "./plans";
+import { PLANS, getPlan } from "./plans";
+import { registerJob } from "./jobs.server";
+import { startUpgradeScan } from "./billing.server";
 import { simpleProfile, templateQuestions } from "./fallbacks";
 
 const PRODUCTS_QUERY = `#graphql
@@ -188,20 +190,26 @@ export const QuestionsSchema = z.object({
   ),
 });
 
-/** Write ~30 buyer questions, look up how often people search for them, keep the best ones active. */
-export async function generateQuestions(shopId: string) {
-  const shop = await db.shop.findUniqueOrThrow({ where: { id: shopId }, include: { profile: true } });
-  const plan = getPlan(shop.plan);
+// Questions written at onboarding: enough for Done-for-you's 100 plus spares, so an upgrade only has to
+// switch more on. Free tracks 10 and Standard 50 of them; the rest wait, inactive, ranked by search volume.
+export const QUESTION_POOL = Math.max(30, PLANS.pro.questions + 10);
+
+const loadShop = (shopId: string) => db.shop.findUniqueOrThrow({ where: { id: shopId }, include: { profile: true } });
+type ShopWithProfile = Awaited<ReturnType<typeof loadShop>>;
+
+/** Ask Claude for `count` new buyer questions (templates if Claude is unavailable), skipping any in `avoid`. */
+async function writeQuestionList(shop: ShopWithProfile, count: number, avoid: string[] = []) {
   const profile = shop.profile;
-  const products = await db.product.findMany({ where: { shopId, status: "ACTIVE" }, take: 40 });
+  const products = await db.product.findMany({ where: { shopId: shop.id, status: "ACTIVE" }, take: 40 });
   const where = countryName(shop.country);
 
   const result = await askJson({
     schema: QuestionsSchema,
     tier: "smart",
     label: "questions",
-    shopId,
-    maxTokens: 6000,
+    shopId: shop.id,
+    // About 30 output tokens per question; plenty of room so 110 never runs out (Claude ran out = templates).
+    maxTokens: Math.max(6000, count * 80 + 4000),
     system:
       "You know how shoppers ask ChatGPT, Gemini and Perplexity for product recommendations. Write natural questions, the way people actually type them. Never include the store's own brand name: these are unbranded buying questions where the store wants to be recommended.",
     prompt: `Store: ${profile?.brandName ?? shop.name}
@@ -213,8 +221,8 @@ Country: ${where}
 
 Some products:
 ${products.map((p) => `- ${p.title}${p.productType ? ` [${p.productType}]` : ""}`).join("\n")}
-
-Write 30 different buyer questions this store's products could answer. Mix:
+${avoid.length ? `\nAlready tracked (write different ones):\n${avoid.map((q) => `- ${q}`).join("\n")}\n` : ""}
+Write ${count} different buyer questions this store's products could answer. Mix:
 - "best X for Y" questions (e.g. "best beard oil for dry skin in ${where}")
 - problem questions ("what helps with ...")
 - comparison and gift questions
@@ -225,23 +233,30 @@ About half should mention ${where}. Keep each under 15 words.`,
     return { questions: templateQuestions([...products.map((p) => p.productType), profile?.category ?? null], where) };
   });
 
+  const seen = new Set(avoid.map((q) => q.trim().toLowerCase()));
   const unique = new Map<string, { question: string; keyword: string }>();
   for (const q of result.questions) {
     const key = q.question.trim().toLowerCase();
-    if (key && !unique.has(key)) unique.set(key, { question: q.question.trim(), keyword: q.keyword.trim() });
+    if (key && !seen.has(key) && !unique.has(key)) unique.set(key, { question: q.question.trim(), keyword: q.keyword.trim() });
   }
-  const list = [...unique.values()].slice(0, 40);
+  const list = [...unique.values()].slice(0, count);
 
   let volumes: Record<string, number> = {};
   try {
-    volumes = await keywordVolumes(list.map((q) => q.keyword), shop.country, shopId);
+    volumes = list.length ? await keywordVolumes(list.map((q) => q.keyword), shop.country, shop.id) : {};
   } catch (err) {
     console.error(`[questions] volume lookup failed: ${(err as Error).message}`);
   }
-
-  const scored = list
+  return list
     .map((q) => ({ ...q, volume: volumes[q.keyword.toLowerCase()] ?? null }))
     .sort((a, b) => (b.volume ?? -1) - (a.volume ?? -1));
+}
+
+/** Write the buyer questions, look up how often people search for them, keep the best ones active. */
+export async function generateQuestions(shopId: string) {
+  const shop = await loadShop(shopId);
+  const plan = getPlan(shop.plan);
+  const scored = await writeQuestionList(shop, QUESTION_POOL);
 
   // Keep merchant-added questions; switch off older AI-written ones (their history stays).
   await db.question.updateMany({ where: { shopId, source: "ai" }, data: { active: false } });
@@ -257,3 +272,50 @@ About half should mention ${where}. Keep each under 15 words.`,
   }
   return scored.length;
 }
+
+/**
+ * Fill the plan's question slots after an upgrade: switch on unused questions first (best search volume),
+ * then write new ones if there still aren't enough. Never switches off or changes an existing question,
+ * including ones the store added. Returns how many new questions were written.
+ */
+export async function topUpQuestions(shopId: string) {
+  const shop = await loadShop(shopId);
+  const plan = getPlan(shop.plan);
+  const activeNow = () => db.question.count({ where: { shopId, active: true } });
+
+  let active = await activeNow();
+  if (active < plan.questions) {
+    const unused = await db.question.findMany({
+      where: { shopId, active: false },
+      orderBy: { volume: { sort: "desc", nulls: "last" } },
+      take: plan.questions - active,
+      select: { id: true },
+    });
+    await db.question.updateMany({ where: { id: { in: unused.map((q) => q.id) } }, data: { active: true } });
+    active = await activeNow();
+  }
+  const existing = await db.question.findMany({ where: { shopId }, select: { text: true } });
+  const missing = plan.questions - existing.length;
+  if (missing <= 0 || active >= plan.questions) return 0;
+
+  // A few spares, as some come back as repeats.
+  const scored = await writeQuestionList(shop, missing + 10, existing.map((q) => q.text));
+  let slots = plan.questions - active;
+  let written = 0;
+  for (const q of scored) {
+    const row = await db.question
+      .create({ data: { shopId, text: q.question, keyword: q.keyword, volume: q.volume, active: slots > 0, source: "ai" } })
+      .catch(() => null); // already there (same text)
+    if (!row) continue;
+    written++;
+    slots--;
+  }
+  return written;
+}
+
+// Upgrade: more questions first, then the upgrade scan (queued by billing.server's onPlanChanged).
+registerJob("questions.topup", async (job) => {
+  const n = await topUpQuestions(job.shopId!);
+  console.log(`[questions] ${n} new questions for shop ${job.shopId}`);
+  if ((job.payload as { scan?: boolean }).scan) await startUpgradeScan(job.shopId!);
+});

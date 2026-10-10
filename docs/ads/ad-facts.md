@@ -455,7 +455,7 @@ say is simpler: an organic AI recommendation has no cost per click, and the ad c
 > |---|---|---|
 > | "Ad costs never come down" | **FALSE. Don't say it.** | Meta's price per ad fell for 7 quarters in a row (2022 to 2023, down to -22%). Google's CPC fell in 2022 and early 2023. Beauty search clicks fell 19% in 2026. Facebook CPMs fell 4% in Q1 2026 (Tinuiti). Meta's Q2 2026 price per ad is about where it was in Q2 2021. |
 > | "Ad costs keep rising" | **TRUE if dated.** | Meta: higher than the year before for 11 quarters straight (Q4 2023 to Q2 2026), +12% in Q2 2026. Google: higher than the year before in every period reported since Q3 2023. WordStream: average US click more than doubled since 2016. Always add the period and source. |
-> | "AI recommendations have no cost per click" | **TRUE for the organic answer.** | You don't pay per click when ChatGPT, Gemini or Perplexity names your product in the answer. But ChatGPT shows labelled ads below answers, and Google sells ads inside AI Overviews in AU/NZ. Getting recommended takes work, and GEO costs US$49 a month. |
+> | "AI recommendations have no cost per click" | **TRUE for the organic answer.** | You don't pay per click when ChatGPT, Gemini or Perplexity names your product in the answer. But ChatGPT shows labelled ads below answers, and Google sells ads inside AI Overviews in AU/NZ. Getting recommended takes work, and GEO costs US$97 a month. |
 >
 > ### Safe ways to say it
 >
@@ -476,7 +476,7 @@ say is simpler: an organic AI recommendation has no cost per click, and the ad c
 > - "CAC is up 60%" (2020 data, subscription companies).
 > - "Australian ad costs are rising X%" (no reliable public data; the IAB number is total spend, not price).
 > - "Your CPM", "your cost per click", or any number presented as what the reader pays.
-> - "Ranking in AI is free money" / "free traffic forever" (hype, implies a guaranteed return; AI is still a small share of store traffic and GEO costs US$49 a month).
+> - "Ranking in AI is free money" / "free traffic forever" (hype, implies a guaranteed return; AI is still a small share of store traffic and GEO costs US$97 a month).
 > - "GEO is free" (the recommendation has no cost per click; GEO itself is a paid app).
 > - "AI shoppers convert better than ad clicks" or "AI customers are cheaper than ad customers" (no source shows this; one academic study found the opposite for paid search in 2024 to 2025).
 > - "AI assistants have no ads" / "you can't pay to appear in AI answers" (ChatGPT has ads below answers; Google sells ads inside AI Overviews in AU/NZ).

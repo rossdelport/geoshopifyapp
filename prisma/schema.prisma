@@ -51,6 +51,8 @@ model Shop {
   lastScanAt     DateTime?
   lastReportAt   DateTime?
   autopilot      Boolean   @default(false)
+  autopilotOptOut Boolean  @default(false) // the store switched autopilot off: keep it off across plan changes
+  trialEndsAt    DateTime? // end of the store's one free trial, saved when it first starts (never cleared)
   reportEmails   String? // comma separated
   pixelId        String?
   costMonth      String? // "2026-10"
@@ -361,6 +363,16 @@ model ApiCost {
   createdAt DateTime @default(now())
 
   @@index([shopId, createdAt])
+}
+
+// A plan picked on the website before installing ("Start 7-day free trial" on a pricing card), by the
+// store's myshopify domain. Offered on the dashboard once the free scan is done; deleted once used.
+// Holds no personal data. Rows older than 30 days are ignored and cleared.
+model PlanIntent {
+  domain    String   @id // my-store.myshopify.com
+  plan      String // core | pro
+  cycle     String // monthly | yearly
+  createdAt DateTime @default(now())
 }
 
 // Free product check from the public home page (no install). Not tied to a shop.

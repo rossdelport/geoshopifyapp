@@ -3,15 +3,22 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData } from "react-router";
 
 import { login } from "../../shopify.server";
+import { savePlanIntentFromLogin } from "../../lib/plan-intent.server";
+import { parsePlanChoice } from "../../lib/plans";
 import { loginErrorMessage } from "./error.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const errors = loginErrorMessage(await login(request));
+  // A plan picked on the website's pricing cards (/auth/login?plan=pro&cycle=yearly) rides along in the form.
+  const url = new URL(request.url);
+  const choice = parsePlanChoice(url.searchParams.get("plan"), url.searchParams.get("cycle"));
 
-  return { errors };
+  return { errors, choice };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  // Save the picked plan by shop domain before Shopify takes over (login() redirects on success).
+  if (request.method === "POST") await savePlanIntentFromLogin(await request.clone().formData(), new URL(request.url));
   const errors = loginErrorMessage(await login(request));
 
   return {
@@ -30,6 +37,12 @@ export default function Auth() {
       <script src="https://cdn.shopify.com/shopifycloud/polaris.js" />
       <s-page>
         <Form method="post">
+        {loaderData.choice && (
+          <>
+            <input type="hidden" name="plan" value={loaderData.choice.plan} />
+            <input type="hidden" name="cycle" value={loaderData.choice.cycle} />
+          </>
+        )}
         <s-section heading="Log in">
           <s-text-field
             name="shop"

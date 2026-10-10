@@ -1,5 +1,5 @@
 // Decorative loops (the logo marquee, the hero cards and floating clay pieces, the FAQ chat, the how-it-works
-// renders, the coins, the Core card's border light (hover only), the closing shop front) pause while their part of the page
+// renders, the coins, the Standard card's border light (hover only), the closing shop front) pause while their part of the page
 // is off screen, so an idle page does no animation work. Missing parts are skipped.
 // The CSS for .is-off is in 05-shared.css. The hero cards and the FAQ manage their own motion as well.
 (function () {

@@ -51,7 +51,7 @@ Why we changed Ross's lines (one line each):
 | Ross's line | What we say instead | Why |
 |---|---|---|
 | "Ad CPMs only go up and to the right and never come back down." | "Every ad click has a price. A ChatGPT recommendation doesn't." / "Ad prices go up and down. Since late 2023 they've mostly gone up." / "Check what a click cost you in 2023, and what it costs now." | False as stated: Meta's price per ad fell for 7 quarters in a row (Q1 2022 to Q3 2023), so "never" fails the ACCC's "true, accurate and based on reasonable grounds" test (`ad-facts.md` §1, `ad-rules.md` 5.2). There is no reliable public data on Australian ad prices (`ad-facts.md` §6b), so the owner's own numbers are the best proof. |
-| "Ranking in AI answers is like free money." | "When ChatGPT recommends your product, there's no cost per click." | Meta bans "unrealistic financial reward for unclear or minimal effort", Google bans "unrealistic promises of large financial return", and GEO itself costs US$49 a month (`ad-rules.md` 1.1, 2.1, 5.3). |
+| "Ranking in AI answers is like free money." | "When ChatGPT recommends your product, there's no cost per click." | Meta bans "unrealistic financial reward for unclear or minimal effort", Google bans "unrealistic promises of large financial return", and GEO itself costs US$97 a month (`ad-rules.md` 1.1, 2.1, 5.3). |
 | "Right now" (the window is open) | "It's small today and growing fast: ChatGPT was about 0.2% of store visits in one 2024 to 2025 study of 973 stores, and Shopify's president said in Feb 2026 that AI search orders were 15 times higher than in January 2025." | Dated and true (AI9, AI6). Saying "small" first is the trust advantage over StoreRank's "87%" and "5.1x" (`competitor-ads.md` §4). We never predict how long the window lasts. |
 
 ### 1.1 What real answers show (10 Oct 2026, raw files in `docs/ads/evidence/`)
@@ -103,7 +103,7 @@ region in the ad or one tap away.
 | P1 | ChatGPT often adds `utm_source=chatgpt.com` to its links (on the links in 2 of our 8 saved answers). GEO looks for that tag and for visits from ChatGPT, Perplexity, Gemini, Copilot, Claude and other AI sites, so it counts the AI orders it can trace. | Oct 2026 | CLAUDE.md §10; `docs/ads/evidence/`; AI11 |
 | P2 | Retired. The planning test in CLAUDE.md §17 has no saved answer. Use P5 and P6. | | |
 | P3 | Free product check: paste a product link, GEO asks ChatGPT, Gemini and Perplexity 3 questions a real buyer would ask, twice each, **up to 18 answers** (failed calls still count toward the 18), and shows who they name, which sites they trust and **a preview of each answer** (about the first 700 characters, `app/lib/check-types.ts`). Free, no sign-up. Not from your own ChatGPT account. Does **not** cover Google AI Overviews. | spec | `docs/free-check.md` |
-| P4 | Core US$49 a month (USD) after a 7-day trial, billed through Shopify; cancel on the app's Plans page ("Cancel my plan") or by uninstalling. Pro US$149 a month. **Can't be advertised as available until gate 1 in 4.0 passes.** GST on app charges for AU stores: not confirmed (gate 9). | current | CLAUDE.md §3; `app/routes/app.plans.tsx` |
+| P4 | Standard US$97 a month or US$873 a year (USD) after a 7-day free trial, billed through Shopify; cancel on the app's Plans page ("Cancel my plan") or by uninstalling. Done-for-you US$497 a month or US$4,473 a year. **Can't be advertised as available until gate 1 in 4.0 passes.** GST on app charges for AU stores: not confirmed (gate 9). | Oct 2026 | `app/lib/plans.ts` (same as CLAUDE.md §3); `app/routes/app.plans.tsx` |
 | P5 | Gift question, 4 ChatGPT answers, Australia, 10 Oct 2026: 17 of 21 picks linked to the brand's own website; 2 picks in all four answers; at least 11 brands named in total; AUD prices, set contents and free-shipping thresholds quoted; links to the stores' own product pages. | 10 Oct 2026 | `docs/ads/evidence/` (gift-bearded-man runs 1 to 4) |
 | P6 | Beard oil question, 2 ChatGPT answers, Australia, 10 Oct 2026: 3 brands, then 4; 1 in both; 4 of 7 picks linked to the brand's own site; sources were roundups, brand pages, a retailer and skin-care guides; the brand named twice had its own "best beard oil in Australia 2026" guide cited both times. | 10 Oct 2026 | `docs/ads/evidence/` (beard-oil runs 1 and 2) |
 | P7 | Coffee gift question, 2 ChatGPT answers: product types, big retailers, gift-guide blogs. The gift angle doesn't fit every category. | 10 Oct 2026 | `docs/ads/evidence/` (gift-coffee runs 1 and 2) |
@@ -114,10 +114,10 @@ region in the ad or one tap away.
 
 - **Price line, two stages. Pick the stage that is true on the day the ad runs.**
   - **Stage A (now, until gate 1 passes):** "The check is free. Our app is coming to the Shopify App
-    Store at US$49/mo. Join the early list." No trial claim, because nobody can start a trial yet. The
+    Store at US$97/mo. Join the early list." No trial claim, because nobody can start a trial yet. The
     report's "Start your 7-day free trial" button becomes an early-list form for the same period.
   - **Stage B (after a non-dev store has installed and started the trial, and GST is confirmed):** "The
-    check is free. Our app is US$49/mo (USD), billed through Shopify after a 7-day trial unless you
+    check is free. Our app is US$97/mo (USD), billed through Shopify after a 7-day trial unless you
     cancel. Cancel in the app or by uninstalling." Add "plus GST" if Shopify adds it for AU stores.
   - Either way, the price goes in the primary text, not only in the link description, because Meta hides
     the description on many placements.
@@ -269,7 +269,7 @@ region in the ad or one tap away.
   6. "So I built a free check: paste a product link, and we ask ChatGPT, Gemini and Perplexity three
      shopper questions, twice each."
   7. "It's new, no reviews yet, and I won't promise sales. The check is free. The app is coming to the
-     Shopify App Store at US$49 a month." (Stage B: the trial wording.)
+     Shopify App Store at US$97 a month." (Stage B: the trial wording.)
   - Origin line only if it's true for Ross. Otherwise: "That's why the check asks every question twice
     and shows the sites AI trusts."
 - **Visual:** 9:16 selfie, natural light, burned-in captions (Inter, navy on white boxes). B-roll: his
@@ -493,7 +493,7 @@ Practical for one person: make each concept in two sizes (4:5 and 9:16) and reus
 - **Responsive search ad (headlines max 30 characters, descriptions max 90):**
   - **Headline 1, pinned:** "[Name]: Free Product Check" (20 characters plus the name; the name can be
     up to 10 characters). Our name leads, so ChatGPT is never the most prominent mark.
-  - **Headline 2, pinned:** stage A "App Coming: From US$49/mo" (25); stage B "7-Day Trial, Then US$49/mo"
+  - **Headline 2, pinned:** stage A "App Coming: From US$97/mo" (25); stage B "7-Day Trial, Then US$97/mo"
     (26). Google: "Headlines or descriptions pinned to Headline position 1, Headline position 2, or
     Description position 1 will always show. Content pinned to Headline position 3 and Description
     position 2 are not guaranteed to show in every ad." ([Google Ads Help](https://support.google.com/google-ads/answer/7684791?hl=en), read 10 Oct 2026.)
@@ -501,7 +501,7 @@ Practical for one person: make each concept in two sizes (4:5 and 9:16) and reus
     Product Link" (20) · "For Shopify Stores in AU & NZ" (29) · "ChatGPT, Gemini & Perplexity" (28) ·
     "See Who AI Names in Answers" (27) · "Ask Twice. Get Two Lists." (25)
   - **Description 1, pinned (carries the price):** stage A "Our app is coming to the Shopify App Store at
-    US$49/mo (USD). Join the early list." (82); stage B "US$49/mo (USD), billed by Shopify after a 7-day
+    US$97/mo (USD). Join the early list." (82); stage B "US$97/mo (USD), billed by Shopify after a 7-day
     trial unless you cancel in the app." (83)
   - **Unpinned descriptions:** "Paste a product link. We ask ChatGPT, Gemini and Perplexity 3 shopper
     questions, twice." (87) · "See which stores AI names for your product and which sites it trusts. No

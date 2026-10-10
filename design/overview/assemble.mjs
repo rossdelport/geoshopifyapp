@@ -33,7 +33,7 @@ console.log(`${outName}: ${(out.length / 1024).toFixed(0)} KB from ${files.lengt
 
 // Full build only: also write the live home page served at "/" by app/routes/_index/route.tsx.
 // Same page as a proper HTML document; images come from /home/img/, the sign-up buttons
-// go to the Shopify install (log in) page, and window.GEO_LIVE lets the hero check form post to /check.
+// go to the Shopify install (log in) page with the picked plan, and window.GEO_LIVE lets the hero check form post to /check.
 if (!only && outName === 'index.html') {
   const root = path.join(dir, '..', '..');
   const head = out.slice(0, out.indexOf('<div class="page">')).trim();
@@ -49,13 +49,15 @@ if (!only && outName === 'index.html') {
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>[hidden]:not([hidden="until-found"]){display:none!important}</style>
 <script>window.GEO_LIVE=true</script>
-${head.replace('<title>GEO Overview</title>', '<title>GEO · The free sales channel your store is missing</title>')}
+${head.replace('<title>GEO Overview</title>', '<title>GEO · Get your products recommended by AI</title>')}
 </head>
 <body>
 ${body}</body>
 </html>
 `
     .replaceAll('src="img/', 'src="/home/img/')
+    // Pricing card buttons carry their plan to the login page (42-pricing.js switches cycle= with the toggle).
+    .replace(/(<a class="btn[^"]*" href=)"#pricing" data-plan="(core|pro)"/g, '$1"/auth/login?plan=$2&amp;cycle=monthly" data-plan="$2"')
     .replace(/(<a class="btn[^"]*" href=)"#pricing"/g, '$1"/auth/login"')
     .replace('href="https://geo-shopify-app-production.up.railway.app/privacy" target="_blank" rel="noopener"', 'href="/privacy"');
   fs.mkdirSync(path.join(root, 'app', 'home'), { recursive: true });

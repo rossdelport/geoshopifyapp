@@ -1492,10 +1492,12 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .worth-m, .worth-y { transform-origin: 50% 80%; }
 .worth-nums { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px 20px; }
 .worth-big, .worth-yr { display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
+/* "a month in sales" drops under a big number on a narrow phone instead of running past the box */
+.worth-big { flex-wrap: wrap; row-gap: 4px; }
 .worth-m { font-family: var(--font-head); font-size: 52px; font-weight: 500; letter-spacing: -2px; line-height: 1; color: var(--cobalt); }
 .worth-y { font-family: var(--font-head); font-size: 26px; font-weight: 500; letter-spacing: -0.8px; line-height: 1; color: var(--cobalt-deep); }
 .worth-unit { font-size: 15px; font-weight: 500; color: var(--navy); }
-/* the "5 orders × $80 = $400 a month" sum: screen readers only (it is the live region; the big numbers say it on screen) */
+/* the "2 orders × $80 = $160 a month" sum: screen readers only (it is the live region; the big numbers say it on screen) */
 .worth-sum { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 
 .worth-core { margin-top: 22px; font-size: 15px; line-height: 1.55; color: var(--navy); }
@@ -1530,8 +1532,9 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 }
 
 /* 42-pricing.css */
-/* Pricing: full-width lilac gradient block, navy text, white cards, indigo featured card. Only Core's
-   "Start 7-day trial" is a filled button; Free scan and Pro use a quieter outline button. */
+/* Pricing: full-width lilac gradient block, navy text, a Monthly / Yearly switch and two cards: Standard
+   (plan id "core", our pick: the indigo card with the filled button and the edge light) and Done-for-you
+   (plan id "pro", white card, quieter outline button). 42-pricing.js runs the switch. */
 .price-sec { background: var(--bg); padding-top: 24px; }
 .price-band {
   margin-inline: 16px;
@@ -1550,12 +1553,40 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 
 .price-head { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .price-h2 { color: var(--navy); }
-.price-lead { margin-top: 16px; max-width: 560px; color: var(--text-lilac); text-wrap: balance; }
+
+/* Monthly / Yearly: two real buttons with aria-pressed in a frosted pill. Hidden until 42-pricing.js runs,
+   so without JavaScript the cards simply show monthly prices with the yearly price under them. */
+.price-toggle {
+  margin-top: 28px;
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 5px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.95), 0 10px 24px -14px rgba(56, 64, 160, 0.45);
+}
+.price-tg {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 42px; padding: 0 18px; border-radius: 999px;
+  font-size: 15px; line-height: 1; font-weight: 600; color: var(--text-lilac);
+  transition: background-color .25s ease, color .25s ease, box-shadow .25s ease;
+}
+.price-tg:hover { color: var(--navy); }
+.price-tg[aria-pressed="true"] {
+  background: var(--white); color: var(--navy);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 0 0 1px rgba(56, 64, 160, 0.08), 0 6px 14px -8px rgba(56, 64, 160, 0.55);
+}
+.price-save {
+  font-size: 12px; line-height: 1; font-weight: 600; color: var(--indigo-900);
+  background: var(--lilac-pedestal); border-radius: 999px; padding: 6px 8px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.page .price-sec .price-tg:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+/* screen readers hear "Yearly prices shown" after a switch */
+.price-status { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 .price-grid {
-  margin: 48px auto 0;
-  max-width: 1218px;
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px;
+  margin: 40px auto 0;
+  max-width: 880px;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px;
   align-items: stretch;
 }
 .price-card {
@@ -1571,6 +1602,11 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .price-amt { margin-top: 22px; display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 8px; row-gap: 2px; }
 .price-num { font-family: var(--font-head); font-size: 34px; line-height: 1.1; font-weight: 600; letter-spacing: -1.4px; color: var(--navy); font-variant-numeric: tabular-nums; }
 .price-per { font-size: 15px; line-height: 1.4; color: var(--text); }
+.price-alt { margin-top: 6px; font-size: 14px; line-height: 1.5; color: var(--text); font-variant-numeric: tabular-nums; }
+/* a short fade and rise on the amounts when the switch changes them (42-pricing.js adds .is-swap) */
+.price-amt.is-swap, .price-alt.is-swap { animation: price-swap .45s cubic-bezier(.2, .7, .2, 1) both; }
+.price-alt.is-swap { animation-delay: .06s; }
+@keyframes price-swap { from { opacity: 0; transform: translate3d(0, 6px, 0); } to { opacity: 1; transform: none; } }
 .price-desc { margin-top: 14px; font-size: 14px; line-height: 1.6; color: var(--text); }
 .price-btn { margin-top: 30px; width: 100%; height: 50px; font-size: 15px; }
 .price-btn-line { color: var(--navy); background: var(--white); box-shadow: inset 0 0 0 1.5px rgba(56, 64, 160, 0.3); }
@@ -1578,15 +1614,14 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .price-list { list-style: none; margin: 34px 0 0; padding: 0; display: flex; flex-direction: column; gap: 15px; }
 .price-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; line-height: 22px; color: var(--text); }
 .price-list .check-chip { margin-top: 0; background: var(--lilac-100); color: var(--cobalt); }
-.price-list .price-no { color: var(--text); }
-.price-list .price-no .check-chip { color: #8a8b9c; background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); }
 
-/* Core: deep indigo card */
+/* Standard: deep indigo card */
 .price-card-dark { background: var(--grad-indigo); color: var(--on-dark); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 36px 64px -28px rgba(21, 22, 60, 0.6); }
 .price-card-dark .price-name,
 .price-card-dark .price-num { color: var(--white); }
 /* --lilac-100 on indigo: about 12:1 */
 .price-card-dark .price-per,
+.price-card-dark .price-alt,
 .price-card-dark .price-desc { color: var(--lilac-100); }
 .price-card-dark .price-list li { color: var(--white); }
 .price-card-dark .check-chip { background: rgba(191, 201, 250, 0.14); color: var(--peri-300); box-shadow: inset 0 0 0 1px rgba(191, 201, 250, 0.16); }
@@ -1600,7 +1635,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 }
 
 /* Motion. Cards lift a little on hover (the deeper shadow is a pseudo-element that fades in, so only
-   transform and opacity change). Core's edge light only fades in and turns while it is hovered or has focus,
+   transform and opacity change). Standard's edge light only fades in and turns while it is hovered or has focus,
    so the hero's link box keeps the page's one travelling light. 05-shared.js also pauses it off screen;
    reduced motion turns it off. */
 .price-card { transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
@@ -1642,6 +1677,11 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .price-card:focus-within, .price-card:hover { transform: none; }
 }
 
+/* Under the cards: the free check for anyone not ready yet, then billing in one line. */
+.price-foot { margin: 36px auto 0; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; font-size: 15px; line-height: 1.6; color: var(--text-lilac); text-wrap: balance; }
+.price-foot-link { color: var(--cobalt-deep); font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: rgba(56, 64, 160, 0.45); transition: text-decoration-color .2s ease; }
+.price-foot-link:hover { text-decoration-color: currentColor; }
+
 /* focus rings: the shared rule makes them white on this band; cobalt reads on lilac and white cards */
 .page .price-sec .price-band a:focus-visible { outline-color: var(--cobalt); }
 .page .price-sec .price-card-dark a:focus-visible { outline-color: var(--white); }
@@ -1652,20 +1692,23 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .price-card { padding: 28px 22px 30px; }
   .price-list li { font-size: 14px; }
 }
-@media (max-width: 900px) {
-  .price-grid { grid-template-columns: minmax(0, 1fr); max-width: 520px; }
-}
 @media (max-width: 760px) {
   .price-band { margin-inline: 8px; border-radius: 24px; padding: 56px 0 36px; }
   .price-band .wrap { padding-inline: 12px; }
-  .price-lead { margin-top: 12px; font-size: 15px; }
-  .price-grid { margin-top: 28px; gap: 12px; }
+  .price-toggle { margin-top: 20px; }
+  .price-tg { height: 44px; padding: 0 14px; font-size: 14.5px; gap: 7px; }
+  .price-grid { grid-template-columns: minmax(0, 1fr); max-width: 520px; margin-top: 24px; gap: 20px; }
   .price-card { padding: 22px 20px 22px; border-radius: var(--r-md); }
   .price-amt { margin-top: 14px; }
   .price-num { font-size: 30px; }
   .price-desc { margin-top: 8px; }
   .price-btn { margin-top: 18px; height: 48px; }
   .price-list { margin-top: 20px; gap: 11px; }
+  .price-foot { margin-top: 24px; font-size: 14.5px; }
+}
+@media (max-width: 360px) {
+  .price-tg { padding: 0 11px; }
+  .price-save { padding: 5px 7px; font-size: 11.5px; }
 }
 
 /* 43-faq.css */
@@ -2078,21 +2121,21 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
           <li class="eng-item"><span class="eng-mono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M2 9h20"/><path d="m12 22-4-13 3-6"/><path d="m12 22 4-13-3-6"/></svg></span>Gemini</li>
           <li class="eng-item"><span class="eng-mono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="m15.5 8.5-2 5-5 2 2-5Z"/></svg></span>Perplexity</li>
           <li class="eng-item"><span class="eng-mono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/><path d="M11 8v6M8 11h6"/></svg></span>Google AI Overviews</li>
-          <li class="eng-item"><span class="eng-mono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12.67 19a2 2 0 0 0 1.416-.588l6.154-6.172a6 6 0 0 0-8.49-8.49L5.586 9.914A2 2 0 0 0 5 11.328V18a1 1 0 0 0 1 1z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/></svg></span>Claude<span class="eng-pro">GEO Pro</span></li>
+          <li class="eng-item"><span class="eng-mono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12.67 19a2 2 0 0 0 1.416-.588l6.154-6.172a6 6 0 0 0-8.49-8.49L5.586 9.914A2 2 0 0 0 5 11.328V18a1 1 0 0 0 1 1z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/></svg></span>Claude<span class="eng-pro">Done-for-you</span></li>
         </ul>
         <ul class="eng-group" aria-hidden="true">
           <li class="eng-item"><span class="eng-mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg></span>ChatGPT</li>
           <li class="eng-item"><span class="eng-mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M2 9h20"/><path d="m12 22-4-13 3-6"/><path d="m12 22 4-13-3-6"/></svg></span>Gemini</li>
           <li class="eng-item"><span class="eng-mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="m15.5 8.5-2 5-5 2 2-5Z"/></svg></span>Perplexity</li>
           <li class="eng-item"><span class="eng-mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/><path d="M11 8v6M8 11h6"/></svg></span>Google AI Overviews</li>
-          <li class="eng-item"><span class="eng-mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12.67 19a2 2 0 0 0 1.416-.588l6.154-6.172a6 6 0 0 0-8.49-8.49L5.586 9.914A2 2 0 0 0 5 11.328V18a1 1 0 0 0 1 1z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/></svg></span>Claude<span class="eng-pro">GEO Pro</span></li>
+          <li class="eng-item"><span class="eng-mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12.67 19a2 2 0 0 0 1.416-.588l6.154-6.172a6 6 0 0 0-8.49-8.49L5.586 9.914A2 2 0 0 0 5 11.328V18a1 1 0 0 0 1 1z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/></svg></span>Claude<span class="eng-pro">Done-for-you</span></li>
         </ul>
         <ul class="eng-group" aria-hidden="true">
           <li class="eng-item"><span class="eng-mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg></span>ChatGPT</li>
           <li class="eng-item"><span class="eng-mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M2 9h20"/><path d="m12 22-4-13 3-6"/><path d="m12 22 4-13-3-6"/></svg></span>Gemini</li>
           <li class="eng-item"><span class="eng-mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="m15.5 8.5-2 5-5 2 2-5Z"/></svg></span>Perplexity</li>
           <li class="eng-item"><span class="eng-mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/><path d="M11 8v6M8 11h6"/></svg></span>Google AI Overviews</li>
-          <li class="eng-item"><span class="eng-mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12.67 19a2 2 0 0 0 1.416-.588l6.154-6.172a6 6 0 0 0-8.49-8.49L5.586 9.914A2 2 0 0 0 5 11.328V18a1 1 0 0 0 1 1z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/></svg></span>Claude<span class="eng-pro">GEO Pro</span></li>
+          <li class="eng-item"><span class="eng-mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12.67 19a2 2 0 0 0 1.416-.588l6.154-6.172a6 6 0 0 0-8.49-8.49L5.586 9.914A2 2 0 0 0 5 11.328V18a1 1 0 0 0 1 1z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/></svg></span>Claude<span class="eng-pro">Done-for-you</span></li>
         </ul>
       </div>
     </div>
@@ -2161,7 +2204,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
     </ol>
 
     <ul class="how-chips" aria-label="Your safeguards for every fix">
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>You approve every change</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>You stay in control</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>One-click undo</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Never invents facts</li>
     </ul>
@@ -2405,23 +2448,23 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
         <div class="worth-field">
           <div class="worth-row">
             <label class="worth-lab" for="worth-orders">Extra orders a month from AI</label>
-            <span class="worth-val tnum" id="worth-orders-out" aria-hidden="true">5</span>
+            <span class="worth-val tnum" id="worth-orders-out" aria-hidden="true">2</span>
           </div>
-          <div class="worth-range" style="--p:0.0816">
-            <input type="range" id="worth-orders" name="orders" min="1" max="50" step="1" value="5" aria-valuetext="5 orders a month">
+          <div class="worth-range" style="--p:0.0204">
+            <input type="range" id="worth-orders" name="orders" min="1" max="50" step="1" value="2" aria-valuetext="2 orders a month">
           </div>
           <div class="worth-ends" aria-hidden="true"><span>1</span><span>50</span></div>
         </div>
 
         <div class="worth-out">
           <div class="worth-nums" aria-hidden="true">
-            <p class="worth-big"><span class="worth-m tnum" id="worth-month">$400</span><span class="worth-unit">a month</span></p>
-            <p class="worth-yr"><span class="worth-y tnum" id="worth-year">$4,800</span><span class="worth-unit">a year</span></p>
+            <p class="worth-big"><span class="worth-m tnum" id="worth-month">$160</span><span class="worth-unit">a month in sales</span></p>
+            <p class="worth-yr"><span class="worth-y tnum" id="worth-year">$1,920</span><span class="worth-unit">a year</span></p>
           </div>
-          <p class="worth-sum tnum" aria-live="polite" aria-atomic="true"><span id="worth-sum">5 orders × $80 = $400 a month</span><span class="worth-sr" id="worth-sum-yr"></span></p>
+          <p class="worth-sum tnum" aria-live="polite" aria-atomic="true"><span id="worth-sum">2 orders × $80 = $160 a month</span><span class="worth-sr" id="worth-sum-yr"></span></p>
         </div>
 
-        <p class="worth-core">GEO Core is US$49 a month. You decide what’s realistic for your store.</p>
+        <p class="worth-core">GEO Standard is US$97 a month. You decide what’s realistic for your store.</p>
       </div>
     </div>
   </div>
@@ -2433,53 +2476,56 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
     <div class="wrap">
       <div class="price-head">
         <h2 class="h2 price-h2" id="price-title">Simple pricing</h2>
-        <p class="lead price-lead">Billed in US dollars through Shopify. Cancel any time.</p>
+        <!-- Monthly / yearly switch. 42-pricing.js shows it and swaps each [data-m][data-y] text. Without
+             JavaScript it stays hidden: the cards show monthly prices, with the yearly price as a small line. -->
+        <div class="price-toggle" role="group" aria-label="Billing period" hidden>
+          <button type="button" class="price-tg" data-period="m" aria-pressed="true">Monthly</button>
+          <button type="button" class="price-tg" data-period="y" aria-pressed="false">Yearly <span class="price-save">3 months free</span></button>
+        </div>
+        <p class="price-status" aria-live="polite"></p>
       </div>
 
       <div class="price-grid">
-        <!-- Free scan (inside Shopify, after install; the free product check above needs no install) -->
-        <article class="price-card" aria-labelledby="price-n-free">
-          <h3 class="price-name" id="price-n-free">Free scan</h3>
-          <p class="price-amt"><span class="price-num">$0</span><span class="price-per">one-time</span></p>
-          <p class="price-desc">After install: see if AI recommends you.</p>
-          <a class="btn btn-light price-btn price-btn-line" href="#pricing">Install and scan free</a>
-          <ul class="price-list">
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>10 buyer questions on 3 AI assistants</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Who AI recommends instead</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>AI sales we can trace, last 60 days</li>
-            <li class="price-no"><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></span>No fixes or ongoing tracking</li>
-          </ul>
-        </article>
-
-        <!-- Core -->
-        <article class="price-card price-card-dark" aria-labelledby="price-n-core">
+        <!-- Standard (plan id "core"): our pick, the indigo card with the edge light -->
+        <article class="price-card price-card-dark" aria-labelledby="price-n-std">
           <span class="price-glow" aria-hidden="true"></span>
-          <span class="price-badge">Our pick</span>
-          <h3 class="price-name" id="price-n-core">Core</h3>
-          <p class="price-amt"><span class="price-num">US$49</span><span class="price-per">a month · 7-day free trial</span></p>
-          <p class="price-desc">Help AI recommend you, and see the money.</p>
-          <a class="btn price-btn price-btn-white" href="#pricing">Start 7-day trial</a>
+          <span class="price-badge">For most stores</span>
+          <h3 class="price-name" id="price-n-std">Standard</h3>
+          <p class="price-amt"><span class="price-num" data-m="US$97" data-y="US$873">US$97</span><span class="price-per" data-m="a month" data-y="a year">a month</span></p>
+          <p class="price-alt" data-m="Or US$873 a year." data-y="About US$73 a month. 3 months free.">Or US$873 a year.</p>
+          <p class="price-desc">You approve, AI does the work.</p>
+          <a class="btn price-btn price-btn-white" href="#pricing" data-plan="core">Start 7-day free trial</a>
           <ul class="price-list">
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>25 buyer questions, tracked weekly</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>ChatGPT, Gemini, Perplexity + Google</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>100 products, 30 fixes a month</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Revenue dashboard and monthly report</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>50 buyer questions, scanned weekly</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>ChatGPT, Gemini, Perplexity, Google AI Overviews</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Unlimited fixes, one-click approve</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>500 products, 2 guide pages a month</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Up to 10 pitches a month, drafted</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Monthly email report</li>
           </ul>
         </article>
 
-        <!-- Pro -->
-        <article class="price-card" aria-labelledby="price-n-pro">
-          <h3 class="price-name" id="price-n-pro">Pro</h3>
-          <p class="price-amt"><span class="price-num">US$149</span><span class="price-per">a month</span></p>
-          <p class="price-desc">Everything in Core, for bigger catalogues.</p>
-          <a class="btn btn-light price-btn price-btn-line" href="#pricing">Choose Pro</a>
+        <!-- Done-for-you (plan id "pro") -->
+        <article class="price-card" aria-labelledby="price-n-dfy">
+          <h3 class="price-name" id="price-n-dfy">Done-for-you</h3>
+          <p class="price-amt"><span class="price-num" data-m="US$497" data-y="US$4,473">US$497</span><span class="price-per" data-m="a month" data-y="a year">a month</span></p>
+          <p class="price-alt" data-m="Or US$4,473 a year." data-y="About US$373 a month. 3 months free.">Or US$4,473 a year.</p>
+          <p class="price-desc">AI and our team do it for you.</p>
+          <a class="btn btn-light price-btn price-btn-line" href="#pricing" data-plan="pro">Start 7-day free trial</a>
           <ul class="price-list">
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>100 buyer questions, scanned daily</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Adds Claude</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>1,000 products, unlimited fixes</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Autopilot mode (opt-in)</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Also checks Claude</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Fixes applied for you, undo any time</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>2,000 products, 8 guide pages a month</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Up to 40 pitches a month, sent and followed up</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Monthly report and a 30-minute call</li>
           </ul>
         </article>
+      </div>
+
+      <div class="price-foot">
+        <p>Not sure yet? <a class="price-foot-link" href="#check">Run a free product check first.</a></p>
+        <p>Billed in US dollars through Shopify. Cancel any time.</p>
       </div>
     </div>
   </div>
@@ -2514,7 +2560,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
               <div class="faq-pair" id="faq-p1">
                 <div class="faq-msg faq-msg-q"><h3 class="faq-q">What does GEO actually do?</h3></div>
                 <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
-                  <p>It helps ChatGPT, Gemini and Perplexity recommend your products. It checks their answers, writes fixes you approve and counts the sales it can trace back to them.</p>
+                  <p>It helps ChatGPT, Gemini and Perplexity recommend your products. It checks their answers, writes fixes and counts the sales it can trace back to them.</p>
                 </div></div>
               </div>
               <div class="faq-pair" id="faq-p2">
@@ -2533,19 +2579,19 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
               <div class="faq-pair" id="faq-p4">
                 <div class="faq-msg faq-msg-q"><h3 class="faq-q">Will GEO change my store without asking?</h3></div>
                 <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
-                  <p>No. Every change waits for your approval unless you turn on autopilot (Pro). Even then it skips risky changes, like product claims.</p>
+                  <p>Not on Standard: you approve every change. Done-for-you makes them for you, except risky ones like product claims. Undo takes one click.</p>
                 </div></div>
               </div>
               <div class="faq-pair" id="faq-p5">
                 <div class="faq-msg faq-msg-q"><h3 class="faq-q">If GEO costs money, what’s free?</h3></div>
                 <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
-                  <p>AI recommendations and the clicks they send, plus the product check and free scan. Core is US$49 a month after a 7-day free trial.</p>
+                  <p>The product check, the free scan after install, the 7-day free trial and AI’s clicks. After that, Standard is US$97 a month.</p>
                 </div></div>
               </div>
               <div class="faq-pair" id="faq-p6">
                 <div class="faq-msg faq-msg-q"><h3 class="faq-q">How long does setup take?</h3></div>
                 <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
-                  <p>About five minutes. Install from Shopify and tick the questions you care about. Your first scan runs in the background.</p>
+                  <p>About five minutes. Install from Shopify, tick your questions and the first scan starts.</p>
                 </div></div>
               </div>
             </div>
@@ -2609,7 +2655,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 <script>
 // 05-shared.js
 // Decorative loops (the logo marquee, the hero cards and floating clay pieces, the FAQ chat, the how-it-works
-// renders, the coins, the Core card's border light (hover only), the closing shop front) pause while their part of the page
+// renders, the coins, the Standard card's border light (hover only), the closing shop front) pause while their part of the page
 // is off screen, so an idle page does no animation work. Missing parts are skipped.
 // The CSS for .is-off is in 05-shared.css. The hero cards and the FAQ manage their own motion as well.
 (function () {
@@ -3293,6 +3339,51 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   orders.addEventListener('change', bump);
   // The browser can restore slider positions on back/forward, so sync once on load.
   update();
+})();
+
+// 42-pricing.js
+(function () {
+  // Pricing: the Monthly / Yearly switch. Every text that changes carries both versions, data-m (monthly)
+  // and data-y (yearly); the page itself holds the monthly one. Without JavaScript the switch stays hidden
+  // and each card shows its monthly price with the yearly price as a small line under it.
+  var root = document.getElementById('pricing');
+  if (!root) return;
+  var bar = root.querySelector('.price-toggle');
+  if (!bar) return;
+  var btns = Array.prototype.slice.call(bar.querySelectorAll('.price-tg[data-period]'));
+  var swaps = Array.prototype.slice.call(root.querySelectorAll('[data-m][data-y]'));
+  var status = root.querySelector('.price-status');
+  if (btns.length < 2 || !swaps.length) return;
+  var period = 'm';
+
+  // replay the small fade on the amounts and the line under them (CSS: .is-swap; off for reduced motion)
+  function replay(el) {
+    el.classList.remove('is-swap');
+    void el.offsetWidth;
+    el.classList.add('is-swap');
+  }
+
+  function set(next) {
+    if (next === period) return;
+    period = next;
+    btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-period') === period)); });
+    swaps.forEach(function (el) { el.textContent = el.getAttribute(period === 'y' ? 'data-y' : 'data-m'); });
+    Array.prototype.forEach.call(root.querySelectorAll('.price-amt, .price-alt'), replay);
+    // The live page's trial buttons go to /auth/login?plan=..&cycle=..: keep the cycle in step with the toggle.
+    Array.prototype.forEach.call(root.querySelectorAll('a.price-btn[data-plan]'), function (a) {
+      var href = a.getAttribute('href') || '';
+      if (href.indexOf('cycle=') > -1) a.setAttribute('href', href.replace(/cycle=(monthly|yearly)/, 'cycle=' + (period === 'y' ? 'yearly' : 'monthly')));
+    });
+    if (status) status.textContent = period === 'y' ? 'Yearly prices shown.' : 'Monthly prices shown.';
+  }
+
+  btns.forEach(function (b) {
+    b.addEventListener('click', function () { set(b.getAttribute('data-period')); });
+  });
+  root.addEventListener('animationend', function (e) {
+    if (e.target.classList && e.target.classList.contains('is-swap')) e.target.classList.remove('is-swap');
+  });
+  bar.hidden = false;
 })();
 
 // 43-faq.js

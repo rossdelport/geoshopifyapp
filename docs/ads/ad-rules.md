@@ -30,7 +30,7 @@ Tick every box. One "no" means the ad doesn't run.
 **Price and "free"**
 
 - [ ] "Free" is only used for things that cost nothing: the free product check, or "no cost per click" for the AI recommendation itself. Never for GEO.
-- [ ] If the ad says "free" anywhere, the price is clear in the same place, using the line that is true that day (`ad-concepts.md` 2.1). Stage A, until a normal store can install: "The check is free. Our app is coming to the Shopify App Store at US$49/mo. Join the early list." Stage B: "The check is free. Our app is US$49/mo (USD), billed through Shopify after a 7-day trial unless you cancel. Cancel in the app or by uninstalling."
+- [ ] If the ad says "free" anywhere, the price is clear in the same place, using the line that is true that day (`ad-concepts.md` 2.1). Stage A, until a normal store can install: "The check is free. Our app is coming to the Shopify App Store at US$97/mo. Join the early list." Stage B: "The check is free. Our app is US$97/mo (USD), billed through Shopify after a 7-day trial unless you cancel. Cancel in the app or by uninstalling."
 - [ ] No ad mentions the trial until a non-dev store has installed the app and started one (section 5.10).
 - [ ] Trial ads say how long the trial is and that billing starts automatically after it, plus how to cancel. Add "plus GST" if Shopify adds GST to app charges for AU stores (not yet confirmed).
 
@@ -64,9 +64,9 @@ Tick every box. One "no" means the ad doesn't run.
 
 | Ross's line | Verdict | Why (rule) | Say this instead |
 |---|---|---|---|
-| "Ranking in AI answers is like free money" | **Don't use. High rejection and legal risk.** | Meta bans "unrealistic financial reward for unclear or minimal effort" (1.1). Google bans "unrealistic promises of large financial return with minimal risk, effort or investment" (2.1). ACCC: "free" is read as absolutely free, and GEO costs US$49 a month (5.3). A promise of money is a claim about the future that needs reasonable grounds (5.5). | "When ChatGPT recommends your product, there's no cost per click." / "Ads have a price per click. An AI recommendation has to be earned." |
+| "Ranking in AI answers is like free money" | **Don't use. High rejection and legal risk.** | Meta bans "unrealistic financial reward for unclear or minimal effort" (1.1). Google bans "unrealistic promises of large financial return with minimal risk, effort or investment" (2.1). ACCC: "free" is read as absolutely free, and GEO costs US$97 a month (5.3). A promise of money is a claim about the future that needs reasonable grounds (5.5). | "When ChatGPT recommends your product, there's no cost per click." / "Ads have a price per click. An AI recommendation has to be earned." |
 | "CPMs only go up and to the right. They never come back down." | **Don't use. False on the platforms' own numbers.** | Meta's price per ad fell for 7 quarters in a row in 2022 to 2023 (`ad-facts.md` section 1). A false claim breaks ACL s18 and s29 (5.1, 5.2). "Never" is a prediction with no reasonable grounds (5.5). Google bans "inaccurate claims" (2.1). Meta can reject ads "contrary to our competitive position" (1.7). | "Meta's average price per ad was 12% higher than a year earlier (Q2 2026, Meta's results)." / "Ad prices go up and down. Since late 2023 they've mostly gone up." Pair it, and let them connect the dots: "Meta: +12% per ad on last year. A ChatGPT recommendation: no cost per click." |
-| "The free sales channel your store is missing" (site headline) | **OK on the site with the price nearby. Risky as a stand-alone ad headline.** | The AI recommendation has no cost per click, so "free" is defensible for the channel. But the overall impression must not be that GEO is free, and fine print can't fix a misleading headline (5.3, 5.4). Shopify listing rules keep pricing out of the intro text (3.3). | In ads: "A sales channel with no cost per click" plus the price line in the same frame (stage A until installs open: "Our app is coming to the Shopify App Store at US$49/mo"). |
+| "The free sales channel your store is missing" (site headline) | **OK on the site with the price nearby. Risky as a stand-alone ad headline.** | The AI recommendation has no cost per click, so "free" is defensible for the channel. But the overall impression must not be that GEO is free, and fine print can't fix a misleading headline (5.3, 5.4). Shopify listing rules keep pricing out of the intro text (3.3). | In ads: "A sales channel with no cost per click" plus the price line in the same frame (stage A until installs open: "Our app is coming to the Shopify App Store at US$97/mo"). |
 | "Are you losing sales to stores ChatGPT recommends?" | **Don't use on Meta.** | Meta bans ads that "imply knowledge of personal or organizational financial information" and ads that "ask questions about personal attributes", including "vulnerable financial status" (1.4). | "When a shopper asks ChatGPT for a gift, which stores does it name? Check yours free." / "Have you checked what ChatGPT recommends in your category?" |
 | "Get your products recommended by ChatGPT" | **OK if not a promise.** | A guaranteed outcome is an "improbable result ... as the likely outcome" (2.1) and a future claim (5.5). | "Help your products get recommended by ChatGPT & co." / "See what ChatGPT says about your products, and fix what it can't read." |
 | "Free AI visibility check" | **OK.** | It is genuinely free. If an email is needed, say so. | "Free product check: paste a link, see if ChatGPT, Gemini and Perplexity recommend it." |
@@ -88,7 +88,7 @@ The old "Unacceptable Business Practices" URL now redirects here. Ads must follo
   - Investment content bans offers "claiming or referencing successful past performance or returns to create an expectation of similar future results" and offers "that claim quick returns (such as under 24 hours)".
   - Practices Meta acts on from user feedback include "Misleading or unreasonable pricing", "Product misrepresentation: promoting products or services that materially differ from what was advertised" and "Deceptive subscription practices: enrolling customers in recurring payment plans or subscription services without clear disclosure of terms."
 
-**What it means for GEO:** "Free money" plus coin imagery plus "no effort" reads like a get-rich-quick offer to Meta's automated review, even though GEO is software. (That last point is our judgement, not Meta's wording.) The 7-day trial that turns into US$49 a month must be disclosed plainly.
+**What it means for GEO:** "Free money" plus coin imagery plus "no effort" reads like a get-rich-quick offer to Meta's automated review, even though GEO is software. (That last point is our judgement, not Meta's wording.) The 7-day trial that turns into US$97 a month must be disclosed plainly.
 
 ### 1.2 "Unrealistic outcomes" (old page removed, idea still enforced)
 
@@ -189,8 +189,8 @@ The old "Unacceptable Business Practices" URL now redirects here. Ads must follo
 |---|---|
 | Headline: "Kedra Alternative: AI Visibility" landing on our page, if it reads as if we are Kedra | Bid on the keyword if wanted, but headline with our own name: "GEO: see what ChatGPT recommends" |
 | "Rank #1 in ChatGPT Guaranteed" | "Check If ChatGPT Recommends You" |
-| "Free AI Visibility App" | "Free Product Check. Plans from US$49/mo" |
-| "7-Day Free Trial" with no billing info | "US$49/mo (USD), billed by Shopify after a 7-day trial unless you cancel in the app." (only once a normal store can install) |
+| "Free AI Visibility App" | "Free Product Check. Plans from US$97/mo" |
+| "7-Day Free Trial" with no billing info | "US$97/mo (USD), billed by Shopify after a 7-day trial unless you cancel in the app." (only once a normal store can install) |
 | "The Secret to AI Sales" | "How ChatGPT Picks What to Recommend" |
 
 ### 2.3 Responsive search ads: where the price must be pinned
@@ -318,7 +318,7 @@ So the listing rules below are the App Store ad rules.
 - "See if ChatGPT, Gemini and Perplexity recommend your products."
 - "Tracks which stores ChatGPT & co recommend for the questions your shoppers ask."
 - "Shows the orders and revenue it can trace to ChatGPT, Gemini and Perplexity links."
-- "Checks Google's AI Overviews too." (True for Core and Pro scans; the free product check covers ChatGPT, Gemini and Perplexity only, so don't say it there.)
+- "Checks Google's AI Overviews too." (True for Standard and Done-for-you scans; the free product check covers ChatGPT, Gemini and Perplexity only, so don't say it there.)
 - "For Shopify stores."
 - "GEO is independent and not affiliated with OpenAI, Google or Perplexity."
 

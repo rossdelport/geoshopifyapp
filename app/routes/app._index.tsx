@@ -8,8 +8,9 @@ import { requireShop, getUsage } from "../lib/shop.server";
 import { activeScan, moneySummary, topCompetitors, visibilitySummary } from "../lib/dashboard.server";
 import { enqueue } from "../lib/jobs.server";
 import { startScan } from "../lib/scan.server";
-import { canRunScan } from "../lib/limits";
-import { ENGINE_LABELS, type Engine } from "../lib/plans";
+import { canRunManualCheck } from "../lib/limits";
+import { ENGINE_LABELS, PLANS, everyDaysLabel, trialDaysForNewSubscription, type Engine } from "../lib/plans";
+import { planIntentFor } from "../lib/plan-intent.server";
 import { AI_ENGINE_LABELS } from "../lib/attribution";
 import { SCORE_EXPLAINER, scoreLabel } from "../lib/score";
 import { FIX_TYPE_LABELS } from "../lib/fix-labels";
@@ -32,7 +33,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
   if (shop.onboarding !== "done") return { ...base, view: "setup" as const };
 
-  const [money, visibility, competitors, fixes, usage, brand, lastScan] = await Promise.all([
+  const [money, visibility, competitors, fixes, usage, brand, lastScan, lastManual, picked] = await Promise.all([
     moneySummary(shop),
     visibilitySummary(shop.id),
     topCompetitors(shop.id, 5),
@@ -40,6 +41,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     getUsage(shop.id),
     db.brandProfile.findUnique({ where: { shopId: shop.id }, select: { brandName: true } }),
     db.scan.findFirst({ where: { shopId: shop.id, status: { in: ["done", "failed"] } }, orderBy: { startedAt: "desc" } }),
+    db.scan.findFirst({ where: { shopId: shop.id, kind: "manual" }, orderBy: { startedAt: "desc" }, select: { startedAt: true } }),
+    // A plan picked on our website before installing: offer it now the free scan is done.
+    plan.id === "free" ? planIntentFor(shop.domain) : Promise.resolve(null),
   ]);
   const order = { high: 0, medium: 1, low: 2 } as Record<string, number>;
   const nextFixes = fixes.sort((a, b) => (order[a.impact] ?? 3) - (order[b.impact] ?? 3)).slice(0, 3);
@@ -57,8 +61,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     pendingFixes: fixes.length,
     lastScanAt: shop.lastScanAt,
     lastScanFailed: lastScan?.status === "failed" ? lastScan.error : null,
-    canScanNow: canRunScan(plan, usage, false).ok && plan.id !== "free",
+    canScanNow: canRunManualCheck(plan, usage, lastManual?.startedAt).ok,
+    manualEvery: plan.manualCheckEveryDays ? everyDaysLabel(plan.manualCheckEveryDays) : null,
     freeScanUsed: usage.freeScanUsed,
+    // A store gets one free trial: none (or only what's left) if it has had one.
+    trialDays: trialDaysForNewSubscription(PLANS.core, null, new Date(), shop.trialEndsAt),
+    picked: picked ? { ...picked, name: PLANS[picked.plan].name } : null,
   };
 };
 
@@ -73,13 +81,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return { ok: true, message: "Setting things up…" };
   }
   if (intent === "rescan") {
+    // A light scan (1 run per assistant, no Claude), once per plan.manualCheckEveryDays, inside the cost cap.
     const usage = await getUsage(shop.id);
-    const check = canRunScan(plan, usage, false);
-    if (!check.ok || plan.id === "free") return { ok: false, message: check.reason ?? "Start a plan to run more scans." };
-    const recent = await db.scan.findFirst({
-      where: { shopId: shop.id, kind: "manual", startedAt: { gte: new Date(Date.now() - 20 * 3_600_000) } },
-    });
-    if (recent) return { ok: false, message: "You can run one extra check a day. Your scheduled scans keep running." };
+    const lastManual = await db.scan.findFirst({ where: { shopId: shop.id, kind: "manual" }, orderBy: { startedAt: "desc" } });
+    const check = canRunManualCheck(plan, usage, lastManual?.startedAt);
+    if (!check.ok) return { ok: false, message: check.reason ?? "Start a plan to run more scans." };
     await startScan(shop.id, "manual");
     return { ok: true, message: "Checking the AI assistants now. This takes a few minutes." };
   }
@@ -207,7 +213,11 @@ export default function Dashboard() {
   return (
     <s-page heading={`${data.shopName}`}>
       {data.plan.id === "free" && (
-        <s-button slot="primary-action" variant="primary" href="/app/plans">
+        <s-button
+          slot="primary-action"
+          variant="primary"
+          href={data.picked ? `/app/plans?plan=${data.picked.plan}&cycle=${data.picked.cycle}` : "/app/plans"}
+        >
           Start tracking weekly
         </s-button>
       )}
@@ -222,11 +232,23 @@ export default function Dashboard() {
         </s-button>
       )}
 
-      {data.plan.id === "free" && data.freeScanUsed && (
+      {data.picked && (
+        <s-banner tone="success" heading={`You picked ${data.picked.name} on our website`}>
+          <s-paragraph>
+            Your free scan is done. Start {data.picked.name}
+            {data.trialDays > 0 ? ` with a ${data.trialDays}-day free trial` : ""} to keep tracking and get your fixes.
+          </s-paragraph>
+          <s-button slot="secondary-actions" variant="primary" href={`/app/plans?plan=${data.picked.plan}&cycle=${data.picked.cycle}`}>
+            {data.trialDays > 0 ? `Start ${data.trialDays}-day free trial` : `Start ${data.picked.name}`}
+          </s-button>
+        </s-banner>
+      )}
+      {data.plan.id === "free" && data.freeScanUsed && !data.picked && (
         <s-banner tone="info" heading="That was your free scan">
           <s-paragraph>
-            Start Core (7 days free) to track your questions every week, get fixes you can approve in one click, and see your AI
-            sales grow.
+            Start {PLANS.core.name}
+            {data.trialDays > 0 ? ` with a ${data.trialDays}-day free trial` : ""} to track your questions every week, get fixes
+            you can approve in one click, and see your AI sales.
           </s-paragraph>
         </s-banner>
       )}
@@ -352,7 +374,7 @@ export default function Dashboard() {
           <div className="geo-small" style={{ marginTop: 6 }}>
             {scanning
               ? `Checking now… ${data.scan!.done}/${data.scan!.total}`
-              : `Last checked ${timeAgo(data.lastScanAt)}${data.plan.scanEveryDays ? ` · checks every ${data.plan.scanEveryDays === 1 ? "day" : "week"}` : ""}`}
+              : `Last checked ${timeAgo(data.lastScanAt)}${data.plan.scanEveryDays ? ` · checks every ${data.plan.scanEveryDays === 1 ? "day" : "week"}` : ""}${data.manualEvery ? ` · one extra quick check ${data.manualEvery}` : ""}`}
           </div>
         </s-section>
 

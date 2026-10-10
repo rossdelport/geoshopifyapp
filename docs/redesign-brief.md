@@ -83,7 +83,8 @@ section answers "what's in it for my store" and teaches something.
 6. **The app (six screens), Guardrails, Fix engine, How it works, Proof, Connections, Pricing, FAQ,
    Guides, CTA:** same structure, copy rewritten benefit-first and educational. Pricing framing:
    "If GEO brings you one extra order a month at your average order value, compare that with
-   US$49." Let them do the maths (the slider helps).
+   US$97." Let them do the maths (the slider helps). (Prices updated 10 Oct 2026: Standard US$97 a
+   month, Done-for-you US$497; see `app/lib/plans.ts`.)
 
 ## "What's it worth to you" slider (new section, vanilla JS, no library)
 
@@ -91,7 +92,7 @@ section answers "what's in it for my store" and teaches something.
   **Extra orders a month from AI** (1 to 50, default 5).
 - Output: monthly and yearly extra revenue, and the working shown in words so they connect the dots:
   "5 orders × $80 = $400 a month, or $4,800 a year."
-- A neutral line beneath: "GEO Core is US$49 a month. You decide what's realistic for your store."
+- A neutral line beneath: "GEO Standard is US$97 a month. You decide what's realistic for your store."
   No promise of results. Use a plain "$" (no currency conversion).
 - Accessible: real `<input type="range">` with labels, `aria-valuetext`, keyboard friendly, works at
   390px. In the design preview it works the same (pure client-side).

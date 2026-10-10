@@ -717,11 +717,12 @@ export function CheckReport({ view }: { view: CheckView }) {
         <div className="ck-cta-tx">
           <h2 className="ck-cta-h">Help AI recommend you, every week</h2>
           <p>
-            GEO Core checks up to {PLANS.core.questions} buyer questions every week, writes fixes that help AI recommend
-            your products (you approve each one), and counts the orders it can trace back to AI.
+            GEO {PLANS.core.name} checks up to {PLANS.core.questions} buyer questions every week, writes fixes that help AI
+            recommend your products (you approve each one), and counts the orders it can trace back to AI.
           </p>
           <p className="ck-cta-price">
-            Your first scan is free. Core is US${PLANS.core.priceUsd} a month after a {PLANS.core.trialDays}-day free trial.
+            Your first scan is free. {PLANS.core.name} is US${PLANS.core.priceUsd} a month after a{" "}
+            {PLANS.core.trialDays}-day free trial.
           </p>
           <div className="ck-cta-row">
             <a className="ck-btn ck-btn-dark" href={view.installUrl}>
@@ -739,8 +740,8 @@ export function CheckReport({ view }: { view: CheckView }) {
 
       <p className="ck-honest">
         Answers change from run to run, so we ask twice. This quick check uses 3 questions. The app tracks up to{" "}
-        {PLANS.core.questions} every week on Core, or {PLANS.pro.questions} every day on Pro (asked twice on the weekly
-        full scan).
+        {PLANS.core.questions} every week on {PLANS.core.name}, or {PLANS.pro.questions} every day on {PLANS.pro.name} (asked
+        twice on the weekly full scan).
       </p>
     </>
   );

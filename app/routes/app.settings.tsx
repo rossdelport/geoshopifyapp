@@ -26,8 +26,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       fixes: plan.fixesPerMonth,
       fixesLabel: limitLabel(plan.fixesPerMonth),
       products: plan.products,
+      guides: plan.guidePagesPerMonth,
       outreach: plan.outreachPerMonth,
     },
+    autopilot: plan.autopilot && shop.autopilot,
     usage,
     reportEmails: shop.reportEmails ?? shop.email ?? "",
     country: shop.country,
@@ -131,6 +133,7 @@ export default function Settings() {
             <>
               <UsageRow label="Fixes this month" used={data.usage.fixesThisMonth} limit={data.plan.fixes} />
               <UsageRow label="Products optimised" used={data.usage.optimisedProducts} limit={data.plan.products} />
+              <UsageRow label="Guide pages this month" used={data.usage.guidePagesThisMonth} limit={data.plan.guides} />
               <UsageRow label="Outreach targets this month" used={data.usage.outreachThisMonth} limit={data.plan.outreach} />
             </>
           )}
@@ -191,7 +194,11 @@ export default function Settings() {
 
       <s-section heading="How we keep this honest">
         <s-unordered-list>
-          <s-list-item>Nothing in your store changes until you approve it, and every change can be undone.</s-list-item>
+          <s-list-item>
+            {data.autopilot
+              ? "Autopilot is on: fixes go live for you after a check for health and other claims. Any that need facts from you wait for your approval. Every change can be undone."
+              : "Nothing in your store changes until you approve it, and every change can be undone."}
+          </s-list-item>
           <s-list-item>We never invent facts, reviews or awards, and we avoid health claims.</s-list-item>
           <s-list-item>AI sales are orders where the shopper arrived from an AI assistant. We don&apos;t claim all of them are thanks to us.</s-list-item>
           <s-list-item>Google AI Overviews can&apos;t be separated from normal Google traffic, so they aren&apos;t counted as AI sales.</s-list-item>

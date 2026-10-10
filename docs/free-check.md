@@ -199,10 +199,10 @@ Google Fonts link for Geist + Inter. Works at 390px wide (no sideways scroll). H
   N of 2), and an expandable answer snippet (`<details>`) with brand names highlighted (build text
   segments; never `dangerouslySetInnerHTML`); "Quick wins" tips; CTA card "Track this every week and
   fix it in one click" → `installUrl` button "Start your 7-day free trial" (with the line "Weekly
-  tracking and one-click fixes are on Core, US$49/mo after the trial.") + link "Check another
+  tracking and one-click fixes are on Standard, US$97/mo after the trial.") + link "Check another
   product" → `/#check`.
   Honesty note: "Answers change from run to run, so we ask twice. This quick check uses 3 questions;
-  the app tracks up to 25 every week."
+  the app tracks up to 50 every week on Standard."
 - Failed: friendly message + the form to try again.
 - `meta`: title "GEO free check: {product title}".
 

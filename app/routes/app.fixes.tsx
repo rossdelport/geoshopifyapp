@@ -5,11 +5,11 @@ import { useAppBridge } from "@shopify/app-bridge-react";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import db from "../db.server";
 import { requireShop, getUsage } from "../lib/shop.server";
-import { applyFix, revertFix } from "../lib/fixes.server";
+import { applyFix, queueAutopilot, revertFix } from "../lib/fixes.server";
 import { FIX_TYPE_LABELS, type FaqItem, type FixAfter, type FixBefore } from "../lib/fix-labels";
 import { parseFaq } from "../lib/faq";
-import { remainingFixes } from "../lib/limits";
-import { limitLabel } from "../lib/plans";
+import { remainingFixes, remainingGuidePages } from "../lib/limits";
+import { PLANS, limitLabel } from "../lib/plans";
 import { enqueue } from "../lib/jobs.server";
 import { sanitizeHtml } from "../lib/sanitize";
 import { timeAgo } from "../lib/format";
@@ -33,6 +33,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     perMonth: limitLabel(plan.fixesPerMonth),
     optimised: usage.optimisedProducts,
     productLimit: plan.products,
+    guidesLeft: remainingGuidePages(plan, usage),
+    guidesPerMonth: plan.guidePagesPerMonth,
     themeEditorUrl: `https://${shop.domain}/admin/themes/current/editor?template=product&addAppBlockId=${process.env.SHOPIFY_API_KEY ?? ""}/product-faq&target=mainSection`,
     hasFaqLive: fixes.some((f) => f.type === "product_faq" && f.status === "applied"),
     fixes: fixes
@@ -54,6 +56,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       .sort((a, b) => (impactOrder[a.impact] ?? 3) - (impactOrder[b.impact] ?? 3)),
   };
 };
+
+const GENERATE_EVERY_MS = 3 * 3_600_000;
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { shop, plan, admin } = await requireShop(request);
@@ -93,12 +97,25 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         return { ok: true, message: "Saved your changes" };
       }
       case "autopilot": {
-        if (!plan.autopilot) return { ok: false, message: "Autopilot is on the Pro plan." };
+        if (!plan.autopilot) return { ok: false, message: `Autopilot comes with ${PLANS.pro.name}.` };
         const on = form.get("on") === "true";
-        await db.shop.update({ where: { id: shop.id }, data: { autopilot: on } });
-        return { ok: true, message: on ? "Autopilot on: safe fixes go live automatically" : "Autopilot off" };
+        // Remember a store that switches it off, so a plan change never switches it back on.
+        await db.shop.update({ where: { id: shop.id }, data: { autopilot: on, autopilotOptOut: !on } });
+        if (on) await queueAutopilot(shop.id); // apply what's already waiting, not just the next round
+        return { ok: true, message: on ? "Autopilot on: fixes go live for you, unless they need your input" : "Autopilot off" };
       }
       case "generate": {
+        // Fixes are unlimited, but each round costs AI time: inside the month's budget, and not more
+        // often than every few hours (a round also runs after every scan).
+        const usage = await getUsage(shop.id);
+        if (usage.costThisMonth >= plan.costCapUsd) {
+          return { ok: false, message: "This month's AI budget is used up. New fixes start again next month." };
+        }
+        const last = await db.job.findUnique({ where: { dedupeKey: `fixes:${shop.id}` } });
+        if (last && (last.status === "queued" || last.status === "running")) return { ok: true, message: "Already writing fixes…" };
+        if (last && Date.now() - last.updatedAt.getTime() < GENERATE_EVERY_MS) {
+          return { ok: false, message: "New fixes were written in the last 3 hours. Review those first, or try again later." };
+        }
         const job = await enqueue("fixes.generate", {}, { shopId: shop.id, dedupeKey: `fixes:${shop.id}` });
         return { ok: true, message: job ? "Writing new fixes. They'll appear here in a minute or two." : "Already writing fixes…" };
       }
@@ -374,20 +391,27 @@ export default function Fixes() {
       <s-section>
         <s-stack direction="block" gap="base">
           <s-paragraph>
-            Changes that make it easier for AI assistants to understand and recommend your products. Nothing goes live until you
-            approve it, and every change can be undone.
+            Changes that make it easier for AI assistants to understand and recommend your products.{" "}
+            {data.autopilotAllowed && data.autopilot
+              ? "Autopilot puts fixes live for you. Any that need facts from you, or wording we had to soften, wait here for you. Every change can be undone."
+              : "Nothing goes live until you approve it, and every change can be undone."}
           </s-paragraph>
           <div className="geo-legend" style={{ marginTop: 0 }}>
             <span>
               Fixes this month: <b>{data.remaining < 0 ? "unlimited" : `${data.remaining} left of ${data.perMonth}`}</b>
             </span>
             <span>
-              Products optimised: <b>{data.optimised} of {data.productLimit.toLocaleString()}</b>
+              Products optimised: <b>{data.optimised} of {data.productLimit.toLocaleString("en-AU")}</b>
             </span>
+            {data.guidesPerMonth > 0 && (
+              <span>
+                Guide pages this month: <b>{data.guidesLeft} left of {data.guidesPerMonth}</b>
+              </span>
+            )}
           </div>
           {data.autopilotAllowed && (
             <s-switch
-              label="Autopilot: publish low-risk fixes (FAQs, search text, product types) automatically"
+              label="Autopilot: put fixes live for you (ones that need your input still wait)"
               checked={data.autopilot}
               onChange={() => submit({ intent: "autopilot", on: String(!data.autopilot) })}
             />

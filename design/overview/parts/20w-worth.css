@@ -87,10 +87,12 @@
 .worth-m, .worth-y { transform-origin: 50% 80%; }
 .worth-nums { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px 20px; }
 .worth-big, .worth-yr { display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
+/* "a month in sales" drops under a big number on a narrow phone instead of running past the box */
+.worth-big { flex-wrap: wrap; row-gap: 4px; }
 .worth-m { font-family: var(--font-head); font-size: 52px; font-weight: 500; letter-spacing: -2px; line-height: 1; color: var(--cobalt); }
 .worth-y { font-family: var(--font-head); font-size: 26px; font-weight: 500; letter-spacing: -0.8px; line-height: 1; color: var(--cobalt-deep); }
 .worth-unit { font-size: 15px; font-weight: 500; color: var(--navy); }
-/* the "5 orders × $80 = $400 a month" sum: screen readers only (it is the live region; the big numbers say it on screen) */
+/* the "2 orders × $80 = $160 a month" sum: screen readers only (it is the live region; the big numbers say it on screen) */
 .worth-sum { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 
 .worth-core { margin-top: 22px; font-size: 15px; line-height: 1.55; color: var(--navy); }

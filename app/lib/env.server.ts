@@ -10,6 +10,7 @@ export const env = {
   modelSmart: process.env.AI_MODEL_SMART || "claude-opus-5-5",
   resendKey: process.env.RESEND_API_KEY || "",
   emailFrom: process.env.GEO_EMAIL_FROM || process.env.RESEND_FROM_EMAIL || "",
+  // Who hears when a store starts or leaves Done-for-you (hand outreach, the monthly call).
   alertEmail: process.env.GEO_ALERT_EMAIL || "",
   billingTest: process.env.SHOPIFY_BILLING_TEST !== "false",
   runWorker: process.env.RUN_WORKER !== "false",
@@ -20,3 +21,12 @@ export const env = {
 };
 
 export const isProd = process.env.NODE_ENV === "production";
+
+// Test billing means no store is ever charged. Fine for development stores; at launch set
+// SHOPIFY_BILLING_TEST=false on Railway (see the launch checklist in CLAUDE.md section 18).
+if (isProd && env.billingTest) {
+  console.warn("[billing] WARNING: test billing is on (SHOPIFY_BILLING_TEST is not \"false\"). Subscriptions are test charges and nobody is billed.");
+}
+if (isProd && !env.alertEmail) {
+  console.warn("[billing] WARNING: GEO_ALERT_EMAIL is not set. Nobody is emailed when a store starts or leaves Done-for-you.");
+}
