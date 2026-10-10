@@ -15,7 +15,8 @@ A self-serve Shopify app that gets ecommerce brands **recommended by AI shopping
 ## 2. Who it's for
 
 - Shopify DTC brands, starting with **AU/NZ** (English, AUD), any size. Sweet spot: brands with real catalogs (beauty, grooming, skincare, supplements, apparel, home).
-- Merchant is non-technical. Copy must be plain English, short, no jargon (no "GEO", "AEO", "LLM" in UI — say "AI search", "ChatGPT & co").
+- Merchant is non-technical. Copy must be plain English, short, no jargon (no "GEO", "AEO", "LLM" in UI; say "AI search", "ChatGPT & co").
+- **Never use em dashes (—) in any copy** (site, app UI, emails, reports). Use a full stop, comma, colon or "and" instead. Ross's rule.
 
 ## 3. Pricing & plan limits (enforce in code)
 
