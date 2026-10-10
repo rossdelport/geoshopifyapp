@@ -1,0 +1,19 @@
+/* Page-wide polish shared by every part (base.css stays untouched). */
+
+/* Darker green for small text: 4.6:1 on --green-bg, about 5:1 on white. */
+:root { --green-ink: #15803d; }
+
+/* Qarin's label text chip is light grey on white sections, white on #fafafa sections. */
+.label .chip-tx { background: var(--bg-3); box-shadow: none; }
+.section.alt .label .chip-tx { background: var(--white); box-shadow: 0 1px 2px rgba(11, 12, 43, 0.04); }
+
+/* In-page jumps land below the floating nav. */
+section[id], footer[id] { scroll-margin-top: 96px; }
+
+/* Clear keyboard focus on links and buttons (the browser default is faint on navy and blue). */
+.page a:focus-visible, .page .btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 10px; }
+.page .price-band a:focus-visible { outline-color: var(--white); }
+
+@media (max-width: 760px) {
+  section[id], footer[id] { scroll-margin-top: 88px; }
+}

@@ -13,14 +13,14 @@
   gap: 24px;
   padding: 0 16px 0 16px;
   border-radius: 16px;
-  background: rgba(250, 251, 250, 0.86);
+  background: rgba(250, 251, 250, 0.94);
   -webkit-backdrop-filter: saturate(160%) blur(14px);
   backdrop-filter: saturate(160%) blur(14px);
   box-shadow: 0 0 0 1px #f1f1f1;
   transition: box-shadow .25s ease, background-color .25s ease;
 }
 .nav-wrap.nav-scrolled .nav-bar {
-  background: rgba(250, 251, 250, 0.92);
+  background: rgba(250, 251, 250, 0.97);
   box-shadow: 0 0 0 1px #ececec, 0 12px 28px -14px rgba(11, 12, 43, 0.16);
 }
 .nav-logo { display: inline-flex; align-items: center; gap: 10px; flex: none; }
@@ -73,3 +73,6 @@
   .nav-word { font-size: 24px; }
   .nav-cta { height: 38px; padding: 0 13px; font-size: 13px; border-radius: 9px; }
 }
+
+/* Smooth scrolling for in-page links lives in 10-nav.js, so other scrolls (and page captures) stay instant. */
+html { scroll-behavior: auto; }

@@ -70,7 +70,9 @@
 .hub-t1 { left: 5.02%; top: 55px; animation-delay: -0.5s; }
 .hub-t2 { left: 25.97%; top: 55px; animation-delay: -2.5s; }
 .hub-t3 { left: 14.96%; top: 205px; animation-delay: -4s; }
-.hub-t4 { left: 25.97%; top: 355px; animation-delay: -1.5s; }
+.hub-t4 { left: 5.02%; top: 355px; animation-delay: -1.5s; }
+.hub-t9 { left: 25.97%; top: 355px; animation-delay: -4.5s; }
+.hub-t10 { left: 74.03%; top: 355px; animation-delay: -2s; }
 .hub-t5 { left: 74.03%; top: 55px; animation-delay: -3.5s; }
 .hub-t6 { left: 94.98%; top: 55px; animation-delay: -1s; }
 .hub-t7 { left: 85.04%; top: 205px; animation-delay: -5s; }
@@ -78,7 +80,7 @@
 
 @media (max-width: 1100px) {
   .hub-map { margin-top: 56px; }
-  .hub-t1, .hub-t6, .hub-t8 { --hub-s: 60px; }
+  .hub-t1, .hub-t4, .hub-t6, .hub-t8 { --hub-s: 60px; }
 }
 @media (max-width: 760px) {
   .hub-btn { margin-top: 8px; }
@@ -91,10 +93,10 @@
   .hub-center { width: 104px; height: 104px; border-radius: 26px; }
   .hub-mark { width: 48px; height: 48px; }
   .hub-mark i { width: 32px; height: 32px; }
-  .hub-tiles { position: static; width: 100%; max-width: 358px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 40px; column-gap: 8px; justify-items: center; padding-bottom: 22px; }
-  .hub-tile, .hub-t1, .hub-t6, .hub-t8 { position: relative; left: auto; top: auto; translate: none; --hub-s: 60px; animation: none; }
+  .hub-tiles { position: static; width: 100%; max-width: 358px; display: flex; flex-wrap: wrap; justify-content: center; gap: 40px calc((100% - 240px) / 4); padding-bottom: 22px; }
+  .hub-tile, .hub-t1, .hub-t4, .hub-t6, .hub-t8 { position: relative; left: auto; top: auto; translate: none; --hub-s: 60px; animation: none; }
   .hub-t3 { order: 1; } .hub-t2 { order: 2; } .hub-t1 { order: 3; } .hub-t5 { order: 4; }
-  .hub-t6 { order: 5; } .hub-t8 { order: 6; } .hub-t7 { order: 7; } .hub-t4 { order: 8; }
+  .hub-t6 { order: 5; } .hub-t8 { order: 6; } .hub-t7 { order: 7; } .hub-t4 { order: 8; } .hub-t9 { order: 9; } .hub-t10 { order: 10; }
   .hub-cap { top: calc(100% + 8px); font-size: 11px; }
   .hub-pro { box-shadow: 0 0 0 2px var(--bg-2); right: -7px; }
 }

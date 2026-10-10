@@ -214,17 +214,18 @@
   .fx-row-t { font-size: 16.5px; }
   .fx-row-p { font-size: 14.5px; line-height: 1.6; }
 
-  .fx-stage { height: auto; padding: 40px 0 0 16px; }
+  .fx-stage { height: auto; padding: 40px 12px 12px; }
   .fx-stage > .sample-tag { top: 10px; right: 12px; }
   .fx-pane { position: static; }
-  .fx-shot { height: auto; border-top-left-radius: 12px; }
+  .fx-shot { height: auto; border: 1px solid var(--line); border-radius: 12px; }
 
   .fx-ph { flex-wrap: wrap; padding: 12px 14px 10px; }
   .fx-ph-t { font-size: 14px; max-width: calc(100% - 90px); }
   .fx-ph-sp { display: none; }
   .fx-geo-chip { order: 5; margin-right: 0; }
-  .fx-ed { grid-template-columns: minmax(0, 1fr); padding: 0 0 14px 12px; gap: 10px; }
-  .fx-ed-main .fx-card, .fx-act { border-radius: 12px 0 0 12px; }
+  .fx-ed { grid-template-columns: minmax(0, 1fr); padding: 0 12px 14px; gap: 10px; }
+  .fx-ed-main .fx-card, .fx-act, .fx-ed-side .fx-card { border-radius: 12px; }
+  .fx-ed-side { margin-right: 0; }
   .fx-card { padding: 12px 12px 14px; }
   .fx-act { flex-wrap: wrap; gap: 8px; }
   .fx-act-sp { display: none; }

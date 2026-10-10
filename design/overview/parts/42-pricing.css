@@ -55,8 +55,8 @@
 .price-list { list-style: none; margin: 34px 0 0; padding: 0; display: flex; flex-direction: column; gap: 15px; }
 .price-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; line-height: 22px; color: var(--text); }
 .price-list .check-chip { margin-top: 0; }
-.price-list .price-no { color: var(--muted); }
-.price-list .price-no .check-chip { color: var(--muted); background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); }
+.price-list .price-no { color: var(--text); }
+.price-list .price-no .check-chip { color: #8a8b9c; background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); }
 
 /* Core: dark card */
 .price-card-dark { background: var(--ink); color: var(--on-dark); box-shadow: 0 30px 60px -24px rgba(11, 12, 43, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06); }
@@ -75,7 +75,7 @@
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-.price-fine { margin-top: 36px; text-align: center; font-size: 14px; line-height: 1.6; font-weight: 500; color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 1px rgba(11, 12, 43, 0.12); }
+.price-fine { display: table; margin: 36px auto 0; padding: 7px 14px; border-radius: 999px; text-align: center; font-size: 13.5px; line-height: 1.5; font-weight: 500; color: var(--navy); background: rgba(255, 255, 255, 0.92); box-shadow: 0 6px 16px -10px rgba(11, 12, 43, 0.35); }
 
 @media (max-width: 1100px) {
   .price-band { padding: 104px 0 100px; }
@@ -88,7 +88,7 @@
   .price-desc { min-height: 0; }
 }
 @media (max-width: 760px) {
-  .price-band { margin-inline: 12px; border-radius: 20px; padding: 72px 0 64px; }
+  .price-band { margin-inline: 16px; border-radius: 20px; padding: 72px 0 64px; }
   .price-band .wrap { padding-inline: 12px; }
   .price-seg { margin-top: 32px; padding: 4px; border-radius: 12px; }
   .price-seg > span { height: 40px; padding: 0 12px; font-size: 13px; border-radius: 9px; }
@@ -97,5 +97,5 @@
   .price-num { font-size: 30px; }
   .price-btn { margin-top: 22px; }
   .price-list { margin-top: 24px; gap: 13px; }
-  .price-fine { margin-top: 28px; font-size: 13px; padding-inline: 8px; }
+  .price-fine { margin-top: 28px; font-size: 12.5px; padding: 8px 14px; border-radius: 14px; }
 }

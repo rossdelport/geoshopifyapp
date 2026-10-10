@@ -21,7 +21,7 @@
 .faq-help-tx p { max-width: 330px; font-size: 15px; line-height: 1.55; color: var(--white); font-weight: 500; text-wrap: pretty; }
 .faq-help-link { margin-top: 18px; display: inline-flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 500; color: var(--white); line-height: 1; }
 .faq-help-link svg { width: 18px; height: 18px; transition: transform .2s ease; }
-.faq-help-link:hover svg { transform: translate(2px, -2px); }
+.faq-help-link:hover svg { transform: translateX(3px); }
 
 .faq-list { display: flex; flex-direction: column; gap: 8px; }
 .faq-item {

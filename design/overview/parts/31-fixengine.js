@@ -13,6 +13,13 @@
     panes.forEach(function (p, j) { p.hidden = j !== i; });
     if (focus) tabs[i].focus();
   }
+  // Links elsewhere on the page (guide cards) can open a pane: <a href="#fixes" data-fx-pane="3">
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[data-fx-pane]') : null;
+    if (!a) return;
+    var n = parseInt(a.getAttribute('data-fx-pane'), 10) - 1;
+    if (n >= 0 && n < tabs.length) show(n, false);
+  });
   tabs.forEach(function (t, i) {
     t.addEventListener('click', function () { show(i, false); });
     t.addEventListener('keydown', function (e) {

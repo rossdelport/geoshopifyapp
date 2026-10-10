@@ -20,7 +20,7 @@
       t.setAttribute('aria-selected', on ? 'true' : 'false');
       t.tabIndex = on ? 0 : -1;
       var panel = document.getElementById(t.getAttribute('aria-controls'));
-      if (panel) panel.hidden = !on;
+      if (panel) panel.classList.toggle('scr-off', !on);
     });
     if (focus) tab.focus({ preventScroll: true });
     reveal(tab, true);
