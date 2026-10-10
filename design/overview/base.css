@@ -8,9 +8,23 @@
   --text: #66677d;
   --text-2: #707075;
   --muted: #9a9bab;
-  --blue: #3355ff;
-  --blue-2: #5c77ff;
-  --blue-3: #8599ff;
+  /* Main brand colours (Oct 2026): the lilac to periwinkle gradient from the clay images, cobalt accent. */
+  --lilac-50: #efecfd;
+  --lilac-100: #e2e2fc;
+  --peri-300: #bfc9fa;
+  --lilac-pedestal: #e1ccf7;
+  --lilac-deep: #b5a8e0;
+  --cobalt: #4050b0;
+  --cobalt-mid: #6878d8;
+  --cobalt-deep: #3840a0;
+  --indigo-900: #1b1d4a;
+  --indigo-950: #15163c;
+  --grad-main: linear-gradient(180deg, #efecfd 0%, #e2e2fc 50%, #bfc9fa 100%);
+  --grad-indigo: linear-gradient(180deg, #1b1d4a 0%, #15163c 100%);
+  /* older names, now pointing at the new accent */
+  --blue: #4050b0;
+  --blue-2: #6878d8;
+  --blue-3: #bfc9fa;
   --lav: #f2f2ff;
   --lav-2: #ebeeff;
   --lav-line: #e8e6fa;
