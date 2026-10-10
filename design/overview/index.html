@@ -433,14 +433,14 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .hc-run { position: absolute; inset: 0; }
 .hc-ring .hc-run { inset: 1px; } /* runs along the middle of the 2px band */
 .hc-run > i { position: absolute; left: 0; top: 0; border-radius: 50%; }
-/* the bloom: a soft light that fades out about 24px past the edge (gaussian-like falloff, no rim) */
+/* the bloom: a soft round light that fades out about 48px from its centre (gaussian-like falloff, no rim) */
 .hc-halo .hc-run > i {
-  width: 340px; height: 56px; margin: -28px 0 0 -170px;
+  width: 96px; height: 96px; margin: -48px 0 0 -48px; /* round, so it spreads the same on every side and corner */
   background: radial-gradient(closest-side, rgba(238, 241, 255, 1) 0%, rgba(176, 186, 248, 0.92) 22%, rgba(138, 150, 240, 0.7) 42%, rgba(138, 150, 240, 0.42) 62%, rgba(160, 170, 244, 0.16) 82%, rgba(191, 201, 250, 0) 100%);
 }
 /* the bright edge: a white spark with periwinkle either side, clipped to the 2px band */
 .hc-ring .hc-run > i {
-  width: 240px; height: 40px; margin: -20px 0 0 -120px;
+  width: 180px; height: 180px; margin: -90px 0 0 -90px; /* round too: the same bright length on long sides and ends */
   background: radial-gradient(closest-side, #fff 0%, #dfe4ff 18%, #9ba6f3 42%, rgba(138, 150, 240, 0.55) 66%, rgba(191, 201, 250, 0) 100%);
 }
 @media (prefers-reduced-motion: no-preference) {
