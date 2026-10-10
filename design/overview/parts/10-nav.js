@@ -20,4 +20,25 @@
     e.preventDefault();
     el.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
   });
+
+  // Highlight the nav link for the section in view (cobalt), so readers know where they are.
+  var links = [].slice.call(nav.querySelectorAll('.nav-links a[href^="#"]'));
+  if (!('IntersectionObserver' in window) || !links.length) return;
+  var byId = {};
+  links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+  var spy = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      var a = byId[en.target.id];
+      if (!a) return;
+      if (en.isIntersecting) {
+        links.forEach(function (l) { l.classList.remove('is-on'); l.removeAttribute('aria-current'); });
+        a.classList.add('is-on');
+        a.setAttribute('aria-current', 'location');
+      } else if (a.classList.contains('is-on')) {
+        a.classList.remove('is-on');
+        a.removeAttribute('aria-current');
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  Object.keys(byId).forEach(function (id) { var el = document.getElementById(id); if (el) spy.observe(el); });
 })();

@@ -1,13 +1,13 @@
 <section class="hero" id="overview">
-  <div class="hero-grid grid-bg grid-fade" aria-hidden="true"></div>
+  <div class="hero-bg" aria-hidden="true"><div class="hero-grid grid-bg grid-fade"></div></div>
   <div class="wrap hero-inner">
     <a class="hero-pill" href="#why">
-      <span class="hero-pill-new">60×</span>
-      <span class="hero-pill-tx"><span class="hero-pill-long">more orders from AI in late 2025 than all of 2024</span><span class="hero-pill-short">more orders from AI: Q4 2025 vs all 2024</span></span>
+      <span class="hero-pill-new">~50M</span>
+      <span class="hero-pill-tx"><span class="hero-pill-long">shopping questions asked on ChatGPT every day <span class="hero-pill-est">(our 2025 estimate)</span></span><span class="hero-pill-short">shopping questions a day on ChatGPT</span></span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
     </a>
-    <h1 class="h1 hero-title">Get your store recommended <br class="hero-br">by ChatGPT &amp; co</h1>
-    <p class="lead hero-lead">GEO shows where AI shopping assistants recommend you, fixes your product pages in one click, and shows the sales AI sends your way.</p>
+    <h1 class="h1 hero-title">The free sales channel <br class="hero-br">your store is missing</h1>
+    <p class="lead hero-lead">Shoppers now ask ChatGPT, Gemini and Perplexity what to buy. Each answer names a few stores and links to them. Those stores don’t pay for the click. AI picks them from what it can read about their products and the sites that mention them.</p>
     <form class="hero-check" id="check" method="post" action="/check">
       <div class="hero-check-box">
         <label class="hero-check-field">
@@ -31,11 +31,15 @@
         </div>
       </div>
       <div class="hero-check-hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
-      <p class="hero-check-hint">Free. No sign-up. We ask ChatGPT, Gemini and Perplexity questions shoppers typically ask about products like yours.</p>
+      <p class="hero-check-hint">Free. No sign-up. We ask ChatGPT, Gemini and Perplexity 3 questions a real buyer would ask, twice each, and show you who they recommend.</p>
       <p class="hero-check-note" role="status" hidden>Live checks run on the GEO website. <a href="https://geo-shopify-app-production.up.railway.app/#check" target="_blank" rel="noopener">Open it and paste your link there</a></p>
-      <a class="hero-check-alt" href="#screens">or see every screen</a>
+      <a class="hero-check-alt" href="#decide">or first, see how AI picks what to recommend</a>
     </form>
 
+    <div class="hero-stage">
+    <img class="hero-deco hero-deco-bubble" src="img/clay-bubble.png" alt="" aria-hidden="true" width="800" height="800" decoding="async">
+    <img class="hero-deco hero-deco-coin" src="img/clay-coin.png" alt="" aria-hidden="true" width="720" height="720" decoding="async">
+    <img class="hero-deco hero-deco-bag" src="img/clay-bag.png" alt="" aria-hidden="true" width="800" height="800" decoding="async">
     <div class="hero-frame">
       <span class="sample-tag">Sample data</span>
       <div class="fit hero-fit">
@@ -86,7 +90,7 @@
                   <div class="hero-kpi-top"><span class="hero-kpi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/></svg></span>AI revenue</div>
                   <div class="hero-kpi-row">
                     <span class="kpi">A$4,820</span>
-                    <svg class="hero-spark" viewBox="0 0 96 34" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="hero-sp1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3355ff" stop-opacity=".22"/><stop offset="1" stop-color="#3355ff" stop-opacity="0"/></linearGradient></defs><path d="M0 27 L9 25 L18 26.5 L27 22 L36 23.5 L45 18 L54 19.5 L63 14 L72 15.5 L81 9 L90 7 L96 5 V34 H0 Z" fill="url(#hero-sp1)"/><path d="M0 27 L9 25 L18 26.5 L27 22 L36 23.5 L45 18 L54 19.5 L63 14 L72 15.5 L81 9 L90 7 L96 5" fill="none" stroke="#3355ff" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
+                    <svg class="hero-spark" viewBox="0 0 96 34" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="hero-sp1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4050b0" stop-opacity=".22"/><stop offset="1" stop-color="#4050b0" stop-opacity="0"/></linearGradient></defs><path d="M0 27 L9 25 L18 26.5 L27 22 L36 23.5 L45 18 L54 19.5 L63 14 L72 15.5 L81 9 L90 7 L96 5 V34 H0 Z" fill="url(#hero-sp1)"/><path d="M0 27 L9 25 L18 26.5 L27 22 L36 23.5 L45 18 L54 19.5 L63 14 L72 15.5 L81 9 L90 7 L96 5" fill="none" stroke="#4050b0" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
                   </div>
                   <div class="hero-kpi-d"><span class="delta-up">▲ 38%</span><span>vs your baseline</span></div>
                 </div>
@@ -94,7 +98,7 @@
                   <div class="hero-kpi-top"><span class="hero-kpi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span>AI orders</div>
                   <div class="hero-kpi-row">
                     <span class="kpi">61</span>
-                    <svg class="hero-spark" viewBox="0 0 96 34" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="hero-sp2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3355ff" stop-opacity=".22"/><stop offset="1" stop-color="#3355ff" stop-opacity="0"/></linearGradient></defs><path d="M0 24 L9 25.5 L18 21 L27 23 L36 19 L45 20.5 L54 16 L63 18 L72 13 L81 14.5 L90 10 L96 9 V34 H0 Z" fill="url(#hero-sp2)"/><path d="M0 24 L9 25.5 L18 21 L27 23 L36 19 L45 20.5 L54 16 L63 18 L72 13 L81 14.5 L90 10 L96 9" fill="none" stroke="#3355ff" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
+                    <svg class="hero-spark" viewBox="0 0 96 34" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="hero-sp2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4050b0" stop-opacity=".22"/><stop offset="1" stop-color="#4050b0" stop-opacity="0"/></linearGradient></defs><path d="M0 24 L9 25.5 L18 21 L27 23 L36 19 L45 20.5 L54 16 L63 18 L72 13 L81 14.5 L90 10 L96 9 V34 H0 Z" fill="url(#hero-sp2)"/><path d="M0 24 L9 25.5 L18 21 L27 23 L36 19 L45 20.5 L54 16 L63 18 L72 13 L81 14.5 L90 10 L96 9" fill="none" stroke="#4050b0" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
                   </div>
                   <div class="hero-kpi-d"><span class="delta-up">▲ 22%</span><span>vs your baseline</span></div>
                 </div>
@@ -102,7 +106,7 @@
                   <div class="hero-kpi-top"><span class="hero-kpi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.1 12 6"/><path d="m5.1 8-2.9-.8"/><path d="m6 12-1.9 2"/><path d="M7.2 2.2 8 5.1"/><path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z"/></svg></span>AI clicks</div>
                   <div class="hero-kpi-row">
                     <span class="kpi">1,940</span>
-                    <svg class="hero-spark" viewBox="0 0 96 34" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="hero-sp3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3355ff" stop-opacity=".22"/><stop offset="1" stop-color="#3355ff" stop-opacity="0"/></linearGradient></defs><path d="M0 29 L9 27 L18 28 L27 24 L36 21 L45 22.5 L54 17 L63 15 L72 16 L81 10 L90 6.5 L96 4 V34 H0 Z" fill="url(#hero-sp3)"/><path d="M0 29 L9 27 L18 28 L27 24 L36 21 L45 22.5 L54 17 L63 15 L72 16 L81 10 L90 6.5 L96 4" fill="none" stroke="#3355ff" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
+                    <svg class="hero-spark" viewBox="0 0 96 34" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="hero-sp3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4050b0" stop-opacity=".22"/><stop offset="1" stop-color="#4050b0" stop-opacity="0"/></linearGradient></defs><path d="M0 29 L9 27 L18 28 L27 24 L36 21 L45 22.5 L54 17 L63 15 L72 16 L81 10 L90 6.5 L96 4 V34 H0 Z" fill="url(#hero-sp3)"/><path d="M0 29 L9 27 L18 28 L27 24 L36 21 L45 22.5 L54 17 L63 15 L72 16 L81 10 L90 6.5 L96 4" fill="none" stroke="#4050b0" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
                   </div>
                   <div class="hero-kpi-d"><span class="delta-up">▲ 51%</span><span>vs your baseline</span></div>
                 </div>
@@ -138,7 +142,7 @@
                   </div>
                   <div class="hero-vis-body">
                     <div class="hero-ring">
-                      <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="none" stroke="#ebeeff" stroke-width="9"/><circle cx="50" cy="50" r="42" fill="none" stroke="url(#hero-ringg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="163.6 263.9" transform="rotate(-90 50 50)"/><defs><linearGradient id="hero-ringg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8599ff"/><stop offset="1" stop-color="#3355ff"/></linearGradient></defs></svg>
+                      <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="none" stroke="#e9e7fc" stroke-width="9"/><circle cx="50" cy="50" r="42" fill="none" stroke="url(#hero-ringg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="163.6 263.9" transform="rotate(-90 50 50)"/><defs><linearGradient id="hero-ringg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8f9be8"/><stop offset="1" stop-color="#4050b0"/></linearGradient></defs></svg>
                       <span class="hero-ring-v"><b>62</b><span>/100</span></span>
                     </div>
                     <ul class="hero-eng">
@@ -180,6 +184,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </section>

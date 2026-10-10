@@ -1,5 +1,5 @@
-/* Meet GEO: 2 wide cards (left) + 1 tall card (right), lavender gradient cards with mini UIs. */
-.meet { padding-bottom: 0; }
+/* Meet GEO: 2 wide cards (left) + 1 tall card (right), lilac cards with mini UIs. White section (Decide above is lilac). */
+.meet { --meet-body: #4a4b66; --meet-hair: rgba(181, 168, 224, 0.55); padding-bottom: 0; background: var(--white); }
 .meet-h2 { max-width: 560px; }
 .meet-lead { max-width: 560px; text-wrap: balance; }
 
@@ -17,16 +17,16 @@
 .meet-card {
   position: relative;
   overflow: hidden;
-  border-radius: 16px;
-  background: linear-gradient(180deg, #f3f3fd 0%, #f6f6fd 45%, #fafafd 100%);
-  box-shadow: inset 0 0 0 1px var(--lav-line);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, var(--lilac-50) 0%, #e9e8fc 100%);
+  box-shadow: 0 18px 36px -24px rgba(64, 80, 176, 0.28);
 }
-.meet-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--lav-line); pointer-events: none; z-index: 4; }
+.meet-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--meet-hair); pointer-events: none; z-index: 4; }
 .meet-wide { height: 252px; display: grid; grid-template-columns: minmax(0, 1fr) 292px; align-items: stretch; gap: 16px; padding: 0 18px 0 28px; }
 .meet-wide-b { grid-template-columns: minmax(0, 1fr) 264px; }
 .meet-wide .meet-text { align-self: center; padding: 28px 0; }
 .meet-t { font-size: 24px; letter-spacing: -0.6px; line-height: 1.3; font-weight: 500; }
-.meet-p { margin-top: 14px; font-size: 14.5px; line-height: 1.6; color: var(--text); max-width: 330px; text-wrap: pretty; }
+.meet-p { margin-top: 14px; font-size: 14.5px; line-height: 1.6; color: var(--meet-body); max-width: 330px; text-wrap: pretty; }
 
 /* inset "screenshot" panel: translucent rim + white panel */
 .meet-shot {
@@ -35,8 +35,8 @@
   margin-top: 18px;
   padding: 10px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.55);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9), 0 10px 30px -18px rgba(51, 85, 255, 0.25);
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9), 0 12px 30px -18px rgba(64, 80, 176, 0.32);
 }
 .meet-ui { background: var(--white); border-radius: 12px; padding: 10px; box-shadow: 0 1px 2px rgba(11, 12, 43, 0.04); font-family: var(--font-body); color: var(--navy); }
 
@@ -52,9 +52,9 @@
 .meet-ba { position: relative; width: 100%; height: 88px; display: flex; align-items: flex-end; justify-content: center; }
 .meet-stack { width: 30px; border-radius: 7px; overflow: hidden; display: flex; flex-direction: column; }
 .meet-stack i { display: block; min-height: 0; }
-.meet-s1 { background: #d3dcfd; }
-.meet-s2 { background: #5c77ff; }
-.meet-s3 { background: #26419a; }
+.meet-s1 { background: var(--peri-300); }
+.meet-s2 { background: var(--cobalt-mid); }
+.meet-s3 { background: var(--cobalt-deep); }
 .meet-x { font-size: 9.5px; color: #6f7085; line-height: 1; white-space: nowrap; letter-spacing: -0.1px; }
 .meet-hatch { background: repeating-linear-gradient(135deg, #7b7c8c 0 4px, transparent 4px 9px); }
 .meet-col-pro .meet-x { color: #7d7e92; }
@@ -66,7 +66,7 @@
   background: var(--white); box-shadow: 0 0 0 1px #ececf1, 0 4px 10px -4px rgba(11, 12, 43, 0.12);
   font-size: 9.5px; color: var(--navy); white-space: nowrap;
 }
-.meet-tip i { width: 7px; height: 7px; border-radius: 50%; background: #c9d3ff; box-shadow: 0 0 0 2px #eef1ff; }
+.meet-tip i { width: 7px; height: 7px; border-radius: 50%; background: var(--cobalt-mid); box-shadow: 0 0 0 2px var(--lilac-100); }
 .meet-tip b { font-weight: 600; margin-left: 4px; font-variant-numeric: tabular-nums; }
 
 /* card 2: competitor list (bleeds off the bottom) */
@@ -82,12 +82,12 @@
 .meet-rb em { font-style: normal; font-weight: 500; color: var(--blue); }
 .meet-rb small { font-size: 10px; color: #66677d; white-space: nowrap; }
 .meet-pos { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 20px; padding: 0 7px; border-radius: 100px; background: var(--white); box-shadow: inset 0 0 0 1px #e6e6ee; font-size: 10.5px; font-weight: 600; color: var(--navy); font-variant-numeric: tabular-nums; }
-.meet-row-you { background: var(--lav-2); box-shadow: inset 0 0 0 1px #d9dcfb; }
+.meet-row-you { background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--peri-300); }
 .meet-av-you { background: var(--blue); color: #fff; }
 .meet-pos-you { background: var(--blue); color: #fff; box-shadow: none; }
 
 /* tall card: revenue chart bleeding off right/bottom */
-.meet-tall { display: flex; flex-direction: column; padding: 0; }
+.meet-tall { display: flex; flex-direction: column; padding: 0; background: var(--grad-main); }
 .meet-tall .meet-text { padding: 40px 34px 0; }
 .meet-tall .meet-p { max-width: 520px; }
 .meet-tall .sample-tag { top: 18px; right: 18px; }
@@ -103,18 +103,18 @@
 .meet-ic svg { width: 14px; height: 14px; }
 .meet-rev-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 22px; }
 .meet-rev-num { font-family: var(--font-head); font-size: 32px; font-weight: 500; letter-spacing: -1.2px; color: var(--navy); font-variant-numeric: tabular-nums; line-height: 1; }
-.meet-chip { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 11px; border-radius: 8px; background: var(--lav); box-shadow: inset 0 0 0 1px var(--lav-line); font-size: 13px; font-weight: 500; color: var(--navy); }
+.meet-chip { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 11px; border-radius: 8px; background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-100); font-size: 13px; font-weight: 500; color: var(--navy); }
 .meet-chip svg { width: 15px; height: 15px; color: var(--green-ink); }
 .meet-area { position: relative; margin-top: 18px; height: 168px; }
 .meet-area svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.meet-dot { position: absolute; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; border-radius: 50%; background: var(--white); box-shadow: 0 0 0 2.5px var(--blue), 0 0 0 7px rgba(51, 85, 255, 0.12); }
+.meet-dot { position: absolute; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; border-radius: 50%; background: var(--white); box-shadow: 0 0 0 2.5px var(--cobalt), 0 0 0 7px rgba(64, 80, 176, 0.14); }
 .meet-tip2 { position: absolute; transform: translate(-50%, calc(-100% - 16px)); display: inline-flex; align-items: baseline; gap: 6px; padding: 5px 8px; border-radius: 7px; background: var(--navy); color: rgba(255, 255, 255, 0.72); font-size: 10.5px; white-space: nowrap; box-shadow: 0 6px 14px -6px rgba(11, 12, 43, 0.5); }
 .meet-tip2 b { color: #fff; font-weight: 600; font-size: 11.5px; font-variant-numeric: tabular-nums; }
 .meet-tip2::after { content: ""; position: absolute; left: 50%; bottom: -4px; width: 8px; height: 8px; margin-left: -4px; background: var(--navy); transform: rotate(45deg); border-radius: 1px; }
 .meet-legend { display: flex; gap: 16px; margin-top: 12px; font-size: 11px; color: #6f7085; }
 .meet-legend span { display: inline-flex; align-items: center; gap: 6px; }
-.meet-legend i { width: 16px; height: 0; border-top: 2px solid var(--blue); display: inline-block; }
-.meet-legend .meet-lg-b { border-top: 2px dashed var(--blue-3); }
+.meet-legend i { width: 16px; height: 0; border-top: 2px solid var(--cobalt); display: inline-block; }
+.meet-legend .meet-lg-b { border-top: 2px dashed #9a8fd0; }
 
 /* responsive */
 @media (max-width: 1360px) {

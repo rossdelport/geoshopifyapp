@@ -1,18 +1,21 @@
-/* Page-wide polish shared by every part (base.css stays untouched). */
+/* Page-wide polish shared by every part (tokens and primitives live in base.css). */
 
 /* Darker green for small text: 4.6:1 on --green-bg, about 5:1 on white. */
 :root { --green-ink: #15803d; }
 
-/* Qarin's label text chip is light grey on white sections, white on #fafafa sections. */
-.label .chip-tx { background: var(--bg-3); box-shadow: none; }
-.section.alt .label .chip-tx { background: var(--white); box-shadow: 0 1px 2px rgba(11, 12, 43, 0.04); }
-
 /* In-page jumps land below the floating nav. */
 section[id], footer[id] { scroll-margin-top: 96px; }
 
-/* Clear keyboard focus on links and buttons (the browser default is faint on navy and blue). */
-.page a:focus-visible, .page .btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 10px; }
-.page .price-band a:focus-visible { outline-color: var(--white); }
+/* Clear keyboard focus on links and buttons (the browser default is faint on navy and lilac). */
+.page a:focus-visible, .page .btn:focus-visible, .page button:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 3px; border-radius: 10px; }
+.page .price-band a:focus-visible, .page .on-dark a:focus-visible { outline-color: var(--white); }
+
+/* Source links under numbers: small, cobalt, underlined (every number links to where it came from). */
+.src-link { color: var(--cobalt-deep); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; text-decoration-color: rgba(56, 64, 160, 0.45); transition: text-decoration-color .2s ease; }
+.src-link:hover { text-decoration-color: currentColor; }
+
+/* Selection in the brand colours. */
+::selection { background: var(--lilac-pedestal); color: var(--navy); }
 
 @media (max-width: 760px) {
   section[id], footer[id] { scroll-margin-top: 88px; }
