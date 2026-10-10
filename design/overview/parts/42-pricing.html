@@ -3,53 +3,56 @@
     <div class="wrap">
       <div class="price-head">
         <h2 class="h2 price-h2" id="price-title">Simple pricing</h2>
-        <p class="lead price-lead">Billed in US dollars through Shopify. Cancel any time.</p>
+        <!-- Monthly / yearly switch. 42-pricing.js shows it and swaps each [data-m][data-y] text. Without
+             JavaScript it stays hidden: the cards show monthly prices, with the yearly price as a small line. -->
+        <div class="price-toggle" role="group" aria-label="Billing period" hidden>
+          <button type="button" class="price-tg" data-period="m" aria-pressed="true">Monthly</button>
+          <button type="button" class="price-tg" data-period="y" aria-pressed="false">Yearly <span class="price-save">3 months free</span></button>
+        </div>
+        <p class="price-status" aria-live="polite"></p>
       </div>
 
       <div class="price-grid">
-        <!-- Free scan (inside Shopify, after install; the free product check above needs no install) -->
-        <article class="price-card" aria-labelledby="price-n-free">
-          <h3 class="price-name" id="price-n-free">Free scan</h3>
-          <p class="price-amt"><span class="price-num">$0</span><span class="price-per">one-time</span></p>
-          <p class="price-desc">After install: see if AI recommends you.</p>
-          <a class="btn btn-light price-btn price-btn-line" href="#pricing">Install and scan free</a>
-          <ul class="price-list">
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>10 buyer questions on 3 AI assistants</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Who AI recommends instead</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>AI sales we can trace, last 60 days</li>
-            <li class="price-no"><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></span>No fixes or ongoing tracking</li>
-          </ul>
-        </article>
-
-        <!-- Core -->
-        <article class="price-card price-card-dark" aria-labelledby="price-n-core">
+        <!-- Standard (plan id "core"): our pick, the indigo card with the edge light -->
+        <article class="price-card price-card-dark" aria-labelledby="price-n-std">
           <span class="price-glow" aria-hidden="true"></span>
-          <span class="price-badge">Our pick</span>
-          <h3 class="price-name" id="price-n-core">Core</h3>
-          <p class="price-amt"><span class="price-num">US$49</span><span class="price-per">a month · 7-day free trial</span></p>
-          <p class="price-desc">Help AI recommend you, and see the money.</p>
-          <a class="btn price-btn price-btn-white" href="#pricing">Start 7-day trial</a>
+          <span class="price-badge">For most stores</span>
+          <h3 class="price-name" id="price-n-std">Standard</h3>
+          <p class="price-amt"><span class="price-num" data-m="US$97" data-y="US$873">US$97</span><span class="price-per" data-m="a month" data-y="a year">a month</span></p>
+          <p class="price-alt" data-m="Or US$873 a year, about US$73 a month." data-y="About US$73 a month. 3 months free.">Or US$873 a year, about US$73 a month.</p>
+          <p class="price-desc">You approve, AI does the work.</p>
+          <a class="btn price-btn price-btn-white" href="#pricing">Start 7-day free trial</a>
           <ul class="price-list">
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>25 buyer questions, tracked weekly</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>ChatGPT, Gemini, Perplexity + Google</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>100 products, 30 fixes a month</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Revenue dashboard and monthly report</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>50 buyer questions, scanned weekly</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>ChatGPT, Gemini, Perplexity and Google</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Unlimited fixes, one-click approve</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>500 products, 2 guide pages a month</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>10 outreach targets, pitches drafted</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Monthly email report</li>
           </ul>
         </article>
 
-        <!-- Pro -->
-        <article class="price-card" aria-labelledby="price-n-pro">
-          <h3 class="price-name" id="price-n-pro">Pro</h3>
-          <p class="price-amt"><span class="price-num">US$149</span><span class="price-per">a month</span></p>
-          <p class="price-desc">Everything in Core, for bigger catalogues.</p>
-          <a class="btn btn-light price-btn price-btn-line" href="#pricing">Choose Pro</a>
+        <!-- Done-for-you (plan id "pro") -->
+        <article class="price-card" aria-labelledby="price-n-dfy">
+          <h3 class="price-name" id="price-n-dfy">Done-for-you</h3>
+          <p class="price-amt"><span class="price-num" data-m="US$497" data-y="US$4,473">US$497</span><span class="price-per" data-m="a month" data-y="a year">a month</span></p>
+          <p class="price-alt" data-m="Or US$4,473 a year, about US$373 a month." data-y="About US$373 a month. 3 months free.">Or US$4,473 a year, about US$373 a month.</p>
+          <p class="price-desc">We do it for you.</p>
+          <a class="btn btn-light price-btn price-btn-line" href="#pricing">Start 7-day free trial</a>
           <ul class="price-list">
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>100 buyer questions, scanned daily</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Adds Claude</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>1,000 products, unlimited fixes</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Autopilot mode (opt-in)</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Everything in Standard, plus Claude</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Fixes applied for you, undo any time</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>2,000 products, 8 guide pages a month</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>40 pitches a month, sent and followed up</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Monthly report and a 30-minute call</li>
           </ul>
         </article>
+      </div>
+
+      <div class="price-foot">
+        <p>Not sure yet? <a class="price-foot-link" href="#check">Run a free product check first.</a></p>
+        <p>Billed in US dollars through Shopify. Cancel any time.</p>
       </div>
     </div>
   </div>
