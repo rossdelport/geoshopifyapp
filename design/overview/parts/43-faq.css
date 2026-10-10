@@ -1,26 +1,29 @@
-/* §14 FAQ — Qarin two-column: intro + support card left, accordion right. */
+/* §14 FAQ: Qarin two-column, intro + lilac help card left (sticky on desktop), accordion right. */
 .faq-sec { background: var(--bg); padding-top: 130px; }
 .faq-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 60px; align-items: start; }
 
-.faq-left { display: flex; flex-direction: column; align-items: flex-start; }
+.faq-left { display: flex; flex-direction: column; align-items: flex-start; position: sticky; top: 112px; }
 .faq-h2 { margin-top: 18px; }
 .faq-lead { margin-top: 16px; }
 
+/* help card: the clay image flows into a periwinkle panel (the image's own bottom colour), navy text */
 .faq-help {
-  position: relative; margin-top: 48px; width: 100%; height: 395px;
-  border-radius: var(--r-md); overflow: hidden; background: var(--ink);
-  isolation: isolate;
+  position: relative; margin-top: 44px; width: 100%;
+  border-radius: var(--r-lg); overflow: hidden;
+  background: var(--peri-300);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), var(--shadow-clay);
 }
-.faq-help img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; z-index: -2; transition: transform .8s ease; }
-.faq-help:hover img { transform: scale(1.03); }
-.faq-help::after {
-  content: ""; position: absolute; inset: 0; z-index: -1;
-  background: linear-gradient(180deg, rgba(24, 25, 27, 0) 28%, rgba(24, 25, 27, 0.18) 45%, rgba(24, 25, 27, 0.6) 68%, rgba(24, 25, 27, 0.9) 100%);
+.faq-help-img { aspect-ratio: 1200 / 670; overflow: hidden; -webkit-mask-image: linear-gradient(180deg, #000 78%, transparent 100%); mask-image: linear-gradient(180deg, #000 78%, transparent 100%); }
+.faq-help-img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; transform-origin: 50% 100%; transition: transform .8s ease; }
+.faq-help:hover .faq-help-img img { transform: scale(1.03); }
+.faq-help-tx { padding: 4px 28px 26px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; }
+.faq-help-tx p { max-width: 330px; font-size: 16px; line-height: 1.5; color: var(--navy); font-weight: 500; text-wrap: pretty; }
+.faq-help-link {
+  display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border-radius: 10px;
+  font-size: 15px; font-weight: 600; color: var(--white); line-height: 1; white-space: nowrap;
+  background: var(--grad-btn); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 6px 14px -6px rgba(21, 22, 60, 0.6);
 }
-.faq-help-tx { position: absolute; left: 24px; right: 24px; bottom: 24px; }
-.faq-help-tx p { max-width: 330px; font-size: 15px; line-height: 1.55; color: var(--white); font-weight: 500; text-wrap: pretty; }
-.faq-help-link { margin-top: 18px; display: inline-flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 500; color: var(--white); line-height: 1; }
-.faq-help-link svg { width: 18px; height: 18px; transition: transform .2s ease; }
+.faq-help-link svg { width: 17px; height: 17px; transition: transform .2s ease; }
 .faq-help-link:hover svg { transform: translateX(3px); }
 
 .faq-list { display: flex; flex-direction: column; gap: 8px; }
@@ -29,31 +32,41 @@
   box-shadow: 0 0 0 1px var(--line);
   transition: background-color .25s ease, box-shadow .25s ease;
 }
-.faq-item.faq-open { background: var(--bg-2); }
-.faq-item:hover { box-shadow: 0 0 0 1px var(--line-2); }
+.faq-item.faq-open { background: var(--lilac-50); box-shadow: 0 0 0 1px var(--lilac-100); }
+.faq-item:hover { box-shadow: 0 0 0 1px var(--lav-line); }
+.faq-item.faq-open:hover { box-shadow: 0 0 0 1px var(--lilac-100); }
 .faq-q { font-family: var(--font-body); font-size: inherit; font-weight: inherit; letter-spacing: 0; margin: 0; text-wrap: wrap; }
 .faq-btn {
   width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 20px;
-  padding: 26px 30px; text-align: left;
+  padding: 24px 26px 24px 30px; text-align: left;
   font-family: var(--font-body); font-size: 18px; line-height: 1.45; font-weight: 450; color: var(--navy); letter-spacing: -0.1px;
   border-radius: var(--r-md); text-wrap: pretty;
 }
-.faq-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-.faq-chev { width: 20px; height: 20px; flex: none; color: var(--navy); transition: transform .3s ease; }
-.faq-item.faq-open .faq-chev { transform: rotate(180deg); }
+.faq-btn:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+/* plus / minus in a soft lilac chip, cobalt stroke */
+.faq-pm { width: 32px; height: 32px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--lilac-50); color: var(--cobalt); box-shadow: inset 0 0 0 1px var(--lilac-100); transition: background-color .25s ease; }
+.faq-pm svg { width: 16px; height: 16px; }
+.faq-pm-v { transform-origin: 12px 12px; transition: transform .3s ease; }
+.faq-item.faq-open .faq-pm { background: var(--white); }
+.faq-item.faq-open .faq-pm-v { transform: scaleY(0); }
 
 .faq-a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .32s ease; }
 .faq-item.faq-open .faq-a { grid-template-rows: 1fr; }
-.faq-a-in { overflow: hidden; min-height: 0; visibility: hidden; transition: visibility 0s linear .32s; }
+.faq-a-in { overflow: hidden; min-height: 0; visibility: hidden; transition: visibility 0s linear .32s; padding: 0 30px; }
 .faq-item.faq-open .faq-a-in { visibility: visible; transition-delay: 0s; }
-.faq-a-in p { padding: 0 30px 28px; margin-top: -6px; font-size: 16px; line-height: 1.7; color: var(--text); max-width: 560px; }
-.faq-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13.5px; color: var(--blue); background: var(--lav-2); border-radius: 5px; padding: 1px 5px; white-space: nowrap; }
+.faq-a-in p { margin-top: -6px; font-size: 16px; line-height: 1.7; color: var(--text); max-width: 560px; }
+.faq-a-in p:last-child { padding-bottom: 28px; }
+.faq-a-in .faq-src { margin-top: 10px; font-size: 13px; line-height: 1.55; color: var(--text); }
+.faq-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13.5px; color: var(--cobalt-deep); background: var(--white); border-radius: 5px; padding: 1px 5px; white-space: nowrap; box-shadow: inset 0 0 0 1px var(--lilac-100); }
 
 @media (max-width: 1100px) {
   .faq-sec { padding-top: 104px; }
   .faq-grid { gap: 40px; }
-  .faq-btn { padding: 22px 24px; font-size: 17px; }
-  .faq-a-in p { padding: 0 24px 24px; font-size: 15px; }
+  .faq-btn { padding: 20px 20px 20px 24px; font-size: 17px; }
+  .faq-a-in { padding: 0 24px; }
+  .faq-a-in p { font-size: 15px; }
+  .faq-a-in p:last-child { padding-bottom: 24px; }
+  .faq-help-tx { padding: 4px 22px 22px; }
 }
 @media (max-width: 900px) {
   /* one column: intro, then questions, then the help card */
@@ -61,18 +74,22 @@
   .faq-left { display: contents; }
   .faq-left > .label { justify-self: start; }
   .faq-list { order: 4; margin-top: 36px; }
-  .faq-help { order: 5; height: 320px; margin-top: 16px; }
+  .faq-help { order: 5; margin-top: 16px; }
 }
 @media (max-width: 760px) {
   .faq-sec { padding-top: 72px; }
   .faq-h2 { margin-top: 14px; }
   .faq-list { margin-top: 28px; }
-  .faq-help { height: 240px; margin-top: 12px; }
-  .faq-help-tx { left: 18px; right: 18px; bottom: 18px; }
-  .faq-help-tx p { font-size: 14px; }
-  .faq-help-link { margin-top: 12px; font-size: 15px; }
-  .faq-btn { padding: 18px 18px; font-size: 16px; gap: 14px; }
-  .faq-chev { width: 18px; height: 18px; }
-  .faq-a-in p { padding: 0 18px 20px; margin-top: -4px; font-size: 14px; }
+  .faq-help { margin-top: 12px; border-radius: var(--r-md); }
+  .faq-help-tx { padding: 2px 18px 20px; }
+  .faq-help-tx p { font-size: 15px; }
+  .faq-help-link { height: 42px; font-size: 14px; }
+  .faq-btn { padding: 16px 14px 16px 18px; font-size: 16px; gap: 14px; }
+  .faq-pm { width: 28px; height: 28px; }
+  .faq-pm svg { width: 14px; height: 14px; }
+  .faq-a-in { padding: 0 18px; }
+  .faq-a-in p { margin-top: -4px; font-size: 14px; }
+  .faq-a-in p:last-child { padding-bottom: 20px; }
+  .faq-a-in .faq-src { font-size: 12.5px; }
   .faq-code { font-size: 12.5px; white-space: normal; word-break: break-all; }
 }

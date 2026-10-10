@@ -1833,7 +1833,7 @@ html { scroll-behavior: auto; }
 .guard-top { display: grid; grid-template-columns: minmax(0, 1fr) 264px; align-items: center; gap: 48px; margin-bottom: 72px; }
 .guard-head { margin-bottom: 0; }
 .guard-h2 { color: var(--on-dark); max-width: 640px; }
-.guard-lead { color: var(--lilac-100); max-width: 560px; }
+.guard-head .guard-lead { color: var(--lilac-100); max-width: 560px; margin-inline: 0; }
 
 /* the clay shield sits on its own lilac background, so it is framed as a tile with a cobalt glow */
 .guard-art {
@@ -2301,15 +2301,15 @@ html { scroll-behavior: auto; }
 }
 
 /* 40-proof.css */
-/* §11 Real answers — Qarin testimonial layout, honest content (live tests only). */
+/* §11 Real answers: Qarin testimonial layout, honest content (live tests only), clay image on lilac. */
 .section.alt + .proof-sec.alt { padding-top: 40px; }
 
-.proof-head { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 80px; }
+.proof-head { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 72px; }
 .proof-kicker { display: inline-flex; align-items: center; gap: 12px; font-size: 15px; line-height: 1.4; font-weight: 600; color: var(--navy); }
 .proof-dots { display: inline-flex; align-items: center; gap: 4px; }
 .proof-dot {
   width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center;
-  background: var(--white); box-shadow: inset 0 0 0 1px var(--line-2);
+  background: var(--white); box-shadow: inset 0 0 0 1px var(--lav-line), 0 1px 2px rgba(56, 64, 160, 0.08);
 }
 .proof-dot svg { width: 13px; height: 13px; }
 .proof-dot-gpt { color: var(--e-chatgpt); }
@@ -2317,8 +2317,9 @@ html { scroll-behavior: auto; }
 .proof-dot-ppx { color: var(--e-perplexity); }
 .proof-dot-goo { color: var(--e-google); }
 .proof-sub { margin-top: 10px; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; line-height: 1.5; color: var(--navy); }
-.proof-sep { width: 1px; height: 14px; background: #c9c9d3; display: inline-block; }
+.proof-sep { width: 1px; height: 14px; background: var(--lilac-deep); display: inline-block; }
 .proof-h2 { margin-top: 28px; max-width: 900px; }
+.proof-lead { margin-top: 18px; max-width: 600px; text-wrap: pretty; }
 
 .proof-list { display: flex; flex-direction: column; gap: 24px; }
 
@@ -2327,47 +2328,51 @@ html { scroll-behavior: auto; }
   grid-template-columns: 320px minmax(0, 1fr) 272px;
   padding: 24px;
   background: var(--white);
-  border-radius: var(--r-md);
-  box-shadow: 0 0 0 1px var(--line);
-  transition: box-shadow .3s ease;
+  border-radius: var(--r-lg);
+  box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.3), var(--shadow-clay);
+  transition: box-shadow .3s ease, transform .3s ease;
 }
-.proof-card:hover { box-shadow: 0 0 0 1px var(--line-2), var(--shadow); }
+.proof-card:hover { box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.5), 0 30px 60px -28px rgba(56, 64, 160, 0.35), 0 8px 16px -10px rgba(56, 64, 160, 0.14); }
 
-.proof-media { position: relative; margin: 0; width: 100%; height: 368px; border-radius: var(--r); overflow: hidden; background: var(--lav-2); }
-.proof-media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; transition: transform .6s ease; }
-.proof-media-2 img { object-position: 52% 38%; }
+/* the clay renders sit on the same lilac gradient as the frame, so the frame never shows an edge */
+.proof-media { position: relative; margin: 0; width: 100%; height: 368px; border-radius: var(--r-md); overflow: hidden; background: var(--grad-main); }
+.proof-media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; transition: transform .6s ease; }
 .proof-card:hover .proof-media img { transform: scale(1.03); }
 .proof-tag {
   position: absolute; left: 12px; bottom: 12px;
   display: inline-flex; align-items: center; gap: 6px;
   height: 28px; padding: 0 10px; border-radius: 8px;
   font-size: 12px; font-weight: 600; line-height: 1; color: var(--navy);
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.9);
   -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6), 0 6px 16px -8px rgba(11, 12, 43, 0.3);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6), 0 6px 16px -8px rgba(56, 64, 160, 0.35);
 }
-.proof-tag svg { width: 13px; height: 13px; color: var(--blue); flex: none; }
+.proof-tag svg { width: 13px; height: 13px; color: var(--cobalt); flex: none; }
 
-.proof-body { display: flex; flex-direction: column; min-width: 0; padding: 40px 56px 16px 40px; }
+.proof-body { display: flex; flex-direction: column; min-width: 0; padding: 36px 56px 16px 40px; }
 .proof-quote { margin: 0; }
 .proof-q { font-family: var(--font-body); font-size: 20px; line-height: 1.5; font-weight: 400; color: var(--navy); letter-spacing: -0.2px; max-width: 520px; text-wrap: pretty; }
 .proof-p { margin-top: 14px; font-size: 15px; line-height: 1.7; color: var(--text); max-width: 520px; text-wrap: pretty; }
 .proof-p b { color: var(--navy); font-weight: 600; }
 
+/* the takeaway: small cobalt line that points at what the answer leaned on */
+.proof-take { margin-top: 14px; display: flex; align-items: flex-start; gap: 8px; max-width: 520px; font-size: 14px; line-height: 1.55; font-weight: 500; color: var(--cobalt-deep); text-wrap: pretty; }
+.proof-take svg { width: 16px; height: 16px; flex: none; margin-top: 2px; color: var(--cobalt); }
+
 .proof-srcs { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .proof-srcs li {
   display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 9px 0 4px;
-  border-radius: 7px; background: var(--bg-2); box-shadow: inset 0 0 0 1px var(--line);
+  border-radius: 7px; background: var(--lav); box-shadow: inset 0 0 0 1px var(--lav-line);
   font-size: 12px; line-height: 1; font-weight: 500; color: var(--text-2); white-space: nowrap;
 }
-.proof-fav { width: 18px; height: 18px; border-radius: 5px; display: grid; place-items: center; background: var(--lav-chip); color: var(--blue); font-size: 10px; font-weight: 700; }
+.proof-fav { width: 18px; height: 18px; border-radius: 5px; display: grid; place-items: center; background: var(--lilac-pedestal); color: var(--cobalt-deep); font-size: 10px; font-weight: 700; }
 
 .proof-by { margin-top: auto; padding-top: 28px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
 .proof-name { font-size: 18px; line-height: 1.4; font-weight: 600; color: var(--navy); }
 .proof-meta { margin-top: 4px; font-size: 16px; line-height: 1.4; color: var(--text); }
 .proof-mono {
   width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex: none;
-  background: var(--white); box-shadow: 0 0 0 1px var(--line-2), 0 4px 10px -6px rgba(11, 12, 43, 0.18);
+  background: var(--white); box-shadow: 0 0 0 1px var(--lav-line), 0 4px 10px -6px rgba(56, 64, 160, 0.25);
 }
 .proof-mono svg { width: 20px; height: 20px; }
 .proof-mono-gpt { color: var(--e-chatgpt); }
@@ -2375,23 +2380,23 @@ html { scroll-behavior: auto; }
 .proof-mono-ppx { color: var(--e-perplexity); }
 .proof-mono-goo { color: var(--e-google); }
 .proof-stack { display: inline-flex; align-items: center; }
-.proof-stack .proof-mono { width: 36px; height: 36px; border-radius: 50%; box-shadow: 0 0 0 2px var(--white), 0 0 0 3px var(--line-2); }
+.proof-stack .proof-mono { width: 36px; height: 36px; border-radius: 50%; box-shadow: 0 0 0 2px var(--white), 0 0 0 3px var(--lav-line); }
 .proof-stack .proof-mono + .proof-mono { margin-left: -8px; }
 .proof-stack .proof-mono svg { width: 17px; height: 17px; }
 
 .proof-stats {
   display: flex; flex-direction: column; justify-content: space-around; gap: 24px;
   margin-block: 0; padding: 8px 12px 8px 24px;
-  border-left: 1px solid var(--line);
+  border-left: 1px solid var(--lav-line);
   text-align: right;
 }
 .proof-num {
   font-family: var(--font-head); font-size: 56px; line-height: 1.05; font-weight: 500; letter-spacing: -2.4px;
-  color: var(--navy); font-variant-numeric: tabular-nums; white-space: nowrap;
+  color: var(--cobalt); font-variant-numeric: tabular-nums; white-space: nowrap;
 }
-.proof-of { color: #6f7085; }
-.proof-unit { font-size: 26px; letter-spacing: -0.6px; color: #6f7085; margin-right: 3px; vertical-align: 0.62em; }
-.proof-lbl { margin-top: 10px; font-size: 15px; line-height: 1.5; font-weight: 600; color: var(--text); }
+.proof-of { color: var(--cobalt-mid); }
+.proof-lbl { margin-top: 10px; font-size: 15px; line-height: 1.5; font-weight: 600; color: var(--navy); }
+.proof-lbl-sub { margin-top: 2px; font-size: 13px; line-height: 1.45; color: var(--text); }
 
 @media (max-width: 1100px) {
   .proof-card { grid-template-columns: 260px minmax(0, 1fr) 210px; }
@@ -2399,14 +2404,13 @@ html { scroll-behavior: auto; }
   .proof-body { padding: 24px 28px 8px 28px; }
   .proof-q { font-size: 18px; }
   .proof-num { font-size: 46px; letter-spacing: -1.8px; }
-  .proof-unit { font-size: 21px; }
 }
 @media (max-width: 860px) {
   .proof-card { grid-template-columns: 220px minmax(0, 1fr); }
   .proof-media { height: 100%; min-height: 300px; }
-  .proof-stats { grid-column: 1 / -1; flex-direction: row; justify-content: flex-start; gap: 0; margin-top: 24px; padding: 20px 0 0; border-left: 0; border-top: 1px solid var(--line); text-align: left; }
+  .proof-stats { grid-column: 1 / -1; flex-direction: row; justify-content: flex-start; gap: 0; margin-top: 24px; padding: 20px 0 0; border-left: 0; border-top: 1px solid var(--lav-line); text-align: left; }
   .proof-stat { flex: 1; }
-  .proof-stat + .proof-stat { padding-left: 20px; border-left: 1px solid var(--line); }
+  .proof-stat + .proof-stat { padding-left: 20px; border-left: 1px solid var(--lav-line); }
 }
 @media (max-width: 760px) {
   .section.alt + .proof-sec.alt { padding-top: 24px; }
@@ -2414,14 +2418,15 @@ html { scroll-behavior: auto; }
   .proof-kicker { font-size: 14px; gap: 10px; }
   .proof-sub { font-size: 13px; flex-wrap: wrap; justify-content: center; }
   .proof-h2 { margin-top: 20px; }
+  .proof-lead { margin-top: 14px; }
   .proof-list { gap: 16px; }
-  .proof-card { grid-template-columns: minmax(0, 1fr); padding: 12px; }
-  .proof-media { height: auto; min-height: 0; aspect-ratio: 4 / 3; }
-  .proof-media img { object-position: 50% 66%; }
-  .proof-media-2 img { object-position: 50% 32%; }
+  .proof-card { grid-template-columns: minmax(0, 1fr); padding: 12px; border-radius: var(--r-md); }
+  .proof-media { height: auto; min-height: 0; aspect-ratio: 4 / 3; border-radius: var(--r); }
+  .proof-media img { object-position: 50% 52%; }
   .proof-body { padding: 20px 8px 0; }
   .proof-q { font-size: 18px; }
   .proof-p { font-size: 14px; }
+  .proof-take { font-size: 13.5px; }
   .proof-srcs { margin-top: 14px; }
   .proof-by { padding-top: 20px; align-items: center; }
   .proof-name { font-size: 16px; }
@@ -2431,20 +2436,20 @@ html { scroll-behavior: auto; }
   .proof-stack .proof-mono svg { width: 14px; height: 14px; }
   .proof-stats { margin: 20px 8px 8px; padding-top: 18px; }
   .proof-num { font-size: 36px; letter-spacing: -1.4px; }
-  .proof-unit { font-size: 16px; letter-spacing: -0.3px; margin-right: 2px; }
   .proof-lbl { font-size: 13px; margin-top: 6px; }
+  .proof-lbl-sub { font-size: 12px; }
   .proof-stat + .proof-stat { padding-left: 16px; }
 }
 
 /* Card 2: results grid instead of a photo (no person, so it can't read as a testimonial) */
-.proof-media-grid { display: flex; align-items: center; justify-content: center; padding: 22px; background: linear-gradient(180deg, #f1f1fd 0%, #f6f6fd 60%, #fafafd 100%); box-shadow: inset 0 0 0 1px var(--lav-line); }
-.proof-gui { width: 100%; padding: 16px 14px 14px; border-radius: 12px; background: var(--white); box-shadow: 0 0 0 1px rgba(232, 230, 250, 0.9), 0 18px 32px -20px rgba(51, 85, 255, 0.35); font-family: var(--font-body); color: var(--navy); text-align: left; }
+.proof-media-grid { display: flex; align-items: center; justify-content: center; padding: 22px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6); }
+.proof-gui { width: 100%; padding: 16px 14px 14px; border-radius: 14px; background: var(--white); box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.35), 0 18px 32px -20px rgba(56, 64, 160, 0.4); font-family: var(--font-body); color: var(--navy); text-align: left; }
 .proof-gui-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .proof-gui-t { font-size: 13px; font-weight: 600; letter-spacing: -0.1px; }
-.proof-gui-ok { height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 100px; background: var(--green-bg); color: var(--green-ink); font-size: 11px; font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.proof-gui-s { margin-top: 3px; font-size: 11px; line-height: 1.4; color: #6f7085; }
-.proof-gui-g { margin-top: 14px; padding-top: 12px; border-top: 1px dashed #e4e5f2; display: grid; grid-template-columns: minmax(0, 1fr) repeat(3, 44px); gap: 8px 5px; align-items: center; }
-.proof-gui-q { font-size: 10.5px; font-weight: 600; color: #6f7085; text-align: center; }
+.proof-gui-ok { height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 100px; background: var(--lilac-100); color: var(--cobalt-deep); font-size: 11px; font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.proof-gui-s { margin-top: 3px; font-size: 11px; line-height: 1.4; color: var(--text); }
+.proof-gui-g { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--lav-line); display: grid; grid-template-columns: minmax(0, 1fr) repeat(3, 44px); gap: 8px 5px; align-items: center; }
+.proof-gui-q { font-size: 10.5px; font-weight: 600; color: var(--text); text-align: center; }
 .proof-gui-e { display: inline-flex; align-items: center; gap: 6px; min-width: 0; font-size: 11.5px; font-weight: 500; white-space: nowrap; }
 .proof-gui-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
 .proof-gui-gpt { background: var(--e-chatgpt); }
@@ -2452,10 +2457,11 @@ html { scroll-behavior: auto; }
 .proof-gui-ppx { background: var(--e-perplexity); }
 .proof-gui-goo { background: var(--e-google); }
 .proof-gui-c { display: flex; justify-content: center; gap: 3px; }
-.proof-gui-c i { width: 20px; height: 20px; border-radius: 6px; display: grid; place-items: center; background: var(--green-bg); color: var(--green-ink); box-shadow: inset 0 0 0 1px rgba(21, 128, 61, 0.16); }
+/* ticks in cobalt on soft lilac */
+.proof-gui-c i { width: 20px; height: 20px; border-radius: 6px; display: grid; place-items: center; background: var(--lilac-100); color: var(--cobalt); box-shadow: inset 0 0 0 1px rgba(64, 80, 176, 0.16); }
 .proof-gui-c svg { width: 11px; height: 11px; }
-.proof-gui-f { margin-top: 12px; padding-top: 10px; border-top: 1px dashed #e4e5f2; font-size: 11px; line-height: 1.4; color: #6f7085; }
-.proof-eyebrow { margin-bottom: 12px; font-size: 13px; line-height: 1.4; font-weight: 600; color: var(--blue); }
+.proof-gui-f { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--lav-line); font-size: 11px; line-height: 1.4; color: var(--text); }
+.proof-gui-span { grid-column: 2 / -1; justify-self: stretch; text-align: center; font-size: 10.5px; font-weight: 600; line-height: 1.3; color: #8a5a0b; background: var(--amber-bg); border-radius: 6px; padding: 4px 6px; }
 @media (max-width: 860px) {
   .proof-media-grid { padding: 14px; }
   .proof-gui-g { grid-template-columns: minmax(0, 1fr) repeat(3, 46px); }
@@ -2464,10 +2470,8 @@ html { scroll-behavior: auto; }
   .proof-media-grid { aspect-ratio: auto; padding: 16px; }
 }
 
-.proof-gui-span { grid-column: 2 / -1; justify-self: stretch; text-align: center; font-size: 10.5px; font-weight: 600; line-height: 1.3; color: #8a5a0b; background: var(--amber-bg); border-radius: 6px; padding: 4px 6px; }
-
 /* 41-hub.css */
-/* §12 Connections hub — Qarin integrations layout with neutral glyph tiles (no real logos). */
+/* §12 Connections hub: Qarin integrations layout with neutral glyph tiles (no real logos), lilac rings, cobalt core. */
 .section.alt + .hub-sec.alt { padding-top: 16px; }
 
 .hub-head { margin-bottom: 0; }
@@ -2479,7 +2483,7 @@ html { scroll-behavior: auto; }
 
 .hub-lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .hub-lines path {
-  stroke: #d3d8f6; stroke-width: 1.5; stroke-dasharray: 4 7;
+  stroke: var(--lilac-deep); stroke-opacity: 0.75; stroke-width: 1.5; stroke-dasharray: 4 7;
   vector-effect: non-scaling-stroke;
   animation: hub-flow 2.6s linear infinite;
 }
@@ -2489,17 +2493,18 @@ html { scroll-behavior: auto; }
 .hub-ring, .hub-center { position: absolute; left: 0; top: 0; translate: -50% -50%; }
 .hub-ring-1 {
   width: 222px; height: 222px; border-radius: 56px;
-  background: linear-gradient(180deg, rgba(92, 119, 255, 0.20) 0%, rgba(133, 153, 255, 0.24) 100%), var(--bg-2);
-  box-shadow: 0 30px 50px -24px rgba(51, 85, 255, 0.28);
+  background: linear-gradient(180deg, rgba(225, 204, 247, 0.55) 0%, rgba(191, 201, 250, 0.7) 100%), var(--white);
+  box-shadow: inset 0 0 0 1px rgba(181, 168, 224, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 30px 50px -24px rgba(56, 64, 160, 0.3);
 }
 .hub-ring-2 {
   width: 182px; height: 182px; border-radius: 46px;
-  background: linear-gradient(180deg, rgba(92, 119, 255, 0.26) 0%, rgba(133, 153, 255, 0.34) 100%);
+  background: linear-gradient(180deg, rgba(181, 168, 224, 0.45) 0%, rgba(104, 120, 216, 0.4) 100%);
+  box-shadow: inset 0 0 0 1px rgba(181, 168, 224, 0.7);
 }
 .hub-center {
   width: 136px; height: 136px; border-radius: 32px; display: grid; place-items: center;
-  background: linear-gradient(180deg, #4766ff 0%, #3355ff 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 18px 30px -12px rgba(51, 85, 255, 0.65);
+  background: linear-gradient(180deg, #5664c4 0%, var(--cobalt) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 18px 30px -12px rgba(64, 80, 176, 0.65);
 }
 .hub-mark { position: relative; width: 62px; height: 62px; display: block; }
 .hub-mark i { position: absolute; width: 42px; height: 42px; border-radius: 50%; display: block; }
@@ -2515,7 +2520,7 @@ html { scroll-behavior: auto; }
   border-radius: calc(var(--hub-s) * 0.27);
   background: var(--white);
   color: var(--hub-c, var(--navy));
-  box-shadow: 0 0 0 1px #ededf3, 0 1px 2px rgba(11, 12, 43, 0.04), 0 12px 22px -10px rgba(11, 12, 43, 0.16);
+  box-shadow: 0 0 0 1px var(--lav-line), 0 1px 2px rgba(56, 64, 160, 0.06), 0 14px 24px -12px rgba(56, 64, 160, 0.28);
   animation: hub-bob 6s ease-in-out infinite;
 }
 .hub-tile svg { width: calc(var(--hub-s) * 0.44); height: calc(var(--hub-s) * 0.44); }
@@ -2526,13 +2531,13 @@ html { scroll-behavior: auto; }
 .hub-s80 { --hub-s: 80px; }
 .hub-cap {
   position: absolute; top: calc(100% + 10px); left: 50%; translate: -50% 0;
-  font-size: 12px; line-height: 1.2; font-weight: 500; color: var(--text); white-space: nowrap;
+  font-size: 12px; line-height: 1.2; font-weight: 500; color: var(--text-lilac); white-space: nowrap;
 }
 .hub-pro {
   position: absolute; top: -7px; right: -9px;
   font-size: 10px; font-weight: 600; line-height: 1; letter-spacing: .02em;
-  color: var(--white); background: var(--blue); border-radius: 6px; padding: 4px 6px;
-  box-shadow: 0 0 0 2px var(--bg-2);
+  color: var(--white); background: var(--cobalt); border-radius: 6px; padding: 4px 6px;
+  box-shadow: 0 0 0 2px var(--lilac-50);
 }
 @keyframes hub-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
@@ -2567,42 +2572,48 @@ html { scroll-behavior: auto; }
   .hub-t3 { order: 1; } .hub-t2 { order: 2; } .hub-t1 { order: 3; } .hub-t5 { order: 4; }
   .hub-t6 { order: 5; } .hub-t8 { order: 6; } .hub-t7 { order: 7; } .hub-t4 { order: 8; } .hub-t9 { order: 9; } .hub-t10 { order: 10; }
   .hub-cap { top: calc(100% + 8px); font-size: 11px; }
-  .hub-pro { box-shadow: 0 0 0 2px var(--bg-2); right: -7px; }
+  .hub-pro { box-shadow: 0 0 0 2px var(--lilac-50); right: -7px; }
 }
 
 /* 42-pricing.css */
-/* §13 Pricing — full-width blue gradient block (Qarin). */
-.price-sec { background: var(--bg); }
+/* §13 Pricing: full-width lilac gradient block (Qarin layout), navy text, white cards, indigo featured card. */
+.price-sec { background: var(--bg); padding-top: 24px; }
 .price-band {
   margin-inline: 24px;
-  border-radius: var(--r-lg);
-  background: var(--grad-blue);
-  padding: 128px 0 124px;
+  border-radius: var(--r-xl);
+  background: var(--grad-main);
+  padding: 120px 0 112px;
   position: relative;
   overflow: hidden;
   isolation: isolate;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
 }
 .price-band::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255, 255, 255, 0.12), transparent 70%);
+  background: radial-gradient(ellipse 60% 36% at 50% 0%, rgba(255, 255, 255, 0.75), transparent 70%);
 }
 
 .price-head { display: flex; flex-direction: column; align-items: center; text-align: center; }
-.price-band .label .chip-ic { background: rgba(255, 255, 255, 0.92); color: var(--blue); }
-.price-band .label .chip-tx { background: var(--white); color: var(--navy); box-shadow: none; }
-.price-h2 { margin-top: 18px; color: var(--white); }
+.price-band .label .chip-ic { background: var(--white); color: var(--cobalt); box-shadow: 0 1px 2px rgba(56, 64, 160, 0.08); }
+.price-band .label .chip-tx { background: var(--white); color: var(--navy); box-shadow: 0 1px 2px rgba(56, 64, 160, 0.08); }
+.price-h2 { margin-top: 18px; color: var(--navy); }
+.price-lead { margin-top: 16px; max-width: 560px; color: var(--text-lilac); text-wrap: pretty; }
+.price-calc { margin-top: 14px; display: inline-flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--cobalt-deep); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: rgba(56, 64, 160, 0.4); }
+.price-calc svg { width: 16px; height: 16px; transition: transform .2s ease; }
+.price-calc:hover { text-decoration-color: currentColor; }
+.price-calc:hover svg { transform: translateX(3px); }
 
 .price-seg {
-  margin-top: 56px;
+  margin-top: 40px;
   display: inline-flex; align-items: center; gap: 4px;
   padding: 5px; border-radius: 14px;
   background: var(--white);
-  box-shadow: inset 0 0 0 1px rgba(11, 12, 43, 0.06), 0 10px 24px -14px rgba(11, 12, 43, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(181, 168, 224, 0.35), 0 10px 24px -14px rgba(56, 64, 160, 0.4);
 }
 .price-seg > span { display: inline-flex; align-items: center; gap: 7px; height: 46px; padding: 0 16px; border-radius: 10px; font-size: 15px; font-weight: 600; line-height: 1; white-space: nowrap; }
-.price-seg-on { background: var(--blue); color: var(--white); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 4px 10px -4px rgba(51, 85, 255, 0.6); }
+.price-seg-on { background: var(--cobalt); color: var(--white); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 4px 10px -4px rgba(64, 80, 176, 0.6); }
 .price-seg-info { color: var(--navy); }
-.price-seg-info svg { width: 16px; height: 16px; color: var(--blue); flex: none; }
+.price-seg-info svg { width: 16px; height: 16px; color: var(--cobalt); flex: none; }
 
 .price-grid {
   margin: 40px auto 0;
@@ -2614,10 +2625,10 @@ html { scroll-behavior: auto; }
   position: relative;
   display: flex; flex-direction: column;
   padding: 32px 28px 34px;
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   background: var(--white);
   color: var(--text);
-  box-shadow: 0 24px 48px -24px rgba(11, 12, 43, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8), var(--shadow-clay);
 }
 .price-name { font-family: var(--font-body); font-size: 18px; line-height: 1.3; font-weight: 600; letter-spacing: -0.2px; color: var(--navy); }
 .price-amt { margin-top: 22px; display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 8px; row-gap: 2px; }
@@ -2627,31 +2638,36 @@ html { scroll-behavior: auto; }
 .price-btn { margin-top: 30px; width: 100%; height: 50px; font-size: 15px; }
 .price-list { list-style: none; margin: 34px 0 0; padding: 0; display: flex; flex-direction: column; gap: 15px; }
 .price-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; line-height: 22px; color: var(--text); }
-.price-list .check-chip { margin-top: 0; }
+.price-list .check-chip { margin-top: 0; background: var(--lilac-100); color: var(--cobalt); }
 .price-list .price-no { color: var(--text); }
 .price-list .price-no .check-chip { color: #8a8b9c; background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); }
 
-/* Core: dark card */
-.price-card-dark { background: var(--ink); color: var(--on-dark); box-shadow: 0 30px 60px -24px rgba(11, 12, 43, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06); }
+/* Core: deep indigo card */
+.price-card-dark { background: var(--grad-indigo); color: var(--on-dark); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 36px 64px -28px rgba(21, 22, 60, 0.6); }
 .price-card-dark .price-name,
 .price-card-dark .price-num { color: var(--white); }
+/* --lilac-100 on indigo: about 12:1 */
 .price-card-dark .price-per,
-.price-card-dark .price-desc { color: rgba(255, 255, 255, 0.72); }
+.price-card-dark .price-desc { color: var(--lilac-100); }
 .price-card-dark .price-list li { color: var(--white); }
-.price-card-dark .check-chip { background: rgba(255, 255, 255, 0.1); color: var(--white); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); }
+.price-card-dark .check-chip { background: rgba(191, 201, 250, 0.14); color: var(--peri-300); box-shadow: inset 0 0 0 1px rgba(191, 201, 250, 0.16); }
 .price-btn-white { background: var(--white); color: var(--navy); box-shadow: inset 0 -1px 0 rgba(11, 12, 43, 0.08), 0 6px 14px -6px rgba(0, 0, 0, 0.5); }
 .price-btn-white:hover { box-shadow: inset 0 -1px 0 rgba(11, 12, 43, 0.08), 0 10px 20px -8px rgba(0, 0, 0, 0.6); }
 .price-badge {
-  position: absolute; top: 10px; right: 10px;
-  font-size: 13px; line-height: 1; font-weight: 500; color: var(--white);
-  background: var(--blue); border-radius: 6px; padding: 8px 9px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: absolute; top: 12px; right: 12px;
+  font-size: 12.5px; line-height: 1; font-weight: 600; color: var(--indigo-900);
+  background: var(--lilac-pedestal); border-radius: 7px; padding: 7px 9px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
-.price-fine { display: table; margin: 36px auto 0; padding: 7px 14px; border-radius: 999px; text-align: center; font-size: 13.5px; line-height: 1.5; font-weight: 500; color: var(--navy); background: rgba(255, 255, 255, 0.92); box-shadow: 0 6px 16px -10px rgba(11, 12, 43, 0.35); }
+.price-fine { display: table; margin: 36px auto 0; padding: 7px 14px; border-radius: 999px; text-align: center; font-size: 13.5px; line-height: 1.5; font-weight: 500; color: var(--navy); background: rgba(255, 255, 255, 0.92); box-shadow: 0 6px 16px -10px rgba(56, 64, 160, 0.4); }
+
+/* focus rings: the shared rule makes them white on this band; cobalt reads on lilac and white cards */
+.page .price-sec .price-band a:focus-visible { outline-color: var(--cobalt); }
+.page .price-sec .price-card-dark a:focus-visible { outline-color: var(--white); }
 
 @media (max-width: 1100px) {
-  .price-band { padding: 104px 0 100px; }
+  .price-band { padding: 96px 0 92px; }
   .price-grid { gap: 16px; }
   .price-card { padding: 28px 22px 30px; }
   .price-list li { font-size: 14px; }
@@ -2661,12 +2677,13 @@ html { scroll-behavior: auto; }
   .price-desc { min-height: 0; }
 }
 @media (max-width: 760px) {
-  .price-band { margin-inline: 16px; border-radius: 20px; padding: 72px 0 64px; }
+  .price-band { margin-inline: 16px; border-radius: var(--r-lg); padding: 64px 0 56px; }
   .price-band .wrap { padding-inline: 12px; }
-  .price-seg { margin-top: 32px; padding: 4px; border-radius: 12px; }
+  .price-lead { font-size: 15px; }
+  .price-seg { margin-top: 28px; padding: 4px; border-radius: 12px; }
   .price-seg > span { height: 40px; padding: 0 12px; font-size: 13px; border-radius: 9px; }
   .price-grid { margin-top: 28px; gap: 14px; }
-  .price-card { padding: 24px 20px 26px; }
+  .price-card { padding: 24px 20px 26px; border-radius: var(--r-md); }
   .price-num { font-size: 30px; }
   .price-btn { margin-top: 22px; }
   .price-list { margin-top: 24px; gap: 13px; }
@@ -2674,29 +2691,32 @@ html { scroll-behavior: auto; }
 }
 
 /* 43-faq.css */
-/* §14 FAQ — Qarin two-column: intro + support card left, accordion right. */
+/* §14 FAQ: Qarin two-column, intro + lilac help card left (sticky on desktop), accordion right. */
 .faq-sec { background: var(--bg); padding-top: 130px; }
 .faq-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 60px; align-items: start; }
 
-.faq-left { display: flex; flex-direction: column; align-items: flex-start; }
+.faq-left { display: flex; flex-direction: column; align-items: flex-start; position: sticky; top: 112px; }
 .faq-h2 { margin-top: 18px; }
 .faq-lead { margin-top: 16px; }
 
+/* help card: the clay image flows into a periwinkle panel (the image's own bottom colour), navy text */
 .faq-help {
-  position: relative; margin-top: 48px; width: 100%; height: 395px;
-  border-radius: var(--r-md); overflow: hidden; background: var(--ink);
-  isolation: isolate;
+  position: relative; margin-top: 44px; width: 100%;
+  border-radius: var(--r-lg); overflow: hidden;
+  background: var(--peri-300);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), var(--shadow-clay);
 }
-.faq-help img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; z-index: -2; transition: transform .8s ease; }
-.faq-help:hover img { transform: scale(1.03); }
-.faq-help::after {
-  content: ""; position: absolute; inset: 0; z-index: -1;
-  background: linear-gradient(180deg, rgba(24, 25, 27, 0) 28%, rgba(24, 25, 27, 0.18) 45%, rgba(24, 25, 27, 0.6) 68%, rgba(24, 25, 27, 0.9) 100%);
+.faq-help-img { aspect-ratio: 1200 / 670; overflow: hidden; -webkit-mask-image: linear-gradient(180deg, #000 78%, transparent 100%); mask-image: linear-gradient(180deg, #000 78%, transparent 100%); }
+.faq-help-img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; transform-origin: 50% 100%; transition: transform .8s ease; }
+.faq-help:hover .faq-help-img img { transform: scale(1.03); }
+.faq-help-tx { padding: 4px 28px 26px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; }
+.faq-help-tx p { max-width: 330px; font-size: 16px; line-height: 1.5; color: var(--navy); font-weight: 500; text-wrap: pretty; }
+.faq-help-link {
+  display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border-radius: 10px;
+  font-size: 15px; font-weight: 600; color: var(--white); line-height: 1; white-space: nowrap;
+  background: var(--grad-btn); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 6px 14px -6px rgba(21, 22, 60, 0.6);
 }
-.faq-help-tx { position: absolute; left: 24px; right: 24px; bottom: 24px; }
-.faq-help-tx p { max-width: 330px; font-size: 15px; line-height: 1.55; color: var(--white); font-weight: 500; text-wrap: pretty; }
-.faq-help-link { margin-top: 18px; display: inline-flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 500; color: var(--white); line-height: 1; }
-.faq-help-link svg { width: 18px; height: 18px; transition: transform .2s ease; }
+.faq-help-link svg { width: 17px; height: 17px; transition: transform .2s ease; }
 .faq-help-link:hover svg { transform: translateX(3px); }
 
 .faq-list { display: flex; flex-direction: column; gap: 8px; }
@@ -2705,31 +2725,41 @@ html { scroll-behavior: auto; }
   box-shadow: 0 0 0 1px var(--line);
   transition: background-color .25s ease, box-shadow .25s ease;
 }
-.faq-item.faq-open { background: var(--bg-2); }
-.faq-item:hover { box-shadow: 0 0 0 1px var(--line-2); }
+.faq-item.faq-open { background: var(--lilac-50); box-shadow: 0 0 0 1px var(--lilac-100); }
+.faq-item:hover { box-shadow: 0 0 0 1px var(--lav-line); }
+.faq-item.faq-open:hover { box-shadow: 0 0 0 1px var(--lilac-100); }
 .faq-q { font-family: var(--font-body); font-size: inherit; font-weight: inherit; letter-spacing: 0; margin: 0; text-wrap: wrap; }
 .faq-btn {
   width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 20px;
-  padding: 26px 30px; text-align: left;
+  padding: 24px 26px 24px 30px; text-align: left;
   font-family: var(--font-body); font-size: 18px; line-height: 1.45; font-weight: 450; color: var(--navy); letter-spacing: -0.1px;
   border-radius: var(--r-md); text-wrap: pretty;
 }
-.faq-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-.faq-chev { width: 20px; height: 20px; flex: none; color: var(--navy); transition: transform .3s ease; }
-.faq-item.faq-open .faq-chev { transform: rotate(180deg); }
+.faq-btn:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+/* plus / minus in a soft lilac chip, cobalt stroke */
+.faq-pm { width: 32px; height: 32px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--lilac-50); color: var(--cobalt); box-shadow: inset 0 0 0 1px var(--lilac-100); transition: background-color .25s ease; }
+.faq-pm svg { width: 16px; height: 16px; }
+.faq-pm-v { transform-origin: 12px 12px; transition: transform .3s ease; }
+.faq-item.faq-open .faq-pm { background: var(--white); }
+.faq-item.faq-open .faq-pm-v { transform: scaleY(0); }
 
 .faq-a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .32s ease; }
 .faq-item.faq-open .faq-a { grid-template-rows: 1fr; }
-.faq-a-in { overflow: hidden; min-height: 0; visibility: hidden; transition: visibility 0s linear .32s; }
+.faq-a-in { overflow: hidden; min-height: 0; visibility: hidden; transition: visibility 0s linear .32s; padding: 0 30px; }
 .faq-item.faq-open .faq-a-in { visibility: visible; transition-delay: 0s; }
-.faq-a-in p { padding: 0 30px 28px; margin-top: -6px; font-size: 16px; line-height: 1.7; color: var(--text); max-width: 560px; }
-.faq-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13.5px; color: var(--blue); background: var(--lav-2); border-radius: 5px; padding: 1px 5px; white-space: nowrap; }
+.faq-a-in p { margin-top: -6px; font-size: 16px; line-height: 1.7; color: var(--text); max-width: 560px; }
+.faq-a-in p:last-child { padding-bottom: 28px; }
+.faq-a-in .faq-src { margin-top: 10px; font-size: 13px; line-height: 1.55; color: var(--text); }
+.faq-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13.5px; color: var(--cobalt-deep); background: var(--white); border-radius: 5px; padding: 1px 5px; white-space: nowrap; box-shadow: inset 0 0 0 1px var(--lilac-100); }
 
 @media (max-width: 1100px) {
   .faq-sec { padding-top: 104px; }
   .faq-grid { gap: 40px; }
-  .faq-btn { padding: 22px 24px; font-size: 17px; }
-  .faq-a-in p { padding: 0 24px 24px; font-size: 15px; }
+  .faq-btn { padding: 20px 20px 20px 24px; font-size: 17px; }
+  .faq-a-in { padding: 0 24px; }
+  .faq-a-in p { font-size: 15px; }
+  .faq-a-in p:last-child { padding-bottom: 24px; }
+  .faq-help-tx { padding: 4px 22px 22px; }
 }
 @media (max-width: 900px) {
   /* one column: intro, then questions, then the help card */
@@ -2737,48 +2767,53 @@ html { scroll-behavior: auto; }
   .faq-left { display: contents; }
   .faq-left > .label { justify-self: start; }
   .faq-list { order: 4; margin-top: 36px; }
-  .faq-help { order: 5; height: 320px; margin-top: 16px; }
+  .faq-help { order: 5; margin-top: 16px; }
 }
 @media (max-width: 760px) {
   .faq-sec { padding-top: 72px; }
   .faq-h2 { margin-top: 14px; }
   .faq-list { margin-top: 28px; }
-  .faq-help { height: 240px; margin-top: 12px; }
-  .faq-help-tx { left: 18px; right: 18px; bottom: 18px; }
-  .faq-help-tx p { font-size: 14px; }
-  .faq-help-link { margin-top: 12px; font-size: 15px; }
-  .faq-btn { padding: 18px 18px; font-size: 16px; gap: 14px; }
-  .faq-chev { width: 18px; height: 18px; }
-  .faq-a-in p { padding: 0 18px 20px; margin-top: -4px; font-size: 14px; }
+  .faq-help { margin-top: 12px; border-radius: var(--r-md); }
+  .faq-help-tx { padding: 2px 18px 20px; }
+  .faq-help-tx p { font-size: 15px; }
+  .faq-help-link { height: 42px; font-size: 14px; }
+  .faq-btn { padding: 16px 14px 16px 18px; font-size: 16px; gap: 14px; }
+  .faq-pm { width: 28px; height: 28px; }
+  .faq-pm svg { width: 14px; height: 14px; }
+  .faq-a-in { padding: 0 18px; }
+  .faq-a-in p { margin-top: -4px; font-size: 14px; }
+  .faq-a-in p:last-child { padding-bottom: 20px; }
+  .faq-a-in .faq-src { font-size: 12.5px; }
   .faq-code { font-size: 12.5px; white-space: normal; word-break: break-all; }
 }
 
 /* 44-guides.css */
-/* §15 Guide pages — Qarin blog cards. */
-.guide-sec { background: var(--bg); border-top: 1px solid var(--line); padding-top: 128px; }
-.guide-head { margin-bottom: 80px; }
+/* §15 Guide pages: Qarin blog cards, clay images on the lilac gradient. */
+.guide-sec { background: var(--bg); border-top: 1px solid var(--lav-line); padding-top: 128px; }
+.guide-head { margin-bottom: 72px; }
+.guide-lead { max-width: 580px; text-wrap: pretty; }
 
 .guide-grid { max-width: 1152px; margin-inline: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
 .guide-card {
   display: flex; flex-direction: column;
-  padding: 16px; border-radius: var(--r-md); background: var(--white);
-  box-shadow: 0 0 0 1px var(--line);
+  padding: 14px; border-radius: var(--r-lg); background: var(--white);
+  box-shadow: 0 0 0 1px var(--lav-line), 0 24px 48px -36px rgba(56, 64, 160, 0.3);
   transition: box-shadow .3s ease, transform .3s ease;
 }
-.guide-card:hover { box-shadow: 0 0 0 1px var(--line-2), var(--shadow); transform: translateY(-2px); }
-.guide-link-wrap { display: block; border-radius: 10px; }
-.guide-img { display: block; aspect-ratio: 4 / 3; border-radius: 10px; overflow: hidden; background: var(--lav-2); }
+.guide-card:hover { box-shadow: 0 0 0 1px var(--lilac-100), var(--shadow-clay); transform: translateY(-2px); }
+.guide-link-wrap { display: block; border-radius: var(--r-md); }
+.guide-img { display: block; aspect-ratio: 4 / 3; border-radius: var(--r-md); overflow: hidden; background: var(--grad-main); }
 .guide-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
 .guide-card:hover .guide-img img { transform: scale(1.04); }
 
 .guide-tx { display: flex; flex-direction: column; flex: 1; padding: 24px 12px 12px; }
 .guide-meta { display: flex; align-items: center; gap: 8px; font-size: 15px; line-height: 1.4; color: var(--text-2); }
-.guide-sep { width: 1px; height: 22px; background: #d9d9de; display: inline-block; }
+.guide-sep { width: 1px; height: 22px; background: var(--lilac-deep); display: inline-block; }
 .guide-title { margin-top: 16px; font-family: var(--font-body); font-size: 18px; line-height: 1.65; font-weight: 450; letter-spacing: -0.1px; color: var(--navy); text-wrap: pretty; }
-.guide-more { margin-top: auto; padding-top: 30px; display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; font-size: 16px; font-weight: 600; line-height: 1; color: var(--blue); }
+.guide-more { margin-top: auto; padding-top: 30px; display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; font-size: 16px; font-weight: 600; line-height: 1; color: var(--cobalt); }
 .guide-more svg { width: 17px; height: 17px; transition: transform .2s ease; }
 .guide-more:hover svg, .guide-card:hover .guide-more svg { transform: translateX(3px); }
-.guide-link-wrap:focus-visible, .guide-more:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+.guide-link-wrap:focus-visible, .guide-more:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 3px; }
 
 @media (max-width: 1100px) {
   .guide-sec { padding-top: 104px; }
@@ -2802,38 +2837,46 @@ html { scroll-behavior: auto; }
 }
 
 /* 45-cta-footer.css */
-/* §16 CTA + footer — one big light rounded block (Qarin). */
+/* §16 CTA + footer: one big light rounded block (Qarin). */
 .foot-sec { background: var(--bg); padding: 8px 32px 32px; }
-/* Closing CTA: blue grid card that sits over the top edge of the light footer block (Qarin). */
+/* Closing CTA: lilac gradient card (navy text, navy button) with the clay shop front on the right,
+   sitting over the top edge of the light footer block (Qarin). */
 .foot-cta-card {
   position: relative; z-index: 1; isolation: isolate; overflow: hidden;
   max-width: 1216px; margin: 0 auto;
-  border-radius: var(--r-lg);
-  padding: 104px 40px;
-  background: var(--grad-blue);
-  text-align: center;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 30px 60px -32px rgba(51, 85, 255, 0.55);
+  border-radius: var(--r-xl);
+  background: var(--grad-main);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.75), 0 40px 80px -40px rgba(56, 64, 160, 0.5), 0 12px 24px -16px rgba(56, 64, 160, 0.2);
 }
 .foot-cta-card::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+  background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 64px 64px; background-position: center top;
-  -webkit-mask-image: radial-gradient(ellipse 70% 85% at 50% 15%, #000 30%, transparent 80%);
-  mask-image: radial-gradient(ellipse 70% 85% at 50% 15%, #000 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 60% 90% at 25% 20%, #000 25%, transparent 80%);
+  mask-image: radial-gradient(ellipse 60% 90% at 25% 20%, #000 25%, transparent 80%);
 }
 .foot-block {
   position: relative; isolation: isolate; overflow: hidden;
   max-width: 1376px; margin: -220px auto 0;
   border-radius: var(--r-xl);
-  background: var(--bg-2);
-  box-shadow: inset 0 0 0 1px #f1f1f3;
+  background: var(--lav);
+  box-shadow: inset 0 0 0 1px var(--lav-line);
   padding: 220px 80px 0;
 }
 
-.foot-cta { display: flex; flex-direction: column; align-items: center; text-align: center; }
-.foot-h2 { max-width: 720px; color: var(--white); }
-.foot-lead { margin-top: 18px; color: var(--white); }
-.foot-btn { margin-top: 36px; height: 50px; padding: 0 22px; }
+.foot-cta { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 520px); align-items: stretch; min-height: 440px; }
+.foot-cta-tx { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; text-align: left; padding: 88px 24px 88px 80px; }
+.foot-h2 { max-width: 560px; color: var(--navy); }
+.foot-lead { margin-top: 18px; max-width: 500px; color: var(--navy-3); text-wrap: pretty; }
+.foot-btn { margin-top: 32px; height: 50px; padding: 0 22px; }
+/* the shop front bleeds to the card's right, top and bottom edges; its own gradient matches the card,
+   and a soft fade on the left melts it in */
+.foot-cta-art { position: relative; min-height: 100%; }
+.foot-cta-art img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 55%;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 24%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 24%);
+}
 
 .foot-main {
   margin-top: 96px;
@@ -2843,8 +2886,8 @@ html { scroll-behavior: auto; }
 .foot-logo { display: inline-flex; align-items: center; gap: 10px; }
 .foot-mark { position: relative; width: 36px; height: 36px; flex: none; }
 .foot-mark i { position: absolute; width: 24px; height: 24px; border-radius: 50%; display: block; }
-.foot-mark-b { right: 0; bottom: 0; background: var(--blue); }
-.foot-mark-a { left: 0; top: 0; background: var(--blue-3); opacity: .88; mix-blend-mode: multiply; }
+.foot-mark-b { right: 0; bottom: 0; background: var(--cobalt); }
+.foot-mark-a { left: 0; top: 0; background: var(--peri-300); opacity: .88; mix-blend-mode: multiply; }
 .foot-word { font-family: var(--font-head); font-weight: 600; font-size: 25px; letter-spacing: -0.9px; line-height: 1; color: var(--navy); }
 .foot-line { margin-top: 20px; max-width: 340px; font-size: 14px; line-height: 1.6; color: var(--text); }
 
@@ -2852,31 +2895,42 @@ html { scroll-behavior: auto; }
 .foot-h { font-family: var(--font-body); font-size: 16px; line-height: 1.4; font-weight: 600; letter-spacing: -0.1px; color: var(--navy); }
 .foot-col ul { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-direction: column; gap: 17px; }
 .foot-col a { font-size: 14px; line-height: 1.6; color: var(--text); transition: color .2s ease; }
-.foot-col a:hover { color: var(--blue); }
-.foot-col a.foot-first { color: var(--blue); font-size: 15px; }
+.foot-col a:hover { color: var(--cobalt); }
+.foot-col a.foot-first { color: var(--cobalt); font-size: 15px; }
 .foot-soon { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; line-height: 1.6; color: var(--text); }
-.foot-soon small { font-size: 10.5px; font-weight: 600; line-height: 1; color: var(--text-2); background: #efeff3; border-radius: 5px; padding: 3px 5px; }
+.foot-soon small { font-size: 10.5px; font-weight: 600; line-height: 1; color: var(--text-2); background: var(--lilac-100); border-radius: 5px; padding: 3px 5px; }
 
 .foot-bottom {
   margin-top: 72px; padding: 26px 0 34px;
-  border-top: 1px solid #ececef;
+  border-top: 1px solid var(--lav-line);
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   font-size: 14px; line-height: 1.6; color: var(--text);
 }
 
 @media (max-width: 1100px) {
   .foot-block { padding: 200px 48px 0; margin-top: -200px; }
-  .foot-cta-card { margin-inline: 24px; padding: 88px 32px; }
+  .foot-cta-card { margin-inline: 24px; }
+  .foot-cta { grid-template-columns: minmax(0, 1fr) minmax(0, 380px); min-height: 400px; }
+  .foot-cta-tx { padding: 72px 16px 72px 48px; }
   .foot-main { margin-top: 80px; grid-template-columns: minmax(0, 1fr); gap: 40px; }
   .foot-cols { justify-content: start; grid-template-columns: repeat(3, minmax(0, 200px)); }
 }
 @media (max-width: 760px) {
   .foot-sec { padding: 4px 16px 16px; }
   .foot-block { border-radius: 24px; padding: 120px 20px 0; margin-top: -120px; }
-  .foot-cta-card { margin-inline: 12px; border-radius: 20px; padding: 64px 20px; }
-  .foot-cta-card::before { background-size: 44px 44px; }
-  .foot-lead { margin-top: 14px; }
-  .foot-btn { margin-top: 28px; }
+  .foot-cta-card { margin-inline: 12px; border-radius: var(--r-lg); }
+  .foot-cta-card::before { background-size: 44px 44px; -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 25%, transparent 80%); mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 25%, transparent 80%); }
+  /* phones: shop front above the headline, centred */
+  .foot-cta { grid-template-columns: minmax(0, 1fr); min-height: 0; padding: 28px 20px 52px; }
+  .foot-cta-art { order: -1; justify-self: center; width: 100%; max-width: 220px; min-height: 0; margin-bottom: 4px; }
+  .foot-cta-art img {
+    position: static; height: auto; aspect-ratio: 4 / 3;
+    -webkit-mask-image: radial-gradient(closest-side, #000 58%, transparent 100%);
+    mask-image: radial-gradient(closest-side, #000 58%, transparent 100%);
+  }
+  .foot-cta-tx { align-items: center; text-align: center; padding: 12px 0 0; }
+  .foot-lead { margin-top: 14px; font-size: 15px; }
+  .foot-btn { margin-top: 26px; }
   .foot-main { margin-top: 56px; gap: 36px; }
   .foot-soon { font-size: 13px; }
   .foot-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
@@ -4363,7 +4417,7 @@ html { scroll-behavior: auto; }
             <div class="fx-pdp">
               <div class="fx-pdp-media">
                 <img src="img/guide-beard-oil.jpg" alt="Clay beard oil bottle on a lilac stand" width="1200" height="896">
-                <span class="fx-thumbs" aria-hidden="true"><i class="on"><img src="img/guide-beard-oil.jpg" alt="" loading="lazy"></i><i><img src="img/guide-beard-oil.jpg" alt="" loading="lazy"></i><i><img src="img/guide-beard-oil.jpg" alt="" loading="lazy"></i></span>
+                <span class="fx-thumbs" aria-hidden="true"><i class="on"><img src="img/guide-beard-oil.jpg" alt=""></i><i><img src="img/guide-beard-oil.jpg" alt=""></i><i><img src="img/guide-beard-oil.jpg" alt=""></i></span>
               </div>
               <div class="fx-pdp-info">
                 <span class="fx-vendor">Bondi Beard Co.</span>
@@ -4617,20 +4671,22 @@ html { scroll-behavior: auto; }
       </p>
       <p class="proof-sub">Real data from our own live tests <span class="proof-sep" aria-hidden="true"></span> October 2026</p>
       <h2 class="h2 proof-h2" id="proof-title">What a real AI answer looks like</h2>
+      <p class="lead proof-lead">While planning GEO, we asked ChatGPT a real buyer question as a shopper in Australia. Then we tested GEO itself against all four AI assistants.</p>
     </div>
 
     <div class="proof-list">
       <!-- Card 1: live ChatGPT answer -->
       <article class="proof-card" aria-label="Live ChatGPT test in Australia">
         <figure class="proof-media">
-          <img src="img/beard-oil.jpg" alt="Two amber beard oil bottles and a wooden comb on a grey stone tray" width="928" height="1152">
+          <img src="img/clay-answer.jpg" alt="Clay illustration of a phone showing a chat with a small dropper bottle card" width="928" height="1152" decoding="async">
           <figcaption class="proof-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>Asked in Australia</figcaption>
         </figure>
         <div class="proof-body">
           <blockquote class="proof-quote">
             <p class="proof-q">“best beard oil for dry skin in Australia”</p>
-            <p class="proof-p">ChatGPT named <b>The Groomed Man Co</b>, <b>A Better</b>, <b>Bold &amp; Bare</b> and <b>Milkman</b>, and cited stuga.com.au’s ‘best beard oil 2026’ roundup, Chemist Warehouse, BIG W and Beard Guru.</p>
+            <p class="proof-p">ChatGPT named <b>The Groomed Man Co</b>, <b>A Better</b>, <b>Bold &amp; Bare</b> and <b>Milkman</b>. It cited stuga.com.au’s “best beard oil 2026” roundup, Chemist Warehouse, BIG W and Beard Guru.</p>
           </blockquote>
+          <p class="proof-take"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg><span>Notice what it cites: a roundup article and well-known retailers. Those are the sources AI leaned on for this question.</span></p>
           <ul class="proof-srcs" aria-label="Sites ChatGPT cited">
             <li><span class="proof-fav" aria-hidden="true">S</span>stuga.com.au</li>
             <li><span class="proof-fav" aria-hidden="true">C</span>chemistwarehouse.com.au</li>
@@ -4679,14 +4735,13 @@ html { scroll-behavior: auto; }
         </figure>
         <div class="proof-body">
           <div class="proof-quote">
-            <p class="proof-eyebrow">GEO self-test · 9 Oct 2026</p>
             <p class="proof-q">24 of 24 answers came back from ChatGPT, Gemini, Perplexity and Google AI Overviews.</p>
-            <p class="proof-p">Every question was asked twice per assistant. Google showed no AI Overview for 3 of its 6 searches, which is normal. Each answer cost us about a third of a cent to fetch.</p>
+            <p class="proof-p">Every question was asked twice per assistant. Google showed no AI Overview for 3 of its 6 searches, which is normal.</p>
           </div>
           <div class="proof-by">
             <div class="proof-who">
-              <p class="proof-name">4 AI assistants</p>
-              <p class="proof-meta">The same ones Core checks for you</p>
+              <p class="proof-name">GEO self-test</p>
+              <p class="proof-meta">9 Oct 2026</p>
             </div>
             <span class="proof-stack" aria-hidden="true">
               <i class="proof-mono proof-mono-gpt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg></i>
@@ -4698,12 +4753,13 @@ html { scroll-behavior: auto; }
         </div>
         <div class="proof-stats">
           <div class="proof-stat">
-            <p class="proof-num">24<span class="proof-of">/24</span></p>
-            <p class="proof-lbl">Answers returned</p>
+            <p class="proof-num">4</p>
+            <p class="proof-lbl">AI assistants</p>
+            <p class="proof-lbl-sub">The same ones Core checks for you</p>
           </div>
           <div class="proof-stat">
-            <p class="proof-num"><span class="proof-unit">~US$</span>0.003</p>
-            <p class="proof-lbl">Per answer</p>
+            <p class="proof-num">24<span class="proof-of">/24</span></p>
+            <p class="proof-lbl">Answers returned</p>
           </div>
         </div>
       </article>
@@ -4794,11 +4850,13 @@ html { scroll-behavior: auto; }
 
 <!-- 42-pricing.html -->
 <section class="price-sec" id="pricing" aria-labelledby="price-title">
-  <div class="price-band on-blue">
+  <div class="price-band">
     <div class="wrap">
       <div class="price-head">
         <span class="label"><span class="chip-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg></span><span class="chip-tx">Pricing</span></span>
-        <h2 class="h2 price-h2" id="price-title">Simple plans. Real money tracked.</h2>
+        <h2 class="h2 price-h2" id="price-title">Simple plans. You do the maths.</h2>
+        <p class="lead price-lead">Here’s a simple test. What’s one extra order a month worth to you, at your average order value? Compare that with US$49.</p>
+        <a class="price-calc" href="#worth">Try the calculator <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
         <div class="price-seg" role="group" aria-label="Billing">
           <span class="price-seg-on">Monthly</span>
           <span class="price-seg-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Billed through Shopify</span>
@@ -4810,14 +4868,14 @@ html { scroll-behavior: auto; }
         <article class="price-card" aria-labelledby="price-n-free">
           <h3 class="price-name" id="price-n-free">Free scan</h3>
           <p class="price-amt"><span class="price-num">$0</span><span class="price-per">one-time</span></p>
-          <p class="price-desc">See where you stand with AI today, before you pay a cent.</p>
+          <p class="price-desc">See where you stand with AI today, before you pay anything.</p>
           <a class="btn btn-dark price-btn" href="#pricing">Start free scan</a>
           <ul class="price-list">
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>10 buyer questions, checked once</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>10 buyer questions, one-time scan</li>
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>3 AI assistants</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Your visibility score</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Your visibility score: how often AI names you, out of 100</li>
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Top competitors AI picks instead</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>AI sales from the last 60 days</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>AI sales from your last 60 days</li>
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Results in a few minutes</li>
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>No card needed</li>
             <li class="price-no"><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></span>No fixes or ongoing tracking</li>
@@ -4826,7 +4884,7 @@ html { scroll-behavior: auto; }
 
         <!-- Core -->
         <article class="price-card price-card-dark" aria-labelledby="price-n-core">
-          <span class="price-badge">Best for most stores</span>
+          <span class="price-badge">Our pick for most stores</span>
           <h3 class="price-name" id="price-n-core">Core</h3>
           <p class="price-amt"><span class="price-num">US$49</span><span class="price-per">/month · 7-day free trial</span></p>
           <p class="price-desc">Weekly tracking, fixes you approve, and the money AI sends you.</p>
@@ -4847,8 +4905,8 @@ html { scroll-behavior: auto; }
         <article class="price-card" aria-labelledby="price-n-pro">
           <h3 class="price-name" id="price-n-pro">Pro</h3>
           <p class="price-amt"><span class="price-num">US$149</span><span class="price-per">/month</span></p>
-          <p class="price-desc">More questions, daily checks and hands-off fixes for bigger stores.</p>
-          <a class="btn btn-dark price-btn" href="#pricing">Go Pro</a>
+          <p class="price-desc">More questions, daily checks and hands-off fixes for bigger catalogues.</p>
+          <a class="btn btn-dark price-btn" href="#pricing">Choose Pro</a>
           <ul class="price-list">
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Everything in Core</li>
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>100 buyer questions, scanned daily</li>
@@ -4857,12 +4915,11 @@ html { scroll-behavior: auto; }
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Unlimited fixes</li>
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Autopilot mode (opt-in)</li>
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Outreach finder, 40 targets a month</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Monthly email report</li>
           </ul>
         </article>
       </div>
 
-      <p class="price-fine">Prices in US dollars. Shopify adds them to your normal bill. Cancel any time.</p>
+      <p class="price-fine">Prices in US dollars. Shopify adds them to your normal bill. Cancel any time. The visits AI sends you cost nothing per click.</p>
     </div>
   </div>
 </section>
@@ -4872,11 +4929,11 @@ html { scroll-behavior: auto; }
   <div class="wrap faq-grid">
     <div class="faq-left">
       <span class="label"><span class="chip-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg></span><span class="chip-tx">FAQs</span></span>
-      <h2 class="h2 faq-h2" id="faq-title">Got questions?</h2>
-      <p class="lead faq-lead">Plain answers about tracking, changes and plans.</p>
+      <h2 class="h2 faq-h2" id="faq-title">Questions store owners ask</h2>
+      <p class="lead faq-lead">Plain answers about how AI picks stores, how we count sales, and what changes in your store.</p>
 
       <div class="faq-help">
-        <img src="img/support.jpg" alt="A support person with a headset smiling at her laptop in the evening" width="1200" height="750">
+        <div class="faq-help-img"><img src="img/clay-support.jpg" alt="Clay headset beside two chat bubbles" width="1200" height="670" decoding="async"></div>
         <div class="faq-help-tx">
           <p>Stuck on setup? We’ll help you get your first scan running.</p>
           <a class="faq-help-link" href="#how">See the setup steps <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
@@ -4886,28 +4943,95 @@ html { scroll-behavior: auto; }
 
     <div class="faq-list">
       <div class="faq-item faq-open">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b1" aria-expanded="true" aria-controls="faq-a1">How do you know a sale came from AI?<svg class="faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></h3>
-        <div class="faq-a" id="faq-a1" role="region" aria-labelledby="faq-b1"><div class="faq-a-in"><p>ChatGPT adds <code class="faq-code">utm_source=chatgpt.com</code> to links it shows. We also read where the visit came from (Perplexity, Gemini, Copilot, Claude and others) and count sales from the pages we build for you. Google’s AI Overviews can’t be cleanly separated from normal Google, so we label that.</p></div></div>
+        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b1" aria-expanded="true" aria-controls="faq-a1">How does AI decide which stores to recommend?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
+        <div class="faq-a" id="faq-a1" role="region" aria-labelledby="faq-b1"><div class="faq-a-in">
+            <p>Nobody outside the AI companies knows the exact recipe. But the answers show their working. AI repeats facts it can read on your product pages, picks pages that answer the exact question asked, and quotes sources it trusts, like roundup articles, retailers and forums. GEO tracks all three for the questions your buyers ask.</p>
+        </div></div>
       </div>
       <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b2" aria-expanded="false" aria-controls="faq-a2">Will GEO change my store without asking?<svg class="faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></h3>
-        <div class="faq-a" id="faq-a2" role="region" aria-labelledby="faq-b2"><div class="faq-a-in"><p>No. Every change waits for your approval. Autopilot on Pro is opt-in and still skips anything risky.</p></div></div>
+        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b2" aria-expanded="false" aria-controls="faq-a2">Can I pay to appear in AI answers?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
+        <div class="faq-a" id="faq-a2" role="region" aria-labelledby="faq-b2"><div class="faq-a-in">
+            <p>You can buy ads next to some answers, but not the recommendation itself. ChatGPT shows ads on its Free and Go plans. They sit below the answer, they’re labelled, and OpenAI says advertisers can’t shape or rank the answer. Google can place ads above, below or within its AI Overviews in Australia and New Zealand. The recommendation inside the answer isn’t for sale.</p>
+            <p class="faq-src">Sources: <a class="src-link" href="https://help.openai.com/en/articles/20001047-ads-in-chatgpt" target="_blank" rel="noopener">OpenAI, Ads in ChatGPT</a>, <a class="src-link" href="https://openai.com/index/chatgpt-ads-expands-southeast-asia-taiwan/" target="_blank" rel="noopener">OpenAI, Sep 2026</a> and <a class="src-link" href="https://support.google.com/google-ads/answer/16297775?hl=en" target="_blank" rel="noopener">Google Ads Help</a>.</p>
+        </div></div>
       </div>
       <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b3" aria-expanded="false" aria-controls="faq-a3">Which AI assistants do you check?<svg class="faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></h3>
-        <div class="faq-a" id="faq-a3" role="region" aria-labelledby="faq-b3"><div class="faq-a-in"><p>ChatGPT, Gemini, Perplexity and Google AI Overviews. Pro adds Claude.</p></div></div>
+        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b3" aria-expanded="false" aria-controls="faq-a3">If GEO costs money, what’s “free” about it?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
+        <div class="faq-a" id="faq-a3" role="region" aria-labelledby="faq-b3"><div class="faq-a-in">
+            <p>The traffic. When AI names your store and a shopper clicks through, you don’t pay for that click the way you would for an ad. GEO itself is a paid monthly plan. You can start with a $0 first scan, and Core has a 7-day free trial.</p>
+        </div></div>
       </div>
       <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b4" aria-expanded="false" aria-controls="faq-a4">Can I undo a change?<svg class="faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></h3>
-        <div class="faq-a" id="faq-a4" role="region" aria-labelledby="faq-b4"><div class="faq-a-in"><p>Yes. We keep the old version of everything we change, so undo is one click.</p></div></div>
+        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b4" aria-expanded="false" aria-controls="faq-a4">How do you know a sale came from AI?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
+        <div class="faq-a" id="faq-a4" role="region" aria-labelledby="faq-b4"><div class="faq-a-in">
+            <p>ChatGPT adds <code class="faq-code">utm_source=chatgpt.com</code> to the links it shows. We also check where each visit came from (Perplexity, Gemini, Copilot, Claude and others), and we count sales from the pages we build for you with our own link tag. Google’s AI Overviews can’t be cleanly separated from normal Google, so we label them. We compare everything with your baseline, your numbers from before you joined, and we never claim every AI sale was caused by GEO.</p>
+        </div></div>
       </div>
       <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b5" aria-expanded="false" aria-controls="faq-a5">Will it write health or skin claims?<svg class="faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></h3>
-        <div class="faq-a" id="faq-a5" role="region" aria-labelledby="faq-b5"><div class="faq-a-in"><p>No. Health, skin and supplement products get a claims check first, in line with Australia’s TGA rules.</p></div></div>
+        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b5" aria-expanded="false" aria-controls="faq-a5">What is the visibility score?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
+        <div class="faq-a" id="faq-a5" role="region" aria-labelledby="faq-b5"><div class="faq-a-in">
+            <p>A score out of 100 for how often AI names you. It’s the share of AI answers that name you, across all your questions, every AI assistant and both runs, with a bonus when you’re in the top 3. 0 means no AI named you. Higher means you’re named more often, and nearer the top.</p>
+        </div></div>
       </div>
       <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b6" aria-expanded="false" aria-controls="faq-a6">What’s in the free scan?<svg class="faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></h3>
-        <div class="faq-a" id="faq-a6" role="region" aria-labelledby="faq-b6"><div class="faq-a-in"><p>10 buyer questions checked on 3 AI assistants, your visibility score, who AI recommends instead, and any AI sales from the last 60 days.</p></div></div>
+        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b6" aria-expanded="false" aria-controls="faq-a6">Will GEO change my store without asking?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
+        <div class="faq-a" id="faq-a6" role="region" aria-labelledby="faq-b6"><div class="faq-a-in">
+            <p>No. Every change waits for your approval. Autopilot on Pro is opt-in, and it still skips anything risky, like product claims.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b7" aria-expanded="false" aria-controls="faq-a7">Can I undo a change?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
+        <div class="faq-a" id="faq-a7" role="region" aria-labelledby="faq-b7"><div class="faq-a-in">
+            <p>Yes. We keep the old version of everything we change, so undo is one click.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b8" aria-expanded="false" aria-controls="faq-a8">Will it write health or skin claims?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
+        <div class="faq-a" id="faq-a8" role="region" aria-labelledby="faq-b8"><div class="faq-a-in">
+            <p>No. Health, skin and supplement products get a claims check first, in line with Australia’s TGA rules. We only reword facts already in your catalogue. If something is missing, we ask you.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b9" aria-expanded="false" aria-controls="faq-a9">Which AI assistants do you check?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
+        <div class="faq-a" id="faq-a9" role="region" aria-labelledby="faq-b9"><div class="faq-a-in">
+            <p>ChatGPT, Gemini, Perplexity and Google AI Overviews. Pro adds Claude. Each question is asked twice per assistant on every full scan, and we show the average.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b10" aria-expanded="false" aria-controls="faq-a10">How soon will I see results?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
+        <div class="faq-a" id="faq-a10" role="region" aria-labelledby="faq-b10"><div class="faq-a-in">
+            <p>We can’t promise a date, and we won’t. AI assistants refresh what they know at different speeds, and getting into a roundup depends on its editor. That’s why GEO tracks the same questions every week against your baseline, so you can see what’s moving and what isn’t.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b11" aria-expanded="false" aria-controls="faq-a11">Is this the same as SEO?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
+        <div class="faq-a" id="faq-a11" role="region" aria-labelledby="faq-b11"><div class="faq-a-in">
+            <p>They overlap. Good SEO helps, because many AI answers draw on the web. The difference is the question you ask. SEO asks where you rank on a page of links. GEO asks whether AI names you in its answer, and which sites it quotes when it does.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b12" aria-expanded="false" aria-controls="faq-a12">Do I need to be technical?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
+        <div class="faq-a" id="faq-a12" role="region" aria-labelledby="faq-b12"><div class="faq-a-in">
+            <p>No. Install from Shopify, tick the questions you care about, and approve fixes with one click. GEO writes the changes and pushes them to your store for you.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b13" aria-expanded="false" aria-controls="faq-a13">What’s in the free scan? And how is it different from the free product check?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
+        <div class="faq-a" id="faq-a13" role="region" aria-labelledby="faq-b13"><div class="faq-a-in">
+            <p>The free product check on this page needs no install: one product, 3 questions, ChatGPT, Gemini and Perplexity, each asked twice. The free scan runs inside Shopify after you install: 10 buyer questions on 3 AI assistants, your visibility score (how often AI names you, out of 100), who AI recommends instead, and any AI sales from your last 60 days. Both cost $0.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b14" aria-expanded="false" aria-controls="faq-a14">Does it work outside Australia?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
+        <div class="faq-a" id="faq-a14" role="region" aria-labelledby="faq-b14"><div class="faq-a-in">
+            <p>GEO is built for stores in Australia and New Zealand first, and asks each question as a local shopper would. The free product check also works for shoppers in the US, UK and Canada.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b15" aria-expanded="false" aria-controls="faq-a15">What do you do with my store’s data?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
+        <div class="faq-a" id="faq-a15" role="region" aria-labelledby="faq-b15"><div class="faq-a-in">
+            <p>We read your products and homepage to write fixes, and your orders to find sales from AI. Click tracking counts visits from AI answers, follows your store’s consent settings and keeps no personal details. We never use one store’s data for another store.</p>
+        </div></div>
       </div>
     </div>
   </div>
@@ -4919,6 +5043,7 @@ html { scroll-behavior: auto; }
     <div class="sec-head guide-head">
       <span class="label"><span class="chip-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><span class="chip-tx">Guide pages</span></span>
       <h2 class="h2" id="guide-title">Pages GEO can write for you</h2>
+      <p class="lead guide-lead">Guide pages answer the exact questions shoppers ask AI, using only your products and facts. You approve each one before it’s published, and every link is tracked.</p>
     </div>
 
     <div class="guide-grid">
@@ -4934,7 +5059,7 @@ html { scroll-behavior: auto; }
       </article>
 
       <article class="guide-card">
-        <a class="guide-link-wrap" href="#fixes" data-fx-pane="3" aria-label="See example: Beard care for sensitive skin">
+        <a class="guide-link-wrap" href="#fixes" data-fx-pane="3" aria-label="See example: Beard care for sensitive skin, what to look for">
           <span class="guide-img"><img src="img/guide-sensitive.jpg" alt="" width="1200" height="896"></span>
         </a>
         <div class="guide-tx">
@@ -4962,9 +5087,14 @@ html { scroll-behavior: auto; }
 <footer class="foot-sec" id="contact">
   <div class="foot-cta-card">
     <div class="foot-cta">
-      <h2 class="h2 foot-h2" id="foot-cta-title">See where you stand with AI today</h2>
-      <p class="lead foot-lead">Free scan. Results in minutes. No card needed.</p>
-      <a class="btn btn-light foot-btn" href="#check">Get your free scan</a>
+      <div class="foot-cta-tx">
+        <h2 class="h2 foot-h2" id="foot-cta-title">Is AI recommending your store?</h2>
+        <p class="lead foot-lead">Paste one product link. In a few minutes you’ll see who AI recommends, which sites it trusts, and what to fix first. Free, no sign-up.</p>
+        <a class="btn btn-dark foot-btn" href="#check">Check my product <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
+      </div>
+      <div class="foot-cta-art">
+        <img src="img/clay-storefront.jpg" alt="" width="1200" height="896" decoding="async">
+      </div>
     </div>
   </div>
 
@@ -4972,11 +5102,11 @@ html { scroll-behavior: auto; }
 
     <div class="foot-main">
       <div class="foot-brand">
-        <a class="foot-logo" href="#overview" aria-label="GEO — back to top">
+        <a class="foot-logo" href="#overview" aria-label="GEO, back to top">
           <span class="foot-mark" aria-hidden="true"><i class="foot-mark-a"></i><i class="foot-mark-b"></i></span>
           <span class="foot-word">GEO</span>
         </a>
-        <p class="foot-line">Get recommended by ChatGPT &amp; co — and see the sales it brings.</p>
+        <p class="foot-line">Get recommended by ChatGPT &amp; co, and see what it’s worth to your store.</p>
       </div>
 
       <nav class="foot-cols" aria-label="Footer">
@@ -4984,6 +5114,7 @@ html { scroll-behavior: auto; }
           <h3 class="foot-h">Product</h3>
           <ul>
             <li><a class="foot-first" href="#overview">Overview</a></li>
+            <li><a href="#decide">How AI picks</a></li>
             <li><a href="#screens">Screens</a></li>
             <li><a href="#how">How it works</a></li>
             <li><a href="#pricing">Pricing</a></li>

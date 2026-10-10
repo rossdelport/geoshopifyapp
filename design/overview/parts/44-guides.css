@@ -1,28 +1,29 @@
-/* §15 Guide pages — Qarin blog cards. */
-.guide-sec { background: var(--bg); border-top: 1px solid var(--line); padding-top: 128px; }
-.guide-head { margin-bottom: 80px; }
+/* §15 Guide pages: Qarin blog cards, clay images on the lilac gradient. */
+.guide-sec { background: var(--bg); border-top: 1px solid var(--lav-line); padding-top: 128px; }
+.guide-head { margin-bottom: 72px; }
+.guide-lead { max-width: 580px; text-wrap: pretty; }
 
 .guide-grid { max-width: 1152px; margin-inline: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
 .guide-card {
   display: flex; flex-direction: column;
-  padding: 16px; border-radius: var(--r-md); background: var(--white);
-  box-shadow: 0 0 0 1px var(--line);
+  padding: 14px; border-radius: var(--r-lg); background: var(--white);
+  box-shadow: 0 0 0 1px var(--lav-line), 0 24px 48px -36px rgba(56, 64, 160, 0.3);
   transition: box-shadow .3s ease, transform .3s ease;
 }
-.guide-card:hover { box-shadow: 0 0 0 1px var(--line-2), var(--shadow); transform: translateY(-2px); }
-.guide-link-wrap { display: block; border-radius: 10px; }
-.guide-img { display: block; aspect-ratio: 4 / 3; border-radius: 10px; overflow: hidden; background: var(--lav-2); }
+.guide-card:hover { box-shadow: 0 0 0 1px var(--lilac-100), var(--shadow-clay); transform: translateY(-2px); }
+.guide-link-wrap { display: block; border-radius: var(--r-md); }
+.guide-img { display: block; aspect-ratio: 4 / 3; border-radius: var(--r-md); overflow: hidden; background: var(--grad-main); }
 .guide-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
 .guide-card:hover .guide-img img { transform: scale(1.04); }
 
 .guide-tx { display: flex; flex-direction: column; flex: 1; padding: 24px 12px 12px; }
 .guide-meta { display: flex; align-items: center; gap: 8px; font-size: 15px; line-height: 1.4; color: var(--text-2); }
-.guide-sep { width: 1px; height: 22px; background: #d9d9de; display: inline-block; }
+.guide-sep { width: 1px; height: 22px; background: var(--lilac-deep); display: inline-block; }
 .guide-title { margin-top: 16px; font-family: var(--font-body); font-size: 18px; line-height: 1.65; font-weight: 450; letter-spacing: -0.1px; color: var(--navy); text-wrap: pretty; }
-.guide-more { margin-top: auto; padding-top: 30px; display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; font-size: 16px; font-weight: 600; line-height: 1; color: var(--blue); }
+.guide-more { margin-top: auto; padding-top: 30px; display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; font-size: 16px; font-weight: 600; line-height: 1; color: var(--cobalt); }
 .guide-more svg { width: 17px; height: 17px; transition: transform .2s ease; }
 .guide-more:hover svg, .guide-card:hover .guide-more svg { transform: translateX(3px); }
-.guide-link-wrap:focus-visible, .guide-more:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+.guide-link-wrap:focus-visible, .guide-more:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 3px; }
 
 @media (max-width: 1100px) {
   .guide-sec { padding-top: 104px; }

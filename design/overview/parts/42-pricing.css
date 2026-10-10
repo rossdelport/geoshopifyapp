@@ -1,5 +1,5 @@
 /* §13 Pricing: full-width lilac gradient block (Qarin layout), navy text, white cards, indigo featured card. */
-.price-sec { background: var(--bg); }
+.price-sec { background: var(--bg); padding-top: 24px; }
 .price-band {
   margin-inline: 24px;
   border-radius: var(--r-xl);
