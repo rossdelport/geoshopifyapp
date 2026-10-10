@@ -1,0 +1,277 @@
+{
+ "what": "Raw ChatGPT answer, unedited, as returned by the Treg gateway (cloro live ChatGPT web UI scraper). Saved as evidence for docs/ads/ad-concepts.md.",
+ "prompt": "best beard oil for dry skin in Australia",
+ "country": "AU",
+ "engine": "ChatGPT live web UI, reached through the cloro scraping service (not anyone's personal ChatGPT account)",
+ "endpoint": "cloro.ai-search.chatgpt.scrape",
+ "request_body": {
+  "prompt": "best beard oil for dry skin in Australia",
+  "country": "AU",
+  "include": {
+   "markdown": true,
+   "shopping": true
+  }
+ },
+ "treg_call_id": "8e12892b6f3249d6b5441729156136fb",
+ "run_by": "ad-concepts finalise pass",
+ "received_at_utc": "2026-10-10T07:00:36.208Z",
+ "note": "Text is stored with JSON escapes (for example \\u2014), so the file holds the exact answer while keeping literal dashes out of docs/ads.",
+ "response": {
+  "call_id": "8e12892b6f3249d6b5441729156136fb",
+  "status": 200,
+  "endpoint_id": "cloro.ai-search.chatgpt.scrape",
+  "replayed": null,
+  "body": {
+   "success": true,
+   "result": {
+    "model": null,
+    "text": "If you have a dry, itchy or flaky face under your beard, I\u2019d prioritise a fragrance-free beard oil with jojoba or squalane rather than simply choosing the best-smelling oil. These ingredients help soften beard hair and reduce that tight, dry feeling underneath. Fragrance and essential oils can also irritate sensitive skin.\n\nBest beard oils for dry skin in Australia\n\n1. Professor Fuzzworthy's Weightless Luxe Face & Beard Oil Serum\n\nBest for sensitive skin\n\nAround A$35\n\nA lightweight, squalane-based serum made in Tasmania, with additional plant oils. A strong option if your skin feels dry but you dislike heavy, greasy beard oils. Check the full ingredient list if you react to botanical ingredients.\n\nFind it on Amazon Australia\n\n2. Stuga Beard Oil \u2014 Unscented\n\nBest Australian-made option\n\nFrom around A$30\n\nMade in Moss Vale, NSW, with a blend including sweet almond, macadamia and apricot kernel oils. The unscented option is worth considering if perfumes tend to bother your skin. Note that nut-derived oils may not suit everyone.\n\nShop Stuga Australia\n\n3. Alpine Beards Basecamp Unscented Beard Oil\n\nAustralian-made \u00b7 Price varies\n\nContains jojoba, grapeseed, sweet almond, castor and vitamin E oils. A straightforward, fragrance-free choice for conditioning beard hair and moisturising the skin beneath it.\n\nShop Alpine Beards Australia\n\n4. Bulldog Original Beard Oil\n\nBest budget option\n\nUsually around A$10\u201316\n\nA readily available option containing jojoba, sweet almond and sunflower oils, along with aloe vera. Good for everyday conditioning, but it has a scent, so it may not be your first choice if your skin is very reactive.\n\nFind it at Chemist Warehouse\n\nHow to get the best results\n\nApply 2\u20134 drops to a clean, slightly damp beard, working the oil down to the skin.\n\nStart once daily and increase only if needed.\n\nIf your skin remains dry, use a fragrance-free facial moisturiser underneath or instead of more oil. Beard oil conditions hair, but a moisturiser is often better for persistent skin dryness.\n\nAvoid heavily fragranced oils if you experience redness, burning or itching. Patch-test new products first.\n\nIf you have persistent redness, thick flakes or a rash, it could be seborrhoeic dermatitis or another skin condition rather than simple dryness.\n\nOne quick question\n\nWhat best describes your skin?",
+    "sources": [
+     {
+      "position": 1,
+      "label": "Best Beard Oil Australia 2026: 8 Top Picks Compared",
+      "url": "https://nestpath.com.au/homeowner-hub/best-beard-oil-australia",
+      "footnote": false
+     },
+     {
+      "position": 2,
+      "label": "Best Beard Oil Australia 2026 \u2014 5 Brands Compared",
+      "url": "https://stuga.com.au/blogs/journal/best-beard-oil-in-australia-2026",
+      "footnote": false
+     },
+     {
+      "position": 3,
+      "label": "Basecamp (Unscented) Beard Oil",
+      "url": "https://alpinebeardsaustralia.com.au/products/basecamp-unscented-beard-oil",
+      "footnote": false
+     },
+     {
+      "position": 4,
+      "label": "Best Beard Oils Australia",
+      "url": "https://www.canstarblue.com.au/health-beauty/best-beard-oils/",
+      "footnote": false
+     },
+     {
+      "position": 5,
+      "label": "",
+      "url": "https://www.amazon.com.au/s?k=",
+      "footnote": true
+     },
+     {
+      "position": 6,
+      "label": "",
+      "url": "https://www.professorfuzzworthy.com/products/gentlemans-face-beard-serum?srsltid=AfmBOoropUBYN3VVdTvDPCUIroUo4Gin0BUuVb3xcz6vyWtfUM_MrJp2",
+      "footnote": true
+     },
+     {
+      "position": 7,
+      "label": "Find it on Amazon Australia",
+      "url": "https://www.amazon.com.au/s?k=Professor+Fuzzworthy+Weightless+Luxe+Face+Beard+Oil",
+      "footnote": true
+     },
+     {
+      "position": 8,
+      "label": "Shop Stuga Australia",
+      "url": "https://stuga.com.au/",
+      "footnote": true
+     },
+     {
+      "position": 9,
+      "label": "",
+      "url": "https://skolbeardco.com.au/products/premium-50ml-beard-oil",
+      "footnote": true
+     },
+     {
+      "position": 10,
+      "label": "Find it at Chemist Warehouse",
+      "url": "https://www.chemistwarehouse.com.au/search?searchtext=Bulldog+Beard+Oil",
+      "footnote": true
+     },
+     {
+      "position": 11,
+      "label": "",
+      "url": "https://www.chemistwarehouse.com.au/buy/168640/alpine-beards-australia-50-peaks-beard-oil-50ml",
+      "footnote": true
+     },
+     {
+      "position": 12,
+      "label": "",
+      "url": "https://au.bulldogskincare.com/products/original-beard-oil",
+      "footnote": true
+     },
+     {
+      "position": 13,
+      "label": "",
+      "url": "https://dmbio.com/blog/best-beard-oil-dry-skin",
+      "footnote": true
+     },
+     {
+      "position": 14,
+      "label": "",
+      "url": "https://pagesix.com/2026/10/07/style/hailey-bieber-go-to-naturium-body-butter-is-on-sale-for-october-prime-day/",
+      "footnote": true
+     },
+     {
+      "position": 15,
+      "label": "",
+      "url": "https://www.beardandblade.com.au/blogs/academy/the-best-beard-oils-in-australia",
+      "footnote": true
+     }
+    ],
+    "entities": [
+     {
+      "type": "product",
+      "name": "Professor Fuzzworthy's Weightless Luxe Face & Beard Oil Serum"
+     },
+     {
+      "type": "product",
+      "name": "Stuga Beard Oil \u2014 Unscented"
+     },
+     {
+      "type": "product",
+      "name": "Alpine Beards Basecamp Unscented Beard Oil"
+     },
+     {
+      "type": "product",
+      "name": "Bulldog Original Beard Oil"
+     }
+    ],
+    "map": [],
+    "followUpForm": {
+     "questions": [
+      {
+       "label": "1. What is the main problem?",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Dry, flaky skin or beard dandruff",
+         "value": "dry_flaky",
+         "selected": true
+        },
+        {
+         "label": "Itchy, sensitive or easily irritated skin",
+         "value": "itchy_sensitive",
+         "selected": false
+        },
+        {
+         "label": "Dry skin and coarse beard hair",
+         "value": "dry_coarse",
+         "selected": false
+        },
+        {
+         "label": "Oily face but dry skin under the beard",
+         "value": "oily_dry",
+         "selected": false
+        }
+       ],
+       "name": "skin"
+      },
+      {
+       "label": "2. Do you prefer scented or unscented?",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Unscented / fragrance-free",
+         "value": "unscented",
+         "selected": true
+        },
+        {
+         "label": "A subtle natural scent",
+         "value": "subtle",
+         "selected": false
+        },
+        {
+         "label": "A strong masculine scent",
+         "value": "strong",
+         "selected": false
+        }
+       ],
+       "name": "scent"
+      },
+      {
+       "label": "3. What is your budget?",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Under A$20",
+         "value": "under_20",
+         "selected": false
+        },
+        {
+         "label": "A$20\u201330",
+         "value": "20_30",
+         "selected": false
+        },
+        {
+         "label": "A$30\u201350",
+         "value": "30_50",
+         "selected": true
+        },
+        {
+         "label": "A$50+",
+         "value": "50_plus",
+         "selected": false
+        }
+       ],
+       "name": "budget"
+      }
+     ],
+     "submitLabel": "Find my best match",
+     "followUpPrompt": "Recommend the best beard oil available in Australia for my skin. Skin concern: {skin}. Scent preference: {scent}. Budget: {budget}. Give the single best match and where to buy it in Australia."
+    },
+    "markdown": "If you have a dry, itchy or flaky face under your beard, I\u2019d prioritise a fragrance-free beard oil with jojoba or squalane rather than simply choosing the best-smelling oil. These ingredients help soften beard hair and reduce that tight, dry feeling underneath. Fragrance and essential oils can also irritate sensitive skin.\n\n## Best beard oils for dry skin in Australia\n\n### 1. Professor Fuzzworthy's Weightless Luxe Face & Beard Oil Serum\n\nBest for sensitive skin\n\nAround A$35\n\nA lightweight, squalane-based serum made in Tasmania, with additional plant oils. A strong option if your skin feels dry but you dislike heavy, greasy beard oils. Check the full ingredient list if you react to botanical ingredients. [Best Beard Oil Australia 2026: 8 Top Picks Compared](https://nestpath.com.au/homeowner-hub/best-beard-oil-australia)\n\n[Find it on Amazon Australia](https://www.amazon.com.au/s?k=Professor+Fuzzworthy+Weightless+Luxe+Face+Beard+Oil)\n\n### 2. Stuga Beard Oil \u2014 Unscented\n\nBest Australian-made option\n\nFrom around A$30\n\nMade in Moss Vale, NSW, with a blend including sweet almond, macadamia and apricot kernel oils. The unscented option is worth considering if perfumes tend to bother your skin. Note that nut-derived oils may not suit everyone. [Best Beard Oil Australia 2026 \u2014 5 Brands Compared](https://stuga.com.au/blogs/journal/best-beard-oil-in-australia-2026)\n\n[Shop Stuga Australia](https://stuga.com.au/)\n\n### 3. Alpine Beards Basecamp Unscented Beard Oil\n\nAustralian-made \u00b7 Price varies\n\nContains jojoba, grapeseed, sweet almond, castor and vitamin E oils. A straightforward, fragrance-free choice for conditioning beard hair and moisturising the skin beneath it. [Basecamp (Unscented) Beard Oil](https://alpinebeardsaustralia.com.au/products/basecamp-unscented-beard-oil)\n\n[Shop Alpine Beards Australia](https://alpinebeardsaustralia.com.au/products/basecamp-unscented-beard-oil)\n\n### 4. Bulldog Original Beard Oil\n\nBest budget option\n\nUsually around A$10\u201316\n\nA readily available option containing jojoba, sweet almond and sunflower oils, along with aloe vera. Good for everyday conditioning, but it has a scent, so it may not be your first choice if your skin is very reactive. [Best Beard Oils Australia](https://www.canstarblue.com.au/health-beauty/best-beard-oils/)[Best Beard Oil Australia 2026: 8 Top Picks Compared](https://nestpath.com.au/homeowner-hub/best-beard-oil-australia)\n\n[Find it at Chemist Warehouse](https://www.chemistwarehouse.com.au/search?searchtext=Bulldog%20Beard%20Oil)\n\n## How to get the best results\n\n- Apply 2\u20134 drops to a clean, slightly damp beard, working the oil down to the skin.\n- Start once daily and increase only if needed.\n- If your skin remains dry, use a fragrance-free facial moisturiser underneath or instead of more oil. Beard oil conditions hair, but a moisturiser is often better for persistent skin dryness.\n- Avoid heavily fragranced oils if you experience redness, burning or itching. Patch-test new products first.\n\nIf you have persistent redness, thick flakes or a rash, it could be seborrhoeic dermatitis or another skin condition rather than simple dryness.\n\n## One quick question\n\nWhat best describes your skin?",
+    "shoppingCards": [],
+    "inlineProducts": [],
+    "citationPills": [
+     {
+      "url": "https://nestpath.com.au/homeowner-hub/best-beard-oil-australia",
+      "label": "Best Beard Oil Australia 2026: 8 Top Picks Compared",
+      "domain": "nestpath.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 0,
+      "position": 1
+     },
+     {
+      "url": "https://stuga.com.au/blogs/journal/best-beard-oil-in-australia-2026",
+      "label": "Best Beard Oil Australia 2026 \u2014 5 Brands Compared",
+      "domain": "stuga.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 1,
+      "position": 2
+     },
+     {
+      "url": "https://alpinebeardsaustralia.com.au/products/basecamp-unscented-beard-oil",
+      "label": "Basecamp (Unscented) Beard Oil",
+      "domain": "alpinebeardsaustralia.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 2,
+      "position": 3
+     },
+     {
+      "url": "https://www.canstarblue.com.au/health-beauty/best-beard-oils/",
+      "label": "Best Beard Oils Australia",
+      "domain": "canstarblue.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 3,
+      "position": 4
+     },
+     {
+      "url": "https://nestpath.com.au/homeowner-hub/best-beard-oil-australia",
+      "label": "Best Beard Oil Australia 2026: 8 Top Picks Compared",
+      "domain": "nestpath.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 3,
+      "position": 1
+     }
+    ]
+   }
+  },
+  "cost_usd": 0.0036,
+  "served_via": null,
+  "whose_error": null,
+  "hint": null,
+  "did_you_mean": null,
+  "error": null,
+  "detail": null
+ }
+}

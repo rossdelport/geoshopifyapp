@@ -1,0 +1,372 @@
+{
+ "what": "Raw ChatGPT answer, unedited, as returned by the Treg gateway (cloro live ChatGPT web UI scraper). Saved as evidence for docs/ads/ad-concepts.md.",
+ "prompt": "best beard oil for dry skin in Australia",
+ "country": "AU",
+ "engine": "ChatGPT live web UI, reached through the cloro scraping service (not anyone's personal ChatGPT account)",
+ "endpoint": "cloro.ai-search.chatgpt.scrape",
+ "request_body": {
+  "prompt": "best beard oil for dry skin in Australia",
+  "country": "AU",
+  "include": {
+   "markdown": true,
+   "shopping": true
+  }
+ },
+ "treg_call_id": "6e2872995ee246cf95c39e31ff18cc5d",
+ "run_by": "ad-concepts finalise pass",
+ "received_at_utc": "2026-10-10T06:59:56.811Z",
+ "note": "Text is stored with JSON escapes (for example \\u2014), so the file holds the exact answer while keeping literal dashes out of docs/ads.",
+ "response": {
+  "call_id": "6e2872995ee246cf95c39e31ff18cc5d",
+  "status": 200,
+  "endpoint_id": "cloro.ai-search.chatgpt.scrape",
+  "replayed": null,
+  "body": {
+   "success": true,
+   "result": {
+    "model": null,
+    "text": "For dry skin under your beard in Australia, I'd choose a fragrance-free beard oil with jojoba or argan oil. These help soften coarse beard hair and reduce that tight, itchy feeling underneath. If your skin is very sensitive, a fragrance-free facial moisturiser may actually work better than beard oil alone.\n\nBest beard oils for dry skin in Australia\n\n1. Stuga Beard Oil \u2013 Unscented\n\nBest Australian-made pick\n\nFrom $29.95\u2013$34.95 AUD\n\nMade in Moss Vale, NSW, using sweet almond, macadamia and apricot kernel oils, plus vitamin E. A good choice for dry beard hair and skin if you want a locally made, fragrance-free blend.\n\nShop Stuga\n\n2. Percy Nobleman Conditioning Beard Oil Unscented\n\n$39.99 AUD \u00b7 100 ml\n\nBest for everyday moisturising. Contains jojoba, argan, marula and avocado oils. The fragrance-free formula and larger bottle make it a practical option for regular use.\n\nShop Beard & Blade\n\n3. Bold & Bare Beard Oil \u2013 Signature Edition Unscented\n\n$19.95 AUD \u00b7 15 ml\n\nBest budget option to try first. Includes argan, jojoba, sweet almond and other conditioning oils. The unscented version is intended for people who prefer to avoid added fragrance.\n\nShop Bold & Bare\n\nHow to choose the right one\n\nDry, flaky skin: Start with Stuga Unscented or Percy Nobleman Unscented.\n\nSensitive skin that stings or gets red: Avoid fragrance and essential oils. Consider a fragrance-free facial moisturiser instead of relying on oil alone.\n\nDry beard hair but otherwise normal skin: Any of the three above is worth considering.\n\nHow to use beard oil for dry skin\n\nWash with a gentle, fragrance-free cleanser.\n\nPat your beard dry, leaving it slightly damp.\n\nStart with 2\u20134 drops and massage the oil right down to the skin beneath your beard.\n\nApply daily after showering, adjusting the amount to your beard length.\n\nIf the skin remains flaky, a fragrance-free moisturiser may help more. Persistent redness, itching or thick scales can indicate a skin condition that needs treatment.\n\nOne quick question\n\nWhat is your main skin problem? That will help me narrow this down to the best option for you.",
+    "sources": [
+     {
+      "position": 1,
+      "label": "A dermatologist's top tips for a healthy beard",
+      "url": "https://www.aad.org/public/everyday-care/skin-care-secrets/face/healthy-beard?_hsmi=202030708",
+      "footnote": false
+     },
+     {
+      "position": 2,
+      "label": "Best Beard Oil for Sensitive Skin",
+      "url": "https://www.shavingschool.com/beard/best-beard-oil-for-sensitive-skin/",
+      "footnote": false
+     },
+     {
+      "position": 3,
+      "label": "Beard Oil Scents & Strengths \u2014 Unscented Too",
+      "url": "https://stuga.com.au/collections/beard-oil",
+      "footnote": false
+     },
+     {
+      "position": 4,
+      "label": "Beard Oil, Blended Fresh to Order \u2014 6 Scents",
+      "url": "https://stuga.com.au/products/stuga-beard-oil",
+      "footnote": false
+     },
+     {
+      "position": 5,
+      "label": "Percy Nobleman Conditioning Beard Oil Unscented 100ml",
+      "url": "https://www.beardandblade.com.au/products/percy-nobleman-conditioning-beard-oil-unscented-100ml",
+      "footnote": false
+     },
+     {
+      "position": 6,
+      "label": "Bold and Bare Dash and Daring Beard Oil",
+      "url": "https://www.boldandbare.com.au/shopboldandbare/p/bold-beard-oil",
+      "footnote": false
+     },
+     {
+      "position": 7,
+      "label": "Beard Oil vs. Moisturizer",
+      "url": "https://facialfortress.com/blog/beard-care/beard-oil-vs-moisturizer/",
+      "footnote": false
+     },
+     {
+      "position": 8,
+      "label": "",
+      "url": "https://skolbeardco.com.au/products/premium-50ml-beard-oil",
+      "footnote": true
+     },
+     {
+      "position": 9,
+      "label": "",
+      "url": "https://www.boldandbare.com.au/shopboldandbare",
+      "footnote": true
+     },
+     {
+      "position": 10,
+      "label": "",
+      "url": "https://www.bondibeardco.com.au/products/au-naturel-beard-oil",
+      "footnote": true
+     },
+     {
+      "position": 11,
+      "label": "",
+      "url": "https://beardguru.com.au/blogs/beard-blog/best-beard-products-for-sensitive-skin",
+      "footnote": true
+     },
+     {
+      "position": 12,
+      "label": "",
+      "url": "https://dmbio.com/blog/best-beard-oil-dry-skin",
+      "footnote": true
+     },
+     {
+      "position": 13,
+      "label": "",
+      "url": "https://grizzlygco.com/base-camp/beard-oil-for-dry-skin",
+      "footnote": true
+     },
+     {
+      "position": 14,
+      "label": "",
+      "url": "https://luminusbodyandbath.com.au/blogs/news/beard-oils-for-sensitive-mature-dry-skin-why-i-finally-made-them",
+      "footnote": true
+     },
+     {
+      "position": 15,
+      "label": "",
+      "url": "https://nestpath.com.au/homeowner-hub/best-beard-oil-australia",
+      "footnote": true
+     },
+     {
+      "position": 16,
+      "label": "",
+      "url": "https://stuga.com.au/blogs/journal/best-beard-oil-in-australia-2026",
+      "footnote": true
+     },
+     {
+      "position": 17,
+      "label": "",
+      "url": "https://stuga.com.au/collections/beard-balm",
+      "footnote": true
+     },
+     {
+      "position": 18,
+      "label": "",
+      "url": "https://stuga.com.au/collections/beard-mo",
+      "footnote": true
+     },
+     {
+      "position": 19,
+      "label": "",
+      "url": "https://stuga.com.au/products/stuga-beard-balm",
+      "footnote": true
+     },
+     {
+      "position": 20,
+      "label": "",
+      "url": "https://www.beardandblade.com.au/blogs/academy/the-best-beard-oils-in-australia",
+      "footnote": true
+     },
+     {
+      "position": 21,
+      "label": "",
+      "url": "https://www.beardandblade.com.au/collections/beard-oils?type=grid",
+      "footnote": true
+     },
+     {
+      "position": 22,
+      "label": "",
+      "url": "https://www.beardandblade.com.au/collections/percy-nobleman",
+      "footnote": true
+     },
+     {
+      "position": 23,
+      "label": "",
+      "url": "https://www.beardandblade.com.au/products/percy-nobleman-beard-grooming-kit",
+      "footnote": true
+     },
+     {
+      "position": 24,
+      "label": "",
+      "url": "https://www.beardandblade.com.au/products/percy-nobleman-complete-beard-care-kit",
+      "footnote": true
+     },
+     {
+      "position": 25,
+      "label": "",
+      "url": "https://www.beardandblade.com.au/products/percy-nobleman-signature-beard-oil-100ml",
+      "footnote": true
+     },
+     {
+      "position": 26,
+      "label": "",
+      "url": "https://www.boldandbare.com.au/shopboldandbare/p/body-oil",
+      "footnote": true
+     },
+     {
+      "position": 27,
+      "label": "",
+      "url": "https://www.brostrick.com/guide/best-beard-oil-tonics/",
+      "footnote": true
+     }
+    ],
+    "entities": [
+     {
+      "type": "product",
+      "name": "Stuga Beard Oil \u2013 Unscented"
+     },
+     {
+      "type": "product",
+      "name": "Percy Nobleman Conditioning Beard Oil Unscented"
+     },
+     {
+      "type": "product",
+      "name": "Bold & Bare Beard Oil \u2013 Signature Edition Unscented"
+     }
+    ],
+    "map": [],
+    "followUpForm": {
+     "questions": [
+      {
+       "label": "1. What are you experiencing?",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Dry, flaky skin or beard dandruff",
+         "value": "Dry and flaky",
+         "selected": true
+        },
+        {
+         "label": "Itching underneath my beard",
+         "value": "Itchy skin",
+         "selected": false
+        },
+        {
+         "label": "Rough, dry beard hair",
+         "value": "Dry beard hair",
+         "selected": false
+        },
+        {
+         "label": "Dryness with redness or irritation",
+         "value": "Dry, red or irritated skin",
+         "selected": false
+        }
+       ],
+       "name": "skin"
+      },
+      {
+       "label": "2. How sensitive is your skin?",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Quite sensitive; products can sting",
+         "value": "Quite sensitive",
+         "selected": true
+        },
+        {
+         "label": "Somewhat sensitive",
+         "value": "Somewhat sensitive",
+         "selected": false
+        },
+        {
+         "label": "Not particularly sensitive",
+         "value": "Not sensitive",
+         "selected": false
+        }
+       ],
+       "name": "sensitivity"
+      },
+      {
+       "label": "3. Your budget?",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Under $25",
+         "value": "Under $25",
+         "selected": false
+        },
+        {
+         "label": "Under $40",
+         "value": "Under $40",
+         "selected": true
+        },
+        {
+         "label": "$40 or more for a premium option",
+         "value": "$40 or more",
+         "selected": false
+        }
+       ],
+       "name": "budget"
+      }
+     ],
+     "submitLabel": "Find my best match",
+     "followUpPrompt": "Recommend the best beard oil or moisturiser available in Australia for me. Skin problem: {skin}. Sensitivity: {sensitivity}. Budget: {budget}."
+    },
+    "markdown": "For dry skin under your beard in Australia, I'd choose a fragrance-free beard oil with jojoba or argan oil. These help soften coarse beard hair and reduce that tight, itchy feeling underneath. If your skin is very sensitive, a fragrance-free facial moisturiser may actually work better than beard oil alone. [A dermatologist's top tips for a healthy beard](https://www.aad.org/public/everyday-care/skin-care-secrets/face/healthy-beard?_hsmi=202030708)[Best Beard Oil for Sensitive Skin](https://www.shavingschool.com/beard/best-beard-oil-for-sensitive-skin/)\n\n## Best beard oils for dry skin in Australia\n\n## 1. Stuga Beard Oil \u2013 Unscented\n\nBest Australian-made pick\n\nFrom $29.95\u2013$34.95 AUD\n\nMade in Moss Vale, NSW, using sweet almond, macadamia and apricot kernel oils, plus vitamin E. A good choice for dry beard hair and skin if you want a locally made, fragrance-free blend. [Beard Oil, Blended Fresh to Order \u2014 6 Scents](https://stuga.com.au/products/stuga-beard-oil)[Beard Oil Scents & Strengths \u2014 Unscented Too](https://stuga.com.au/collections/beard-oil)\n\n[Shop Stuga](https://stuga.com.au/products/stuga-beard-oil)\n\n## 2. Percy Nobleman Conditioning Beard Oil Unscented\n\n$39.99 AUD \u00b7 100 ml\n\nBest for everyday moisturising. Contains jojoba, argan, marula and avocado oils. The fragrance-free formula and larger bottle make it a practical option for regular use. [Percy Nobleman Conditioning Beard Oil Unscented 100ml](https://www.beardandblade.com.au/products/percy-nobleman-conditioning-beard-oil-unscented-100ml)\n\n[Shop Beard & Blade](https://www.beardandblade.com.au/products/percy-nobleman-conditioning-beard-oil-unscented-100ml)\n\n## 3. Bold & Bare Beard Oil \u2013 Signature Edition Unscented\n\n$19.95 AUD \u00b7 15 ml\n\nBest budget option to try first. Includes argan, jojoba, sweet almond and other conditioning oils. The unscented version is intended for people who prefer to avoid added fragrance. [Bold and Bare Dash and Daring Beard Oil](https://www.boldandbare.com.au/shopboldandbare/p/bold-beard-oil)[Bold and Bare Dash and Daring Beard Oil](https://www.boldandbare.com.au/shopboldandbare/p/bold-beard-oil)\n\n[Shop Bold & Bare](https://www.boldandbare.com.au/shopboldandbare/p/bold-beard-oil)\n\n## How to choose the right one\n\n- Dry, flaky skin: Start with Stuga Unscented or Percy Nobleman Unscented.\n- Sensitive skin that stings or gets red: Avoid fragrance and essential oils. Consider a fragrance-free facial moisturiser instead of relying on oil alone.\n- Dry beard hair but otherwise normal skin: Any of the three above is worth considering.\n\n## How to use beard oil for dry skin\n\n1. Wash with a gentle, fragrance-free cleanser.\n2. Pat your beard dry, leaving it slightly damp.\n3. Start with 2\u20134 drops and massage the oil right down to the skin beneath your beard.\n4. Apply daily after showering, adjusting the amount to your beard length.\n\nIf the skin remains flaky, a fragrance-free moisturiser may help more. Persistent redness, itching or thick scales can indicate a skin condition that needs treatment. [A dermatologist's top tips for a healthy beard](https://www.aad.org/public/everyday-care/skin-care-secrets/face/healthy-beard?_hsmi=202030708)[Beard Oil vs. Moisturizer](https://facialfortress.com/blog/beard-care/beard-oil-vs-moisturizer/)\n\n## One quick question\n\nWhat is your main skin problem? That will help me narrow this down to the best option for you.",
+    "shoppingCards": [],
+    "inlineProducts": [],
+    "citationPills": [
+     {
+      "url": "https://www.aad.org/public/everyday-care/skin-care-secrets/face/healthy-beard?_hsmi=202030708",
+      "label": "A dermatologist's top tips for a healthy beard",
+      "domain": "aad.org",
+      "type": "groupedWebpage",
+      "citationPillId": 0,
+      "position": 1
+     },
+     {
+      "url": "https://www.shavingschool.com/beard/best-beard-oil-for-sensitive-skin/",
+      "label": "Best Beard Oil for Sensitive Skin",
+      "domain": "shavingschool.com",
+      "type": "groupedWebpage",
+      "citationPillId": 0,
+      "position": 2
+     },
+     {
+      "url": "https://stuga.com.au/products/stuga-beard-oil",
+      "label": "Beard Oil, Blended Fresh to Order \u2014 6 Scents",
+      "domain": "stuga.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 1,
+      "position": 4
+     },
+     {
+      "url": "https://stuga.com.au/collections/beard-oil",
+      "label": "Beard Oil Scents & Strengths \u2014 Unscented Too",
+      "domain": "stuga.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 1,
+      "position": 3
+     },
+     {
+      "url": "https://www.beardandblade.com.au/products/percy-nobleman-conditioning-beard-oil-unscented-100ml",
+      "label": "Percy Nobleman Conditioning Beard Oil Unscented 100ml",
+      "domain": "beardandblade.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 2,
+      "position": 5
+     },
+     {
+      "url": "https://www.boldandbare.com.au/shopboldandbare/p/bold-beard-oil",
+      "label": "Bold and Bare Dash and Daring Beard Oil",
+      "domain": "boldandbare.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 3,
+      "position": 6
+     },
+     {
+      "url": "https://www.boldandbare.com.au/shopboldandbare/p/bold-beard-oil",
+      "label": "Bold and Bare Dash and Daring Beard Oil",
+      "domain": "boldandbare.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 3,
+      "position": 6
+     },
+     {
+      "url": "https://www.aad.org/public/everyday-care/skin-care-secrets/face/healthy-beard?_hsmi=202030708",
+      "label": "A dermatologist's top tips for a healthy beard",
+      "domain": "aad.org",
+      "type": "groupedWebpage",
+      "citationPillId": 4,
+      "position": 1
+     },
+     {
+      "url": "https://facialfortress.com/blog/beard-care/beard-oil-vs-moisturizer/",
+      "label": "Beard Oil vs. Moisturizer",
+      "domain": "facialfortress.com",
+      "type": "groupedWebpage",
+      "citationPillId": 4,
+      "position": 7
+     }
+    ]
+   }
+  },
+  "cost_usd": 0.0036,
+  "served_via": null,
+  "whose_error": null,
+  "hint": null,
+  "did_you_mean": null,
+  "error": null,
+  "detail": null
+ }
+}

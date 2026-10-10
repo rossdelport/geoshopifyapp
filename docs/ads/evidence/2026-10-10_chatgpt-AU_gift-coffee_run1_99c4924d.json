@@ -1,0 +1,313 @@
+{
+ "what": "Raw ChatGPT answer, unedited, as returned by the Treg gateway (cloro live ChatGPT web UI scraper). Saved as evidence for docs/ads/ad-concepts.md.",
+ "prompt": "gift for a coffee lover under $50 in Australia",
+ "country": "AU",
+ "engine": "ChatGPT live web UI, reached through the cloro scraping service (not anyone's personal ChatGPT account)",
+ "endpoint": "cloro.ai-search.chatgpt.scrape",
+ "request_body": {
+  "prompt": "gift for a coffee lover under $50 in Australia",
+  "country": "AU",
+  "include": {
+   "markdown": true,
+   "shopping": true
+  }
+ },
+ "treg_call_id": "99c4924dac914095aa919b147c4b6958",
+ "run_by": "reviewer (owner and marketer review)",
+ "received_at_utc": "2026-10-10T06:53:17.188Z",
+ "note": "Text is stored with JSON escapes (for example \\u2014), so the file holds the exact answer while keeping literal dashes out of docs/ads.",
+ "response": {
+  "call_id": "99c4924dac914095aa919b147c4b6958",
+  "status": 200,
+  "endpoint_id": "cloro.ai-search.chatgpt.scrape",
+  "replayed": null,
+  "body": {
+   "success": true,
+   "result": {
+    "model": null,
+    "text": "If you\u2019re buying a gift for a coffee lover in Australia with a budget of A$50, I\u2019d go for something they can use every day, rather than a novelty mug. A nice coffee-making gadget, specialty beans or a little home barista upgrade can feel thoughtful without being expensive.\n\nMy favourite coffee gifts under $50\n\n1. AeroPress-style coffee maker\n\nBest overall gift\n\nAround A$40\u201350 if you find a deal\n\nGreat for someone who enjoys making caf\u00e9-quality coffee at home or while travelling. Compact, practical and fun to experiment with. Check the current price before buying.\n\n2. Specialty coffee beans\n\nAround A$20\u201330 per bag\n\nA bag from an Australian specialty roaster makes an easy, elegant gift. Add a handwritten tasting note or chocolate to make a small gift feel special. Choose whole beans if they own a grinder; otherwise, get them ground for their brewing method.\n\n3. Pour-over coffee set\n\nAround A$13\u201335\n\nA stylish dripper with filters is ideal for someone who enjoys the ritual of brewing coffee. You could pair it with a small bag of beans and stay within budget.\n\n4. Manual coffee grinder\n\nAround A$30\u201340\n\nA good option for someone who buys whole beans or wants to try freshly ground coffee. The Hario Ceramic Slim is one model worth considering; check compatibility with their preferred brewing method.\n\n5. Double-wall glass coffee cups\n\nAround A$20\u201340\n\nA polished-looking present for someone who loves cappuccinos, flat whites or espresso. Choose a pair of quality cups rather than a large novelty mug set.\n\n6. DIY coffee lover gift box\n\nA$35\u201350 total\n\nCombine specialty beans, good chocolate and a small reusable coffee accessory. It looks more personal than a generic gift hamper, and you can tailor it to their tastes.\n\nSpecific products I found in Australia\n\nHario Ceramic Slim Coffee Mill Mss-1tb\n\n$34.99\n\nAmazon AU - Amazon.com.au-Seller + others\n\nA recognisable coffee accessory from a specialist brewing brand.\n\nView product\n\nCoffee Culture Pour Over Coffee Maker 400ml\n\n$34.95\n\nKitchen Warehouse + others\n\nA simple pour-over brewing option for someone who likes making coffee from scratch.\n\nView product\n\nCoffee Culture Hand Burr Grinder\n\n$35.95\n\nKmart + others\n\nA budget-friendly hand grinder for a coffee enthusiast who enjoys freshly ground beans.\n\nView product\n\nPrices may change, and delivery costs could push a purchase over budget.\n\nMy personal pick: specialty beans paired with chocolate for a safe, thoughtful gift, or a manual brewer for someone who loves experimenting with coffee.\n\nOne question that would help me narrow it down: how do they usually drink their coffee?",
+    "sources": [
+     {
+      "position": 1,
+      "label": "Best Coffee Gifts Under $50 (2026): Gear That Gets Used",
+      "url": "https://tampandpour.com/gifts/best-coffee-gifts-under-50",
+      "footnote": false
+     },
+     {
+      "position": 2,
+      "label": "Best Gifts for Coffee Lovers 2026: 25 Picks Every Budget",
+      "url": "https://masteringcoffee.com/best-gifts-for-coffee-lovers/",
+      "footnote": false
+     },
+     {
+      "position": 3,
+      "label": "",
+      "url": "https://coffeewise.com.au/best-gifts-for-coffee-lovers-australia/",
+      "footnote": false
+     },
+     {
+      "position": 4,
+      "label": "25 Best Gifts Under $50 in Australia (2026)",
+      "url": "https://thegiftpilot.com/guides/best-gifts-under-50-dollars-australia",
+      "footnote": false
+     },
+     {
+      "position": 5,
+      "label": "",
+      "url": "https://home.thesassycoffeecompany.co.uk/products/aeropress",
+      "footnote": true
+     },
+     {
+      "position": 6,
+      "label": "",
+      "url": "https://www.thewoodroaster.com/pages/subscription-landing-page",
+      "footnote": true
+     },
+     {
+      "position": 7,
+      "label": "",
+      "url": "https://harioaustralia.com.au/products/v60-ceramic-dripper-02-set",
+      "footnote": true
+     },
+     {
+      "position": 8,
+      "label": "",
+      "url": "https://www.mcivers.melbourne/products/hario-ceramic-slim",
+      "footnote": true
+     },
+     {
+      "position": 9,
+      "label": "",
+      "url": "https://www.crack-cafes.fr/boutique-du-cafe/cafes-de-specialite/cafe-en-grains",
+      "footnote": true
+     },
+     {
+      "position": 10,
+      "label": "",
+      "url": "https://top5best.com/double-wall-espresso-glass",
+      "footnote": true
+     },
+     {
+      "position": 11,
+      "label": "View product",
+      "url": "https://chatgpt.com/?hints=search&q=Hario+Ceramic+Slim+Coffee+Mill+Mss-1tb",
+      "footnote": true
+     },
+     {
+      "position": 12,
+      "label": "View product",
+      "url": "https://chatgpt.com/?hints=search&q=Coffee+Culture+Pour+Over+Coffee+Maker+400ml",
+      "footnote": true
+     },
+     {
+      "position": 13,
+      "label": "View product",
+      "url": "https://chatgpt.com/?hints=search&q=Coffee+Culture+Hand+Burr+Grinder",
+      "footnote": true
+     },
+     {
+      "position": 14,
+      "label": "",
+      "url": "https://arigacoffeeau.com.au/blogs/news/best-coffee-gifts-australia-buyers-guide",
+      "footnote": true
+     },
+     {
+      "position": 15,
+      "label": "",
+      "url": "https://burrandbasket.com/guides/coffee-gifts-under-50",
+      "footnote": true
+     },
+     {
+      "position": 16,
+      "label": "",
+      "url": "https://cremaandgrind.com/gifts/coffee-gifts-under-50",
+      "footnote": true
+     },
+     {
+      "position": 17,
+      "label": "",
+      "url": "https://nymag.com/strategist/article/best-gifts-for-co-workers.html",
+      "footnote": true
+     },
+     {
+      "position": 18,
+      "label": "",
+      "url": "https://portafilterco.com/espresso-accessories/best-coffee-gifts-under-50",
+      "footnote": true
+     },
+     {
+      "position": 19,
+      "label": "",
+      "url": "https://resources.news.com.au/images/gateway/newscomau16x9.png?resize=500",
+      "footnote": true
+     },
+     {
+      "position": 20,
+      "label": "",
+      "url": "https://uniquegiftideas.com.au/blog/gifts-for-coffee-lovers",
+      "footnote": true
+     },
+     {
+      "position": 21,
+      "label": "",
+      "url": "https://www.coffeecessory.com/blog/best-coffee-gifts-under-50.html",
+      "footnote": true
+     },
+     {
+      "position": 22,
+      "label": "",
+      "url": "https://www.foodandwine.com/best-holiday-gift-ideas-amazon-october-2026-12112808",
+      "footnote": true
+     },
+     {
+      "position": 23,
+      "label": "",
+      "url": "https://www.junjieg.com/best-gifts-for-coffee-lovers-under-50/",
+      "footnote": true
+     },
+     {
+      "position": 24,
+      "label": "",
+      "url": "https://www.news.com.au/checkout/life/gifts/gifts-for-everyone/best-tech-gifts/news-story/98d10a76acc09cd84a0d43183e5838e6",
+      "footnote": true
+     },
+     {
+      "position": 25,
+      "label": "",
+      "url": "https://www.seriouseats.com/best-yeti-gifts-12134976",
+      "footnote": true
+     },
+     {
+      "position": 26,
+      "label": "",
+      "url": "https://www.theaustralian.com.au/wealth/personal-finance/how-coffee-machines-and-robot-vacuums-can-save-you-money-as-costs-bite/news-story/186eb392246411b0b76f1273300325e6",
+      "footnote": true
+     },
+     {
+      "position": 27,
+      "label": "",
+      "url": "https://www.tomsguide.com/home/i-upgraded-my-coffee-corner-with-these-5-products-and-theyre-all-under-usd20",
+      "footnote": true
+     }
+    ],
+    "entities": [
+     {
+      "type": "product",
+      "name": "Hario Ceramic Slim Coffee Mill Mss-1tb"
+     },
+     {
+      "type": "product",
+      "name": "Coffee Culture Pour Over Coffee Maker 400ml"
+     },
+     {
+      "type": "product",
+      "name": "Coffee Culture Hand Burr Grinder"
+     }
+    ],
+    "map": [],
+    "followUpForm": {
+     "questions": [
+      {
+       "label": "One question that would help me narrow it down: how do they usually drink their coffee?",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Espresso machine / flat white / latte",
+         "value": "espresso",
+         "selected": true
+        },
+        {
+         "label": "Instant coffee or everyday caf\u00e9 coffee",
+         "value": "instant",
+         "selected": false
+        },
+        {
+         "label": "Pour-over, French press or filter coffee",
+         "value": "filter",
+         "selected": false
+        },
+        {
+         "label": "Not sure \u2014 they just love coffee",
+         "value": "unsure",
+         "selected": false
+        }
+       ],
+       "name": "style"
+      },
+      {
+       "label": "Who is the gift for?",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Partner",
+         "value": "partner",
+         "selected": false
+        },
+        {
+         "label": "Friend",
+         "value": "friend",
+         "selected": true
+        },
+        {
+         "label": "Mum or dad",
+         "value": "parent",
+         "selected": false
+        },
+        {
+         "label": "Colleague",
+         "value": "colleague",
+         "selected": false
+        }
+       ],
+       "name": "recipient"
+      }
+     ],
+     "submitLabel": "Find the best gift",
+     "followUpPrompt": "Recommend the best coffee lover gifts available in Australia under A$50. Coffee style: {style}. Recipient: {recipient}. Include specific products, current prices and purchase links."
+    },
+    "markdown": "If you\u2019re buying a gift for a coffee lover in Australia with a budget of A$50, I\u2019d go for something they can use every day, rather than a novelty mug. A nice coffee-making gadget, specialty beans or a little home barista upgrade can feel thoughtful without being expensive.\n\n## My favourite coffee gifts under $50\n\n## 1. AeroPress-style coffee maker\n\nBest overall gift\n\nAround A$40\u201350 if you find a deal\n\nGreat for someone who enjoys making caf\u00e9-quality coffee at home or while travelling. Compact, practical and fun to experiment with. Check the current price before buying. [Best Coffee Gifts Under $50 (2026): Gear That Gets Used](https://tampandpour.com/gifts/best-coffee-gifts-under-50)[Best Gifts for Coffee Lovers 2026: 25 Picks Every Budget](https://masteringcoffee.com/best-gifts-for-coffee-lovers/)\n\n## 2. Specialty coffee beans\n\nAround A$20\u201330 per bag\n\nA bag from an Australian specialty roaster makes an easy, elegant gift. Add a handwritten tasting note or chocolate to make a small gift feel special. Choose whole beans if they own a grinder; otherwise, get them ground for their brewing method. [25 Best Gifts Under $50 in Australia (2026)](https://thegiftpilot.com/guides/best-gifts-under-50-dollars-australia)[All The Best Gifts For Coffee Lovers Australia [2026]](https://coffeewise.com.au/best-gifts-for-coffee-lovers-australia/)\n\n## 3. Pour-over coffee set\n\nAround A$13\u201335\n\nA stylish dripper with filters is ideal for someone who enjoys the ritual of brewing coffee. You could pair it with a small bag of beans and stay within budget.\n\n## 4. Manual coffee grinder\n\nAround A$30\u201340\n\nA good option for someone who buys whole beans or wants to try freshly ground coffee. The Hario Ceramic Slim is one model worth considering; check compatibility with their preferred brewing method.\n\n## 5. Double-wall glass coffee cups\n\nAround A$20\u201340\n\nA polished-looking present for someone who loves cappuccinos, flat whites or espresso. Choose a pair of quality cups rather than a large novelty mug set.\n\n## 6. DIY coffee lover gift box\n\nA$35\u201350 total\n\nCombine specialty beans, good chocolate and a small reusable coffee accessory. It looks more personal than a generic gift hamper, and you can tailor it to their tastes.\n\n## Specific products I found in Australia\n\nHario Ceramic Slim Coffee Mill Mss-1tb\n\n### $34.99\n\nAmazon AU - Amazon.com.au-Seller + others\n\nA recognisable coffee accessory from a specialist brewing brand.\n\n[View product](https://chatgpt.com/?hints=search&q=Hario+Ceramic+Slim+Coffee+Mill+Mss-1tb)\n\nCoffee Culture Pour Over Coffee Maker 400ml\n\n### $34.95\n\nKitchen Warehouse + others\n\nA simple pour-over brewing option for someone who likes making coffee from scratch.\n\n[View product](https://chatgpt.com/?hints=search&q=Coffee+Culture+Pour+Over+Coffee+Maker+400ml)\n\nCoffee Culture Hand Burr Grinder\n\n### $35.95\n\nKmart + others\n\nA budget-friendly hand grinder for a coffee enthusiast who enjoys freshly ground beans.\n\n[View product](https://chatgpt.com/?hints=search&q=Coffee+Culture+Hand+Burr+Grinder)\n\nPrices may change, and delivery costs could push a purchase over budget.\n\nMy personal pick: specialty beans paired with chocolate for a safe, thoughtful gift, or a manual brewer for someone who loves experimenting with coffee.\n\nOne question that would help me narrow it down: how do they usually drink their coffee?",
+    "citationPills": [
+     {
+      "url": "https://tampandpour.com/gifts/best-coffee-gifts-under-50",
+      "label": "Best Coffee Gifts Under $50 (2026): Gear That Gets Used",
+      "domain": "tampandpour.com",
+      "type": "groupedWebpage",
+      "citationPillId": 0,
+      "position": 1
+     },
+     {
+      "url": "https://masteringcoffee.com/best-gifts-for-coffee-lovers/",
+      "label": "Best Gifts for Coffee Lovers 2026: 25 Picks Every Budget",
+      "domain": "masteringcoffee.com",
+      "type": "groupedWebpage",
+      "citationPillId": 0,
+      "position": 2
+     },
+     {
+      "url": "https://thegiftpilot.com/guides/best-gifts-under-50-dollars-australia",
+      "label": "25 Best Gifts Under $50 in Australia (2026)",
+      "domain": "thegiftpilot.com",
+      "type": "groupedWebpage",
+      "citationPillId": 1,
+      "position": 4
+     },
+     {
+      "url": "https://coffeewise.com.au/best-gifts-for-coffee-lovers-australia/",
+      "label": "All The Best Gifts For Coffee Lovers Australia [2026]",
+      "domain": "coffeewise.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 1,
+      "position": 3
+     }
+    ]
+   }
+  },
+  "cost_usd": 0.0028,
+  "served_via": null,
+  "whose_error": null,
+  "hint": null,
+  "did_you_mean": null,
+  "error": null,
+  "detail": null
+ }
+}

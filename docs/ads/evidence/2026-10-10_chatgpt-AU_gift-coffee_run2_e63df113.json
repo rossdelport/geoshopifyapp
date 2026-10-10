@@ -1,0 +1,274 @@
+{
+ "what": "Raw ChatGPT answer, unedited, as returned by the Treg gateway (cloro live ChatGPT web UI scraper). Saved as evidence for docs/ads/ad-concepts.md.",
+ "prompt": "gift for a coffee lover under $50 in Australia",
+ "country": "AU",
+ "engine": "ChatGPT live web UI, reached through the cloro scraping service (not anyone's personal ChatGPT account)",
+ "endpoint": "cloro.ai-search.chatgpt.scrape",
+ "request_body": {
+  "prompt": "gift for a coffee lover under $50 in Australia",
+  "country": "AU",
+  "include": {
+   "markdown": true,
+   "shopping": true
+  }
+ },
+ "treg_call_id": "e63df113007740a78e1e78656e950ff4",
+ "run_by": "ad-concepts finalise pass",
+ "received_at_utc": "2026-10-10T07:04:15.404Z",
+ "note": "Text is stored with JSON escapes (for example \\u2014), so the file holds the exact answer while keeping literal dashes out of docs/ads.",
+ "response": {
+  "call_id": "e63df113007740a78e1e78656e950ff4",
+  "status": 200,
+  "endpoint_id": "cloro.ai-search.chatgpt.scrape",
+  "replayed": null,
+  "body": {
+   "success": true,
+   "result": {
+    "model": null,
+    "text": "If you\u2019re shopping for a coffee lover in Australia with a budget of A$50 or less, I\u2019d go for something they can enjoy every morning \u2014 ideally a useful coffee accessory paired with some really good beans.\n\n5 coffee gifts under $50\n\n1. AeroPress coffee maker\n\nBest overall gift\n\nA fun way to make smooth coffee at home or while travelling. Great for someone who enjoys experimenting with their brew.\n\nBudget: around A$40\u201350, depending on retailer.\n\n2. Specialty coffee beans\n\nBest for coffee purists\n\nChoose a freshly roasted single-origin coffee or a premium espresso blend from an Australian roaster. Add a handwritten tasting note for a thoughtful touch.\n\nBudget: A$20\u201335 per bag.\n\n3. Reusable takeaway coffee cup\n\nBest everyday gift\n\nA stylish reusable cup is ideal for someone who buys takeaway coffee on the way to work. Look for a design that suits their style.\n\nBudget: A$20\u201340.\n\n4. Mini stovetop espresso maker\n\nBest for a coffee enthusiast\n\nA classic moka pot makes rich, espresso-style coffee without an espresso machine. A lovely gift for someone who likes Italian-style coffee.\n\nBudget: around A$30\u201350 for smaller models or selected deals.\n\n5. Coffee and chocolate gift bundle\n\nBest ready-to-gift option\n\nCombine a bag of quality beans with artisan chocolate or biscotti. It feels generous, looks lovely wrapped, and doesn't require knowing their coffee equipment.\n\nBudget: A$30\u201350.\n\nMy pick\n\nI\u2019d choose specialty coffee beans and artisan chocolate for around A$40. It feels personal, suits most coffee drinkers, and avoids buying equipment they may already own. Freshness and matching the grind to their brewing method are worth checking.\n\nIf you\u2019d prefer a physical coffee gadget, the Coffee Culture Pour Over Coffee Maker is another option, listed at A$45 at Bunnings, with other retailers offering lower prices.\n\nOne quick question: What kind of coffee lover are they?",
+    "sources": [
+     {
+      "position": 1,
+      "label": "Best Coffee Gifts in Australia: A Buyer's Guide",
+      "url": "https://arigacoffeeau.com.au/blogs/news/best-coffee-gifts-australia-buyers-guide",
+      "footnote": false
+     },
+     {
+      "position": 2,
+      "label": "Coffee Culture Pour Over Coffee Maker 400ml",
+      "url": "https://www.victoriasbasement.com.au/p/coffee-culture-coffee-pour-over-400ml-with-silicone-sleeve/",
+      "footnote": false
+     },
+     {
+      "position": 3,
+      "label": "",
+      "url": "https://www.kitchenwarehouse.com.au/product/aeropress-original-coffee-press",
+      "footnote": true
+     },
+     {
+      "position": 4,
+      "label": "",
+      "url": "https://artisti.com.au/products/the-fix-coffee",
+      "footnote": true
+     },
+     {
+      "position": 5,
+      "label": "",
+      "url": "https://www.floraandfauna.com.au/products/brew-glass-coffee-cup-with-cork-black-12oz",
+      "footnote": true
+     },
+     {
+      "position": 6,
+      "label": "",
+      "url": "https://www.kitchenwarehouse.com.au/product/bialetti-moka-express-stovetop-espresso-maker-3-cup",
+      "footnote": true
+     },
+     {
+      "position": 7,
+      "label": "",
+      "url": "https://marigoldgrey.com/products/daily-grind",
+      "footnote": true
+     },
+     {
+      "position": 8,
+      "label": "",
+      "url": "https://www.bunnings.com.au/coffee-culture-400ml-p",
+      "footnote": true
+     },
+     {
+      "position": 9,
+      "label": "Coffee Culture Pour Over Coffee Maker",
+      "url": "https://www.bunnings.com.au/coffee-culture-400ml-pour-over-coffee-maker-glass-jug-dripper-w-filter_p0240503",
+      "footnote": true
+     },
+     {
+      "position": 10,
+      "label": "",
+      "url": "https://burrandbasket.com/guides/coffee-gifts-under-50",
+      "footnote": true
+     },
+     {
+      "position": 11,
+      "label": "",
+      "url": "https://coffeebarsetup.com/gifts/coffee-gifts-under-50/",
+      "footnote": true
+     },
+     {
+      "position": 12,
+      "label": "",
+      "url": "https://cremaandgrind.com/gifts/coffee-gifts-under-50",
+      "footnote": true
+     },
+     {
+      "position": 13,
+      "label": "",
+      "url": "https://dripanddose.com/gifts/under-50",
+      "footnote": true
+     },
+     {
+      "position": 14,
+      "label": "",
+      "url": "https://nymag.com/strategist/article/best-gifts-for-co-workers.html",
+      "footnote": true
+     },
+     {
+      "position": 15,
+      "label": "",
+      "url": "https://nymag.com/strategist/article/best-travel-coffee-mugs-reusable.html",
+      "footnote": true
+     },
+     {
+      "position": 16,
+      "label": "",
+      "url": "https://portafilterco.com/espresso-accessories/best-coffee-gifts-under-50",
+      "footnote": true
+     },
+     {
+      "position": 17,
+      "label": "",
+      "url": "https://resources.news.com.au/images/gateway/newscomau16x9.png?resize=500",
+      "footnote": true
+     },
+     {
+      "position": 18,
+      "label": "",
+      "url": "https://tampandpour.com/gifts/best-coffee-gifts-under-50",
+      "footnote": true
+     },
+     {
+      "position": 19,
+      "label": "",
+      "url": "https://thegiftpilot.com/guides/best-gifts-under-50-dollars-australia",
+      "footnote": true
+     },
+     {
+      "position": 20,
+      "label": "",
+      "url": "https://www.coffeecessory.com/blog/best-coffee-gifts-under-50.html",
+      "footnote": true
+     },
+     {
+      "position": 21,
+      "label": "",
+      "url": "https://www.foodandwine.com/best-holiday-gift-ideas-amazon-october-2026-12112808",
+      "footnote": true
+     },
+     {
+      "position": 22,
+      "label": "",
+      "url": "https://www.junjieg.com/best-gifts-for-coffee-lovers-under-50/",
+      "footnote": true
+     },
+     {
+      "position": 23,
+      "label": "",
+      "url": "https://www.news.com.au/checkout/life/gifts/gifts-for-everyone/best-tech-gifts/news-story/98d10a76acc09cd84a0d43183e5838e6",
+      "footnote": true
+     },
+     {
+      "position": 24,
+      "label": "",
+      "url": "https://www.seriouseats.com/best-yeti-gifts-12134976",
+      "footnote": true
+     },
+     {
+      "position": 25,
+      "label": "",
+      "url": "https://www.tomsguide.com/home/i-upgraded-my-coffee-corner-with-these-5-products-and-theyre-all-under-usd20",
+      "footnote": true
+     }
+    ],
+    "entities": [],
+    "map": [],
+    "followUpForm": {
+     "questions": [
+      {
+       "label": "One quick question: What kind of coffee lover are they?",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Caf\u00e9 coffee and takeaway flat whites",
+         "value": "Cafe",
+         "selected": true
+        },
+        {
+         "label": "Making espresso at home",
+         "value": "Home espresso",
+         "selected": false
+        },
+        {
+         "label": "Pour-over, plunger or black coffee",
+         "value": "Filter",
+         "selected": false
+        },
+        {
+         "label": "Just loves drinking coffee",
+         "value": "Any coffee",
+         "selected": false
+        }
+       ],
+       "name": "type"
+      },
+      {
+       "label": "Who is the gift for?",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Partner or friend",
+         "value": "Partner or friend",
+         "selected": true
+        },
+        {
+         "label": "Mum or dad",
+         "value": "Parent",
+         "selected": false
+        },
+        {
+         "label": "Colleague or Secret Santa",
+         "value": "Colleague",
+         "selected": false
+        },
+        {
+         "label": "A serious coffee enthusiast",
+         "value": "Coffee enthusiast",
+         "selected": false
+        }
+       ],
+       "name": "recipient"
+      }
+     ],
+     "submitLabel": "Find the best gift",
+     "followUpPrompt": "Recommend specific coffee gifts available in Australia under A$50. Coffee preference: {type}. Recipient: {recipient}. Include current prices and purchase links."
+    },
+    "markdown": "If you\u2019re shopping for a coffee lover in Australia with a budget of A$50 or less, I\u2019d go for something they can enjoy every morning \u2014 ideally a useful coffee accessory paired with some really good beans.\n\n## 5 coffee gifts under $50\n\n### 1. AeroPress coffee maker\n\nBest overall gift\n\nA fun way to make smooth coffee at home or while travelling. Great for someone who enjoys experimenting with their brew.\n\nBudget: around A$40\u201350, depending on retailer.\n\n### 2. Specialty coffee beans\n\nBest for coffee purists\n\nChoose a freshly roasted single-origin coffee or a premium espresso blend from an Australian roaster. Add a handwritten tasting note for a thoughtful touch.\n\nBudget: A$20\u201335 per bag.\n\n### 3. Reusable takeaway coffee cup\n\nBest everyday gift\n\nA stylish reusable cup is ideal for someone who buys takeaway coffee on the way to work. Look for a design that suits their style.\n\nBudget: A$20\u201340.\n\n### 4. Mini stovetop espresso maker\n\nBest for a coffee enthusiast\n\nA classic moka pot makes rich, espresso-style coffee without an espresso machine. A lovely gift for someone who likes Italian-style coffee.\n\nBudget: around A$30\u201350 for smaller models or selected deals.\n\n### 5. Coffee and chocolate gift bundle\n\nBest ready-to-gift option\n\nCombine a bag of quality beans with artisan chocolate or biscotti. It feels generous, looks lovely wrapped, and doesn't require knowing their coffee equipment.\n\nBudget: A$30\u201350.\n\n## My pick\n\nI\u2019d choose specialty coffee beans and artisan chocolate for around A$40. It feels personal, suits most coffee drinkers, and avoids buying equipment they may already own. Freshness and matching the grind to their brewing method are worth checking. [Best Coffee Gifts in Australia: A Buyer's Guide](https://arigacoffeeau.com.au/blogs/news/best-coffee-gifts-australia-buyers-guide)\n\nIf you\u2019d prefer a physical coffee gadget, the [Coffee Culture Pour Over Coffee Maker](https://www.bunnings.com.au/coffee-culture-400ml-pour-over-coffee-maker-glass-jug-dripper-w-filter_p0240503) is another option, listed at A$45 at Bunnings, with other retailers offering lower prices. [Coffee Culture Pour Over Coffee Maker 400ml](https://www.victoriasbasement.com.au/p/coffee-culture-coffee-pour-over-400ml-with-silicone-sleeve/)\n\nOne quick question: What kind of coffee lover are they?",
+    "shoppingCards": [],
+    "inlineProducts": [],
+    "citationPills": [
+     {
+      "url": "https://arigacoffeeau.com.au/blogs/news/best-coffee-gifts-australia-buyers-guide",
+      "label": "Best Coffee Gifts in Australia: A Buyer's Guide",
+      "domain": "arigacoffeeau.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 0,
+      "position": 1
+     },
+     {
+      "url": "https://www.victoriasbasement.com.au/p/coffee-culture-coffee-pour-over-400ml-with-silicone-sleeve/",
+      "label": "Coffee Culture Pour Over Coffee Maker 400ml",
+      "domain": "victoriasbasement.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 1,
+      "position": 2
+     }
+    ]
+   }
+  },
+  "cost_usd": 0.0036,
+  "served_via": null,
+  "whose_error": null,
+  "hint": null,
+  "did_you_mean": null,
+  "error": null,
+  "detail": null
+ }
+}

@@ -1,0 +1,295 @@
+{
+ "what": "Raw ChatGPT answer, unedited, as returned by the Treg gateway (cloro live ChatGPT web UI scraper). Saved as evidence for docs/ads/ad-concepts.md.",
+ "prompt": "gift for a bearded man under $80, ships to Australia",
+ "country": "AU",
+ "engine": "ChatGPT live web UI, reached through the cloro scraping service (not anyone's personal ChatGPT account)",
+ "endpoint": "cloro.ai-search.chatgpt.scrape",
+ "request_body": {
+  "prompt": "gift for a bearded man under $80, ships to Australia",
+  "country": "AU",
+  "include": {
+   "markdown": true,
+   "shopping": true
+  }
+ },
+ "treg_call_id": "89d220e2b0e144d79539f09b106b60a0",
+ "run_by": "ad-concepts finalise pass",
+ "received_at_utc": "2026-10-10T07:01:13.122Z",
+ "note": "Text is stored with JSON escapes (for example \\u2014), so the file holds the exact answer while keeping literal dashes out of docs/ads.",
+ "response": {
+  "call_id": "89d220e2b0e144d79539f09b106b60a0",
+  "status": 200,
+  "endpoint_id": "cloro.ai-search.chatgpt.scrape",
+  "replayed": null,
+  "body": {
+   "success": true,
+   "result": {
+    "model": null,
+    "text": "Here are some great gifts for a bearded man under AU$80 that you can order online in Australia. I\u2019d lean towards an Australian-made beard care gift box \u2014 it feels more thoughtful than buying a single bottle of beard oil.\n\nMy top picks\n\nBest overall\n\n1. Milkman Grooming Co Beard Styling Box\n\nAU$70\n\nIncludes 50 ml beard oil, beard wash and a bamboo-and-nylon military beard brush, presented in a gift box. A polished gift for someone who takes pride in his beard.\n\nShop Milkman Grooming Co\n\n2. Beards Australia Grooming Gift Pack\n\nAU$55\n\nA versatile set with three beard oils in different scents, beard scissors and a comb. Great if you're unsure which fragrance he'll prefer. Ships from Australia, with free shipping advertised on orders over AU$79.\n\nShop Beards Australia\n\n3. Cowboy Grooming Co Basic Gift Pack\n\nAU$80\n\nA personalised-feeling bundle with two beard oils, a choice of hair product and a comb, packed in a gift box. Ideal for someone with a rugged or barbershop style. Note: the listing currently shows sold out.\n\nCheck availability at Cowboy Grooming Co\n\n4. Braun Beard Trimmer Series 3 BT3520\n\nAU$49\n\nA practical choice if he likes keeping his beard neat and shaped. A better option than grooming products if he already has a favourite beard oil or scent.\n\nListed by Shaver Shop; check delivery costs at checkout.\n\nShop via Shaver Shop\n\nWhich would I choose?\n\nFor a partner: Milkman Grooming Co \u2014 the gift-ready presentation makes it feel special.\n\nFor a dad, brother or friend: Beards Australia \u2014 useful tools plus several scents to try.\n\nFor someone who already has a beard-care routine: Braun trimmer \u2014 practical and easy to use.\n\nPrices are in Australian dollars. Check the final checkout total and delivery to the recipient's postcode before ordering, as shipping charges and stock can change.\n\nOne quick question: What sort of guy is he?",
+    "sources": [
+     {
+      "position": 1,
+      "label": "Beard Styling Box - Beard Oil, Beard Wash & Military Brush",
+      "url": "https://www.milkmanaustralia.com/collections/beard-kits/products/beard-oil-beard-wash-pack-copy",
+      "footnote": false
+     },
+     {
+      "position": 2,
+      "label": "Beard Oil and Grooming Kit Beards Australia Gift Pack",
+      "url": "https://beardsaustralia.com/product/beard-oil-and-grooming-kit-beards-australia-gift-pack",
+      "footnote": false
+     },
+     {
+      "position": 3,
+      "label": "Beard Care Australia",
+      "url": "https://beardsaustralia.com/",
+      "footnote": false
+     },
+     {
+      "position": 4,
+      "label": "Basic Gift Pack",
+      "url": "https://cowboygroomingco.com/products/gift-pack-a",
+      "footnote": false
+     },
+     {
+      "position": 5,
+      "label": "",
+      "url": "https://www.shavershop.com.au/milkman/3-piece-beard-styling-box---king-of-wood-012736.html",
+      "footnote": true
+     },
+     {
+      "position": 6,
+      "label": "Shop via Shaver Shop",
+      "url": "https://www.shavershop.com.au/",
+      "footnote": true
+     },
+     {
+      "position": 7,
+      "label": "",
+      "url": "https://www.binglee.com.au/products/beard-bt3520-blkblu-box-bt3520",
+      "footnote": true
+     },
+     {
+      "position": 8,
+      "label": "",
+      "url": "https://stuga.com.au/blogs/journal/best-beard-grooming-kit-in-australia-2026",
+      "footnote": true
+     },
+     {
+      "position": 9,
+      "label": "",
+      "url": "https://stuga.com.au/blogs/journal/the-best-beard-gift-for-him-2026-an-australian-made-beard-kit",
+      "footnote": true
+     },
+     {
+      "position": 10,
+      "label": "",
+      "url": "https://www.adorebeauty.com.au/beautyiq/men/best-mens-grooming-products/",
+      "footnote": true
+     },
+     {
+      "position": 11,
+      "label": "",
+      "url": "https://www.etsy.com/listing/1215874092/australian-beard-grooming-kit-natural",
+      "footnote": true
+     },
+     {
+      "position": 12,
+      "label": "",
+      "url": "https://www.etsy.com/uk/market/beard_kit_gift",
+      "footnote": true
+     },
+     {
+      "position": 13,
+      "label": "",
+      "url": "https://www.nishman.com.au/products/888019p",
+      "footnote": true
+     },
+     {
+      "position": 14,
+      "label": "",
+      "url": "https://www.reddit.com/r/wicked_edge/comments/1vjynkq/australian_guide_to_wet_shaving_2026/",
+      "footnote": true
+     },
+     {
+      "position": 15,
+      "label": "",
+      "url": "https://www.theiconic.com.au/mens-accessories-gifts-grooming/",
+      "footnote": true
+     },
+     {
+      "position": 16,
+      "label": "",
+      "url": "https://www.theiconic.com.au/mens-beauty-grooming-sets/",
+      "footnote": true
+     }
+    ],
+    "entities": [
+     {
+      "type": "product",
+      "name": "Milkman Grooming Co Beard Styling Box"
+     },
+     {
+      "type": "product",
+      "name": "Beards Australia Grooming Gift Pack"
+     },
+     {
+      "type": "product",
+      "name": "Cowboy Grooming Co Basic Gift Pack"
+     },
+     {
+      "type": "product",
+      "name": "Braun Beard Trimmer Series 3 BT3520"
+     }
+    ],
+    "map": [],
+    "followUpForm": {
+     "questions": [
+      {
+       "label": "His style",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Rugged and outdoorsy",
+         "value": "Rugged and outdoorsy",
+         "selected": true
+        },
+        {
+         "label": "Stylish and well-groomed",
+         "value": "Stylish and well-groomed",
+         "selected": false
+        },
+        {
+         "label": "Funny and novelty-loving",
+         "value": "Funny and novelty-loving",
+         "selected": false
+        },
+        {
+         "label": "Practical and low-maintenance",
+         "value": "Practical and low-maintenance",
+         "selected": false
+        }
+       ],
+       "name": "style"
+      },
+      {
+       "label": "Who is he to you?",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Partner",
+         "value": "Partner",
+         "selected": true
+        },
+        {
+         "label": "Dad",
+         "value": "Dad",
+         "selected": false
+        },
+        {
+         "label": "Friend or brother",
+         "value": "Friend or brother",
+         "selected": false
+        },
+        {
+         "label": "Colleague or other",
+         "value": "Colleague or other",
+         "selected": false
+        }
+       ],
+       "name": "relationship"
+      },
+      {
+       "label": "Budget in AUD",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Under $30",
+         "value": "Under 30",
+         "selected": false
+        },
+        {
+         "label": "$30\u2013$50",
+         "value": "30\u201350",
+         "selected": false
+        },
+        {
+         "label": "$50\u2013$80",
+         "value": "50\u201380",
+         "selected": true
+        }
+       ],
+       "name": "budget"
+      }
+     ],
+     "submitLabel": "Find the best match",
+     "followUpPrompt": "Recommend gifts for a bearded man that ship to Australia. Style: {style}. Recipient: {relationship}. Budget AUD: {budget}. Include current prices and direct purchase links."
+    },
+    "markdown": "Here are some great gifts for a bearded man under AU$80 that you can order online in Australia. I\u2019d lean towards an Australian-made beard care gift box \u2014 it feels more thoughtful than buying a single bottle of beard oil.\n\n## My top picks\n\nBest overall\n\n## 1. Milkman Grooming Co Beard Styling Box\n\n# AU$70\n\nIncludes 50 ml beard oil, beard wash and a bamboo-and-nylon military beard brush, presented in a gift box. A polished gift for someone who takes pride in his beard. [Beard Styling Box - Beard Oil, Beard Wash & Military Brush](https://www.milkmanaustralia.com/collections/beard-kits/products/beard-oil-beard-wash-pack-copy)\n\n[Shop Milkman Grooming Co](https://www.milkmanaustralia.com/collections/beard-kits/products/beard-oil-beard-wash-pack-copy)\n\n## 2. Beards Australia Grooming Gift Pack\n\n# AU$55\n\nA versatile set with three beard oils in different scents, beard scissors and a comb. Great if you're unsure which fragrance he'll prefer. Ships from Australia, with free shipping advertised on orders over AU$79. [Beard Oil and Grooming Kit Beards Australia Gift Pack](https://beardsaustralia.com/product/beard-oil-and-grooming-kit-beards-australia-gift-pack)[Beard Care Australia](https://beardsaustralia.com/)\n\n[Shop Beards Australia](https://beardsaustralia.com/product/beard-oil-and-grooming-kit-beards-australia-gift-pack)\n\n## 3. Cowboy Grooming Co Basic Gift Pack\n\n# AU$80\n\nA personalised-feeling bundle with two beard oils, a choice of hair product and a comb, packed in a gift box. Ideal for someone with a rugged or barbershop style. Note: the listing currently shows sold out. [Basic Gift Pack](https://cowboygroomingco.com/products/gift-pack-a)\n\n[Check availability at Cowboy Grooming Co](https://cowboygroomingco.com/products/gift-pack-a)\n\n## 4. Braun Beard Trimmer Series 3 BT3520\n\n# AU$49\n\nA practical choice if he likes keeping his beard neat and shaped. A better option than grooming products if he already has a favourite beard oil or scent.\n\nListed by Shaver Shop; check delivery costs at checkout.\n\n[Shop via Shaver Shop](https://www.shavershop.com.au/)\n\n## Which would I choose?\n\n- For a partner: Milkman Grooming Co \u2014 the gift-ready presentation makes it feel special.\n- For a dad, brother or friend: Beards Australia \u2014 useful tools plus several scents to try.\n- For someone who already has a beard-care routine: Braun trimmer \u2014 practical and easy to use.\n\nPrices are in Australian dollars. Check the final checkout total and delivery to the recipient's postcode before ordering, as shipping charges and stock can change.\n\nOne quick question: What sort of guy is he?",
+    "shoppingCards": [],
+    "inlineProducts": [
+     {
+      "product": {
+       "title": "Braun Beard Trimmer Series 3 BT3520",
+       "position": 1,
+       "price": "$49.00",
+       "merchants": "Shaver Shop + others",
+       "imageUrls": [
+        "https://images.openai.com/thumbnails/url/RzigxnicDcnbCoIwAADQL8prpgkRUc4cOlFiaS-hc8y7M0eoX9Xv9Dd1Xs_3UwrBJ1uWaU9eCxe02Ii81yU2iUxURCJDJ0_lwHnVs-N4-J99QsXeJbGBakI1HKCCQY3FOjQSZCqAw1uMLTdR1blWEAg6loGo9S5R-FhDZSS49Ymz5Xfcw5UOYfPkbz-1zhqDQQ1EbNzyVI9Y0nhjO6rXuXCNnVnWC6Bm5oAcsx82Cj2X"
+       ],
+       "rating": 4.5,
+       "num_reviews": 247,
+       "product_lookup_key": {
+        "data": "{\"request_query\":\"Braun Beard Trimmer Series 3 BT3520\",\"all_ids\":{\"p2\":[\"627608079138142599\"]},\"known_ids\":{\"p2\":[\"627608079138142599\"]},\"metadata_sources\":[\"p1\",\"p3\"],\"variant_sources\":null,\"last_variant_group_types\":null,\"merchant_hints\":[\"Shaver Shop + others\"],\"provider_title\":\"Braun Beard Trimmer Series 3 BT3520\",\"provider_metadata\":{\"p2\":{\"id_to_token_map\":{\"627608079138142599\":\"mgAoTXicdVNJruvWEQ28ggyygAcEGX0IuJc98_AG7ClKJMXukuJEuGxEUmzFRpQE7yF7eN824AydAFnL9yBrsQBP7UlVoQ5wClV1zv__8tfPvPrfNd8buG9H4-wZA0cdOipClWP-PIx9tqRzlf2HJ0hIAB7SHAlIwPEMy_yc4hk3fVFlvzAEywAOsDwkOUgRNM__UuY4a6out8_nfJT79MXBAYJkAc-xFEeTkCcZFvy7anGR_w6zL05A0hzBgVdiKYJiv47Z9I06SCdI0ZCCDMcTLGAoSJE0Ab8_uLZ8-hPwx-uSj49vf09yPGZf5rFq23z8snTZK_6DoDjwBS_TPOKmwj8Ww2v8f_-I5Wv7Wo5mGYohaAhoDhIQcCz5dbjNn2Xxw7I0-Tdm_SIJW2crbctAQ49MKyZEoGf2qpNKFLPIAmmrTjhUJid69XWjTLSm_CyaT7x8ls1n3v3U4-F2Tn_97m9Kv8rStEpOMAxIdoF3iZt9cK9TBQaeXzzTer6GSmz5dU8HfhZHxBAkeg9TkC1mlClpZDWBrN4Spbw5nRodgfuMlbLPddSjxiQjQDNBEK_JxX1YGnVPoXg9RiX24SAjZW5dDdyDxiJSuSZiwnBQVHpxuNIxKKhAbZ5-aOzylq8SwvKxZjzdYF4T6CIUqmami3ICa8pT7mX2FC8YFnMewBHDuHUAlLMui2JwnH0FqUGwEknQtB4aJEs3xtSDbdxkc0xmkRvOmqc1gwnLIGmGxSLL9RhaTajdS-QBmETqavnNMwzi8XiJJayhHfLRwwRzaGm0EUO3dFHWpk1M5gq_CzXVTAl4zIPSTvX-HrSxGiqIzJE4HS8WnSLe9WW3jusMhKixjiB7hHoZ-6ElBWo2xU8HJqQFkAbLvMsq_5IN8bNRrUtD4bABASzubmA98lolfBR4Kqk2vjKUCQEfXhv7XidQlioullqGGKmWVhmiq1sPO4xdpGVzEt5R4jfACpvLsclaN3IvQWeYmFQNJxzEH-7TeP4GBJWePZsiJ98xwzILV8HMzi29EHUeerNhhus_4cuADKQZmuV47qe07-sq__W7f3m25H28NPr-djp5ebqM-cbz3cOHIFqlwFTqZbLSzM9qoTOfsxskF3A11MvudVYd6eRpryndqYNgYpSLjVOeuxVlNU0H5aZbK3tTHhg_xN2hNzYOT-7T8JytXKP75cO-b7T3N08RXEk_eYKpeFtf-ZAKZ1vstuL7m6BIHwLGvGIMGDTNzb-2HicuqeMUEWI4j2edHq3X46GMwkW_91ukou6xDKnqzRvn_U1GHxTbqfgyZgCaSWqslWhiGxGscU-R_pL9-5u1lT-kayFJguIRhSLad032hIKdHc_uwZxvloR0Y6GVESvbpSao8aE2ImcMcmUY8_juFa6qj5eKO2m3B7FRhu3s7xgdK9zqxXooLOfSvefMGESleCxPOyxpYC2vaJ_42lj7VxP00ZF4_fsp70Zb3G_3EY9y7VSdcBFwrGLuOQENhra1p-Ws5RwDc4OcZTn0CRULtXzPqub6MpJemgfDy8W9MVS2opu4jK6M4Z7rrh-3Dzz1IxayZ5MHPWE1rjyJVKgT3c3WEwExUlDvK98IdO6kH6qQ0m7tWdDPpYztQ-s5tr7r8mG_ZY-4CL1CNOtABNdVf5LhJvefz21oD_ajPw3CuXXGuo6lXSNTxPMhnE-sCbve16XiJevxhDfKpd1djl27NztmXcO5YH15U9vH3Rm0zA7gxaF-A02xJ1U\"},\"id_to_otoken_map\":{}}},\"included_image_hashes\":[\"9bdb0ee96b08ed9634bddcc98cc3d04708684334308e7d33ecde934f6106c1b7\",\"168e588b259b5a7b3624353377f8c4a705962ec814fb0d6ffff6b463c55e4087\"],\"provider_url\":\"https://chatgpt.com/?hints=search&q=Braun+Beard+Trimmer+Series+3+BT3520\"}",
+        "version": "1",
+        "variant_options_query": null,
+        "last_variant_selection_group_id": null
+       }
+      }
+     }
+    ],
+    "citationPills": [
+     {
+      "url": "https://www.milkmanaustralia.com/collections/beard-kits/products/beard-oil-beard-wash-pack-copy",
+      "label": "Beard Styling Box - Beard Oil, Beard Wash & Military Brush",
+      "domain": "milkmanaustralia.com",
+      "type": "groupedWebpage",
+      "citationPillId": 0,
+      "position": 1
+     },
+     {
+      "url": "https://beardsaustralia.com/product/beard-oil-and-grooming-kit-beards-australia-gift-pack",
+      "label": "Beard Oil and Grooming Kit Beards Australia Gift Pack",
+      "domain": "beardsaustralia.com",
+      "type": "groupedWebpage",
+      "citationPillId": 1,
+      "position": 2
+     },
+     {
+      "url": "https://beardsaustralia.com/",
+      "label": "Beard Care Australia",
+      "domain": "beardsaustralia.com",
+      "type": "groupedWebpage",
+      "citationPillId": 1,
+      "position": 3
+     },
+     {
+      "url": "https://cowboygroomingco.com/products/gift-pack-a",
+      "label": "Basic Gift Pack",
+      "domain": "cowboygroomingco.com",
+      "type": "groupedWebpage",
+      "citationPillId": 2,
+      "position": 4
+     }
+    ]
+   }
+  },
+  "cost_usd": 0.0036,
+  "served_via": null,
+  "whose_error": null,
+  "hint": null,
+  "did_you_mean": null,
+  "error": null,
+  "detail": null
+ }
+}

@@ -1,0 +1,289 @@
+{
+ "what": "Raw ChatGPT answer, unedited, as returned by the Treg gateway (cloro live ChatGPT web UI scraper). Saved as evidence for docs/ads/ad-concepts.md.",
+ "prompt": "gift for a bearded man under $80, ships to Australia",
+ "country": "AU",
+ "engine": "ChatGPT live web UI, reached through the cloro scraping service (not anyone's personal ChatGPT account)",
+ "endpoint": "cloro.ai-search.chatgpt.scrape",
+ "request_body": {
+  "prompt": "gift for a bearded man under $80, ships to Australia",
+  "country": "AU",
+  "include": {
+   "markdown": true,
+   "shopping": true
+  }
+ },
+ "treg_call_id": "b4a7c6d659d54fbba94df55324664551",
+ "run_by": "ad-concepts finalise pass",
+ "received_at_utc": "2026-10-10T07:01:55.959Z",
+ "note": "Text is stored with JSON escapes (for example \\u2014), so the file holds the exact answer while keeping literal dashes out of docs/ads.",
+ "response": {
+  "call_id": "b4a7c6d659d54fbba94df55324664551",
+  "status": 200,
+  "endpoint_id": "cloro.ai-search.chatgpt.scrape",
+  "replayed": null,
+  "body": {
+   "success": true,
+   "result": {
+    "model": null,
+    "text": "Here are some great gifts for a bearded man under $80 AUD, with Australian online retailers so you can avoid the hassle of international shipping. I\u2019d lean towards a nicely packaged beard-care kit rather than a single bottle of beard oil.\n\nBest beard gifts under $80\n\n1. Beards Australia \u2014 Beard Oil & Grooming Kit\n\n$55 AUD\n\nBest all-round gift\n\nIncludes three beard oils in different fragrances, scissors and a comb. It's a practical set with variety, and it ships from Australia. Free shipping is offered over $79.\n\nShop Beards Australia\n\n2. Washpool \u2014 Bearded Lads Toolbox Kit\n\n$80 AUD\n\nBest for a bloke who likes something different\n\nA quirky red toolbox-style gift containing beard oil, a shower-and-shave shampoo bar and a konjac sponge. Great if you want something more memorable than a standard grooming set.\n\nShop Washpool\n\n3. Milkman Grooming Co \u2014 Beard Styling Box\n\n$70 AUD\n\nBest premium-feeling set\n\nComes with full-size beard oil, travel-size beard wash and a bamboo-and-nylon military beard brush, presented in an Australian-made gift box. A good choice for someone who takes pride in his beard.\n\nShop Milkman Grooming Co\n\n4. Lily & Luna \u2014 Beard Edition Gift Pack\n\n$63 AUD\n\nBest for a thoughtful, scented gift\n\nIncludes goat's milk liquid soap and beard oil, with a choice of fragrance. Handmade in Sydney and shipped through Australia Post.\n\nShop Lily & Luna\n\n5. Bel Scents Co \u2014 Men's Grooming Gift Box\n\n$65 AUD\n\nBest for beard styling\n\nFeatures natural beard balm, beard oil and a wooden beard comb. Ideal for someone who likes to keep his beard soft, tidy and shaped.\n\nShop Bel Scents Co\n\nWhich one would I choose?\n\nBest overall: Beards Australia at $55 \u2014 useful, varied and leaves room in the budget for shipping.\n\nMost fun and distinctive: Washpool's toolbox kit.\n\nBest for a beard enthusiast: Milkman Grooming Co's styling box.\n\nPrices are listed in AUD. Shipping fees and delivery eligibility can depend on the destination postcode, so check the final checkout total to keep the gift under $80.\n\nOne quick question: Who is the gift for, and what's his style?",
+    "sources": [
+     {
+      "position": 1,
+      "label": "Beard Oil and Grooming Kit Beards Australia Gift Pack",
+      "url": "https://beardsaustralia.com/product/beard-oil-and-grooming-kit-beards-australia-gift-pack",
+      "footnote": false
+     },
+     {
+      "position": 2,
+      "label": "Men\u2019s Grooming Gift Set | Bearded Lads Toolbox Kit",
+      "url": "https://www.washpool.com.au/product/bearded-lads-toolbox-kit",
+      "footnote": false
+     },
+     {
+      "position": 3,
+      "label": "Beard Styling Box - Beard Oil, Beard Wash & Military Brush",
+      "url": "https://www.milkmanaustralia.com/collections/beard-kits/products/beard-oil-beard-wash-pack-copy",
+      "footnote": false
+     },
+     {
+      "position": 4,
+      "label": "Men's Beard Grooming Gift Pack",
+      "url": "https://lilyandluna.com.au/products/men-s-grooming-gift-pack-beard-edition",
+      "footnote": false
+     },
+     {
+      "position": 5,
+      "label": "Mens Grooming Gift Box",
+      "url": "https://www.belscentco.com.au/products/mens-gift-grooming-gift-set-beard-grooming",
+      "footnote": false
+     },
+     {
+      "position": 6,
+      "label": "",
+      "url": "https://www.beardsaustralia.com/product/beard-oil-and-grooming-kit-beards-australia-gift-pack/",
+      "footnote": true
+     },
+     {
+      "position": 7,
+      "label": "",
+      "url": "https://www.milkmanaustralia.com/collections/beard-kits/products/beard-oil-beard-wash-pack",
+      "footnote": true
+     },
+     {
+      "position": 8,
+      "label": "",
+      "url": "https://www.weatherbeardsupply.com/products/beard-starter-kit-with-carbon-fiber-beard-comb-the-explorer",
+      "footnote": true
+     },
+     {
+      "position": 9,
+      "label": "",
+      "url": "https://www.shavershop.com.au/milkman/3-piece-beard-styling-box---king-of-wood-012736.html",
+      "footnote": true
+     },
+     {
+      "position": 10,
+      "label": "",
+      "url": "https://www.etsy.com/ca/listing/1243478327/gift-box-for-men-self-care-gift-box-for",
+      "footnote": true
+     },
+     {
+      "position": 11,
+      "label": "",
+      "url": "https://cowboygroomingco.com/products/gift-pack-a",
+      "footnote": true
+     },
+     {
+      "position": 12,
+      "label": "",
+      "url": "https://valororganics.com/collections/gifts-and-sets",
+      "footnote": true
+     },
+     {
+      "position": 13,
+      "label": "",
+      "url": "https://www.abovethecollar.com.au/collections/beard-beard-gifts-kits",
+      "footnote": true
+     },
+     {
+      "position": 14,
+      "label": "",
+      "url": "https://www.milkmanaustralia.com/products/beard-oil-beard-wash-pack",
+      "footnote": true
+     },
+     {
+      "position": 15,
+      "label": "",
+      "url": "https://www.nishman.com.au/products/888019p",
+      "footnote": true
+     },
+     {
+      "position": 16,
+      "label": "",
+      "url": "https://www.thebeardclub.com.au/collections/gift-sets",
+      "footnote": true
+     },
+     {
+      "position": 17,
+      "label": "",
+      "url": "https://www.theiconic.com.au/mens-beauty-grooming-sets/",
+      "footnote": true
+     }
+    ],
+    "entities": [],
+    "map": [],
+    "followUpForm": {
+     "questions": [
+      {
+       "label": "Who is he to you?",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Partner / husband",
+         "value": "Partner",
+         "selected": true
+        },
+        {
+         "label": "Dad",
+         "value": "Dad",
+         "selected": false
+        },
+        {
+         "label": "Brother / friend",
+         "value": "Brother or friend",
+         "selected": false
+        },
+        {
+         "label": "Colleague",
+         "value": "Colleague",
+         "selected": false
+        }
+       ],
+       "name": "recipient"
+      },
+      {
+       "label": "What sort of gift would he like?",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Practical grooming essentials",
+         "value": "Practical",
+         "selected": true
+        },
+        {
+         "label": "Luxury / premium-looking gift",
+         "value": "Luxury",
+         "selected": false
+        },
+        {
+         "label": "Funny or unusual gift",
+         "value": "Funny",
+         "selected": false
+        },
+        {
+         "label": "Something other than beard products",
+         "value": "Non-grooming",
+         "selected": false
+        }
+       ],
+       "name": "style"
+      },
+      {
+       "label": "His beard",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Short beard or stubble",
+         "value": "Short/stubble",
+         "selected": false
+        },
+        {
+         "label": "Long or full beard",
+         "value": "Long/full beard",
+         "selected": true
+        },
+        {
+         "label": "Not sure",
+         "value": "Not sure",
+         "selected": false
+        }
+       ],
+       "name": "beard"
+      },
+      {
+       "label": "Budget",
+       "type": "radio",
+       "options": [
+        {
+         "label": "Under $80 including shipping",
+         "value": "Under $80 including shipping",
+         "selected": true
+        },
+        {
+         "label": "$80 before shipping",
+         "value": "$80 before shipping",
+         "selected": false
+        }
+       ],
+       "name": "budget"
+      }
+     ],
+     "submitLabel": "Find the best match",
+     "followUpPrompt": "Recommend the best gift for a bearded man shipping to Australia. Recipient: {recipient}. Gift style: {style}. Beard: {beard}. Budget: {budget}. Find specific purchasable options with links."
+    },
+    "markdown": "Here are some great gifts for a bearded man under $80 AUD, with Australian online retailers so you can avoid the hassle of international shipping. I\u2019d lean towards a nicely packaged beard-care kit rather than a single bottle of beard oil.\n\n## Best beard gifts under $80\n\n## 1. Beards Australia \u2014 Beard Oil & Grooming Kit\n\n### $55 AUD\n\nBest all-round gift\n\nIncludes three beard oils in different fragrances, scissors and a comb. It's a practical set with variety, and it ships from Australia. Free shipping is offered over $79. [Beard Oil and Grooming Kit Beards Australia Gift Pack](https://beardsaustralia.com/product/beard-oil-and-grooming-kit-beards-australia-gift-pack)\n\n[Shop Beards Australia](https://beardsaustralia.com/product/beard-oil-and-grooming-kit-beards-australia-gift-pack)\n\n## 2. Washpool \u2014 Bearded Lads Toolbox Kit\n\n### $80 AUD\n\nBest for a bloke who likes something different\n\nA quirky red toolbox-style gift containing beard oil, a shower-and-shave shampoo bar and a konjac sponge. Great if you want something more memorable than a standard grooming set. [Men\u2019s Grooming Gift Set | Bearded Lads Toolbox Kit](https://www.washpool.com.au/product/bearded-lads-toolbox-kit)\n\n[Shop Washpool](https://www.washpool.com.au/product/bearded-lads-toolbox-kit)\n\n## 3. Milkman Grooming Co \u2014 Beard Styling Box\n\n### $70 AUD\n\nBest premium-feeling set\n\nComes with full-size beard oil, travel-size beard wash and a bamboo-and-nylon military beard brush, presented in an Australian-made gift box. A good choice for someone who takes pride in his beard. [Beard Styling Box - Beard Oil, Beard Wash & Military Brush](https://www.milkmanaustralia.com/collections/beard-kits/products/beard-oil-beard-wash-pack-copy)\n\n[Shop Milkman Grooming Co](https://www.milkmanaustralia.com/collections/beard-kits/products/beard-oil-beard-wash-pack-copy)\n\n## 4. Lily & Luna \u2014 Beard Edition Gift Pack\n\n### $63 AUD\n\nBest for a thoughtful, scented gift\n\nIncludes goat's milk liquid soap and beard oil, with a choice of fragrance. Handmade in Sydney and shipped through Australia Post. [Men's Beard Grooming Gift Pack](https://lilyandluna.com.au/products/men-s-grooming-gift-pack-beard-edition)\n\n[Shop Lily & Luna](https://lilyandluna.com.au/products/men-s-grooming-gift-pack-beard-edition)\n\n## 5. Bel Scents Co \u2014 Men's Grooming Gift Box\n\n### $65 AUD\n\nBest for beard styling\n\nFeatures natural beard balm, beard oil and a wooden beard comb. Ideal for someone who likes to keep his beard soft, tidy and shaped. [Mens Grooming Gift Box](https://www.belscentco.com.au/products/mens-gift-grooming-gift-set-beard-grooming)\n\n[Shop Bel Scents Co](https://www.belscentco.com.au/products/mens-gift-grooming-gift-set-beard-grooming)\n\n## Which one would I choose?\n\n- Best overall: Beards Australia at $55 \u2014 useful, varied and leaves room in the budget for shipping.\n- Most fun and distinctive: Washpool's toolbox kit.\n- Best for a beard enthusiast: Milkman Grooming Co's styling box.\n\nPrices are listed in AUD. Shipping fees and delivery eligibility can depend on the destination postcode, so check the final checkout total to keep the gift under $80.\n\nOne quick question: Who is the gift for, and what's his style?",
+    "shoppingCards": [],
+    "inlineProducts": [],
+    "citationPills": [
+     {
+      "url": "https://beardsaustralia.com/product/beard-oil-and-grooming-kit-beards-australia-gift-pack",
+      "label": "Beard Oil and Grooming Kit Beards Australia Gift Pack",
+      "domain": "beardsaustralia.com",
+      "type": "groupedWebpage",
+      "citationPillId": 0,
+      "position": 1
+     },
+     {
+      "url": "https://www.washpool.com.au/product/bearded-lads-toolbox-kit",
+      "label": "Men\u2019s Grooming Gift Set | Bearded Lads Toolbox Kit",
+      "domain": "washpool.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 1,
+      "position": 2
+     },
+     {
+      "url": "https://www.milkmanaustralia.com/collections/beard-kits/products/beard-oil-beard-wash-pack-copy",
+      "label": "Beard Styling Box - Beard Oil, Beard Wash & Military Brush",
+      "domain": "milkmanaustralia.com",
+      "type": "groupedWebpage",
+      "citationPillId": 2,
+      "position": 3
+     },
+     {
+      "url": "https://lilyandluna.com.au/products/men-s-grooming-gift-pack-beard-edition",
+      "label": "Men's Beard Grooming Gift Pack",
+      "domain": "lilyandluna.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 3,
+      "position": 4
+     },
+     {
+      "url": "https://www.belscentco.com.au/products/mens-gift-grooming-gift-set-beard-grooming",
+      "label": "Mens Grooming Gift Box",
+      "domain": "belscentco.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 4,
+      "position": 5
+     }
+    ]
+   }
+  },
+  "cost_usd": 0.0036,
+  "served_via": null,
+  "whose_error": null,
+  "hint": null,
+  "did_you_mean": null,
+  "error": null,
+  "detail": null
+ }
+}

@@ -1,0 +1,131 @@
+{
+ "what": "Raw ChatGPT answer, unedited, as returned by the Treg gateway (cloro live ChatGPT web UI scraper). Saved as evidence for docs/ads/ad-concepts.md.",
+ "prompt": "gift for a bearded man under $80, ships to Australia",
+ "country": "AU",
+ "engine": "ChatGPT live web UI, reached through the cloro scraping service (not anyone's personal ChatGPT account)",
+ "endpoint": "cloro.ai-search.chatgpt.scrape",
+ "request_body": {
+  "prompt": "gift for a bearded man under $80, ships to Australia",
+  "country": "AU",
+  "include": {
+   "markdown": true,
+   "shopping": true
+  }
+ },
+ "treg_call_id": "c748eb2160b64dcc9dfd512015576e61",
+ "run_by": "reviewer (owner and marketer review)",
+ "received_at_utc": "2026-10-10T06:52:24.870Z",
+ "note": "Text is stored with JSON escapes (for example \\u2014), so the file holds the exact answer while keeping literal dashes out of docs/ads.",
+ "response": {
+  "call_id": "c748eb2160b64dcc9dfd512015576e61",
+  "status": 200,
+  "endpoint_id": "cloro.ai-search.chatgpt.scrape",
+  "replayed": null,
+  "body": {
+   "success": true,
+   "result": {
+    "model": null,
+    "text": "If you're looking for a gift for a bearded man under **$80 AUD that ships to Australia**, I'd go for a quality beard-care gift box rather than a generic grooming kit. There are some great Australian-made options that feel a little more special. \ud83c\udf81\n\n## 6 great gifts for a bearded man under $80\n\n### 1. \ud83e\udd47 Beard & Blade Essentials Beard Grooming Kit \u2014 $64 AUD\n**Best all-round gift**\n\n[Shop Beard & Blade Essentials Kit](https://www.beardandblade.com.au/products/beard-blade-essentials-beard-grooming-kit)\n\n- Includes beard oil, a beard cleanser and a German-made plant-fibre brush.\n- Designed to cleanse, condition and keep his beard looking tidy.\n- Presented as a gift box.\n- Australian delivery is available, with free standard shipping on orders over $35.\n\n**Why I'd choose it:** It's a practical, complete set from a specialist beard-grooming retailer, and it doesn't feel like a cheap novelty gift. [Beard & Blade](https://www.beardandblade.com.au/products/beard-blade-essentials-beard-grooming-kit?utm_source=chatgpt.com)\n\n### 2. \ud83e\uddd4 Beards Australia Beard Oil & Grooming Gift Pack \u2014 $55 AUD\n**Best traditional beard-care gift**\n\n[Shop Beards Australia Gift Pack](https://beardsaustralia.com/product/beard-oil-and-grooming-kit-beards-australia-gift-pack)\n\n- Three 15 ml beard oils.\n- Includes scissors and a comb.\n- Australian-made oils featuring ingredients such as argan, jojoba and macadamia oils.\n- Available in fragrances including Salted Caramel, Coconut Lime and Million $.\n- Ships from Australia, with free shipping over $79.\n\n**Why I'd choose it:** It's a lovely option for someone who takes pride in his beard and enjoys trying different scents. [Beards Australia](https://beardsaustralia.com/product/beard-oil-and-grooming-kit-beards-australia-gift-pack?utm_source=chatgpt.com)\n\n### 3. \ud83c\udf32 The Groomed Man Co. Morning Wood Beard Oil & Balm Kit \u2014 $75 AUD\n**Best premium-feeling gift**\n\n[Shop The Groomed Man Co. Kit](https://www.thegroomedmanco.com/products/morning-wood-beard-oil-and-balm-kit)\n\n- Beard oil and beard balm.\n- Designed to soften facial hair and help tame unruly beards.\n- Features notes of Australian sandalwood, cedarwood, pine and patchouli.\n- Listed at $75 AUD.\n\n**Why I'd choose it:** The earthy, woody fragrance makes this a good choice for someone who prefers a more masculine, outdoorsy scent. [The Groomed Man Co.](https://www.thegroomedmanco.com/products/morning-wood-beard-oil-and-balm-kit?utm_source=chatgpt.com)\n\n*Note: Check the delivery charge at checkout to ensure the total stays under $80.*\n\n### 4. \ud83e\udeb5 Milkman Grooming Co. Beard Styling Box \u2014 $70 AUD\n**Best Australian-made gift box**\n\n[Shop Milkman Beard Styling Box](https://www.milkmanaustralia.com/collections/beard-kits/products/beard-oil-beard-wash-pack-copy)\n\n- 50 ml beard oil.\n- 100 ml beard wash.\n- Bamboo and nylon military-style beard brush.\n- Comes in an Australian-made gift box.\n- Available in the King of Wood scent.\n\n**Why I'd choose it:** It includes three useful grooming essentials and comes ready to give as a present. [Milkman Grooming Co](https://www.milkmanaustralia.com/collections/beard-kits/products/beard-oil-beard-wash-pack-copy?utm_source=chatgpt.com)\n\n### 5. \ud83e\uddf0 Washpool Bearded Lads Toolbox Kit \u2014 $80 AUD\n**Best unusual gift**\n\n[Shop Washpool Bearded Lads Toolbox Kit](https://www.washpool.com.au/product/bearded-lads-toolbox-kit)\n\n- Presented in a red toolbox.\n- Includes beard oil, a shower and shave shampoo bar, and a konjac sponge.\n- Features a fresh citrus-and-spice theme.\n- Listed at $80 AUD.\n\n**Why I'd choose it:** The toolbox packaging makes it more memorable than an ordinary grooming set.\n\nIt's right at your budget limit, so check shipping costs before ordering. [www.washpool.com.au](https://www.washpool.com.au/product/bearded-lads-toolbox-kit?utm_source=chatgpt.com)\n\n### 6. \ud83e\ude92 Beard & Blade Beard Survival Kit \u2014 $29.95 AUD\n**Best smaller gift**\n\n[Find the Beard Survival Kit at David Jones](https://www.davidjones.com/)\n\n- A compact beard-themed gift from Gentlemen's Hardware.\n- A good option for someone who enjoys practical accessories.\n- Leaves room in your budget to add his favourite chocolate, coffee or another small gift.\n\nThe listed price is $29.95 AUD. Check the retailer's current listing for the exact contents and delivery options. \u3010turn0product19\u3011\n\n---\n\n## My top three\n\n| Gift | Price | Best for |\n|---|---:|---|\n| Beard & Blade Essentials Kit | $64 | Best overall |\n| Beards Australia Gift Pack | $55 | Someone who loves beard oils |\n| Milkman Beard Styling Box | $70 | A premium-looking Australian gift |\n\n**My personal pick would be the Beard & Blade Essentials Kit.** It combines three useful products, has gift-worthy presentation and leaves some room in your budget for shipping.\n\n## Let me narrow it down for you\n\nOne quick question: **What sort of guy is he?**\n\n- **A.** Rugged, outdoorsy, masculine\n- **B.** Stylish and particular about his appearance\n- **C.** Funny, cheeky, or loves unusual gifts\n- **D.** Practical \u2014 likes tools, gadgets and useful things\n- **E.** Already has everything and is difficult to buy for\n\nI'll suggest the best options under $80 AUD, including gifts that aren't just beard oil and grooming kits.",
+    "sources": [
+     {
+      "position": 1,
+      "label": "Shop Beard & Blade Essentials Kit",
+      "url": "https://www.beardandblade.com.au/products/beard-blade-essentials-beard-grooming-kit",
+      "footnote": true
+     },
+     {
+      "position": 2,
+      "label": "Shop Beards Australia Gift Pack",
+      "url": "https://beardsaustralia.com/product/beard-oil-and-grooming-kit-beards-australia-gift-pack",
+      "footnote": true
+     },
+     {
+      "position": 3,
+      "label": "Shop The Groomed Man Co. Kit",
+      "url": "https://www.thegroomedmanco.com/products/morning-wood-beard-oil-and-balm-kit",
+      "footnote": true
+     },
+     {
+      "position": 4,
+      "label": "Shop Milkman Beard Styling Box",
+      "url": "https://www.milkmanaustralia.com/collections/beard-kits/products/beard-oil-beard-wash-pack-copy",
+      "footnote": true
+     },
+     {
+      "position": 5,
+      "label": "Shop Washpool Bearded Lads Toolbox Kit",
+      "url": "https://www.washpool.com.au/product/bearded-lads-toolbox-kit",
+      "footnote": true
+     },
+     {
+      "position": 6,
+      "label": "Find the Beard Survival Kit at David Jones",
+      "url": "https://www.davidjones.com/",
+      "footnote": true
+     }
+    ],
+    "entities": [],
+    "map": [],
+    "followUpForm": null,
+    "markdown": "If you're looking for a gift for a bearded man under **$80 AUD that ships to Australia**, I'd go for a quality beard-care gift box rather than a generic grooming kit. There are some great Australian-made options that feel a little more special. \ud83c\udf81\n\n## 6 great gifts for a bearded man under $80\n\n### 1. \ud83e\udd47 Beard & Blade Essentials Beard Grooming Kit \u2014 $64 AUD\n**Best all-round gift**\n\n[Shop Beard & Blade Essentials Kit](https://www.beardandblade.com.au/products/beard-blade-essentials-beard-grooming-kit)\n\n- Includes beard oil, a beard cleanser and a German-made plant-fibre brush.\n- Designed to cleanse, condition and keep his beard looking tidy.\n- Presented as a gift box.\n- Australian delivery is available, with free standard shipping on orders over $35.\n\n**Why I'd choose it:** It's a practical, complete set from a specialist beard-grooming retailer, and it doesn't feel like a cheap novelty gift. [Beard & Blade](https://www.beardandblade.com.au/products/beard-blade-essentials-beard-grooming-kit?utm_source=chatgpt.com)\n\n### 2. \ud83e\uddd4 Beards Australia Beard Oil & Grooming Gift Pack \u2014 $55 AUD\n**Best traditional beard-care gift**\n\n[Shop Beards Australia Gift Pack](https://beardsaustralia.com/product/beard-oil-and-grooming-kit-beards-australia-gift-pack)\n\n- Three 15 ml beard oils.\n- Includes scissors and a comb.\n- Australian-made oils featuring ingredients such as argan, jojoba and macadamia oils.\n- Available in fragrances including Salted Caramel, Coconut Lime and Million $.\n- Ships from Australia, with free shipping over $79.\n\n**Why I'd choose it:** It's a lovely option for someone who takes pride in his beard and enjoys trying different scents. [Beards Australia](https://beardsaustralia.com/product/beard-oil-and-grooming-kit-beards-australia-gift-pack?utm_source=chatgpt.com)\n\n### 3. \ud83c\udf32 The Groomed Man Co. Morning Wood Beard Oil & Balm Kit \u2014 $75 AUD\n**Best premium-feeling gift**\n\n[Shop The Groomed Man Co. Kit](https://www.thegroomedmanco.com/products/morning-wood-beard-oil-and-balm-kit)\n\n- Beard oil and beard balm.\n- Designed to soften facial hair and help tame unruly beards.\n- Features notes of Australian sandalwood, cedarwood, pine and patchouli.\n- Listed at $75 AUD.\n\n**Why I'd choose it:** The earthy, woody fragrance makes this a good choice for someone who prefers a more masculine, outdoorsy scent. [The Groomed Man Co.](https://www.thegroomedmanco.com/products/morning-wood-beard-oil-and-balm-kit?utm_source=chatgpt.com)\n\n*Note: Check the delivery charge at checkout to ensure the total stays under $80.*\n\n### 4. \ud83e\udeb5 Milkman Grooming Co. Beard Styling Box \u2014 $70 AUD\n**Best Australian-made gift box**\n\n[Shop Milkman Beard Styling Box](https://www.milkmanaustralia.com/collections/beard-kits/products/beard-oil-beard-wash-pack-copy)\n\n- 50 ml beard oil.\n- 100 ml beard wash.\n- Bamboo and nylon military-style beard brush.\n- Comes in an Australian-made gift box.\n- Available in the King of Wood scent.\n\n**Why I'd choose it:** It includes three useful grooming essentials and comes ready to give as a present. [Milkman Grooming Co](https://www.milkmanaustralia.com/collections/beard-kits/products/beard-oil-beard-wash-pack-copy?utm_source=chatgpt.com)\n\n### 5. \ud83e\uddf0 Washpool Bearded Lads Toolbox Kit \u2014 $80 AUD\n**Best unusual gift**\n\n[Shop Washpool Bearded Lads Toolbox Kit](https://www.washpool.com.au/product/bearded-lads-toolbox-kit)\n\n- Presented in a red toolbox.\n- Includes beard oil, a shower and shave shampoo bar, and a konjac sponge.\n- Features a fresh citrus-and-spice theme.\n- Listed at $80 AUD.\n\n**Why I'd choose it:** The toolbox packaging makes it more memorable than an ordinary grooming set.\n\nIt's right at your budget limit, so check shipping costs before ordering. [www.washpool.com.au](https://www.washpool.com.au/product/bearded-lads-toolbox-kit?utm_source=chatgpt.com)\n\n### 6. \ud83e\ude92 Beard & Blade Beard Survival Kit \u2014 $29.95 AUD\n**Best smaller gift**\n\n[Find the Beard Survival Kit at David Jones](https://www.davidjones.com/)\n\n- A compact beard-themed gift from Gentlemen's Hardware.\n- A good option for someone who enjoys practical accessories.\n- Leaves room in your budget to add his favourite chocolate, coffee or another small gift.\n\nThe listed price is $29.95 AUD. Check the retailer's current listing for the exact contents and delivery options. \u3010turn0product19\u3011\n\n---\n\n## My top three\n\n| Gift | Price | Best for |\n|---|---:|---|\n| Beard & Blade Essentials Kit | $64 | Best overall |\n| Beards Australia Gift Pack | $55 | Someone who loves beard oils |\n| Milkman Beard Styling Box | $70 | A premium-looking Australian gift |\n\n**My personal pick would be the Beard & Blade Essentials Kit.** It combines three useful products, has gift-worthy presentation and leaves some room in your budget for shipping.\n\n## Let me narrow it down for you\n\nOne quick question: **What sort of guy is he?**\n\n- **A.** Rugged, outdoorsy, masculine\n- **B.** Stylish and particular about his appearance\n- **C.** Funny, cheeky, or loves unusual gifts\n- **D.** Practical \u2014 likes tools, gadgets and useful things\n- **E.** Already has everything and is difficult to buy for\n\nI'll suggest the best options under $80 AUD, including gifts that aren't just beard oil and grooming kits.",
+    "citationPills": [
+     {
+      "url": "https://www.beardandblade.com.au/products/beard-blade-essentials-beard-grooming-kit",
+      "label": "Shop Beard & Blade Essentials Kit",
+      "domain": "beardandblade.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 0,
+      "position": 1
+     },
+     {
+      "url": "https://beardsaustralia.com/product/beard-oil-and-grooming-kit-beards-australia-gift-pack",
+      "label": "Shop Beards Australia Gift Pack",
+      "domain": "beardsaustralia.com",
+      "type": "groupedWebpage",
+      "citationPillId": 1,
+      "position": 2
+     },
+     {
+      "url": "https://www.thegroomedmanco.com/products/morning-wood-beard-oil-and-balm-kit",
+      "label": "Shop The Groomed Man Co. Kit",
+      "domain": "thegroomedmanco.com",
+      "type": "groupedWebpage",
+      "citationPillId": 2,
+      "position": 3
+     },
+     {
+      "url": "https://www.milkmanaustralia.com/collections/beard-kits/products/beard-oil-beard-wash-pack-copy",
+      "label": "Shop Milkman Beard Styling Box",
+      "domain": "milkmanaustralia.com",
+      "type": "groupedWebpage",
+      "citationPillId": 3,
+      "position": 4
+     },
+     {
+      "url": "https://www.washpool.com.au/product/bearded-lads-toolbox-kit",
+      "label": "Shop Washpool Bearded Lads Toolbox Kit",
+      "domain": "washpool.com.au",
+      "type": "groupedWebpage",
+      "citationPillId": 4,
+      "position": 5
+     },
+     {
+      "url": "https://www.davidjones.com/",
+      "label": "Find the Beard Survival Kit at David Jones",
+      "domain": "davidjones.com",
+      "type": "groupedWebpage",
+      "citationPillId": 5,
+      "position": 6
+     }
+    ]
+   }
+  },
+  "cost_usd": 0.0028,
+  "served_via": null,
+  "whose_error": null,
+  "hint": null,
+  "did_you_mean": null,
+  "error": null,
+  "detail": null
+ }
+}
