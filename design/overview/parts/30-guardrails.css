@@ -1,31 +1,56 @@
-/* Guardrails: dark rounded block (Qarin "Core features"), inset 24px from the viewport edges. */
+/* Guardrails: deep indigo rounded block (Qarin "Core features"), inset 24px from the viewport edges,
+   with the clay shield as a lilac tile beside the head. */
 .guard { background: var(--bg); padding: 24px 24px 0; }
 .guard-box {
-  background: var(--ink);
+  position: relative; isolation: isolate; overflow: hidden;
+  background: var(--grad-indigo);
   border-radius: var(--r-xl);
-  padding: 130px 24px 152px;
+  padding: 120px 24px 136px;
   color: var(--on-dark);
 }
+/* soft cobalt glow behind the head, so the indigo has depth */
+.guard-box::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(ellipse 50% 38% at 80% 8%, rgba(104, 120, 216, 0.30), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 10% 100%, rgba(64, 80, 176, 0.18), transparent 70%);
+}
 .guard-in { max-width: 1216px; margin-inline: auto; }
-.guard-head { margin-bottom: 72px; }
+
+.guard-top { display: grid; grid-template-columns: minmax(0, 1fr) 264px; align-items: center; gap: 48px; margin-bottom: 72px; }
+.guard-head { margin-bottom: 0; }
 .guard-h2 { color: var(--on-dark); max-width: 640px; }
-.guard-lead { color: rgba(255, 255, 255, 0.8); max-width: 600px; }
+.guard-lead { color: var(--lilac-100); max-width: 560px; }
+
+/* the clay shield sits on its own lilac background, so it is framed as a tile with a cobalt glow */
+.guard-art {
+  position: relative; width: 264px; aspect-ratio: 1; justify-self: end;
+  border-radius: var(--r-lg); overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(226, 226, 252, 0.28), 0 0 0 8px rgba(226, 226, 252, 0.05), 0 30px 70px -18px rgba(104, 120, 216, 0.65);
+}
+.guard-art img { width: 100%; height: 100%; object-fit: cover; }
 
 .guard-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
 .guard-card {
   border-radius: var(--r-md);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: transparent;
-  padding: 36px 36px 38px;
-  min-height: 300px;
+  border: 1px solid rgba(181, 168, 224, 0.22);
+  background: rgba(226, 226, 252, 0.06);
+  padding: 34px 34px 36px;
+  min-height: 286px;
   display: flex;
   flex-direction: column;
   transition: border-color .25s ease, background-color .25s ease;
 }
-.guard-card:hover { border-color: rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.015); }
-.guard-ic { width: 64px; height: 64px; color: var(--on-dark); flex: none; margin-left: -3px; }
+.guard-card:hover { border-color: rgba(181, 168, 224, 0.4); background: rgba(226, 226, 252, 0.09); }
+.guard-ic-wrap {
+  width: 60px; height: 60px; flex: none; border-radius: 16px;
+  display: grid; place-items: center;
+  background: linear-gradient(180deg, rgba(191, 201, 250, 0.16) 0%, rgba(104, 120, 216, 0.12) 100%);
+  box-shadow: inset 0 0 0 1px rgba(181, 168, 224, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+.guard-ic { width: 30px; height: 30px; color: var(--peri-300); }
 .guard-t {
-  margin-top: 52px;
+  margin-top: 44px;
   font-family: var(--font-head);
   font-size: 20px;
   font-weight: 500;
@@ -33,19 +58,25 @@
   line-height: 1.35;
   color: var(--on-dark);
 }
-.guard-p { margin-top: 16px; font-size: 15px; line-height: 1.6; color: rgba(255, 255, 255, 0.8); max-width: 330px; text-wrap: pretty; }
+/* --lilac-100 on --indigo-950: about 13:1 */
+.guard-p { margin-top: 14px; font-size: 15px; line-height: 1.6; color: var(--lilac-100); max-width: 330px; text-wrap: pretty; }
 
 @media (max-width: 1100px) {
-  .guard-box { padding: 104px 32px 112px; }
+  .guard-box { padding: 96px 32px 104px; }
+  .guard-top { grid-template-columns: minmax(0, 1fr) 200px; gap: 32px; margin-bottom: 56px; }
+  .guard-art { width: 200px; }
   .guard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 760px) {
   .guard { padding: 16px 16px 0; }
-  .guard-box { border-radius: var(--r-lg); padding: 72px 16px 24px; }
-  .guard-head { margin-bottom: 40px; padding-inline: 4px; }
+  .guard-box { border-radius: var(--r-lg); padding: 56px 16px 24px; }
+  /* shield above the head on phones */
+  .guard-top { grid-template-columns: minmax(0, 1fr); gap: 28px; margin-bottom: 40px; padding-inline: 4px; }
+  .guard-art { order: -1; width: 140px; justify-self: start; border-radius: 20px; }
   .guard-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-  .guard-card { min-height: 0; padding: 26px 24px 28px; }
-  .guard-ic { width: 48px; height: 48px; margin-left: -2px; }
-  .guard-t { margin-top: 28px; font-size: 19px; }
-  .guard-p { margin-top: 10px; }
+  .guard-card { min-height: 0; padding: 24px 22px 26px; }
+  .guard-ic-wrap { width: 48px; height: 48px; border-radius: 13px; }
+  .guard-ic { width: 24px; height: 24px; }
+  .guard-t { margin-top: 22px; font-size: 19px; }
+  .guard-p { margin-top: 8px; }
 }

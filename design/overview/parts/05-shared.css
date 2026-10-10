@@ -7,7 +7,7 @@
 section[id], footer[id] { scroll-margin-top: 96px; }
 
 /* Clear keyboard focus on links and buttons (the browser default is faint on navy and lilac). */
-.page a:focus-visible, .page .btn:focus-visible, .page button:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 3px; border-radius: 10px; }
+.page a:focus-visible, .page .btn:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 3px; border-radius: 10px; }
 .page .price-band a:focus-visible, .page .on-dark a:focus-visible { outline-color: var(--white); }
 
 /* Source links under numbers: small, cobalt, underlined (every number links to where it came from). */

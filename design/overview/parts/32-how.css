@@ -10,7 +10,7 @@
   position: relative; height: 336px; overflow: hidden;
   border-radius: 16px 16px 0 0;
   padding: 24px 24px 0;
-  background: linear-gradient(180deg, #f1f1fd 0%, #f4f4fd 55%, rgba(246, 246, 252, 0) 100%);
+  background: linear-gradient(180deg, var(--lilac-50) 0%, #f2f0fd 55%, rgba(244, 242, 254, 0) 100%);
   box-shadow: inset 0 1px 0 var(--lav-line), inset 1px 0 0 var(--lav-line), inset -1px 0 0 var(--lav-line);
   -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 72%, transparent 100%);
   mask-image: linear-gradient(180deg, #000 0%, #000 72%, transparent 100%);
@@ -24,16 +24,16 @@
 .how-card-1 .sample-tag, .how-card-2 .sample-tag { top: 13px; right: 16px; }
 
 /* ---- card 1: setup list (like Qarin's integrations list) ---- */
-.how-li { display: flex; align-items: center; gap: 12px; padding: 0 14px 0 14px; height: 58px; border-radius: 8px; background: var(--white); box-shadow: 0 1px 2px rgba(11, 12, 43, 0.04), 0 0 0 1px rgba(232, 230, 250, 0.6); }
-.how-li-on { height: 56px; margin-inline: 0; box-shadow: 0 10px 22px -12px rgba(11, 12, 43, 0.22), 0 0 0 1px var(--lav-line); }
+.how-li { display: flex; align-items: center; gap: 12px; padding: 0 14px 0 14px; height: 58px; border-radius: 10px; background: var(--white); box-shadow: 0 1px 2px rgba(56, 64, 160, 0.06), 0 0 0 1px rgba(226, 226, 252, 0.9); }
+.how-li-on { height: 56px; margin-inline: 0; box-shadow: 0 12px 24px -12px rgba(56, 64, 160, 0.3), 0 0 0 1px var(--lilac-deep); }
 .how-li-sm { height: 48px; margin-inline: 0; }
 .how-ic { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: var(--white); }
 .how-ic svg { width: 14px; height: 14px; }
-.how-ic-blue { background: var(--blue); }
-.how-ic-violet { background: #8a63f0; }
+.how-ic-blue { background: var(--cobalt); }
+.how-ic-violet { background: var(--cobalt-mid); }
 .how-ic-teal { background: var(--e-perplexity); }
 .how-ic-amber { background: #f08a3c; }
-.how-ic-grey { background: #c6c7d4; }
+.how-ic-grey { background: var(--lilac-deep); }
 .how-li-sm .how-ic { width: 24px; height: 24px; }
 .how-li-sm .how-ic svg { width: 12px; height: 12px; }
 .how-li-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.3; }
@@ -43,16 +43,16 @@
 .how-li-sm .how-li-tx b { font-size: 13px; color: #45465e; }
 .how-done { display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 9px; border-radius: 7px; background: var(--white); box-shadow: inset 0 0 0 1px var(--line-2); font-size: 12px; font-weight: 500; color: var(--green-ink); white-space: nowrap; }
 .how-done svg { width: 12px; height: 12px; }
-.how-choose { display: inline-flex; align-items: center; height: 30px; padding: 0 13px; border-radius: 7px; background: #18191b; color: var(--white); font-size: 13px; font-weight: 500; white-space: nowrap; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14); }
+.how-choose { display: inline-flex; align-items: center; height: 30px; padding: 0 13px; border-radius: 7px; background: var(--grad-btn); color: var(--white); font-size: 13px; font-weight: 500; white-space: nowrap; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14); }
 .how-next { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--line-2); font-size: 11px; color: var(--text-2); }
 
 /* ---- card 2: scan in progress ---- */
-.how-scan, .how-ans { background: var(--white); border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(11, 12, 43, 0.04), 0 0 0 1px rgba(232, 230, 250, 0.6); }
+.how-scan, .how-ans { background: var(--white); border-radius: 12px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(56, 64, 160, 0.06), 0 0 0 1px rgba(226, 226, 252, 0.9); }
 .how-scan-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .how-q { display: inline-flex; align-items: center; gap: 7px; min-width: 0; font-size: 13px; font-weight: 600; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .how-q-tx { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .how-q svg { width: 13px; height: 13px; color: var(--muted); }
-.how-live { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 100px; background: var(--blue); color: var(--white); font-size: 10.5px; font-weight: 600; white-space: nowrap; flex: none; }
+.how-live { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 100px; background: var(--cobalt); color: var(--white); font-size: 10.5px; font-weight: 600; white-space: nowrap; flex: none; }
 .how-live i { width: 6px; height: 6px; border-radius: 50%; background: var(--white); animation: how-pulse 1.4s ease-in-out infinite; }
 @keyframes how-pulse { 50% { opacity: .35; } }
 .how-engines { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
@@ -65,8 +65,8 @@
 .how-prog { margin-top: 12px; }
 .how-prog-l { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-2); }
 .how-prog-l b { color: var(--navy); font-weight: 600; }
-.how-bar { margin-top: 6px; height: 6px; border-radius: 100px; background: var(--lav-2); overflow: hidden; }
-.how-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #5c77ff, #3355ff); }
+.how-bar { margin-top: 6px; height: 6px; border-radius: 100px; background: var(--lilac-100); overflow: hidden; }
+.how-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--cobalt-mid), var(--cobalt)); }
 .how-ans-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .how-ans-src { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: var(--navy); white-space: nowrap; }
 .how-ans-src i { width: 16px; height: 16px; border-radius: 5px; }
@@ -84,28 +84,28 @@
 .how-stat-s { font-size: 12.5px; color: var(--text-2); }
 .how-chart { position: relative; height: 140px; margin-top: 30px; }
 .how-chart-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.how-dot { position: absolute; left: 62.64%; top: 30.67%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--white); box-shadow: 0 0 0 2.5px var(--blue), 0 2px 6px rgba(51, 85, 255, 0.35); }
-.how-tip { position: absolute; left: 62.64%; top: 30.67%; transform: translate(-50%, calc(-100% - 12px)); display: inline-flex; align-items: baseline; gap: 6px; padding: 5px 8px; border-radius: 6px; background: #18191b; color: var(--white); white-space: nowrap; box-shadow: 0 6px 14px -6px rgba(11, 12, 43, 0.5); }
-.how-tip::after { content: ""; position: absolute; left: 50%; bottom: -4px; width: 8px; height: 8px; margin-left: -4px; background: #18191b; transform: rotate(45deg); border-radius: 1px; }
+.how-dot { position: absolute; left: 62.64%; top: 30.67%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--white); box-shadow: 0 0 0 2.5px var(--cobalt), 0 2px 6px rgba(64, 80, 176, 0.35); }
+.how-tip { position: absolute; left: 62.64%; top: 30.67%; transform: translate(-50%, calc(-100% - 12px)); display: inline-flex; align-items: baseline; gap: 6px; padding: 5px 8px; border-radius: 6px; background: var(--navy); color: var(--white); white-space: nowrap; box-shadow: 0 6px 14px -6px rgba(11, 12, 43, 0.5); }
+.how-tip::after { content: ""; position: absolute; left: 50%; bottom: -4px; width: 8px; height: 8px; margin-left: -4px; background: var(--navy); transform: rotate(45deg); border-radius: 1px; }
 .how-tip b { font-size: 11.5px; font-weight: 600; }
 .how-tip small { font-size: 10px; color: rgba(255, 255, 255, 0.6); }
 .how-mini { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
 .how-mini-i { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .how-chip { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; flex: none; }
 .how-chip svg { width: 17px; height: 17px; }
-.how-chip-blue { background: var(--lav-chip); color: var(--blue); box-shadow: 0 0 0 4px rgba(225, 226, 252, 0.45); }
+.how-chip-blue { background: var(--lilac-100); color: var(--cobalt); box-shadow: 0 0 0 4px rgba(226, 226, 252, 0.5); }
 .how-chip-green { background: #dcf3e3; color: var(--green-ink); box-shadow: 0 0 0 4px rgba(220, 243, 227, 0.45); }
 .how-mini-tx { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
 .how-mini-tx small { font-size: 11px; color: var(--text-2); }
 .how-mini-tx b { font-size: 17px; font-weight: 500; color: var(--navy); letter-spacing: -0.3px; }
 
 /* ---- journey ---- */
-.how-journey { list-style: none; margin: 72px 0 0; padding: 26px 32px; display: flex; align-items: center; gap: 16px; position: relative; background: var(--white); border-radius: var(--r-md); box-shadow: var(--ring); }
+.how-journey { list-style: none; margin: 72px 0 0; padding: 26px 32px; display: flex; align-items: center; gap: 16px; position: relative; background: var(--white); border-radius: var(--r-md); box-shadow: 0 0 0 1px var(--lav-line), 0 24px 48px -36px rgba(56, 64, 160, 0.35); }
 .how-j { position: relative; flex: none; display: flex; align-items: center; gap: 12px; min-width: 0; }
 /* even dashed connectors: each one takes an equal share of the free space */
-.how-j-line { flex: 1 1 0; min-width: 24px; height: 0; border-top: 1.5px dashed #c9cfff; }
-.how-j-n { position: relative; z-index: 1; width: 34px; height: 34px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--white); color: var(--blue); font-family: var(--font-head); font-size: 14px; font-weight: 600; box-shadow: inset 0 0 0 1px var(--lav-line), 0 0 0 4px var(--lav); font-variant-numeric: tabular-nums; }
-.how-j:first-child .how-j-n { background: var(--blue); color: var(--white); box-shadow: 0 0 0 4px var(--lav-2); }
+.how-j-line { flex: 1 1 0; min-width: 24px; height: 0; border-top: 1.5px dashed var(--lilac-deep); }
+.how-j-n { position: relative; z-index: 1; width: 34px; height: 34px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--white); color: var(--cobalt); font-family: var(--font-head); font-size: 14px; font-weight: 600; box-shadow: inset 0 0 0 1.5px var(--cobalt-mid), 0 0 0 4px var(--lilac-50); font-variant-numeric: tabular-nums; }
+.how-j:first-child .how-j-n { background: var(--cobalt); color: var(--white); box-shadow: 0 0 0 4px var(--lilac-100); }
 .how-j-tx { position: relative; z-index: 1; display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
 .how-j-tx b { font-size: 14px; font-weight: 600; color: var(--navy); white-space: nowrap; }
 .how-j-tx small { font-size: 12px; color: var(--text-2); }
@@ -137,6 +137,6 @@
   .how-scan, .how-ans { padding: 12px; }
   .how-chart { height: 130px; }
   .how-journey { grid-template-columns: minmax(0, 1fr); gap: 18px; margin-top: 48px; padding: 22px 20px; }
-  .how-j:not(:last-child)::after { content: ""; position: absolute; top: 34px; bottom: -18px; left: 16px; border-left: 1.5px dashed #c9cfff; }
+  .how-j:not(:last-child)::after { content: ""; position: absolute; top: 34px; bottom: -18px; left: 16px; border-left: 1.5px dashed var(--lilac-deep); }
   .how-j-tx b { white-space: normal; }
 }

@@ -28,7 +28,7 @@
   function fit() { input.setAttribute('placeholder', narrow && narrow.matches ? 'Paste your product link' : long); }
   if (narrow) { fit(); if (narrow.addEventListener) narrow.addEventListener('change', fit); }
 
-  // "Get your free scan" buttons scroll here; put the cursor in the box on desktop.
+  // "Check a product free" links scroll here; put the cursor in the box on desktop.
   var desktop = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
   function focusSoon() { if (desktop) setTimeout(function () { input.focus({ preventScroll: true }); }, 450); }
   document.addEventListener('click', function (e) {

@@ -9,7 +9,7 @@
 /* numbers: cobalt, tabular */
 .why-num { font-family: var(--font-head); font-weight: 500; font-size: 56px; line-height: 1; letter-spacing: -2.4px; color: var(--cobalt); font-variant-numeric: tabular-nums; }
 .why-unit { color: var(--cobalt-mid); margin-left: 2px; }
-.why-num-l { font-size: 88px; letter-spacing: -4px; display: flex; align-items: baseline; }
+.why-num-l { font-size: 76px; letter-spacing: -3.4px; display: flex; align-items: baseline; }
 .why-num-pre { font-size: 22px; letter-spacing: -0.4px; font-weight: 500; color: var(--navy); margin-right: 10px; }
 
 /* ---------- lead card (main gradient) ---------- */
@@ -23,6 +23,7 @@
 .why-lead-tx { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .why-big { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 14px; font-family: var(--font-head); font-weight: 500; color: var(--cobalt); line-height: .95; font-variant-numeric: tabular-nums; }
 .why-big-n { font-size: 128px; letter-spacing: -6px; }
+.why-big-t { font-size: .6em; letter-spacing: 0; margin-right: -2px; position: relative; top: -0.18em; }
 .why-big-u { font-size: 48px; letter-spacing: -1.8px; color: var(--cobalt-deep); }
 .why-lead-what { font-family: var(--font-head); font-weight: 500; font-size: 24px; line-height: 1.3; letter-spacing: -0.6px; color: var(--navy); max-width: 22ch; text-wrap: balance; }
 .why-lead-what .why-soft { font-family: var(--font-body); font-size: 16px; letter-spacing: 0; white-space: nowrap; }
@@ -51,16 +52,16 @@
 
 /* ---------- growth card + small cards (bento) ---------- */
 .why-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; margin-top: 20px; align-items: stretch; }
-.why-growth { display: flex; flex-direction: column; gap: 14px; min-width: 0; padding: 32px 32px 24px; border-radius: var(--r-lg); background: var(--white); box-shadow: 0 0 0 1px var(--lilac-deep), var(--shadow); box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.55), var(--shadow); }
+.why-growth { display: flex; flex-direction: column; gap: 12px; min-width: 0; padding: 28px 30px 22px; border-radius: var(--r-lg); background: var(--white); box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.55), var(--shadow); }
 .why-growth-what { font-size: 16px; line-height: 1.55; color: var(--navy); max-width: 46ch; }
 .why-chart { margin-top: 6px; padding: 18px 18px 14px; border-radius: var(--r-md); background: var(--lilac-50); }
 .why-growth .why-src { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--lav-line); }
 
 /* bars, drawn to scale: height = 1 for the biggest value */
-.why-bars { display: flex; align-items: flex-end; gap: 24px; height: 196px; padding: 0 12px; border-bottom: 1px solid var(--lilac-deep); }
+.why-bars { display: flex; align-items: flex-end; gap: 24px; height: 168px; padding: 0 12px; border-bottom: 1px solid var(--lilac-deep); }
 .why-bar { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; }
 .why-bar b { font-size: 13px; font-weight: 600; color: var(--text-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.why-bar i { display: block; width: 100%; max-width: 104px; height: calc(160px * var(--f)); min-height: 3px; border-radius: 8px 8px 0 0; background: var(--peri-300); }
+.why-bar i { display: block; width: 100%; max-width: 104px; height: calc(134px * var(--f)); min-height: 3px; border-radius: 8px 8px 0 0; background: var(--peri-300); }
 .why-bar.is-now b { color: var(--cobalt); }
 .why-bar.is-now i { background: linear-gradient(180deg, var(--cobalt-mid) 0%, #7d8ce0 100%); box-shadow: 0 14px 26px -16px rgba(64, 80, 176, 0.8); }
 .why-axis { display: flex; gap: 24px; padding: 10px 12px 0; }
@@ -68,15 +69,15 @@
 .why-axis small { font-size: 12px; font-weight: 400; color: var(--text-2); }
 
 .why-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; min-width: 0; }
-.why-card { display: flex; flex-direction: column; gap: 12px; min-width: 0; padding: 26px 24px 20px; border-radius: var(--r-lg); background: var(--white); box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.55), var(--shadow); }
+.why-card { display: flex; flex-direction: column; gap: 12px; min-width: 0; padding: 24px 24px 18px; border-radius: var(--r-lg); background: var(--white); box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.55), var(--shadow); }
 .why-what { font-size: 15px; line-height: 1.5; color: var(--navy); }
 .why-card .why-src { margin-top: auto; padding-top: 12px; border-top: 1px dashed var(--lav-line); }
 
 /* ---------- questions strip ---------- */
-.why-qs { margin-top: 20px; padding: 28px; border-radius: var(--r-lg); background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lav-line); }
-.why-qs-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
-.why-qs-h { font-size: 20px; letter-spacing: -0.5px; line-height: 1.3; }
-.why-qs-link { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--cobalt-deep); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(56, 64, 160, 0.35); }
+.why-qs { margin-top: 20px; padding: 28px; border-radius: var(--r-lg); background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lav-line); display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 18px 16px; }
+.why-qs-h { grid-column: 1; grid-row: 1; font-size: 20px; letter-spacing: -0.5px; line-height: 1.3; }
+.why-qs-list { grid-column: 1 / -1; grid-row: 2; }
+.why-qs-link { grid-column: 2; grid-row: 1; justify-self: end; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--cobalt-deep); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(56, 64, 160, 0.35); }
 .why-qs-link:hover { text-decoration-color: currentColor; }
 .why-qs-link svg { width: 15px; height: 15px; flex: none; }
 .why-qs-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
@@ -116,7 +117,8 @@
   .why-grid { grid-template-columns: 1fr; gap: 14px; }
   .why-card { padding: 22px 20px 18px; border-radius: var(--r-md); }
   .why-num { font-size: 48px; letter-spacing: -2px; }
-  .why-qs { padding: 20px 16px; border-radius: var(--r-md); }
+  .why-qs { padding: 20px 16px; border-radius: var(--r-md); grid-template-columns: 1fr; gap: 14px; }
+  .why-qs-link { grid-column: 1; grid-row: 3; justify-self: start; }
   .why-qs-list { grid-template-columns: 1fr; gap: 8px; }
   .why-qs-list li { padding: 14px; }
   .why-qs-list p { font-size: 15px; }

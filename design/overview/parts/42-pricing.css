@@ -1,35 +1,41 @@
-/* §13 Pricing — full-width blue gradient block (Qarin). */
+/* §13 Pricing: full-width lilac gradient block (Qarin layout), navy text, white cards, indigo featured card. */
 .price-sec { background: var(--bg); }
 .price-band {
   margin-inline: 24px;
-  border-radius: var(--r-lg);
-  background: var(--grad-blue);
-  padding: 128px 0 124px;
+  border-radius: var(--r-xl);
+  background: var(--grad-main);
+  padding: 120px 0 112px;
   position: relative;
   overflow: hidden;
   isolation: isolate;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
 }
 .price-band::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255, 255, 255, 0.12), transparent 70%);
+  background: radial-gradient(ellipse 60% 36% at 50% 0%, rgba(255, 255, 255, 0.75), transparent 70%);
 }
 
 .price-head { display: flex; flex-direction: column; align-items: center; text-align: center; }
-.price-band .label .chip-ic { background: rgba(255, 255, 255, 0.92); color: var(--blue); }
-.price-band .label .chip-tx { background: var(--white); color: var(--navy); box-shadow: none; }
-.price-h2 { margin-top: 18px; color: var(--white); }
+.price-band .label .chip-ic { background: var(--white); color: var(--cobalt); box-shadow: 0 1px 2px rgba(56, 64, 160, 0.08); }
+.price-band .label .chip-tx { background: var(--white); color: var(--navy); box-shadow: 0 1px 2px rgba(56, 64, 160, 0.08); }
+.price-h2 { margin-top: 18px; color: var(--navy); }
+.price-lead { margin-top: 16px; max-width: 560px; color: var(--text-lilac); text-wrap: pretty; }
+.price-calc { margin-top: 14px; display: inline-flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--cobalt-deep); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: rgba(56, 64, 160, 0.4); }
+.price-calc svg { width: 16px; height: 16px; transition: transform .2s ease; }
+.price-calc:hover { text-decoration-color: currentColor; }
+.price-calc:hover svg { transform: translateX(3px); }
 
 .price-seg {
-  margin-top: 56px;
+  margin-top: 40px;
   display: inline-flex; align-items: center; gap: 4px;
   padding: 5px; border-radius: 14px;
   background: var(--white);
-  box-shadow: inset 0 0 0 1px rgba(11, 12, 43, 0.06), 0 10px 24px -14px rgba(11, 12, 43, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(181, 168, 224, 0.35), 0 10px 24px -14px rgba(56, 64, 160, 0.4);
 }
 .price-seg > span { display: inline-flex; align-items: center; gap: 7px; height: 46px; padding: 0 16px; border-radius: 10px; font-size: 15px; font-weight: 600; line-height: 1; white-space: nowrap; }
-.price-seg-on { background: var(--blue); color: var(--white); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 4px 10px -4px rgba(51, 85, 255, 0.6); }
+.price-seg-on { background: var(--cobalt); color: var(--white); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 4px 10px -4px rgba(64, 80, 176, 0.6); }
 .price-seg-info { color: var(--navy); }
-.price-seg-info svg { width: 16px; height: 16px; color: var(--blue); flex: none; }
+.price-seg-info svg { width: 16px; height: 16px; color: var(--cobalt); flex: none; }
 
 .price-grid {
   margin: 40px auto 0;
@@ -41,10 +47,10 @@
   position: relative;
   display: flex; flex-direction: column;
   padding: 32px 28px 34px;
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   background: var(--white);
   color: var(--text);
-  box-shadow: 0 24px 48px -24px rgba(11, 12, 43, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8), var(--shadow-clay);
 }
 .price-name { font-family: var(--font-body); font-size: 18px; line-height: 1.3; font-weight: 600; letter-spacing: -0.2px; color: var(--navy); }
 .price-amt { margin-top: 22px; display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 8px; row-gap: 2px; }
@@ -54,31 +60,36 @@
 .price-btn { margin-top: 30px; width: 100%; height: 50px; font-size: 15px; }
 .price-list { list-style: none; margin: 34px 0 0; padding: 0; display: flex; flex-direction: column; gap: 15px; }
 .price-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; line-height: 22px; color: var(--text); }
-.price-list .check-chip { margin-top: 0; }
+.price-list .check-chip { margin-top: 0; background: var(--lilac-100); color: var(--cobalt); }
 .price-list .price-no { color: var(--text); }
 .price-list .price-no .check-chip { color: #8a8b9c; background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); }
 
-/* Core: dark card */
-.price-card-dark { background: var(--ink); color: var(--on-dark); box-shadow: 0 30px 60px -24px rgba(11, 12, 43, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06); }
+/* Core: deep indigo card */
+.price-card-dark { background: var(--grad-indigo); color: var(--on-dark); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 36px 64px -28px rgba(21, 22, 60, 0.6); }
 .price-card-dark .price-name,
 .price-card-dark .price-num { color: var(--white); }
+/* --lilac-100 on indigo: about 12:1 */
 .price-card-dark .price-per,
-.price-card-dark .price-desc { color: rgba(255, 255, 255, 0.72); }
+.price-card-dark .price-desc { color: var(--lilac-100); }
 .price-card-dark .price-list li { color: var(--white); }
-.price-card-dark .check-chip { background: rgba(255, 255, 255, 0.1); color: var(--white); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); }
+.price-card-dark .check-chip { background: rgba(191, 201, 250, 0.14); color: var(--peri-300); box-shadow: inset 0 0 0 1px rgba(191, 201, 250, 0.16); }
 .price-btn-white { background: var(--white); color: var(--navy); box-shadow: inset 0 -1px 0 rgba(11, 12, 43, 0.08), 0 6px 14px -6px rgba(0, 0, 0, 0.5); }
 .price-btn-white:hover { box-shadow: inset 0 -1px 0 rgba(11, 12, 43, 0.08), 0 10px 20px -8px rgba(0, 0, 0, 0.6); }
 .price-badge {
-  position: absolute; top: 10px; right: 10px;
-  font-size: 13px; line-height: 1; font-weight: 500; color: var(--white);
-  background: var(--blue); border-radius: 6px; padding: 8px 9px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: absolute; top: 12px; right: 12px;
+  font-size: 12.5px; line-height: 1; font-weight: 600; color: var(--indigo-900);
+  background: var(--lilac-pedestal); border-radius: 7px; padding: 7px 9px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
-.price-fine { display: table; margin: 36px auto 0; padding: 7px 14px; border-radius: 999px; text-align: center; font-size: 13.5px; line-height: 1.5; font-weight: 500; color: var(--navy); background: rgba(255, 255, 255, 0.92); box-shadow: 0 6px 16px -10px rgba(11, 12, 43, 0.35); }
+.price-fine { display: table; margin: 36px auto 0; padding: 7px 14px; border-radius: 999px; text-align: center; font-size: 13.5px; line-height: 1.5; font-weight: 500; color: var(--navy); background: rgba(255, 255, 255, 0.92); box-shadow: 0 6px 16px -10px rgba(56, 64, 160, 0.4); }
+
+/* focus rings: the shared rule makes them white on this band; cobalt reads on lilac and white cards */
+.page .price-sec .price-band a:focus-visible { outline-color: var(--cobalt); }
+.page .price-sec .price-card-dark a:focus-visible { outline-color: var(--white); }
 
 @media (max-width: 1100px) {
-  .price-band { padding: 104px 0 100px; }
+  .price-band { padding: 96px 0 92px; }
   .price-grid { gap: 16px; }
   .price-card { padding: 28px 22px 30px; }
   .price-list li { font-size: 14px; }
@@ -88,12 +99,13 @@
   .price-desc { min-height: 0; }
 }
 @media (max-width: 760px) {
-  .price-band { margin-inline: 16px; border-radius: 20px; padding: 72px 0 64px; }
+  .price-band { margin-inline: 16px; border-radius: var(--r-lg); padding: 64px 0 56px; }
   .price-band .wrap { padding-inline: 12px; }
-  .price-seg { margin-top: 32px; padding: 4px; border-radius: 12px; }
+  .price-lead { font-size: 15px; }
+  .price-seg { margin-top: 28px; padding: 4px; border-radius: 12px; }
   .price-seg > span { height: 40px; padding: 0 12px; font-size: 13px; border-radius: 9px; }
   .price-grid { margin-top: 28px; gap: 14px; }
-  .price-card { padding: 24px 20px 26px; }
+  .price-card { padding: 24px 20px 26px; border-radius: var(--r-md); }
   .price-num { font-size: 30px; }
   .price-btn { margin-top: 22px; }
   .price-list { margin-top: 24px; gap: 13px; }
