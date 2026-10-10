@@ -1,7 +1,9 @@
 (function () {
-  // FAQ chat: the first question starts open, the rest become suggestion bubbles. Tapping one moves its
-  // question into the conversation, shows the assistant typing for a moment, then reveals the answer.
-  // Every pair is already real text in the HTML, so this only hides, moves and shows it.
+  // FAQ chat: the first question starts open; the others wait as question chips under the chat (the next
+  // few, plus "More questions"). Choosing one adds it to the conversation, shows the assistant typing for
+  // a moment, then the answer. The chip stays where it was, marked as answered, so nothing moves under
+  // the pointer. Every pair is real text in the HTML: this only hides, moves and shows it. Waiting pairs
+  // use hidden="until-found", so find in page still reaches them (and opens them).
   var root = document.getElementById('faq');
   if (!root) return;
   var chat = root.querySelector('.faq-chat');
@@ -17,12 +19,17 @@
   var pairs = Array.prototype.slice.call(thread.querySelectorAll('.faq-pair'));
   if (pairs.length < 2) return;
 
+  var SHOW = 4; // chips shown before "More questions"
   var motion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
   function reduced() { return !!(motion && motion.matches); }
 
   var SEND_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>';
+  var DONE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+  var MORE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
   var asked = 0;
   var pending = null;
+  var expanded = false;
+  var chips = []; // { pair, li, btn }
 
   // the "typing" row reuses the avatar; screen readers skip it (the answer itself is announced)
   var typing = document.createElement('div');
@@ -42,6 +49,21 @@
     else log.scrollTop = y;
   }
 
+  // If the conversation isn't fully on screen (a phone, with the question list below it), bring the
+  // page to it first, so the answer appears where the person is looking. The floating nav is measured.
+  function revealChat() {
+    var bar = document.querySelector('.nav-bar');
+    var top = (bar ? Math.max(0, bar.getBoundingClientRect().bottom) : 84) + 12;
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var lr = log.getBoundingClientRect();
+    if (lr.top >= top - 1 && lr.bottom <= vh + 1) return;
+    var cr = chat.getBoundingClientRect();
+    // The whole chat fits: line its bottom up with the bottom of the screen. Else put the conversation's top under the nav.
+    var dy = cr.height <= vh - top - 12 ? cr.bottom - (vh - 12) : lr.top - top;
+    if (Math.abs(dy) < 2) return;
+    try { window.scrollBy({ top: dy, behavior: reduced() ? 'auto' : 'smooth' }); } catch (e) { window.scrollBy(0, dy); }
+  }
+
   function makeChip(pair) {
     var li = document.createElement('li');
     var btn = document.createElement('button');
@@ -49,30 +71,85 @@
     btn.className = 'faq-chip';
     btn.setAttribute('aria-controls', pair.id);
     var tx = document.createElement('span');
+    tx.className = 'faq-chip-tx';
     tx.textContent = questionText(pair);
     var ic = document.createElement('span');
     ic.className = 'faq-chip-ic';
     ic.innerHTML = SEND_ICON;
     btn.appendChild(tx);
     btn.appendChild(ic);
-    btn.addEventListener('click', function () { ask(pair, li); });
+    var chip = { pair: pair, li: li, btn: btn, ic: ic, done: false };
+    btn.addEventListener('click', function () { ask(chip, false); });
     li.appendChild(btn);
-    return li;
+    return chip;
   }
 
-  function fillList(skip) {
-    list.textContent = '';
-    pairs.forEach(function (pair) { if (pair !== skip) list.appendChild(makeChip(pair)); });
+  function markDone(chip, done) {
+    chip.done = done;
+    chip.li.classList.toggle('is-done', done);
+    chip.btn.disabled = done;
+    chip.ic.innerHTML = done ? DONE_ICON : SEND_ICON;
+    var note = chip.btn.querySelector('.faq-sr');
+    if (done && !note) {
+      note = document.createElement('span');
+      note.className = 'faq-sr';
+      note.textContent = ' (answered above)';
+      chip.btn.insertBefore(note, chip.ic);
+    } else if (!done && note) {
+      chip.btn.removeChild(note);
+    }
+  }
+
+  // "More questions (10)" shows the rest; the chips themselves never move.
+  var moreLi = document.createElement('li');
+  moreLi.className = 'faq-more-li';
+  var more = document.createElement('button');
+  more.type = 'button';
+  more.className = 'faq-more';
+  more.setAttribute('aria-expanded', 'false');
+  if (list.id) more.setAttribute('aria-controls', list.id);
+  more.addEventListener('click', function () {
+    expanded = !expanded;
+    layout();
+    // keep focus on the button; open, the first newly shown question is one Tab away
+  });
+  moreLi.appendChild(more);
+
+  function layout() {
+    chips.forEach(function (c, i) { c.li.hidden = !expanded && i >= SHOW; });
+    var rest = Math.max(0, chips.length - SHOW);
+    moreLi.hidden = rest === 0;
+    more.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    more.innerHTML = '<span>' + (expanded ? 'Fewer questions' : 'More questions (' + rest + ')') + '</span>' + MORE_ICON;
   }
 
   function syncState() {
-    var left = list.children.length;
+    var left = chips.filter(function (c) { return !c.done; }).length;
     if (reset) reset.hidden = asked === 0;
-    if (title) title.textContent = left ? titleText : 'That\u2019s every question';
-    list.hidden = left === 0;
+    if (title) title.textContent = left ? titleText : 'That’s every question';
   }
 
-  // show the waiting answer now (after the typing delay, or at once when another question is tapped)
+  // the next question to focus after `chip`: the next unanswered visible chip, else an earlier one
+  function nextTarget(chip) {
+    var at = chips.indexOf(chip);
+    var open = function (c) { return !c.done && !c.li.hidden; };
+    for (var i = at + 1; i < chips.length; i++) if (open(chips[i])) return chips[i].btn;
+    for (var j = at - 1; j >= 0; j--) if (open(chips[j])) return chips[j].btn;
+    if (!moreLi.hidden && !expanded) return more;
+    return reset && !reset.hidden ? reset : log;
+  }
+
+  // in the sideways row on phones, make sure the focused chip isn't cut off
+  function showInRow(el) {
+    if (!el || el.parentNode.parentNode !== list || list.scrollWidth <= list.clientWidth + 1) return;
+    var li = el.parentNode;
+    var left = li.offsetLeft - list.offsetLeft;
+    if (left < list.scrollLeft || left + li.offsetWidth > list.scrollLeft + list.clientWidth) {
+      try { list.scrollTo({ left: Math.max(0, left - 12), behavior: reduced() ? 'auto' : 'smooth' }); } catch (e) { list.scrollLeft = Math.max(0, left - 12); }
+    }
+  }
+
+  // show the waiting answer now (after the typing delay, or at once when another question is chosen)
   function finish() {
     if (!pending) return;
     var p = pending;
@@ -84,26 +161,34 @@
     scrollLog(p.pair.offsetTop - 16);
   }
 
-  function ask(pair, li) {
+  // found: opened by find in page, so show it at once and leave focus and scrolling to the browser
+  function ask(chip, found) {
     finish();
-    var items = Array.prototype.slice.call(list.children);
-    var at = items.indexOf(li);
-    if (li.parentNode) li.parentNode.removeChild(li);
+    var pair = chip.pair;
+    if (chip.done && !found) return;
+    var wasFocused = document.activeElement === chip.btn;
+    markDone(chip, true);
     asked += 1;
 
     // the question joins the end of the conversation; the answer waits off the page until it is "typed"
-    var answer = pair.querySelector('.faq-msg-a');
+    var answer = found ? null : pair.querySelector('.faq-msg-a');
     if (answer) pair.removeChild(answer);
     pair.hidden = false;
-    pair.classList.add('is-new');
+    pair.classList.toggle('is-new', !found);
     thread.appendChild(pair);
     syncState();
+    if (found) return;
 
-    // keep keyboard focus in the list: the next question, else the reset button
-    var next = list.children[at] || list.children[at - 1];
-    var target = next ? next.querySelector('button') : (reset && !reset.hidden ? reset : log);
-    if (target) { try { target.focus({ preventScroll: true }); } catch (e) { target.focus(); } }
+    // keep keyboard focus in the list: the next question, else "More questions", else "Start over"
+    if (wasFocused || chip.btn.contains(document.activeElement) || document.activeElement === document.body) {
+      var target = nextTarget(chip);
+      if (target) {
+        try { target.focus({ preventScroll: true }); } catch (e) { target.focus(); }
+        showInRow(target);
+      }
+    }
 
+    revealChat();
     if (!answer) { scrollLog(pair.offsetTop - 16); return; }
     var wait = reduced() ? 0 : 600 + Math.min(300, Math.round(answer.textContent.length * 0.6));
     pending = { pair: pair, answer: answer, timer: 0 };
@@ -113,23 +198,46 @@
     pending.timer = setTimeout(finish, wait);
   }
 
-  // start: first pair open, the rest hidden (still in the page) and listed as suggestions
+  function hideWaiting(pair) {
+    pair.setAttribute('hidden', 'until-found'); // plain hidden in browsers without find-in-page support
+  }
+
+  // start: first pair open, the rest waiting (still in the page) and listed as chips
   chat.classList.add('is-live');
   log.tabIndex = 0; // the conversation now scrolls on its own, so keyboard users can focus and scroll it
   if (hello) hello.hidden = false;
-  pairs.forEach(function (pair, i) { pair.hidden = i > 0; });
-  fillList(pairs[0]);
+  pairs.forEach(function (pair, i) {
+    pair.classList.remove('is-new');
+    if (i === 0) return;
+    hideWaiting(pair);
+    var chip = makeChip(pair);
+    chips.push(chip);
+    list.appendChild(chip.li);
+    pair.addEventListener('beforematch', function () { ask(chip, true); });
+  });
+  list.appendChild(moreLi);
+  layout();
   sugg.hidden = false;
   syncState();
   log.scrollTop = log.scrollHeight;
 
+  // "Start over": back to the first question only, every chip unanswered and the list folded
   if (reset) {
     reset.addEventListener('click', function () {
       finish();
       asked = 0;
-      fillList(null);
+      expanded = false;
+      pairs.forEach(function (pair, i) {
+        pair.classList.remove('is-new');
+        thread.appendChild(pair); // first-to-last: back in the page's own order
+        if (i > 0) hideWaiting(pair);
+      });
+      chips.forEach(function (c) { markDone(c, false); });
+      layout();
       syncState();
-      var first = list.querySelector('button');
+      list.scrollLeft = 0;
+      log.scrollTop = log.scrollHeight;
+      var first = chips[0] && chips[0].btn;
       if (first) { try { first.focus({ preventScroll: true }); } catch (e) { first.focus(); } }
     });
   }

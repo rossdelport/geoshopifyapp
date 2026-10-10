@@ -328,9 +328,12 @@ section[id], footer[id] { scroll-margin-top: 96px; }
 html { scroll-behavior: auto; }
 
 /* 11-hero.css */
-/* Hero: lilac gradient band with the faint grid, pill, h1, lead, free check form, then the dashboard
-   mockup with three floating clay decorations around it. */
-.hero { position: relative; padding-top: 170px; padding-bottom: 104px; background: var(--bg); isolation: isolate; overflow: hidden; overflow: clip; }
+/* Hero: lilac gradient band with the faint grid, pill, h1, lead and the free check form, then three
+   small animated cards that explain the idea: shoppers ask AI, AI picks a few stores, you get the sale.
+   Card animations are CSS keyframes (transform and opacity only). 11-hero.js starts them when a card
+   scrolls into view and replays them on hover or focus. With reduced motion (or no JS) each card shows
+   its finished state, which is what the plain styles below describe. */
+.hero { position: relative; padding-top: 170px; padding-bottom: 96px; background: var(--bg); isolation: isolate; overflow: hidden; overflow: clip; }
 .hero-bg {
   position: absolute; top: 16px; left: 16px; right: 16px; bottom: 0; z-index: -1; pointer-events: none;
   border-radius: var(--r-xl); overflow: hidden;
@@ -392,181 +395,368 @@ html { scroll-behavior: auto; }
 .hero-check-alt { margin-top: 10px; font-size: 14px; font-weight: 500; color: var(--navy); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--lilac-deep); transition: text-decoration-color .2s ease, color .2s ease; }
 .hero-check-alt:hover { color: var(--cobalt-deep); text-decoration-color: var(--cobalt); }
 
-/* stage: the dashboard frame plus the floating clay pieces (behind it, white backgrounds multiplied away) */
-.hero-stage { position: relative; margin-top: 80px; width: 100%; max-width: 1010px; }
-/* the frame's drop shadow lives on the stage, under the clay pieces, so it never greys them out */
-.hero-stage::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: var(--r-lg);
-  box-shadow: 0 60px 120px -40px rgba(56, 64, 160, 0.38), 0 24px 48px -24px rgba(56, 64, 160, 0.2);
+/* ---------- three animated cards ---------- */
+.hw-wrap { position: relative; width: 100%; max-width: 1100px; margin-top: 72px; }
+.hw { position: relative; z-index: 1; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; text-align: left; }
+.hw-card {
+  --art-h: 208px;
+  position: relative; display: flex; flex-direction: column; min-width: 0;
+  padding: 8px; border-radius: 20px; background: var(--white);
+  box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.42), 0 28px 56px -32px rgba(56, 64, 160, 0.34), 0 10px 22px -14px rgba(56, 64, 160, 0.16);
+  outline: none; transition: transform .25s ease, box-shadow .25s ease;
 }
+.hw-card:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.6), 0 34px 60px -30px rgba(56, 64, 160, 0.4), 0 12px 24px -14px rgba(56, 64, 160, 0.2); }
+.hw-card:focus-visible { box-shadow: 0 0 0 2px var(--cobalt), 0 0 0 6px rgba(64, 80, 176, 0.18), 0 28px 56px -32px rgba(56, 64, 160, 0.34); }
+
+/* illustration panel: soft lilac gradient with a faint grid */
+.hw-art {
+  position: relative; height: var(--art-h); flex: none; border-radius: 14px; overflow: hidden; isolation: isolate;
+  background:
+    radial-gradient(ellipse 75% 60% at 50% 0%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 70%),
+    linear-gradient(180deg, #f1effe 0%, #e5e5fc 55%, #d4dbfa 100%);
+  box-shadow: inset 0 0 0 1px rgba(181, 168, 224, 0.32);
+}
+.hw-art::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 24px 24px; background-position: center center;
+  -webkit-mask-image: radial-gradient(ellipse 80% 75% at 50% 45%, #000 25%, transparent 80%);
+  mask-image: radial-gradient(ellipse 80% 75% at 50% 45%, #000 25%, transparent 80%);
+}
+.hw-body { padding: 18px 14px 14px; }
+.hw-t { font-family: var(--font-head); font-size: 19px; font-weight: 500; letter-spacing: -0.4px; line-height: 1.3; color: var(--navy); }
+.hw-p { margin-top: 6px; font-size: 14px; line-height: 1.55; color: var(--text); text-wrap: pretty; }
+.hw-p a { color: var(--cobalt-deep); text-decoration: underline; text-decoration-color: var(--lilac-deep); text-underline-offset: 3px; transition: text-decoration-color .2s ease; }
+.hw-p a:hover { text-decoration-color: var(--cobalt); }
+
+/* card 1: question bubbles rise out of a chat box and stack (finished state: all three stacked) */
+.hw-c1 { --slot: 47px; --q-bottom: 60px; }
+.hw-feed {
+  position: absolute; inset: 0;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 14px);
+  mask-image: linear-gradient(180deg, transparent 0, #000 14px);
+}
+.hw-q { position: absolute; left: 10px; right: 10px; bottom: var(--q-bottom); display: flex; justify-content: center; }
+.hw-q1 { transform: translateY(calc(var(--slot) * -2)); }
+.hw-q2 { transform: translateY(calc(var(--slot) * -1)); }
+.hw-bub {
+  display: flex; flex-direction: column; gap: 1px; max-width: 100%; padding: 5px 11px 6px;
+  border-radius: 13px 13px 4px 13px; background: var(--white);
+  box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.38), 0 8px 18px -10px rgba(56, 64, 160, 0.38);
+}
+.hw-eng { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; line-height: 1.3; color: var(--text-2); }
+.hw-eng i { width: 6px; height: 6px; border-radius: 50%; flex: none; }
+.hw-e-gpt { background: var(--e-chatgpt); }
+.hw-e-gem { background: var(--e-gemini); }
+.hw-e-ppx { background: var(--e-perplexity); }
+.hw-qt { font-size: 12.5px; font-weight: 500; line-height: 1.35; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hw-tray {
+  position: absolute; left: 0; right: 0; bottom: 14px; margin: 0 auto; width: min(84%, 260px); height: 34px;
+  display: flex; align-items: center; gap: 8px; padding: 0 5px 0 11px; border-radius: 17px; background: var(--white);
+  box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.42), 0 10px 22px -12px rgba(56, 64, 160, 0.4);
+}
+.hw-tray-plus { width: 14px; height: 14px; flex: none; color: var(--muted); }
+.hw-type { flex: 1; min-width: 0; height: 6px; }
+.hw-type i { display: block; width: 100%; height: 100%; border-radius: 3px; background: var(--lilac-100); transform: scaleX(.55); transform-origin: left center; }
+.hw-send { width: 24px; height: 24px; flex: none; border-radius: 50%; display: grid; place-items: center; color: var(--white); background: linear-gradient(160deg, var(--cobalt-mid), var(--cobalt-deep)); box-shadow: 0 4px 10px -4px rgba(56, 64, 160, 0.6); }
+.hw-send svg { width: 12px; height: 12px; }
+
+/* card 2: an AI tile wired to three store tiles; dashes run down the wires and "You" gets picked */
+.hw-c2 { --net-s: 1.12; }
+.hw-net { position: absolute; left: 50%; top: 50%; width: 260px; height: 170px; margin: -85px 0 0 -130px; transform: scale(var(--net-s)); }
+.hw-lines { position: absolute; inset: 0; overflow: visible; }
+.hw-ln { stroke: rgba(104, 120, 216, 0.42); stroke-width: 1.5; }
+.hw-ln-on { stroke: var(--cobalt); stroke-width: 2; stroke-linecap: round; }
+.hw-dash {
+  position: absolute; left: 0; top: 0; width: 24px; height: 4px; margin: -2px 0 0 -12px; border-radius: 4px; opacity: 0;
+  background: linear-gradient(90deg, rgba(64, 80, 176, 0) 0%, rgba(64, 80, 176, 0.9) 55%, #fff 92%);
+  filter: drop-shadow(0 0 2px rgba(64, 80, 176, 0.9)) drop-shadow(0 0 6px rgba(104, 120, 216, 0.9));
+}
+.hw-ai {
+  position: absolute; left: 107px; top: 3px; z-index: 1; width: 46px; height: 46px; border-radius: 14px;
+  display: grid; place-items: center; color: var(--white);
+  background: linear-gradient(160deg, #7c8ae4 0%, var(--cobalt) 58%, var(--cobalt-deep) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 10px 20px -8px rgba(56, 64, 160, 0.6);
+}
+.hw-ai svg { width: 22px; height: 22px; }
+.hw-ai::after { content: ""; position: absolute; inset: -6px; border-radius: 19px; box-shadow: 0 0 0 1px rgba(104, 120, 216, 0.4), 0 0 18px 2px rgba(104, 120, 216, 0.45); opacity: 0; }
+.hw-store {
+  position: absolute; top: 96px; z-index: 1; width: 44px; height: 44px; border-radius: 13px;
+  display: grid; place-items: center; background: var(--white);
+  box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.5), 0 8px 16px -10px rgba(56, 64, 160, 0.38);
+  font-family: var(--font-head); font-size: 13px; font-weight: 600; letter-spacing: .02em; color: #6b6c86; line-height: 1;
+}
+.hw-store-l { left: 14px; }
+.hw-store-r { left: 202px; }
+.hw-you { left: 108px; color: var(--cobalt); transform: scale(1.06); }
+.hw-you-lit {
+  position: absolute; inset: 0; border-radius: inherit; display: grid; place-items: center; color: var(--white);
+  background: linear-gradient(160deg, var(--cobalt-mid) 0%, var(--cobalt-deep) 100%);
+  box-shadow: 0 0 0 3px rgba(104, 120, 216, 0.28), 0 12px 24px -8px rgba(56, 64, 160, 0.65);
+}
+.hw-rec {
+  position: absolute; left: 0; right: 0; top: 149px; margin: 0 auto; width: max-content; height: 21px;
+  display: flex; align-items: center; gap: 4px; padding: 0 8px 0 6px; border-radius: 11px;
+  background: var(--white); color: var(--cobalt-deep); font-size: 11px; font-weight: 600; line-height: 1; white-space: nowrap;
+  box-shadow: 0 0 0 1px rgba(104, 120, 216, 0.35), 0 6px 14px -8px rgba(56, 64, 160, 0.5);
+}
+.hw-rec svg { width: 11px; height: 11px; color: var(--green-ink); }
+
+/* card 3: three result rows; the order row ends slightly larger */
+.hw-c3 { --row-h: 44px; --row-gap: 8px; --rows-top: 38px; }
+.hw-ex {
+  position: absolute; top: 10px; right: 10px; z-index: 2; height: 18px; padding: 0 6px; border-radius: 5px;
+  display: inline-flex; align-items: center; font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; line-height: 1;
+  color: var(--text-2); background: rgba(255, 255, 255, 0.85); box-shadow: inset 0 0 0 1px var(--lav-line);
+}
+.hw-rows { position: absolute; left: 0; right: 0; top: var(--rows-top); margin: 0 auto; width: min(calc(100% - 28px), 300px); display: flex; flex-direction: column; gap: var(--row-gap); }
+.hw-row {
+  display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 8px;
+  height: var(--row-h); padding: 0 8px 0 8px; border-radius: 12px; background: var(--white);
+  box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.38), 0 8px 18px -12px rgba(56, 64, 160, 0.38);
+}
+.hw-row-ic { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; background: var(--lilac-50); color: var(--cobalt); box-shadow: inset 0 0 0 1px var(--lav-line); }
+.hw-row-ic svg { width: 14px; height: 14px; }
+.hw-row-coin { position: relative; background: none; box-shadow: none; }
+/* centred on the slot and kept inside the white row, so multiply never shows the PNG's white square */
+.hw-row-coin img { position: absolute; left: 50%; top: 50%; width: 36px; height: 36px; margin: -18px 0 0 -18px; max-width: none; mix-blend-mode: multiply; }
+.hw-row-b { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
+.hw-row-t { font-size: 12.5px; font-weight: 600; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hw-row-s { font-size: 11px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hw-chip { height: 20px; padding: 0 7px; border-radius: 10px; display: inline-flex; align-items: center; background: var(--green-bg); color: var(--green-ink); font-size: 10.5px; font-weight: 600; line-height: 1; white-space: nowrap; }
+@media (max-width: 1240px) {
+  .hw-rows { width: min(calc(100% - 20px), 320px); }
+  .hw-row { grid-template-columns: 26px minmax(0, 1fr) auto; gap: 7px; padding: 0 7px; }
+  .hw-row-ic { width: 26px; height: 26px; }
+  .hw-row-t { font-size: 12px; }
+  .hw-row-s { font-size: 10.5px; }
+  .hw-chip { padding: 0 6px; font-size: 10px; }
+}
+.hw-row3 { transform: scale(1.045); box-shadow: 0 0 0 1px rgba(104, 120, 216, 0.5), 0 14px 26px -12px rgba(56, 64, 160, 0.45); }
+
+/* ---------- animation (only when motion is welcome and 11-hero.js has armed the row) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* card 1: 7.5s loop, a new question every 2.5s */
+  .hw-ready .hw-q { animation: hw-q 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
+  .hw-ready .hw-q1 { animation-delay: .4s; }
+  .hw-ready .hw-q2 { animation-delay: 2.9s; }
+  .hw-ready .hw-q3 { animation-delay: 5.4s; }
+  .hw-ready .hw-type i { animation: hw-type 2.5s linear .4s infinite both; }
+  .hw-ready .hw-send { animation: hw-send 2.5s ease-out .3s infinite both; }
+
+  /* card 2: 7s loop. Two waves down every wire, a third down the "You" wire, then "You" lights up */
+  .hw-ready .hw-dash { animation: 7s linear infinite both; }
+  .hw-ready .hw-dash-l { animation-name: hw-run-l; }
+  .hw-ready .hw-dash-c { animation-name: hw-run-c; }
+  .hw-ready .hw-dash-r { animation-name: hw-run-r; }
+  .hw-ready .hw-dash-l.hw-d1 { animation-delay: .2s; }
+  .hw-ready .hw-dash-c.hw-d1 { animation-delay: .3s; }
+  .hw-ready .hw-dash-r.hw-d1 { animation-delay: .35s; }
+  .hw-ready .hw-dash-l.hw-d2 { animation-delay: 1.6s; }
+  .hw-ready .hw-dash-c.hw-d2 { animation-delay: 1.7s; }
+  .hw-ready .hw-dash-r.hw-d2 { animation-delay: 1.75s; }
+  .hw-ready .hw-dash-c.hw-d3 { animation-delay: 3.1s; }
+  .hw-ready .hw-ai { animation: hw-ai 7s ease-out infinite both; }
+  .hw-ready .hw-ai::after { animation: hw-ai-glow 7s ease-out infinite both; }
+  .hw-ready .hw-you { animation: hw-you 7s cubic-bezier(.3, .7, .2, 1) infinite both; }
+  .hw-ready .hw-store-l { animation: hw-hit-l 7s ease-out infinite both; }
+  .hw-ready .hw-store-r { animation: hw-hit-r 7s ease-out infinite both; }
+  .hw-ready .hw-you-lit { animation: hw-lit 7s ease infinite both; }
+  .hw-ready .hw-ln-on { animation: hw-lit 7s ease infinite both; }
+  .hw-ready .hw-rec { animation: hw-rec 7s cubic-bezier(.3, .7, .2, 1) infinite both; }
+
+  /* card 3: 7.5s loop, a row every second, the order row pops larger */
+  .hw-ready .hw-row1 { animation: hw-row1 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
+  .hw-ready .hw-row2 { animation: hw-row2 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
+  .hw-ready .hw-row3 { animation: hw-row3 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
+  .hw-ready .hw-row1 .hw-chip { animation: hw-chip1 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
+  .hw-ready .hw-row2 .hw-chip { animation: hw-chip2 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
+  .hw-ready .hw-row3 .hw-chip { animation: hw-chip3 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
+  .hw-ready .hw-row-coin img { animation: hw-coin 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
+
+  /* wait at the first frame until the card is in view (11-hero.js adds .is-on) */
+  .hw-ready .hw-card:not(.is-on) .hw-art *,
+  .hw-ready .hw-card:not(.is-on) .hw-art *::after { animation-play-state: paused; }
+}
+
+@keyframes hw-q {
+  0% { transform: translateY(26px) scale(.9); opacity: 0; }
+  6% { transform: translateY(-3px) scale(1.02); opacity: 1; }
+  10% { transform: translateY(0) scale(1); opacity: 1; }
+  33.3% { transform: translateY(0) scale(1); opacity: 1; }
+  40% { transform: translateY(calc(var(--slot) * -1)) scale(1); opacity: 1; }
+  66.6% { transform: translateY(calc(var(--slot) * -1)) scale(1); opacity: 1; }
+  73.3% { transform: translateY(calc(var(--slot) * -2)) scale(1); opacity: 1; }
+  88% { transform: translateY(calc(var(--slot) * -2)) scale(1); opacity: 1; }
+  96%, 100% { transform: translateY(calc(var(--slot) * -2 - 14px)) scale(.97); opacity: 0; }
+}
+@keyframes hw-type {
+  0% { transform: scaleX(.8); opacity: 1; }
+  5% { transform: scaleX(.8); opacity: 0; }
+  8% { transform: scaleX(0); opacity: 0; }
+  14% { transform: scaleX(0); opacity: 1; }
+  80%, 100% { transform: scaleX(.8); opacity: 1; }
+}
+@keyframes hw-send {
+  0%, 100% { transform: scale(1); }
+  3% { transform: scale(.82); }
+  10% { transform: scale(1.08); }
+  16% { transform: scale(1); }
+}
+@keyframes hw-run-l {
+  0% { transform: translate(120px, 49px) rotate(90deg); opacity: 0; }
+  1.7% { transform: translate(116px, 58.1px) rotate(135deg); opacity: 1; }
+  3.4% { transform: translate(107.5px, 63.8px) rotate(154deg); opacity: 1; }
+  5.1% { transform: translate(98px, 67.5px) rotate(162deg); opacity: 1; }
+  6.8% { transform: translate(88.1px, 70.3px) rotate(165deg); opacity: 1; }
+  8.5% { transform: translate(78.2px, 72.8px) rotate(166deg); opacity: 1; }
+  10.2% { transform: translate(68.3px, 75.3px) rotate(166deg); opacity: 1; }
+  11.9% { transform: translate(58.4px, 78.1px) rotate(163deg); opacity: 1; }
+  13.6% { transform: translate(48.8px, 81.6px) rotate(156deg); opacity: 1; }
+  15.3% { transform: translate(40.2px, 87px) rotate(137deg); opacity: 1; }
+  17% { transform: translate(36px, 96px) rotate(90deg); opacity: 0; }
+  100% { transform: translate(36px, 96px) rotate(90deg); opacity: 0; }
+}
+@keyframes hw-run-r {
+  0% { transform: translate(140px, 49px) rotate(90deg); opacity: 0; }
+  1.7% { transform: translate(144px, 58.1px) rotate(45deg); opacity: 1; }
+  3.4% { transform: translate(152.5px, 63.8px) rotate(26deg); opacity: 1; }
+  5.1% { transform: translate(162px, 67.5px) rotate(18deg); opacity: 1; }
+  6.8% { transform: translate(171.9px, 70.3px) rotate(15deg); opacity: 1; }
+  8.5% { transform: translate(181.8px, 72.8px) rotate(14deg); opacity: 1; }
+  10.2% { transform: translate(191.7px, 75.3px) rotate(14deg); opacity: 1; }
+  11.9% { transform: translate(201.6px, 78.1px) rotate(17deg); opacity: 1; }
+  13.6% { transform: translate(211.2px, 81.6px) rotate(24deg); opacity: 1; }
+  15.3% { transform: translate(219.8px, 87px) rotate(43deg); opacity: 1; }
+  17% { transform: translate(224px, 96px) rotate(90deg); opacity: 0; }
+  100% { transform: translate(224px, 96px) rotate(90deg); opacity: 0; }
+}
+@keyframes hw-run-c {
+  0% { transform: translate(130px, 49px) rotate(90deg); opacity: 0; }
+  2% { transform: translate(130px, 58.4px) rotate(90deg); opacity: 1; }
+  4% { transform: translate(130px, 67.8px) rotate(90deg); opacity: 1; }
+  6% { transform: translate(130px, 77.2px) rotate(90deg); opacity: 1; }
+  8% { transform: translate(130px, 86.6px) rotate(90deg); opacity: 1; }
+  10% { transform: translate(130px, 96px) rotate(90deg); opacity: 0; }
+  100% { transform: translate(130px, 96px) rotate(90deg); opacity: 0; }
+}
+@keyframes hw-ai {
+  0%, 9%, 20%, 29%, 41%, 50%, 100% { transform: scale(1); }
+  3%, 23%, 44% { transform: scale(1.07); }
+}
+@keyframes hw-ai-glow {
+  0%, 14%, 20%, 34%, 41%, 56%, 100% { opacity: 0; }
+  3%, 23%, 44% { opacity: 1; }
+}
+@keyframes hw-hit-l {
+  0%, 17%, 25%, 37%, 45%, 100% { transform: scale(1); }
+  20.5%, 40.5% { transform: scale(1.07); }
+}
+@keyframes hw-hit-r {
+  0%, 19%, 27%, 39%, 47%, 100% { transform: scale(1); }
+  22.5%, 42.5% { transform: scale(1.07); }
+}
+@keyframes hw-you {
+  0%, 11%, 19%, 31%, 39%, 53% { transform: scale(1); }
+  15%, 35% { transform: scale(1.07); }
+  57% { transform: scale(1.14); }
+  61%, 90% { transform: scale(1.06); }
+  96%, 100% { transform: scale(1); }
+}
+@keyframes hw-lit {
+  0%, 53% { opacity: 0; }
+  57%, 90% { opacity: 1; }
+  96%, 100% { opacity: 0; }
+}
+@keyframes hw-rec {
+  0%, 56% { transform: translateY(6px) scale(.85); opacity: 0; }
+  60% { transform: translateY(-1px) scale(1.04); opacity: 1; }
+  64%, 90% { transform: translateY(0) scale(1); opacity: 1; }
+  96%, 100% { transform: translateY(3px) scale(.96); opacity: 0; }
+}
+@keyframes hw-row1 {
+  0%, 4% { transform: translateY(10px) scale(.96); opacity: 0; }
+  10%, 88% { transform: translateY(0) scale(1); opacity: 1; }
+  95%, 100% { transform: translateY(-6px) scale(1); opacity: 0; }
+}
+@keyframes hw-row2 {
+  0%, 17.3% { transform: translateY(10px) scale(.96); opacity: 0; }
+  23.3%, 88% { transform: translateY(0) scale(1); opacity: 1; }
+  95%, 100% { transform: translateY(-6px) scale(1); opacity: 0; }
+}
+@keyframes hw-row3 {
+  0%, 30.7% { transform: translateY(12px) scale(.9); opacity: 0; }
+  35.5% { transform: translateY(-2px) scale(1.09); opacity: 1; }
+  40%, 88% { transform: translateY(0) scale(1.045); opacity: 1; }
+  95%, 100% { transform: translateY(-6px) scale(1.045); opacity: 0; }
+}
+@keyframes hw-chip1 {
+  0%, 9% { transform: scale(.6); opacity: 0; }
+  13% { transform: scale(1.12); opacity: 1; }
+  17%, 100% { transform: scale(1); opacity: 1; }
+}
+@keyframes hw-chip2 {
+  0%, 22.5% { transform: scale(.6); opacity: 0; }
+  26.5% { transform: scale(1.12); opacity: 1; }
+  30.5%, 100% { transform: scale(1); opacity: 1; }
+}
+@keyframes hw-chip3 {
+  0%, 38.5% { transform: scale(.6); opacity: 0; }
+  42.5% { transform: scale(1.14); opacity: 1; }
+  46.5%, 100% { transform: scale(1); opacity: 1; }
+}
+@keyframes hw-coin {
+  0%, 31% { transform: rotate(-16deg) scale(.7); }
+  37% { transform: rotate(8deg) scale(1.12); }
+  42%, 100% { transform: rotate(0) scale(1); }
+}
+
+/* floating clay pieces beside the cards (white backgrounds multiplied away, behind the cards) */
 .hero-deco {
   position: absolute; z-index: 0; height: auto; pointer-events: none; user-select: none;
   mix-blend-mode: multiply;
   animation: hero-float 8s ease-in-out infinite;
 }
-.hero-deco-bubble { width: 200px; left: -158px; top: -118px; --rot: -3deg; animation-delay: -1.5s; }
-.hero-deco-coin { width: 170px; right: -136px; top: 112px; --rot: 4deg; animation-duration: 9s; animation-delay: -4s; filter: brightness(1.1) saturate(1.08); }
-.hero-deco-bag { width: 190px; left: -128px; bottom: -78px; --rot: 2.5deg; animation-duration: 10s; animation-delay: -6s; }
+.hero-deco-bubble { width: 140px; left: -126px; top: -108px; --rot: -3deg; animation-delay: -1.5s; }
+.hero-deco-bag { width: 130px; right: -112px; bottom: -44px; --rot: 2.5deg; animation-duration: 10s; animation-delay: -6s; }
 @keyframes hero-float {
   0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
   50% { transform: translate3d(0, -12px, 0) rotate(var(--rot, -3deg)); }
 }
 @media (prefers-reduced-motion: reduce) { .hero-deco { animation: none; } }
 
-/* frame around the mockup: soft frosted white on lilac */
-.hero-frame {
-  position: relative; z-index: 1;
-  width: 100%;
-  padding: 12px; border-radius: var(--r-lg);
-  background: rgba(255, 255, 255, 0.62);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.95), 0 0 0 1px rgba(181, 168, 224, 0.4);
-  text-align: left;
-}
-.hero-frame .sample-tag { top: 23px; right: 98px; background: rgba(255, 255, 255, 0.1); color: #d4d4d4; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16); font-size: 10px; padding: 4px 7px; }
-.hero-app { border-radius: 14px; box-shadow: 0 0 0 1px rgba(11, 12, 43, 0.06); }
-.hero-ic { width: 14px; height: 14px; flex: none; }
-
-/* admin top bar */
-.hero-app .app-top { height: 44px; padding: 0 12px; }
-.hero-app .app-top .hero-store-ic { display: grid; place-items: center; font-style: normal; font-size: 9px; font-weight: 700; letter-spacing: .02em; color: #0b3d1d; background: #7fdc9a; }
-.hero-store-n { font-weight: 600; color: #f1f1f1; font-size: 12.5px; }
-.hero-app .app-top .search { gap: 8px; font-size: 12px; max-width: 380px; height: 28px; background: #2b2b2b; box-shadow: inset 0 0 0 1px #3a3a3a; }
-.hero-search-tx { flex: 1; }
-.hero-kbd { font-size: 10.5px; color: #b0b0b0; background: #3a3a3a; border-radius: 4px; padding: 2px 5px; }
-.hero-top-r { display: inline-flex; align-items: center; gap: 12px; color: #cfcfcf; }
-.hero-top-r .hero-ic { width: 16px; height: 16px; }
-.hero-avatar { width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; background: var(--cobalt); color: #fff; font-size: 10px; font-weight: 700; }
-
-/* left admin nav */
-.hero-nav { padding: 12px 8px 14px; font-size: 12.5px; }
-.hero-nav a { padding: 5px 10px; color: #303030; font-weight: 500; }
-.hero-nav a svg { width: 15px; height: 15px; color: #4a4a4a; }
-.hero-nav a.on { color: #1a1a1a; }
-.hero-nav a.on svg { color: var(--blue); }
-.hero-nav-n { margin-left: auto; font-size: 10.5px; font-weight: 600; color: #5c5c5c; background: #dcdcdc; border-radius: 6px; padding: 1px 6px; line-height: 1.5; }
-.hero-nav-n-blue { background: var(--blue); color: #fff; }
-.hero-nav .hero-apps { margin-top: 10px; border-top: 1px solid #dadada; padding: 12px 10px 2px; font-size: 11px; color: #616161; }
-.hero-nav .hero-grp { display: flex; align-items: center; gap: 8px; padding: 5px 10px; color: #303030; font-size: 12.5px; font-weight: 500; }
-.hero-nav a.hero-sub { padding: 4px 10px 4px 34px; font-size: 12px; font-weight: 450; color: #4a4a4a; }
-.hero-nav a.hero-sub.on { font-weight: 600; color: #1a1a1a; background: #fff; }
-.hero-grp-mark { position: relative; width: 16px; height: 16px; flex: none; }
-.hero-grp-mark i { position: absolute; width: 11px; height: 11px; border-radius: 50%; }
-.hero-grp-mark i:first-child { right: 0; bottom: 0; background: var(--cobalt); }
-.hero-grp-mark i:last-child { left: 0; top: 0; background: var(--peri-300); opacity: .92; mix-blend-mode: multiply; }
-.hero-nav-plan { margin-top: auto; display: flex; flex-direction: column; gap: 3px; padding: 10px; border-radius: 10px; background: #f6f6f6; box-shadow: inset 0 0 0 1px #dedede; }
-.hero-nav-plan-t { font-size: 11.5px; font-weight: 600; color: #303030; }
-.hero-nav-plan-s { font-size: 11px; color: #6b6b6b; font-variant-numeric: tabular-nums; }
-.hero-nav-meter { height: 4px; border-radius: 4px; background: #dedede; overflow: hidden; margin-top: 3px; }
-.hero-nav-meter i { display: block; width: 72%; height: 100%; background: var(--blue); border-radius: 4px; }
-
-/* main column */
-.hero-main { padding: 18px 20px 20px; gap: 12px; }
-.hero-title-r { display: flex; align-items: center; gap: 12px; }
-.hero-muted { color: #6b6c80; font-size: 12px; font-variant-numeric: tabular-nums; }
-.hero-lastscan { display: inline-flex; align-items: center; gap: 6px; }
-.hero-live { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px rgba(108, 214, 140, 0.22); }
-.hero-date { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 8px 0 9px; border-radius: 8px; background: var(--white); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06), inset 0 0 0 1px rgba(0, 0, 0, 0.08); font-size: 12px; font-weight: 600; color: #303030; white-space: nowrap; }
-.hero-date .hero-ic { width: 13px; height: 13px; color: #6b6b6b; }
-.hero-chev { color: #8a8a8a; }
-
-.hero-sec { display: flex; align-items: baseline; gap: 8px; margin-top: 2px; }
-.hero-sec-t { font-size: 13px; font-weight: 700; color: #303030; }
-.hero-sec-s { font-size: 12px; color: #6b6c80; }
-.hero-sec-a { margin-left: auto; display: inline-flex; align-items: center; gap: 2px; font-size: 12px; font-weight: 500; color: var(--blue); white-space: nowrap; }
-.hero-sec-a .hero-ic { width: 12px; height: 12px; }
-
-.hero-kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.hero-kpi { padding: 13px 14px 12px; display: flex; flex-direction: column; gap: 8px; }
-.hero-kpi-top { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: #4a4a5a; }
-.hero-kpi-ic { width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; background: var(--lilac-50); color: var(--cobalt); box-shadow: inset 0 0 0 1px var(--lav-line); }
-.hero-kpi-ic svg { width: 13px; height: 13px; }
-.hero-kpi-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
-.hero-kpi .kpi { font-size: 27px; letter-spacing: -1px; }
-.hero-spark { width: 96px; height: 32px; flex: none; overflow: visible; }
-.hero-kpi-d { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: #6b6c80; padding-top: 8px; border-top: 1px dashed #ececf1; }
-.hero-kpi-d .delta-up { font-size: 11.5px; font-variant-numeric: tabular-nums; background: var(--green-bg); border-radius: 5px; padding: 1px 5px; }
-
-/* source split */
-.hero-ph { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-.hero-ph h6 { margin: 0; }
-.hero-ph .hero-muted { margin-left: auto; }
-.hero-src { padding: 13px 16px 12px; }
-.hero-bar { display: flex; gap: 3px; height: 12px; }
-.hero-bar i { display: block; height: 100%; border-radius: 4px; }
-.hero-seg-gpt, .hero-dot-gpt { background: var(--e-chatgpt); }
-.hero-seg-ppx, .hero-dot-ppx { background: var(--e-perplexity); }
-.hero-seg-gem, .hero-dot-gem { background: var(--e-gemini); }
-.hero-seg-blt, .hero-dot-blt { background: #8b6fe0; }
-.hero-seg-oth, .hero-dot-oth { background: #c7c8d6; }
-.hero-seg-ppx { opacity: .9; }
-.hero-legend { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
-.hero-legend li { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.hero-lg-n { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #4a4a5a; white-space: nowrap; }
-.hero-lg-n .dot { width: 7px; height: 7px; border-radius: 2px; }
-.hero-lg-v { display: inline-flex; align-items: baseline; gap: 6px; padding-left: 13px; font-size: 12px; color: #6b6c80; font-variant-numeric: tabular-nums; }
-.hero-lg-v b { font-size: 13px; font-weight: 650; color: #1f2033; }
-.hero-built { display: flex; align-items: center; gap: 8px; margin-top: 11px; padding-top: 10px; border-top: 1px solid #f0f0f3; font-size: 12px; color: #303030; flex-wrap: wrap; }
-.hero-built b { font-weight: 650; color: var(--navy); font-variant-numeric: tabular-nums; }
-.hero-built-ic { width: 20px; height: 20px; border-radius: 6px; display: grid; place-items: center; background: var(--lilac-50); color: var(--cobalt); }
-.hero-built-ic svg { width: 12px; height: 12px; }
-.hero-built-s { margin-left: auto; font-size: 11.5px; }
-
-/* bottom row */
-.hero-row2 { display: grid; grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.16fr); gap: 12px; }
-.hero-pill-sm { height: 20px; padding: 0 7px; font-size: 11px; font-weight: 600; }
-.hero-vis { display: flex; flex-direction: column; }
-.hero-vis-body { display: flex; align-items: center; gap: 16px; flex: 1; }
-.hero-ring { position: relative; width: 96px; height: 96px; flex: none; }
-.hero-ring svg { width: 100%; height: 100%; display: block; }
-.hero-ring-v { position: absolute; inset: 0; display: flex; align-items: baseline; justify-content: center; padding-top: 32px; gap: 1px; font-variant-numeric: tabular-nums; }
-.hero-ring-v b { font-family: var(--font-head); font-size: 26px; font-weight: 600; letter-spacing: -1px; color: var(--navy); line-height: 1; }
-.hero-ring-v span { font-size: 11px; color: #6f7085; }
-.hero-eng { list-style: none; margin: 0; padding: 0; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 9px; }
-.hero-eng li { display: grid; grid-template-columns: 74px minmax(0, 1fr) 20px; align-items: center; gap: 8px; font-size: 11.5px; color: #4a4a5a; }
-.hero-eng li span { white-space: nowrap; }
-.hero-eng li b { font-weight: 650; color: #1f2033; text-align: right; font-variant-numeric: tabular-nums; }
-.hero-track { display: block; height: 6px; border-radius: 6px; background: #efedf9; overflow: hidden; }
-.hero-track i { display: block; height: 100%; border-radius: 6px; }
-.hero-note { margin-top: 10px; font-size: 11.5px; line-height: 1.45; color: #6b6c80; }
-
-.hero-next { padding-bottom: 8px; }
-.hero-next-a { margin-left: auto; }
-.hero-fixes { list-style: none; margin: 0; padding: 0; }
-.hero-fix { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid #f0f0f3; }
-.hero-fix:first-child { border-top: 0; padding-top: 2px; }
-.hero-fix-ic { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: var(--lilac-50); color: var(--cobalt); box-shadow: inset 0 0 0 1px var(--lav-line); }
-.hero-fix-ic svg { width: 14px; height: 14px; }
-.hero-fix-b { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.hero-fix-m { display: flex; align-items: center; gap: 7px; min-width: 0; }
-.hero-fix-m .pill { flex: none; height: 18px; padding: 0 6px; font-size: 10.5px; border-radius: 5px; }
-.hero-fix-t { font-size: 12.5px; font-weight: 600; color: #1f2033; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.hero-fix-s { font-size: 11.5px; color: #6b6c80; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.hero-approve { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 7px; background: var(--grad-btn); color: #fff; font-size: 11.5px; font-weight: 600; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 2px 4px -2px rgba(21, 22, 60, 0.5); }
-
 /* responsive */
-@media (max-width: 1300px) {
-  .hero-deco-bubble { width: 150px; left: -80px; top: -104px; }
-  .hero-deco-coin { width: 140px; right: -70px; top: 120px; }
-  .hero-deco-bag { width: 160px; left: -96px; bottom: -70px; }
+@media (max-width: 1360px) {
+  .hero-deco-bubble { width: 108px; left: -78px; top: -92px; }
+  .hero-deco-bag { width: 104px; right: -70px; bottom: -40px; }
+}
+@media (max-width: 1240px) {
+  /* little room at the sides: the bubble sits above the first card's corner, the bag goes */
+  .hero-deco-bubble { width: 92px; left: -14px; top: -84px; }
+  .hero-deco-bag { display: none; }
+  .hw-c2 { --net-s: 1.04; }
 }
 @media (max-width: 1100px) {
-  .hero { padding-top: 150px; padding-bottom: 88px; }
-  .hero-app .app-top .search { max-width: 240px; }
-  .hero-sec-s { display: none; }
-  /* little room at the sides: bubble and coin float above the frame's top corners; the bag would hide
-     behind the frame, so it goes */
-  .hero-deco-bubble { width: 130px; left: -30px; top: -98px; }
-  .hero-deco-coin { width: 112px; right: -14px; left: auto; top: -88px; }
-  .hero-deco-bag { display: none; }
+  .hero { padding-top: 150px; padding-bottom: 80px; }
+  .hw { gap: 16px; }
 }
-@media (max-width: 960px) {
-  .hero-app .app-body { grid-template-columns: 1fr; }
-  .hero-app .app-nav { display: none; }
+@media (max-width: 1023px) {
+  /* one column: the cards stack (sideways on tablets, upright and at most 460px wide on phones) */
+  .hw-wrap { max-width: 460px; margin-top: 56px; }
+  .hw { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .hero-deco { display: none; }
+}
+@media (min-width: 761px) and (max-width: 1023px) {
+  /* tablets: each card turns sideways (picture left, words right) so the stack stays short */
+  .hw-wrap { max-width: 680px; }
+  .hw-card { flex-direction: row; align-items: center; }
+  .hw-art { width: 300px; }
+  .hw-body { flex: 1; min-width: 0; padding: 12px 18px 12px 22px; }
+  .hw-c2 { --net-s: 1.04; }
+  .hw-rows { width: min(calc(100% - 30px), 320px); }
 }
 @media (max-width: 760px) {
-  .hero { padding-top: 116px; padding-bottom: 64px; }
+  .hero { padding-top: 116px; padding-bottom: 44px; }
   .hero-bg { top: 8px; left: 8px; right: 8px; border-radius: 24px; }
   .hero-br { display: none; }
   .hero-title { margin-top: 22px; }
@@ -577,60 +767,26 @@ html { scroll-behavior: auto; }
   .hero-check-row { width: 100%; }
   .hero-check-btn { flex: 1; }
   .hero-pill { font-size: 12.5px; }
-  .hero-stage { margin-top: 56px; }
-  .hero-frame { padding: 6px; border-radius: 18px; }
-  .hero-stage::before { border-radius: 18px; }
-  .hero-deco { animation-name: hero-float-sm; }
-  .hero-deco-bag { display: none; }
-  .hero-deco-bubble { width: 96px; left: -4px; top: -72px; }
-  .hero-deco-coin { width: 84px; right: 0; top: -66px; }
-  /* phones: keep the money (KPIs and where it came from); the score and fixes panels come later on the page */
-  .hero-row2 { display: none; }
-  .hero-app { border-radius: 13px; }
-  .hero-app .app-top { height: 40px; }
-  .hero-store-n { font-size: 12px; }
-  .hero-app .app-top .store { margin-right: auto; }
-  .hero-top-r .hero-ic { display: none; }
-  .hero-top-r { display: none; }
-  .hero-main { padding: 14px 12px 14px; gap: 10px; }
-  .hero-lastscan { display: none; }
-  .hero-kpis { grid-template-columns: 1fr; gap: 8px; }
-  .hero-kpi { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 12px; }
-  .hero-kpi-top { width: 100%; }
-  .hero-kpi-row { flex: 1; }
-  .hero-kpi-d { width: 100%; }
-  .hero-kpi .kpi { font-size: 24px; }
-  .hero-spark { width: 84px; height: 28px; }
-  .hero-legend { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 10px; }
-  .hero-built-s { margin-left: 28px; width: 100%; }
-  .hero-row2 { grid-template-columns: 1fr; }
-  .hero-vis-body { gap: 14px; }
-  .hero-ring { width: 84px; height: 84px; }
-  .hero-ring-v { padding-top: 27px; }
-  .hero-ring-v b { font-size: 22px; }
-  .hero-eng li { grid-template-columns: 70px minmax(0, 1fr) 18px; }
-  .hero-fix { align-items: start; }
-  .hero-fix-t { white-space: normal; }
-  .hero-fix-s { display: none; }
-  .hero-approve { margin-top: 2px; }
-  .hero-frame .sample-tag { top: 15px; right: 14px; }
-  .hero-kpi-d { border-top: 0; padding-top: 0; }
+  .hw-wrap { margin-top: 36px; }
+  .hw { gap: 10px; }
+  .hw-card { --art-h: 180px; padding: 6px; border-radius: 18px; }
+  .hw-art { border-radius: 13px; }
+  .hw-body { padding: 12px 12px 12px; }
+  .hw-t { font-size: 18px; }
+  .hw-p { margin-top: 3px; }
+  .hw-c1 { --slot: 43px; --q-bottom: 48px; }
+  .hw-feed { -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 8px); mask-image: linear-gradient(180deg, transparent 0, #000 8px); }
+  .hw-c2 { --net-s: .96; }
+  .hw-bub { padding: 4px 11px 5px; }
+  .hw-tray { bottom: 9px; height: 32px; }
+  .hw-c3 { --row-h: 40px; --row-gap: 7px; --rows-top: 32px; }
+  .hw-rows { width: min(calc(100% - 30px), 320px); }
 }
 
 .hero-pill-short { display: none; }
 @media (max-width: 760px) {
   .hero-pill-long { display: none; }
   .hero-pill-short { display: inline; }
-}
-
-@keyframes hero-float-sm {
-  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-  50% { transform: translate3d(0, -6px, 0) rotate(var(--rot, -3deg)); }
-}
-/* phones: one decoration only, so nothing crowds the form; the coin sits on the frame's top-right corner */
-@media (max-width: 600px) {
-  .hero-deco-bubble { display: none; }
-  .hero-deco-coin { z-index: 2; width: 80px; right: -4px; top: -64px; }
 }
 
 /* 12-engines.css */
@@ -912,7 +1068,8 @@ html { scroll-behavior: auto; }
 }
 .meet-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--meet-hair); pointer-events: none; z-index: 4; }
 .meet-wide { height: 252px; display: grid; grid-template-columns: minmax(0, 1fr) 292px; align-items: stretch; gap: 16px; padding: 0 18px 0 28px; }
-.meet-wide-b { grid-template-columns: minmax(0, 1fr) 264px; }
+/* 292px (same as card 1) so the longest sample name, "Coolabah Grooming Co. (you)", fits on one line */
+.meet-wide-b { grid-template-columns: minmax(0, 1fr) 292px; }
 .meet-wide .meet-text { align-self: center; padding: 28px 0; }
 .meet-t { font-size: 24px; letter-spacing: -0.6px; line-height: 1.3; font-weight: 500; }
 .meet-p { margin-top: 14px; font-size: 14.5px; line-height: 1.6; color: var(--meet-body); max-width: 330px; text-wrap: pretty; }
@@ -970,7 +1127,9 @@ html { scroll-behavior: auto; }
 .meet-av-sm { font-size: 7.5px; letter-spacing: 0; }
 .meet-rb { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
 .meet-rb b { font-size: 11.5px; font-weight: 600; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.meet-rb em { font-style: normal; font-weight: 500; color: var(--blue); }
+.meet-rb em { font-style: normal; font-weight: 500; color: var(--blue); white-space: nowrap; }
+/* your own row never truncates: on narrower cards "(you)" wraps to a second line instead */
+.meet-row-you .meet-rb b { white-space: normal; overflow: visible; }
 .meet-rb small { font-size: 10px; color: #66677d; white-space: nowrap; }
 .meet-pos { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 20px; padding: 0 7px; border-radius: 100px; background: var(--white); box-shadow: inset 0 0 0 1px #e6e6ee; font-size: 10.5px; font-weight: 600; color: var(--navy); font-variant-numeric: tabular-nums; }
 .meet-row-you { background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--peri-300); }
@@ -1531,6 +1690,9 @@ html { scroll-behavior: auto; }
 .scr-brands li.scr-you { margin-top: 4px; border-radius: 7px; padding: 5px 6px; color: var(--blue); background: var(--lav); box-shadow: inset 0 0 0 1px var(--lav-line); font-weight: 600; }
 .scr-you .scr-pos { background: #fff; color: var(--blue); }
 .scr-you-n { margin-left: auto; font-size: 10.5px; font-weight: 600; color: #b33a3a; }
+/* the sample store name is long, so "not named" sits on its own line under it */
+.scr-brands li.scr-you { flex-wrap: wrap; row-gap: 1px; }
+.scr-brands li.scr-you .scr-you-n { flex-basis: 100%; margin-left: 0; padding-left: 28px; line-height: 1.2; }
 .scr-side-p { font-size: 11.5px; line-height: 1.5; color: var(--scr-sub); }
 .scr-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; padding: 10px 12px; font-size: 11.5px; color: var(--scr-sub); }
 .scr-legend > span { display: inline-flex; align-items: center; gap: 6px; }
@@ -2687,100 +2849,169 @@ html { scroll-behavior: auto; }
 }
 
 /* 43-faq.css */
-/* §14 FAQ: Qarin two-column, intro + lilac help card left (sticky on desktop), accordion right. */
+/* §18 FAQ: a chat window. The asked question is a cobalt bubble on the right, the answer comes from the
+   GEO assistant on the left, and the other questions wait as tappable bubbles under the conversation.
+   Without JavaScript every pair shows as one long conversation (the .is-live rules never apply). */
 .faq-sec { background: var(--bg); padding-top: 130px; }
-.faq-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 60px; align-items: start; }
+.faq-sec [hidden] { display: none !important; }
+.faq-head { margin-bottom: 56px; }
+.faq-lead { text-wrap: pretty; }
 
-.faq-left { display: flex; flex-direction: column; align-items: flex-start; position: sticky; top: 112px; }
-.faq-h2 { margin-top: 18px; }
-.faq-lead { margin-top: 16px; }
+.faq-main { position: relative; max-width: 860px; margin-inline: auto; }
 
-/* help card: the clay image flows into a periwinkle panel (the image's own bottom colour), navy text */
-.faq-help {
-  position: relative; margin-top: 44px; width: 100%;
-  border-radius: var(--r-lg); overflow: hidden;
-  background: var(--peri-300);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), var(--shadow-clay);
+/* floating clay bubble beside the window (wide screens only; white PNG, so multiply over the white page) */
+.faq-deco { position: absolute; z-index: 0; top: -58px; right: -118px; width: 168px; height: auto; mix-blend-mode: multiply; pointer-events: none; transform: rotate(8deg); animation: faqFloat 7s ease-in-out infinite; }
+@keyframes faqFloat { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
+
+/* window */
+.faq-chat {
+  position: relative; z-index: 1; overflow: hidden;
+  border-radius: var(--r-lg); background: var(--white);
+  box-shadow: 0 0 0 1px var(--lav-line), 0 44px 80px -44px rgba(56, 64, 160, 0.38), 0 14px 28px -18px rgba(56, 64, 160, 0.18);
 }
-.faq-help-img { aspect-ratio: 1200 / 670; overflow: hidden; -webkit-mask-image: linear-gradient(180deg, #000 78%, transparent 100%); mask-image: linear-gradient(180deg, #000 78%, transparent 100%); }
-.faq-help-img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; transform-origin: 50% 100%; transition: transform .8s ease; }
-.faq-help:hover .faq-help-img img { transform: scale(1.03); }
-.faq-help-tx { padding: 4px 28px 26px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; }
-.faq-help-tx p { max-width: 330px; font-size: 16px; line-height: 1.5; color: var(--navy); font-weight: 500; text-wrap: pretty; }
+
+/* top bar */
+.faq-bar { position: relative; z-index: 3; display: flex; align-items: center; gap: 14px; height: 66px; padding: 0 22px; background: var(--white); border-bottom: 1px solid var(--lav-line); }
+.faq-bar-tx { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.faq-bar-name { font-family: var(--font-head); font-size: 16px; line-height: 1.2; font-weight: 600; color: var(--navy); letter-spacing: -0.2px; }
+.faq-bar-sub { display: flex; align-items: center; gap: 6px; font-size: 12.5px; line-height: 1.3; color: var(--text); }
+.faq-bar-sub::before { content: ""; width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--cobalt-mid); box-shadow: 0 0 0 3px var(--lilac-100); }
+
+/* GEO avatar: the logo's two circles in a white disc */
+.faq-av { position: relative; flex: none; width: 32px; height: 32px; border-radius: 50%; background: var(--white); box-shadow: 0 0 0 1px var(--lilac-100), 0 4px 10px -6px rgba(56, 64, 160, 0.45); }
+.faq-av i { position: absolute; width: 15px; height: 15px; border-radius: 50%; display: block; }
+.faq-av i:first-child { left: 5px; top: 5px; background: var(--peri-300); }
+.faq-av i:last-child { right: 5px; bottom: 5px; background: var(--cobalt); mix-blend-mode: multiply; }
+.faq-av-lg { width: 42px; height: 42px; box-shadow: 0 0 0 1px var(--lilac-100), 0 0 0 4px var(--lilac-50); }
+.faq-av-lg i { width: 19px; height: 19px; }
+.faq-av-lg i:first-child { left: 6px; top: 6px; }
+.faq-av-lg i:last-child { right: 6px; bottom: 6px; }
+
+/* conversation (faint lilac). With JavaScript it becomes a fixed-height scroll area, newest at the bottom. */
+.faq-log { position: relative; padding: 28px 30px 30px; background: linear-gradient(180deg, #f8f7fe 0%, #f1effd 100%); }
+.faq-log:focus-visible { outline: 2px solid var(--cobalt); outline-offset: -4px; border-radius: 6px; }
+.faq-chat.is-live .faq-log { height: 432px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--lilac-deep) transparent; }
+.faq-chat.is-live .faq-log-in { min-height: 100%; display: flex; flex-direction: column; justify-content: flex-end; }
+.faq-log-in, .faq-thread { display: flex; flex-direction: column; gap: 26px; }
+/* soft fade where messages scroll up under the top bar */
+.faq-chat.is-live::before { content: ""; position: absolute; z-index: 2; left: 0; right: 12px; top: 67px; height: 22px; background: linear-gradient(180deg, #f8f7fe 0%, rgba(248, 247, 254, 0) 100%); pointer-events: none; }
+.faq-hello .faq-bub { background: transparent; box-shadow: inset 0 0 0 1px var(--lilac-100); }
+.faq-hello .faq-bub p { font-size: 14.5px; color: var(--text); }
+
+.faq-pair { display: flex; flex-direction: column; gap: 14px; }
+.faq-msg-q { align-self: flex-end; max-width: min(78%, 560px); }
+.faq-q {
+  margin: 0; padding: 12px 18px;
+  font-family: var(--font-body); font-size: 16px; line-height: 1.5; font-weight: 500; letter-spacing: -0.1px; color: var(--white); text-wrap: pretty;
+  border-radius: 20px 20px 6px 20px; background: linear-gradient(180deg, #5664c4 0%, #4050b0 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -2px 0 rgba(21, 22, 60, 0.12), 0 12px 22px -14px rgba(56, 64, 160, 0.7);
+}
+.faq-msg-a { display: flex; align-items: flex-start; gap: 12px; max-width: min(90%, 660px); }
+.faq-bub {
+  min-width: 0; padding: 14px 20px 16px;
+  border-radius: 6px 20px 20px 20px; background: var(--white);
+  box-shadow: 0 0 0 1px var(--lav-line), 0 10px 22px -18px rgba(56, 64, 160, 0.5);
+}
+.faq-bub p { font-size: 15.5px; line-height: 1.65; color: var(--navy-3); text-wrap: pretty; }
+.faq-bub p + p { margin-top: 10px; }
+.faq-bub .faq-src { font-size: 13px; line-height: 1.55; color: var(--text); padding-top: 10px; border-top: 1px solid var(--lav-line); }
+.faq-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13.5px; color: var(--cobalt-deep); background: var(--lilac-50); border-radius: 5px; padding: 1px 5px; white-space: nowrap; box-shadow: inset 0 0 0 1px var(--lilac-100); }
+
+/* new messages rise in; the typing dots bounce */
+.faq-chat.is-live .faq-pair.is-new .faq-msg { animation: faqIn .34s cubic-bezier(.2, .7, .3, 1) both; }
+@keyframes faqIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.faq-typing .faq-bub { display: inline-flex; align-items: center; gap: 5px; padding: 15px 18px; }
+.faq-typing .faq-bub span { width: 7px; height: 7px; border-radius: 50%; background: var(--cobalt-mid); animation: faqDot 1s ease-in-out infinite; }
+.faq-typing .faq-bub span:nth-child(2) { animation-delay: .15s; }
+.faq-typing .faq-bub span:nth-child(3) { animation-delay: .3s; }
+.faq-typing { animation: faqIn .25s ease both; }
+@keyframes faqDot { 0%, 60%, 100% { opacity: .35; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-4px); } }
+
+/* suggested questions, under the conversation like a reply box */
+.faq-sugg { padding: 18px 24px 24px; background: var(--white); border-top: 1px solid var(--lav-line); }
+.faq-sugg-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 30px; }
+.faq-sugg-title { font-size: 13px; line-height: 1.3; font-weight: 600; color: var(--text); letter-spacing: .01em; }
+.faq-reset { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; margin-right: -10px; border-radius: 8px; font-size: 13px; font-weight: 600; line-height: 1; color: var(--cobalt-deep); white-space: nowrap; transition: background-color .2s ease; }
+.faq-reset svg { width: 14px; height: 14px; }
+.faq-reset:hover { background: var(--lilac-50); }
+.faq-reset:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 1px; }
+.faq-sugg-list { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.faq-sugg-list li { display: flex; max-width: 100%; }
+.faq-chip {
+  display: inline-flex; align-items: center; gap: 10px; max-width: 100%; min-height: 40px; padding: 7px 7px 7px 16px;
+  border-radius: 20px 20px 6px 20px; background: var(--white); text-align: left;
+  font-size: 14.5px; line-height: 1.4; font-weight: 500; color: var(--cobalt-deep);
+  box-shadow: inset 0 0 0 1px rgba(181, 168, 224, 0.75), 0 2px 6px -4px rgba(56, 64, 160, 0.35);
+  transition: background-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.faq-chip-ic { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--lilac-50); color: var(--cobalt); box-shadow: inset 0 0 0 1px var(--lilac-100); transition: background-color .2s ease, color .2s ease; }
+.faq-chip-ic svg { width: 14px; height: 14px; }
+.faq-chip:hover { background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-deep), 0 6px 14px -8px rgba(56, 64, 160, 0.45); transform: translateY(-1px); }
+.faq-chip:hover .faq-chip-ic { background: var(--cobalt); color: var(--white); box-shadow: none; }
+.faq-chip:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+
+/* setup help, a slim strip under the window */
+.faq-help { position: relative; z-index: 1; display: flex; align-items: center; gap: 18px; margin-top: 20px; padding: 10px; border-radius: 20px; background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-100); }
+.faq-help-img { flex: none; width: 116px; aspect-ratio: 16 / 10; border-radius: 12px; overflow: hidden; background: var(--lilac-100); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.8); }
+.faq-help-img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 52%; transform: scale(1.5); }
+.faq-help-tx { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; padding-right: 6px; }
+.faq-help-tx p { max-width: 400px; font-size: 15px; line-height: 1.5; font-weight: 500; color: var(--navy); text-wrap: pretty; }
 .faq-help-link {
-  display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border-radius: 10px;
-  font-size: 15px; font-weight: 600; color: var(--white); line-height: 1; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 16px; border-radius: 10px;
+  font-size: 14.5px; font-weight: 600; color: var(--white); line-height: 1; white-space: nowrap;
   background: var(--grad-btn); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 6px 14px -6px rgba(21, 22, 60, 0.6);
 }
-.faq-help-link svg { width: 17px; height: 17px; transition: transform .2s ease; }
+.faq-help-link svg { width: 16px; height: 16px; transition: transform .2s ease; }
 .faq-help-link:hover svg { transform: translateX(3px); }
 
-.faq-list { display: flex; flex-direction: column; gap: 8px; }
-.faq-item {
-  border-radius: var(--r-md); background: var(--white);
-  box-shadow: 0 0 0 1px var(--line);
-  transition: background-color .25s ease, box-shadow .25s ease;
+@media (max-width: 1240px) {
+  .faq-deco { display: none; }
 }
-.faq-item.faq-open { background: var(--lilac-50); box-shadow: 0 0 0 1px var(--lilac-100); }
-.faq-item:hover { box-shadow: 0 0 0 1px var(--lav-line); }
-.faq-item.faq-open:hover { box-shadow: 0 0 0 1px var(--lilac-100); }
-.faq-q { font-family: var(--font-body); font-size: inherit; font-weight: inherit; letter-spacing: 0; margin: 0; text-wrap: wrap; }
-.faq-btn {
-  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 20px;
-  padding: 24px 26px 24px 30px; text-align: left;
-  font-family: var(--font-body); font-size: 18px; line-height: 1.45; font-weight: 450; color: var(--navy); letter-spacing: -0.1px;
-  border-radius: var(--r-md); text-wrap: pretty;
-}
-.faq-btn:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
-/* plus / minus in a soft lilac chip, cobalt stroke */
-.faq-pm { width: 32px; height: 32px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--lilac-50); color: var(--cobalt); box-shadow: inset 0 0 0 1px var(--lilac-100); transition: background-color .25s ease; }
-.faq-pm svg { width: 16px; height: 16px; }
-.faq-pm-v { transform-origin: 12px 12px; transition: transform .3s ease; }
-.faq-item.faq-open .faq-pm { background: var(--white); }
-.faq-item.faq-open .faq-pm-v { transform: scaleY(0); }
-
-.faq-a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .32s ease; }
-.faq-item.faq-open .faq-a { grid-template-rows: 1fr; }
-.faq-a-in { overflow: hidden; min-height: 0; visibility: hidden; transition: visibility 0s linear .32s; padding: 0 30px; }
-.faq-item.faq-open .faq-a-in { visibility: visible; transition-delay: 0s; }
-.faq-a-in p { margin-top: -6px; font-size: 16px; line-height: 1.7; color: var(--text); max-width: 560px; }
-.faq-a-in p:last-child { padding-bottom: 28px; }
-.faq-a-in .faq-src { margin-top: 10px; font-size: 13px; line-height: 1.55; color: var(--text); }
-.faq-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13.5px; color: var(--cobalt-deep); background: var(--white); border-radius: 5px; padding: 1px 5px; white-space: nowrap; box-shadow: inset 0 0 0 1px var(--lilac-100); }
-
 @media (max-width: 1100px) {
   .faq-sec { padding-top: 104px; }
-  .faq-grid { gap: 40px; }
-  .faq-btn { padding: 20px 20px 20px 24px; font-size: 17px; }
-  .faq-a-in { padding: 0 24px; }
-  .faq-a-in p { font-size: 15px; }
-  .faq-a-in p:last-child { padding-bottom: 24px; }
-  .faq-help-tx { padding: 4px 22px 22px; }
-}
-@media (max-width: 900px) {
-  /* one column: intro, then questions, then the help card */
-  .faq-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .faq-left { display: contents; }
-  .faq-left > .label { justify-self: start; }
-  .faq-list { order: 4; margin-top: 36px; }
-  .faq-help { order: 5; margin-top: 16px; }
 }
 @media (max-width: 760px) {
   .faq-sec { padding-top: 72px; }
-  .faq-h2 { margin-top: 14px; }
-  .faq-list { margin-top: 28px; }
-  .faq-help { margin-top: 12px; border-radius: var(--r-md); }
-  .faq-help-tx { padding: 2px 18px 20px; }
-  .faq-help-tx p { font-size: 15px; }
-  .faq-help-link { height: 42px; font-size: 14px; }
-  .faq-btn { padding: 16px 14px 16px 18px; font-size: 16px; gap: 14px; }
-  .faq-pm { width: 28px; height: 28px; }
-  .faq-pm svg { width: 14px; height: 14px; }
-  .faq-a-in { padding: 0 18px; }
-  .faq-a-in p { margin-top: -4px; font-size: 14px; }
-  .faq-a-in p:last-child { padding-bottom: 20px; }
-  .faq-a-in .faq-src { font-size: 12.5px; }
+  .faq-head { margin-bottom: 32px; }
+  .faq-chat { border-radius: 20px; }
+  .faq-bar { height: 60px; padding: 0 14px; gap: 12px; }
+  .faq-chat.is-live::before { top: 61px; right: 8px; }
+  .faq-av-lg { width: 36px; height: 36px; }
+  .faq-av-lg i { width: 16px; height: 16px; }
+  .faq-av-lg i:first-child { left: 5px; top: 5px; }
+  .faq-av-lg i:last-child { right: 5px; bottom: 5px; }
+  .faq-bar-name { font-size: 15px; }
+  .faq-bar-sub { font-size: 12px; }
+  .faq-log { padding: 18px 12px 20px; }
+  .faq-chat.is-live .faq-log { height: clamp(400px, 62vh, 480px); }
+  .faq-log-in, .faq-thread { gap: 20px; }
+  .faq-hello .faq-bub p { font-size: 13.5px; }
+  .faq-pair { gap: 10px; }
+  .faq-msg-q { max-width: 88%; }
+  .faq-q { padding: 10px 14px; font-size: 15px; border-radius: 18px 18px 5px 18px; }
+  .faq-msg-a { gap: 8px; max-width: 100%; }
+  .faq-av { width: 26px; height: 26px; }
+  .faq-av i { width: 12px; height: 12px; }
+  .faq-av i:first-child { left: 4px; top: 4px; }
+  .faq-av i:last-child { right: 4px; bottom: 4px; }
+  .faq-bub { padding: 11px 14px 13px; border-radius: 5px 18px 18px 18px; }
+  .faq-bub p { font-size: 14.5px; line-height: 1.6; }
+  .faq-bub .faq-src { font-size: 12.5px; }
   .faq-code { font-size: 12.5px; white-space: normal; word-break: break-all; }
+  .faq-sugg { padding: 14px 12px 16px; }
+  .faq-reset { margin-right: -6px; padding: 0 6px; }
+  .faq-sugg-list { gap: 7px; margin-top: 10px; }
+  .faq-chip { font-size: 14px; min-height: 40px; padding: 6px 6px 6px 14px; gap: 8px; border-radius: 18px 18px 5px 18px; }
+  .faq-chip-ic { width: 24px; height: 24px; }
+  .faq-chip-ic svg { width: 13px; height: 13px; }
+  .faq-help { align-items: flex-start; gap: 12px; margin-top: 14px; padding: 10px; border-radius: 18px; }
+  .faq-help-img { width: 84px; border-radius: 10px; }
+  .faq-help-tx { flex-direction: column; align-items: flex-start; gap: 10px; padding: 2px 0 2px; }
+  .faq-help-tx p { font-size: 14px; }
+  .faq-help-link { height: 40px; font-size: 14px; padding: 0 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq-deco { animation: none; }
 }
 
 /* 44-guides.css */
@@ -3000,155 +3231,79 @@ html { scroll-behavior: auto; }
       <a class="hero-check-alt" href="#decide">or first, see how AI picks what to recommend</a>
     </form>
 
-    <div class="hero-stage">
-    <img class="hero-deco hero-deco-bubble" src="img/clay-bubble.png" alt="" aria-hidden="true" width="400" height="400" decoding="async">
-    <img class="hero-deco hero-deco-coin" src="img/clay-coin.png" alt="" aria-hidden="true" width="400" height="400" decoding="async">
-    <img class="hero-deco hero-deco-bag" src="img/clay-bag.png" alt="" aria-hidden="true" width="400" height="400" decoding="async">
-    <div class="hero-frame">
-      <span class="sample-tag">Sample data</span>
-      <div class="fit hero-fit">
-        <div class="app hero-app" role="img" aria-label="GEO dashboard inside Shopify admin, showing AI revenue of A$4,820 over the last 4 weeks, 61 AI orders, 1,940 AI clicks, a visibility score of 38 out of 100 and five fixes waiting for approval. Sample data.">
-          <div class="app-top">
-            <span class="store"><i class="hero-store-ic">BB</i><span class="hero-store-n">Bondi Beard Co.</span></span>
-            <span class="search"><svg class="hero-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="hero-search-tx">Search</span><span class="hero-kbd">⌘ K</span></span>
-            <span class="hero-top-r">
-              <svg class="hero-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-              <span class="hero-avatar">BB</span>
-            </span>
-          </div>
-          <div class="app-body">
-            <div class="app-nav hero-nav">
-              <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9v11h13V9"/><path d="M10 20v-6h4v6"/></svg>Home</a>
-              <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>Orders<span class="hero-nav-n">12</span></a>
-              <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r="1"/></svg>Products</a>
-              <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Customers</a>
-              <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>Analytics</a>
-              <span class="grp hero-apps">Apps</span>
-              <span class="grp hero-grp"><span class="hero-grp-mark" aria-hidden="true"><i></i><i></i></span>GEO</span>
-              <a class="hero-sub on">Dashboard</a>
-              <a class="hero-sub">Questions</a>
-              <a class="hero-sub">Competitors</a>
-              <a class="hero-sub">Fixes<span class="hero-nav-n hero-nav-n-blue">5</span></a>
-              <a class="hero-sub">Outreach</a>
-              <a class="hero-sub">Settings</a>
-              <span class="hero-nav-plan"><span class="hero-nav-plan-t">Core plan</span><span class="hero-nav-plan-s">18 of 25 questions</span><span class="hero-nav-meter"><i></i></span></span>
+    <div class="hw-wrap">
+      <img class="hero-deco hero-deco-bubble" src="img/clay-bubble.png" alt="" aria-hidden="true" width="400" height="400" decoding="async">
+      <img class="hero-deco hero-deco-bag" src="img/clay-bag.png" alt="" aria-hidden="true" width="400" height="400" decoding="async">
+      <ol class="hw" role="list" aria-label="How a shopper’s question to AI becomes a sale">
+        <li class="hw-card hw-c1" tabindex="0" aria-labelledby="hw-t1" aria-describedby="hw-p1">
+          <div class="hw-art" aria-hidden="true">
+            <div class="hw-feed">
+              <div class="hw-q hw-q1"><span class="hw-bub"><span class="hw-eng"><i class="hw-e-gpt"></i>ChatGPT</span><span class="hw-qt">best beard oil for dry skin?</span></span></div>
+              <div class="hw-q hw-q2"><span class="hw-bub"><span class="hw-eng"><i class="hw-e-gem"></i>Gemini</span><span class="hw-qt">unscented beard oil in Australia?</span></span></div>
+              <div class="hw-q hw-q3"><span class="hw-bub"><span class="hw-eng"><i class="hw-e-ppx"></i>Perplexity</span><span class="hw-qt">gift for a bearded man under $80?</span></span></div>
             </div>
-
-            <div class="app-main hero-main">
-              <div class="app-title">
-                <h5>Dashboard</h5>
-                <div class="hero-title-r">
-                  <span class="hero-muted hero-lastscan"><i class="hero-live"></i>Last scan Mon 5 Oct</span>
-                  <span class="hero-date"><svg class="hero-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>Last 4 weeks<svg class="hero-ic hero-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
-                </div>
+            <div class="hw-tray">
+              <svg class="hw-tray-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              <span class="hw-type"><i></i></span>
+              <span class="hw-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></span>
+            </div>
+          </div>
+          <div class="hw-body">
+            <h2 class="hw-t" id="hw-t1">Shoppers ask AI</h2>
+            <p class="hw-p" id="hw-p1">Shoppers ask AI what to buy. About 50 million times a day on ChatGPT alone, by <a href="#why">our 2025 estimate</a>.</p>
+          </div>
+        </li>
+        <li class="hw-card hw-c2" tabindex="0" aria-labelledby="hw-t2" aria-describedby="hw-p2">
+          <div class="hw-art" aria-hidden="true">
+            <div class="hw-net">
+              <svg class="hw-lines" viewBox="0 0 260 170" width="260" height="170" fill="none">
+                <path class="hw-ln" d="M120 49C120 76 36 70 36 96"/>
+                <path class="hw-ln" d="M130 49V96"/>
+                <path class="hw-ln" d="M140 49C140 76 224 70 224 96"/>
+                <path class="hw-ln-on" d="M130 49V96"/>
+              </svg>
+              <i class="hw-dash hw-dash-l hw-d1"></i><i class="hw-dash hw-dash-l hw-d2"></i>
+              <i class="hw-dash hw-dash-c hw-d1"></i><i class="hw-dash hw-dash-c hw-d2"></i><i class="hw-dash hw-dash-c hw-d3"></i>
+              <i class="hw-dash hw-dash-r hw-d1"></i><i class="hw-dash hw-dash-r hw-d2"></i>
+              <span class="hw-ai"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5c.6 5 4.5 8.9 9.5 9.5-5 .6-8.9 4.5-9.5 9.5-.6-5-4.5-8.9-9.5-9.5 5-.6 8.9-4.5 9.5-9.5Z"/></svg></span>
+              <span class="hw-store hw-store-l">RB</span>
+              <span class="hw-store hw-you"><span class="hw-you-tx">You</span><span class="hw-you-lit">You</span></span>
+              <span class="hw-store hw-store-r">SB</span>
+              <span class="hw-rec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Recommended</span>
+            </div>
+          </div>
+          <div class="hw-body">
+            <h2 class="hw-t" id="hw-t2">AI picks a few stores</h2>
+            <p class="hw-p" id="hw-p2">Each answer names just a few stores. GEO helps make yours one of them.</p>
+          </div>
+        </li>
+        <li class="hw-card hw-c3" tabindex="0" aria-labelledby="hw-t3" aria-describedby="hw-p3">
+          <div class="hw-art" aria-hidden="true">
+            <span class="hw-ex">Example</span>
+            <div class="hw-rows">
+              <div class="hw-row hw-row1">
+                <span class="hw-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+                <span class="hw-row-b"><span class="hw-row-t">Named by ChatGPT</span><span class="hw-row-s">best beard oil for dry skin?</span></span>
+                <span class="hw-chip">Top 3</span>
               </div>
-
-              <div class="hero-sec">
-                <span class="hero-sec-t">Money from AI</span>
-                <span class="hero-sec-s">Sales and visits that came from AI assistants</span>
-                <span class="hero-sec-a">How we count<svg class="hero-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></span>
+              <div class="hw-row hw-row2">
+                <span class="hw-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4.1 12 6"/><path d="m5.1 8-2.9-.8"/><path d="m6 12-1.9 2"/><path d="M7.2 2.2 8 5.1"/><path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z"/></svg></span>
+                <span class="hw-row-b"><span class="hw-row-t">Visit from chatgpt.com</span><span class="hw-row-s">Lands on your product page</span></span>
+                <span class="hw-chip">No ad cost</span>
               </div>
-
-              <div class="hero-kpis">
-                <div class="panel hero-kpi">
-                  <div class="hero-kpi-top"><span class="hero-kpi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/></svg></span>AI revenue</div>
-                  <div class="hero-kpi-row">
-                    <span class="kpi">A$4,820</span>
-                    <svg class="hero-spark" viewBox="0 0 96 34" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="hero-sp1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4050b0" stop-opacity=".22"/><stop offset="1" stop-color="#4050b0" stop-opacity="0"/></linearGradient></defs><path d="M0 27 L9 25 L18 26.5 L27 22 L36 23.5 L45 18 L54 19.5 L63 14 L72 15.5 L81 9 L90 7 L96 5 V34 H0 Z" fill="url(#hero-sp1)"/><path d="M0 27 L9 25 L18 26.5 L27 22 L36 23.5 L45 18 L54 19.5 L63 14 L72 15.5 L81 9 L90 7 L96 5" fill="none" stroke="#4050b0" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
-                  </div>
-                  <div class="hero-kpi-d"><span class="delta-up">▲ 38%</span><span>vs before you joined</span></div>
-                </div>
-                <div class="panel hero-kpi">
-                  <div class="hero-kpi-top"><span class="hero-kpi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span>AI orders</div>
-                  <div class="hero-kpi-row">
-                    <span class="kpi">61</span>
-                    <svg class="hero-spark" viewBox="0 0 96 34" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="hero-sp2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4050b0" stop-opacity=".22"/><stop offset="1" stop-color="#4050b0" stop-opacity="0"/></linearGradient></defs><path d="M0 24 L9 25.5 L18 21 L27 23 L36 19 L45 20.5 L54 16 L63 18 L72 13 L81 14.5 L90 10 L96 9 V34 H0 Z" fill="url(#hero-sp2)"/><path d="M0 24 L9 25.5 L18 21 L27 23 L36 19 L45 20.5 L54 16 L63 18 L72 13 L81 14.5 L90 10 L96 9" fill="none" stroke="#4050b0" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
-                  </div>
-                  <div class="hero-kpi-d"><span class="delta-up">▲ 22%</span><span>vs before you joined</span></div>
-                </div>
-                <div class="panel hero-kpi">
-                  <div class="hero-kpi-top"><span class="hero-kpi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.1 12 6"/><path d="m5.1 8-2.9-.8"/><path d="m6 12-1.9 2"/><path d="M7.2 2.2 8 5.1"/><path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z"/></svg></span>AI clicks</div>
-                  <div class="hero-kpi-row">
-                    <span class="kpi">1,940</span>
-                    <svg class="hero-spark" viewBox="0 0 96 34" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="hero-sp3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4050b0" stop-opacity=".22"/><stop offset="1" stop-color="#4050b0" stop-opacity="0"/></linearGradient></defs><path d="M0 29 L9 27 L18 28 L27 24 L36 21 L45 22.5 L54 17 L63 15 L72 16 L81 10 L90 6.5 L96 4 V34 H0 Z" fill="url(#hero-sp3)"/><path d="M0 29 L9 27 L18 28 L27 24 L36 21 L45 22.5 L54 17 L63 15 L72 16 L81 10 L90 6.5 L96 4" fill="none" stroke="#4050b0" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
-                  </div>
-                  <div class="hero-kpi-d"><span class="delta-up">▲ 51%</span><span>vs before you joined</span></div>
-                </div>
-              </div>
-
-              <div class="panel hero-src">
-                <div class="hero-ph">
-                  <h6>Where it came from</h6>
-                  <span class="hero-muted">61 AI orders · A$4,820</span>
-                </div>
-                <div class="hero-bar" aria-hidden="true">
-                  <i class="hero-seg-gpt" style="width:55%"></i><i class="hero-seg-ppx" style="width:18%"></i><i class="hero-seg-gem" style="width:12%"></i><i class="hero-seg-blt" style="width:8%"></i><i class="hero-seg-oth" style="width:7%"></i>
-                </div>
-                <ul class="hero-legend">
-                  <li><span class="hero-lg-n"><i class="dot hero-dot-gpt"></i>ChatGPT</span><span class="hero-lg-v"><b>55%</b>A$2,640</span></li>
-                  <li><span class="hero-lg-n"><i class="dot hero-dot-ppx"></i>Perplexity</span><span class="hero-lg-v"><b>18%</b>A$880</span></li>
-                  <li><span class="hero-lg-n"><i class="dot hero-dot-gem"></i>Gemini</span><span class="hero-lg-v"><b>12%</b>A$560</span></li>
-                  <li><span class="hero-lg-n"><i class="dot hero-dot-blt"></i>Pages we built</span><span class="hero-lg-v"><b>8%</b>A$410</span></li>
-                  <li><span class="hero-lg-n"><i class="dot hero-dot-oth"></i>Other AI</span><span class="hero-lg-v"><b>7%</b>A$330</span></li>
-                </ul>
-                <div class="hero-built">
-                  <span class="hero-built-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span>
-                  <span>Revenue from pages we built: <b>A$410</b></span>
-                  <span class="hero-muted hero-built-s">2 guide pages · tracked with our own link tag</span>
-                </div>
-              </div>
-
-              <div class="hero-row2">
-                <div class="panel hero-vis">
-                  <div class="hero-ph">
-                    <h6>Visibility score</h6>
-                    <span class="pill pill-green hero-pill-sm">▲ 9 since joining</span>
-                  </div>
-                  <div class="hero-vis-body">
-                    <div class="hero-ring">
-                      <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="none" stroke="#e9e7fc" stroke-width="9"/><circle cx="50" cy="50" r="42" fill="none" stroke="url(#hero-ringg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="100.3 263.9" transform="rotate(-90 50 50)"/><defs><linearGradient id="hero-ringg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8f9be8"/><stop offset="1" stop-color="#4050b0"/></linearGradient></defs></svg>
-                      <span class="hero-ring-v"><b>38</b><span>/100</span></span>
-                    </div>
-                    <ul class="hero-eng">
-                      <li><span>ChatGPT</span><i class="hero-track"><i style="width:46%;background:var(--e-chatgpt)"></i></i><b>46</b></li>
-                      <li><span>Perplexity</span><i class="hero-track"><i style="width:41%;background:var(--e-perplexity)"></i></i><b>41</b></li>
-                      <li><span>Gemini</span><i class="hero-track"><i style="width:35%;background:var(--e-gemini)"></i></i><b>35</b></li>
-                      <li><span>AI Overviews</span><i class="hero-track"><i style="width:30%;background:var(--e-google)"></i></i><b>30</b></li>
-                    </ul>
-                  </div>
-                  <p class="hero-note">Share of AI answers that name you, across your 18 questions, with a top-3 bonus. Started at 29.</p>
-                </div>
-
-                <div class="panel hero-next">
-                  <div class="hero-ph">
-                    <h6>Do this next</h6>
-                    <span class="pill pill-lav hero-pill-sm">5 waiting</span>
-                    <span class="hero-sec-a hero-next-a">All fixes<svg class="hero-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></span>
-                  </div>
-                  <ul class="hero-fixes">
-                    <li class="hero-fix">
-                      <span class="hero-fix-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg></span>
-                      <span class="hero-fix-b"><span class="hero-fix-t">Rewrite ‘Sandalwood Beard Oil’ description</span><span class="hero-fix-m"><span class="pill pill-green hero-pill-sm">High impact</span><span class="hero-fix-s">Adds who it’s for and size</span></span></span>
-                      <span class="hero-approve">Approve</span>
-                    </li>
-                    <li class="hero-fix">
-                      <span class="hero-fix-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M9.5 8.5a2.5 2.5 0 0 1 4.8 1c0 1.5-2.3 2-2.3 2"/><path d="M12 14h.01"/></svg></span>
-                      <span class="hero-fix-b"><span class="hero-fix-t">Add 5 FAQs to ‘Sensitive Skin Beard Oil’</span><span class="hero-fix-m"><span class="pill pill-green hero-pill-sm">High impact</span><span class="hero-fix-s">Answers what shoppers ask AI</span></span></span>
-                      <span class="hero-approve">Approve</span>
-                    </li>
-                    <li class="hero-fix">
-                      <span class="hero-fix-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
-                      <span class="hero-fix-b"><span class="hero-fix-t">Rewrite ‘Daily Beard Wash’ Google listing title</span><span class="hero-fix-m"><span class="pill pill-amber hero-pill-sm">Medium impact</span><span class="hero-fix-s">Says what it is and the size</span></span></span>
-                      <span class="hero-approve">Approve</span>
-                    </li>
-                  </ul>
-                </div>
+              <div class="hw-row hw-row3">
+                <span class="hw-row-ic hw-row-coin"><img src="img/clay-coin.png" alt="" width="400" height="400" decoding="async"></span>
+                <span class="hw-row-b"><span class="hw-row-t">New order $34</span><span class="hw-row-s">Sandalwood Beard Oil 30ml</span></span>
+                <span class="hw-chip">Tracked</span>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+          <div class="hw-body">
+            <h2 class="hw-t" id="hw-t3">You get the sale</h2>
+            <p class="hw-p" id="hw-p3">Shoppers click straight through. No cost per click, and GEO counts every order it can trace back to AI.</p>
+          </div>
+        </li>
+      </ol>
     </div>
   </div>
 </section>
@@ -3470,11 +3625,11 @@ html { scroll-behavior: auto; }
           <span class="sample-tag meet-tag">Sample data</span>
           <div class="meet-ui meet-list" aria-hidden="true">
             <div class="meet-q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>best beard oil for dry skin in Australia</span></div>
-            <div class="meet-row"><span class="meet-av">TG</span><span class="meet-rb"><b>The Groomed Man Co</b><small>Named in 7 of 8 answers</small></span><span class="meet-pos">#1</span></div>
-            <div class="meet-row"><span class="meet-av">MK</span><span class="meet-rb"><b>Milkman</b><small>Named in 6 of 8 answers</small></span><span class="meet-pos">#2</span></div>
-            <div class="meet-row"><span class="meet-av meet-av-sm">B&amp;B</span><span class="meet-rb"><b>Bold &amp; Bare</b><small>Named in 5 of 8 answers</small></span><span class="meet-pos">#3</span></div>
-            <div class="meet-row meet-row-you"><span class="meet-av meet-av-you">BB</span><span class="meet-rb"><b>Bondi Beard Co. <em>(you)</em></b><small>Named in 4 of 8 answers</small></span><span class="meet-pos meet-pos-you">#4</span></div>
-            <div class="meet-row"><span class="meet-av">AB</span><span class="meet-rb"><b>A Better</b><small>Named in 3 of 8 answers</small></span><span class="meet-pos">#5</span></div>
+            <div class="meet-row"><span class="meet-av">RB</span><span class="meet-rb"><b>Ridgeback Beard Co.</b><small>Named in 7 of 8 answers</small></span><span class="meet-pos">#1</span></div>
+            <div class="meet-row"><span class="meet-av">SB</span><span class="meet-rb"><b>Saltbush Beard Co.</b><small>Named in 6 of 8 answers</small></span><span class="meet-pos">#2</span></div>
+            <div class="meet-row"><span class="meet-av">BA</span><span class="meet-rb"><b>Banksia Beard Co.</b><small>Named in 5 of 8 answers</small></span><span class="meet-pos">#3</span></div>
+            <div class="meet-row meet-row-you"><span class="meet-av meet-av-you">CG</span><span class="meet-rb"><b>Coolabah Grooming Co. <em>(you)</em></b><small>Named in 4 of 8 answers</small></span><span class="meet-pos meet-pos-you">#4</span></div>
+            <div class="meet-row"><span class="meet-av">WG</span><span class="meet-rb"><b>Wattlebird Grooming</b><small>Named in 3 of 8 answers</small></span><span class="meet-pos">#5</span></div>
           </div>
         </div>
       </article>
@@ -3642,9 +3797,9 @@ html { scroll-behavior: auto; }
         <div class="scr-frame">
           <div class="app scr-app" role="group" aria-label="GEO Dashboard screen, sample data">
             <div class="app-top">
-              <span class="store"><i class="scr-store-ic">BB</i><span class="scr-store-n">Bondi Beard Co.</span></span>
+              <span class="store"><i class="scr-store-ic">CG</i><span class="scr-store-n">Coolabah Grooming Co.</span></span>
               <span class="search"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Search</span></span>
-              <span class="scr-top-r"><span class="sample-tag">Sample data</span><svg class="scr-ic14 scr-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="scr-ava">BB</span></span>
+              <span class="scr-top-r"><span class="sample-tag">Sample data</span><svg class="scr-ic14 scr-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="scr-ava">CG</span></span>
             </div>
             <div class="app-body">
               <div class="app-nav scr-nav">
@@ -3749,9 +3904,9 @@ html { scroll-behavior: auto; }
         <div class="scr-frame">
           <div class="app scr-app" role="group" aria-label="GEO Questions screen, sample data">
             <div class="app-top">
-              <span class="store"><i class="scr-store-ic">BB</i><span class="scr-store-n">Bondi Beard Co.</span></span>
+              <span class="store"><i class="scr-store-ic">CG</i><span class="scr-store-n">Coolabah Grooming Co.</span></span>
               <span class="search"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Search</span></span>
-              <span class="scr-top-r"><span class="sample-tag">Sample data</span><svg class="scr-ic14 scr-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="scr-ava">BB</span></span>
+              <span class="scr-top-r"><span class="sample-tag">Sample data</span><svg class="scr-ic14 scr-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="scr-ava">CG</span></span>
             </div>
             <div class="app-body">
               <div class="app-nav scr-nav">
@@ -3795,7 +3950,7 @@ html { scroll-behavior: auto; }
                   <span class="scr-qe scr-qe3"><span class="scr-ml">Perplexity</span><span class="scr-st scr-st-y" role="img" aria-label="Named in both runs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></span>
                   <span class="scr-qe scr-qe4"><span class="scr-ml">AI Overviews</span><span class="scr-st scr-st-n" role="img" aria-label="Not named"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span></span>
                   <span class="scr-qb"><span class="scr-ml">Best spot </span><span class="scr-rank">#4</span></span>
-                  <span class="scr-qrv"><i class="scr-mono" style="--c:#2f3150">G</i><span>The Groomed Man Co</span></span>
+                  <span class="scr-qrv"><i class="scr-mono" style="--c:#2f3150">R</i><span>Ridgeback Beard Co.</span></span>
                 </div>
                 <div class="scr-qx">
                   <div class="scr-ans">
@@ -3808,12 +3963,12 @@ html { scroll-behavior: auto; }
                     <div class="scr-md">
                       <p>For dry skin, pick a light oil that soaks in fast and has a mild scent. Good picks in Australia:</p>
                       <ol>
-                        <li><span class="hl">The Groomed Man Co</span><sup>1</sup></li>
-                        <li><span class="hl">A Better</span><sup>2</sup></li>
-                        <li><span class="hl">Bold &amp; Bare</span><sup>1</sup></li>
-                        <li><span class="hl">Milkman</span><sup>3</sup></li>
+                        <li><span class="hl">Ridgeback Beard Co.</span></li>
+                        <li><span class="hl">Wattlebird Grooming</span></li>
+                        <li><span class="hl">Banksia Beard Co.</span></li>
+                        <li><span class="hl">Saltbush Beard Co.</span></li>
                       </ol>
-                      <p>Check the ingredient list and patch test first if your skin is sensitive.<sup>4</sup></p>
+                      <p>Check the ingredient list and patch test first if your skin is sensitive.</p>
                     </div>
                     <div class="scr-srcs">
                       <span class="scr-srcs-l">Sites it cited</span>
@@ -3826,11 +3981,11 @@ html { scroll-behavior: auto; }
                   <div class="scr-side">
                     <span class="scr-side-t">Brands in this answer</span>
                     <ol class="scr-brands">
-                      <li><span class="scr-pos">1</span>The Groomed Man Co</li>
-                      <li><span class="scr-pos">2</span>A Better</li>
-                      <li><span class="scr-pos">3</span>Bold &amp; Bare</li>
-                      <li><span class="scr-pos">4</span>Milkman</li>
-                      <li class="scr-you"><span class="scr-pos" aria-hidden="true"></span>Bondi Beard Co.<span class="scr-you-n">not named</span></li>
+                      <li><span class="scr-pos">1</span>Ridgeback Beard Co.</li>
+                      <li><span class="scr-pos">2</span>Wattlebird Grooming</li>
+                      <li><span class="scr-pos">3</span>Banksia Beard Co.</li>
+                      <li><span class="scr-pos">4</span>Saltbush Beard Co.</li>
+                      <li class="scr-you"><span class="scr-pos" aria-hidden="true"></span>Coolabah Grooming Co.<span class="scr-you-n">not named</span></li>
                     </ol>
                     <p class="scr-side-p">In run 2, ChatGPT named you at #4. We show the average, not one lucky run.</p>
                     <span class="scr-btn scr-btn-blue scr-btn-full"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4V2"/><path d="M15 16v-2"/><path d="M8 9h2"/><path d="M20 9h2"/><path d="M17.8 11.8 19 13"/><path d="M15 9h.01"/><path d="M17.8 6.2 19 5"/><path d="m3 21 9-9"/><path d="M12.2 6.2 11 5"/></svg>See 2 fixes for this question</span>
@@ -3844,7 +3999,7 @@ html { scroll-behavior: auto; }
                   <span class="scr-qe scr-qe3"><span class="scr-ml">Perplexity</span><span class="scr-st scr-st-y" role="img" aria-label="Named in both runs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></span>
                   <span class="scr-qe scr-qe4"><span class="scr-ml">AI Overviews</span><span class="scr-st scr-st-n" role="img" aria-label="Not named"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span></span>
                   <span class="scr-qb"><span class="scr-ml">Best spot </span><span class="scr-rank scr-rank-top">#2</span></span>
-                  <span class="scr-qrv"><i class="scr-mono" style="--c:#9a6b3f">M</i><span>Milkman</span></span>
+                  <span class="scr-qrv"><i class="scr-mono" style="--c:#9a6b3f">S</i><span>Saltbush Beard Co.</span></span>
                 </div>
                 <div class="scr-qr">
                   <span class="scr-qq"><span class="scr-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span><span>beard oil vs beard balm which is better</span></span>
@@ -3854,7 +4009,7 @@ html { scroll-behavior: auto; }
                   <span class="scr-qe scr-qe3"><span class="scr-ml">Perplexity</span><span class="scr-st scr-st-n" role="img" aria-label="Not named"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span></span>
                   <span class="scr-qe scr-qe4"><span class="scr-ml">AI Overviews</span><span class="scr-st scr-st-n" role="img" aria-label="Not named"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span></span>
                   <span class="scr-qb"><span class="scr-ml">Best spot </span><span class="scr-rank">#5</span></span>
-                  <span class="scr-qrv"><i class="scr-mono" style="--c:#3f7a5a">B</i><span>Bold &amp; Bare</span></span>
+                  <span class="scr-qrv"><i class="scr-mono" style="--c:#3f7a5a">B</i><span>Banksia Beard Co.</span></span>
                 </div>
                 <div class="scr-qr">
                   <span class="scr-qq"><span class="scr-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span><span>gift for a man with a beard under $80 australia</span></span>
@@ -3864,7 +4019,7 @@ html { scroll-behavior: auto; }
                   <span class="scr-qe scr-qe3"><span class="scr-ml">Perplexity</span><span class="scr-st scr-st-y" role="img" aria-label="Named in both runs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></span>
                   <span class="scr-qe scr-qe4"><span class="scr-ml">AI Overviews</span><span class="scr-st scr-st-y" role="img" aria-label="Named in both runs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></span>
                   <span class="scr-qb"><span class="scr-ml">Best spot </span><span class="scr-rank scr-rank-top">#3</span></span>
-                  <span class="scr-qrv"><i class="scr-mono" style="--c:#6b5ba5">A</i><span>A Better</span></span>
+                  <span class="scr-qrv"><i class="scr-mono" style="--c:#6b5ba5">W</i><span>Wattlebird Grooming</span></span>
                 </div>
                 <div class="scr-qr scr-q-extra">
                   <span class="scr-qq"><span class="scr-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span><span>how to stop beard itch</span></span>
@@ -3874,7 +4029,7 @@ html { scroll-behavior: auto; }
                   <span class="scr-qe scr-qe3"><span class="scr-ml">Perplexity</span><span class="scr-st scr-st-n" role="img" aria-label="Not named"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span></span>
                   <span class="scr-qe scr-qe4"><span class="scr-ml">AI Overviews</span><span class="scr-st scr-st-n" role="img" aria-label="Not named"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span></span>
                   <span class="scr-qb"><span class="scr-ml">Best spot: </span><span class="scr-rank scr-rank-none">none</span></span>
-                  <span class="scr-qrv"><i class="scr-mono" style="--c:#2f3150">G</i><span>The Groomed Man Co</span></span>
+                  <span class="scr-qrv"><i class="scr-mono" style="--c:#2f3150">R</i><span>Ridgeback Beard Co.</span></span>
                 </div>
                 <div class="scr-qr scr-q-extra">
                   <span class="scr-qq"><span class="scr-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span><span>best smelling beard oil</span></span>
@@ -3884,7 +4039,7 @@ html { scroll-behavior: auto; }
                   <span class="scr-qe scr-qe3"><span class="scr-ml">Perplexity</span><span class="scr-st scr-st-n" role="img" aria-label="Not named"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span></span>
                   <span class="scr-qe scr-qe4"><span class="scr-ml">AI Overviews</span><span class="scr-st scr-st-y" role="img" aria-label="Named in both runs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></span>
                   <span class="scr-qb"><span class="scr-ml">Best spot </span><span class="scr-rank">#6</span></span>
-                  <span class="scr-qrv"><i class="scr-mono" style="--c:#9a6b3f">M</i><span>Milkman</span></span>
+                  <span class="scr-qrv"><i class="scr-mono" style="--c:#9a6b3f">S</i><span>Saltbush Beard Co.</span></span>
                 </div>
                   </div>
                   <div class="scr-legend">
@@ -3904,9 +4059,9 @@ html { scroll-behavior: auto; }
         <div class="scr-frame">
           <div class="app scr-app" role="group" aria-label="GEO Competitors and sources screen, sample data">
             <div class="app-top">
-              <span class="store"><i class="scr-store-ic">BB</i><span class="scr-store-n">Bondi Beard Co.</span></span>
+              <span class="store"><i class="scr-store-ic">CG</i><span class="scr-store-n">Coolabah Grooming Co.</span></span>
               <span class="search"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Search</span></span>
-              <span class="scr-top-r"><span class="sample-tag">Sample data</span><svg class="scr-ic14 scr-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="scr-ava">BB</span></span>
+              <span class="scr-top-r"><span class="sample-tag">Sample data</span><svg class="scr-ic14 scr-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="scr-ava">CG</span></span>
             </div>
             <div class="app-body">
               <div class="app-nav scr-nav">
@@ -3931,11 +4086,11 @@ html { scroll-behavior: auto; }
                   <div class="panel">
                     <div class="scr-ph"><h6>Who AI recommends most</h6><span class="scr-mut">Share of answers that name them</span></div>
                     <ol class="scr-rk">
-                      <li><span class="scr-rk-i">1</span><div class="scr-rk-c"><div class="scr-rk-t"><span class="scr-rk-n"><i class="scr-mono" style="--c:#2f3150">G</i><span>The Groomed Man Co</span></span><span class="scr-rk-cnt">102 of 144</span><span class="scr-rk-v">71%</span></div><span class="scr-rk-b"><i style="width:71%"></i></span></div></li>
-                      <li><span class="scr-rk-i">2</span><div class="scr-rk-c"><div class="scr-rk-t"><span class="scr-rk-n"><i class="scr-mono" style="--c:#9a6b3f">M</i><span>Milkman</span></span><span class="scr-rk-cnt">78 of 144</span><span class="scr-rk-v">54%</span></div><span class="scr-rk-b"><i style="width:54%"></i></span></div></li>
-                      <li><span class="scr-rk-i">3</span><div class="scr-rk-c"><div class="scr-rk-t"><span class="scr-rk-n"><i class="scr-mono" style="--c:#3f7a5a">B</i><span>Bold &amp; Bare</span></span><span class="scr-rk-cnt">69 of 144</span><span class="scr-rk-v">48%</span></div><span class="scr-rk-b"><i style="width:48%"></i></span></div></li>
-                      <li class="scr-rk-you"><span class="scr-rk-i">4</span><div class="scr-rk-c"><div class="scr-rk-t"><span class="scr-rk-n"><i class="scr-mono" style="--c:var(--blue)">B</i><span>Bondi Beard Co.</span> <em>you</em></span><span class="scr-rk-cnt">52 of 144</span><span class="scr-rk-v">36%</span></div><span class="scr-rk-b"><i style="width:36%"></i></span></div></li>
-                      <li><span class="scr-rk-i">5</span><div class="scr-rk-c"><div class="scr-rk-t"><span class="scr-rk-n"><i class="scr-mono" style="--c:#6b5ba5">A</i><span>A Better</span></span><span class="scr-rk-cnt">45 of 144</span><span class="scr-rk-v">31%</span></div><span class="scr-rk-b"><i style="width:31%"></i></span></div></li>
+                      <li><span class="scr-rk-i">1</span><div class="scr-rk-c"><div class="scr-rk-t"><span class="scr-rk-n"><i class="scr-mono" style="--c:#2f3150">R</i><span>Ridgeback Beard Co.</span></span><span class="scr-rk-cnt">102 of 144</span><span class="scr-rk-v">71%</span></div><span class="scr-rk-b"><i style="width:71%"></i></span></div></li>
+                      <li><span class="scr-rk-i">2</span><div class="scr-rk-c"><div class="scr-rk-t"><span class="scr-rk-n"><i class="scr-mono" style="--c:#9a6b3f">S</i><span>Saltbush Beard Co.</span></span><span class="scr-rk-cnt">78 of 144</span><span class="scr-rk-v">54%</span></div><span class="scr-rk-b"><i style="width:54%"></i></span></div></li>
+                      <li><span class="scr-rk-i">3</span><div class="scr-rk-c"><div class="scr-rk-t"><span class="scr-rk-n"><i class="scr-mono" style="--c:#3f7a5a">B</i><span>Banksia Beard Co.</span></span><span class="scr-rk-cnt">69 of 144</span><span class="scr-rk-v">48%</span></div><span class="scr-rk-b"><i style="width:48%"></i></span></div></li>
+                      <li class="scr-rk-you"><span class="scr-rk-i">4</span><div class="scr-rk-c"><div class="scr-rk-t"><span class="scr-rk-n"><i class="scr-mono" style="--c:var(--blue)">C</i><span>Coolabah Grooming Co.</span> <em>you</em></span><span class="scr-rk-cnt">52 of 144</span><span class="scr-rk-v">36%</span></div><span class="scr-rk-b"><i style="width:36%"></i></span></div></li>
+                      <li><span class="scr-rk-i">5</span><div class="scr-rk-c"><div class="scr-rk-t"><span class="scr-rk-n"><i class="scr-mono" style="--c:#6b5ba5">W</i><span>Wattlebird Grooming</span></span><span class="scr-rk-cnt">45 of 144</span><span class="scr-rk-v">31%</span></div><span class="scr-rk-b"><i style="width:31%"></i></span></div></li>
                     </ol>
                     <p class="scr-foot"><span class="delta-up">▲ 8 pts</span> for you since joining (was 28%).</p>
                   </div>
@@ -3948,7 +4103,7 @@ html { scroll-behavior: auto; }
                           <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#e0603c">S</i><span class="scr-site-d">stuga.com.au<em class="scr-site-ty">Roundup</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-roundup">Roundup</span></td><td class="scr-r">14×</td><td class="scr-c"><span class="pill pill-red scr-sm">No</span></td></tr>
                           <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#d8262f">C</i><span class="scr-site-d">chemistwarehouse.com.au<em class="scr-site-ty">Retailer</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-retailer">Retailer</span></td><td class="scr-r">11×</td><td class="scr-c"><span class="pill pill-red scr-sm">No</span></td></tr>
                           <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#ff4500">R</i><span class="scr-site-d">reddit.com/r/beards<em class="scr-site-ty">Reddit</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-reddit">Reddit</span></td><td class="scr-r">9×</td><td class="scr-c"><span class="scr-na" title="Not something you can be listed on">n/a</span></td></tr>
-                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#0057b8">B</i><span class="scr-site-d">bigw.com.au<em class="scr-site-ty">Retailer</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-retailer">Retailer</span></td><td class="scr-r">7×</td><td class="scr-c"><span class="pill pill-green scr-sm">Yes</span></td></tr>
+                          <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#0057b8">B</i><span class="scr-site-d">bigw.com.au<em class="scr-site-ty">Retailer</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-retailer">Retailer</span></td><td class="scr-r">7×</td><td class="scr-c"><span class="pill pill-red scr-sm">No</span></td></tr>
                           <tr><td><span class="scr-site"><i class="scr-fav" style="--c:#4b3b2f">B</i><span class="scr-site-d">beardguru.com.au<em class="scr-site-ty">Brand</em></span></span></td><td class="scr-ty-col"><span class="scr-type scr-type-brand">Brand</span></td><td class="scr-r">5×</td><td class="scr-c"><span class="scr-na" title="Not something you can be listed on">n/a</span></td></tr>
                         </tbody>
                       </table>
@@ -3971,9 +4126,9 @@ html { scroll-behavior: auto; }
                   <div class="panel">
                     <div class="scr-ph"><h6>Since your last scan</h6><span class="scr-mut">28 Sep → 5 Oct</span></div>
                     <ul class="scr-chg">
-                      <li><span class="scr-chg-ic scr-chg-up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg></span><span><b>You moved up to 4th</b>: named in 52 answers, up from 41. You passed A Better.</span></li>
-                      <li><span class="scr-chg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><span><b>stuga.com.au</b> was cited 3 more times. It’s in Outreach.</span></li>
-                      <li><span class="scr-chg-ic scr-chg-down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></span><span><b>Bold &amp; Bare</b> was named less often (−4 pts).</span></li>
+                      <li><span class="scr-chg-ic scr-chg-up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg></span><span><b>You moved up to 4th</b>: named in 52 answers, up from 41. You passed Wattlebird Grooming.</span></li>
+                      <li><span class="scr-chg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><span><b>examplereviews.com.au</b> was cited 3 more times. It’s in Outreach.</span></li>
+                      <li><span class="scr-chg-ic scr-chg-down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></span><span><b>Banksia Beard Co.</b> was named less often (−4 pts).</span></li>
                     </ul>
                   </div>
                 </div>
@@ -3987,9 +4142,9 @@ html { scroll-behavior: auto; }
         <div class="scr-frame">
           <div class="app scr-app" role="group" aria-label="GEO Fixes screen, sample data">
             <div class="app-top">
-              <span class="store"><i class="scr-store-ic">BB</i><span class="scr-store-n">Bondi Beard Co.</span></span>
+              <span class="store"><i class="scr-store-ic">CG</i><span class="scr-store-n">Coolabah Grooming Co.</span></span>
               <span class="search"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Search</span></span>
-              <span class="scr-top-r"><span class="sample-tag">Sample data</span><svg class="scr-ic14 scr-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="scr-ava">BB</span></span>
+              <span class="scr-top-r"><span class="sample-tag">Sample data</span><svg class="scr-ic14 scr-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="scr-ava">CG</span></span>
             </div>
             <div class="app-body">
               <div class="app-nav scr-nav">
@@ -4059,9 +4214,9 @@ html { scroll-behavior: auto; }
         <div class="scr-frame">
           <div class="app scr-app" role="group" aria-label="GEO Outreach screen, sample data">
             <div class="app-top">
-              <span class="store"><i class="scr-store-ic">BB</i><span class="scr-store-n">Bondi Beard Co.</span></span>
+              <span class="store"><i class="scr-store-ic">CG</i><span class="scr-store-n">Coolabah Grooming Co.</span></span>
               <span class="search"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Search</span></span>
-              <span class="scr-top-r"><span class="sample-tag">Sample data</span><svg class="scr-ic14 scr-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="scr-ava">BB</span></span>
+              <span class="scr-top-r"><span class="sample-tag">Sample data</span><svg class="scr-ic14 scr-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="scr-ava">CG</span></span>
             </div>
             <div class="app-body">
               <div class="app-nav scr-nav">
@@ -4085,29 +4240,29 @@ html { scroll-behavior: auto; }
                   <div class="scr-ot">
                     <div class="scr-or scr-oh"><span>Article</span><span>Names</span><span>Author</span><span>Email</span><span>Status</span></div>
                     <div class="scr-or on">
-                      <span class="scr-oa"><i class="scr-fav scr-fav-lg" style="--c:#e0603c">S</i><span><b>Best beard oil 2026</b><em>stuga.com.au · Roundup</em></span></span>
-                      <span class="scr-on"><span class="scr-ml">Names </span>The Groomed Man Co, Milkman <span class="scr-more">+2</span></span>
+                      <span class="scr-oa"><i class="scr-fav scr-fav-lg" style="--c:#e0603c">R</i><span><b>Best beard oil 2026</b><em>examplereviews.com.au · Roundup</em></span></span>
+                      <span class="scr-on"><span class="scr-ml">Names </span>Ridgeback Beard Co. <span class="scr-more">+3</span></span>
                       <span class="scr-oau"><span class="scr-ml">By </span>Editor</span>
                       <span class="scr-oem"><span class="scr-found"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Found</span></span>
                       <span class="scr-os"><span class="pill pill-lav scr-sm">Drafted</span></span>
                     </div>
                     <div class="scr-or">
                       <span class="scr-oa"><i class="scr-fav scr-fav-lg" style="--c:#2c6e8f">W</i><span><b>15 gifts for bearded blokes</b><em>examplegiftguide.com.au · Lifestyle</em></span></span>
-                      <span class="scr-on"><span class="scr-ml">Names </span>A Better, Bold &amp; Bare</span>
+                      <span class="scr-on"><span class="scr-ml">Names </span>Wattlebird Grooming, Banksia Beard Co.</span>
                       <span class="scr-oau"><span class="scr-ml">By </span>Jess N.</span>
                       <span class="scr-oem"><span class="scr-found"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Found</span></span>
                       <span class="scr-os"><span class="pill pill-grey scr-sm">New</span></span>
                     </div>
                     <div class="scr-or">
                       <span class="scr-oa"><i class="scr-fav scr-fav-lg" style="--c:#7a5c3e">B</i><span><b>Beard care for beginners</b><em>examplebeardblog.com.au · Blog</em></span></span>
-                      <span class="scr-on"><span class="scr-ml">Names </span>Milkman <span class="scr-more">+1</span></span>
+                      <span class="scr-on"><span class="scr-ml">Names </span>Saltbush Beard Co. <span class="scr-more">+1</span></span>
                       <span class="scr-oau"><span class="scr-ml">By </span>Alex T.</span>
                       <span class="scr-oem"><span class="scr-nf">Not found</span></span>
                       <span class="scr-os"><span class="pill pill-grey scr-sm">New</span></span>
                     </div>
                     <div class="scr-or">
                       <span class="scr-oa"><i class="scr-fav scr-fav-lg" style="--c:#4d7c64">G</i><span><b>The best beard balms, tried</b><em>examplegrooming.com.au · Blog</em></span></span>
-                      <span class="scr-on"><span class="scr-ml">Names </span>Bold &amp; Bare</span>
+                      <span class="scr-on"><span class="scr-ml">Names </span>Banksia Beard Co.</span>
                       <span class="scr-oau"><span class="scr-ml">By </span>Chris P.</span>
                       <span class="scr-oem"><span class="scr-found"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Found</span></span>
                       <span class="scr-os"><span class="pill pill-green scr-sm">Sent 2 Oct</span></span>
@@ -4118,14 +4273,14 @@ html { scroll-behavior: auto; }
                   <div class="scr-ph"><h6>Pitch draft · Best beard oil 2026</h6><span class="scr-mut">Written for you. Edit anything.</span></div>
                   <div class="scr-pg">
                     <div class="scr-mail">
-                      <div class="scr-mf"><span>To</span><b>Editor, stuga.com.au</b><em>Email found · hidden in sample</em></div>
+                      <div class="scr-mf"><span>To</span><b>Editor, examplereviews.com.au</b><em>Email found · hidden in sample</em></div>
                       <div class="scr-mf"><span>Subject</span><b>A dry-skin beard oil for your 2026 roundup?</b></div>
                       <div class="scr-mb">
                         <p>Hi there,</p>
-                        <p>I enjoyed your Best beard oil 2026 roundup. We’re Bondi Beard Co., a small Australian brand. We make a sandalwood beard oil for men whose skin gets dry under the beard.</p>
-                        <p>Here it is: <span class="scr-mlink">bondibeardco.com.au/sandalwood</span></p>
+                        <p>I enjoyed your Best beard oil 2026 roundup. We’re Coolabah Grooming Co., a small Australian brand. We make a sandalwood beard oil for men whose skin gets dry under the beard.</p>
+                        <p>Here it is: <span class="scr-mlink">coolabahgrooming.com.au/sandalwood</span></p>
                         <p>If it’s useful for your next update, I’d be glad to send a bottle to try. No strings attached.</p>
-                        <p>Thanks,<br>[Your name]<br>Bondi Beard Co.</p>
+                        <p>Thanks,<br>[Your name]<br>Coolabah Grooming Co.</p>
                       </div>
                     </div>
                     <div class="scr-pa">
@@ -4154,9 +4309,9 @@ html { scroll-behavior: auto; }
         <div class="scr-frame">
           <div class="app scr-app" role="group" aria-label="GEO Plans and settings screen, sample data">
             <div class="app-top">
-              <span class="store"><i class="scr-store-ic">BB</i><span class="scr-store-n">Bondi Beard Co.</span></span>
+              <span class="store"><i class="scr-store-ic">CG</i><span class="scr-store-n">Coolabah Grooming Co.</span></span>
               <span class="search"><svg class="scr-ic14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Search</span></span>
-              <span class="scr-top-r"><span class="sample-tag">Sample data</span><svg class="scr-ic14 scr-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="scr-ava">BB</span></span>
+              <span class="scr-top-r"><span class="sample-tag">Sample data</span><svg class="scr-ic14 scr-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="scr-ava">CG</span></span>
             </div>
             <div class="app-body">
               <div class="app-nav scr-nav">
@@ -4212,9 +4367,9 @@ html { scroll-behavior: auto; }
                     <div class="scr-ph scr-pad"><h6>Settings</h6></div>
                     <ul class="scr-set">
                       <li class="scr-set-off"><div><b><svg class="scr-ic13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Autopilot <span class="pill pill-grey scr-sm">Pro</span></b><p>Applies safe fixes for you. Never touches claims.</p></div><span class="scr-tog" role="img" aria-label="Off, Pro plan only"></span></li>
-                      <li><div><b>Monthly email report</b><p>Sent on the 1st to <span class="scr-chip"><svg class="scr-ic12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>owner@bondibeardco.com.au</span> <span class="scr-add">+ Add</span></p></div><span class="scr-tog scr-tog-on" role="img" aria-label="On"></span></li>
+                      <li><div><b>Monthly email report</b><p>Sent on the 1st to <span class="scr-chip"><svg class="scr-ic12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>owner@coolabahgrooming.com.au</span> <span class="scr-add">+ Add</span></p></div><span class="scr-tog scr-tog-on" role="img" aria-label="On"></span></li>
                       <li><div><b>Scan schedule</b><p>Every Monday · 2 runs per AI assistant. Daily on Pro.</p></div><span class="scr-select">Weekly<svg class="scr-ic13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></li>
-                      <li class="scr-set-comp"><div><b>Competitors we watch</b><p class="scr-chips"><span class="scr-chip">The Groomed Man Co</span><span class="scr-chip">Milkman</span><span class="scr-chip">Bold &amp; Bare</span><span class="scr-chip">A Better</span></p></div><span class="scr-link">Edit</span></li>
+                      <li class="scr-set-comp"><div><b>Competitors we watch</b><p class="scr-chips"><span class="scr-chip">Ridgeback Beard Co.</span><span class="scr-chip">Saltbush Beard Co.</span><span class="scr-chip">Banksia Beard Co.</span><span class="scr-chip">Wattlebird Grooming</span></p></div><span class="scr-link">Edit</span></li>
                       <li><div><b>Shopper country</b><p>We ask each question as a shopper in this country.</p></div><span class="scr-select">Australia · AUD<svg class="scr-ic13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></li>
                     </ul>
                   </div>
@@ -4389,7 +4544,7 @@ html { scroll-behavior: auto; }
                   </div>
                   <div class="fx-kv fx-kv-vendor">
                     <span class="fx-k">Vendor</span>
-                    <div class="fx-input fx-input-sm">Bondi Beard Co.</div>
+                    <div class="fx-input fx-input-sm">Coolabah Grooming Co.</div>
                   </div>
                 </div>
                 <div class="fx-card">
@@ -4409,7 +4564,7 @@ html { scroll-behavior: auto; }
           <div class="fx-shot fx-shot-web">
             <div class="fx-chrome">
               <span class="fx-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-              <span class="fx-url"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>bondibeardco.com.au/products/sandalwood-beard-oil</span>
+              <span class="fx-url"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>coolabahgrooming.com.au/products/sandalwood-beard-oil</span>
             </div>
             <div class="fx-pdp">
               <div class="fx-pdp-media">
@@ -4417,7 +4572,7 @@ html { scroll-behavior: auto; }
                 <span class="fx-thumbs" aria-hidden="true"><i class="on"><img src="img/guide-beard-oil.jpg" alt=""></i><i><img src="img/guide-beard-oil.jpg" alt=""></i><i><img src="img/guide-beard-oil.jpg" alt=""></i></span>
               </div>
               <div class="fx-pdp-info">
-                <span class="fx-vendor">Bondi Beard Co.</span>
+                <span class="fx-vendor">Coolabah Grooming Co.</span>
                 <span class="fx-pdp-t">Sandalwood Beard Oil for Dry Skin, 30ml</span>
                 <span class="fx-price tnum">A$34.00</span>
                 <span class="fx-cart">Add to cart</span>
@@ -4449,7 +4604,7 @@ html { scroll-behavior: auto; }
           <div class="fx-shot fx-shot-web">
             <div class="fx-chrome">
               <span class="fx-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-              <span class="fx-url"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>bondibeardco.com.au/pages/best-beard-oil-dry-skin</span>
+              <span class="fx-url"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>coolabahgrooming.com.au/pages/best-beard-oil-dry-skin</span>
               <span class="pill pill-amber fx-pill-sm fx-draft">Draft · approve to publish</span>
             </div>
             <div class="fx-guide">
@@ -4458,7 +4613,7 @@ html { scroll-behavior: auto; }
                   <span class="fx-g-eye">Guide · Updated Oct 2026</span>
                   <span class="fx-g-t">Best beard oil for dry skin in Australia</span>
                   <span class="fx-g-sub">Three picks from our range, and who each one suits. Short and honest.</span>
-                  <span class="fx-g-by"><i>BB</i>Bondi Beard Co. · 4 min read</span>
+                  <span class="fx-g-by"><i>CG</i>Coolabah Grooming Co. · 4 min read</span>
                 </div>
                 <div class="fx-g-img"><img src="img/guide-beard-oil.jpg" alt="Clay beard oil bottle on a lilac stand" width="1200" height="896"></div>
               </div>
@@ -4571,7 +4726,7 @@ html { scroll-behavior: auto; }
                 <span class="how-ans-src"><i style="background: var(--e-chatgpt)"></i>ChatGPT · run 1 of 2</span>
                 <span class="how-notyet">You: not named yet</span>
               </div>
-              <p class="how-ans-p">For dry skin, shoppers in Australia often go for <span class="hl">The Groomed Man Co</span>, <span class="hl">A Better</span>, <span class="hl">Bold &amp; Bare</span> and <span class="hl">Milkman</span>. Look for jojoba or argan oil and a light finish…</p>
+              <p class="how-ans-p">For dry skin, shoppers in Australia often go for <span class="hl">Ridgeback Beard Co.</span>, <span class="hl">Wattlebird Grooming</span>, <span class="hl">Banksia Beard Co.</span> and <span class="hl">Saltbush Beard Co.</span> Look for jojoba or argan oil and a light finish…</p>
               <div class="how-cites">
                 <span>stuga.com.au</span><span>chemistwarehouse.com.au</span><span>bigw.com.au</span>
               </div>
@@ -4916,112 +5071,145 @@ html { scroll-behavior: auto; }
 
 <!-- 43-faq.html -->
 <section class="section faq-sec" id="faq" aria-labelledby="faq-title">
-  <div class="wrap faq-grid">
-    <div class="faq-left">
+  <div class="wrap">
+    <div class="sec-head faq-head">
       <span class="label"><span class="chip-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg></span><span class="chip-tx">FAQs</span></span>
-      <h2 class="h2 faq-h2" id="faq-title">Questions store owners ask</h2>
+      <h2 class="h2" id="faq-title">Questions store owners ask</h2>
       <p class="lead faq-lead">Plain answers about how AI picks stores, how we count sales, and what changes in your store.</p>
+    </div>
+
+    <div class="faq-main">
+      <img class="faq-deco" src="img/clay-bubble.png" alt="" width="400" height="400" decoding="async">
+
+      <div class="faq-chat">
+        <div class="faq-bar">
+          <span class="faq-av faq-av-lg" aria-hidden="true"><i></i><i></i></span>
+          <div class="faq-bar-tx">
+            <p class="faq-bar-name">GEO assistant</p>
+            <p class="faq-bar-sub">Answers written by the GEO team</p>
+          </div>
+        </div>
+
+        <!-- Every question and answer is real text in the page. Without JavaScript they all show as one
+             conversation (the greeting stays hidden). With it, the first pair shows and the rest wait in the
+             list below the chat; new messages land in the role="log" thread, which announces them. -->
+        <div class="faq-log" role="region" aria-label="FAQ conversation">
+          <div class="faq-log-in">
+            <div class="faq-msg faq-msg-a faq-hello" hidden><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+              <p>Hi. Choose a question below and its answer appears here. Let’s start with how AI picks stores.</p>
+            </div></div>
+            <div class="faq-thread" role="log" aria-label="Questions and answers">
+              <div class="faq-pair" id="faq-p1">
+                <div class="faq-msg faq-msg-q"><h3 class="faq-q">How does AI decide which stores to recommend?</h3></div>
+                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                  <p>Nobody outside the AI companies knows the exact recipe. But the answers show their working. AI repeats facts it can read on your product pages, picks pages that answer the exact question asked, and quotes sources it trusts, like roundup articles, retailers and forums. GEO tracks all three for the questions your buyers ask.</p>
+                </div></div>
+              </div>
+              <div class="faq-pair" id="faq-p2">
+                <div class="faq-msg faq-msg-q"><h3 class="faq-q">Can I pay to appear in AI answers?</h3></div>
+                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                  <p>You can buy ads next to some answers, but not the recommendation itself. ChatGPT shows ads on its Free and Go plans. They sit below the answer, they’re labelled, and OpenAI says advertisers can’t shape or rank the answer. Google can place ads above, below or within its AI Overviews in Australia and New Zealand. The recommendation inside the answer isn’t for sale.</p>
+                  <p class="faq-src">Sources: <a class="src-link" href="https://help.openai.com/en/articles/20001047-ads-in-chatgpt" target="_blank" rel="noopener">OpenAI, Ads in ChatGPT</a>, <a class="src-link" href="https://openai.com/index/chatgpt-ads-expands-southeast-asia-taiwan/" target="_blank" rel="noopener">OpenAI, Sep 2026</a> and <a class="src-link" href="https://support.google.com/google-ads/answer/16297775?hl=en" target="_blank" rel="noopener">Google Ads Help</a>.</p>
+                </div></div>
+              </div>
+              <div class="faq-pair" id="faq-p3">
+                <div class="faq-msg faq-msg-q"><h3 class="faq-q">If GEO costs money, what’s “free” about it?</h3></div>
+                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                  <p>The traffic. When AI names your store and a shopper clicks through, you don’t pay for that click the way you would for an ad. GEO itself is a paid monthly plan. You can start with a $0 first scan, and Core has a 7-day free trial.</p>
+                </div></div>
+              </div>
+              <div class="faq-pair" id="faq-p4">
+                <div class="faq-msg faq-msg-q"><h3 class="faq-q">How do you know a sale came from AI?</h3></div>
+                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                  <p>ChatGPT adds <code class="faq-code">utm_source=chatgpt.com</code> to the links it shows. We also check where each visit came from (Perplexity, Gemini, Copilot, Claude and others), and we count sales from the pages we build for you with our own link tag. Google’s AI Overviews can’t be cleanly separated from normal Google, so we label them. We compare everything with your baseline, your numbers from before you joined, and we never claim every AI sale was caused by GEO.</p>
+                </div></div>
+              </div>
+              <div class="faq-pair" id="faq-p5">
+                <div class="faq-msg faq-msg-q"><h3 class="faq-q">What is the visibility score?</h3></div>
+                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                  <p>A score out of 100 for how often AI names you. It’s the share of AI answers that name you, across all your questions, every AI assistant and both runs, with a bonus when you’re in the top 3 and a little credit when AI links to your site. 0 means no AI named you. Higher means you’re named more often, and nearer the top.</p>
+                </div></div>
+              </div>
+              <div class="faq-pair" id="faq-p6">
+                <div class="faq-msg faq-msg-q"><h3 class="faq-q">Will GEO change my store without asking?</h3></div>
+                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                  <p>No. Every change waits for your approval. Autopilot on Pro is opt-in, and it still skips anything risky, like product claims.</p>
+                </div></div>
+              </div>
+              <div class="faq-pair" id="faq-p7">
+                <div class="faq-msg faq-msg-q"><h3 class="faq-q">Can I undo a change?</h3></div>
+                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                  <p>Yes. We keep the old version of everything we change, so undo is one click.</p>
+                </div></div>
+              </div>
+              <div class="faq-pair" id="faq-p8">
+                <div class="faq-msg faq-msg-q"><h3 class="faq-q">Will it write health or skin claims?</h3></div>
+                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                  <p>No. Health, skin and supplement products get a claims check first, in line with Australia’s TGA rules. We only reword facts already in your catalogue. If something is missing, we ask you.</p>
+                </div></div>
+              </div>
+              <div class="faq-pair" id="faq-p9">
+                <div class="faq-msg faq-msg-q"><h3 class="faq-q">Which AI assistants do you check?</h3></div>
+                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                  <p>ChatGPT, Gemini, Perplexity and Google AI Overviews. Pro adds Claude. Each question is asked twice per assistant on every full scan, and we show the average.</p>
+                </div></div>
+              </div>
+              <div class="faq-pair" id="faq-p10">
+                <div class="faq-msg faq-msg-q"><h3 class="faq-q">How soon will I see results?</h3></div>
+                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                  <p>We can’t promise a date, and we won’t. AI assistants refresh what they know at different speeds, and getting into a roundup depends on its editor. That’s why GEO tracks the same questions every week against your baseline, so you can see what’s moving and what isn’t.</p>
+                </div></div>
+              </div>
+              <div class="faq-pair" id="faq-p11">
+                <div class="faq-msg faq-msg-q"><h3 class="faq-q">Is this the same as SEO?</h3></div>
+                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                  <p>They overlap. Good SEO helps, because many AI answers draw on the web. The difference is the question you ask. SEO asks where you rank on a page of links. GEO asks whether AI names you in its answer, and which sites it quotes when it does.</p>
+                </div></div>
+              </div>
+              <div class="faq-pair" id="faq-p12">
+                <div class="faq-msg faq-msg-q"><h3 class="faq-q">Do I need to be technical?</h3></div>
+                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                  <p>No. Install from Shopify, tick the questions you care about, and approve fixes with one click. GEO writes the changes and pushes them to your store for you.</p>
+                </div></div>
+              </div>
+              <div class="faq-pair" id="faq-p13">
+                <div class="faq-msg faq-msg-q"><h3 class="faq-q">What’s in the free scan? And how is it different from the free product check?</h3></div>
+                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                  <p>The free product check on this page needs no install: one product, 3 questions, ChatGPT, Gemini and Perplexity, each asked twice. The free scan runs inside Shopify after you install: 10 buyer questions on 3 AI assistants, your visibility score (how often AI names you, out of 100), who AI recommends instead, and any AI sales from your last 60 days. Both cost $0.</p>
+                </div></div>
+              </div>
+              <div class="faq-pair" id="faq-p14">
+                <div class="faq-msg faq-msg-q"><h3 class="faq-q">Does it work outside Australia?</h3></div>
+                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                  <p>GEO is built for stores in Australia and New Zealand first, and asks each question as a local shopper would. The free product check also works for shoppers in the US, UK and Canada.</p>
+                </div></div>
+              </div>
+              <div class="faq-pair" id="faq-p15">
+                <div class="faq-msg faq-msg-q"><h3 class="faq-q">What do you do with my store’s data?</h3></div>
+                <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
+                  <p>We read your products and homepage to write fixes, and your orders to find sales from AI. Click tracking counts visits from AI answers, follows your store’s consent settings and keeps no personal details. We never use one store’s data for another store.</p>
+                </div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Suggested questions: built by 43-faq.js from the pairs above, so it stays hidden without JavaScript. -->
+        <div class="faq-sugg" hidden>
+          <div class="faq-sugg-head">
+            <p class="faq-sugg-title" id="faq-sugg-title">More questions</p>
+            <button type="button" class="faq-reset" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Show all questions</button>
+          </div>
+          <ul class="faq-sugg-list" aria-labelledby="faq-sugg-title"></ul>
+        </div>
+      </div>
 
       <div class="faq-help">
-        <div class="faq-help-img"><img src="img/clay-support.jpg" alt="Clay headset beside two chat bubbles" width="1200" height="670" decoding="async"></div>
+        <span class="faq-help-img"><img src="img/clay-support.jpg" alt="Clay headset beside two chat bubbles" width="1200" height="670" decoding="async"></span>
         <div class="faq-help-tx">
           <p>Stuck on setup? It takes about five minutes, and most of it runs on its own.</p>
           <a class="faq-help-link" href="#how">See the setup steps <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
         </div>
-      </div>
-    </div>
-
-    <div class="faq-list">
-      <div class="faq-item faq-open">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b1" aria-expanded="true" aria-controls="faq-a1">How does AI decide which stores to recommend?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a1" role="region" aria-labelledby="faq-b1"><div class="faq-a-in">
-            <p>Nobody outside the AI companies knows the exact recipe. But the answers show their working. AI repeats facts it can read on your product pages, picks pages that answer the exact question asked, and quotes sources it trusts, like roundup articles, retailers and forums. GEO tracks all three for the questions your buyers ask.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b2" aria-expanded="false" aria-controls="faq-a2">Can I pay to appear in AI answers?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a2" role="region" aria-labelledby="faq-b2"><div class="faq-a-in">
-            <p>You can buy ads next to some answers, but not the recommendation itself. ChatGPT shows ads on its Free and Go plans. They sit below the answer, they’re labelled, and OpenAI says advertisers can’t shape or rank the answer. Google can place ads above, below or within its AI Overviews in Australia and New Zealand. The recommendation inside the answer isn’t for sale.</p>
-            <p class="faq-src">Sources: <a class="src-link" href="https://help.openai.com/en/articles/20001047-ads-in-chatgpt" target="_blank" rel="noopener">OpenAI, Ads in ChatGPT</a>, <a class="src-link" href="https://openai.com/index/chatgpt-ads-expands-southeast-asia-taiwan/" target="_blank" rel="noopener">OpenAI, Sep 2026</a> and <a class="src-link" href="https://support.google.com/google-ads/answer/16297775?hl=en" target="_blank" rel="noopener">Google Ads Help</a>.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b3" aria-expanded="false" aria-controls="faq-a3">If GEO costs money, what’s “free” about it?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a3" role="region" aria-labelledby="faq-b3"><div class="faq-a-in">
-            <p>The traffic. When AI names your store and a shopper clicks through, you don’t pay for that click the way you would for an ad. GEO itself is a paid monthly plan. You can start with a $0 first scan, and Core has a 7-day free trial.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b4" aria-expanded="false" aria-controls="faq-a4">How do you know a sale came from AI?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a4" role="region" aria-labelledby="faq-b4"><div class="faq-a-in">
-            <p>ChatGPT adds <code class="faq-code">utm_source=chatgpt.com</code> to the links it shows. We also check where each visit came from (Perplexity, Gemini, Copilot, Claude and others), and we count sales from the pages we build for you with our own link tag. Google’s AI Overviews can’t be cleanly separated from normal Google, so we label them. We compare everything with your baseline, your numbers from before you joined, and we never claim every AI sale was caused by GEO.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b5" aria-expanded="false" aria-controls="faq-a5">What is the visibility score?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a5" role="region" aria-labelledby="faq-b5"><div class="faq-a-in">
-            <p>A score out of 100 for how often AI names you. It’s the share of AI answers that name you, across all your questions, every AI assistant and both runs, with a bonus when you’re in the top 3 and a little credit when AI links to your site. 0 means no AI named you. Higher means you’re named more often, and nearer the top.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b6" aria-expanded="false" aria-controls="faq-a6">Will GEO change my store without asking?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a6" role="region" aria-labelledby="faq-b6"><div class="faq-a-in">
-            <p>No. Every change waits for your approval. Autopilot on Pro is opt-in, and it still skips anything risky, like product claims.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b7" aria-expanded="false" aria-controls="faq-a7">Can I undo a change?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a7" role="region" aria-labelledby="faq-b7"><div class="faq-a-in">
-            <p>Yes. We keep the old version of everything we change, so undo is one click.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b8" aria-expanded="false" aria-controls="faq-a8">Will it write health or skin claims?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a8" role="region" aria-labelledby="faq-b8"><div class="faq-a-in">
-            <p>No. Health, skin and supplement products get a claims check first, in line with Australia’s TGA rules. We only reword facts already in your catalogue. If something is missing, we ask you.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b9" aria-expanded="false" aria-controls="faq-a9">Which AI assistants do you check?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a9" role="region" aria-labelledby="faq-b9"><div class="faq-a-in">
-            <p>ChatGPT, Gemini, Perplexity and Google AI Overviews. Pro adds Claude. Each question is asked twice per assistant on every full scan, and we show the average.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b10" aria-expanded="false" aria-controls="faq-a10">How soon will I see results?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a10" role="region" aria-labelledby="faq-b10"><div class="faq-a-in">
-            <p>We can’t promise a date, and we won’t. AI assistants refresh what they know at different speeds, and getting into a roundup depends on its editor. That’s why GEO tracks the same questions every week against your baseline, so you can see what’s moving and what isn’t.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b11" aria-expanded="false" aria-controls="faq-a11">Is this the same as SEO?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a11" role="region" aria-labelledby="faq-b11"><div class="faq-a-in">
-            <p>They overlap. Good SEO helps, because many AI answers draw on the web. The difference is the question you ask. SEO asks where you rank on a page of links. GEO asks whether AI names you in its answer, and which sites it quotes when it does.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b12" aria-expanded="false" aria-controls="faq-a12">Do I need to be technical?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a12" role="region" aria-labelledby="faq-b12"><div class="faq-a-in">
-            <p>No. Install from Shopify, tick the questions you care about, and approve fixes with one click. GEO writes the changes and pushes them to your store for you.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b13" aria-expanded="false" aria-controls="faq-a13">What’s in the free scan? And how is it different from the free product check?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a13" role="region" aria-labelledby="faq-b13"><div class="faq-a-in">
-            <p>The free product check on this page needs no install: one product, 3 questions, ChatGPT, Gemini and Perplexity, each asked twice. The free scan runs inside Shopify after you install: 10 buyer questions on 3 AI assistants, your visibility score (how often AI names you, out of 100), who AI recommends instead, and any AI sales from your last 60 days. Both cost $0.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b14" aria-expanded="false" aria-controls="faq-a14">Does it work outside Australia?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a14" role="region" aria-labelledby="faq-b14"><div class="faq-a-in">
-            <p>GEO is built for stores in Australia and New Zealand first, and asks each question as a local shopper would. The free product check also works for shoppers in the US, UK and Canada.</p>
-        </div></div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q"><button type="button" class="faq-btn" id="faq-b15" aria-expanded="false" aria-controls="faq-a15">What do you do with my store’s data?<span class="faq-pm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path class="faq-pm-v" d="M12 5v14"/></svg></span></button></h3>
-        <div class="faq-a" id="faq-a15" role="region" aria-labelledby="faq-b15"><div class="faq-a-in">
-            <p>We read your products and homepage to write fixes, and your orders to find sales from AI. Click tracking counts visits from AI answers, follows your store’s consent settings and keeps no personal details. We never use one store’s data for another store.</p>
-        </div></div>
       </div>
     </div>
   </div>
@@ -5079,7 +5267,7 @@ html { scroll-behavior: auto; }
     <div class="foot-cta">
       <div class="foot-cta-tx">
         <h2 class="h2 foot-h2" id="foot-cta-title">Is AI recommending your store?</h2>
-        <p class="lead foot-lead">Paste one product link. In a few minutes you’ll see who AI recommends, which sites it trusts, and what to fix first. Free, no sign-up.</p>
+        <p class="lead foot-lead">Paste one product link. In about 3 to 6 minutes you’ll see who AI recommends, which sites it trusts, and what to fix first. Free, no sign-up.</p>
         <a class="btn btn-dark foot-btn" href="#check">Check my product <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
       </div>
       <div class="foot-cta-art">
@@ -5224,6 +5412,43 @@ html { scroll-behavior: auto; }
   if (location.hash === '#check') focusSoon();
 })();
 
+// Hero cards: start each card's animation when it scrolls into view, pause it when it leaves, and
+// replay it from the start on hover or keyboard focus. With reduced motion the CSS shows the finished
+// state and nothing here runs.
+(function () {
+  var row = document.querySelector('.hw');
+  if (!row) return;
+  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (calm) return;
+  var cards = [].slice.call(row.querySelectorAll('.hw-card'));
+  row.classList.add('hw-ready');
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { en.target.classList.toggle('is-on', en.isIntersecting); });
+    }, { threshold: 0.3 });
+    cards.forEach(function (c) { io.observe(c); });
+  } else {
+    cards.forEach(function (c) { c.classList.add('is-on'); });
+  }
+
+  function replay(card) {
+    var now = Date.now();
+    if (now - (card._hwAt || 0) < 1200) return; // ignore quick in-and-out
+    card._hwAt = now;
+    card.classList.add('is-on');
+    var art = card.querySelector('.hw-art');
+    if (art && art.getAnimations) {
+      // Only rewind: calling play() would stop the CSS from pausing it when it scrolls away.
+      art.getAnimations({ subtree: true }).forEach(function (a) { a.currentTime = 0; });
+    }
+  }
+  cards.forEach(function (c) {
+    c.addEventListener('mouseenter', function () { replay(c); });
+    c.addEventListener('focusin', function () { replay(c); });
+  });
+})();
+
 // 20w-worth.js
 (function () {
   var root = document.getElementById('worth');
@@ -5357,22 +5582,139 @@ html { scroll-behavior: auto; }
 
 // 43-faq.js
 (function () {
+  // FAQ chat: the first question starts open, the rest become suggestion bubbles. Tapping one moves its
+  // question into the conversation, shows the assistant typing for a moment, then reveals the answer.
+  // Every pair is already real text in the HTML, so this only hides, moves and shows it.
   var root = document.getElementById('faq');
   if (!root) return;
-  var items = root.querySelectorAll('.faq-item');
-  function setOpen(item, open) {
-    item.classList.toggle('faq-open', open);
-    var btn = item.querySelector('.faq-btn');
-    if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  var chat = root.querySelector('.faq-chat');
+  var log = root.querySelector('.faq-log');
+  var thread = root.querySelector('.faq-thread');
+  var hello = root.querySelector('.faq-hello');
+  var sugg = root.querySelector('.faq-sugg');
+  var list = root.querySelector('.faq-sugg-list');
+  var reset = root.querySelector('.faq-reset');
+  var title = root.querySelector('.faq-sugg-title');
+  var titleText = title ? title.textContent : '';
+  if (!chat || !log || !thread || !sugg || !list) return;
+  var pairs = Array.prototype.slice.call(thread.querySelectorAll('.faq-pair'));
+  if (pairs.length < 2) return;
+
+  var motion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  function reduced() { return !!(motion && motion.matches); }
+
+  var SEND_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>';
+  var asked = 0;
+  var pending = null;
+
+  // the "typing" row reuses the avatar; screen readers skip it (the answer itself is announced)
+  var typing = document.createElement('div');
+  typing.className = 'faq-msg faq-msg-a faq-typing';
+  typing.setAttribute('aria-hidden', 'true');
+  typing.innerHTML = '<span class="faq-av"><i></i><i></i></span><div class="faq-bub"><span></span><span></span><span></span></div>';
+
+  function questionText(pair) {
+    var q = pair.querySelector('.faq-q');
+    return q ? q.textContent.replace(/\s+/g, ' ').trim() : '';
   }
-  items.forEach(function (item) {
-    var btn = item.querySelector('.faq-btn');
-    if (!btn) return;
-    btn.addEventListener('click', function () {
-      var willOpen = !item.classList.contains('faq-open');
-      items.forEach(function (other) { if (other !== item) setOpen(other, false); });
-      setOpen(item, willOpen);
+
+  function scrollLog(top) {
+    var max = log.scrollHeight - log.clientHeight;
+    var y = Math.max(0, Math.min(top, max));
+    if (typeof log.scrollTo === 'function') log.scrollTo({ top: y, behavior: reduced() ? 'auto' : 'smooth' });
+    else log.scrollTop = y;
+  }
+
+  function makeChip(pair) {
+    var li = document.createElement('li');
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'faq-chip';
+    btn.setAttribute('aria-controls', pair.id);
+    var tx = document.createElement('span');
+    tx.textContent = questionText(pair);
+    var ic = document.createElement('span');
+    ic.className = 'faq-chip-ic';
+    ic.innerHTML = SEND_ICON;
+    btn.appendChild(tx);
+    btn.appendChild(ic);
+    btn.addEventListener('click', function () { ask(pair, li); });
+    li.appendChild(btn);
+    return li;
+  }
+
+  function fillList(skip) {
+    list.textContent = '';
+    pairs.forEach(function (pair) { if (pair !== skip) list.appendChild(makeChip(pair)); });
+  }
+
+  function syncState() {
+    var left = list.children.length;
+    if (reset) reset.hidden = asked === 0;
+    if (title) title.textContent = left ? titleText : 'That\u2019s every question';
+    list.hidden = left === 0;
+  }
+
+  // show the waiting answer now (after the typing delay, or at once when another question is tapped)
+  function finish() {
+    if (!pending) return;
+    var p = pending;
+    pending = null;
+    clearTimeout(p.timer);
+    if (typing.parentNode) typing.parentNode.removeChild(typing);
+    p.pair.appendChild(p.answer);
+    // bring the new question to the top of the chat when the answer is long, else show the whole pair
+    scrollLog(p.pair.offsetTop - 16);
+  }
+
+  function ask(pair, li) {
+    finish();
+    var items = Array.prototype.slice.call(list.children);
+    var at = items.indexOf(li);
+    if (li.parentNode) li.parentNode.removeChild(li);
+    asked += 1;
+
+    // the question joins the end of the conversation; the answer waits off the page until it is "typed"
+    var answer = pair.querySelector('.faq-msg-a');
+    if (answer) pair.removeChild(answer);
+    pair.hidden = false;
+    pair.classList.add('is-new');
+    thread.appendChild(pair);
+    syncState();
+
+    // keep keyboard focus in the list: the next question, else the reset button
+    var next = list.children[at] || list.children[at - 1];
+    var target = next ? next.querySelector('button') : (reset && !reset.hidden ? reset : log);
+    if (target) { try { target.focus({ preventScroll: true }); } catch (e) { target.focus(); } }
+
+    if (!answer) { scrollLog(pair.offsetTop - 16); return; }
+    var wait = reduced() ? 0 : 600 + Math.min(300, Math.round(answer.textContent.length * 0.6));
+    pending = { pair: pair, answer: answer, timer: 0 };
+    if (!wait) { finish(); return; }
+    thread.appendChild(typing);
+    scrollLog(log.scrollHeight);
+    pending.timer = setTimeout(finish, wait);
+  }
+
+  // start: first pair open, the rest hidden (still in the page) and listed as suggestions
+  chat.classList.add('is-live');
+  log.tabIndex = 0; // the conversation now scrolls on its own, so keyboard users can focus and scroll it
+  if (hello) hello.hidden = false;
+  pairs.forEach(function (pair, i) { pair.hidden = i > 0; });
+  fillList(pairs[0]);
+  sugg.hidden = false;
+  syncState();
+  log.scrollTop = log.scrollHeight;
+
+  if (reset) {
+    reset.addEventListener('click', function () {
+      finish();
+      asked = 0;
+      fillList(null);
+      syncState();
+      var first = list.querySelector('button');
+      if (first) { try { first.focus({ preventScroll: true }); } catch (e) { first.focus(); } }
     });
-  });
+  }
 })();
 </script>

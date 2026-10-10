@@ -1,8 +1,9 @@
 /* Hero: lilac gradient band with the faint grid, pill, h1, lead and the free check form, then three
-   small animated cards that explain the idea: shoppers ask AI, AI picks a few stores, you get the sale.
-   Card animations are CSS keyframes (transform and opacity only). 11-hero.js starts them when a card
-   scrolls into view and replays them on hover or focus. With reduced motion (or no JS) each card shows
-   its finished state, which is what the plain styles below describe. */
+   small animated cards that explain the idea: shoppers ask AI, AI picks a few brands, you get the sale.
+   Card animations are CSS keyframes (transform and opacity only) that start and end on the finished
+   picture. 11-hero.js starts them when the cards scroll into view; each story plays twice, then rests.
+   With reduced motion (or no JS) each card shows its finished state, which is what the plain styles
+   below describe. The cards are not links or buttons, so they don't lift on hover. */
 .hero { position: relative; padding-top: 170px; padding-bottom: 96px; background: var(--bg); isolation: isolate; overflow: hidden; overflow: clip; }
 .hero-bg {
   position: absolute; top: 16px; left: 16px; right: 16px; bottom: 0; z-index: -1; pointer-events: none;
@@ -73,10 +74,7 @@
   position: relative; display: flex; flex-direction: column; min-width: 0;
   padding: 8px; border-radius: 20px; background: var(--white);
   box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.42), 0 28px 56px -32px rgba(56, 64, 160, 0.34), 0 10px 22px -14px rgba(56, 64, 160, 0.16);
-  outline: none; transition: transform .25s ease, box-shadow .25s ease;
 }
-.hw-card:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.6), 0 34px 60px -30px rgba(56, 64, 160, 0.4), 0 12px 24px -14px rgba(56, 64, 160, 0.2); }
-.hw-card:focus-visible { box-shadow: 0 0 0 2px var(--cobalt), 0 0 0 6px rgba(64, 80, 176, 0.18), 0 28px 56px -32px rgba(56, 64, 160, 0.34); }
 
 /* illustration panel: soft lilac gradient with a faint grid */
 .hw-art {
@@ -100,7 +98,7 @@
 .hw-p a:hover { text-decoration-color: var(--cobalt); }
 
 /* card 1: question bubbles rise out of a chat box and stack (finished state: all three stacked) */
-.hw-c1 { --slot: 47px; --q-bottom: 60px; }
+.hw-c1 { --slot: 47px; --q-bottom: 57px; }
 .hw-feed {
   position: absolute; inset: 0;
   -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 14px);
@@ -114,7 +112,7 @@
   border-radius: 13px 13px 4px 13px; background: var(--white);
   box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.38), 0 8px 18px -10px rgba(56, 64, 160, 0.38);
 }
-.hw-eng { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; line-height: 1.3; color: var(--text-2); }
+.hw-eng { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; line-height: 1.3; color: var(--text-2); }
 .hw-eng i { width: 6px; height: 6px; border-radius: 50%; flex: none; }
 .hw-e-gpt { background: var(--e-chatgpt); }
 .hw-e-gem { background: var(--e-gemini); }
@@ -131,7 +129,7 @@
 .hw-send { width: 24px; height: 24px; flex: none; border-radius: 50%; display: grid; place-items: center; color: var(--white); background: linear-gradient(160deg, var(--cobalt-mid), var(--cobalt-deep)); box-shadow: 0 4px 10px -4px rgba(56, 64, 160, 0.6); }
 .hw-send svg { width: 12px; height: 12px; }
 
-/* card 2: an AI tile wired to three store tiles; dashes run down the wires and "You" gets picked */
+/* card 2: an AI tile wired to three store tiles (two plain shopping bags and "You"); dashes run down the wires and "You" gets picked */
 .hw-c2 { --net-s: 1.12; }
 .hw-net { position: absolute; left: 50%; top: 50%; width: 260px; height: 170px; margin: -85px 0 0 -130px; transform: scale(var(--net-s)); }
 .hw-lines { position: absolute; inset: 0; overflow: visible; }
@@ -154,8 +152,9 @@
   position: absolute; top: 96px; z-index: 1; width: 44px; height: 44px; border-radius: 13px;
   display: grid; place-items: center; background: var(--white);
   box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.5), 0 8px 16px -10px rgba(56, 64, 160, 0.38);
-  font-family: var(--font-head); font-size: 13px; font-weight: 600; letter-spacing: .02em; color: #7d7e98; line-height: 1;
+  font-family: var(--font-head); font-size: 13px; font-weight: 600; letter-spacing: .02em; color: #6b6c86; line-height: 1;
 }
+.hw-store svg { width: 20px; height: 20px; color: #8a8ba6; }
 .hw-store-l { left: 14px; }
 .hw-store-r { left: 202px; }
 .hw-you { left: 108px; color: var(--cobalt); transform: scale(1.06); }
@@ -173,10 +172,10 @@
 .hw-rec svg { width: 11px; height: 11px; color: var(--green-ink); }
 
 /* card 3: three result rows; the order row ends slightly larger */
-.hw-c3 { --row-h: 44px; --row-gap: 8px; --rows-top: 38px; }
+.hw-c3 { --row-h: 44px; --row-gap: 8px; --rows-top: 38px; --row3-pop: 1.09; --row3-rest: 1.045; }
 .hw-ex {
   position: absolute; top: 10px; right: 10px; z-index: 2; height: 18px; padding: 0 6px; border-radius: 5px;
-  display: inline-flex; align-items: center; font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; line-height: 1;
+  display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; line-height: 1;
   color: var(--text-2); background: rgba(255, 255, 255, 0.85); box-shadow: inset 0 0 0 1px var(--lav-line);
 }
 .hw-rows { position: absolute; left: 0; right: 0; top: var(--rows-top); margin: 0 auto; width: min(calc(100% - 28px), 300px); display: flex; flex-direction: column; gap: var(--row-gap); }
@@ -187,204 +186,303 @@
 }
 .hw-row-ic { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; background: var(--lilac-50); color: var(--cobalt); box-shadow: inset 0 0 0 1px var(--lav-line); }
 .hw-row-ic svg { width: 14px; height: 14px; }
-.hw-row-coin { background: none; box-shadow: none; }
-.hw-row-coin img { width: 36px; height: 36px; max-width: none; mix-blend-mode: multiply; }
+.hw-row-coin { position: relative; background: none; box-shadow: none; }
+/* centred on the slot and kept inside the white row, so multiply never shows the PNG's white square */
+.hw-row-coin img { position: absolute; left: 50%; top: 50%; width: 36px; height: 36px; margin: -18px 0 0 -18px; max-width: none; mix-blend-mode: multiply; }
 .hw-row-b { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
 .hw-row-t { font-size: 12.5px; font-weight: 600; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .hw-row-s { font-size: 11px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.hw-chip { height: 20px; padding: 0 7px; border-radius: 10px; display: inline-flex; align-items: center; background: var(--green-bg); color: var(--green-ink); font-size: 10.5px; font-weight: 600; line-height: 1; white-space: nowrap; }
+.hw-chip { height: 20px; padding: 0 7px; border-radius: 10px; display: inline-flex; align-items: center; background: var(--green-bg); color: var(--green-ink); font-size: 11px; font-weight: 600; line-height: 1; white-space: nowrap; }
 @media (max-width: 1240px) {
-  .hw-rows { width: calc(100% - 20px); }
+  .hw-rows { width: min(calc(100% - 20px), 320px); }
   .hw-row { grid-template-columns: 26px minmax(0, 1fr) auto; gap: 7px; padding: 0 7px; }
   .hw-row-ic { width: 26px; height: 26px; }
   .hw-row-t { font-size: 12px; }
-  .hw-row-s { font-size: 10.5px; }
-  .hw-chip { padding: 0 6px; font-size: 10px; }
+  .hw-chip { padding: 0 6px; }
 }
-.hw-row3 { transform: scale(1.045); box-shadow: 0 0 0 1px rgba(104, 120, 216, 0.5), 0 14px 26px -12px rgba(56, 64, 160, 0.45); }
+.hw-row3 { transform: scale(var(--row3-rest)); box-shadow: 0 0 0 1px rgba(104, 120, 216, 0.5), 0 14px 26px -12px rgba(56, 64, 160, 0.45); }
 
-/* ---------- animation (only when motion is welcome and 11-hero.js has armed the row) ---------- */
+/* ---------- animation (only when motion is welcome and 11-hero.js has armed the row) ----------
+   Every keyframe set starts and ends on the finished picture above, so a card is never blank: it holds
+   the finished picture for 1.2s, clears, rebuilds, and rests finished again. Each story plays twice
+   (10s each), then stops on the finished picture.
+   Wide screens (3 cards in a row): one shared timeline, started by 11-hero.js when the row is in view.
+   All three cards clear together at 1.2s, then the story runs left to right: card 1 sends three
+   questions (to 3.9s), card 2 picks "You" (3.5 to 5.2s), card 3 adds the rows (5 to 6.9s), and all three
+   hold the finished picture for over 4s. --hw-d2 and --hw-d3 shift cards 2 and 3 along that timeline,
+   and the "-d" keyframes clear those cards early, with card 1.
+   Stacked cards (1023px and below): each card starts on its own when it scrolls into view, so --hw-d2 and
+   --hw-d3 are 0 and every card clears just before it rebuilds. */
+.hw { --hw-d2: 0s; --hw-d3: 0s; --hw-ease: cubic-bezier(.3, .7, .2, 1); }
+@media (min-width: 1024px) { .hw { --hw-d2: 1.85s; --hw-d3: 3.45s; } }
+
 @media (prefers-reduced-motion: no-preference) {
-  /* card 1: 7.5s loop, a new question every 2.5s */
-  .hw-ready .hw-q { animation: hw-q 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
-  .hw-ready .hw-q1 { animation-delay: .4s; }
-  .hw-ready .hw-q2 { animation-delay: 2.9s; }
-  .hw-ready .hw-q3 { animation-delay: 5.4s; }
-  .hw-ready .hw-type i { animation: hw-type 2.5s linear .4s infinite both; }
-  .hw-ready .hw-send { animation: hw-send 2.5s ease-out .3s infinite both; }
+  /* card 1: the bubbles clear, then three questions are typed and sent */
+  .hw-ready .hw-q1 { animation: hw-q1 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-q2 { animation: hw-q2 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-q3 { animation: hw-q3 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-type i { animation: hw-type 10s linear 2 both; }
+  .hw-ready .hw-send { animation: hw-send 10s ease-out 2 both; }
 
-  /* card 2: 7s loop. Two waves down every wire, a third down the "You" wire, then "You" lights up */
-  .hw-ready .hw-dash { animation: 7s linear infinite both; }
+  /* card 2: two waves down every wire, a third down the "You" wire, then "You" lights up */
+  .hw-ready .hw-dash { animation: 10s linear 2 both; }
   .hw-ready .hw-dash-l { animation-name: hw-run-l; }
   .hw-ready .hw-dash-c { animation-name: hw-run-c; }
   .hw-ready .hw-dash-r { animation-name: hw-run-r; }
-  .hw-ready .hw-dash-l.hw-d1 { animation-delay: .2s; }
-  .hw-ready .hw-dash-c.hw-d1 { animation-delay: .3s; }
-  .hw-ready .hw-dash-r.hw-d1 { animation-delay: .35s; }
-  .hw-ready .hw-dash-l.hw-d2 { animation-delay: 1.6s; }
-  .hw-ready .hw-dash-c.hw-d2 { animation-delay: 1.7s; }
-  .hw-ready .hw-dash-r.hw-d2 { animation-delay: 1.75s; }
-  .hw-ready .hw-dash-c.hw-d3 { animation-delay: 3.1s; }
-  .hw-ready .hw-ai { animation: hw-ai 7s ease-out infinite both; }
-  .hw-ready .hw-ai::after { animation: hw-ai-glow 7s ease-out infinite both; }
-  .hw-ready .hw-you { animation: hw-you 7s cubic-bezier(.3, .7, .2, 1) infinite both; }
-  .hw-ready .hw-store-l { animation: hw-hit-l 7s ease-out infinite both; }
-  .hw-ready .hw-store-r { animation: hw-hit-r 7s ease-out infinite both; }
-  .hw-ready .hw-you-lit { animation: hw-lit 7s ease infinite both; }
-  .hw-ready .hw-ln-on { animation: hw-lit 7s ease infinite both; }
-  .hw-ready .hw-rec { animation: hw-rec 7s cubic-bezier(.3, .7, .2, 1) infinite both; }
+  .hw-ready .hw-dash-l.hw-d1 { animation-delay: calc(var(--hw-d2) + 1.65s); }
+  .hw-ready .hw-dash-c.hw-d1 { animation-delay: calc(var(--hw-d2) + 1.7s); }
+  .hw-ready .hw-dash-r.hw-d1 { animation-delay: calc(var(--hw-d2) + 1.72s); }
+  .hw-ready .hw-dash-l.hw-d2 { animation-delay: calc(var(--hw-d2) + 2s); }
+  .hw-ready .hw-dash-c.hw-d2 { animation-delay: calc(var(--hw-d2) + 2.05s); }
+  .hw-ready .hw-dash-r.hw-d2 { animation-delay: calc(var(--hw-d2) + 2.07s); }
+  .hw-ready .hw-dash-c.hw-d3 { animation-delay: calc(var(--hw-d2) + 2.4s); }
+  .hw-ready .hw-ai { animation: hw-ai 10s ease-out var(--hw-d2) 2 both; }
+  .hw-ready .hw-ai::after { animation: hw-ai-glow 10s ease-out var(--hw-d2) 2 both; }
+  .hw-ready .hw-store-l { animation: hw-hit-l 10s ease-out var(--hw-d2) 2 both; }
+  .hw-ready .hw-store-r { animation: hw-hit-r 10s ease-out var(--hw-d2) 2 both; }
+  .hw-ready .hw-you { animation: hw-you 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-you-lit,
+  .hw-ready .hw-ln-on { animation: hw-lit 10s ease 2 both; }
+  .hw-ready .hw-rec { animation: hw-rec 10s var(--hw-ease) 2 both; }
 
-  /* card 3: 7.5s loop, a row every second, the order row pops larger */
-  .hw-ready .hw-row1 { animation: hw-row1 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
-  .hw-ready .hw-row2 { animation: hw-row2 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
-  .hw-ready .hw-row3 { animation: hw-row3 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
-  .hw-ready .hw-row1 .hw-chip { animation: hw-chip1 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
-  .hw-ready .hw-row2 .hw-chip { animation: hw-chip2 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
-  .hw-ready .hw-row3 .hw-chip { animation: hw-chip3 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
-  .hw-ready .hw-row-coin img { animation: hw-coin 7.5s cubic-bezier(.3, .7, .2, 1) infinite both; }
+  /* card 3: the rows clear, then come back one by one; the order row pops */
+  .hw-ready .hw-row1 { animation: hw-row1 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-row2 { animation: hw-row2 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-row3 { animation: hw-row3 10s var(--hw-ease) 2 both; }
+  .hw-ready .hw-row1 .hw-chip { animation: hw-chip1 10s var(--hw-ease) var(--hw-d3) 2 both; }
+  .hw-ready .hw-row2 .hw-chip { animation: hw-chip2 10s var(--hw-ease) var(--hw-d3) 2 both; }
+  .hw-ready .hw-row3 .hw-chip { animation: hw-chip3 10s var(--hw-ease) var(--hw-d3) 2 both; }
+  .hw-ready .hw-row-coin img { animation: hw-coin 10s var(--hw-ease) var(--hw-d3) 2 both; }
 
-  /* wait at the first frame until the card is in view (11-hero.js adds .is-on) */
+  /* wide screens: cards 2 and 3 clear together with card 1, then wait for their turn */
+  @media (min-width: 1024px) {
+    .hw-ready .hw-you { animation-name: hw-you-d; }
+    .hw-ready .hw-you-lit,
+    .hw-ready .hw-ln-on { animation-name: hw-lit-d; }
+    .hw-ready .hw-rec { animation-name: hw-rec-d; }
+    .hw-ready .hw-row1 { animation-name: hw-row1-d; }
+    .hw-ready .hw-row2 { animation-name: hw-row2-d; }
+    .hw-ready .hw-row3 { animation-name: hw-row3-d; }
+  }
+
+  /* wait on the finished picture until the card (or, on wide screens, the row) is in view */
   .hw-ready .hw-card:not(.is-on) .hw-art *,
   .hw-ready .hw-card:not(.is-on) .hw-art *::after { animation-play-state: paused; }
 }
 
-@keyframes hw-q {
-  0% { transform: translateY(26px) scale(.9); opacity: 0; }
-  6% { transform: translateY(-3px) scale(1.02); opacity: 1; }
-  10% { transform: translateY(0) scale(1); opacity: 1; }
-  33.3% { transform: translateY(0) scale(1); opacity: 1; }
-  40% { transform: translateY(calc(var(--slot) * -1)) scale(1); opacity: 1; }
-  66.6% { transform: translateY(calc(var(--slot) * -1)) scale(1); opacity: 1; }
-  73.3% { transform: translateY(calc(var(--slot) * -2)) scale(1); opacity: 1; }
-  88% { transform: translateY(calc(var(--slot) * -2)) scale(1); opacity: 1; }
-  96%, 100% { transform: translateY(calc(var(--slot) * -2 - 14px)) scale(.97); opacity: 0; }
+/* card 1 (all widths). Bubbles rise in from the input: +26px, overshoot, settle; the stack moves up one slot per question. */
+@keyframes hw-q1 {
+  0%, 12% { transform: translateY(calc(var(--slot) * -2)) scale(1); opacity: 1; }
+  15.5% { transform: translateY(calc(var(--slot) * -2 - 10px)) scale(.94); opacity: 0; }
+  15.6%, 20% { transform: translateY(26px) scale(.9); opacity: 0; }
+  23% { transform: translateY(-3px) scale(1.02); opacity: 1; }
+  24.5%, 27% { transform: translateY(0) scale(1); opacity: 1; }
+  31%, 34% { transform: translateY(calc(var(--slot) * -1)) scale(1); opacity: 1; }
+  38%, 100% { transform: translateY(calc(var(--slot) * -2)) scale(1); opacity: 1; }
 }
+@keyframes hw-q2 {
+  0%, 12% { transform: translateY(calc(var(--slot) * -1)) scale(1); opacity: 1; }
+  15.5% { transform: translateY(calc(var(--slot) * -1 - 10px)) scale(.94); opacity: 0; }
+  15.6%, 27% { transform: translateY(26px) scale(.9); opacity: 0; }
+  30% { transform: translateY(-3px) scale(1.02); opacity: 1; }
+  31.5%, 34% { transform: translateY(0) scale(1); opacity: 1; }
+  38%, 100% { transform: translateY(calc(var(--slot) * -1)) scale(1); opacity: 1; }
+}
+@keyframes hw-q3 {
+  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
+  15.5% { transform: translateY(-10px) scale(.94); opacity: 0; }
+  15.6%, 34% { transform: translateY(26px) scale(.9); opacity: 0; }
+  37% { transform: translateY(-3px) scale(1.02); opacity: 1; }
+  38.5%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+/* the typed text: clears, then fills before each send and empties when it is sent */
 @keyframes hw-type {
-  0% { transform: scaleX(.8); opacity: 1; }
-  5% { transform: scaleX(.8); opacity: 0; }
-  8% { transform: scaleX(0); opacity: 0; }
-  14% { transform: scaleX(0); opacity: 1; }
-  80%, 100% { transform: scaleX(.8); opacity: 1; }
+  0%, 12% { transform: scaleX(.55); opacity: 1; }
+  15.5% { transform: scaleX(0); opacity: 1; }
+  19.5% { transform: scaleX(.8); opacity: 1; }
+  20% { transform: scaleX(.8); opacity: 0; }
+  20.5% { transform: scaleX(0); opacity: 0; }
+  21% { transform: scaleX(0); opacity: 1; }
+  26.5% { transform: scaleX(.8); opacity: 1; }
+  27% { transform: scaleX(.8); opacity: 0; }
+  27.5% { transform: scaleX(0); opacity: 0; }
+  28% { transform: scaleX(0); opacity: 1; }
+  33.5% { transform: scaleX(.8); opacity: 1; }
+  34% { transform: scaleX(.8); opacity: 0; }
+  34.5% { transform: scaleX(0); opacity: 0; }
+  35% { transform: scaleX(0); opacity: 1; }
+  41%, 100% { transform: scaleX(.55); opacity: 1; }
 }
 @keyframes hw-send {
-  0%, 100% { transform: scale(1); }
-  3% { transform: scale(.82); }
-  10% { transform: scale(1.08); }
-  16% { transform: scale(1); }
+  0%, 19.5%, 22.5%, 26.5%, 29.5%, 33.5%, 36.5%, 100% { transform: scale(1); }
+  20%, 27%, 34% { transform: scale(.82); }
+  21%, 28%, 35% { transform: scale(1.08); }
 }
+
+/* card 2. Dash runs: the wave starts come from the animation delays above. */
 @keyframes hw-run-l {
   0% { transform: translate(120px, 49px) rotate(90deg); opacity: 0; }
-  1.7% { transform: translate(116px, 58.1px) rotate(135deg); opacity: 1; }
-  3.4% { transform: translate(107.5px, 63.8px) rotate(154deg); opacity: 1; }
-  5.1% { transform: translate(98px, 67.5px) rotate(162deg); opacity: 1; }
-  6.8% { transform: translate(88.1px, 70.3px) rotate(165deg); opacity: 1; }
-  8.5% { transform: translate(78.2px, 72.8px) rotate(166deg); opacity: 1; }
-  10.2% { transform: translate(68.3px, 75.3px) rotate(166deg); opacity: 1; }
-  11.9% { transform: translate(58.4px, 78.1px) rotate(163deg); opacity: 1; }
-  13.6% { transform: translate(48.8px, 81.6px) rotate(156deg); opacity: 1; }
-  15.3% { transform: translate(40.2px, 87px) rotate(137deg); opacity: 1; }
-  17% { transform: translate(36px, 96px) rotate(90deg); opacity: 0; }
-  100% { transform: translate(36px, 96px) rotate(90deg); opacity: 0; }
+  0.6% { transform: translate(116px, 58.1px) rotate(135deg); opacity: 1; }
+  1.2% { transform: translate(107.5px, 63.8px) rotate(154deg); opacity: 1; }
+  1.8% { transform: translate(98px, 67.5px) rotate(162deg); opacity: 1; }
+  2.4% { transform: translate(88.1px, 70.3px) rotate(165deg); opacity: 1; }
+  3% { transform: translate(78.2px, 72.8px) rotate(166deg); opacity: 1; }
+  3.6% { transform: translate(68.3px, 75.3px) rotate(166deg); opacity: 1; }
+  4.2% { transform: translate(58.4px, 78.1px) rotate(163deg); opacity: 1; }
+  4.8% { transform: translate(48.8px, 81.6px) rotate(156deg); opacity: 1; }
+  5.4% { transform: translate(40.2px, 87px) rotate(137deg); opacity: 1; }
+  6%, 100% { transform: translate(36px, 96px) rotate(90deg); opacity: 0; }
 }
 @keyframes hw-run-r {
   0% { transform: translate(140px, 49px) rotate(90deg); opacity: 0; }
-  1.7% { transform: translate(144px, 58.1px) rotate(45deg); opacity: 1; }
-  3.4% { transform: translate(152.5px, 63.8px) rotate(26deg); opacity: 1; }
-  5.1% { transform: translate(162px, 67.5px) rotate(18deg); opacity: 1; }
-  6.8% { transform: translate(171.9px, 70.3px) rotate(15deg); opacity: 1; }
-  8.5% { transform: translate(181.8px, 72.8px) rotate(14deg); opacity: 1; }
-  10.2% { transform: translate(191.7px, 75.3px) rotate(14deg); opacity: 1; }
-  11.9% { transform: translate(201.6px, 78.1px) rotate(17deg); opacity: 1; }
-  13.6% { transform: translate(211.2px, 81.6px) rotate(24deg); opacity: 1; }
-  15.3% { transform: translate(219.8px, 87px) rotate(43deg); opacity: 1; }
-  17% { transform: translate(224px, 96px) rotate(90deg); opacity: 0; }
-  100% { transform: translate(224px, 96px) rotate(90deg); opacity: 0; }
+  0.6% { transform: translate(144px, 58.1px) rotate(45deg); opacity: 1; }
+  1.2% { transform: translate(152.5px, 63.8px) rotate(26deg); opacity: 1; }
+  1.8% { transform: translate(162px, 67.5px) rotate(18deg); opacity: 1; }
+  2.4% { transform: translate(171.9px, 70.3px) rotate(15deg); opacity: 1; }
+  3% { transform: translate(181.8px, 72.8px) rotate(14deg); opacity: 1; }
+  3.6% { transform: translate(191.7px, 75.3px) rotate(14deg); opacity: 1; }
+  4.2% { transform: translate(201.6px, 78.1px) rotate(17deg); opacity: 1; }
+  4.8% { transform: translate(211.2px, 81.6px) rotate(24deg); opacity: 1; }
+  5.4% { transform: translate(219.8px, 87px) rotate(43deg); opacity: 1; }
+  6%, 100% { transform: translate(224px, 96px) rotate(90deg); opacity: 0; }
 }
 @keyframes hw-run-c {
   0% { transform: translate(130px, 49px) rotate(90deg); opacity: 0; }
-  2% { transform: translate(130px, 58.4px) rotate(90deg); opacity: 1; }
-  4% { transform: translate(130px, 67.8px) rotate(90deg); opacity: 1; }
-  6% { transform: translate(130px, 77.2px) rotate(90deg); opacity: 1; }
-  8% { transform: translate(130px, 86.6px) rotate(90deg); opacity: 1; }
-  10% { transform: translate(130px, 96px) rotate(90deg); opacity: 0; }
-  100% { transform: translate(130px, 96px) rotate(90deg); opacity: 0; }
+  0.9% { transform: translate(130px, 58.4px) rotate(90deg); opacity: 1; }
+  1.8% { transform: translate(130px, 67.8px) rotate(90deg); opacity: 1; }
+  2.7% { transform: translate(130px, 77.2px) rotate(90deg); opacity: 1; }
+  3.6% { transform: translate(130px, 86.6px) rotate(90deg); opacity: 1; }
+  4.5%, 100% { transform: translate(130px, 96px) rotate(90deg); opacity: 0; }
 }
+/* the AI tile pulses as each wave leaves; the store tiles bump as a dash arrives (times include --hw-d2) */
 @keyframes hw-ai {
-  0%, 9%, 20%, 29%, 41%, 50%, 100% { transform: scale(1); }
-  3%, 23%, 44% { transform: scale(1.07); }
+  0%, 16%, 19%, 19.5%, 22.5%, 23.5%, 27%, 100% { transform: scale(1); }
+  17%, 20.5%, 24.5% { transform: scale(1.07); }
 }
 @keyframes hw-ai-glow {
-  0%, 14%, 20%, 34%, 41%, 56%, 100% { opacity: 0; }
-  3%, 23%, 44% { opacity: 1; }
+  0%, 16%, 19.5%, 23.5%, 28%, 100% { opacity: 0; }
+  17%, 20.5%, 24.5% { opacity: 1; }
 }
 @keyframes hw-hit-l {
-  0%, 17%, 25%, 37%, 45%, 100% { transform: scale(1); }
-  20.5%, 40.5% { transform: scale(1.07); }
+  0%, 22.5%, 25.5%, 26%, 29%, 100% { transform: scale(1); }
+  23%, 26.5% { transform: scale(1.07); }
 }
 @keyframes hw-hit-r {
-  0%, 19%, 27%, 39%, 47%, 100% { transform: scale(1); }
-  22.5%, 42.5% { transform: scale(1.07); }
+  0%, 23.2%, 26.2%, 26.7%, 29.7%, 100% { transform: scale(1); }
+  23.7%, 27.2% { transform: scale(1.07); }
 }
+/* stacked cards: "You" clears just before its own rebuild */
 @keyframes hw-you {
-  0%, 11%, 19%, 31%, 39%, 53% { transform: scale(1); }
-  15%, 35% { transform: scale(1.07); }
-  57% { transform: scale(1.14); }
-  61%, 90% { transform: scale(1.06); }
-  96%, 100% { transform: scale(1); }
+  0%, 12% { transform: scale(1.06); }
+  15%, 21.5%, 24.5%, 25%, 28%, 28.5% { transform: scale(1); }
+  22%, 25.5% { transform: scale(1.07); }
+  30% { transform: scale(1.14); }
+  32%, 100% { transform: scale(1.06); }
 }
 @keyframes hw-lit {
-  0%, 53% { opacity: 0; }
-  57%, 90% { opacity: 1; }
-  96%, 100% { opacity: 0; }
+  0%, 12% { opacity: 1; }
+  15%, 28.5% { opacity: 0; }
+  30%, 100% { opacity: 1; }
 }
 @keyframes hw-rec {
-  0%, 56% { transform: translateY(6px) scale(.85); opacity: 0; }
-  60% { transform: translateY(-1px) scale(1.04); opacity: 1; }
-  64%, 90% { transform: translateY(0) scale(1); opacity: 1; }
-  96%, 100% { transform: translateY(3px) scale(.96); opacity: 0; }
+  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
+  15% { transform: translateY(3px) scale(.96); opacity: 0; }
+  15.1%, 29.5% { transform: translateY(6px) scale(.85); opacity: 0; }
+  32% { transform: translateY(-1px) scale(1.04); opacity: 1; }
+  34%, 100% { transform: translateY(0) scale(1); opacity: 1; }
 }
+/* wide screens: the same, but clearing at 1.2s with card 1 and rebuilding 1.85s (--hw-d2) later */
+@keyframes hw-you-d {
+  0%, 12% { transform: scale(1.06); }
+  15%, 40%, 43%, 43.5%, 46.5%, 47% { transform: scale(1); }
+  40.5%, 44% { transform: scale(1.07); }
+  48.5% { transform: scale(1.14); }
+  50.5%, 100% { transform: scale(1.06); }
+}
+@keyframes hw-lit-d {
+  0%, 12% { opacity: 1; }
+  15%, 47% { opacity: 0; }
+  48.5%, 100% { opacity: 1; }
+}
+@keyframes hw-rec-d {
+  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
+  15% { transform: translateY(3px) scale(.96); opacity: 0; }
+  15.1%, 48% { transform: translateY(6px) scale(.85); opacity: 0; }
+  50.5% { transform: translateY(-1px) scale(1.04); opacity: 1; }
+  52.5%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* card 3. Stacked cards: the rows clear and come back right away. */
 @keyframes hw-row1 {
-  0%, 4% { transform: translateY(10px) scale(.96); opacity: 0; }
-  10%, 88% { transform: translateY(0) scale(1); opacity: 1; }
-  95%, 100% { transform: translateY(-6px) scale(1); opacity: 0; }
+  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
+  14.5% { transform: translateY(-6px) scale(1); opacity: 0; }
+  14.6%, 15.5% { transform: translateY(10px) scale(.96); opacity: 0; }
+  19.5%, 100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 @keyframes hw-row2 {
-  0%, 17.3% { transform: translateY(10px) scale(.96); opacity: 0; }
-  23.3%, 88% { transform: translateY(0) scale(1); opacity: 1; }
-  95%, 100% { transform: translateY(-6px) scale(1); opacity: 0; }
+  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
+  14.5% { transform: translateY(-6px) scale(1); opacity: 0; }
+  14.6%, 20.5% { transform: translateY(10px) scale(.96); opacity: 0; }
+  24.5%, 100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 @keyframes hw-row3 {
-  0%, 30.7% { transform: translateY(12px) scale(.9); opacity: 0; }
-  35.5% { transform: translateY(-2px) scale(1.09); opacity: 1; }
-  40%, 88% { transform: translateY(0) scale(1.045); opacity: 1; }
-  95%, 100% { transform: translateY(-6px) scale(1.045); opacity: 0; }
+  0%, 12% { transform: translateY(0) scale(var(--row3-rest)); opacity: 1; }
+  14.5% { transform: translateY(-6px) scale(var(--row3-rest)); opacity: 0; }
+  14.6%, 25.5% { transform: translateY(12px) scale(.9); opacity: 0; }
+  30% { transform: translateY(-2px) scale(var(--row3-pop)); opacity: 1; }
+  33%, 100% { transform: translateY(0) scale(var(--row3-rest)); opacity: 1; }
 }
+/* wide screens: clear at 1.2s with card 1, come back 3.45s (--hw-d3) later */
+@keyframes hw-row1-d {
+  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
+  14.5% { transform: translateY(-6px) scale(1); opacity: 0; }
+  14.6%, 50% { transform: translateY(10px) scale(.96); opacity: 0; }
+  54%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes hw-row2-d {
+  0%, 12% { transform: translateY(0) scale(1); opacity: 1; }
+  14.5% { transform: translateY(-6px) scale(1); opacity: 0; }
+  14.6%, 55% { transform: translateY(10px) scale(.96); opacity: 0; }
+  59%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes hw-row3-d {
+  0%, 12% { transform: translateY(0) scale(var(--row3-rest)); opacity: 1; }
+  14.5% { transform: translateY(-6px) scale(var(--row3-rest)); opacity: 0; }
+  14.6%, 60% { transform: translateY(12px) scale(.9); opacity: 0; }
+  64.5% { transform: translateY(-2px) scale(var(--row3-pop)); opacity: 1; }
+  67.5%, 100% { transform: translateY(0) scale(var(--row3-rest)); opacity: 1; }
+}
+/* chips and the coin (times include --hw-d3); they hide while their row is hidden */
 @keyframes hw-chip1 {
-  0%, 9% { transform: scale(.6); opacity: 0; }
-  13% { transform: scale(1.12); opacity: 1; }
-  17%, 100% { transform: scale(1); opacity: 1; }
+  0%, 12% { transform: scale(1); opacity: 1; }
+  14.5%, 19% { transform: scale(.6); opacity: 0; }
+  21% { transform: scale(1.12); opacity: 1; }
+  23%, 100% { transform: scale(1); opacity: 1; }
 }
 @keyframes hw-chip2 {
-  0%, 22.5% { transform: scale(.6); opacity: 0; }
-  26.5% { transform: scale(1.12); opacity: 1; }
-  30.5%, 100% { transform: scale(1); opacity: 1; }
+  0%, 12% { transform: scale(1); opacity: 1; }
+  14.5%, 24% { transform: scale(.6); opacity: 0; }
+  26% { transform: scale(1.12); opacity: 1; }
+  28%, 100% { transform: scale(1); opacity: 1; }
 }
 @keyframes hw-chip3 {
-  0%, 38.5% { transform: scale(.6); opacity: 0; }
-  42.5% { transform: scale(1.14); opacity: 1; }
-  46.5%, 100% { transform: scale(1); opacity: 1; }
+  0%, 12% { transform: scale(1); opacity: 1; }
+  14.5%, 31% { transform: scale(.6); opacity: 0; }
+  33% { transform: scale(1.14); opacity: 1; }
+  35%, 100% { transform: scale(1); opacity: 1; }
 }
 @keyframes hw-coin {
-  0%, 31% { transform: rotate(-16deg) scale(.7); }
-  37% { transform: rotate(8deg) scale(1.12); }
-  42%, 100% { transform: rotate(0) scale(1); }
+  0%, 12% { transform: rotate(0) scale(1); }
+  14.5%, 25.5% { transform: rotate(-16deg) scale(.7); }
+  31% { transform: rotate(8deg) scale(1.12); }
+  34%, 100% { transform: rotate(0) scale(1); }
 }
 
 /* floating clay pieces beside the cards (white backgrounds multiplied away, behind the cards) */
 .hero-deco {
   position: absolute; z-index: 0; height: auto; pointer-events: none; user-select: none;
   mix-blend-mode: multiply;
-  animation: hero-float 8s ease-in-out infinite;
+  animation: hero-float 8s ease-in-out 3; /* a few slow floats, then still (also paused off screen: 05-shared.js) */
 }
 .hero-deco-bubble { width: 140px; left: -126px; top: -108px; --rot: -3deg; animation-delay: -1.5s; }
 .hero-deco-bag { width: 130px; right: -112px; bottom: -44px; --rot: 2.5deg; animation-duration: 10s; animation-delay: -6s; }
@@ -410,11 +508,19 @@
   .hw { gap: 16px; }
 }
 @media (max-width: 1023px) {
-  /* one column: the cards stack, each one narrow enough to read like a card */
+  /* one column: the cards stack (sideways on tablets, upright and at most 460px wide on phones) */
   .hw-wrap { max-width: 460px; margin-top: 56px; }
   .hw { grid-template-columns: minmax(0, 1fr); gap: 14px; }
-  .hw-c2 { --net-s: 1.12; }
   .hero-deco { display: none; }
+}
+@media (min-width: 761px) and (max-width: 1023px) {
+  /* tablets: each card turns sideways (picture left, words right) so the stack stays short */
+  .hw-wrap { max-width: 680px; }
+  .hw-card { flex-direction: row; align-items: center; }
+  .hw-art { width: 300px; }
+  .hw-body { flex: 1; min-width: 0; padding: 12px 18px 12px 22px; }
+  .hw-c2 { --net-s: 1.04; }
+  .hw-rows { width: min(calc(100% - 30px), 320px); }
 }
 @media (max-width: 760px) {
   .hero { padding-top: 116px; padding-bottom: 44px; }
@@ -435,12 +541,14 @@
   .hw-body { padding: 12px 12px 12px; }
   .hw-t { font-size: 18px; }
   .hw-p { margin-top: 3px; }
-  .hw-c1 { --slot: 43px; --q-bottom: 48px; }
+  .hw-c1 { --slot: 40px; --q-bottom: 46px; }
   .hw-feed { -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 8px); mask-image: linear-gradient(180deg, transparent 0, #000 8px); }
   .hw-c2 { --net-s: .96; }
-  .hw-bub { padding: 4px 11px 5px; }
+  .hw-bub { gap: 0; padding: 3px 10px 3px; }
   .hw-tray { bottom: 9px; height: 32px; }
-  .hw-c3 { --row-h: 40px; --row-gap: 7px; --rows-top: 32px; }
+  .hw-c3 { --row-h: 40px; --row-gap: 7px; --rows-top: 32px; --row3-pop: 1.05; --row3-rest: 1.03; }
+  .hw-row-s { font-size: 12px; }
+  .hw-rows { width: min(calc(100% - 30px), 320px); }
 }
 
 .hero-pill-short { display: none; }

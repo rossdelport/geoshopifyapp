@@ -23,3 +23,6 @@ section[id], footer[id] { scroll-margin-top: 96px; }
 @media (max-width: 760px) {
   section[id], footer[id] { scroll-margin-top: 88px; }
 }
+
+/* Decorative loops pause while their part of the page is off screen (05-shared.js adds .is-off). */
+.is-off, .is-off *, .is-off *::before, .is-off *::after { animation-play-state: paused !important; }

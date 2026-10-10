@@ -38,39 +38,45 @@
   if (location.hash === '#check') focusSoon();
 })();
 
-// Hero cards: start each card's animation when it scrolls into view, pause it when it leaves, and
-// replay it from the start on hover or keyboard focus. With reduced motion the CSS shows the finished
-// state and nothing here runs.
+// Hero cards: their CSS stories start on the finished picture and wait (paused) until they're in view.
+// Wide screens (3 cards in a row): one shared timeline, so the whole row starts and pauses together and
+// the story runs left to right. Stacked cards (1023px and below): each card starts when it's in view.
+// Each story plays twice, then rests on the finished picture (see 11-hero.css). Hover and focus do nothing:
+// the cards aren't controls. With reduced motion the CSS shows the finished state and nothing here runs.
 (function () {
   var row = document.querySelector('.hw');
-  if (!row) return;
-  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (calm) return;
+  if (!row || !window.matchMedia) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var cards = [].slice.call(row.querySelectorAll('.hw-card'));
+  var wide = window.matchMedia('(min-width: 1024px)');
   row.classList.add('hw-ready');
 
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) { en.target.classList.toggle('is-on', en.isIntersecting); });
-    }, { threshold: 0.3 });
-    cards.forEach(function (c) { io.observe(c); });
-  } else {
+  if (!('IntersectionObserver' in window)) {
     cards.forEach(function (c) { c.classList.add('is-on'); });
+    return;
   }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      var on = en.isIntersecting;
+      if (en.target === row) cards.forEach(function (c) { c.classList.toggle('is-on', on); });
+      else en.target.classList.toggle('is-on', on);
+    });
+  }, { threshold: 0.3 });
 
-  function replay(card) {
-    var now = Date.now();
-    if (now - (card._hwAt || 0) < 1200) return; // ignore quick in-and-out
-    card._hwAt = now;
-    card.classList.add('is-on');
-    var art = card.querySelector('.hw-art');
-    if (art && art.getAnimations) {
-      // Only rewind: calling play() would stop the CSS from pausing it when it scrolls away.
-      art.getAnimations({ subtree: true }).forEach(function (a) { a.currentTime = 0; });
-    }
+  function watch() {
+    io.disconnect();
+    cards.forEach(function (c) { c.classList.remove('is-on'); });
+    if (wide.matches) io.observe(row);
+    else cards.forEach(function (c) { io.observe(c); });
   }
-  cards.forEach(function (c) {
-    c.addEventListener('mouseenter', function () { replay(c); });
-    c.addEventListener('focusin', function () { replay(c); });
-  });
+  watch();
+  // Crossing 1024px swaps some keyframes, so start every story again from the finished picture.
+  function restart() {
+    row.classList.remove('hw-ready');
+    void row.offsetWidth;
+    row.classList.add('hw-ready');
+    watch();
+  }
+  if (wide.addEventListener) wide.addEventListener('change', restart);
+  else if (wide.addListener) wide.addListener(restart);
 })();

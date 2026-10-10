@@ -45,7 +45,7 @@ if (!only && outName === 'index.html') {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO shows whether AI recommends your Shopify store, writes the fixes, and counts the orders AI sends you.">
 <link rel="icon" href="/favicon.ico">
-<style>[hidden]{display:none!important}</style>
+<style>[hidden]:not([hidden="until-found"]){display:none!important}</style>
 <script>window.GEO_LIVE=true</script>
 ${head.replace('<title>GEO Overview</title>', '<title>GEO · The free sales channel your store is missing</title>')}
 </head>
