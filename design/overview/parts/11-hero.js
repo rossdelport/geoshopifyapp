@@ -37,3 +37,40 @@
   });
   if (location.hash === '#check') focusSoon();
 })();
+
+// Hero cards: start each card's animation when it scrolls into view, pause it when it leaves, and
+// replay it from the start on hover or keyboard focus. With reduced motion the CSS shows the finished
+// state and nothing here runs.
+(function () {
+  var row = document.querySelector('.hw');
+  if (!row) return;
+  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (calm) return;
+  var cards = [].slice.call(row.querySelectorAll('.hw-card'));
+  row.classList.add('hw-ready');
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { en.target.classList.toggle('is-on', en.isIntersecting); });
+    }, { threshold: 0.3 });
+    cards.forEach(function (c) { io.observe(c); });
+  } else {
+    cards.forEach(function (c) { c.classList.add('is-on'); });
+  }
+
+  function replay(card) {
+    var now = Date.now();
+    if (now - (card._hwAt || 0) < 1200) return; // ignore quick in-and-out
+    card._hwAt = now;
+    card.classList.add('is-on');
+    var art = card.querySelector('.hw-art');
+    if (art && art.getAnimations) {
+      // Only rewind: calling play() would stop the CSS from pausing it when it scrolls away.
+      art.getAnimations({ subtree: true }).forEach(function (a) { a.currentTime = 0; });
+    }
+  }
+  cards.forEach(function (c) {
+    c.addEventListener('mouseenter', function () { replay(c); });
+    c.addEventListener('focusin', function () { replay(c); });
+  });
+})();

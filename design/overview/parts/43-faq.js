@@ -6,13 +6,15 @@
   if (!root) return;
   var chat = root.querySelector('.faq-chat');
   var log = root.querySelector('.faq-log');
-  var logIn = root.querySelector('.faq-log-in');
+  var thread = root.querySelector('.faq-thread');
+  var hello = root.querySelector('.faq-hello');
   var sugg = root.querySelector('.faq-sugg');
   var list = root.querySelector('.faq-sugg-list');
   var reset = root.querySelector('.faq-reset');
-  var done = root.querySelector('.faq-sugg-done');
-  if (!chat || !log || !logIn || !sugg || !list) return;
-  var pairs = Array.prototype.slice.call(logIn.querySelectorAll('.faq-pair'));
+  var title = root.querySelector('.faq-sugg-title');
+  var titleText = title ? title.textContent : '';
+  if (!chat || !log || !thread || !sugg || !list) return;
+  var pairs = Array.prototype.slice.call(thread.querySelectorAll('.faq-pair'));
   if (pairs.length < 2) return;
 
   var motion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
@@ -66,7 +68,7 @@
   function syncState() {
     var left = list.children.length;
     if (reset) reset.hidden = asked === 0;
-    if (done) done.hidden = left > 0;
+    if (title) title.textContent = left ? titleText : 'That\u2019s every question';
     list.hidden = left === 0;
   }
 
@@ -94,7 +96,7 @@
     if (answer) pair.removeChild(answer);
     pair.hidden = false;
     pair.classList.add('is-new');
-    logIn.appendChild(pair);
+    thread.appendChild(pair);
     syncState();
 
     // keep keyboard focus in the list: the next question, else the reset button
@@ -106,13 +108,15 @@
     var wait = reduced() ? 0 : 600 + Math.min(300, Math.round(answer.textContent.length * 0.6));
     pending = { pair: pair, answer: answer, timer: 0 };
     if (!wait) { finish(); return; }
-    logIn.appendChild(typing);
+    thread.appendChild(typing);
     scrollLog(log.scrollHeight);
     pending.timer = setTimeout(finish, wait);
   }
 
   // start: first pair open, the rest hidden (still in the page) and listed as suggestions
   chat.classList.add('is-live');
+  log.tabIndex = 0; // the conversation now scrolls on its own, so keyboard users can focus and scroll it
+  if (hello) hello.hidden = false;
   pairs.forEach(function (pair, i) { pair.hidden = i > 0; });
   fillList(pairs[0]);
   sugg.hidden = false;
@@ -126,7 +130,7 @@
       fillList(null);
       syncState();
       var first = list.querySelector('button');
-      if (first) first.focus();
+      if (first) { try { first.focus({ preventScroll: true }); } catch (e) { first.focus(); } }
     });
   }
 })();
