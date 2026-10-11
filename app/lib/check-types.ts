@@ -3,20 +3,17 @@
 // and show whether they recommend the product. No install, no sign-up.
 
 import type { SourceType } from "./sources";
+import { MARKET_COUNTRIES, shopperCountryName, type MarketCountry } from "./countries";
 
 export const CHECK_ENGINES = ["chatgpt", "gemini", "perplexity"] as const;
 export type CheckEngine = (typeof CHECK_ENGINES)[number];
 export const CHECK_QUESTIONS = 3;
 export const CHECK_RUNS = 2; // every question twice per engine: answers vary run to run
 
-export const CHECK_COUNTRIES = {
-  AU: "Australia",
-  NZ: "New Zealand",
-  US: "the US",
-  GB: "the UK",
-  CA: "Canada",
-} as const;
-export type CheckCountry = keyof typeof CHECK_COUNTRIES;
+// The countries we can ask the AI assistants from: the same 30 markets the app scans from (countries.ts,
+// treg.server.ts). A store anywhere else is checked as a shopper in the US (see detectCountry in check-read.ts).
+export type CheckCountry = MarketCountry;
+export const CHECK_COUNTRIES = Object.fromEntries(MARKET_COUNTRIES.map((c) => [c, shopperCountryName(c)])) as Record<CheckCountry, string>;
 /** Where a check's country came from (see detectCountry in check-read.ts). */
 export type CountryHow =
   | "chosen" // an old form or link picked it
@@ -24,8 +21,8 @@ export type CountryHow =
   | "domain" // the web address, e.g. .com.au
   | "language" // og:locale or <html lang>, e.g. en-NZ (can follow the visitor's location)
   | "currency" // the page's prices, e.g. GBP (can follow the visitor's location)
-  | "unsupported" // the store is in a country we don't check yet: Australia, our launch market
-  | "default"; // nothing usable: Australia, our launch market
+  | "unsupported" // the store is outside the 30 countries we check: the US, the biggest English-language market
+  | "default"; // nothing usable: the US
 
 export type CheckStatus = "queued" | "reading" | "asking" | "writing" | "done" | "failed";
 
@@ -73,7 +70,7 @@ export interface CheckAnswer {
 }
 
 /** One check on the "Is your page easy for AI to quote?" card (see ai-ready.ts). */
-export type AiReadyCheckId = "audience" | "facts" | "faq" | "description" | "schema" | "origin";
+export type AiReadyCheckId = "audience" | "facts" | "top" | "faq" | "description" | "schema" | "origin";
 export interface AiReadyCheck {
   id: AiReadyCheckId;
   label: string; // e.g. "Says who it's for"
@@ -146,4 +143,4 @@ export type CheckEmailResult = { ok: true; lead: CheckLeadState } | { ok: false;
 
 export type CreateCheckResult = { ok: true; id: string } | { ok: false; error: string };
 
-export const isCheckCountry = (c: string): c is CheckCountry => c in CHECK_COUNTRIES;
+export const isCheckCountry = (c: string): c is CheckCountry => (MARKET_COUNTRIES as readonly string[]).includes(c);

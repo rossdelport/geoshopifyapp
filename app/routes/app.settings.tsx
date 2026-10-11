@@ -9,6 +9,7 @@ import { enqueue } from "../lib/jobs.server";
 import { ensurePixel } from "../lib/pixel.server";
 import { limitLabel } from "../lib/plans";
 import { formatNumber } from "../lib/format";
+import { MARKET_COUNTRIES, countryOptions, isCountryCode } from "../lib/countries";
 import { Bar } from "../components/ui";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -33,6 +34,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     usage,
     reportEmails: shop.reportEmails ?? shop.email ?? "",
     country: shop.country,
+    // Built on the server so the names match when the page hydrates.
+    countries: countryOptions(shop.country),
+    // Countries the AI assistants can be asked from; any other is checked as a shopper in the US.
+    checkable: [...MARKET_COUNTRIES] as string[],
     brandName: profile?.brandName ?? shop.name ?? "",
     aliases: ((profile?.aliases as string[]) ?? []).join(", "),
     summary: profile?.summary ?? "",
@@ -54,7 +59,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         .filter((e) => /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(e))
         .slice(0, 5)
         .join(", ");
-      const country = String(form.get("country") ?? shop.country).toUpperCase().slice(0, 2);
+      // Only a real country code; anything else keeps the store's country.
+      const asked = String(form.get("country") ?? "").trim().toUpperCase();
+      const country = isCountryCode(asked) ? asked : shop.country;
       await db.shop.update({ where: { id: shop.id }, data: { reportEmails: emails || null, country } });
       const brandName = String(form.get("brandName") ?? "").trim();
       if (brandName) {
@@ -95,15 +102,6 @@ function UsageRow({ label, used, limit }: { label: string; used: number; limit: 
     </div>
   );
 }
-
-const COUNTRIES = [
-  ["AU", "Australia"],
-  ["NZ", "New Zealand"],
-  ["US", "United States"],
-  ["GB", "United Kingdom"],
-  ["CA", "Canada"],
-  ["IE", "Ireland"],
-];
 
 export default function Settings() {
   const data = useLoaderData<typeof loader>();
@@ -153,8 +151,13 @@ export default function Settings() {
               <s-text color="subdued">How we describe you: {data.summary}</s-text>
             </s-paragraph>
           )}
-          <s-select label="Where your customers are" value={form.country} onChange={set("country")} details="AI answers are checked from this country.">
-            {COUNTRIES.map(([code, name]) => (
+          <s-select
+            label="Where your customers are"
+            value={form.country}
+            onChange={set("country")}
+            details={data.checkable.includes(form.country) ? "AI answers are checked from this country." : "We can't ask AI from this country yet, so answers are checked as a shopper in the US."}
+          >
+            {data.countries.map(([code, name]) => (
               <s-option key={code} value={code}>
                 {name}
               </s-option>

@@ -535,11 +535,17 @@ export function storeCountryFromMeta(
   return meta.host.toLowerCase() === page.host.toLowerCase() ? meta.country : null;
 }
 
+// Country web address endings for the countries we check. Generic ones (.co, .io, .me, .shop) say nothing.
+const TLD_COUNTRY: Record<string, CheckCountry> = {
+  au: "AU", nz: "NZ", uk: "GB", ca: "CA", us: "US", ie: "IE", de: "DE", fr: "FR", es: "ES", it: "IT", nl: "NL",
+  be: "BE", at: "AT", ch: "CH", dk: "DK", se: "SE", no: "NO", fi: "FI", pl: "PL", pt: "PT", jp: "JP", in: "IN",
+  sg: "SG", my: "MY", ph: "PH", hk: "HK", mx: "MX", br: "BR", za: "ZA", ae: "AE",
+};
+
 /** "shop.com.au" -> "AU". Only the endings of the countries we check: .co, .io or .me say nothing about where a shop is. */
 export function domainCountry(domain: string | null | undefined): CheckCountry | null {
   const tld = (domain ?? "").toLowerCase().replace(/\.$/, "").split(".").pop() ?? "";
-  const byTld: Record<string, CheckCountry> = { au: "AU", nz: "NZ", uk: "GB", ca: "CA", us: "US" };
-  return byTld[tld] ?? null;
+  return TLD_COUNTRY[tld] ?? null;
 }
 
 /** "en-AU", "en_au", "zh-Hant-TW" -> the region ("AU", "TW"); "en" -> null. "UK" counts as GB. */
@@ -549,7 +555,14 @@ export function localeRegion(tag: string | null | undefined): string | null {
   return region === "UK" ? "GB" : region;
 }
 
-const CURRENCY_COUNTRY: Record<string, CheckCountry> = { AUD: "AU", NZD: "NZ", GBP: "GB", CAD: "CA", USD: "US" };
+// A currency used by one country we check. EUR is shared by many, so it says nothing on its own.
+const CURRENCY_COUNTRY: Record<string, CheckCountry> = {
+  AUD: "AU", NZD: "NZ", GBP: "GB", CAD: "CA", USD: "US", CHF: "CH", DKK: "DK", SEK: "SE", NOK: "NO", PLN: "PL",
+  JPY: "JP", INR: "IN", SGD: "SG", MYR: "MY", PHP: "PH", HKD: "HK", MXN: "MX", BRL: "BR", ZAR: "ZA", AED: "AE",
+};
+// Our server is in Singapore, and many shops show prices and language to suit the visitor: Singapore
+// dollars or en-SG may only mean the shop is showing itself to us. So they never count on their own.
+const SERVER_COUNTRY: CheckCountry = "SG";
 
 export interface CountrySignals {
   override?: string | null; // a country an old form or link chose: it wins when it's one we check
@@ -561,10 +574,10 @@ export interface CountrySignals {
 
 /**
  * The shopper country for a check: where the store is. In order:
- * 1. a country an old form chose; 2. Shopify's store country; 3. the domain ending (.com.au, .co.nz...).
- * Then signals a shop can change to suit the visitor (our server is in Singapore), so they only count
- * when they name a country we check: 4. a currency other than USD (AUD, NZD, GBP or CAD prices are rarely
- * shown to a visitor unless they are the shop's own); 5. a language region other than US; 6. USD prices;
+ * 1. a country chosen on the form; 2. Shopify's store country; 3. the domain ending (.com.au, .de, .co.jp...).
+ * Then signals a shop can change to suit the visitor (our server is in Singapore, so Singapore dollars and
+ * en-SG never count), and only when they name a country we check: 4. a currency other than USD that one
+ * country uses (GBP, JPY, CHF...; not EUR); 5. a language region other than US; 6. USD prices;
  * 7. en-US (many sites keep USD and en-US as their "international" default).
  * A store in a country we don't check yet only looks at the domain and a non-USD currency, then uses
  * the US ("unsupported"). Nothing at all: the US ("default"), the biggest English-language market.
@@ -578,11 +591,11 @@ export function detectCountry(s: CountrySignals): { country: CheckCountry; how: 
   const byDomain = domainCountry(s.domain);
   if (byDomain) return { country: byDomain, how: "domain" };
   const currencies = (s.currencies ?? []).map((c) => (c ?? "").trim().toUpperCase());
-  const byCurrency = currencies.map((c) => (c === "USD" ? undefined : CURRENCY_COUNTRY[c])).find(Boolean);
+  const byCurrency = currencies.map((c) => (c === "USD" ? undefined : CURRENCY_COUNTRY[c])).find((c) => c && c !== SERVER_COUNTRY);
   if (byCurrency) return { country: byCurrency, how: "currency" };
   if (knownStore) return { country: "US", how: "unsupported" };
   const regions = (s.locales ?? []).map(localeRegion);
-  const byLanguage = regions.find((r): r is CheckCountry => r !== null && r !== "US" && isCheckCountry(r));
+  const byLanguage = regions.find((r): r is CheckCountry => r !== null && r !== "US" && r !== SERVER_COUNTRY && isCheckCountry(r));
   if (byLanguage) return { country: byLanguage, how: "language" };
   if (currencies.includes("USD")) return { country: "US", how: "currency" };
   if (regions.includes("US")) return { country: "US", how: "language" };
@@ -745,14 +758,25 @@ export function fallbackQuestions(category: string, country: CheckCountry): Chec
   ];
 }
 
-const COUNTRY_WORDS: Record<CheckCountry, RegExp> = {
+// How a question names a country. The special cases first; every other country by its name.
+const COUNTRY_WORDS: Partial<Record<CheckCountry, RegExp>> = {
   AU: /australia|aussie|\bAU\b/i,
   NZ: /new zealand|\bNZ\b|aotearoa/i,
   US: /\bUSA?\b|[Uu]nited [Ss]tates|[Aa]merica/,
   GB: /\bUK\b|united kingdom|britain|england|scotland|wales/i,
   CA: /canada|canadian/i,
+  AE: /\bUAE\b|united arab emirates|dubai|abu dhabi/i,
+  HK: /hong kong/i,
+  NL: /netherlands|holland|dutch/i,
+  PH: /philippines/i,
 };
-export const mentionsCountry = (text: string, country: CheckCountry) => COUNTRY_WORDS[country].test(text);
+const countryWords = (country: CheckCountry): RegExp => {
+  const known = COUNTRY_WORDS[country];
+  if (known) return known;
+  const name = CHECK_COUNTRIES[country].replace(/^the\s+/i, "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`\\b${name}\\b`, "i");
+};
+export const mentionsCountry = (text: string, country: CheckCountry) => countryWords(country).test(text);
 
 /** Exactly 3 questions: drop any that name the brand, fill gaps, and make sure 2 mention the country. */
 export function tidyQuestions(

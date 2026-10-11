@@ -215,3 +215,93 @@ export function applyClaimsText(d: GuideDraft, items: FaqItem[] | null): GuideDr
     picks: d.picks.map((p, i) => ({ ...p, why: clean(rest[d.sections.length + i].a).replace(/^\(no note\)$/, "") })),
   };
 }
+
+// ---------- Topic clusters: links between a hub guide and its specific guides ----------
+// Worked out when a guide goes live (never when it's drafted), and only to guides that are live now,
+// so no link ever points at a page that doesn't exist. Plain links with no UTM: a shopper moving
+// between our guides keeps the AI source they arrived from. The links live in one block we own
+// (<div class="geo-related">), rebuilt from the list of live guides each time, so the rest of the page
+// (including the store's own edits) is never touched.
+
+export const RELATED_CLASS = "geo-related";
+const RELATED_BLOCK = /\n?<div class="geo-related">[\s\S]{0,20000}?<\/div>/i;
+
+export interface GuideLink {
+  title: string;
+  url: string;
+}
+
+/** The hub's "More guides on this topic" list, or a specific guide's link back to its hub. Empty when there's nothing to link. */
+export function relatedBlock(kind: "hub" | "spoke", links: GuideLink[]): string {
+  const safe = links.filter((l) => linkKey(l.url)).slice(0, 20);
+  if (!safe.length) return "";
+  if (kind === "spoke") {
+    const hub = safe[0];
+    return `<div class="${RELATED_CLASS}"><p><em>Part of our guide:</em> <a href="${esc(hub.url)}">${esc(clean(hub.title))}</a></p></div>`;
+  }
+  return `<div class="${RELATED_CLASS}"><h2>More guides on this topic</h2><ul>${safe
+    .map((l) => `<li><a href="${esc(l.url)}">${esc(clean(l.title))}</a></li>`)
+    .join("")}</ul></div>`;
+}
+
+/** The page without our links block. */
+export function stripRelated(html: string): string {
+  return html.replace(RELATED_BLOCK, "");
+}
+
+/** Put our links block in (replacing the old one), or take it out when `block` is empty. */
+export function setRelatedBlock(html: string, block: string): string {
+  const without = stripRelated(html).replace(/\s+$/, "");
+  return block ? `${without}\n${block}` : without;
+}
+
+/** The hub URLs a page links to in our block (for tests and checks). */
+export function relatedLinks(html: string): string[] {
+  const block = RELATED_BLOCK.exec(html)?.[0] ?? "";
+  return [...block.matchAll(/href="([^"<>]{1,500})"/g)].map((m) => m[1].replace(/&amp;/g, "&"));
+}
+
+// ---------- Freshness: the "Updated <Month Year>" line ----------
+
+export const UPDATED_CLASS = "geo-updated";
+const UPDATED_LINE = /<p class="geo-updated">[^<]{0,80}(?:<em>[^<]{0,80}<\/em>)?[^<]{0,20}<\/p>\n?/i;
+
+/** "Updated October 2026" in UTC. */
+export function updatedText(date: Date): string {
+  return `Updated ${date.toLocaleDateString("en-GB", { month: "long", year: "numeric", timeZone: "UTC" })}`;
+}
+
+/** The page without its "Updated" line. */
+export function stripUpdatedLine(html: string): string {
+  return html.replace(UPDATED_LINE, "");
+}
+
+/** Put the "Updated <Month Year>" line at the top of the page (replacing an old one). */
+export function setUpdatedLine(html: string, date: Date): string {
+  return `<p class="${UPDATED_CLASS}"><em>${updatedText(date)}</em></p>\n${stripUpdatedLine(html)}`;
+}
+
+/** The month a page says it was updated ("October 2026"), or null. */
+export function updatedLineOf(html: string): string | null {
+  return /<p class="geo-updated">\s*(?:<em>)?\s*Updated ([A-Za-z]+ \d{4})/i.exec(html)?.[1] ?? null;
+}
+
+/**
+ * The words of a guide that count as its content: without our links block, the "Updated" line and the
+ * HTML. Two versions with the same content text are the same guide (a refresh never just bumps the date).
+ */
+export function guideContentText(html: string): string {
+  return unescape(stripUpdatedLine(stripRelated(html)).slice(0, MAX_BODY)).toLowerCase();
+}
+
+/** The products a guide's "Products that fit" list links to, by handle (from /products/<handle> links). */
+export function guideProductHandles(html: string): string[] {
+  const out: string[] = [];
+  // Each href is read once (a bounded run of non-quote characters), then the handle is picked out of it:
+  // no nested repeats, so a long or unclosed link can't make this slow.
+  for (const m of html.slice(0, MAX_BODY).matchAll(/href="([^"<>]{1,800})"/gi)) {
+    const h = /\/products\/([a-z0-9][a-z0-9-]{0,200})/i.exec(m[1])?.[1]?.toLowerCase();
+    if (h && !out.includes(h)) out.push(h);
+  }
+  return out;
+}

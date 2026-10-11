@@ -41,12 +41,25 @@ describe("detectCountry", () => {
     expect(detectCountry({ domain: "shop.co", locales: ["en-SG"], currencies: ["SGD"] })).toEqual({ country: "US", how: "default" });
   });
 
+  it("checks stores in any of the 30 countries the app scans from", () => {
+    expect(detectCountry({ storeCountry: "DE", domain: "shop.com", locales: ["en-US"], currencies: ["USD"] })).toEqual({ country: "DE", how: "store" });
+    expect(detectCountry({ storeCountry: "SG", domain: "shop.com" })).toEqual({ country: "SG", how: "store" });
+    expect(detectCountry({ domain: "kirschblute.de" })).toEqual({ country: "DE", how: "domain" });
+    expect(detectCountry({ domain: "sakura.co.jp" })).toEqual({ country: "JP", how: "domain" });
+    expect(detectCountry({ domain: "fynbos.co.za" })).toEqual({ country: "ZA", how: "domain" });
+    expect(detectCountry({ domain: "shop.com", currencies: ["JPY"] })).toEqual({ country: "JP", how: "currency" });
+    expect(detectCountry({ domain: "shop.com", currencies: ["CHF"] })).toEqual({ country: "CH", how: "currency" });
+    expect(detectCountry({ domain: "shop.com", locales: ["de-DE"], currencies: ["EUR"] })).toEqual({ country: "DE", how: "language" });
+    // EUR alone could be any of many countries.
+    expect(detectCountry({ domain: "shop.com", currencies: ["EUR"] })).toEqual({ country: "US", how: "default" });
+  });
+
   it("for a store based somewhere we don't check yet, uses its web address or own currency, else the US", () => {
     // USD and en-US say nothing about where it is (they often follow the visitor), so they are skipped.
-    expect(detectCountry({ storeCountry: "DE", domain: "shop.com", locales: ["en-US"], currencies: ["USD"] })).toEqual({ country: "US", how: "unsupported" });
-    expect(detectCountry({ storeCountry: "DE", domain: "shop.com", locales: ["en-GB"] })).toEqual({ country: "US", how: "unsupported" });
-    expect(detectCountry({ storeCountry: "DE", domain: "banksia.co.uk", currencies: ["EUR"] })).toEqual({ country: "GB", how: "domain" });
-    expect(detectCountry({ storeCountry: "SG", domain: "shop.com", currencies: ["SGD", "GBP"] })).toEqual({ country: "GB", how: "currency" });
+    expect(detectCountry({ storeCountry: "KE", domain: "shop.com", locales: ["en-US"], currencies: ["USD"] })).toEqual({ country: "US", how: "unsupported" });
+    expect(detectCountry({ storeCountry: "KE", domain: "shop.com", locales: ["en-GB"] })).toEqual({ country: "US", how: "unsupported" });
+    expect(detectCountry({ storeCountry: "KE", domain: "banksia.co.uk", currencies: ["EUR"] })).toEqual({ country: "GB", how: "domain" });
+    expect(detectCountry({ storeCountry: "KE", domain: "shop.com", currencies: ["SGD", "GBP"] })).toEqual({ country: "GB", how: "currency" });
   });
 
   it("uses the US when nothing is found", () => {
@@ -86,7 +99,9 @@ describe("country signals", () => {
   it("only maps the domain endings of the countries we check", () => {
     expect(domainCountry("shop.com.au.")).toBe("AU");
     expect(domainCountry("shop.org.nz")).toBe("NZ");
-    for (const d of ["shop.com", "shop.co", "shop.io", "x.myshopify.com", "shop.de", "", null]) expect(domainCountry(d)).toBeNull();
+    expect(domainCountry("shop.de")).toBe("DE");
+    expect(domainCountry("shop.com.br")).toBe("BR");
+    for (const d of ["shop.com", "shop.co", "shop.io", "x.myshopify.com", "shop.shop", "shop.ke", "", null]) expect(domainCountry(d)).toBeNull();
   });
 
   it("reads the region of a language tag", () => {

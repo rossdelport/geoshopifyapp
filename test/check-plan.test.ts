@@ -25,10 +25,11 @@ describe("buildActionPlan", () => {
 
   it("lists each failed page check with its fix, the heaviest first", () => {
     const page = plan.steps[0];
-    expect(page.body).toContain("45 out of 100");
-    expect(page.items.map((i) => i.label)).toEqual(["Says who it’s for", "Description is specific", "Has questions and answers"]);
+    expect(page.body).toContain("40 out of 100");
+    expect(page.items.map((i) => i.label)).toEqual(["Says who it’s for", "Key facts near the top", "Description is specific", "Has questions and answers"]);
     expect(page.items[0].fix).toMatch(/^Add one plain line on who it suits/);
-    expect(page.items[1].detail).toBe("The description is only 24 characters.");
+    expect(page.items[1].fix).toMatch(/^Start the description with one or two sentences/);
+    expect(page.items[2].detail).toBe("The description is only 24 characters.");
   });
 
   it("lists the questions AI left the brand out of, with the brands it picked instead", () => {
@@ -68,7 +69,7 @@ describe("buildActionPlan", () => {
   });
 
   it("says what the plan holds, for the page's locked teaser", () => {
-    expect(plan.teaser).toEqual({ steps: 5, pageFixes: 3, sitesToPitch: 2, rivalsToStudy: sampleReport.competitors.length });
+    expect(plan.teaser).toEqual({ steps: 5, pageFixes: 4, sitesToPitch: 2, rivalsToStudy: sampleReport.competitors.length });
   });
 
   it("never repeats a tip a step already covers", () => {

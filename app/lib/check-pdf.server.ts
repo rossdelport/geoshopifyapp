@@ -9,6 +9,7 @@ import { sameBrand } from "./match";
 import { ENGINE_LABELS, PLANS } from "./plans";
 import { SCORE_EXPLAINER } from "./score";
 import { SOURCE_TYPE_LABELS } from "./sources";
+import { countryDateStyle } from "./countries";
 import type { ActionPlan, PlanStep } from "./check-plan";
 import {
   CHECK_COUNTRIES,
@@ -125,15 +126,11 @@ const shortUrl = (u: string, max = 72) => {
   return s.length > max ? `${s.slice(0, max - 1)}\u2026` : s;
 };
 
-const TIME_ZONES: Record<CheckCountry, string> = {
-  AU: "Australia/Sydney",
-  NZ: "Pacific/Auckland",
-  US: "America/New_York",
-  GB: "Europe/London",
-  CA: "America/Toronto",
-};
+// The report date as a shopper in that country writes it ("October 11, 2026" in the US, Canada and the
+// Philippines, "11 October 2026" elsewhere), in that country's main time zone; UTC when we don't know it.
 function longDate(d: Date, country: CheckCountry | null): string {
-  return d.toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric", timeZone: TIME_ZONES[country ?? "AU"] });
+  const { locale, timeZone } = countryDateStyle(country);
+  return d.toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric", timeZone });
 }
 
 // ---------- Drawing ----------
@@ -426,6 +423,9 @@ function drawSources(pdf: Pdf, input: PdfReportInput) {
   pdf.y += 4;
 }
 
+const COUNT_WORDS = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
+const countWord = (n: number) => COUNT_WORDS[n] ?? String(n);
+
 function drawAiReady(pdf: Pdf, input: PdfReportInput) {
   const ready = input.report.aiReady;
   if (!ready) return;
@@ -435,7 +435,7 @@ function drawAiReady(pdf: Pdf, input: PdfReportInput) {
   const heights = ready.checks.map((c) => 16 + pdf.height(c.reason, "body", 9.5, tw) + (fixOf(c) ? pdf.height(fixOf(c), "body", 9.5, tw) + 3 : 0) + 10);
   pdf.section(
     `Is your page easy for AI to quote? ${ready.score} out of 100`,
-    "Six quick checks on your product page. AI assistants repeat clear facts, so each one you pass makes your page easier to recommend.",
+    `${countWord(ready.checks.length)} quick checks on your product page. AI assistants repeat clear facts, so each one you pass makes your page easier to recommend.`,
     heights[0] ?? 40,
   );
   for (const [i, c] of ready.checks.entries()) {

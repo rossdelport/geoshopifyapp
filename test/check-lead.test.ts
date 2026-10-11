@@ -324,9 +324,9 @@ describe.skipIf(!url)("free check email capture (needs TEST_DATABASE_URL)", () =
       const c = await doneCheck();
       const view = (await check.getCheckView(c.id))!;
       expect(view.report!.tips).toEqual([]);
-      expect(view.report!.aiReady!.checks.map((x) => x.fix)).toEqual(["", "", "", "", "", ""]);
+      expect(view.report!.aiReady!.checks.map((x) => x.fix)).toEqual(["", "", "", "", "", "", ""]);
       expect(view.report!.aiReady!.checks.map((x) => x.reason)).toEqual(sampleReport.aiReady!.checks.map((x) => x.reason));
-      expect(view.plan).toEqual({ steps: 5, pageFixes: 3, sitesToPitch: 2, rivalsToStudy: sampleReport.competitors.length });
+      expect(view.plan).toEqual({ steps: 5, pageFixes: 4, sitesToPitch: 2, rivalsToStudy: sampleReport.competitors.length });
       const page = JSON.stringify(view);
       for (const tip of sampleReport.tips) expect(page).not.toContain(tip.body);
       for (const x of sampleReport.aiReady!.checks) expect(page).not.toContain(x.fix);

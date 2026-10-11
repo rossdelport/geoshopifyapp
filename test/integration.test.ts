@@ -371,18 +371,19 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
   it("finds outreach targets only up to the plan's monthly limit", async () => {
     const { findOutreachTargets, findCandidates } = await import("../app/lib/outreach.server");
     const { startOfMonth } = await import("../app/lib/limits");
-    // Article pages are never fetched in tests.
+    // Pages are never fetched in tests: paid calls go through fetch, cited pages through the page reader.
     const fetchSpy = vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("no network in tests"));
+    const fetchPage = vi.fn().mockRejectedValue(new Error("no network in tests"));
     try {
       expect((await findCandidates(shopId)).length).toBeGreaterThan(0);
       const target = (i: number, createdAt?: Date) => ({ shopId, url: `https://example.com/roundup-${i}`, domain: "example.com", ...(createdAt ? { createdAt } : {}) });
       // Standard: 10 a month. 10 from last month don't count; 10 this month use it up.
       await db.outreachTarget.createMany({ data: Array.from({ length: 10 }, (_, i) => target(100 + i, new Date(startOfMonth().getTime() - DAY))) });
       await db.outreachTarget.createMany({ data: Array.from({ length: 10 }, (_, i) => target(i)) });
-      expect(await findOutreachTargets(shopId)).toBe(0);
+      expect(await findOutreachTargets(shopId, { fetchPage })).toBe(0);
       // Done-for-you: 40 a month, so the same 10 leave room for the article AI cited.
       await db.shop.update({ where: { id: shopId }, data: { plan: "pro" } });
-      expect(await findOutreachTargets(shopId)).toBeGreaterThan(0);
+      expect(await findOutreachTargets(shopId, { fetchPage })).toBeGreaterThan(0);
     } finally {
       fetchSpy.mockRestore();
       await db.shop.update({ where: { id: shopId }, data: { plan: "core" } });

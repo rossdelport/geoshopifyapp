@@ -48,12 +48,16 @@ async function saveIfAi(shopId: string, o: OrderNode): Promise<boolean> {
   const result = classifyOrder(toSignals(o), env.utmSource);
   if (!result) return false;
   const money = o.totalPriceSet?.shopMoney;
+  // Shopify nearly always gives the order's currency; if not, it's in the shop's own currency.
+  const fallbackCurrency = money?.currencyCode
+    ? null
+    : ((await db.shop.findUnique({ where: { id: shopId }, select: { currency: true } }))?.currency ?? "USD");
   const data = {
     engine: result.engine,
     ours: result.ours,
     reason: result.reason,
     revenue: Number(money?.amount ?? 0),
-    currency: money?.currencyCode ?? "AUD",
+    currency: money?.currencyCode ?? fallbackCurrency ?? "USD",
     orderName: o.name,
     products: (o.lineItems?.nodes ?? []).map((l: any) => ({ title: l.title, qty: l.quantity })),
     orderedAt: new Date(o.createdAt),

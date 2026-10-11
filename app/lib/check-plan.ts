@@ -59,6 +59,7 @@ const RIVALS_TIP = /^See why AI picks /;
 const AI_READY_TIPS = new Set([
   "Say who it’s for",
   "Spell out the key facts",
+  "Put the key facts first",
   "Add questions and answers",
   "Make the description more specific",
   "Complete your product data",

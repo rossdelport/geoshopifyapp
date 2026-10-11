@@ -5,7 +5,7 @@ import { useAppBridge } from "@shopify/app-bridge-react";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import db from "../db.server";
 import { requireShop, getUsage } from "../lib/shop.server";
-import { applyFix, queueAutopilot, revertFix } from "../lib/fixes.server";
+import { applyFix, queueAutopilot, rejectFix, revertFix } from "../lib/fixes.server";
 import { FIX_TYPE_LABELS, type FaqItem, type FixAfter, type FixBefore } from "../lib/fix-labels";
 import { parseFaq } from "../lib/faq";
 import { remainingFixes, remainingGuidePages } from "../lib/limits";
@@ -13,6 +13,8 @@ import { PLANS, limitLabel } from "../lib/plans";
 import { enqueue } from "../lib/jobs.server";
 import { sanitizeHtml } from "../lib/sanitize";
 import { timeAgo } from "../lib/format";
+import { ROBOTS_FIX, ROBOTS_LIMIT, botLine, crawlerIssues, turnedAway, type CrawlerCheck } from "../lib/robots";
+import { checkCrawlers } from "../lib/robots.server";
 import { Empty } from "../components/ui";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -37,6 +39,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     guidesPerMonth: plan.guidePagesPerMonth,
     themeEditorUrl: `https://${shop.domain}/admin/themes/current/editor?template=product&addAppBlockId=${process.env.SHOPIFY_API_KEY ?? ""}/product-faq&target=mainSection`,
     hasFaqLive: fixes.some((f) => f.type === "product_faq" && f.status === "applied"),
+    crawlers: (shop.crawlers ?? null) as CrawlerCheck | null,
     fixes: fixes
       .map((f) => ({
         id: f.id,
@@ -51,6 +54,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         after: f.after as FixAfter,
         resultUrl: f.resultUrl,
         appliedAt: f.appliedAt,
+        refresh: Boolean(f.refreshOfId),
+        cluster: f.cluster,
+        hub: f.type === "guide_page" && Boolean(f.cluster) && !f.hubFixId,
         questions: ((f.questionIds as string[]) ?? []).map((id) => qText.get(id)).filter(Boolean) as string[],
       }))
       .sort((a, b) => (impactOrder[a.impact] ?? 3) - (impactOrder[b.impact] ?? 3)),
@@ -68,6 +74,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   try {
     switch (intent) {
+      case "crawlers": {
+        // A free read of the store's robots.txt; at most once every two minutes.
+        if (shop.crawlersCheckedAt && Date.now() - shop.crawlersCheckedAt.getTime() < 120_000) return { ok: true, message: "Checked just now" };
+        const r = await checkCrawlers(shop.id);
+        return { ok: true, message: r.status === "unreachable" ? "We couldn't read your robots.txt" : "Checked your robots.txt" };
+      }
       case "approve":
         if (!fix) break;
         await applyFix(fix.id, admin);
@@ -78,7 +90,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         return { ok: true, message: "Undone. Your store is back how it was." };
       case "reject":
         if (!fix) break;
-        await db.fix.update({ where: { id: fix.id }, data: { status: "rejected" } });
+        await rejectFix(fix);
         return { ok: true, message: "Skipped" };
       case "restore":
         if (!fix) break;
@@ -128,9 +140,38 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 type FixView = Awaited<ReturnType<typeof loader>>["fixes"][number];
 
+const REFRESH_LABELS: Record<string, string> = { guide_page: "Updated buying guide", product_faq: "Updated product FAQs" };
+
+/** A FAQ kept as a JSON string (live metafield) or a list. */
+function faqList(v: unknown): FaqItem[] {
+  if (Array.isArray(v)) return v as FaqItem[];
+  if (typeof v === "string") {
+    try {
+      const parsed = JSON.parse(v);
+      return Array.isArray(parsed) ? (parsed as FaqItem[]) : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+}
+
+function FaqView({ items }: { items: FaqItem[] }) {
+  return (
+    <dl className="geo-faq">
+      {items.map((f, i) => (
+        <div key={i}>
+          <dt>{f.q}</dt>
+          <dd>{f.a}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
 function Preview({ fix }: { fix: FixView }) {
   const a = fix.after;
-  const b = fix.before ?? {};
+  const b = (fix.before ?? {}) as FixBefore & { bodyHtml?: string };
   const html = (s: string) => <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(s) }} />;
 
   let before: ReactNode = null;
@@ -140,19 +181,12 @@ function Preview({ fix }: { fix: FixView }) {
       before = b.description || b.descriptionHtml ? (b.descriptionHtml ? html(b.descriptionHtml) : <p>{b.description}</p>) : <p>(empty)</p>;
       after = html(a.descriptionHtml ?? "");
       break;
-    case "product_faq":
-      before = <p>No FAQs on this product.</p>;
-      after = (
-        <dl className="geo-faq">
-          {(a.faq ?? []).map((f: FaqItem, i: number) => (
-            <div key={i}>
-              <dt>{f.q}</dt>
-              <dd>{f.a}</dd>
-            </div>
-          ))}
-        </dl>
-      );
+    case "product_faq": {
+      const now = faqList(b.faq);
+      before = now.length ? <FaqView items={now} /> : <p>No FAQs on this product.</p>;
+      after = <FaqView items={a.faq ?? []} />;
       break;
+    }
     case "product_seo":
       before = (
         <>
@@ -176,7 +210,7 @@ function Preview({ fix }: { fix: FixView }) {
       after = <p>{a.productType}</p>;
       break;
     case "guide_page":
-      before = <p>New page on your website.</p>;
+      before = fix.refresh && b.bodyHtml ? html(b.bodyHtml) : <p>New page on your website.</p>;
       after = (
         <>
           <h3 style={{ marginTop: 0 }}>{a.title}</h3>
@@ -212,7 +246,9 @@ function Editor({ fix, onSave }: { fix: FixView; onSave: (fields: Record<string,
             ? { title: a.title ?? "" }
             : fix.type === "product_type"
               ? { productType: a.productType ?? "" }
-              : { title: a.title ?? "", bodyHtml: a.bodyHtml ?? "" };
+              : fix.refresh
+                ? { bodyHtml: a.bodyHtml ?? "" } // an update to a live page changes its content, not its title
+                : { title: a.title ?? "", bodyHtml: a.bodyHtml ?? "" };
   const [fields, setFields] = useState(initial);
   const LABELS: Record<string, string> = {
     descriptionHtml: "Description (HTML)",
@@ -254,13 +290,76 @@ function Editor({ fix, onSave }: { fix: FixView; onSave: (fields: Record<string,
   );
 }
 
+/** "Can AI assistants read your store?": the weekly robots.txt check, with a plain fix. */
+function CrawlerCard({ check, submit, busy }: { check: CrawlerCheck | null; submit: (d: Record<string, string>) => void; busy: boolean }) {
+  const issues = crawlerIssues(check);
+  const serious = issues.filter((b) => b.level !== "info");
+  const training = issues.filter((b) => b.level === "info");
+  const critical = serious.some((b) => b.level === "critical");
+  return (
+    <s-section heading="Can AI assistants read your store?">
+      <s-stack direction="block" gap="base">
+        {!check ? (
+          <s-paragraph>We check your store&apos;s robots.txt each week to make sure the bots AI assistants use can read your product pages.</s-paragraph>
+        ) : turnedAway(check) ? (
+          <s-banner tone="warning" heading="Your store turned our check away">
+            <s-paragraph>
+              When we asked for {check.robotsUrl}, your store refused (it answered {check.httpStatus}). That&apos;s usually a firewall or bot
+              protection, and it may turn away the bots AI assistants use too. Check its settings and allow OAI-SearchBot, PerplexityBot,
+              Googlebot and Bingbot. We&apos;ll check again tomorrow.
+            </s-paragraph>
+          </s-banner>
+        ) : check.status === "unreachable" ? (
+          <s-banner tone="warning" heading="We couldn't read your robots.txt">
+            <s-paragraph>
+              Your store didn&apos;t send it when we asked for {check.robotsUrl}. If it keeps failing, search engines may stop reading your store
+              until it works. We&apos;ll check again tomorrow.
+            </s-paragraph>
+          </s-banner>
+        ) : serious.length ? (
+          <s-banner tone={critical ? "critical" : "warning"} heading={critical ? "Some AI assistants can't read your store" : "One or more AI bots can't read your store"}>
+            {serious.map((b) => (
+              <s-paragraph key={b.token}>{botLine(b)}</s-paragraph>
+            ))}
+            <s-paragraph>
+              <b>How to fix it:</b> {ROBOTS_FIX}
+            </s-paragraph>
+          </s-banner>
+        ) : check.status === "no-file" ? (
+          <s-paragraph>
+            Good news: your store has no robots.txt, so nothing there stops the bots that ChatGPT, Perplexity, Google AI Overviews, Gemini and
+            Claude use from reading your product pages.
+          </s-paragraph>
+        ) : (
+          <s-paragraph>
+            Good news: your robots.txt lets the bots that ChatGPT, Perplexity, Google AI Overviews, Gemini and Claude use read your product pages.
+          </s-paragraph>
+        )}
+        {training.length > 0 && (
+          <div className="geo-small">
+            You block {training.map((b) => b.name).join(", ")}. {training.some((b) => b.token === "GPTBot" || b.token === "ClaudeBot") ? "Training bots only collect pages to train AI models: blocking them doesn't stop AI answers from recommending you. It's your call." : ""}
+            {training.some((b) => b.token === "ChatGPT-User" || b.token === "Perplexity-User") ? " Bots that fetch a page when someone asks about it may not follow robots.txt anyway." : ""}
+          </div>
+        )}
+        <div className="geo-small">{ROBOTS_LIMIT}</div>
+        <s-stack direction="inline" gap="base" alignItems="center">
+          <s-button onClick={() => submit({ intent: "crawlers" })} {...(busy ? { loading: true } : {})}>
+            {check ? "Check again" : "Check now"}
+          </s-button>
+          {check && <s-text color="subdued">Checked {timeAgo(check.checkedAt)}</s-text>}
+        </s-stack>
+      </s-stack>
+    </s-section>
+  );
+}
+
 function FixCard({ fix, busy, submit }: { fix: FixView; busy: boolean; submit: (d: Record<string, string>) => void }) {
   const [editing, setEditing] = useState(false);
   return (
     <s-section>
       <s-stack direction="block" gap="base">
         <s-stack direction="inline" gap="small-200" alignItems="center">
-          <s-text type="strong">{FIX_TYPE_LABELS[fix.type] ?? fix.type}</s-text>
+          <s-text type="strong">{(fix.refresh ? REFRESH_LABELS[fix.type] : null) ?? FIX_TYPE_LABELS[fix.type] ?? fix.type}</s-text>
           {fix.impact === "high" && <s-badge tone="success">Big win</s-badge>}
           {fix.impact === "low" && <s-badge>Small win</s-badge>}
           {fix.status === "applied" && <s-badge tone="success">Live</s-badge>}
@@ -269,6 +368,11 @@ function FixCard({ fix, busy, submit }: { fix: FixView; busy: boolean; submit: (
           <s-text color="subdued">· {fix.title}</s-text>
         </s-stack>
         <s-paragraph>{fix.reason}</s-paragraph>
+        {fix.type === "guide_page" && fix.cluster && (
+          <div className="geo-small">
+            Topic: {fix.cluster} · {fix.hub ? "the overview guide for this topic" : "a specific guide that links to the topic's overview"}
+          </div>
+        )}
         {fix.questions.length > 0 && (
           <div className="geo-small">Helps with: {fix.questions.slice(0, 3).map((q) => `“${q}”`).join(", ")}</div>
         )}
@@ -364,9 +468,12 @@ export default function Fixes() {
     other: data.fixes.filter((f) => f.status === "rejected" || f.status === "reverted").length,
   };
 
+  const crawlerBusy = fetcher.state !== "idle" && fetcher.formData?.get("intent") === "crawlers";
+
   if (data.planId === "free") {
     return (
       <s-page heading="Fixes">
+        <CrawlerCard check={data.crawlers} submit={submit} busy={crawlerBusy} />
         <s-section>
           <Empty title="Fixes come with a plan">
             <p>
@@ -401,7 +508,7 @@ export default function Fixes() {
               Fixes this month: <b>{data.remaining < 0 ? "unlimited" : `${data.remaining} left of ${data.perMonth}`}</b>
             </span>
             <span>
-              Products optimised: <b>{data.optimised} of {data.productLimit.toLocaleString("en-AU")}</b>
+              Products optimised: <b>{data.optimised} of {data.productLimit.toLocaleString("en")}</b>
             </span>
             {data.guidesPerMonth > 0 && (
               <span>
@@ -426,6 +533,8 @@ export default function Fixes() {
           )}
         </s-stack>
       </s-section>
+
+      <CrawlerCard check={data.crawlers} submit={submit} busy={crawlerBusy} />
 
       <s-section padding="none">
         <div style={{ padding: "12px 16px" }}>

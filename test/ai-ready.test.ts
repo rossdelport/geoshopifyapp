@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { scoreAiReady, AI_READY_WEIGHTS, type AiReadyInput } from "../app/lib/ai-ready";
+import { scoreAiReady, AI_READY_NOTE, AI_READY_WEIGHTS, aiReadyNote, keyFactsNearTop, leadText, looksEnglish, type AiReadyInput } from "../app/lib/ai-ready";
 import { mergeProduct, parseAiSignals, parseProductHtml, parseShopifyJs } from "../app/lib/check-read";
 import { buildReport } from "../app/lib/check-report";
 import type { CheckAnswer } from "../app/lib/check-types";
@@ -64,12 +64,33 @@ describe("AI-ready score", () => {
     const r = scoreAiReady(inputFrom(STRONG_JS, STRONG_HTML))!;
     expect(ids(r, false)).toEqual([]);
     expect(r.score).toBe(100);
-    expect(r.checks.map((c) => c.id)).toEqual(["audience", "facts", "description", "faq", "schema", "origin"]);
+    expect(r.checks.map((c) => c.id)).toEqual(["audience", "facts", "top", "description", "faq", "schema", "origin"]);
     for (const c of r.checks) {
       expect(c.reason).toBeTruthy();
       expect(c.fix).toBeTruthy();
       expect(`${c.label} ${c.reason} ${c.fix}`).not.toMatch(/—|\s–\s/);
     }
+  });
+
+  it("checks the key facts are near the top: who it's for and a size or material in the first lines", () => {
+    const base = inputFrom(STRONG_JS, STRONG_HTML);
+    const top = (description: string) => scoreAiReady({ ...base, description })!.checks.find((c) => c.id === "top")!;
+    const story =
+      "Our founder started this brand in a tiny kitchen, dreaming of something better. Years of late nights and countless batches later, we finally found it. " +
+      "We believe grooming should feel like a ritual, not a chore, and that every bottle should tell a story worth sharing with friends and family. " +
+      "Every batch is still poured by hand in our little workshop. " +
+      "For men with dry skin. 30ml bottle made with argan and jojoba oil.";
+    expect(top(story).pass).toBe(false);
+    expect(top(story).reason).toMatch(/don’t say who it’s for or give key facts/);
+    expect(top("For men with dry skin: a 30ml beard oil made with argan and jojoba. It softens the beard.").pass).toBe(true);
+    expect(top("<p><strong>Ideal for</strong> sensitive skin.</p><p>Made with shea butter and 50 ml in every tin.</p>").pass).toBe(true);
+    // The price doesn't count: the page shows it anyway.
+    expect(keyFactsNearTop("For men with beards. Only $29.").pass).toBe(false);
+    expect(top("").reason).toMatch(/couldn’t find a description/);
+    // The top is the first two sentences, or the first 300 characters when they're shorter (never past 450).
+    expect(leadText("One. Two. Three.")).toBe("One. Two. Three.");
+    expect(leadText(`${"a".repeat(200)}. ${"b".repeat(200)}. Third sentence for men.`)).not.toContain("for men");
+    expect(leadText("x".repeat(1000))).toHaveLength(450);
   });
 
   it("weights add up to 100", () => {
@@ -110,6 +131,24 @@ describe("AI-ready score", () => {
     expect(scoreAiReady({ ...base, signals: banner })!.checks.find((c) => c.id === "origin")!.pass).toBe(true);
     const nav = { ...base.signals!, text: "Shop Australia New arrivals" };
     expect(scoreAiReady({ ...base, signals: nav })!.checks.find((c) => c.id === "origin")!.pass).toBe(false);
+  });
+
+  it("works for stores anywhere, not only the countries the check asks from", () => {
+    const base = { ...inputFrom(STRONG_JS, STRONG_HTML), title: "Oil", tags: [], productType: null, description: "A light oil." };
+    const origin = (text: string) => scoreAiReady({ ...base, signals: { ...base.signals!, text } })!.checks.find((c) => c.id === "origin")!;
+    for (const text of ["Free delivery across Germany", "Ships from Singapore to all of Asia", "We ship worldwide", "Free shipping nationwide"]) {
+      expect(origin(text).pass, text).toBe(true);
+    }
+    // Ingredient names and product words are not places.
+    for (const text of ["German chamomile and French lavender. Fast shipping.", "Fine china plates, quick delivery", "Contact us about delivery"]) {
+      expect(origin(text).pass, text).toBe(false);
+    }
+    // The fix names no country or city of ours: the store fills in its own.
+    expect(origin("").fix).toBe("Add one true line on where it’s made and where you ship, like “Made in [your town], ships worldwide”.");
+    // "for moms" says who it's for, as "for mums" does.
+    const who = (description: string) => scoreAiReady({ ...base, description })!.checks.find((c) => c.id === "audience")!.pass;
+    expect(who("A gentle balm for moms.")).toBe(true);
+    expect(who("A gentle balm for mums.")).toBe(true);
   });
 
   it("is skipped when we couldn't read the page itself", () => {
@@ -174,5 +213,37 @@ describe("AI-ready checks in the report", () => {
     const r = buildReport(answers, product);
     expect(r.aiReady).toBeUndefined();
     expect(r.tips.some((t) => /quote|questions and answers/.test(t.title))).toBe(false);
+  });
+});
+
+describe("the points line under the AI-ready card", () => {
+  it("explains a report's own checks: today's seven, or an older report's six", () => {
+    const now = (Object.entries(AI_READY_WEIGHTS) as [string, number][]).map(([id, weight]) => ({ id, weight }));
+    expect(aiReadyNote(now)).toBe(AI_READY_NOTE);
+    const old = [
+      { id: "audience", weight: 20 },
+      { id: "facts", weight: 20 },
+      { id: "description", weight: 20 },
+      { id: "faq", weight: 15 },
+      { id: "schema", weight: 15 },
+      { id: "origin", weight: 10 },
+    ];
+    expect(aiReadyNote(old)).toBe(
+      "Points for each check passed: who it’s for, key facts and the description are worth 20 each, an FAQ and product data 15 each, and where it ships or is made 10.",
+    );
+    expect(aiReadyNote(old)).not.toContain("near the top");
+    expect(aiReadyNote([{ id: "mystery", weight: 5 }])).toBe(AI_READY_NOTE);
+  });
+});
+
+describe("telling English product data from other languages", () => {
+  it("runs the English answer-first check only on English text", () => {
+    expect(looksEnglish("For men with dry skin: a 30ml beard oil made with argan and jojoba oil. It softens your beard and stops itch from the first use.")).toBe(true);
+    expect(looksEnglish("Unser Bartöl mit Arganöl und Jojobaöl für trockene Haut. Es macht den Bart weich und pflegt die Haut darunter, jeden Tag.")).toBe(false);
+    expect(looksEnglish("Une huile à barbe à l'argan et au jojoba pour les peaux sèches. Elle adoucit la barbe et nourrit la peau chaque jour.")).toBe(false);
+    expect(looksEnglish("Beard oil 30ml")).toBe(true); // too little to tell
+    // HTML tags don't count as words.
+    expect(looksEnglish("<p>Für Männer mit trockener Haut: 30 ml Bartöl mit Arganöl und Jojobaöl. Es macht den Bart weich und pflegt.</p><ul><li><strong>Inhalt</strong></li></ul>")).toBe(false);
+    expect(looksEnglish("<p>For men with dry skin: a 30 ml beard oil made with argan and jojoba. It softens the beard and calms the skin.</p><ul><li><strong>Size</strong>: 30 ml</li></ul>")).toBe(true);
   });
 });

@@ -16,7 +16,7 @@ import {
   type CheckView,
 } from "../lib/check-types";
 import { ENGINE_LABELS, PLANS } from "../lib/plans";
-import { AI_READY_NOTE } from "../lib/ai-ready";
+import { aiReadyNote } from "../lib/ai-ready";
 import type { SourceType } from "../lib/sources";
 import { sameBrand } from "../lib/match";
 import { LeadProvider, LockIcon, MailIcon, planLine, useLead, type LeadView } from "./check-lead";
@@ -72,7 +72,7 @@ export function formatPrice(price: string | null, currency: string | null): stri
   const n = Number(price);
   if (!currency || !Number.isFinite(n)) return currency ? `${price} ${currency}` : price;
   try {
-    const amount = new Intl.NumberFormat("en-AU", { style: "currency", currency, currencyDisplay: "narrowSymbol" }).format(n);
+    const amount = new Intl.NumberFormat("en", { style: "currency", currency, currencyDisplay: "narrowSymbol" }).format(n);
     return `${amount} ${currency}`;
   } catch {
     return `${price} ${currency}`;
@@ -329,13 +329,16 @@ export function CheckPerks() {
 const SURE_OF_STORE: CountryHow[] = ["store", "domain"];
 /** Guesses the visitor may want to correct ("Wrong country?" on the report). */
 const UNSURE: CountryHow[] = ["default", "unsupported", "language", "currency"];
-const COUNTRY_BUTTONS: Record<CheckCountry, string> = { AU: "Australia", NZ: "New Zealand", US: "US", GB: "UK", CA: "Canada" };
+/** The countries to pick from, by name ("Australia", "the UK" sorts as "UK"). */
+const COUNTRY_CHOICES = (Object.entries(CHECK_COUNTRIES) as [CheckCountry, string][])
+  .map(([code, name]): [CheckCountry, string] => [code, name.replace(/^the\s+/, "")])
+  .sort((a, b) => a[1].localeCompare(b[1], "en"));
 
 /** One piece of the "Checked on..." line; `wide` pieces are left out on phones (check.css, .ck-wide). */
 export type LinePart = { text: string; wide?: boolean };
 
 /**
- * "Checked on ChatGPT, Gemini and Perplexity as a shopper in Australia (where your store is) · ...", or
+ * "Checked on ChatGPT, Gemini and Perplexity as a shopper in the UK (where your store is) · ...", or
  * "Checking on..." while the check runs (then "as a shopper where your store is" until we know the country,
  * so the line is about as long in every state and the card doesn't change height). On phones the notes in
  * brackets and "each" are left out, so it fits in about 3 lines.
@@ -344,7 +347,8 @@ export function checkedParts(country: CheckCountry | null, how?: CountryHow, run
   const tail: LinePart[] = [{ text: " · 3 questions, " }, { text: "each ", wide: true }, { text: "asked twice" }];
   if (country && how === "unsupported") {
     return [
-      { text: `Your store is in a country we don’t check yet, so we ${running ? "are asking" : "asked"} ChatGPT, Gemini and Perplexity as a shopper in ${CHECK_COUNTRIES[country]}` },
+      { text: `We ${running ? "are asking" : "asked"} ChatGPT, Gemini and Perplexity as a shopper in ${CHECK_COUNTRIES[country]}` },
+      ...(running ? [] : [{ text: ". Pick your country to check again", wide: true }]),
       ...tail,
     ];
   }
@@ -370,18 +374,24 @@ function CheckedLine({ parts }: { parts: LinePart[] }) {
 
 /** A guessed country can be corrected: the same link, asked again as a shopper in another country. */
 function WrongCountry({ url, country }: { url: string; country: CheckCountry }) {
+  const first = COUNTRY_CHOICES.find(([c]) => c !== country)?.[0] ?? "US";
   return (
     <form className="ck-country" method="post" action="/check">
       <input type="hidden" name="url" value={url} />
-      <span className="ck-country-q">Wrong country? Check again as a shopper in</span>
+      <label className="ck-country-q" htmlFor="ck-country-pick">
+        Wrong country? Check again as a shopper in
+      </label>
       <span className="ck-country-btns">
-        {(Object.keys(COUNTRY_BUTTONS) as CheckCountry[])
-          .filter((c) => c !== country)
-          .map((c) => (
-            <button key={c} className="ck-country-btn" type="submit" name="country" value={c}>
-              {COUNTRY_BUTTONS[c]}
-            </button>
+        <select id="ck-country-pick" className="ck-country-btn" name="country" defaultValue={first}>
+          {COUNTRY_CHOICES.filter(([c]) => c !== country).map(([c, name]) => (
+            <option key={c} value={c}>
+              {name}
+            </option>
           ))}
+        </select>
+        <button className="ck-country-btn" type="submit">
+          Check again
+        </button>
       </span>
     </form>
   );
@@ -796,7 +806,7 @@ export function AiReadyCard({ ready }: { ready: AiReady }) {
           </li>
         ))}
       </ul>
-      <p className="ck-small ck-ready-note">{AI_READY_NOTE}</p>
+      <p className="ck-small ck-ready-note">{aiReadyNote(ready.checks)}</p>
     </section>
   );
 }

@@ -1,19 +1,25 @@
 // Formatting helpers shared by server and UI.
 
-export function formatMoney(amount: number, currency = "AUD"): string {
+/**
+ * A store's own money in its own symbol: "$4,820", "£4,820", "€4,820". The store knows its currency, so
+ * the short symbol reads better than "USD 4,820" (what an Australian locale prints for other dollars).
+ */
+export function formatMoney(amount: number, currency = "USD"): string {
   try {
-    return new Intl.NumberFormat("en-AU", {
+    return new Intl.NumberFormat("en", {
       style: "currency",
       currency,
+      currencyDisplay: "narrowSymbol",
       maximumFractionDigits: amount >= 1000 ? 0 : 2,
-      minimumFractionDigits: 0,
+      // "$12.50", never "$12.5"; whole amounts and big ones stay round ("$40", "$4,820").
+      minimumFractionDigits: amount >= 1000 || Number.isInteger(amount) ? 0 : 2,
     }).format(amount);
   } catch {
     return `$${amount.toFixed(0)}`;
   }
 }
 
-export const formatNumber = (n: number) => new Intl.NumberFormat("en-AU").format(n);
+export const formatNumber = (n: number) => new Intl.NumberFormat("en").format(n);
 
 export function formatPct(fraction: number | null | undefined, digits = 0): string {
   if (fraction === null || fraction === undefined || !Number.isFinite(fraction)) return "–";
@@ -32,4 +38,4 @@ export function timeAgo(date: Date | string | null | undefined): string {
 }
 
 export const formatDate = (date: Date | string) =>
-  new Date(date).toLocaleDateString("en-AU", { day: "numeric", month: "short" });
+  new Date(date).toLocaleDateString("en-GB", { day: "numeric", month: "short" }); // "11 Oct"

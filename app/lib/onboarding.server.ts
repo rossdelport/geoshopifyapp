@@ -10,6 +10,8 @@ import { PLANS, getPlan } from "./plans";
 import { registerJob } from "./jobs.server";
 import { startUpgradeScan } from "./billing.server";
 import { simpleProfile, templateQuestions } from "./fallbacks";
+import { LONG_TAIL_SHARE, MAX_CLUSTERS, looksLongTail, pickActive, tidyClusters } from "./clusters";
+import { shopperCountryName } from "./countries";
 
 const PRODUCTS_QUERY = `#graphql
   query Products($cursor: String) {
@@ -41,13 +43,20 @@ interface ProductsPage {
   products: { pageInfo: { hasNextPage: boolean; endCursor: string | null }; nodes: ProductNode[] };
 }
 
-/** Save up to `max` products (newest first) into our cache. */
+/**
+ * Save up to `max` products (newest first) into our cache. When that read the whole catalogue, products
+ * we still have that Shopify no longer lists were deleted there: they're marked DELETED, so nothing
+ * features them again (everything that picks products asks for ACTIVE ones).
+ */
 export async function syncCatalog(shopId: string, admin: AdminClient, max = 250): Promise<number> {
+  const started = new Date();
   let cursor: string | null = null;
   let count = 0;
+  let complete = false;
   do {
     const data: ProductsPage = await gql<ProductsPage>(admin, PRODUCTS_QUERY, { cursor });
     const page: ProductsPage["products"] = data.products;
+    let saved = 0;
     for (const p of page.nodes) {
       if (count >= max) break;
       const price = p.priceRangeV2?.minVariantPrice;
@@ -71,9 +80,15 @@ export async function syncCatalog(shopId: string, admin: AdminClient, max = 250)
         update: values,
       });
       count++;
+      saved++;
     }
+    // The whole catalogue was read: this is the last page and none of it was cut off by `max`.
+    complete = !page.pageInfo.hasNextPage && saved === page.nodes.length;
     cursor = page.pageInfo.hasNextPage && count < max ? page.pageInfo.endCursor : null;
   } while (cursor);
+  if (complete) {
+    await db.product.updateMany({ where: { shopId, syncedAt: { lt: started }, NOT: { status: "DELETED" } }, data: { status: "DELETED" } });
+  }
   return count;
 }
 
@@ -176,19 +191,44 @@ Write the brand profile.`,
   });
 }
 
-const COUNTRY_NAMES: Record<string, string> = {
-  AU: "Australia", NZ: "New Zealand", US: "the US", GB: "the UK", CA: "Canada", IE: "Ireland",
-};
-export const countryName = (code: string) => COUNTRY_NAMES[code] ?? code;
+/** "DE" -> "Germany", "US" -> "the US". Anything that isn't a known country code comes back unchanged. */
+export function countryName(code: string): string {
+  return shopperCountryName(code);
+}
+
+/** A round "under X" budget in the store's own currency for example questions: "$50", "£50", "€50", "¥5,000". */
+export function budgetExample(currency: string | null | undefined): string {
+  const code = (currency ?? "").trim().toUpperCase();
+  // Currencies where 50 buys very little: use a bigger round number.
+  const amount = /^(JPY|KRW|INR|IDR|VND|HUF|CLP|COP|ISK|PHP|THB|TWD|PKR|LKR|NGN|KES)$/.test(code) ? 5000 : 50;
+  try {
+    return new Intl.NumberFormat("en", { style: "currency", currency: code, currencyDisplay: "narrowSymbol", maximumFractionDigits: 0 }).format(amount);
+  } catch {
+    return `${amount}`;
+  }
+}
 
 export const QuestionsSchema = z.object({
   questions: z.array(
     z.object({
       question: z.string().describe("How a real shopper would ask an AI assistant"),
       keyword: z.string().describe("The same need as a short Google search, 2-5 words, no country"),
+      cluster: z.string().describe("The topic it belongs to: a short lowercase label of 2-5 words, reused for questions on the same topic"),
+      long_tail: z.boolean().describe("true for a specific question: a particular need, ingredient or material, budget, gift or comparison"),
     }),
   ),
 });
+
+export interface ScoredQuestion {
+  question: string;
+  keyword: string;
+  cluster: string;
+  longTail: boolean;
+  volume: number | null;
+}
+
+/** "best beard oil" / "cheap beard oil" / "beard oil gift" -> "beard oil": a template question's topic. */
+const templateTopic = (keyword: string) => keyword.replace(/^(best|cheap|natural)\s+/i, "").replace(/\s+gift$/i, "").trim();
 
 // Questions written at onboarding: enough for Done-for-you's 100 plus spares, so an upgrade only has to
 // switch more on. Free tracks 10 and Standard 50 of them; the rest wait, inactive, ranked by search volume.
@@ -197,8 +237,12 @@ export const QUESTION_POOL = Math.max(30, PLANS.pro.questions + 10);
 const loadShop = (shopId: string) => db.shop.findUniqueOrThrow({ where: { id: shopId }, include: { profile: true } });
 type ShopWithProfile = Awaited<ReturnType<typeof loadShop>>;
 
-/** Ask Claude for `count` new buyer questions (templates if Claude is unavailable), skipping any in `avoid`. */
-async function writeQuestionList(shop: ShopWithProfile, count: number, avoid: string[] = []) {
+/**
+ * Ask Claude for `count` new buyer questions (templates if Claude is unavailable), skipping any in `avoid`.
+ * About 40% are long-tail (specific needs, ingredients or materials from the catalogue, budgets, gifts,
+ * comparisons), and each has a topic cluster (at most 8). Returns them with search volume, best first.
+ */
+async function writeQuestionList(shop: ShopWithProfile, count: number, avoid: string[] = [], topics: string[] = []): Promise<ScoredQuestion[]> {
   const profile = shop.profile;
   const products = await db.product.findMany({ where: { shopId: shop.id, status: "ACTIVE" }, take: 40 });
   const where = countryName(shop.country);
@@ -226,20 +270,30 @@ Write ${count} different buyer questions this store's products could answer. Mix
 - "best X for Y" questions (e.g. "best beard oil for dry skin in ${where}")
 - problem questions ("what helps with ...")
 - comparison and gift questions
-- price questions ("affordable ... under $50")
-About half should mention ${where}. Keep each under 15 words.`,
+- price questions ("affordable ... under ${budgetExample(shop.currency)}")
+About 40% should be long-tail (long_tail: true): specific questions about a particular need (skin or hair type, a use, an occasion), an ingredient or material (only ones that appear in the products above, never invented), a budget in the store's currency (like "under ${budgetExample(shop.currency)}"), a gift, or a comparison. Word them the way people really ask, not stuffed with keywords.
+Give each question a cluster: a short lowercase topic label (2 to 5 words, like "beard oil for dry skin"). Use at most ${MAX_CLUSTERS} clusters in total and reuse the same label for questions on the same topic.${topics.length ? ` Topics the store already has (use these exact labels where a question fits; a new label only for a clearly different topic): ${topics.join(", ")}.` : ""}
+About half should mention ${where}. Write them the way a shopper in ${where} types, with their spelling. Keep each under 15 words.`,
   }).catch((err: Error) => {
     console.error(`[questions] Claude unavailable, using templates: ${err.message.slice(0, 200)}`);
-    return { questions: templateQuestions([...products.map((p) => p.productType), profile?.category ?? null], where) };
+    return {
+      questions: templateQuestions([...products.map((p) => p.productType), profile?.category ?? null], where).map((q) => ({
+        ...q,
+        cluster: templateTopic(q.keyword),
+        long_tail: looksLongTail(q.question),
+      })),
+    };
   });
 
   const seen = new Set(avoid.map((q) => q.trim().toLowerCase()));
-  const unique = new Map<string, { question: string; keyword: string }>();
+  const unique = new Map<string, { question: string; keyword: string; cluster: string; longTail: boolean }>();
   for (const q of result.questions) {
     const key = q.question.trim().toLowerCase();
-    if (key && !seen.has(key) && !unique.has(key)) unique.set(key, { question: q.question.trim(), keyword: q.keyword.trim() });
+    if (key && !seen.has(key) && !unique.has(key)) {
+      unique.set(key, { question: q.question.trim(), keyword: q.keyword.trim(), cluster: q.cluster ?? "", longTail: q.long_tail === true });
+    }
   }
-  const list = [...unique.values()].slice(0, count);
+  const list = tidyClusters([...unique.values()].slice(0, count), MAX_CLUSTERS, topics);
 
   let volumes: Record<string, number> = {};
   try {
@@ -252,23 +306,29 @@ About half should mention ${where}. Keep each under 15 words.`,
     .sort((a, b) => (b.volume ?? -1) - (a.volume ?? -1));
 }
 
-/** Write the buyer questions, look up how often people search for them, keep the best ones active. */
+/**
+ * Write the buyer questions, look up how often people search for them, and keep the best ones active:
+ * about 35% of the slots for long-tail questions whatever their volume (see clusters.ts), the rest by volume.
+ */
 export async function generateQuestions(shopId: string) {
   const shop = await loadShop(shopId);
   const plan = getPlan(shop.plan);
-  const scored = await writeQuestionList(shop, QUESTION_POOL);
+  // Questions the store added are never rewritten: Claude is told to write different ones, so the
+  // upsert below can't switch one of theirs off or relabel it.
+  const merchant = await db.question.findMany({ where: { shopId, source: "merchant" }, select: { text: true } });
+  const scored = await writeQuestionList(shop, QUESTION_POOL, merchant.map((q) => q.text));
 
   // Keep merchant-added questions; switch off older AI-written ones (their history stays).
   await db.question.updateMany({ where: { shopId, source: "ai" }, data: { active: false } });
   const manualActive = await db.question.count({ where: { shopId, source: "merchant", active: true } });
-  let slots = Math.max(0, plan.questions - manualActive);
+  const active = new Set(pickActive(scored, Math.max(0, plan.questions - manualActive)));
   for (const q of scored) {
+    const on = active.has(q);
     await db.question.upsert({
       where: { shopId_text: { shopId, text: q.question } },
-      create: { shopId, text: q.question, keyword: q.keyword, volume: q.volume, active: slots > 0, source: "ai" },
-      update: { keyword: q.keyword, volume: q.volume, active: slots > 0 },
+      create: { shopId, text: q.question, keyword: q.keyword, volume: q.volume, cluster: q.cluster, longTail: q.longTail, active: on, source: "ai" },
+      update: { keyword: q.keyword, volume: q.volume, cluster: q.cluster, longTail: q.longTail, active: on },
     });
-    slots--;
   }
   return scored.length;
 }
@@ -285,30 +345,39 @@ export async function topUpQuestions(shopId: string) {
 
   let active = await activeNow();
   if (active < plan.questions) {
+    // Long-tail questions first, up to their share of the plan's slots; then by search volume.
     const unused = await db.question.findMany({
       where: { shopId, active: false },
-      orderBy: { volume: { sort: "desc", nulls: "last" } },
-      take: plan.questions - active,
-      select: { id: true },
+      orderBy: [{ volume: { sort: "desc", nulls: "last" } }, { createdAt: "asc" }],
+      select: { id: true, longTail: true, volume: true, cluster: true },
     });
-    await db.question.updateMany({ where: { id: { in: unused.map((q) => q.id) } }, data: { active: true } });
+    const ltActive = await db.question.count({ where: { shopId, active: true, longTail: true } });
+    const ltWanted = Math.max(0, Math.round(plan.questions * LONG_TAIL_SHARE) - ltActive);
+    const room = plan.questions - active;
+    const lt = unused.filter((q) => q.longTail).slice(0, Math.min(ltWanted, room));
+    const rest = unused.filter((q) => !lt.includes(q)).slice(0, room - lt.length);
+    await db.question.updateMany({ where: { id: { in: [...lt, ...rest].map((q) => q.id) } }, data: { active: true } });
     active = await activeNow();
   }
-  const existing = await db.question.findMany({ where: { shopId }, select: { text: true } });
+  const existing = await db.question.findMany({ where: { shopId }, select: { text: true, cluster: true } });
   const missing = plan.questions - existing.length;
   if (missing <= 0 || active >= plan.questions) return 0;
 
+  // The store's topics, biggest first: new questions join them instead of starting more topics (each
+  // topic gets its own overview guide page).
+  const topicCounts = new Map<string, number>();
+  for (const q of existing) if (q.cluster) topicCounts.set(q.cluster, (topicCounts.get(q.cluster) ?? 0) + 1);
+  const topics = [...topicCounts.entries()].sort((a, b) => b[1] - a[1]).map(([t]) => t);
   // A few spares, as some come back as repeats.
-  const scored = await writeQuestionList(shop, missing + 10, existing.map((q) => q.text));
-  let slots = plan.questions - active;
+  const scored = await writeQuestionList(shop, missing + 10, existing.map((q) => q.text), topics);
+  const on = new Set(pickActive(scored, plan.questions - active));
   let written = 0;
   for (const q of scored) {
     const row = await db.question
-      .create({ data: { shopId, text: q.question, keyword: q.keyword, volume: q.volume, active: slots > 0, source: "ai" } })
+      .create({ data: { shopId, text: q.question, keyword: q.keyword, volume: q.volume, cluster: q.cluster, longTail: q.longTail, active: on.has(q), source: "ai" } })
       .catch(() => null); // already there (same text)
     if (!row) continue;
     written++;
-    slots--;
   }
   return written;
 }

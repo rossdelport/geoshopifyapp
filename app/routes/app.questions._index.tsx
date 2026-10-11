@@ -9,6 +9,7 @@ import { canTrackMoreQuestions } from "../lib/limits";
 import { generateQuestions } from "../lib/onboarding.server";
 import { sameBrand } from "../lib/match";
 import { formatNumber, formatPct } from "../lib/format";
+import { looksLongTail } from "../lib/clusters";
 import { Bar, Empty } from "../components/ui";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -53,6 +54,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         volume: q.volume,
         active: q.active,
         source: q.source,
+        cluster: q.cluster,
+        longTail: q.longTail,
         rate: s && s.n ? s.named / s.n : null,
         answers: s?.n ?? 0,
         best: s?.best ?? null,
@@ -82,7 +85,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const canAdd = canTrackMoreQuestions(plan, await getUsage(shop.id));
     await db.question.upsert({
       where: { shopId_text: { shopId: shop.id, text } },
-      create: { shopId: shop.id, text, source: "merchant", active: canAdd },
+      create: { shopId: shop.id, text, source: "merchant", active: canAdd, longTail: looksLongTail(text) },
       update: { active: canAdd },
     });
     return { ok: true, message: canAdd ? "Question added. It's checked on the next scan." : "Saved, but switched off: you're at your plan's limit." };
@@ -103,6 +106,9 @@ export default function Questions() {
   const fetcher = useFetcher<typeof action>();
   const shopify = useAppBridge();
   const [text, setText] = useState("");
+  const [topic, setTopic] = useState("all");
+  const clusters = [...new Set(data.questions.map((q) => q.cluster).filter((c): c is string => Boolean(c)))];
+  const shown = topic === "all" ? data.questions : data.questions.filter((q) => q.cluster === topic);
 
   useEffect(() => {
     if (fetcher.data?.message) shopify.toast.show(fetcher.data.message, { isError: !fetcher.data.ok });
@@ -125,6 +131,12 @@ export default function Questions() {
           </s-text>{" "}
           on {data.planName}.
         </s-paragraph>
+        <s-paragraph>
+          <s-text color="subdued">
+            Questions are grouped by topic. Specific ones (a skin type, an ingredient, a budget, a gift) often have no search numbers we can
+            measure, but AI answers them with smaller brands, so we always track some of them.
+          </s-text>
+        </s-paragraph>
         <div className="geo-row" style={{ marginTop: 12, alignItems: "flex-end" }}>
           <div className="geo-grow">
             <s-text-field
@@ -145,6 +157,20 @@ export default function Questions() {
         </div>
       </s-section>
 
+      {clusters.length > 1 && (
+        <s-section padding="none">
+          <div style={{ padding: "12px 16px" }}>
+            <s-stack direction="inline" gap="small-200">
+              {["all", ...clusters].map((c) => (
+                <s-button key={c} variant={topic === c ? "primary" : "secondary"} onClick={() => setTopic(c)}>
+                  {`${c === "all" ? "All topics" : c} (${c === "all" ? data.questions.length : data.questions.filter((q) => q.cluster === c).length})`}
+                </s-button>
+              ))}
+            </s-stack>
+          </div>
+        </s-section>
+      )}
+
       <s-section padding="none">
         {data.questions.length ? (
           <table className="geo-table" style={{ margin: "4px 0" }}>
@@ -158,11 +184,18 @@ export default function Questions() {
               </tr>
             </thead>
             <tbody>
-              {data.questions.map((q) => (
+              {shown.map((q) => (
                 <tr key={q.id} style={{ opacity: q.active ? 1 : 0.55 }}>
                   <td style={{ paddingLeft: 16 }}>
                     <s-link href={`/app/questions/${q.id}`}>{q.text}</s-link>
                     {q.source === "merchant" && <span className="geo-small"> · added by you</span>}
+                    {(q.cluster || q.longTail) && (
+                      <div className="geo-small">
+                        {q.cluster ? `Topic: ${q.cluster}` : ""}
+                        {q.cluster && q.longTail ? " · " : ""}
+                        {q.longTail ? "Specific question" : ""}
+                      </div>
+                    )}
                   </td>
                   <td className="geo-num">{q.volume ? formatNumber(q.volume) : <span className="geo-small">–</span>}</td>
                   <td>

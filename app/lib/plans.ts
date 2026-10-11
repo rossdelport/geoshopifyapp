@@ -29,6 +29,7 @@ export interface Plan {
   fixesPerMonth: number; // Infinity = unlimited
   guidePagesPerMonth: number;
   outreachPerMonth: number;
+  pageReadsPerWeek: number; // free reads of pages AI cites (outreach): polite and bounded, US$0 each
   autopilot: boolean; // fixes applied for the store (on by default, the store can switch it off; held: claims, missing facts)
   doneForYou: boolean; // a person handles outreach and the monthly call
   monthlyReport: boolean;
@@ -53,6 +54,7 @@ export const PLANS: Record<PlanId, Plan> = {
     fixesPerMonth: 0,
     guidePagesPerMonth: 0,
     outreachPerMonth: 0,
+    pageReadsPerWeek: 0,
     autopilot: false,
     doneForYou: false,
     monthlyReport: false,
@@ -80,6 +82,7 @@ export const PLANS: Record<PlanId, Plan> = {
     fixesPerMonth: Infinity,
     guidePagesPerMonth: 2,
     outreachPerMonth: 10,
+    pageReadsPerWeek: 15,
     autopilot: false,
     doneForYou: false,
     monthlyReport: true,
@@ -110,6 +113,7 @@ export const PLANS: Record<PlanId, Plan> = {
     fixesPerMonth: Infinity,
     guidePagesPerMonth: 8,
     outreachPerMonth: 40,
+    pageReadsPerWeek: 50,
     autopilot: true,
     doneForYou: true,
     monthlyReport: true,
@@ -179,7 +183,7 @@ export function yearlyPerMonth(plan: Plan): number {
 }
 
 export function formatUsd(n: number): string {
-  return `US$${n.toLocaleString("en-AU")}`;
+  return `US$${n.toLocaleString("en")}`;
 }
 
 export interface SubscriptionLike {
@@ -264,7 +268,7 @@ export function planRank(id: PlanId): number {
 }
 
 export function limitLabel(n: number): string {
-  return Number.isFinite(n) ? n.toLocaleString("en-AU") : "Unlimited";
+  return Number.isFinite(n) ? n.toLocaleString("en") : "Unlimited";
 }
 
 export interface PlanChoice {

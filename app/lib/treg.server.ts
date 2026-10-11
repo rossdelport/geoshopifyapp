@@ -96,20 +96,41 @@ async function send(url: string, method: "GET" | "POST", endpointId: string, opt
 
 // ---------- Country helpers ----------
 
+// DataForSEO / Google Ads country codes (2000 + the ISO number). Stores sell worldwide: keep this in
+// step with MARKET_COUNTRIES in countries.ts. A country not listed is checked as a shopper in the US.
 const LOCATION_CODES: Record<string, number> = {
-  AU: 2036, NZ: 2554, US: 2840, GB: 2826, CA: 2124, IE: 2372,
+  US: 2840, GB: 2826, CA: 2124, AU: 2036, NZ: 2554, IE: 2372,
+  AE: 2784, AT: 2040, BE: 2056, BR: 2076, CH: 2756, DE: 2276, DK: 2208, ES: 2724, FI: 2246,
+  FR: 2250, HK: 2344, IN: 2356, IT: 2380, JP: 2392, MX: 2484, MY: 2458, NL: 2528, NO: 2578,
+  PH: 2608, PL: 2616, PT: 2620, SE: 2752, SG: 2702, ZA: 2710,
 };
 const GOOGLE_DOMAINS: Record<string, string> = {
   AU: "google.com.au", NZ: "google.co.nz", GB: "google.co.uk", CA: "google.ca", IE: "google.ie",
 };
-export const locationCode = (country: string) => LOCATION_CODES[country] ?? 2036;
+export const locationCode = (country: string) => LOCATION_CODES[(country ?? "").toUpperCase()] ?? LOCATION_CODES.US;
+
+/** The country every provider is asked as: the store's own when we have it, else the US (never a mix in one scan). */
+export const scanCountry = (country: string | null | undefined): string => {
+  const c = (country ?? "").trim().toUpperCase();
+  return LOCATION_CODES[c] ? c : "US";
+};
 
 // ---------- AI answers ----------
 
 type Attempt = { endpoint: string; run: () => Promise<any> };
 
+// Countries cloro refuses (its own docs, checked October 2026). For these the DataForSEO attempt goes
+// first, instead of a refused cloro call before every answer. Of our markets that's Hong Kong.
+const CLORO_REFUSED = new Set(["CN", "CZ", "HK", "IR", "MO", "RU", "VE"]);
+
 function attemptsFor(engine: Engine, prompt: string, country: string, shopId?: string): Attempt[] {
-  const c = country.toUpperCase();
+  const c = scanCountry(country);
+  const all = providerAttempts(engine, prompt, c, shopId);
+  const usable = CLORO_REFUSED.has(c) ? all.filter((a) => !a.endpoint.startsWith("cloro.")) : all;
+  return usable.length ? usable : all;
+}
+
+function providerAttempts(engine: Engine, prompt: string, c: string, shopId?: string): Attempt[] {
   const loc = locationCode(c);
   const call = (endpoint: string, o: CallOptions) => ({
     endpoint,
@@ -200,7 +221,7 @@ export async function keywordVolumes(
     .slice(0, 1000);
   if (!clean.length) return {};
   const raw = await tregCall("dataforseo.google.keywords.volume", {
-    body: [{ keywords: clean, location_code: locationCode(country), language_code: "en" }],
+    body: [{ keywords: clean, location_code: locationCode(scanCountry(country)), language_code: "en" }],
     shopId,
   });
   const out: Record<string, number> = {};

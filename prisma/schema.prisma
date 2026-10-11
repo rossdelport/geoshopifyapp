@@ -34,32 +34,34 @@ model Session {
 }
 
 model Shop {
-  id             String    @id @default(cuid())
-  domain         String    @unique // my-store.myshopify.com
-  name           String?
-  email          String?
-  primaryDomain  String? // www.mystore.com.au
-  currency       String    @default("AUD")
-  country        String    @default("AU")
-  plan           String    @default("free") // free | core | pro
-  status         String    @default("installed") // installed | uninstalled
-  onboarding     String    @default("new") // new | profiling | questions | scanning | done
-  installedAt    DateTime  @default(now())
-  uninstalledAt  DateTime?
-  baselineDate   DateTime?
-  freeScanUsedAt DateTime?
-  lastScanAt     DateTime?
-  lastReportAt   DateTime?
-  autopilot      Boolean   @default(false)
-  autopilotOptOut Boolean  @default(false) // the store switched autopilot off: keep it off across plan changes
-  trialEndsAt    DateTime? // end of the store's one free trial, saved when it first starts (never cleared)
-  reportEmails   String? // comma separated
-  pixelId        String?
-  costMonth      String? // "2026-10"
-  costThisMonth  Float     @default(0)
-  costAlertedAt  DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id                String    @id @default(cuid())
+  domain            String    @unique // my-store.myshopify.com
+  name              String?
+  email             String?
+  primaryDomain     String? // www.mystore.com.au
+  currency          String    @default("AUD")
+  country           String    @default("AU")
+  plan              String    @default("free") // free | core | pro
+  status            String    @default("installed") // installed | uninstalled
+  onboarding        String    @default("new") // new | profiling | questions | scanning | done
+  installedAt       DateTime  @default(now())
+  uninstalledAt     DateTime?
+  baselineDate      DateTime?
+  freeScanUsedAt    DateTime?
+  lastScanAt        DateTime?
+  lastReportAt      DateTime?
+  autopilot         Boolean   @default(false)
+  autopilotOptOut   Boolean   @default(false) // the store switched autopilot off: keep it off across plan changes
+  trialEndsAt       DateTime? // end of the store's one free trial, saved when it first starts (never cleared)
+  crawlers          Json? // last AI crawler check of the store's robots.txt (see lib/robots.ts): which AI bots are blocked
+  crawlersCheckedAt DateTime?
+  reportEmails      String? // comma separated
+  pixelId           String?
+  costMonth         String? // "2026-10"
+  costThisMonth     Float     @default(0)
+  costAlertedAt     DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   profile     BrandProfile?
   products    Product[]
@@ -92,23 +94,23 @@ model BrandProfile {
 }
 
 model Product {
-  id           String   @id @default(cuid())
-  shopId       String
-  shop         Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  gid          String // gid://shopify/Product/123
-  title        String
-  handle       String
-  productType  String?
-  vendor       String?
-  tags         Json     @default("[]")
-  description  String?
-  seoTitle     String?
-  seoDesc      String?
-  price        String?
-  imageUrl     String?
-  status       String?
-  optimisedAt  DateTime?
-  syncedAt     DateTime @default(now())
+  id          String    @id @default(cuid())
+  shopId      String
+  shop        Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  gid         String // gid://shopify/Product/123
+  title       String
+  handle      String
+  productType String?
+  vendor      String?
+  tags        Json      @default("[]")
+  description String?
+  seoTitle    String?
+  seoDesc     String?
+  price       String?
+  imageUrl    String?
+  status      String?
+  optimisedAt DateTime?
+  syncedAt    DateTime  @default(now())
 
   @@unique([shopId, gid])
 }
@@ -122,6 +124,8 @@ model Question {
   volume    Int?
   active    Boolean  @default(true)
   source    String   @default("ai") // ai | merchant
+  cluster   String? // topic cluster label, e.g. "beard oil for sensitive skin" (guides are planned per cluster)
+  longTail  Boolean  @default(false) // a specific, niche question (needs, ingredients, budget, gift, comparison)
   createdAt DateTime @default(now())
 
   answers AiAnswer[]
@@ -166,23 +170,23 @@ model Scan {
 }
 
 model AiAnswer {
-  id          String    @id @default(cuid())
-  scanId      String
-  scan        Scan      @relation(fields: [scanId], references: [id], onDelete: Cascade)
-  questionId  String
-  question    Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  engine      String // chatgpt | gemini | perplexity | aio | claude
-  runNo       Int
-  status      String    @default("pending") // pending | fetched | parsed | failed
-  attempts    Int       @default(0)
-  provider    String?
-  text        String? // answer as markdown/plain text (trimmed)
-  mentioned   Boolean   @default(false)
-  position    Int? // merchant's rank among brands named (1 = first)
-  costUsd     Float     @default(0)
-  error       String?
-  lockedAt    DateTime?
-  createdAt   DateTime  @default(now())
+  id         String    @id @default(cuid())
+  scanId     String
+  scan       Scan      @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  questionId String
+  question   Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  engine     String // chatgpt | gemini | perplexity | aio | claude
+  runNo      Int
+  status     String    @default("pending") // pending | fetched | parsed | failed
+  attempts   Int       @default(0)
+  provider   String?
+  text       String? // answer as markdown/plain text (trimmed)
+  mentioned  Boolean   @default(false)
+  position   Int? // merchant's rank among brands named (1 = first)
+  costUsd    Float     @default(0)
+  error      String?
+  lockedAt   DateTime?
+  createdAt  DateTime  @default(now())
 
   mentions  Mention[]
   citations Citation[]
@@ -217,15 +221,15 @@ model Citation {
 }
 
 model VisibilitySnapshot {
-  id       String   @id @default(cuid())
-  shopId   String
-  shop     Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  scanId   String   @unique
-  scan     Scan     @relation(fields: [scanId], references: [id], onDelete: Cascade)
-  date     DateTime @default(now())
-  score    Float
-  byEngine Json // { chatgpt: 40, gemini: 12 }
-  mentionRate Float @default(0) // share of answers that name the merchant (0-1)
+  id          String   @id @default(cuid())
+  shopId      String
+  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  scanId      String   @unique
+  scan        Scan     @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  date        DateTime @default(now())
+  score       Float
+  byEngine    Json // { chatgpt: 40, gemini: 12 }
+  mentionRate Float    @default(0) // share of answers that name the merchant (0-1)
 
   @@index([shopId, date])
 }
@@ -249,29 +253,37 @@ model Fix {
   resultUrl   String?
   appliedAt   DateTime?
   revertedAt  DateTime?
+  cluster     String? // guide pages: the topic cluster this page belongs to
+  hubFixId    String? // guide pages: the cluster's hub guide this page links back to (null for the hub itself)
+  refreshOfId String? // a refresh of an applied fix (freshness cycle): the fix it updates
+  refreshedAt DateTime? // when this applied fix was last refreshed (or a refresh of it was applied)
   createdAt   DateTime  @default(now())
 
   @@index([shopId, status])
 }
 
 model OutreachTarget {
-  id          String   @id @default(cuid())
-  shopId      String
-  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  url         String
-  domain      String
-  title       String?
-  namedBrands Json     @default("[]")
-  timesCited  Int      @default(1)
-  engines     Json     @default("[]")
-  authorName  String?
-  email       String?
-  contactUrl  String?
-  subject     String?
-  pitch       String?
-  status      String   @default("new") // new | drafted | sent | replied | won | skipped
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String    @id @default(cuid())
+  shopId           String
+  shop             Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  url              String
+  domain           String
+  title            String?
+  namedBrands      Json      @default("[]")
+  timesCited       Int       @default(1)
+  engines          Json      @default("[]")
+  authorName       String?
+  email            String?
+  contactUrl       String?
+  subject          String?
+  pitch            String?
+  status           String    @default("new") // new | drafted | sent | replied | won | skipped | named (the page already names the store)
+  kind             String    @default("article") // article | video | forum | qa | directory | retailer | other
+  mentionsMerchant Boolean? // the cited page itself names the store (null = not checked yet)
+  pageCheckedAt    DateTime? // when we last read the cited page
+  pageModifiedAt   DateTime? // the page's own published/updated date, when it gives one (fresher pages are better targets)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   @@unique([shopId, url])
 }
@@ -305,18 +317,18 @@ model TrafficDay {
 }
 
 model AiOrder {
-  id          String   @id @default(cuid())
-  shopId      String
-  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  orderGid    String
-  orderName   String?
-  engine      String // chatgpt | perplexity | gemini | copilot | claude | other_ai | survey
-  ours        Boolean  @default(false) // came through a page/link this app built
-  reason      String // why we think it came from AI (shown in UI)
-  revenue     Float
-  currency    String
-  products    Json     @default("[]") // [{title, qty}]
-  orderedAt   DateTime
+  id        String   @id @default(cuid())
+  shopId    String
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  orderGid  String
+  orderName String?
+  engine    String // chatgpt | perplexity | gemini | copilot | claude | other_ai | survey
+  ours      Boolean  @default(false) // came through a page/link this app built
+  reason    String // why we think it came from AI (shown in UI)
+  revenue   Float
+  currency  String
+  products  Json     @default("[]") // [{title, qty}]
+  orderedAt DateTime
 
   @@unique([shopId, orderGid])
   @@index([shopId, orderedAt])

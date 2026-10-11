@@ -44,7 +44,17 @@ Ahrefs says it studied 75,000 brands and 25 million AI Overviews (their study). 
    refresh cycle: update facts, stats and quotes, remove stale parts, re-date when the update is meaningful.
    (HubSpot example: a refreshed article got a spike in AI mentions.)
    Also: make sure AI bots can crawl you. In their study of 140 million sites, about 5.9% blocked OpenAI's
-   GPTBot. Check robots.txt.
+   GPTBot. Check robots.txt. Which bot does what (each company's own crawler page, checked October 2026):
+   - **Googlebot** controls Google Search, including AI Overviews and AI Mode. A block is critical.
+   - **OAI-SearchBot** decides whether a site shows in ChatGPT search. Critical.
+   - **PerplexityBot** decides whether a site shows in Perplexity's answers. Critical.
+   - **Claude-SearchBot** and **Claude-User** both affect whether Claude can find and quote a site. Medium.
+   - **Google-Extended** covers Gemini training and grounding, not Google Search or AI Overviews. Medium.
+   - **GPTBot** and **ClaudeBot** are for training only. Blocking them does not hide a store from ChatGPT
+     or Claude answers: never say it does.
+   - **ChatGPT-User** and **Perplexity-User** fetch a page when a person asks; both say robots.txt may not
+     apply to them.
+   Firewall or CDN bot blocking (for example Cloudflare's AI bot setting) can't be seen in robots.txt.
 5. **Diversify.** Of the top 50 most-cited domains in Google AI Overviews, ChatGPT and Perplexity, only 7
    appeared on all three lists (their study). Google AI Overviews leans on YouTube, Reddit and Quora; ChatGPT
    on publishers and news outlets; Perplexity on niche and regional sites. Winning one assistant doesn't win
@@ -56,7 +66,7 @@ Their own caveat: nobody knows the definitive recipe yet; it's still early and n
 
 | Factor | Suggestion | Effort | Impact |
 |---|---|---|---|
-| Crawlable | Free check and app read the store's robots.txt and flag if AI crawlers are blocked (OpenAI's GPTBot / OAI-SearchBot / ChatGPT-User, PerplexityBot, ClaudeBot, Google-Extended, Googlebot), with a plain fix | Small | High when it hits |
+| Crawlable | The app reads the store's robots.txt weekly (lib/robots.ts, RFC 9309) and flags AI bots blocked from product pages: Googlebot, OAI-SearchBot and PerplexityBot are critical; Claude-SearchBot, Claude-User, Google-Extended and Bingbot medium; GPTBot and ClaudeBot information only (training). Plain fix: edit robots.txt.liquid | Small | High when it hits |
 | Diversify | "Sites each AI trusts" split per assistant, and outreach targets grouped per assistant (Google: YouTube, Reddit, Quora; ChatGPT: publishers; Perplexity: niche blogs) | Small (data already collected) | High |
 | Branded mentions | "Others only" outreach: cited pages that name rivals but not you, per assistant (we already find these); add honest outreach types: YouTube reviewers, publishers, Reddit threads to join as the brand (no fake posts) | Medium | High |
 | Long-tail | Write more specific buyer questions (needs, ingredients, gifts, budgets) and track them; guide pages as topic clusters (one hub plus linked specific guides) | Medium | High (our Tallo test: specific questions win) |

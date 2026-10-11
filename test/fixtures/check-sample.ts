@@ -69,22 +69,30 @@ export const sampleAnswers: CheckAnswer[] = [
 ];
 
 export const sampleAiReady: AiReady = {
-  score: 45,
+  score: 40,
   checks: [
     {
       id: "audience",
       label: "Says who it’s for",
       pass: false,
-      weight: 20,
+      weight: 15,
       reason: "We couldn’t find who it’s for (like “for dry skin” or “ideal for beginners”).",
       fix: "Add one plain line on who it suits, such as “For men with dry skin” or “Ideal for everyday use”.",
     },
-    { id: "facts", label: "Key facts are there", pass: true, weight: 20, reason: "We found the size and the price.", fix: "State the size." },
+    { id: "facts", label: "Key facts are there", pass: true, weight: 15, reason: "We found the size and the price.", fix: "State the size." },
+    {
+      id: "top",
+      label: "Key facts near the top",
+      pass: false,
+      weight: 15,
+      reason: "The first lines give facts but don’t say who it’s for.",
+      fix: "Start the description with one or two sentences that say what it is, who it’s for and its key facts (size, main ingredients or materials). Keep the brand story for later.",
+    },
     {
       id: "description",
       label: "Description is specific",
       pass: false,
-      weight: 20,
+      weight: 15,
       reason: "The description is only 24 characters.",
       fix: "Write at least a short paragraph of plain facts: what it is, who it’s for, what’s in it and how to use it.",
     },
@@ -103,7 +111,7 @@ export const sampleAiReady: AiReady = {
       pass: true,
       weight: 10,
       reason: "The page mentions where it ships or where it’s made.",
-      fix: "Add a line like “Made in Melbourne”.",
+      fix: "Add one true line on where it’s made and where you ship, like “Made in [your town], ships worldwide”.",
     },
   ],
 };

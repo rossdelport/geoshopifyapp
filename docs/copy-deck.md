@@ -18,7 +18,8 @@ budget is now **1,050 words** (the page is at 1,048).
 >    exclamation marks.
 > 4. **Money first.** Every section answers "what does this mean for my store's sales?"
 > 5. **Plain English, short sentences.** Aim for under 20 words. If a non-technical store owner has to
->    read it twice, rewrite it. Australian spelling: catalogue, optimised, labelled, colour, maths.
+>    read it twice, rewrite it. Spelling: in the app, emails and reports, spell for the store's country
+   (STYLE_RULE in the code; US spelling when we don't know it). On the website, US spelling.
 > 6. **No jargon.** GEO is our name, never a method. No LLM, AEO or "generative engine". Say "AI
 >    assistants", "AI answers" or "ChatGPT & co". Explain "visibility score" and "baseline" when you use
 >    them (see the names table below).

@@ -104,15 +104,17 @@ Shared shapes: `app/lib/check-types.ts` (do not change them without updating bot
           when it is the page's own shop (`storeCountryFromMeta`): its `myshopify_domain` must match
           the page's `Shopify.shop`, or, when the page names no shop, /meta.json must have ended up on
           the page's own host. Any error is ignored;
-       3. the domain ending: `.au` AU, `.nz` NZ, `.uk` GB, `.ca` CA, `.us` US (`.co`, `.io` say nothing);
-       4. signals a shop can change to suit the visitor (our server is in Singapore), so they only
-          count when they name a country we check: a currency other than USD (JSON-LD,
-          `product:price:currency`, `Shopify.currency.active`: AUD, NZD, GBP, CAD; rarely shown to a
-          visitor unless it is the shop's own), then the region of `og:locale` or `<html lang>` (en-AU,
-          en_NZ; not en-US), then USD, then en-US (USD and en-US are common "international" defaults);
-       5. a store in a country we don't check yet (e.g. DE) only looks at 3 and a non-USD currency,
-          then uses Australia (`unsupported`);
-       6. nothing usable: Australia (`default`), our launch market.
+       3. the domain ending of any of the 30 countries we check, the same markets the app scans from
+          (`MARKET_COUNTRIES` in countries.ts): `.au` AU, `.uk` GB, `.de` DE, `.jp` JP, `.za` ZA and so on
+          (`.co`, `.io`, `.shop` say nothing);
+       4. signals a shop can change to suit the visitor (our server is in Singapore, so SGD and en-SG
+          never count on their own), and only when they name a country we check: a currency only one
+          of them uses (JSON-LD, `product:price:currency`, `Shopify.currency.active`: AUD, GBP, JPY,
+          CHF and so on; not EUR, which many share), then the region of `og:locale` or `<html lang>`
+          (en-AU, de-DE; not en-US), then USD, then en-US (common "international" defaults);
+       5. a store in a country we don't check yet (e.g. KE) only looks at 3 and a non-USD currency,
+          then uses the US (`unsupported`);
+       6. nothing usable: the US (`default`), the biggest English-language market.
        `product.countryFrom` keeps how (`chosen`, `store`, `domain`, `currency`, `language`,
        `unsupported`, `default`); see the product card line below.
   2. `understandProduct(product, country)`: Claude (`askJson`, tier `fast`, low effort) → schema
@@ -137,12 +139,14 @@ Shared shapes: `app/lib/check-types.ts` (do not change them without updating bot
      top 2–3 domains); competitors AI picks. If Claude is available it may rewrite `summary` in one
      friendly sentence, but never add facts. Then `done`.
      AI-ready score (`scoreAiReady` in `app/lib/ai-ready.ts`, pure, unit-tested; no extra paid calls):
-     6 pass/fail checks from what `readProduct` already fetched (Shopify product JSON, JSON-LD, the
+     7 pass/fail checks from what `readProduct` already fetched (Shopify product JSON, JSON-LD, the
      page's visible text from `<main>`, read with bounded windows by `parseAiSignals` in
-     `check-read.ts`): says who it's for (20 points), key facts: 2 of size, ingredients/materials and
-     price (20), description 300+ characters and under 6% praise words (20), FAQ: FAQPage JSON-LD, an
-     "FAQ" heading or 3+ question headings or accordion titles (15), JSON-LD Product with brand, price
-     and stock status (15), where it ships or is made (10). Skipped when we couldn't read the HTML
+     `check-read.ts`): says who it's for (15 points), key facts: 2 of size, ingredients/materials and
+     price (15), key facts near the top: the description's first two sentences (or first 300
+     characters) say who it's for and give a size or material, price not counted (15), description
+     300+ characters and under 6% praise words (15), FAQ: FAQPage JSON-LD, an "FAQ" heading or 3+
+     question headings or accordion titles (15), JSON-LD Product with brand, price and stock status
+     (15), where it ships or is made (10). Skipped when we couldn't read the HTML
      page. Saved as the optional `report.aiReady` (older reports have none and still render). Failed
      checks feed the tips: description and product data reuse the existing tips; the rest become one
      tip (its own title when only one fails, "Make your page easier for AI to quote" when several).
@@ -333,13 +337,14 @@ it, by however much longer the product's title is. `/check` and the error pages 
 - Product card: image, brand, title, price, domain; line "Checked on ChatGPT, Gemini and Perplexity
   as a shopper in {country} · 3 questions, each asked twice", with "(where your store is)" after the
   country when Shopify's settings or the domain told us, "(we couldn't tell where your store is)" for
-  `default`, and "Your store is in a country we don't check yet, so we asked ChatGPT, Gemini and
-  Perplexity as a shopper in Australia · ..." for `unsupported`. While the check runs it says
+  `default`, and "We asked ChatGPT, Gemini and Perplexity as a shopper in the US. Pick your country
+  to check again · ..." for `unsupported`. While the check runs it says
   "Checking on..." ("as a shopper where your store is" while the page is still being read), with the
   pasted domain and a page sketch with a moving scan line. On phones the notes in brackets and "each"
   are left out (`.ck-wide`), so the line fits in about 3 lines. On the finished report, a guessed country (`default`,
   `unsupported`, `language`, `currency`) gets a small form: "Wrong country? Check again as a shopper
-  in" with buttons for the other countries, posting the same link and `country` to `/check`.
+  in" with a list of the other 29 countries and a "Check again" button, posting the same link and
+  `country` to `/check`.
   At the card's right: "Don't want to wait? Email me the report" while running, "Your action plan is
   ready. Email it to me" when done, or where the report is going once this browser saved an email.
   Not on failed checks.

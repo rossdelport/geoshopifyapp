@@ -15,10 +15,10 @@ const PRICES: Record<string, [number, number]> = {
 };
 
 // House style for text a person reads (fixes, pitches, profiles, questions, reports). Calls that only
-// extract data (parse-answer) leave it off; so do the questions for a shopper outside Australia and NZ,
-// which are written the way a local shopper would type them.
-const STYLE_RULE =
-  "Writing style for any text a person will read: never use an em dash or a spaced en dash as punctuation. Use a full stop, comma, colon or the word 'and' instead. Write ranges with 'to' (3 to 4, $20 to $300). Use Australian spelling unless the prompt names another country.";
+// extract data (parse-answer) leave it off. Stores sell worldwide, so spelling follows the country the
+// prompt names (the store's, or the shopper's in the free check), with US spelling when none is named.
+export const STYLE_RULE =
+  "Writing style for any text a person will read: never use an em dash or a spaced en dash as punctuation. Use a full stop, comma, colon or the word 'and' instead. Write ranges with 'to' (3 to 4, $20 to $300). Spell words the way people in the store's or shopper's country do when the prompt names one; otherwise use US spelling.";
 
 // At most this many Claude calls open at once in this process; the rest wait their turn. Keeps a busy
 // moment (two free checks and a store scan) under the rate limit instead of failing over to text matching.

@@ -426,6 +426,7 @@ function buildSummary(r: Omit<CheckReport, "tips" | "summary">, product: ReportP
 const AI_READY_TIP_TITLES: Record<AiReadyCheckId, string> = {
   audience: "Say who it’s for",
   facts: "Spell out the key facts",
+  top: "Put the key facts first",
   faq: "Add questions and answers",
   description: "Make the description more specific",
   schema: "Complete your product data",

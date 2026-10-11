@@ -12,11 +12,12 @@ import { env } from "./env.server";
 import "./onboard-job.server";
 import "./scan.server";
 import "./orders.server";
-import "./fixes.server";
+import { REFRESH_AFTER_DAYS, queueRefresh } from "./fixes.server";
 import "./outreach.server";
 import "./report.server";
 import "./billing.server";
 import "./check.server";
+import { crawlerCheckDue, queueCrawlerCheck } from "./robots.server";
 import { maybeRunSelftest } from "./selftest.server";
 import { purgeOldData } from "./retention.server";
 import { queueStrandedReportEmails } from "./check-lead.server";
@@ -88,6 +89,13 @@ export async function scheduleDueWork(now = new Date()) {
 
   for (const shop of shops) {
     const plan = getPlan(shop.plan);
+
+    // AI crawler check of the store's robots.txt: weekly, every store (a free page read); the next day
+    // when the last one couldn't read the file.
+    const lastCrawlerStatus = (shop.crawlers as { status?: string } | null)?.status;
+    if (crawlerCheckDue(shop.crawlersCheckedAt, now, lastCrawlerStatus)) await queueCrawlerCheck(shop.id);
+    // Freshness: guides and product FAQs due a refresh (60 days on Done-for-you, 90 on Standard), daily.
+    if (REFRESH_AFTER_DAYS[plan.id]) await queueRefresh(shop.id, now);
 
     // Recurring scans.
     if (plan.scanEveryDays) {

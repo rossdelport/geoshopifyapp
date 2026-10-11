@@ -281,12 +281,19 @@ describe("report page", () => {
     expect(store).not.toContain("Wrong country?"); // the shop's own settings: nothing to correct
     expect(checkedLine("GB", "domain")).toContain("as a shopper in the UK (where your store is)");
     // A guess says so; a weak sign or an old check: just the country.
-    expect(checkedLine("AU", "default")).toBe(
-      "Checked on ChatGPT, Gemini and Perplexity as a shopper in Australia (we couldn’t tell where your store is) · 3 questions, each asked twice",
+    expect(checkedLine("US", "default")).toBe(
+      "Checked on ChatGPT, Gemini and Perplexity as a shopper in the US (we couldn’t tell where your store is) · 3 questions, each asked twice",
     );
-    expect(checkedLine("AU", "unsupported")).toBe(
-      "Your store is in a country we don’t check yet, so we asked ChatGPT, Gemini and Perplexity as a shopper in Australia · 3 questions, each asked twice",
+    expect(checkedLine("US", "unsupported")).toBe(
+      "We asked ChatGPT, Gemini and Perplexity as a shopper in the US. Pick your country to check again · 3 questions, each asked twice",
     );
+    expect(checkedLine("US", "unsupported", true)).toBe("We are asking ChatGPT, Gemini and Perplexity as a shopper in the US · 3 questions, each asked twice");
+    // Stores worldwide: any of the 30 countries we check reads naturally.
+    expect(checkedLine("DE", "store")).toContain("as a shopper in Germany (where your store is)");
+    expect(checkedLine("JP", "domain")).toContain("as a shopper in Japan");
+    expect(checkedLine("NL", "store")).toContain("as a shopper in the Netherlands");
+    // Checks from before the worldwide launch used Australia for these; they still read correctly.
+    expect(checkedLine("AU", "default")).toContain("as a shopper in Australia (we couldn’t tell where your store is)");
     expect(checkedLine("US", "currency")).toBe("Checked on ChatGPT, Gemini and Perplexity as a shopper in the US · 3 questions, each asked twice");
     expect(checkedLine("CA")).toBe("Checked on ChatGPT, Gemini and Perplexity as a shopper in Canada · 3 questions, each asked twice");
   });
@@ -297,8 +304,13 @@ describe("report page", () => {
     expect(html).toContain("Wrong country? Check again as a shopper in");
     expect(html).toContain('<form class="ck-country" method="post" action="/check">');
     expect(html).toContain(`<input type="hidden" name="url" value="${product.url}"/>`);
-    for (const c of ["NZ", "US", "GB", "CA"]) expect(html).toContain(`name="country" value="${c}"`);
+    // Worldwide: every country we check, by name, in one list (not only five buttons).
+    expect(html).toMatch(/<select id="ck-country-pick"[^>]*name="country"/);
+    for (const c of ["NZ", "US", "GB", "CA", "DE", "JP", "FR", "ZA"]) expect(html).toContain(`<option value="${c}"`);
     expect(html).not.toContain('value="AU"'); // not the country it already used
+    expect(html).toContain(">Check again</button>");
+    const order = ["CA", "DE", "JP", "NZ", "GB", "US"].map((c) => html.indexOf(`value="${c}"`));
+    expect([...order].sort((a, b) => a - b)).toEqual(order); // Canada, Germany, Japan, New Zealand, UK, US
     for (const how of ["unsupported", "language", "currency"] as const) {
       const guess = renderToStaticMarkup(createElement(ProductCard, { product: { ...product, countryFrom: how }, country: "GB", done: true }));
       expect(guess).toContain("Wrong country?");

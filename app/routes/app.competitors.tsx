@@ -1,57 +1,106 @@
 import { useEffect, useState } from "react";
 import type { ActionFunctionArgs, HeadersFunction, LoaderFunctionArgs } from "react-router";
-import { useFetcher, useLoaderData } from "react-router";
+import { useFetcher, useLoaderData, useSearchParams } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import db from "../db.server";
 import { requireShop } from "../lib/shop.server";
 import { sameBrand } from "../lib/match";
-import { SOURCE_TYPE_LABELS, type SourceType } from "../lib/sources";
+import { cleanUrl } from "../lib/answers";
+import {
+  SOURCE_TYPE_LABELS,
+  latestScanPerEngine,
+  sharedTopDomains,
+  sourcesByEngine,
+  type SourceType,
+  type SourcesView,
+} from "../lib/sources";
 import { ENGINE_LABELS, type Engine } from "../lib/plans";
 import { formatPct } from "../lib/format";
 import { Bar, Empty, EnginePill } from "../components/ui";
 
+const ENGINE_ORDER = Object.keys(ENGINE_LABELS);
+const TOP_SITES = 40;
+
+// own: the store's website. yes: a page AI cites here names the store. some: another page on this site
+// names the store, but not the ones AI cites. no: the pages we read here don't name the store.
+type OnIt = "own" | "yes" | "some" | "no" | null;
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { shop } = await requireShop(request);
-  const scan = await db.scan.findFirst({ where: { shopId: shop.id, status: "done" }, orderBy: { startedAt: "desc" } });
-  const competitors = await db.competitor.findMany({ where: { shopId: shop.id }, orderBy: { createdAt: "asc" } });
-  if (!scan) return { scanned: false as const, competitors: [], you: 0, sources: [], typeTotals: [] };
+  const [scans, competitors] = await Promise.all([
+    db.scan.findMany({ where: { shopId: shop.id, status: "done" }, orderBy: { startedAt: "desc" }, take: 10, select: { id: true } }),
+    db.competitor.findMany({ where: { shopId: shop.id }, orderBy: { createdAt: "asc" } }),
+  ]);
+  if (!scans.length) {
+    return { scanned: false as const, competitors: [], you: 0, engines: [] as string[], views: {} as Record<string, SourcesView & { domains: (SourcesView["domains"][number] & { onIt: OnIt })[] }>, shared: null };
+  }
 
+  // Who AI recommends: the latest scan.
   const answers = await db.aiAnswer.findMany({
-    where: { scanId: scan.id, status: "parsed" },
-    select: { engine: true, mentioned: true, mentions: { select: { brand: true, isMerchant: true } }, citations: true },
+    where: { scanId: scans[0].id, status: "parsed" },
+    select: { engine: true, mentioned: true, mentions: { select: { brand: true, isMerchant: true } } },
   });
   const total = answers.length || 1;
-
   const rows = competitors.map((c) => {
     const hits = answers.filter((a) => a.mentions.some((m) => !m.isMerchant && sameBrand(m.brand, c.name)));
     const engines = [...new Set(hits.map((h) => h.engine))];
     return { id: c.id, name: c.name, hidden: c.hidden, auto: c.auto, share: hits.length / total, engines };
   });
 
-  // Sources: which sites the AI leans on, and whether it names you when it uses them.
-  const byDomain = new Map<string, { domain: string; type: string; n: number; named: number; own: boolean; example: { url: string; title: string | null } }>();
-  const typeCounts = new Map<string, number>();
-  for (const a of answers) {
-    const seen = new Set<string>();
-    for (const c of a.citations) {
-      if (seen.has(c.domain)) continue;
-      seen.add(c.domain);
-      typeCounts.set(c.isOwn ? "yours" : c.type, (typeCounts.get(c.isOwn ? "yours" : c.type) ?? 0) + 1);
-      const d = byDomain.get(c.domain) ?? { domain: c.domain, type: c.type, n: 0, named: 0, own: c.isOwn, example: { url: c.url, title: c.title } };
-      d.n++;
-      if (a.mentioned) d.named++;
-      byDomain.set(c.domain, d);
+  // Sources: each assistant's newest scan (daily light scans skip Claude, so it comes from the weekly one).
+  const scanIds = scans.map((s) => s.id);
+  const groups = await db.aiAnswer.groupBy({ by: ["scanId", "engine"], where: { scanId: { in: scanIds }, status: "parsed" } });
+  const perEngine = latestScanPerEngine(scanIds, groups);
+  const sourceAnswers = Object.keys(perEngine).length
+    ? await db.aiAnswer.findMany({
+        where: { status: "parsed", OR: Object.entries(perEngine).map(([engine, scanId]) => ({ engine, scanId })) },
+        select: { engine: true, mentioned: true, citations: { select: { url: true, domain: true, title: true, type: true, isOwn: true } } },
+      })
+    : [];
+  const { engines, views } = sourcesByEngine(sourceAnswers, ENGINE_ORDER);
+
+  // Is the store on the site? Known for pages outreach has read (the page itself names the store or not),
+  // judged on the pages this view's answers actually cite there.
+  const checked = await db.outreachTarget.findMany({
+    where: { shopId: shop.id, mentionsMerchant: { not: null } },
+    select: { url: true, domain: true, mentionsMerchant: true },
+  });
+  const byUrl = new Map(checked.map((t) => [t.url, Boolean(t.mentionsMerchant)]));
+  const namesOnDomain = new Set(checked.filter((t) => t.mentionsMerchant).map((t) => t.domain));
+  const citedUrls = (engine: string) => {
+    const out = new Map<string, Set<string>>();
+    for (const a of sourceAnswers) {
+      if (engine !== "all" && a.engine !== engine) continue;
+      for (const c of a.citations) {
+        const set = out.get(c.domain) ?? new Set<string>();
+        set.add(cleanUrl(c.url));
+        out.set(c.domain, set);
+      }
     }
-  }
-  const typeTotal = [...typeCounts.values()].reduce((s, v) => s + v, 0) || 1;
+    return out;
+  };
+  const onItFor = (domain: string, cited: Set<string> | undefined): OnIt => {
+    const reads = [...(cited ?? [])].filter((u) => byUrl.has(u));
+    if (reads.some((u) => byUrl.get(u))) return "yes";
+    if (namesOnDomain.has(domain)) return "some";
+    return reads.length ? "no" : null;
+  };
+
+  const trimmed = Object.fromEntries(
+    Object.entries(views).map(([key, v]) => {
+      const cited = citedUrls(key);
+      return [key, { ...v, domains: v.domains.slice(0, TOP_SITES).map((d) => ({ ...d, onIt: (d.own ? "own" : onItFor(d.domain, cited.get(d.domain))) as OnIt })) }];
+    }),
+  );
 
   return {
     scanned: true as const,
     you: answers.filter((a) => a.mentioned).length / total,
     competitors: rows.sort((a, b) => Number(a.hidden) - Number(b.hidden) || b.share - a.share),
-    sources: [...byDomain.values()].sort((a, b) => b.n - a.n).slice(0, 40),
-    typeTotals: [...typeCounts.entries()].sort((a, b) => b[1] - a[1]).map(([type, n]) => ({ type, share: n / typeTotal })),
+    engines,
+    views: trimmed,
+    shared: sharedTopDomains(views, engines, 10),
   };
 };
 
@@ -79,17 +128,37 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 const TYPE_TIPS: Record<string, string> = {
   editorial: "Get featured in these roundups: see Outreach.",
   retailer: "Being stocked by these retailers helps AI find you.",
-  ugc: "Genuine customer posts and reviews here carry weight.",
+  ugc: "Real people's posts carry weight. Join threads openly as the brand: see Outreach.",
   brand: "AI reads competitors' own product pages; clear pages win.",
   marketplace: "Marketplace listings can be quoted by AI.",
   yours: "Your own pages. Fixes make these easier for AI to quote.",
 };
 
+const engineLabel = (e: string) => ENGINE_LABELS[e as Engine] ?? e;
+const typeLabel = (t: string) => (t === "yours" ? "Your website" : SOURCE_TYPE_LABELS[t as SourceType] ?? t);
+
+function OnItCell({ onIt }: { onIt: OnIt }) {
+  if (onIt === "own") return <s-badge tone="success">Your website</s-badge>;
+  if (onIt === "yes") return <s-badge tone="success">Names you</s-badge>;
+  if (onIt === "some") return <span className="geo-small">One page here names you</span>;
+  if (onIt === "no")
+    return (
+      <s-stack direction="block" gap="small-300">
+        <s-badge tone="warning">Not yet</s-badge>
+        <s-link href="/app/outreach">See outreach</s-link>
+      </s-stack>
+    );
+  return <span className="geo-small">Not checked</span>;
+}
+
 export default function Competitors() {
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const shopify = useAppBridge();
+  const [params] = useSearchParams();
   const [name, setName] = useState("");
+  const asked = params.get("engine") ?? "all";
+  const [view, setView] = useState(asked === "all" || data.engines.includes(asked) ? asked : "all");
 
   useEffect(() => {
     if (fetcher.data?.message) shopify.toast.show(fetcher.data.message, { isError: !fetcher.data.ok });
@@ -104,6 +173,9 @@ export default function Competitors() {
       </s-page>
     );
   }
+
+  const current = data.views[view] ?? data.views.all;
+  const who = view === "all" ? "AI assistants" : engineLabel(view);
 
   return (
     <s-page heading="Competitors & sources">
@@ -131,7 +203,7 @@ export default function Competitors() {
                   {c.name}
                   <div className="geo-engines" style={{ justifyContent: "flex-start", margin: "4px 0 0", gap: 4 }}>
                     {c.engines.map((e) => (
-                      <EnginePill key={e} engine={e} label={ENGINE_LABELS[e as Engine] ?? e} />
+                      <EnginePill key={e} engine={e} label={engineLabel(e)} />
                     ))}
                   </div>
                 </td>
@@ -171,54 +243,96 @@ export default function Competitors() {
       </s-section>
 
       <s-section heading="Where AI gets its answers">
-        <s-grid gridTemplateColumns="repeat(auto-fit, minmax(180px, 1fr))" gap="base">
-          {data.typeTotals.map((t) => (
-            <s-box key={t.type} padding="base" borderRadius="base" background="subdued">
-              <s-stack direction="block" gap="small-200">
-                <s-text type="strong">{t.type === "yours" ? "Your website" : SOURCE_TYPE_LABELS[t.type as SourceType] ?? t.type}</s-text>
-                <span style={{ fontSize: 24, fontWeight: 700 }} className="geo-num">
-                  {formatPct(t.share)}
-                </span>
-                <span className="geo-small">{TYPE_TIPS[t.type] ?? ""}</span>
-              </s-stack>
-            </s-box>
-          ))}
-        </s-grid>
+        <s-stack direction="block" gap="base">
+          <s-paragraph>
+            Each AI assistant leans on different websites, so being on the sites one of them trusts doesn&apos;t win the others.
+            Pick an assistant to see its own list.
+            {data.shared && data.engines.length > 1
+              ? ` In your latest scans, ${data.shared.shared} of the ${data.shared.top} sites each assistant uses most ${data.shared.shared === 1 ? "is" : "are"} used by all of them.`
+              : ""}
+          </s-paragraph>
+          {data.engines.length > 1 && (
+            <s-stack direction="inline" gap="small-200">
+              {["all", ...data.engines].map((e) => (
+                <s-button key={e} variant={view === e ? "primary" : "secondary"} onClick={() => setView(e)}>
+                  {e === "all" ? "All assistants" : engineLabel(e)}
+                </s-button>
+              ))}
+            </s-stack>
+          )}
+          {current.types.length ? (
+            <s-grid gridTemplateColumns="repeat(auto-fit, minmax(180px, 1fr))" gap="base">
+              {current.types.map((t) => (
+                <s-box key={t.type} padding="base" borderRadius="base" background="subdued">
+                  <s-stack direction="block" gap="small-200">
+                    <s-text type="strong">{typeLabel(t.type)}</s-text>
+                    <span style={{ fontSize: 24, fontWeight: 700 }} className="geo-num">
+                      {formatPct(t.share)}
+                    </span>
+                    <span className="geo-small">{TYPE_TIPS[t.type] ?? ""}</span>
+                  </s-stack>
+                </s-box>
+              ))}
+            </s-grid>
+          ) : (
+            <span className="geo-small">{who} didn&apos;t show any sources in your latest scan.</span>
+          )}
+          <span className="geo-small">Share of the websites {who} cited, by kind of site.</span>
+        </s-stack>
       </s-section>
 
-      <s-section heading="Most-used websites">
-        <table className="geo-table">
-          <thead>
-            <tr>
-              <th>Website</th>
-              <th>Type</th>
-              <th>Used in</th>
-              <th>AI names you when it uses this</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.sources.map((s) => (
-              <tr key={s.domain}>
-                <td>
-                  <a href={s.example.url} target="_blank" rel="noreferrer">
-                    {s.domain}
-                  </a>
-                  {s.example.title && <div className="geo-small">{s.example.title.slice(0, 70)}</div>}
-                </td>
-                <td className="geo-small">{s.own ? "Your website" : SOURCE_TYPE_LABELS[s.type as SourceType] ?? s.type}</td>
-                <td className="geo-num">{s.n} answers</td>
-                <td style={{ minWidth: 120 }}>
-                  <div className="geo-row" style={{ gap: 8 }}>
-                    <div className="geo-grow">
-                      <Bar value={s.n ? s.named / s.n : 0} />
-                    </div>
-                    <span className="geo-num geo-small">{formatPct(s.n ? s.named / s.n : 0)}</span>
-                  </div>
-                </td>
+      <s-section heading={view === "all" ? "Most-used websites" : `Websites ${who} uses most`}>
+        <s-paragraph>
+          <s-text color="subdued">
+            Used in: share of {who === "AI assistants" ? "all AI" : `${who}'s`} answers that cite the site. Names you alongside: how often the answer also
+            names you. On it: whether the pages AI cites there name you (we read the pages worth pitching).
+          </s-text>
+        </s-paragraph>
+        {current.domains.length ? (
+          <table className="geo-table">
+            <thead>
+              <tr>
+                <th>Website</th>
+                <th>Type</th>
+                <th>Used in</th>
+                <th>Names you alongside</th>
+                <th>On it</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {current.domains.map((s) => (
+                <tr key={s.domain}>
+                  <td>
+                    <a href={s.example.url} target="_blank" rel="noreferrer">
+                      {s.domain}
+                    </a>
+                    {s.example.title && <div className="geo-small">{s.example.title.slice(0, 70)}</div>}
+                  </td>
+                  <td className="geo-small">{s.own ? "Your website" : typeLabel(s.type)}</td>
+                  <td className="geo-num">
+                    {formatPct(s.share)}
+                    <div className="geo-small">
+                      {s.answers} answer{s.answers === 1 ? "" : "s"}
+                    </div>
+                  </td>
+                  <td style={{ minWidth: 110 }}>
+                    <div className="geo-row" style={{ gap: 8 }}>
+                      <div className="geo-grow">
+                        <Bar value={s.answers ? s.named / s.answers : 0} />
+                      </div>
+                      <span className="geo-num geo-small">{formatPct(s.answers ? s.named / s.answers : 0)}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <OnItCell onIt={s.onIt} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <Empty title="No websites yet">Sources show here once {who} cites websites in its answers.</Empty>
+        )}
       </s-section>
     </s-page>
   );
