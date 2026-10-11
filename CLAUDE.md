@@ -191,6 +191,7 @@ Multi-tenant: every row scoped by `shop_id`; enable Supabase RLS or enforce in t
 
 - Dev account just created. Use a **development store** (not the trial store) for testing; seed it with a realistic grooming/skincare catalog.
 - Live test from planning: ChatGPT (AU) for "best beard oil for dry skin in Australia" named The Groomed Man Co, A Better, Bold & Bare, Milkman, and cited stuga.com.au's "best beard oil 2026" roundup, Chemist Warehouse, BIG W, Beard Guru. ChatGPT links include `?utm_source=chatgpt.com` — that's what attribution relies on.
+- **Research notes:** `docs/geo-research.md` keeps the main teachings from GEO videos and articles Ross shares (Hostinger, Ahrefs), plus how we apply them. Read it before building growth features.
 - Main competitors on the App Store: AgentIQ by 40rty (catalog/agent listing optimisation, $49–799), Kedra (tracking + fixes, free plan, ~47 reviews), Mento ($29–99). Our edge: **money dashboard first + fixes that push to Shopify + outreach**, all in one.
 
 ## 18. Build status (updated by Claude, 2026-10-09)
