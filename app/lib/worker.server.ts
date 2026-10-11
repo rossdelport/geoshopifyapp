@@ -29,6 +29,11 @@ const MAX_CHECKS = 2;
 let running = 0;
 let runningChecks = 0;
 let started = false;
+// Set when Railway asks this server to stop (a new version is live): take no new jobs, let the running
+// ones finish (a free check takes a few minutes), then exit. RAILWAY_DEPLOYMENT_DRAINING_SECONDS on the
+// service gives us that time before the container is killed.
+let draining = false;
+const DRAIN_MAX_MS = 330_000;
 
 async function runJob(job: Awaited<ReturnType<typeof claimJobs>>[number]) {
   const handler = getHandler(job.type);
@@ -46,6 +51,7 @@ async function runJob(job: Awaited<ReturnType<typeof claimJobs>>[number]) {
 }
 
 async function tick() {
+  if (draining) return;
   try {
     if (running < MAX_RUNNING) {
       for (const job of await claimJobs(MAX_RUNNING - running, { notTypes: [CHECK_JOB] })) {
@@ -69,6 +75,7 @@ const DAY = 86_400_000;
 let lastPurge = 0;
 
 export async function scheduleDueWork(now = new Date()) {
+  if (draining) return;
   await requeueStuckJobs();
   // Hourly, so hashed IPs on free checks are gone within about a day (see retention.server.ts).
   if (now.getTime() - lastPurge > 3_600_000) {
@@ -120,10 +127,30 @@ export async function scheduleDueWork(now = new Date()) {
   }
 }
 
+/** Stop taking jobs, wait for the running ones (at most DRAIN_MAX_MS), then exit. */
+function drainAndExit(signal: string) {
+  if (draining) return;
+  draining = true;
+  const startedAt = Date.now();
+  console.log(`[worker] ${signal}: finishing ${running + runningChecks} running job(s) before stopping`);
+  const wait = setInterval(() => {
+    const busy = running + runningChecks;
+    if (busy === 0 || Date.now() - startedAt > DRAIN_MAX_MS) {
+      clearInterval(wait);
+      if (busy) console.warn(`[worker] stopping with ${busy} job(s) still running`);
+      else console.log("[worker] all jobs finished, stopping");
+      process.exit(0);
+    }
+  }, 1_000);
+}
+
 export function startWorker() {
   if (started) return;
   started = true;
   console.log("[worker] started");
+  // react-router-serve closes the web server on these signals but leaves the process running; we exit
+  // once our jobs are done.
+  for (const signal of ["SIGTERM", "SIGINT"] as const) process.once(signal, () => drainAndExit(signal));
   setInterval(tick, 3_000);
   setInterval(() => scheduleDueWork().catch((err) => console.error("[worker] schedule failed:", err.message)), 60_000);
   setTimeout(() => scheduleDueWork().catch(() => {}), 10_000);
