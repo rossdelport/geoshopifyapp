@@ -375,6 +375,16 @@ html { scroll-behavior: auto; }
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
 }
 .hero-grid { position: absolute; left: 0; right: 0; top: 0; height: 1100px; background-size: 72px 72px; opacity: 1; }
+/* White cut-out behind the nav (78px tall, 16px from the top): the same 16px of white beside and below it
+   as above it, so the lilac wraps around the header. Rounded at the bottom; the two top joins curve the other way. */
+.hero-notch {
+  position: absolute; top: 0; left: 0; right: 0; margin-inline: auto; height: 94px;
+  width: calc(min(var(--wrap), 100% + 32px - 2 * var(--gutter)) + 32px);
+  background: var(--bg); border-radius: 0 0 34px 34px;
+}
+.hero-notch::before, .hero-notch::after { content: ""; position: absolute; top: 0; width: 16px; height: 16px; }
+.hero-notch::before { right: 100%; background: radial-gradient(circle at 0 100%, transparent 15.5px, var(--bg) 16px); }
+.hero-notch::after { left: 100%; background: radial-gradient(circle at 100% 100%, transparent 15.5px, var(--bg) 16px); }
 /* The grid is clear in the middle (behind the headline, the line and the form) and shows towards the edges. */
 .hero-grid.grid-fade {
   -webkit-mask-image: radial-gradient(ellipse 46% 40% at 50% 34%, transparent 0%, transparent 45%, rgba(0, 0, 0, .55) 75%, #000 100%);
@@ -873,7 +883,10 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .hw-c2 { --net-s: 1.04; }
 }
 @media (max-width: 1100px) {
-  .hero { padding-top: 150px; padding-bottom: 80px; }
+  /* little room beside the nav: no cut-out, the lilac starts 16px below the nav instead */
+  .hero { padding-top: 166px; padding-bottom: 80px; }
+  .hero-bg { top: 110px; }
+  .hero-notch { display: none; }
   .hw { gap: 16px; }
 }
 @media (max-width: 1023px) {
@@ -893,8 +906,8 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .hw-rows { width: min(calc(100% - 30px), 320px); }
 }
 @media (max-width: 760px) {
-  .hero { padding-top: 116px; padding-bottom: 28px; }
-  .hero-bg { top: 8px; left: 8px; right: 8px; border-radius: 24px; }
+  .hero { padding-top: 132px; padding-bottom: 28px; }
+  .hero-bg { top: 92px; left: 8px; right: 8px; border-radius: 24px; }
   .hero-br { display: none; }
   .hero-title { margin-top: 22px; }
   .hero-lead { margin-top: 16px; font-size: 15.5px; }
@@ -2199,7 +2212,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 
 <!-- 11-hero.html -->
 <section class="hero" id="overview">
-  <div class="hero-bg" aria-hidden="true"><div class="hero-grid grid-bg grid-fade"></div></div>
+  <div class="hero-bg" aria-hidden="true"><div class="hero-grid grid-bg grid-fade"></div><div class="hero-notch"></div></div>
   <div class="wrap hero-inner">
     <p class="hero-pill">
       <span class="hero-pill-new">Worldwide</span>
