@@ -620,4 +620,30 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
     expect((await jobs.claimJobs(5, { types: ["check.run"] })).map((j) => j.type)).toEqual(["check.run"]);
     await db.job.deleteMany({});
   });
+
+  it("the monthly report sent early in October covers all of September, not the first days of October", async () => {
+    const { buildMonthlyReport, reportPeriod } = await import("../app/lib/report.server");
+    const p = reportPeriod(new Date(Date.UTC(2026, 9, 2, 9)));
+    expect(p).toEqual({ start: new Date(Date.UTC(2026, 8, 1)), end: new Date(Date.UTC(2026, 9, 1)), label: "September" });
+    expect(reportPeriod(new Date(Date.UTC(2027, 0, 1))).label).toBe("December"); // across the new year
+
+    const order = (gid: string, at: Date, revenue: number, engine = "chatgpt") =>
+      db.aiOrder.create({ data: { shopId, orderGid: gid, engine, reason: "test", revenue, currency: "AUD", orderedAt: at } });
+    await order("gid://report/aug", new Date(Date.UTC(2026, 7, 31, 23)), 999);
+    await order("gid://report/sep1", new Date(Date.UTC(2026, 8, 1, 0, 30)), 40);
+    await order("gid://report/sep2", new Date(Date.UTC(2026, 8, 30, 23)), 60, "perplexity");
+    await order("gid://report/oct", new Date(Date.UTC(2026, 9, 1, 8)), 500);
+    await db.aiSession.create({ data: { shopId, engine: "chatgpt", clientKey: "report-sep", landingUrl: "/", occurredAt: new Date(Date.UTC(2026, 8, 15)) } });
+    await db.aiSession.create({ data: { shopId, engine: "chatgpt", clientKey: "report-oct", landingUrl: "/", occurredAt: new Date(Date.UTC(2026, 9, 1, 9)) } });
+
+    const { html, subject } = await buildMonthlyReport(shopId, new Date(Date.UTC(2026, 9, 2, 9)));
+    expect(html).toContain("Money from AI in September");
+    expect(html).not.toContain("this month");
+    expect(subject).toMatch(/^\S*100(\.00)? from AI in September · /);
+    expect(html).toContain(">2</div>"); // September's 2 orders, not August's or October's
+    expect(html).toContain("ChatGPT");
+    expect(html).toContain("Perplexity");
+    await db.aiOrder.deleteMany({ where: { orderGid: { startsWith: "gid://report/" } } });
+    await db.aiSession.deleteMany({ where: { clientKey: { startsWith: "report-" } } });
+  });
 });
