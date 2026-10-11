@@ -5,7 +5,7 @@
 // A thrown error's message is never shown: every throw becomes "unreachable" with our own copy.
 
 import { safeFetch } from "../check.server";
-import { looksLikeHtml } from "./html";
+import { looksLikeHtml, titleOf } from "./html";
 import { toolFetchGate } from "./limits.server";
 
 export type FetchOutcome =
@@ -70,3 +70,148 @@ export async function fetchSiteFile(
 
 /** Accept header for web pages (home and product pages): pass as `accept` to get the 2 MB default. */
 export const HTML_ACCEPT = "text/html,application/xhtml+xml";
+
+// ---------- where a site really lives ----------
+
+/** "www.Shop.com" -> "shop.com". */
+const bareHost = (h: string) => h.toLowerCase().replace(/^www\./, "");
+
+/** The same site: one host, or the other with or without "www.". */
+export const sameSite = (a: string, b: string) => bareHost(a) === bareHost(b);
+
+/**
+ * The host with "www." added, or taken off when it has it. Null for a myshopify.com address: those move to
+ * the store's own domain, and "www.x.myshopify.com" is never the store.
+ */
+export function twinHost(host: string): string | null {
+  const h = host.toLowerCase();
+  if (h.endsWith(".myshopify.com")) return null;
+  if (h.startsWith("www.")) return h.slice(4).includes(".") ? h.slice(4) : null;
+  return `www.${h}`;
+}
+
+const REDIRECT_SCAN = 200_000;
+const BODY_SCAN = 20_000;
+
+/** The words a visitor sees in a slice of a page: no tags, scripts, styles or comments. Linear (indexOf). */
+function visibleWords(s: string): string {
+  const lower = s.toLowerCase();
+  let out = "";
+  for (let i = 0; i < s.length; ) {
+    const lt = s.indexOf("<", i);
+    if (lt === -1) {
+      out += s.slice(i);
+      break;
+    }
+    out += `${s.slice(i, lt)} `;
+    let from = lt;
+    for (const [open, close] of [
+      ["<script", "</script"],
+      ["<style", "</style"],
+      ["<!--", "-->"],
+    ]) {
+      if (lower.startsWith(open, lt)) {
+        const end = lower.indexOf(close, lt + open.length);
+        from = end === -1 ? s.length : end;
+        break;
+      }
+    }
+    const gt = s.indexOf(">", from);
+    i = gt === -1 ? s.length : gt + 1;
+  }
+  return out.replace(/\s+/g, " ").trim();
+}
+
+/**
+ * True for a page that only sends visitors on: a meta refresh, a "Redirecting..." title, or a body whose only
+ * words are about redirecting (like the page a Shopify checkout domain shows while its script sends people to
+ * the real store). Reads at most the first 200,000 characters, with indexOf and short anchored patterns.
+ */
+export function looksLikeRedirectPage(html: string): boolean {
+  const src = html.slice(0, REDIRECT_SCAN);
+  const lower = src.toLowerCase();
+  for (let i = 0, n = 0; n < 50; n++) {
+    const at = lower.indexOf("http-equiv", i);
+    if (at === -1) break;
+    if (/^http-equiv\s{0,5}=\s{0,5}["']?\s{0,5}refresh/.test(lower.slice(at, at + 60))) return true;
+    i = at + 10;
+  }
+  if (/^redirect(?:ing)?\b/i.test(titleOf(src) ?? "")) return true;
+  const body = lower.indexOf("<body");
+  if (body === -1) return false;
+  const words = visibleWords(src.slice(body, body + BODY_SCAN));
+  return words.length <= 200 && /\bredirecting\b/i.test(words);
+}
+
+/** How we got from the typed address to the one we read. */
+export type SiteMove =
+  /** The typed address sent us there itself, like yourstore.com to www.yourstore.com. */
+  | { how: "redirect" }
+  /** It went to `landed` (another host, or a redirect page), so we read its www (or non-www) twin instead. */
+  | { how: "twin"; landed: string; redirectPage: boolean };
+
+export interface SiteHome {
+  /** Where every file is read from, like "https://www.yourstore.com". */
+  origin: string;
+  host: string;
+  /** The home page as read there; when the typed address gave no page, its answer (404, unreachable). */
+  home: FetchOutcome;
+  /** Null when we read the host that was typed. */
+  moved: SiteMove | null;
+}
+
+const urlOf = (s: string): URL | null => {
+  try {
+    return new URL(s);
+  } catch {
+    return null;
+  }
+};
+
+const isHtmlPage = (o: Extract<FetchOutcome, { kind: "ok" }>) => o.html || /<html[\s>]/i.test(o.text.slice(0, 2_000));
+
+/**
+ * Where a site really lives, so robots.txt, llms.txt and the home page are all read from the store itself.
+ * Typing "gymshark.com" lands on us.checkout.gymshark.com, a Shopify store used only for checkout whose
+ * "Redirecting..." page sends people on to www.gymshark.com with a script; reading files there checks the
+ * wrong site. So, reading the typed home page (the guarded fetch follows up to 4 redirects, each checked):
+ * - it lands on the typed host or its www twin, and isn't a redirect page: that's the site;
+ * - else (another host, or a redirect page) it reads the twin once (https://www.<typed host>/, or the host
+ *   without www) and uses it when it answers with a real home page on the same site;
+ * - else it stays where the typed address sent us (a myshopify.com address moving to the store's own domain).
+ * At most two home page reads, both through `page` (the guarded fetch, passed in). Never throws.
+ */
+export async function resolveSiteHome(input: { origin: string; host: string }, page: (url: string) => Promise<FetchOutcome>): Promise<SiteHome> {
+  const read = (url: string) => page(url).catch((): FetchOutcome => ({ kind: "unreachable" }));
+  const first = await read(`${input.origin}/`);
+  const landed = first.kind === "ok" ? urlOf(first.url) : null;
+  if (first.kind !== "ok" || !landed) return { origin: input.origin, host: input.host, home: first, moved: null };
+  const redirectPage = looksLikeRedirectPage(first.text);
+  const there: SiteHome = { origin: landed.origin, host: landed.hostname, home: first, moved: landed.hostname === input.host ? null : { how: "redirect" } };
+  if (sameSite(landed.hostname, input.host) && !redirectPage) return there;
+
+  const twin = twinHost(input.host);
+  if (!twin) return there;
+  const second = await read(`${input.origin.startsWith("http:") ? "http:" : "https:"}//${twin}/`);
+  const at = second.kind === "ok" ? urlOf(second.url) : null;
+  if (second.kind === "ok" && at && sameSite(at.hostname, input.host) && isHtmlPage(second) && !looksLikeRedirectPage(second.text)) {
+    return { origin: at.origin, host: at.hostname, home: second, moved: at.hostname === input.host ? null : { how: "twin", landed: landed.hostname, redirectPage } };
+  }
+  return there;
+}
+
+/** The one plain line under the result when we read another address than the one typed. */
+export const MOVED_COPY = {
+  redirect: (typed: string, read: string) => `${typed} sends visitors to ${read}, so we checked that address.`,
+  otherHost: (typed: string, landed: string, read: string) => `${typed} goes to ${landed}, so we checked ${read}, where your home page is.`,
+  redirectPage: (typed: string, read: string) => `${typed} shows a redirect page, so we checked ${read}, where your home page is.`,
+} as const;
+
+/** That line for a resolved site, or null when we read the host that was typed. */
+export function movedNote(typedHost: string, where: SiteHome): string | null {
+  const m = where.moved;
+  if (!m || where.host === typedHost) return null;
+  if (m.how === "redirect") return MOVED_COPY.redirect(typedHost, where.host);
+  if (m.landed !== typedHost) return MOVED_COPY.otherHost(typedHost, m.landed, where.host);
+  return MOVED_COPY.redirectPage(typedHost, where.host);
+}

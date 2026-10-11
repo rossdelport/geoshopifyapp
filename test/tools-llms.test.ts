@@ -38,6 +38,8 @@ const layout = await import("../app/routes/tools");
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const read = (p: string) => readFileSync(join(ROOT, p), "utf8");
 const fixture = (name: string) => read(`test/fixtures/tools/llms-${name}.txt`);
+/** Real pages captured on 11 Oct 2026 (each file says where from): test/fixtures/tools/hosts-*. */
+const hosts = (name: string) => read(`test/fixtures/tools/hosts-${name}`);
 const TOOL = toolBySlug("llms-txt-checker");
 const text = (h: string) =>
   h
@@ -361,6 +363,17 @@ describe("the starter file", () => {
     expect(main.some((l) => l.href.includes("/products/"))).toBe(false);
   });
 
+  it("leaves offer banners out and capitalises a lowercase menu link", () => {
+    const { main } = starterLinks([
+      { href: "https://cedar.example/pages/email-offer", text: "Get 10% off when you sign up for emails" },
+      { href: "https://cedar.example/pages/students", text: "Students get an extra 12% off" },
+      { href: "https://cedar.example/pages/refer", text: "Get $10 off when you refer a friend" },
+      { href: "https://cedar.example/collections/women", text: "women" },
+      { href: "https://cedar.example/collections/sale", text: "Sale" },
+    ]);
+    expect(main.map((l) => l.text)).toEqual(["Women", "Sale"]);
+  });
+
   it("names a link with no words from its address, and keeps brackets out of names", () => {
     const { main } = starterLinks([
       { href: "https://cedar.example/collections/beard-oil", text: "" },
@@ -399,6 +412,33 @@ describe("the starter file", () => {
 
   it("leaves out the summary and sections it has nothing for", () => {
     expect(buildStarter({ title: "Cedar", description: null, links: [] })).toBe("# Cedar\n");
+  });
+});
+
+describe("the starter file on real stores (11 Oct 2026)", () => {
+  it("lists a link's words once: allbirds.com's menu has New Arrivals for everyone, then under Men and Women", () => {
+    const facts = readHome(hosts("allbirds-home.html"), "https://www.allbirds.com/", "www.allbirds.com");
+    // The page links three different New Arrivals collections with the same words.
+    const arrivals = facts.links.filter((l) => l.text === "New Arrivals").map((l) => new URL(l.href).pathname);
+    expect(arrivals).toEqual(["/collections/new-arrivals-26", "/collections/mens-new-arrivals", "/collections/womens-new-arrivals"]);
+    const starter = buildStarter(facts);
+    expect(starter.match(/\[New Arrivals\]/g)).toHaveLength(1);
+    expect(starter).toContain("- [New Arrivals](https://www.allbirds.com/collections/new-arrivals-26)");
+    const { main } = starterLinks(facts.links);
+    expect(main).toHaveLength(MAX_MAIN_PAGES);
+    expect(new Set(main.map((l) => l.text.toLowerCase())).size).toBe(main.length);
+  });
+
+  it("keeps the first of two links with the same words, whatever their case or spacing", () => {
+    const { main } = starterLinks([
+      { href: "https://cedar.example/collections/new", text: "New Arrivals" },
+      { href: "https://cedar.example/collections/mens-new", text: "new  arrivals" },
+      { href: "https://cedar.example/collections/oil", text: "Beard oil" },
+    ]);
+    expect(main).toEqual([
+      { href: "https://cedar.example/collections/new", text: "New Arrivals" },
+      { href: "https://cedar.example/collections/oil", text: "Beard oil" },
+    ]);
   });
 });
 
@@ -561,6 +601,85 @@ describe("checkLlmsSite", () => {
     await checkLlmsSite(cedar);
     await checkLlmsSite(cedar);
     expect(fetchMock).toHaveBeenCalledTimes(4);
+  });
+});
+
+describe("checkLlmsSite reads the store's real address", () => {
+  beforeEach(() => {
+    clearLlmsCache();
+    fetchMock.mockReset();
+  });
+
+  // What happened on 11 Oct 2026 (Treg fetches, fixtures in test/fixtures/tools/hosts-gymshark-*): every
+  // address on https://gymshark.com redirects to us.checkout.gymshark.com, a Shopify store used only for
+  // checkout (its /llms.txt is Shopify's automatic file, its home page a "Redirecting..." page). The store is
+  // www.gymshark.com, which has no llms.txt, llms-full.txt or agents.md (404).
+  function gymshark() {
+    fetchMock.mockImplementation(async (url: string) => {
+      const u = new URL(url);
+      if (u.hostname === "gymshark.com") {
+        const at = `https://us.checkout.gymshark.com${u.pathname}`;
+        if (u.pathname === "/") return ok(at, hosts("gymshark-redirect-page.html"), true);
+        if (u.pathname === "/llms.txt" || u.pathname === "/agents.md") return ok(at, fixture("shopify-default"));
+        return MISSING;
+      }
+      if (url === "https://www.gymshark.com/") return ok(url, hosts("gymshark-www-home.html"), true);
+      return MISSING;
+    });
+  }
+  const typed = { origin: "https://gymshark.com", host: "gymshark.com" };
+
+  it("checks www.gymshark.com's files and builds the starter from its home page, not the checkout domain's", async () => {
+    gymshark();
+    const out = await checkLlmsSite(typed);
+    if (!out.ok) throw new Error("expected a result");
+    expect(out.site.host).toBe("www.gymshark.com");
+    expect(out.site.llmsUrl).toBe("https://www.gymshark.com/llms.txt");
+    expect(out.site.hostNote).toBe("gymshark.com goes to us.checkout.gymshark.com, so we checked www.gymshark.com, where your home page is.");
+    expect(out.site.files).toEqual({ llms: "missing", full: "missing", agents: "missing" });
+    expect(out.site.report.found).toBe(false);
+    expect(out.site.report.shopify).toBe(false);
+    expect(out.site.starter).not.toBe("# gymshark.com\n");
+    expect(out.site.starter!.startsWith("# Gymshark\n\n> Unlock your full potential with our game-changing workout clothes.")).toBe(true);
+    expect(out.site.starter).toContain("- [New Arrivals](https://www.gymshark.com/collections/new-releases/womens)");
+    expect(out.site.starterNote).toBeNull();
+    expect(out.site.shopify).toBe(true);
+    const asked = fetchMock.mock.calls.map((c) => c[0]);
+    expect(asked).toEqual(expect.arrayContaining(["https://www.gymshark.com/", "https://www.gymshark.com/llms.txt", "https://www.gymshark.com/llms-full.txt", "https://www.gymshark.com/agents.md"]));
+    expect(asked).toHaveLength(8);
+  });
+
+  it("shows the address it checked and why, on the page", async () => {
+    gymshark();
+    const res = await checkLlmsSite(typed);
+    const page = text(renderPage({ ok: true, intent: "fetch", url: "gymshark.com", site: res.ok ? res.site : null }));
+    expect(page).toContain("We checked https://www.gymshark.com/llms.txt");
+    expect(page).toContain("gymshark.com goes to us.checkout.gymshark.com, so we checked www.gymshark.com, where your home page is.");
+    expect(page).toContain("A starter llms.txt for www.gymshark.com");
+    expect(page).not.toContain("# gymshark.com");
+  });
+
+  it("keeps files that came from the store when the bare domain only moves to www, and re-reads the rest there", async () => {
+    fetchMock.mockImplementation(async (url: string) => {
+      const u = new URL(url);
+      const at = `https://www.cedar.example${u.pathname}`;
+      if (u.pathname === "/") return ok(at, HOME, true);
+      if (u.pathname === "/llms.txt") return ok(at, STARTER);
+      return MISSING;
+    });
+    const out = await checkLlmsSite(cedar);
+    if (!out.ok) throw new Error("expected a result");
+    expect(out.site.llmsUrl).toBe("https://www.cedar.example/llms.txt");
+    expect(out.site.files).toEqual({ llms: "found", full: "missing", agents: "missing" });
+    expect(out.site.hostNote).toBe("cedar.example sends visitors to www.cedar.example, so we checked that address.");
+    expect(fetchMock.mock.calls.map((c) => c[0]).sort()).toEqual([
+      "https://cedar.example/",
+      "https://cedar.example/agents.md",
+      "https://cedar.example/llms-full.txt",
+      "https://cedar.example/llms.txt",
+      "https://www.cedar.example/agents.md",
+      "https://www.cedar.example/llms-full.txt",
+    ]);
   });
 });
 

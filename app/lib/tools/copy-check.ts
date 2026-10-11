@@ -16,8 +16,8 @@ import {
   MAX_TEXT,
   NOTES,
   TIPS,
-  VERDICT,
   verdictLine,
+  verdictWords,
   type FactId,
   type FillerGroup,
   type HypeGroup,
@@ -112,10 +112,64 @@ export function hypeGroup(word: string): HypeGroup {
 // A number with a unit that SIZE (ai-ready.ts) doesn't list: "180 gsm", "42 dB", "8 hours", "SPF 50", "100%".
 const UNIT =
   /\b\d+(?:[.,]\d+)?\s?(?:%|gsm|db|watts?|w|kw|v|mah|hz|hours?|hrs?|minutes?|mins?|days?|weeks?|months?|years?|ft|feet|yards?|kcal|calories|cups?|tbsp|tsp)(?![\p{L}\p{N}])|\bspf\s?\d+/iu;
-// The spec's patterns for the other facts (docs/tools/spec.md T6).
-const USE = /\b(?:how to use|directions|apply|use (?:\d+|one|two|three|a few)|massage|rinse|wash|wear|pour|mix|spray|\d+\s?drops?)\b/i;
-const CARE = /\b(?:care|machine wash|hand wash|wipe clean|dishwasher[- ]safe|store (?:in|at|away)|keep (?:out of|away from)|shelf life)\b/i;
-const INCLUDED = /\b(?:includes?|in the box|comes with|set of|pack of|kit contains)\b/i;
+// The other facts: the spec's patterns (docs/tools/spec.md T6), tightened on real descriptions (11 Oct 2026,
+// test/fixtures/tools/small-copy-descriptions.json). The spec's bare words were often nouns or other senses:
+// "casual wear", "gets better with every wash", "a massage gun", "terms apply", "we care about", "key
+// ingredients include". So a use verb only counts with words after it that say how ("apply to damp skin",
+// "wear it with jeans", "use 3 drops"), and "care" only as a care line ("Care:", "care instructions").
+// Lookaheads keep the match to the verb itself, so "We found" shows "Wash", not "Wash your".
+const USE_AMOUNT = "(?:\\d+(?:\\s?(?:-|\\u2013|to)\\s?\\d+)?|one|two|three|four|a few)";
+const USE_UNIT = "(?:drops?|pumps?|sprays?|scoops?|capsules?|tablets?|caps|ml|g|tsp|tbsp|teaspoons?|tablespoons?|squirts?|dabs?|times)";
+const USE = new RegExp(
+  [
+    "\\bhow to (?:use|apply|wear|style)\\b",
+    "\\bdirections(?: (?:for|of) use)?(?=\\s{0,5}(?::|\\n|$))",
+    "\\bdirections for use\\b",
+    "\\b(?:usage|to use)(?=\\s{0,5}:)",
+    `\\buse ${USE_AMOUNT}\\s?${USE_UNIT}\\b`,
+    "\\buse (?:a (?:small|pea[- ]sized|dime[- ]sized|coin[- ]sized) amount|daily|twice (?:a|per|daily)|once (?:a|per|daily))\\b",
+    "\\buse (?:it|them|this) (?:to|on|after|before|daily|every|as|when|with)\\b",
+    // "Conditions apply" and "fees may apply" aren't directions.
+    "(?<!\\b(?:terms|conditions|fees|charges|restrictions|exclusions|rates|duties|taxes|discounts?|offers?|t&cs?)(?: (?:may|will|also|still))? )\\bapply(?= (?:to|onto|on|into|over|a|an|the|it|them|some|evenly|liberally|generously|sparingly|gently|directly|daily|twice|once|morning|after|before|as|\\d|one|two|three|a few|small|thin|thinly|lightly)\\b)",
+    "\\bmassage(?= (?:into|in|onto|over|through|gently|it|them|until)\\b)",
+    "\\brinse(?= (?:off|out|well|thoroughly|with|away|clean)\\b)|(?<=\\b(?:then|and) )rinse\\b",
+    // "Machine wash" and "hand wash" are care lines (CARE below).
+    "(?<!\\b(?:machine|hand)[- ])\\bwash(?= (?:your|off|away)\\b)",
+    "\\bwear(?= (?:it|them|this|these|with|alone|over|under|all day|daily|every day|year[- ]round)\\b)|\\b(?:can|could|to) be worn\\b",
+    "\\bpour(?= (?:into|over|onto|in|a|the|it|\\d)\\b)",
+    "\\bmix(?= (?:with|into|in|well|together|until|\\d|one|a|the|it)\\b)",
+    "\\bspray(?= (?:onto|on|into|over|evenly|lightly|directly|from|at|throughout|through|\\d|a|the|it|them)\\b)",
+    "\\bshake well\\b",
+    "\\b\\d+\\s?drops?\\b",
+  ].join("|"),
+  "i",
+);
+const CARE = new RegExp(
+  [
+    "(?<!\\bcustomer )\\bcare(?: (?:instructions?|guide|tips|label))?(?=\\s{0,5}:)",
+    "\\bcare (?:instructions?|guide|label)\\b",
+    "\\b(?:easy|low)[- ]care\\b",
+    "\\bhow to (?:care for|clean|store|wash)\\b",
+    "\\bto care for\\b",
+    "\\bcaring for (?:your|the|it|them)\\b",
+    "\\b(?:machine|hand)[- ]wash(?:able)?\\b",
+    "\\bwash(?:ed)? (?:cold|warm|separately|inside out|on (?:cold|gentle|delicate))\\b",
+    "\\b(?:tumble|line|drip) dry\\b",
+    "\\bdry flat\\b",
+    "\\bdry clean(?:ing)?(?: only)?\\b",
+    "\\bdo not (?:bleach|iron|tumble|dry clean|wash)\\b",
+    "\\bwipe clean\\b",
+    "\\bwipe (?:down )?with a (?:damp|soft|dry) cloth\\b",
+    "\\bdishwasher[- ]safe\\b",
+    "\\bstore (?:in|at|away|upright)\\b",
+    "\\bkeep (?:out of|away from)\\b",
+    "\\bshelf life\\b",
+  ].join("|"),
+  "i",
+);
+// "Key ingredients include" and "features include" list other things, not what's in the box.
+const INCLUDED =
+  /(?<!\b(?:ingredients?|features?|benefits?|notes?|prices?|colou?rs?|colou?rways?|range|scents?|flavou?rs?|sizes?|options?|highlights|uses?|perks?)\s)\bincludes?\b|\b(?:in the box|comes with|set of|pack of|kit contains)\b/i;
 // PLACES, PLACE and MADE_IN from ai-ready.ts (private there; copied as is, keep them in step).
 const PLACES =
   "united states|usa|america|north america|canada|canadian|mexico|united kingdom|uk|britain|england|scotland|wales|ireland|" +
@@ -129,6 +183,16 @@ const MADE_IN = /\b(?:[Mm]ade|[Dd]esigned|[Pp]roduced|[Mm]anufactured|[Cc]rafted
 // before MATERIAL runs. Same length, so positions still line up with the text.
 const BARE_NOUNS = /\b(?:ingredients?|materials?|fabrics?)\b/gi;
 const withoutBareNouns = (s: string) => s.replace(BARE_NOUNS, (m) => " ".repeat(m.length));
+// A percentage that isn't a material: MATERIAL counts "100% c..." for "100% cotton", so "save 30% off your
+// first shipment" (a real coffee page, 11 Oct 2026), "1% of sales" or "100% money-back" read as materials.
+// Blanked for the materials fact, like the bare nouns.
+const NOT_MATERIAL_PERCENT =
+  /\b\d{1,3}\s?%\s?(?:off|of|satisfaction|money[- ]back|guarantee[ds]?|refunds?|more|less|faster|better|stronger|longer|cash ?back|discount)\b/gi;
+const forMaterials = (s: string) => withoutBareNouns(s).replace(NOT_MATERIAL_PERCENT, (m) => " ".repeat(m.length));
+// A shoe or clothing size in a country's sizing ("UK 8", "EU 42", "UK sizes") says nothing about where it's
+// made or ships from. Blanked for the origin fact.
+const SIZE_SYSTEM = /\b(?:uk|eu|nz)\s?(?:\d{1,2}(?:[.,]5)?\b|siz(?:es?|ing)\b)/gi;
+const withoutSizeSystems = (s: string) => s.replace(SIZE_SYSTEM, (m) => " ".repeat(m.length));
 // Product names that hold a fact word but state no fact: "skin care" and "beard care" say nothing about care,
 // "face wash" and "hair spray" nothing about how to use it, "a mix of" nothing at all (our list). Blanked
 // before the fact patterns run, like the bare nouns. "Hand wash" stays: it's usually a care line. Only the fact
@@ -153,7 +217,7 @@ const FACT_PATTERNS: Record<FactId, RegExp[]> = {
  * for? A hype word next to one is anchored (Microsoft: "anchor claims in measurable facts").
  */
 function hasFact(sentence: string): boolean {
-  return SIZE.test(sentence) || UNIT.test(sentence) || AUDIENCE.test(sentence) || MATERIAL.test(withoutBareNouns(sentence));
+  return SIZE.test(sentence) || UNIT.test(sentence) || AUDIENCE.test(sentence) || MATERIAL.test(forMaterials(sentence));
 }
 
 // ---------- reading the text ----------
@@ -306,8 +370,11 @@ export interface CopyReport {
   text: string;
   empty: boolean;
   english: boolean;
-  /** Null when there's nothing to judge (empty, or not English). */
-  verdict: { id: VerdictId; label: string; line: string } | null;
+  /**
+   * Null when there's nothing to judge (empty, or not English). `label` and `chip` are worded from what was
+   * found (verdictWords): with no vague phrases, they say what's missing rather than naming filler.
+   */
+  verdict: { id: VerdictId; label: string; chip: string; line: string } | null;
   flags: CopyFlag[];
   segments: CopySegment[];
   phrases: CopyPhrase[];
@@ -455,7 +522,11 @@ const likeText = (label: string, text: string) => (/^[A-Z]/.test(text) ? label[0
  * 20,000 characters are read. Linear time: every pattern is bounded.
  */
 export function checkCopy(input: string, opts: CheckOptions = {}): CopyReport {
-  const raw = String(input ?? "").replace(/\r\n?/g, "\n");
+  // Cut before the line breaks are tidied: turning "\r\n" into "\n" at most halves the length, so twice the
+  // limit (plus one) still holds the first 20,000 characters, and a 2 MB paste isn't scanned end to end.
+  const raw = String(input ?? "")
+    .slice(0, MAX_TEXT * 2 + 1)
+    .replace(/\r\n?/g, "\n");
   const notes: string[] = [];
   let text = raw.length > MAX_TEXT ? raw.slice(0, MAX_TEXT) : raw;
   if (raw.length > MAX_TEXT) notes.push(NOTES.cut);
@@ -510,9 +581,10 @@ export function checkCopy(input: string, opts: CheckOptions = {}): CopyReport {
 
   const flags = pickFlags([...fillers, ...hypes]);
 
-  const materialsText = withoutBareNouns(factText);
+  const materialsText = forMaterials(factText);
+  const originText = withoutSizeSystems(factText);
   const facts: CopyFact[] = FACTS.map((f) => {
-    const source = f.id === "materials" ? materialsText : factText;
+    const source = f.id === "materials" ? materialsText : f.id === "origin" ? originText : factText;
     let match: string | null = null;
     for (const re of FACT_PATTERNS[f.id]) {
       const m = re.exec(source); // none of these is global, so exec always starts at the beginning
@@ -530,7 +602,7 @@ export function checkCopy(input: string, opts: CheckOptions = {}): CopyReport {
     ...base,
     empty: false,
     english: true,
-    verdict: { id, label: VERDICT[id], line: verdictLine(flags.length, found) },
+    verdict: { id, ...verdictWords(id, flags.length), line: verdictLine(flags.length, found) },
     flags,
     segments: segmentsOf(text, flags),
     phrases: phrasesOf(flags),

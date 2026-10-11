@@ -178,6 +178,31 @@ function toQuestions(list: unknown): string[] {
 /** Crawl4AI's overview text ends with Google's "Show more" button label; drop it. */
 const dropShowMore = (text: string) => text.replace(/\s*Show more\s*$/i, "").trim();
 
+// Google's shopping cards inside an overview reach us as run-together text after the product's name: the
+// price (and the old price), the shop, "& more" when several shops sell it, then the star rating and the
+// number of ratings. Seen on 11 Oct 2026 (test/fixtures/tools/crawl4ai-serp-aio.json and
+// small-crawl4ai-serp-flat-feet.json): "Brooks Adrenaline GTS 25 $124.95$155 Zappos.com& more 4.7 (2.1K)
+// Widely considered ..." and "ASICS GT-2000 15 $160.00 ASICS 5.0 (2) A lightweight ...". The card's prices,
+// shop and rating are dropped and the name ends with a full stop: "Brooks Adrenaline GTS 25. Widely
+// considered ...". A price in Google's own sentences ("Price: ~$12.76 to $19.59 (2.5 fl oz)") has no "& more"
+// glued to a shop name and no rating, so it stays. Every part is bounded (a shop name is at most 41 characters).
+const CARD_PRICE = "(?:US|AU|A|CA|C|NZ)?[$\u00a3\u20ac]\\s?\\d{1,7}(?:,\\d{3}){0,3}(?:\\.\\d{1,2})?";
+const CARD_RATING = "\\d(?:\\.\\d)?\\s?\\(\\d[\\d.,]{0,6}[KkMm]?\\)";
+const CARD_SHOP = "[^\\s$\u00a3\u20ac&()][^$\u00a3\u20ac&()]{0,40}?";
+const CARD = new RegExp(
+  `\\s?${CARD_PRICE}(?:\\s?${CARD_PRICE})?(?:\\s?${CARD_SHOP}(?<!\\s)&\\s?more(?:\\s${CARD_RATING})?|\\s?(?:${CARD_SHOP}\\s)?${CARD_RATING})(?=\\s|$)`,
+  "g",
+);
+
+/** The overview text with Google's shopping-card prices, shops and ratings taken out (see CARD). */
+export function tidyOverviewText(text: string): string {
+  return text
+    .replace(CARD, ".")
+    .replace(/([.!?:;,])\./g, "$1") // a name that already ended a sentence
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 /**
  * A Crawl4AI results page, or null when it isn't a usable one (the caller then asks the backup provider):
  * no `blocks` list, or neither an overview nor any normal result unless Google really matched nothing
@@ -187,7 +212,7 @@ const dropShowMore = (text: string) => text.replace(/\s*Show more\s*$/i, "").tri
 export function parseCrawl4ai(raw: any, query: string, checkedAt: string): AioResult | null {
   if (!raw || typeof raw !== "object" || !Array.isArray(raw.blocks)) return null;
   const overview = raw.ai_overview && typeof raw.ai_overview === "object" ? raw.ai_overview : null;
-  const text = dropShowMore(str(overview?.text).slice(0, 20_000).replace(/\s+/g, " ").trim());
+  const text = tidyOverviewText(dropShowMore(str(overview?.text).slice(0, 20_000).replace(/\s+/g, " ").trim()));
   const shown = raw.blocks.includes("ai_overview") && text !== "";
   const organic = toOrganic(raw.results);
   if (!shown && !organic.length && raw.empty_reason !== "google_no_results") return null;
@@ -280,6 +305,43 @@ export function bestRank(result: AioResult, domain: string): number | null {
 
 /** True when a normal result's website is also cited in the overview. */
 export const isCited = (result: AioResult, domain: string) => result.sources.some((s) => sameSite(s.domain, domain));
+
+/**
+ * One page's address for comparing a cited link with a normal result: the host without www and the path
+ * without a trailing slash. The query and #fragment are left out: cited links carry tracking (Walmart's
+ * "?wmlspartner=...") and Google's text highlights ("#:~:text=...") that the ranked link doesn't.
+ */
+export function pageKey(url: string): string | null {
+  try {
+    const u = new URL(url);
+    return `${bare(u.hostname)}${u.pathname.replace(/\/+$/, "")}`;
+  } catch {
+    return null;
+  }
+}
+
+const samePage = (a: string, b: string) => {
+  const key = pageKey(a);
+  return key !== null && key === pageKey(b);
+};
+
+/**
+ * Where a cited page also ranks: that exact page's place in the normal results (`samePage`), or else the
+ * best place of another page from its website. Two cited pages from one site then don't both claim the
+ * place only one of them holds.
+ */
+export function sourceRank(result: AioResult, source: Pick<AioSource, "url" | "domain">): { rank: number; samePage: boolean } | null {
+  const exact = result.organic.filter((o) => samePage(o.url, source.url)).map((o) => o.position);
+  if (exact.length) return { rank: Math.min(...exact), samePage: true };
+  const rank = bestRank(result, source.domain);
+  return rank ? { rank, samePage: false } : null;
+}
+
+/** Is a normal result cited in the overview: "page" (that exact page), "site" (only another page from its website), or null. */
+export function citedAs(result: AioResult, organic: Pick<AioOrganic, "url" | "domain">): "page" | "site" | null {
+  if (result.sources.some((s) => samePage(s.url, organic.url))) return "page";
+  return isCited(result, organic.domain) ? "site" : null;
+}
 
 /** The "Your site" line for a result (docs/tools/spec.md T1, result layout 2). */
 export function yourSiteLine(result: AioResult, match: AioMatch): string | null {

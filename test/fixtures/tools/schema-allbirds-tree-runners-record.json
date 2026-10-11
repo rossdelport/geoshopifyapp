@@ -1,0 +1,60 @@
+{
+  "_note": "OBSERVED, then trimmed: Shopify's public product record https://www.allbirds.com/products/mens-tree-runners.js, fetched 11 Oct 2026 (via Treg crawl4ai.web.scrape, live). Only the fields the checker reads are kept; values are unchanged.",
+  "title": "Men's Tree Runner - Jet Black (White Sole)",
+  "handle": "mens-tree-runners",
+  "price": 10000,
+  "price_min": 10000,
+  "price_max": 10000,
+  "available": true,
+  "variants": [
+    {
+      "title": "8",
+      "sku": "TR3MJBW080",
+      "barcode": "843416184854",
+      "available": true,
+      "price": 10000
+    },
+    {
+      "title": "9",
+      "sku": "TR3MJBW090",
+      "barcode": "843416184861",
+      "available": false,
+      "price": 10000
+    },
+    {
+      "title": "10",
+      "sku": "TR3MJBW100",
+      "barcode": "843416184878",
+      "available": false,
+      "price": 10000
+    },
+    {
+      "title": "11",
+      "sku": "TR3MJBW110",
+      "barcode": "843416184885",
+      "available": false,
+      "price": 10000
+    },
+    {
+      "title": "12",
+      "sku": "TR3MJBW120",
+      "barcode": "843416184892",
+      "available": false,
+      "price": 10000
+    },
+    {
+      "title": "13",
+      "sku": "TR3MJBW130",
+      "barcode": "843416184908",
+      "available": false,
+      "price": 10000
+    },
+    {
+      "title": "14",
+      "sku": "TR3MJBW140",
+      "barcode": "843416184915",
+      "available": false,
+      "price": 10000
+    }
+  ]
+}

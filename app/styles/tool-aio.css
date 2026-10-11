@@ -60,6 +60,8 @@
   font-size: 12.5px; font-weight: 500; color: var(--ink-2); background: var(--warm-100); white-space: nowrap;
 }
 .tl-aio-tag.is-cited { color: #2d3566; background: #eef0f6; }
+/* "Another page from this site ranks #7" is longer: it may wrap on a phone instead of running off the card */
+.tl-aio-tag.is-site { height: auto; min-height: 24px; padding: 3px 9px; line-height: 1.35; white-space: normal; }
 
 .tl-aio-meaning { gap: 6px; }
 .tl-aio-meaning a { color: var(--navy); text-decoration: underline; text-decoration-color: rgba(11, 12, 43, 0.35); }

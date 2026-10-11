@@ -382,9 +382,12 @@ export function withChecks(report: LlmsReport, extra: Check[]): LlmsReport {
 export type FileState = "found" | "missing" | "html" | "unchecked";
 
 export interface LlmsSite {
+  /** The host we read (the store's own address when the typed one sent us elsewhere). */
   host: string;
   /** The address we checked, like "https://yourstore.com/llms.txt". */
   llmsUrl: string;
+  /** "gymshark.com goes to us.checkout.gymshark.com, so we checked www.gymshark.com, ..." when we read another host than the one typed. */
+  hostNote?: string;
   files: { llms: FileState; full: FileState; agents: FileState };
   /** The checks on /llms.txt, with notes about the other two files. */
   report: LlmsReport;
@@ -541,14 +544,26 @@ function linkName(text: string, path: string): string {
 /** "(", ")", "[" and "]" in an address could end a Markdown link early; escaped, they mean the same address. */
 const mdUrl = (href: string) => href.replace(/\(/g, "%28").replace(/\)/g, "%29").replace(/\[/g, "%5B").replace(/\]/g, "%5D");
 
+/** A link's words for spotting repeats: "New  Arrivals" and "new arrivals" are the same. */
+const nameKey = (name: string) => name.toLowerCase().replace(/\s+/g, " ").trim();
+
+/** Offer banners in a store's menu ("Get 10% off when you sign up", "Get $10 off when you refer a friend") aren't pages to list. */
+const PROMO = /\d\s?%|[$£€]\s?\d|\bsign\s?up\b|\brefer a friend\b|\bsubscribe\b/i;
+
+/** "women" from a lowercase menu reads better as "Women". */
+const capFirst = (s: string) => (s === s.toLowerCase() ? s.charAt(0).toUpperCase() + s.slice(1) : s);
+
 /**
  * The links for the starter file: up to 15 main pages (collections, pages, blog posts, about and contact
  * first; never the cart, account, search, sign-in, checkout, files, or the home page itself and its language
  * versions like /fr; no duplicates; no query strings), and the shipping, refund and privacy policies when the
- * home page links them.
+ * home page links them. Two links with the same words (a store's menu often has "New Arrivals" for everyone,
+ * then again under Men and Women) would read as the same page, so only the first is kept. Offer banners
+ * ("Students get an extra 12% off") are left out.
  */
 export function starterLinks(links: HomeLink[]): { main: HomeLink[]; policies: HomeLink[] } {
   const seen = new Set<string>();
+  const names = new Set<string>();
   const candidates: { link: HomeLink; kind: LinkKind; i: number }[] = [];
   const policies = new Map<PolicyHandle, HomeLink>();
   for (const l of links) {
@@ -573,7 +588,10 @@ export function starterLinks(links: HomeLink[]): { main: HomeLink[]; policies: H
     }
     const segments = key.split("/").filter(Boolean);
     if (segments.some((s) => SKIP_SEGMENTS.has(s))) continue;
-    candidates.push({ link: { href: `${u.origin}${path}`, text: linkName(l.text, path) }, kind: kindOf(path), i: candidates.length });
+    const text = capFirst(linkName(l.text, path));
+    if (PROMO.test(text) || names.has(nameKey(text))) continue;
+    names.add(nameKey(text));
+    candidates.push({ link: { href: `${u.origin}${path}`, text }, kind: kindOf(path), i: candidates.length });
   }
 
   // First pass in page order, with a cap per kind so one long menu can't fill the list; then fill up.

@@ -19,6 +19,7 @@ const { readProduct } = await import("../app/lib/check.server");
 const { checkCopy, sentenceSpans, verdictFor, hypeGroup, FILLER } = await import("../app/lib/tools/copy-check");
 const { readLinkedDescription, clearCopyCache } = await import("../app/lib/tools/copy-check.server");
 const copy = await import("../app/lib/tools/copy/ai-bot-checker");
+const { CopyReportView } = await import("../app/components/tools/copy-result");
 const { SAMPLE_TEXT, REWRITE_TEXT } = await import("../app/lib/tools/samples/copy-sample");
 const { toolBySlug, TOOLS } = await import("../app/lib/tools/registry");
 const { toolJsonLd } = await import("../app/lib/tools/seo");
@@ -52,7 +53,7 @@ describe("the made-up sample", () => {
   const r = checkCopy(SAMPLE_TEXT);
 
   it("sounds generic: 12 vague phrases and none of the 7 facts", () => {
-    expect(r.verdict).toEqual({ id: "generic", label: "Sounds generic", line: "12 vague phrases, 0 of 7 key facts found." });
+    expect(r.verdict).toEqual({ id: "generic", label: "Sounds generic", chip: "Needs work", line: "12 vague phrases, 0 of 7 key facts found." });
     expect(r.numbers).toEqual({ words: 44, sentences: 4, averageSentence: 11, facts: 0, vague: 12 });
     expect(r.facts.every((f) => !f.found)).toBe(true);
   });
@@ -201,6 +202,87 @@ describe("the 7 facts", () => {
   });
 });
 
+// Real descriptions from four Shopify stores (fetched 11 Oct 2026, the file says where from).
+const REAL: { id: string; source: string; html: string }[] = JSON.parse(read("test/fixtures/tools/small-copy-descriptions.json")).descriptions;
+const real = (id: string) => checkCopy(REAL.find((d) => d.id === id)!.html);
+const foundFacts = (r: Report) => Object.fromEntries(r.facts.filter((f) => f.found).map((f) => [f.id, f.match]));
+
+describe("the fact matchers on real product descriptions", () => {
+  it("finds what each one really says, and no noun counted as an instruction", () => {
+    // Allbirds: "perfect for everyday casual wear" was "how to use it" (the noun "wear")
+    expect(foundFacts(real("allbirds-tree-runner"))).toEqual({ who: "perfect for", materials: "made with" });
+    // Brooklinen: "it gets better with every wash" was "how to use it"
+    expect(foundFacts(real("brooklinen-sheet-set"))).toEqual({ who: "ideal for", materials: "cotton", included: "includes" });
+    // Beardbrand: "Use it to add waves, volume, texture" is how to use it, and was missed
+    expect(foundFacts(real("beardbrand-sea-salt-spray"))).toEqual({ size: "SIZE", materials: "Infused with", use: "Use it to" });
+    expect(foundFacts(real("beardbrand-oversized-tee"))).toEqual({ who: "designed for" });
+    expect(foundFacts(real("rhode-lip-tint"))).toEqual({ size: "Size" });
+    expect(foundFacts(real("deathwish-light-roast"))).toEqual({ size: "155mg", materials: "contains" });
+    for (const d of REAL) expect(fact(checkCopy(d.html), "care").found, d.id).toBe(false); // none has a care line
+  });
+
+  it("doesn't count a use word that's a noun or another sense", () => {
+    for (const t of [
+      "Perfect for everyday casual wear.",
+      "Soft, and it gets better with every wash.",
+      "A massage gun for sore muscles.",
+      "Free returns. Terms and conditions apply.",
+      "Shipping fees may apply to some orders.",
+      "We use 100% recycled polyester.",
+      "Comes in a spray bottle.",
+      "Mix and match the colours.",
+      "Machine wash cold with like colours.",
+    ]) {
+      expect(fact(checkCopy(t), "use").found, t).toBe(false);
+    }
+  });
+
+  it("still finds real directions", () => {
+    const cases: [string, string][] = [
+      ["Apply to damp skin after a shower.", "Apply"],
+      ["Wear it with jeans or shorts.", "Wear"],
+      ["Massage into the scalp for a minute.", "Massage"],
+      ["Leave for 5 minutes, then rinse off.", "rinse"],
+      ["Use 2 to 3 drops.", "Use 2 to 3 drops"],
+      ["Directions: shake before use.", "Directions"],
+      ["Mix with water or milk.", "Mix"],
+      ["Shake well before use.", "Shake well"],
+      ["Designed to be worn all day.", "to be worn"],
+      ["How to use: one pump on clean hands.", "How to use"],
+    ];
+    for (const [t, match] of cases) expect(fact(checkCopy(t), "use").match, t).toBe(match);
+  });
+
+  it("counts care only as a care line, not 'we care' or 'customer care'", () => {
+    for (const t of ["We care about the planet.", "Contact customer care: hello@shop.example.", "Taking care of your skin is simple."]) {
+      expect(fact(checkCopy(t), "care").found, t).toBe(false);
+    }
+    for (const [t, match] of [
+      ["Machine washable.", "Machine washable"],
+      ["Care instructions: wash cold, dry flat.", "Care instructions"],
+      ["Tumble dry low.", "Tumble dry"],
+      ["Store in a cool, dry place.", "Store in"],
+    ] as [string, string][]) {
+      expect(fact(checkCopy(t), "care").match, t).toBe(match);
+    }
+  });
+
+  it("doesn't read 'ingredients include' as what's in the box", () => {
+    const r = checkCopy("Key ingredients include shea butter and jojoba.");
+    expect(fact(r, "included").found).toBe(false);
+    expect(fact(r, "materials").found).toBe(true);
+    expect(fact(checkCopy("Includes a travel pouch."), "included").match).toBe("Includes");
+  });
+
+  it("doesn't read a discount as a material, or a country's sizing as where it's from", () => {
+    expect(fact(checkCopy("Save 30% off your first order."), "materials").found).toBe(false);
+    expect(fact(checkCopy("A tee in 100% organic cotton."), "materials").found).toBe(true);
+    expect(fact(checkCopy("Fits true to size: a UK 8 is a US 10."), "origin").found).toBe(false);
+    expect(fact(checkCopy("Available in EU sizes 36 to 46."), "origin").found).toBe(false);
+    expect(fact(checkCopy("Ships to the UK and Ireland."), "origin").match).toBe("UK");
+  });
+});
+
 describe("the verdict", () => {
   it("uses the thresholds written in 'How this tool works'", () => {
     expect(verdictFor(4, 1, 100)).toBe("specific");
@@ -221,12 +303,38 @@ describe("the verdict", () => {
     expect(verdictFor(3, 4, 30)).toBe("generic");
     expect(verdictFor(4, 2, 200)).toBe("specific");
     const r = checkCopy("Beard oil for dry skin. 30 ml glass bottle. Premium quality.");
-    expect(r.verdict).toEqual({ id: "mixed", label: "Some specifics, some filler", line: "1 vague phrase, 3 of 7 key facts found." });
+    expect(r.verdict).toEqual({ id: "mixed", label: "Some specifics, some filler", chip: "Could be clearer", line: "1 vague phrase, 3 of 7 key facts found." });
     expect(copy.HOW_IT_WORKS.map((h) => h.text).join(" ")).toContain("A text under 100 words counts as 100 words, so one vague phrase doesn't outweigh the facts in a short description.");
   });
 
   it("calls a generic text 'Needs work', not 'Needs facts' (it may have facts and too much filler)", () => {
     expect(copy.VERDICT_CHIP.generic).toBe("Needs work");
+  });
+
+  it("words the headline from what was found: no filler named when there are no vague phrases", () => {
+    // The real Allbirds description: 0 vague phrases and 2 facts was "Some specifics, some filler"
+    expect(real("allbirds-tree-runner").verdict).toEqual({
+      id: "mixed",
+      label: "Clear, but missing key facts",
+      chip: "Add facts",
+      line: "0 vague phrases, 2 of 7 key facts found.",
+    });
+    // The real rhode description: 0 vague phrases and 1 fact was "Sounds generic"
+    expect(real("rhode-lip-tint").verdict).toEqual({ id: "generic", label: "Missing most key facts", chip: "Needs facts", line: "0 vague phrases, 1 of 7 key facts found." });
+    // with filler, the words stay
+    expect(real("brooklinen-sheet-set").verdict).toMatchObject({ id: "mixed", label: "Some specifics, some filler", line: "1 vague phrase, 3 of 7 key facts found." });
+    expect(copy.verdictWords("specific", 0)).toEqual({ label: "Specific and clear", chip: "Clear" });
+    expect(copy.verdictWords("generic", 3)).toEqual({ label: "Sounds generic", chip: "Needs work" });
+    expect(copy.HOW_IT_WORKS.map((h) => h.text).join(" ")).toContain(
+      "With no vague phrases at all, the headline says what's missing instead: 'Clear, but missing key facts' for 2 or 3 facts, 'Missing most key facts' for 1 or none.",
+    );
+  });
+
+  it("shows the worded headline and chip on the result", () => {
+    const html = renderToStaticMarkup(createElement(CopyReportView, { report: real("allbirds-tree-runner") }));
+    expect(text(html)).toContain("Add facts");
+    expect(text(html)).toContain("Clear, but missing key facts");
+    expect(text(html)).not.toContain("filler");
   });
 
   it("says '1 vague phrase' for one", () => {

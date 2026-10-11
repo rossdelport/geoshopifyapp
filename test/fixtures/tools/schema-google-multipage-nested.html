@@ -1,0 +1,64 @@
+<!doctype html>
+<!-- OBSERVED: Google's own example "Multi-page example: variants nested under ProductGroup", Page 1: Light blue
+     variants, from https://developers.google.com/search/docs/appearance/structured-data/product-variants
+     (last updated 2026-09-08 UTC, read 11 Oct 2026 via Treg crawl4ai.web.scrape). Copied as published, except the
+     "// ... other properties" comment lines, which aren't valid JSON, are removed. Google's code samples are
+     licensed under the Apache 2.0 License. The third hasVariant entry is "a variant with only the url property
+     to link to the variants on the other page". -->
+<html>
+  <head>
+    <title>Wool winter coat, light blue color</title>
+    <script type="application/ld+json">
+    [
+      {
+        "@context": "https://schema.org/",
+        "@type": "ProductGroup",
+        "name": "Wool winter coat",
+        "description": "Wool coat, new for the coming winter season",
+        "brand": {
+          "@type": "Brand",
+          "name": "Good brand"
+        },
+        "productGroupID": "44E01",
+        "variesBy": [
+          "https://schema.org/size",
+          "https://schema.org/color"
+        ],
+        "hasVariant": [
+          {
+            "@type": "Product",
+            "name": "Small light blue coat",
+            "description": "Small wool light blue coat for the winter season",
+            "image": "https://www.example.com/coat_small_lightblue.jpg",
+            "size": "small",
+            "color": "light blue",
+            "offers": {
+              "@type": "Offer",
+              "url": "https://www.example.com/coat/lightblue?size=small",
+              "price": 39.99,
+              "priceCurrency": "USD"
+            }
+          },
+          {
+            "@type": "Product",
+            "name": "Large light blue coat",
+            "description": "Large wool light blue coat for the winter season",
+            "image": "https://www.example.com/coat_large_lightblue.jpg",
+            "size": "large",
+            "color": "light blue",
+            "offers": {
+              "@type": "Offer",
+              "url": "https://www.example.com/coat/lightblue?size=large",
+              "price": 49.99,
+              "priceCurrency": "USD"
+            }
+          },
+          { "url": "https://www.example.com/coat/green?size=small" }
+        ]
+      }
+    ]
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

@@ -75,6 +75,22 @@ export const VERDICT_CHIP: Record<VerdictId, string> = {
   generic: "Needs work",
 };
 
+/**
+ * With no vague phrases at all, the headline says what's missing instead: "Some specifics, some filler" or
+ * "Sounds generic" would name filler that isn't there (a 38-word Allbirds description with 0 vague phrases
+ * and 2 facts got "Some specifics, some filler"). Same verdicts and thresholds, only the words change.
+ */
+export const VERDICT_NO_FILLER: Record<Exclude<VerdictId, "specific">, { label: string; chip: string }> = {
+  mixed: { label: "Clear, but missing key facts", chip: "Add facts" },
+  generic: { label: "Missing most key facts", chip: "Needs facts" },
+};
+
+/** The headline and chip for a verdict, worded from what was found. */
+export function verdictWords(id: VerdictId, vague: number): { label: string; chip: string } {
+  if (id !== "specific" && vague === 0) return VERDICT_NO_FILLER[id];
+  return { label: VERDICT[id], chip: VERDICT_CHIP[id] };
+}
+
 /** The line under the verdict: "12 vague phrases, 0 of 7 key facts found." */
 export const verdictLine = (vague: number, facts: number) => `${plural(vague, "vague phrase")}, ${facts} of 7 key facts found.`;
 
@@ -242,7 +258,7 @@ export const HOW_IT_WORKS: HowItem[] = [
     source: MICROSOFT_AI_ANSWERS,
   },
   {
-    text: "Verdict: 'Specific and clear' means at least 4 of the 7 facts and no more than 1 vague phrase per 100 words. 'Sounds generic' means 1 fact or fewer, or 4 or more vague phrases per 100 words. A text under 100 words counts as 100 words, so one vague phrase doesn't outweigh the facts in a short description.",
+    text: "Verdict: 'Specific and clear' means at least 4 of the 7 facts and no more than 1 vague phrase per 100 words. 'Sounds generic' means 1 fact or fewer, or 4 or more vague phrases per 100 words. A text under 100 words counts as 100 words, so one vague phrase doesn't outweigh the facts in a short description. With no vague phrases at all, the headline says what's missing instead: 'Clear, but missing key facts' for 2 or 3 facts, 'Missing most key facts' for 1 or none.",
   },
   {
     text: "It's a pattern check in English. It can miss things and can flag a fair use of a word. It never says whether a person or an AI wrote the text.",

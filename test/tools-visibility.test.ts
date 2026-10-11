@@ -34,8 +34,12 @@ const text = (h: string) => decode(h.replace(/<[^>]+>/g, " ")).replace(/[ \t]+/g
 const EM_DASH = /\u2014/;
 const SPACED_EN_DASH = /\s\u2013\s/;
 
-/** The report the real check would write for the fixture's answers, built here independently of the page's sample module. */
-const EXPECTED: CheckReport = buildReport(sampleAnswers, sampleProduct, ["Kōwhai & Co", "Kowhai and Co"], {
+/** The sample's answers that the fixture marks as failed or empty (the one documented edit: all Perplexity). */
+const counted = (a: { ok: boolean; empty: boolean }) => a.ok && !a.empty;
+const EDITED = sampleAnswers.flatMap((a, i) => (counted(a) ? [] : [i]));
+
+/** The report the real check writes for the sample's answers (checked against the fixture below), never typed in. */
+const EXPECTED: CheckReport = buildReport(SAMPLE_ANSWERS, sampleProduct, ["Kōwhai & Co", "Kowhai and Co"], {
   descriptionSource: "shopify",
   pageRead: true,
 });
@@ -58,11 +62,30 @@ const renderCard = (report: CheckReport) =>
 // ---------- the sample data ----------
 
 describe("the sample report", () => {
-  it("is the made-up check from the test fixture, copied (app code never imports from test/)", () => {
+  it("is the made-up check from the test fixture, copied (app code never imports from test/), with one edit", () => {
     expect(SAMPLE_PRODUCT).toEqual(sampleProduct);
     expect(SAMPLE_QUESTIONS).toEqual(sampleQuestions);
-    expect(SAMPLE_ANSWERS).toEqual(sampleAnswers);
     expect(SAMPLE_MERCHANT_NAMES).toEqual(["Kōwhai & Co", "Kowhai and Co"]);
+    expect(SAMPLE_ANSWERS).toHaveLength(sampleAnswers.length);
+    // The edit: the fixture's 2 failed runs and 1 empty answer (all Perplexity) are real answers in the sample.
+    expect(EDITED.map((i) => sampleAnswers[i].engine)).toEqual(["perplexity", "perplexity", "perplexity"]);
+    SAMPLE_ANSWERS.forEach((a, i) => {
+      const f = sampleAnswers[i];
+      if (EDITED.includes(i)) expect(a).toMatchObject({ question: f.question, engine: f.engine, run: f.run, ok: true, empty: false });
+      else expect(a).toEqual(f);
+    });
+  });
+
+  it("has 6 answers from every assistant, as the form says: 3 questions, each asked twice", () => {
+    // Perplexity showed "Not named in any of 3 answers" next to 6 for the others.
+    expect(copy.SAMPLE.questionsNote).toBe("Each asked twice on every assistant.");
+    for (const e of CHECK_ENGINES) {
+      expect(SAMPLE_ANSWERS.filter((a) => a.engine === e && counted(a)), e).toHaveLength(SAMPLE_QUESTIONS.length * CHECK_RUNS);
+      expect(SAMPLE_REPORT.byEngine[e].total, e).toBe(6);
+    }
+    // the headline adds up from the rows
+    expect(SAMPLE_REPORT.answerCount).toBe(18);
+    expect(SAMPLE_REPORT.namedCount).toBe(CHECK_ENGINES.reduce((n, e) => n + SAMPLE_REPORT.byEngine[e].named, 0));
   });
 
   it("is what buildReport writes for those answers", () => {
@@ -70,16 +93,21 @@ describe("the sample report", () => {
     const noTips = (r: CheckReport) => ({ ...r, tips: [] });
     expect(noTips(SAMPLE_REPORT)).toEqual(noTips(EXPECTED));
     // The numbers the card shows, written out once so a change in the scoring is noticed here.
-    expect([SAMPLE_REPORT.namedCount, SAMPLE_REPORT.answerCount, SAMPLE_REPORT.score, SAMPLE_REPORT.label]).toEqual([6, 15, 33, "Growing"]);
+    expect([SAMPLE_REPORT.namedCount, SAMPLE_REPORT.answerCount, SAMPLE_REPORT.score, SAMPLE_REPORT.label]).toEqual([8, 18, 41, "Growing"]);
+    expect(CHECK_ENGINES.map((e) => [SAMPLE_REPORT.byEngine[e].named, SAMPLE_REPORT.byEngine[e].total])).toEqual([
+      [4, 6],
+      [2, 6],
+      [2, 6],
+    ]);
     expect(SAMPLE_REPORT.competitors.slice(0, 3).map((c) => [c.name, c.count])).toEqual([
-      ["Café Lip Co", 11],
-      ["Tūī Botanicals", 10],
-      ["Harbour & Fern", 4],
+      ["Café Lip Co", 14],
+      ["Tūī Botanicals", 12],
+      ["Pōhutu Skin", 6],
     ]);
     expect(SAMPLE_REPORT.sources.slice(0, 3).map((s) => [s.domain, s.count, s.isOwn])).toEqual([
       ["bestpicks.co.nz", 8, false],
+      ["kowhaiandco.co.nz", 6, true],
       ["glowjournal.co.nz", 4, false],
-      ["kowhaiandco.co.nz", 4, true],
     ]);
   });
 });
@@ -100,7 +128,7 @@ describe("the sample card", () => {
     expect(plain).toContain("Mānuka Honey Lip Balm 15g");
     expect(plain).toContain("$14.00 NZD");
     const pct = Math.round((EXPECTED.namedCount / EXPECTED.answerCount) * 100);
-    expect(pct).toBe(40);
+    expect(pct).toBe(44);
     expect(out).toContain(`aria-label="AI named Kōwhai &amp; Co in ${pct}% of answers (${EXPECTED.namedCount} of ${EXPECTED.answerCount})"`);
     expect(out).toContain(`data-n="${pct}"`);
     expect(out).toContain(`>Named in ${EXPECTED.namedCount} of ${EXPECTED.answerCount} answers</h2>`);
@@ -109,7 +137,8 @@ describe("the sample card", () => {
   });
 
   it("has a row per assistant, named or not, from byEngine", () => {
-    expect(EXPECTED.byEngine.perplexity.named).toBe(0);
+    for (const e of CHECK_ENGINES) expect(EXPECTED.byEngine[e].total).toBe(6);
+    expect(plain).not.toContain("of 3");
     for (const e of CHECK_ENGINES) {
       const s = EXPECTED.byEngine[e];
       expect(plain).toContain(ENGINE_LABELS[e]);
@@ -121,7 +150,8 @@ describe("the sample card", () => {
   it("lists the top 3 brands named instead and the top 3 cited sites, with counts and type chips", () => {
     for (const c of EXPECTED.competitors.slice(0, 3)) expect(plain).toContain(`${c.name} in ${c.count} of ${EXPECTED.answerCount} answers`);
     for (const c of EXPECTED.competitors.slice(3)) expect(plain).not.toContain(c.name);
-    const [roundup, mag, own] = EXPECTED.sources;
+    const [roundup, own, mag] = EXPECTED.sources;
+    expect(own.isOwn).toBe(true);
     expect(plain).toContain(`${roundup.domain} Review site ${roundup.count} answers`);
     expect(plain).toContain(`${mag.domain} Review site ${mag.count} answers`);
     expect(plain).toContain(`${own.domain} Your site ${own.count} answers`);
@@ -136,7 +166,7 @@ describe("the sample card", () => {
   });
 
   it("says what the ring and the score mean, with buildReport's score, as the real report does", () => {
-    expect(EXPECTED.score).not.toBe(Math.round((EXPECTED.namedCount / EXPECTED.answerCount) * 100)); // 33 vs 40: they differ
+    expect(EXPECTED.score).not.toBe(Math.round((EXPECTED.namedCount / EXPECTED.answerCount) * 100)); // 41 vs 44: they differ
     expect(plain).toContain(
       `What this means: the ring is the share of answers that named Kōwhai & Co. The score (${EXPECTED.score} out of 100) also counts where it was named`,
     );
@@ -145,7 +175,8 @@ describe("the sample card", () => {
     expect(score).toContain("return a.position !== null && a.position <= 3 ? 1 : 2 / 3;");
     expect(score).toContain("if (a.cited) return 1 / 3;");
     // The ring's and the chip's numbers come before the note that explains them.
-    expect(out.indexOf("score 33/100")).toBeLessThan(out.indexOf("What this means:"));
+    expect(out.indexOf(`score ${EXPECTED.score}/100`)).toBeGreaterThan(0);
+    expect(out.indexOf(`score ${EXPECTED.score}/100`)).toBeLessThan(out.indexOf("What this means:"));
   });
 
   it("copes with a check where no assistant answered, or none named the brand", () => {
@@ -158,14 +189,15 @@ describe("the sample card", () => {
     expect(page).not.toContain("What this means"); // no score to explain
 
     const unnamed = buildReport(
-      SAMPLE_ANSWERS.map((a) => ({ ...a, named: false, position: null, brands: a.brands.filter((b) => !b.startsWith("Kōwhai")) })),
+      // not named, and no link to the brand's own site either (a link alone earns a third of a point)
+      SAMPLE_ANSWERS.map((a) => ({ ...a, named: false, position: null, brands: a.brands.filter((b) => !b.startsWith("Kōwhai")), sources: a.sources.filter((x) => !x.isOwn) })),
       SAMPLE_PRODUCT,
       SAMPLE_MERCHANT_NAMES,
     );
     expect(unnamed.label).toBe("Not named yet");
     const html = renderCard(unnamed);
     expect(html).toContain("ck-score-ring is-grey");
-    expect(text(html)).toContain("Named in 0 of 15 answers");
+    expect(text(html)).toContain("Named in 0 of 18 answers");
     expect(text(html)).toContain("Not named in any of 6 answers");
   });
 });

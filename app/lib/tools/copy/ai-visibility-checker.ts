@@ -39,7 +39,7 @@ export const SAMPLE_LABEL = "Sample report for a made-up store. Your report uses
 export const SAMPLE = {
   /** The result area's name for screen readers. */
   region: "Sample report",
-  /** "Named in 6 of 15 answers" (both numbers from buildReport). */
+  /** "Named in 8 of 18 answers" (both numbers from buildReport). */
   named: (named: number, total: number) => `Named in ${named} of ${total} answers`,
   /** The ring's words for screen readers. */
   ring: (brand: string, pct: number, named: number, total: number) => `AI named ${brand} in ${pct}% of answers (${named} of ${total})`,
@@ -47,7 +47,7 @@ export const SAMPLE = {
   /** "Growing · score 33/100" */
   scoreChip: (label: string, score: number) => `${label} · score ${score}/100`,
   /**
-   * Why the ring (40%) and the score (33) differ, as the real report explains it (check-ui.tsx CheckReport).
+   * Why the ring (44%) and the score (41) differ, as the real report explains it (check-ui.tsx CheckReport).
    * The points are answerPoints in app/lib/score.ts: 1 in the top 3, 2/3 lower down, 1/3 for a link to the
    * brand's own site only; each assistant's average, then the average of the assistants.
    */

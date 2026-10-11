@@ -12,7 +12,6 @@ import {
   TOOL_BOTS,
   VERDICT_COPY,
   botByToken,
-  isShopifyDefault,
   isShopifyKind,
   rowsIn,
   verdict,
@@ -156,6 +155,7 @@ export function CrawlerReportView({
   status,
   pathNote,
   checkedUrl,
+  hostNote,
   label,
 }: {
   report: CrawlerReport;
@@ -164,6 +164,8 @@ export function CrawlerReportView({
   pathNote?: string | null;
   /** The robots.txt address we read (site checks). */
   checkedUrl?: string;
+  /** Why we read another address than the one typed (site checks). */
+  hostNote?: string | null;
   /** Above the heading: the sample label, or nothing. */
   label?: ReactNode;
 }) {
@@ -185,6 +187,7 @@ export function CrawlerReportView({
             We read <span className="tl-crawler-mono">{checkedUrl}</span>
           </p>
         ) : null}
+        {hostNote ? <p className="tl-small">{hostNote}</p> : null}
       </div>
       {report.tooComplex ? null : <ReportDetail report={report} pasted={pasted} pathNote={pathNote} />}
     </div>
@@ -254,8 +257,9 @@ export function FixBox({ report, shopify, pasted = false }: { report: CrawlerRep
   const onShopify = shopify || pasted;
   if (report.tooComplex || (!v.blocked && !shopify)) return null;
   if (!v.blocked) {
-    // "Want Shopify's standard rules back?" only makes sense when the file isn't the standard one already.
-    const custom = !isShopifyDefault(report.kind);
+    // "Want Shopify's standard rules back?" only makes sense when the file isn't the standard one already
+    // (the 2026 default; a store still serving the older layout has usually edited it).
+    const custom = report.kind !== "shopify-new-default";
     return (
       <div className="tl-card tl-card-soft tl-crawler-box">
         <h3 className="ck-h3">{FIX.cleanTitle}</h3>
@@ -315,6 +319,7 @@ export function SiteResultView({ site }: { site: SiteCheck }) {
             <p className="tl-small tl-url">
               We tried <span className="tl-crawler-mono">{site.robotsUrl}</span>
             </p>
+            {site.hostNote ? <p className="tl-small">{site.hostNote}</p> : null}
           </div>
         </div>
         <LimitsBox />
@@ -324,7 +329,7 @@ export function SiteResultView({ site }: { site: SiteCheck }) {
   const status = site.status === "no-file" ? (site.html ? SITE_COPY.htmlFile : SITE_COPY.noFile) : null;
   return (
     <>
-      <CrawlerReportView report={site.report} status={status} pathNote={site.pathNote} checkedUrl={site.robotsUrl} />
+      <CrawlerReportView report={site.report} status={status} pathNote={site.pathNote} checkedUrl={site.robotsUrl} hostNote={site.hostNote} />
       <FixBox report={site.report} shopify={site.shopify} />
       <LimitsBox />
     </>

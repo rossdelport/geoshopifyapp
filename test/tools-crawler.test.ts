@@ -71,11 +71,14 @@ const { CROSS_SITE_COPY, TOO_BIG_COPY } = await import("../app/lib/tools/guard.s
 const { HOUR_COPY, resetToolLimits } = await import("../app/lib/tools/limits.server");
 const { toolHeaders } = await import("../app/lib/tools/http");
 const route = await import("../app/routes/tools.ai-crawler-checker");
+const { FixBox } = await import("../app/components/tools/crawler-result");
 const layout = await import("../app/routes/tools");
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const read = (p: string) => readFileSync(join(ROOT, p), "utf8");
 const fixture = (name: string) => read(`test/fixtures/tools/robots-${name}.txt`);
+/** Real pages captured on 11 Oct 2026 (each file says where from): test/fixtures/tools/hosts-*. */
+const hosts = (name: string) => read(`test/fixtures/tools/hosts-${name}`);
 const FIXTURES = ["shopify-new", "shopify-old", "cloudflare-style", "empty", "orphan-rules", "allow-wins"] as const;
 const TOOL = toolBySlug("ai-crawler-checker");
 const text = (h: string) => h.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"');
@@ -286,6 +289,28 @@ describe("robotsKind and the fixtures", () => {
     expect(report.notes).toEqual([]);
   });
 
+  it("never calls the older layout Shopify's standard file (www.gymshark.com's edited copy, 11 Oct 2026)", () => {
+    const www = hosts("gymshark-www-robots.txt");
+    expect(robotsKind(www)).toBe("shopify-old-default");
+    const report = checkBots(www, PASTE_PATHS);
+    expect(verdict(report).blocked).toBe(0);
+    expect(verdict(report).shopifyStandard).toBe(false);
+    expect(report.notes.map((n) => n.id)).toContain("crawl-delay");
+    // Its Sitemap line is repeated in three groups: listed once.
+    expect(report.sitemaps).toEqual(["https://www.gymshark.com/sitemap.xml"]);
+    // The made-up old layout without its Amazonbot block is not "standard" either.
+    const old = checkBots(fixture("shopify-old").replace(/User-agent: Amazonbot\nDisallow: \/\n/, ""), PASTE_PATHS);
+    expect(old.kind).toBe("shopify-old-default");
+    expect(verdict(old).shopifyStandard).toBe(false);
+    // Shopify's 2026 default still is, and the "standard rules back" line only shows for the other files.
+    const checkout = checkBots(hosts("gymshark-checkout-robots.txt"), PASTE_PATHS);
+    expect(checkout.kind).toBe("shopify-new-default");
+    expect(verdict(checkout).shopifyStandard).toBe(true);
+    const box = (r: typeof report) => text(renderToStaticMarkup(createElement(FixBox, { report: r, shopify: true })));
+    expect(box(report)).toContain(copy.FIX.restore);
+    expect(box(checkout)).not.toContain(copy.FIX.restore);
+  });
+
   it("shows an Amazonbot block on the old layout as training only", () => {
     const report = checkBots(fixture("shopify-old"), PASTE_PATHS);
     const v = verdict(report);
@@ -492,6 +517,103 @@ describe("checkSite", () => {
     await checkSite(site());
     await checkSite(site());
     expect(robotsMock).toHaveBeenCalledTimes(1);
+  });
+});
+
+// ---------- a bare domain that lands on a checkout domain (gymshark.com, 11 Oct 2026) ----------
+
+describe("checkSite reads the store's real address", () => {
+  beforeEach(() => clearCrawlerCache());
+
+  // What happened on 11 Oct 2026 (Treg fetches, fixtures in test/fixtures/tools/hosts-gymshark-*):
+  // https://gymshark.com/ and /robots.txt redirect to us.checkout.gymshark.com, a Shopify store used only for
+  // checkout: its home page is a noindex "Redirecting..." page whose script sends people to www.gymshark.com,
+  // and its robots.txt is Shopify's 2026 default. The store itself is www.gymshark.com, with its own file.
+  const page = (url: string, text: string) => ({ kind: "ok" as const, status: 200, url, text, html: true });
+  function gymshark(opts: { wwwHome?: boolean } = {}) {
+    const robotsCalls: string[] = [];
+    const pageCalls: string[] = [];
+    const deps = {
+      robots: async (url: string) => {
+        robotsCalls.push(url);
+        if (url === "https://gymshark.com/robots.txt") return { status: 200, url: "https://us.checkout.gymshark.com/robots.txt", text: hosts("gymshark-checkout-robots.txt") };
+        if (url === "https://www.gymshark.com/robots.txt") return { status: 200, url, text: hosts("gymshark-www-robots.txt") };
+        return { status: 404, url, text: "" };
+      },
+      page: async (url: string) => {
+        pageCalls.push(url);
+        if (url === "https://gymshark.com/") return page("https://us.checkout.gymshark.com/", hosts("gymshark-redirect-page.html"));
+        if (url === "https://www.gymshark.com/" && opts.wwwHome !== false) return page(url, hosts("gymshark-www-home.html"));
+        return { kind: "missing" as const, status: 404 };
+      },
+    };
+    return { deps, robotsCalls, pageCalls };
+  }
+  const typed = { origin: "https://gymshark.com", host: "gymshark.com", path: "/" };
+  const FIRST_PRODUCT = "/products/gymshark-adapt-x-whitney-halter-neck-tank-sleeveless-tops-green-aw26-b7b9m-edjw";
+
+  it("reads www.gymshark.com's own robots.txt, not the checkout domain's, and says so", async () => {
+    const g = gymshark();
+    const out = await checkSite(typed, g.deps);
+    if (!out.ok) throw new Error("expected a result");
+    expect(out.site.host).toBe("www.gymshark.com");
+    expect(out.site.robotsUrl).toBe("https://www.gymshark.com/robots.txt");
+    expect(out.site.hostNote).toBe("gymshark.com goes to us.checkout.gymshark.com, so we checked www.gymshark.com, where your home page is.");
+    expect(g.robotsCalls).toEqual(["https://gymshark.com/robots.txt", "https://www.gymshark.com/robots.txt"]);
+    expect(g.pageCalls).toEqual(["https://gymshark.com/", "https://www.gymshark.com/"]);
+    const report = out.site.report!;
+    expect(report.kind).toBe("shopify-old-default");
+    expect(report.sitemaps).toEqual(["https://www.gymshark.com/sitemap.xml"]);
+    expect(report.notes.map((n) => n.id)).toContain("crawl-delay");
+    expect(verdict(report).shopifyStandard).toBe(false);
+    expect(verdict(report).headline).toBe("All the bots that affect AI answers can read your pages");
+  });
+
+  it("tests a real product page from the store's home page, never a made-up one", async () => {
+    const out = await checkSite(typed, gymshark().deps);
+    if (!out.ok) throw new Error("expected a result");
+    const paths = out.site.report!.paths.map((p) => p.path);
+    expect(paths[0]).toBe("/");
+    expect(paths[1]).toBe(FIRST_PRODUCT);
+    expect(paths).not.toContain("/products/example");
+    expect(out.site.report!.paths[2].path).toMatch(/^\/collections\/[^/]+$/);
+    expect(out.site.shopify).toBe(true);
+  });
+
+  it("shows the address it read and why, on the page", async () => {
+    const out = await checkSite(typed, gymshark().deps);
+    const page = text(renderPage({ ok: true, intent: "fetch", url: "gymshark.com", site: out.ok ? out.site : null }));
+    expect(page).toContain("We read https://www.gymshark.com/robots.txt");
+    expect(page).toContain("gymshark.com goes to us.checkout.gymshark.com, so we checked www.gymshark.com, where your home page is.");
+    expect(page).toContain("Google ignores Crawl-delay. Some other bots follow it.");
+    expect(page).not.toContain(crawler.VERDICT_COPY.shopifyStandard);
+  });
+
+  it("stays on the checkout domain, and names it, when www answers with no home page", async () => {
+    const out = await checkSite(typed, gymshark({ wwwHome: false }).deps);
+    if (!out.ok) throw new Error("expected a result");
+    expect(out.site.host).toBe("us.checkout.gymshark.com");
+    expect(out.site.robotsUrl).toBe("https://us.checkout.gymshark.com/robots.txt");
+    expect(out.site.hostNote).toBe("gymshark.com sends visitors to us.checkout.gymshark.com, so we checked that address.");
+  });
+
+  it("gives no note, and reads the file once, when the typed address is the store", async () => {
+    const g = gymshark();
+    const out = await checkSite({ origin: "https://www.gymshark.com", host: "www.gymshark.com", path: "/" }, g.deps);
+    if (!out.ok) throw new Error("expected a result");
+    expect(out.site.hostNote).toBeUndefined();
+    expect(g.robotsCalls).toEqual(["https://www.gymshark.com/robots.txt"]);
+    expect(g.pageCalls).toEqual(["https://www.gymshark.com/"]);
+  });
+
+  it("finds a product linked only inside a collection, and tests its own page", () => {
+    expect(findStorePages('<a href="/collections/sale/products/cedar-oil?variant=2">Oil</a><a href="/collections/sale">Sale</a>', "https://shop.example/")).toEqual({
+      product: "/products/cedar-oil",
+      collection: "/collections/sale",
+    });
+    expect(findStorePages('<a href="/en-au/collections/sale/products/oil">Oil</a>', "https://shop.example/")).toEqual({ product: "/en-au/products/oil", collection: null });
+    // A plain product link still wins, even when it comes later.
+    expect(findStorePages('<a href="/collections/a/products/x">X</a><a href="/products/y">Y</a>', "https://shop.example/").product).toBe("/products/y");
   });
 });
 
@@ -943,6 +1065,14 @@ describe("checkSite through the real guarded fetch", () => {
       if (h === "big.example") return u.pathname === "/robots.txt" ? { status: 200, body: `User-agent: *\n${"Disallow: /private-folder-name/\n".repeat(20_000)}` } : { status: 200, body: "<html></html>" };
       if (h === "slow.example") return { status: 0, fail: true };
       if (h === "homeaway.example") return u.pathname === "/robots.txt" ? { status: 200, body: "User-agent: *\nDisallow: /cart\n" } : { status: 302, location: "http://evil.example/" };
+      // gymshark.com on 11 Oct 2026: the bare domain redirects to its checkout domain, whose home page is a
+      // "Redirecting..." page; the store is www.gymshark.com.
+      if (h === "gymshark.com") return { status: 301, location: `https://us.checkout.gymshark.com${u.pathname}` };
+      if (h === "us.checkout.gymshark.com") return u.pathname === "/robots.txt" ? { status: 200, body: hosts("gymshark-checkout-robots.txt") } : { status: 200, body: hosts("gymshark-redirect-page.html") };
+      if (h === "www.gymshark.com") return u.pathname === "/robots.txt" ? { status: 200, body: hosts("gymshark-www-robots.txt") } : { status: 200, body: hosts("gymshark-www-home.html") };
+      if (h === "twinaway.example") return { status: 301, location: "https://checkout.twinaway.example/" };
+      if (h === "checkout.twinaway.example") return { status: 200, body: "<html><head><title>Redirecting...</title></head><body>Redirecting...</body></html>" };
+      if (h === "www.twinaway.example") return { status: 302, location: "http://evil.example/" };
       return { status: 404 };
     };
   });
@@ -988,6 +1118,31 @@ describe("checkSite through the real guarded fetch", () => {
     if (!out.ok) return;
     expect(out.site.report!.notes.map((n) => n.id)).toContain("large");
     expect(verdict(out.site.report!).tone).toBe("good");
+  });
+
+  it("follows a bare domain past its checkout domain to the store's www address, every hop guarded", async () => {
+    const out = await checkSite(at("gymshark.com"));
+    if (!out.ok) throw new Error("expected a result");
+    expect(out.site.robotsUrl).toBe("https://www.gymshark.com/robots.txt");
+    expect(out.site.hostNote).toBe("gymshark.com goes to us.checkout.gymshark.com, so we checked www.gymshark.com, where your home page is.");
+    expect(verdict(out.site.report!).shopifyStandard).toBe(false);
+    expect(out.site.report!.paths.map((p) => p.path)).not.toContain("/products/example");
+    // Two home page reads and two robots.txt reads, the bare domain's each with one redirect.
+    expect(web.calls.filter((c) => c.includes("gymshark.com")).sort()).toEqual([
+      "https://gymshark.com/",
+      "https://gymshark.com/robots.txt",
+      "https://us.checkout.gymshark.com/",
+      "https://us.checkout.gymshark.com/robots.txt",
+      "https://www.gymshark.com/",
+      "https://www.gymshark.com/robots.txt",
+    ]);
+  });
+
+  it("never follows the www address into a private network", async () => {
+    const out = await checkSite(at("twinaway.example"));
+    if (!out.ok) throw new Error("expected a result");
+    expect(out.site.host).toBe("checkout.twinaway.example");
+    expect(web.calls.some((c) => c.startsWith("http://evil."))).toBe(false);
   });
 
   it("still checks the robots.txt when the home page redirects somewhere private (the home page is optional)", async () => {

@@ -1,7 +1,10 @@
 // The on-load sample for the AI Visibility Checker (/tools/ai-visibility-checker): a finished free check
 // for a MADE-UP store. "Kōwhai & Co", its lip balm, the rival brands, the questions and the cited sites are
-// all invented. Copied from test/fixtures/check-sample.ts (app code never imports from test/; a test keeps
-// the two equal). The page labels it "Sample report for a made-up store" (copy/ai-visibility-checker.ts).
+// all invented. Copied from test/fixtures/check-sample.ts (app code never imports from test/) with one edit:
+// in the fixture Perplexity failed on Q3 both times and came back empty once on Q2 (the fixture tests how a
+// report copes with that). Here it answered every time, so each assistant has 3 questions x 2 runs = 6
+// answers, as the form under the sample promises ("Each asked twice on every assistant"). A test keeps
+// everything else equal to the fixture. The page labels it "Sample report for a made-up store" (copy/ai-visibility-checker.ts).
 // Every number on the sample card comes from buildReport (check-report.ts), the same code real reports use.
 // When Ross runs a real check on his own product (spec decision R5), freeze that check here with its date
 // and change the label to "Real example: a check run on {date} for a product from {store}."
@@ -57,8 +60,8 @@ function answer(question: number, engine: CheckEngine, run: number, o: Partial<C
   return { question, engine, run, ok: true, empty: false, named: false, position: null, brands: [], sources: [], snippet: "", ...o };
 }
 
-// Q1: rivals win everywhere. Q2: named on ChatGPT only. Q3: named on every assistant that answered
-// (Perplexity failed on Q3 both times, and came back empty once on Q2), so 15 of the 18 answers count.
+// Q1: rivals win everywhere. Q2: named on ChatGPT only. Q3: named on every assistant (fourth on Perplexity,
+// so the score, 41, differs from the ring, 44%). All 18 answers count: 6 per assistant.
 export const SAMPLE_ANSWERS: CheckAnswer[] = [
   ...[1, 2].flatMap((run) => [
     answer(0, "chatgpt", run, { brands: ["Tūī Botanicals", "Café Lip Co", "Harbour & Fern"], sources: [src(ROUNDUP, "editorial"), src(SHOP, "retailer")] }),
@@ -71,10 +74,15 @@ export const SAMPLE_ANSWERS: CheckAnswer[] = [
       sources: [src(ROUNDUP_2, "editorial"), src(OWN, "brand", true)],
     }),
     answer(1, "gemini", run, { brands: ["Harbour & Fern", "Café Lip Co"], sources: [src(MAG, "editorial")] }),
-    answer(1, "perplexity", run, run === 1 ? { empty: true } : { brands: ["Café Lip Co"], sources: [src(FORUM, "ugc")] }),
+    answer(1, "perplexity", run, { brands: ["Café Lip Co"], sources: [src(FORUM, "ugc")] }),
     answer(2, "chatgpt", run, { named: true, position: 1, brands: ["Kōwhai & Co", "Tūī Botanicals"], sources: [src(OWN, "brand", true)] }),
     answer(2, "gemini", run, { named: true, position: 3, brands: ["Pōhutu Skin", "Café Lip Co", "Kōwhai & Co"], sources: [src(ROUNDUP, "editorial")] }),
-    answer(2, "perplexity", run, { ok: false }),
+    answer(2, "perplexity", run, {
+      named: true,
+      position: 4,
+      brands: ["Café Lip Co", "Tūī Botanicals", "Pōhutu Skin", "Kōwhai & Co"],
+      sources: [src(OWN, "brand", true)],
+    }),
   ]),
 ];
 

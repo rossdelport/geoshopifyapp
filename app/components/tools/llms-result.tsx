@@ -168,6 +168,7 @@ export function SiteReportView({ site }: { site: LlmsSite }) {
         <p className="tl-small">
           {RESULT.checked} <span className="tl-url">{site.llmsUrl}</span>
         </p>
+        {site.hostNote ? <p className="tl-small">{site.hostNote}</p> : null}
       </div>
       <FilesRow files={site.files} />
       <ChecksList report={site.report} heading={RESULT.checksHeading} headingId="llms-checks" />

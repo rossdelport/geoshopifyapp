@@ -67,7 +67,10 @@ export const OVERVIEW = {
 } as const;
 
 export const SOURCES_HEADING = "Sites the overview cites";
+/** The cited page itself is in the normal results. */
 export const ALSO_RANKS = (k: number) => `Also ranks #${k}`;
+/** Only another page from the same website is (two cited pages from one site used to both say "Also ranks"). */
+export const SITE_RANKS = (k: number) => `Another page from this site ranks #${k}`;
 export const NEW_TAB = "(opens in a new tab)";
 
 /** The type chips, with the labels the free check pages use (check-ui.tsx). Unknown types show "Other". */
@@ -93,8 +96,12 @@ export const MEANING = {
 /** Linked after MEANING.track. */
 export const TRACK_SOURCE = { url: "https://support.google.com/webmasters/answer/16984139", label: "Google's guide" };
 
-export const ORGANIC_HEADING = "Normal results (top 10)";
+/** Worded from the real count: Google's first page sometimes holds fewer than 10 normal results. */
+export const ORGANIC_HEADING = (n: number) => (n >= 10 ? "Normal results (top 10)" : "Normal results on the first page");
+/** This exact page is cited in the overview. */
 export const CITED_MARK = "cited";
+/** Only another page from the same website is cited. */
+export const CITED_SITE_MARK = "another page cited";
 export const PAA_HEADING = "People also ask";
 export const PAA_LINK = "Answer questions like these with the FAQ Schema Generator";
 
@@ -122,7 +129,7 @@ export const WHAT_IT_CHECKS = [
 
 export const HOW_IT_WORKS = [
   "We send your search to Google in the United States through a search data provider and read the results page as it loads for a signed-out visitor. If that doesn't answer, we ask a second provider for the AI Overview.",
-  "We show the overview as Google displays it before you press “Show more”, every site it links to, and the top 10 normal results.",
+  "We show the overview as Google displays it before you press “Show more”, every site it links to, and the normal results on the first page (up to 10). Prices and star ratings from Google's shopping cards are left out of the overview text.",
   "If you add your website, we compare it with every cited link and every normal result. Subdomains count, so shop.yourstore.com counts as yourstore.com.",
   "We sort cited pages into types (review site, retailer, forum or video, brand site, marketplace) from the web address. It's a quick guess, not a judgement.",
   "We keep each result for 24 hours, so the same search within a day shows the same answer.",

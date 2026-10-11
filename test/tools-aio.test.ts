@@ -39,6 +39,10 @@ const AIO_RAW = fixture("tools/crawl4ai-serp-aio.json");
 const NONE_RAW = fixture("tools/crawl4ai-serp-none.json");
 const ANYAPI_RAW = fixture("tools/anyapi-aio-beard-oil.json");
 const ANYAPI_AI_MODE = fixture("anyapi-aio.json");
+// Captured live through Treg on 11 Oct 2026 for "best running shoes for flat feet" (the file's _note says how):
+// shopping cards in the overview text, and 9 normal results on the first page.
+const FLAT_RAW = fixture("tools/small-crawl4ai-serp-flat-feet.json");
+const { AioResultView } = await import("../app/components/tools/aio-result");
 
 const tool = toolBySlug("ai-overview-checker");
 const EM_DASH = /\u2014/;
@@ -152,6 +156,39 @@ describe("parseCrawl4ai", () => {
     )!;
     expect(r.sources).toEqual([{ url: "https://ok.example/a", title: "ok.example", domain: "ok.example", type: null }]);
     expect(r.organic.map((o) => o.domain)).toEqual(["b.example"]);
+  });
+
+  it("takes Google's shopping-card prices, shops and ratings out of the overview text (real capture)", () => {
+    const r = aio.parseCrawl4ai(FLAT_RAW, "best running shoes for flat feet", "2026-10-11")!;
+    expect(r.shown).toBe(true);
+    // was "... Brooks Adrenaline GTS 25 $124.95$155 Zappos.com& more 4.7 (2.1K) Widely considered ..."
+    expect(r.text).toContain("Top Running Shoes for Flat Feet Brooks Adrenaline GTS 25. Widely considered the best overall daily stability trainer");
+    expect(r.text).toContain("aligned. ASICS GT-2000 15. A lightweight and responsive option"); // "$160.00 ASICS 5.0 (2)" had no "& more"
+    expect(r.text).toContain("secure fit. Saucony");
+    expect(r.text).not.toMatch(/\$\d/);
+    expect(r.text).not.toContain("& more");
+    expect(r.text).not.toMatch(/\d\.\d \(\d/);
+    expect(r.text.startsWith("The best running shoes for flat feet provide structure, motion control, and arch support")).toBe(true);
+    expect(r.text.length).toBeLessThanOrEqual(aio.CUT_TEXT_MAX);
+    // the first capture: the card goes, Google's own price sentence stays
+    const sun = aio.parseCrawl4ai(AIO_RAW, "best sunscreen for oily skin", "2026-10-11")!;
+    expect(sun.text).toContain("Eucerin Sun Clear Skin Face Sunscreen Lotion SPF 50. Price: ~$12.76");
+    expect(sun.text).toContain("Neutrogena Clear Face Sunscreen Lotion SPF 50. Price: ~$12.48");
+    expect(sun.text).not.toContain("& more");
+    expect(sun.text).not.toContain("(7.9K)");
+  });
+
+  it("leaves prices and numbers in ordinary sentences alone (made-up text)", () => {
+    for (const t of [
+      "Prices start at $20 at Target & more stores.",
+      "Price: ~$12.76 \u2013 $19.59 (2.5 fl oz) Key Features: light.",
+      "It costs $5 (2 for $9).",
+      "Rated 4.5 (120) by buyers, from $30.",
+      "A tee for $25. It fits well.",
+    ]) {
+      expect(aio.tidyOverviewText(t), t).toBe(t);
+    }
+    expect(aio.tidyOverviewText("Best pick: Sun Lotion SPF 50 \u00a39.99 Boots& more 4.4 (310)")).toBe("Best pick: Sun Lotion SPF 50.");
   });
 
   it("keeps every cited link, even two from the same site", () => {
@@ -276,6 +313,65 @@ describe("matchDomain", () => {
     expect(aio.bestRank(AIO_SAMPLE, "allure.com")).toBeNull();
     expect(aio.isCited(AIO_SAMPLE, "charlottaeve.com")).toBe(true);
     expect(aio.isCited(AIO_SAMPLE, "reddit.com")).toBe(false);
+  });
+});
+
+// Two cited pages from one site, and only one of them in the normal results (the verifier's live search, 11 Oct
+// 2026: two runrepeat.com pages both said "Also ranks #7"). Made-up result in that shape.
+const RR_A = "https://runrepeat.com/guides/best-flat-feet-running-shoes";
+const RR_B = "https://runrepeat.com/guides/best-stability-running-shoes";
+const TWO_PAGES: any = {
+  ...AIO_SAMPLE,
+  query: "best running shoes for flat feet",
+  sources: [
+    { url: `${RR_A}#:~:text=flat%20feet`, title: "Best running shoes for flat feet", domain: "runrepeat.com", type: "editorial" },
+    { url: RR_B, title: "Best stability running shoes", domain: "runrepeat.com", type: "editorial" },
+    { url: "https://www.doctorsofrunning.com/stability/", title: "Stability shoes", domain: "doctorsofrunning.com", type: "editorial" },
+  ],
+  organic: [
+    { position: 1, url: "https://flawlessshoereviews.com/flat-feet/", domain: "flawlessshoereviews.com", title: "Flat feet" },
+    { position: 7, url: `${RR_A}/`, domain: "runrepeat.com", title: "Best running shoes for flat feet" },
+    { position: 9, url: "https://runrepeat.com/guides/best-trail-running-shoes", domain: "runrepeat.com", title: "Trail" },
+  ],
+};
+
+describe("cited pages and normal results, page by page", () => {
+  it("matches the exact page first, then the website", () => {
+    expect(aio.sourceRank(TWO_PAGES, TWO_PAGES.sources[0])).toEqual({ rank: 7, samePage: true }); // trailing slash and #fragment ignored
+    expect(aio.sourceRank(TWO_PAGES, TWO_PAGES.sources[1])).toEqual({ rank: 7, samePage: false });
+    expect(aio.sourceRank(TWO_PAGES, TWO_PAGES.sources[2])).toBeNull();
+    expect(aio.citedAs(TWO_PAGES, TWO_PAGES.organic[1])).toBe("page");
+    expect(aio.citedAs(TWO_PAGES, TWO_PAGES.organic[2])).toBe("site");
+    expect(aio.citedAs(TWO_PAGES, TWO_PAGES.organic[0])).toBeNull();
+    // Walmart's cited link carries tracking; the ranked link doesn't: the same page
+    expect(aio.pageKey("https://www.walmart.com/ip/x/900?wmlspartner=wlpa")).toBe(aio.pageKey("https://walmart.com/ip/x/900/"));
+  });
+
+  it("says 'Also ranks' only for the page that ranks, and words a site match as the site", () => {
+    const out = renderToStaticMarkup(createElement(AioResultView, { result: TWO_PAGES }));
+    const items = out.split('<li class="tl-aio-source').slice(1).map(text);
+    expect(items[0]).toContain("Also ranks #7");
+    expect(items[1]).toContain("Another page from this site ranks #7");
+    expect(items[1]).not.toContain("Also ranks");
+    expect(text(out).match(/Also ranks #7/g)).toHaveLength(1);
+    // the normal results: the cited page says "cited", another page from the site says so
+    const organic = out.slice(out.indexOf('class="tl-aio-organic"')).split("<li").slice(1).map(text);
+    expect(organic[1]).toMatch(/#7runrepeat\.com.*cited$/);
+    expect(organic[1]).not.toContain("another page");
+    expect(organic[2]).toContain("another page cited");
+    expect(organic[0]).not.toContain("cited");
+    // the sample still tags charlottaeve.com's page (cited and ranked #4, the same address)
+    expect(text(renderToStaticMarkup(createElement(AioResultView, { result: AIO_SAMPLE, sample: true })))).toContain("Also ranks #4");
+  });
+
+  it("words the normal results heading from the real count", () => {
+    const flat = aio.parseCrawl4ai(FLAT_RAW, "best running shoes for flat feet", "2026-10-11")!;
+    expect(flat.organic).toHaveLength(9);
+    const out = text(renderToStaticMarkup(createElement(AioResultView, { result: flat })));
+    expect(out).toContain("Normal results on the first page");
+    expect(out).not.toContain("top 10)");
+    expect(copy.ORGANIC_HEADING(10)).toBe("Normal results (top 10)");
+    expect(copy.HOW_IT_WORKS.join(" ")).toContain("the normal results on the first page (up to 10)");
   });
 });
 

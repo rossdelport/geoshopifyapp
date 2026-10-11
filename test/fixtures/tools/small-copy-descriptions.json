@@ -1,0 +1,45 @@
+{
+  "_note": "OBSERVED: real Shopify product descriptions, fetched 11 Oct 2026 through Treg crawl4ai.web.scrape (plain fetch, live). Each `html` is the store's own description HTML, unchanged (body_html from /products.json, or body from Shopify's /search/suggest.json); dashes and curly quotes are written as JSON escapes. The Allbirds text is the JSON-LD description already saved in schema-allbirds-tree-runners.html. Used by test/tools-copy-check.test.ts to check the 7 fact matchers on real copy.",
+  "descriptions": [
+    {
+      "id": "allbirds-tree-runner",
+      "source": "https://www.allbirds.com/products/mens-tree-runners (JSON-LD Product description)",
+      "html": "The Allbirds Tree Runner is a breathable and lightweight sneaker made with responsibly sourced eucalyptus tree fiber that feels silky smooth and cool on your skin. These shoes are perfect for everyday casual wear, walking, and warmer weather."
+    },
+    {
+      "id": "beardbrand-sea-salt-spray",
+      "source": "https://www.beardbrand.com/products.json?limit=4 (norse-winter-sea-salt-spray)",
+      "html": "<p>Norse Winter Sea Salt Spray smells like December in Scandinavia — ancient evergreen forests and sacred resins burning in snow-covered wooden halls. Use it to add waves, volume, texture, and a touch of hold to your hair and beard. Infused with Dead Sea salt and kaolin. Warning: a few sprays of Sea Salt Spray will have you feeling like Poseidon. <strong>SIZE:</strong> 4 fl oz.</p>"
+    },
+    {
+      "id": "beardbrand-oversized-tee",
+      "source": "https://www.beardbrand.com/products.json?limit=4 (keep-on-growing-oversized-t-shirt)",
+      "html": "<p>Embrace the versatility of the Oversized faded t-shirt, designed for those who appreciate the art of layering and creating unique outfits that effortlessly fuse modern trends with a hint of nostalgia. Its loose fit allows you to play with textures and proportions, giving you the freedom to express your personality through your style.</p>"
+    },
+    {
+      "id": "beardbrand-cologne",
+      "source": "https://www.beardbrand.com/products.json?limit=4 (fox-hunt-mens-cologne)",
+      "html": "<p>Virginia 1768. A young George Washington rides roughshod through overgrown cedar brake and tangled wood. Crisp air is filled with the scent of early-autumn dry grass, oiled English leather, musk; the sound of baying hounds and pounding hooves. Be ever in pursuit. <br>\n<strong>SIZE:</strong> <em>20 mL alcohol and phthalate-free Eau de Parfum.</em></p>"
+    },
+    {
+      "id": "rhode-lip-tint",
+      "source": "https://www.rhodeskin.com/search/suggest.json?q=peptide (peptide-lip-tint-salty-tan)",
+      "html": "<p>Peptide Lip Tint in Salty Tan has joined the rhode lineup forever. Originally made as a limited edition summer shade, it’s a nourishing formula with a hint of tint that hydrates and replenishes lips while leaving a glossy, high-shine finish. Size: 10ml / .3 fl oz.</p>\n<p><span><meta charset=\"utf-8\"> <meta charset=\"utf-8\">The complete collection is now available in our improved formula. Same nourishing gloss you know and love, with a lasting smooth texture.</span></p>"
+    },
+    {
+      "id": "brooklinen-sheet-set",
+      "source": "https://www.brooklinen.com/search/suggest.json?q=sheet%20set (classic-core-sheet-set)",
+      "html": "<p>Hotel-sheet lovers, these are your sheets. Cool, crisp, and ideal for hot sleepers. This the fabric that put us on the map. Our Classic Percale sheets start with the highest quality threads, using 270 thread count long-staple cotton with a one-yarn-over and one-yarn-under weave. This results in a matte finish for that breathable, hotel-style feel. Its exceptional softness and durability means it gets better with every wash, without pilling. Its lightweight, matte finish makes it the top choice for warmer climates, and year-round hot sleepers (night-sweaters this fabric is for you!)</p>\n<ul>\n<li>OEKO-TEX certified for chemical safety</li>\n<li>Keep your pillows secure with our pillowcase envelope closures</li>\n<li>No sweat bed-making with Long and Short side tags on our fitted sheets</li>\n<li>Colors and patterns to fit your taste, no matter your aesthetic</li>\n<li>Core Sheet Set includes: flat sheet, fitted sheet, and 2 pillowcases</li>\n<li><span style=\"font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; font-size: 0.875rem;\"> Twin and Twin XL sets include 1 pillowcase</span></li>\n<li><span style=\"font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; font-size: 0.875rem;\">King/Cali King sets come with king sized pillowcases</span></li>\n</ul>"
+    },
+    {
+      "id": "deathwish-vanilla",
+      "source": "https://www.deathwishcoffee.com/search/suggest.json?q=ground%20coffee (vanilla-10oz)",
+      "html": "<h4>Not your nana's 'nilla.<br>\n</h4>\n<p>There's nothing \"vanilla\" about this brew. Warm your cold heart in a blaze of balanced, rich vanilla that's medium roasted and made with no artificial ingredients. A blend of arabica and robusta beans pair perfectly with vanilla for a bold, smooth taste and a subtly sweet finish made for sipping in solitude.</p>\n<p>A heavy hitter brewed hot or over ice, drown your cup in cream and sugar for the full death-by-decadence experience.</p>\n<p><meta charset=\"utf-8\"><strong>CAFFEINE CONTENT: </strong>Flavored Death Wish<strong> </strong>Coffee contains approximately 140mg of caffeine based on a 6oz serving following brewing instructions on the package. Learn more about the caffeine content of all Death Wish Coffee products at <a title=\"Learn More About Death Wish Coffee Caffeine Content\" href=\"https://www.deathwishcoffee.com/pages/caffeine\">deathwishcoffee.com/caffeine</a>.</p>"
+    },
+    {
+      "id": "deathwish-light-roast",
+      "source": "https://www.deathwishcoffee.com/search/suggest.json?q=ground%20coffee (light-roast-coffee)",
+      "html": "<h4>AVAILABLE EXCLUSIVELY AT DEATHWISHCOFFEE.COM</h4>\n<p>It's time to hit SKIP on watered-down decisions and weak cups of coffee. Recharge your routine with a bold, bright roast that delivers the smooth punch you've been looking for. <br><br>With delicious notes of agave and golden raisins, this Certified Fair Trade and Organic light roast will energize you and keep things interesting. Lighten up, one cup at a time.</p>\n<p><meta charset=\"utf-8\"><strong>CAFFEINE CONTENT: </strong>Light Roast Coffee contains approximately 155mg of caffeine based on a 6oz serving following brewing instructions on the package. Learn more about the caffeine content of all Death Wish Coffee products at <a title=\"Learn More About Death Wish Coffee Caffeine Content\" href=\"https://www.deathwishcoffee.com/pages/caffeine\">deathwishcoffee.com/caffeine</a>.</p>\n<p><meta charset=\"utf-8\"><strong>SUBSCRIBE &amp; SAVE:</strong> Join the Society of Strong Coffee to save 30% off your first shipment and up to 20% off future deliveries. Plus, unlock free shipping on all subscription orders and keep an eye out for exclusive access to upcoming releases.</p>\n<p><meta charset=\"utf-8\">Unless specified in promotional messaging, coffee subscriptions are not eligible for additional discounts or promotional offers.</p>"
+    }
+  ]
+}

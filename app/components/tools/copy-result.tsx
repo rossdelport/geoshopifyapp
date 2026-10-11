@@ -7,7 +7,7 @@
 
 import { ResultHeading, SampleLabel, StatusChip, type ChipTone } from "../tool-ui";
 import type { CopyFact, CopyNumbers, CopyPhrase, CopyReport, CopySegment } from "../../lib/tools/copy-check";
-import { RESULT, SAMPLE_LABEL, VERDICT_CHIP, type VerdictId } from "../../lib/tools/copy/ai-bot-checker";
+import { RESULT, SAMPLE_LABEL, type VerdictId } from "../../lib/tools/copy/ai-bot-checker";
 import { REWRITE_TEXT, SAMPLE_TEXT } from "../../lib/tools/samples/copy-sample";
 
 const VERDICT_TONE: Record<VerdictId, ChipTone> = { specific: "good", mixed: "warn", generic: "bad" };
@@ -146,7 +146,7 @@ export function CopyReportView({ report, sample = false, note }: { report: CopyR
     <div className="tl-card tl-bot-report">
       {sample ? <SampleLabel>{SAMPLE_LABEL}</SampleLabel> : null}
       <div className="tl-bot-verdict">
-        {v ? <StatusChip tone={VERDICT_TONE[v.id]}>{VERDICT_CHIP[v.id]}</StatusChip> : null}
+        {v ? <StatusChip tone={VERDICT_TONE[v.id]}>{v.chip}</StatusChip> : null}
         <ResultHeading>{v ? v.label : report.empty ? RESULT.empty : RESULT.notEnglish}</ResultHeading>
         {v ? <p className="tl-bot-line">{v.line}</p> : null}
         {!report.empty && !report.english ? <p className="tl-small">{RESULT.notEnglishMore}</p> : null}

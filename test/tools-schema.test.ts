@@ -5,7 +5,9 @@
 // Shopify's product record, bounded parsing, the link check (fetches faked), the action's guards, the page
 // (head, JSON-LD, copy, one button) and the copy rules.
 // Fixtures: test/fixtures/tools/schema-*.html. schema-shopify-horizon.html and its -record.json were observed
-// on Shopify's Horizon demo store on 11 Oct 2026 and trimmed; every other fixture is made up and says so.
+// on Shopify's Horizon demo store on 11 Oct 2026 and trimmed; schema-allbirds-tree-runners.html and its
+// -record.json were observed on allbirds.com on 11 Oct 2026 and trimmed; schema-google-multipage-*.html are
+// Google's own examples from its product variants guide; every other fixture is made up and says so.
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -48,6 +50,8 @@ type Report = ReturnType<typeof checkSchema>;
 const field = (r: Report, id: string) => r.fields.find((f) => f.id === id)!;
 const problem = (r: Report, id: string) => r.problems.find((p) => p.id === id);
 const HORIZON_RECORD = () => parseShopifyRecord(JSON.parse(fixture("shopify-horizon-record.json")))!;
+const ALLBIRDS_URL = "https://www.allbirds.com/products/mens-tree-runners";
+const ALLBIRDS_RECORD = () => parseShopifyRecord(JSON.parse(fixture("allbirds-tree-runners-record.json")))!;
 
 // ---------- the on-load sample ----------
 
@@ -334,6 +338,122 @@ describe("tricky product data", () => {
 
   it("never points to a code box that isn't there", () => {
     for (const f of Object.values(copy.FIELDS)) expect(f.fix ?? "").not.toMatch(/see below/i);
+  });
+});
+
+// Google's product variants guide (updated 8 Sep 2026), multi-page sites: "The ProductGroup on each page has a
+// full definition of the variants on the page as well as a variant with only the url property to link to the
+// variants on the other page, which helps Google find your variants."
+describe("variants on other pages (Google's multi-page pattern)", () => {
+  const required = ["name", "variantName", "image", "offers", "price", "currency"];
+  const group = (variants: unknown[], extra: Record<string, unknown> = {}) => JSON.stringify({ "@type": "ProductGroup", name: "Oil", productGroupID: "OIL", hasVariant: variants, ...extra });
+  const full = (name: string, url: string, extra: Record<string, unknown> = {}) => ({
+    "@type": "Product",
+    name,
+    sku: name,
+    image: "a.jpg",
+    offers: { "@type": "Offer", price: "10.00", priceCurrency: "USD", url },
+    ...extra,
+  });
+
+  it("reads Allbirds' real page (observed): 7 variants on the page plus 42 linked ones, ready, and only the barcode note", () => {
+    const r = checkSchema(fixture("allbirds-tree-runners.html"), { source: "page", record: ALLBIRDS_RECORD(), url: ALLBIRDS_URL });
+    expect(r.kind).toBe("ProductGroup");
+    expect(r.units).toBe(7);
+    expect(r.linked).toBe(42);
+    expect(r.found).toBe("Found a ProductGroup with 7 variants in the page's HTML, plus 42 linked variants on other pages.");
+    expect(r.notes[0]).toBe(
+      "The 42 linked variants only give the link to their own page, like another colour. That's how Google suggests doing it, so we check the 7 variants on this page.",
+    );
+    for (const id of required) expect(field(r, id).status, id).toBe("found");
+    expect(field(r, "price").value).toBe("100 USD");
+    expect(r.verdict).toEqual({ state: "ready", headline: "Ready for Google's product results: all required facts found" });
+    // The one real finding: the store has barcodes the product data leaves out.
+    expect(r.problems.map((p) => p.id)).toEqual(["record-barcodes"]);
+    expect(problem(r, "record-barcodes")?.text).toBe(
+      "Your store has a barcode on 7 of 7 variants, but the product data includes none. Your theme may leave barcodes out of its product data.",
+    );
+    expect(field(r, "gtin")).toMatchObject({ status: "missing", found: 0, of: 7 });
+    expect(field(r, "sku")).toMatchObject({ status: "found", found: 7, of: 7 });
+    expect(field(r, "availability")).toMatchObject({ status: "found", value: "In stock, Out of stock" });
+    expect(field(r, "brand").value).toBe("Allbirds");
+    expect(field(r, "variesBy").value).toBe("Size, Color");
+    // No row counts the linked variants.
+    expect(r.fields.filter((f) => f.of !== undefined).every((f) => f.of === 7)).toBe(true);
+  });
+
+  it("reads Google's own multi-page examples: nested links with no @type, and separate Products that point to the group", () => {
+    const nested = checkSchema(fixture("google-multipage-nested.html"));
+    expect([nested.units, nested.linked]).toEqual([2, 1]);
+    expect(nested.found).toBe("Found a ProductGroup with 2 variants in the HTML you pasted, plus 1 linked variant on other pages.");
+    expect(nested.notes[0]).toBe(
+      "The linked variant only gives the link to its own page, like another colour. That's how Google suggests doing it, so we check the 2 variants on this page.",
+    );
+    expect(nested.verdict.state).toBe("ready");
+    expect(field(nested, "brand").value).toBe("Good brand"); // stated once, on the group
+    const separate = checkSchema(fixture("google-multipage-separate.html"));
+    expect([separate.units, separate.linked]).toEqual([1, 2]);
+    expect(separate.found).toBe("Found a ProductGroup with 1 variant in the HTML you pasted, plus 2 linked variants on other pages.");
+    expect(separate.verdict.state).toBe("ready");
+    expect(separate.notes).toEqual([
+      "The 2 linked variants only give the link to their own page, like another colour. That's how Google suggests doing it, so we check the 1 variant on this page.",
+      "We also found OfferShippingDetails and MerchantReturnPolicy data. It isn't product data, so we skip it.",
+    ]);
+  });
+
+  it("still checks a bare variant that links back to this same page: it's a variant here with facts missing", () => {
+    const page = "https://shop.example/products/oil";
+    const r = checkSchema(group([full("Oil - S", "/products/oil?variant=1"), { "@type": "Product", name: "Oil - L", sku: "L", url: "/products/oil?variant=2" }]), { url: page });
+    expect([r.units, r.linked]).toEqual([2, 0]);
+    expect(field(r, "offers")).toMatchObject({ status: "partial", found: 1, of: 2 });
+    expect(r.verdict.state).toBe("missing");
+    // The page we read is this page too, even when no variant on it has a link.
+    const bare = checkSchema(group([{ "@type": "Product", url: "https://shop.example/products/oil?variant=1" }]), { url: page });
+    expect([bare.units, bare.linked]).toEqual([1, 0]);
+    expect(bare.verdict.state).toBe("missing");
+  });
+
+  it("never treats a variant with an image, an offer or other facts as a link", () => {
+    const r = checkSchema(group([full("Oil - S", "/products/oil?v=1"), { "@type": "Product", url: "/products/oil-blue", image: "b.jpg" }, { "@type": "Product", url: "/products/oil-red", color: "Red" }]));
+    expect([r.units, r.linked]).toEqual([3, 0]);
+    expect(field(r, "offers")).toMatchObject({ status: "partial", found: 1, of: 3 });
+  });
+
+  it("says so when a group only links to variants on other pages", () => {
+    const r = checkSchema(group([{ "@type": "Product", url: "/products/oil-blue" }, { url: "/products/oil-red" }, { "@type": "Product", url: "/products/oil-green" }]));
+    expect([r.units, r.linked]).toEqual([0, 3]);
+    expect(r.found).toBe("Found a ProductGroup in the JSON-LD you pasted with no variants of its own, only 3 links to variants on other pages.");
+    expect(r.notes[0]).toBe("Google asks each page to fully describe the variants it sells: a name, image, price and currency for each.");
+    expect(r.verdict.state).toBe("missing");
+  });
+
+  it("keeps a variant with an offer but no name as a variant, with its name missing", () => {
+    const r = checkSchema(group([full("Oil - S", "/p?v=1"), { ...full("x", "/p?v=2"), name: undefined }]));
+    expect([r.units, r.linked]).toEqual([2, 0]);
+    expect(field(r, "variantName")).toMatchObject({ status: "partial", found: 1, of: 2 });
+  });
+
+  it("doesn't count the group's own offer for its variants (Google reads offers on each variant)", () => {
+    const r = checkSchema(group([{ "@type": "Product", name: "Oil - S", sku: "S", image: "a.jpg" }], { offers: { "@type": "Offer", price: "10.00", priceCurrency: "USD" } }));
+    expect(field(r, "offers")).toMatchObject({ status: "missing", found: 0, of: 1 });
+    expect(r.verdict.state).toBe("missing");
+  });
+
+  it("needs each offer's own price: a price range (lowPrice) alone isn't enough for store results", () => {
+    const range = JSON.stringify({ "@type": "Product", name: "Oil", image: "a.jpg", offers: { "@type": "AggregateOffer", lowPrice: "20.00", highPrice: "30.00", priceCurrency: "USD" } });
+    const r = checkSchema(range);
+    expect(field(r, "price").status).toBe("missing");
+    expect(field(r, "currency").status).toBe("found");
+    expect(problem(r, "price-range")).toEqual({
+      id: "price-range",
+      tone: "bad",
+      text: 'Your product data gives a price range ("from 20.00") instead of a price. For product results on store pages, Google needs each offer to have its own price.',
+    });
+    expect(r.verdict.headline).toBe("Missing 1 fact Google needs");
+    // An AggregateOffer that also states a price, and a price in priceSpecification, are fine.
+    const both = JSON.stringify({ "@type": "Product", name: "Oil", image: "a.jpg", offers: { "@type": "AggregateOffer", price: "20.00", lowPrice: "20.00", priceCurrency: "USD" } });
+    expect(checkSchema(both).verdict.state).toBe("ready");
+    expect(checkSchema(fixture("type-array.html")).verdict.state).toBe("ready");
   });
 });
 
@@ -817,6 +937,22 @@ describe("the page (server render, no JavaScript)", () => {
     expect(long).toContain('role="alert"');
     expect(text(long)).toContain(copy.PASTE_TOO_LONG);
     expect(text(long)).not.toContain("No product data found");
+  });
+
+  it("shows Allbirds' linked variants in plain words, and never 'Some variants only (7 of 49)'", async () => {
+    clearSchemaCache();
+    fetchMock.mockReset();
+    fakeStore({ status: 200, url: ALLBIRDS_URL, text: fixture("allbirds-tree-runners.html") }, { status: 200, url: `${ALLBIRDS_URL}.js`, text: fixture("allbirds-tree-runners-record.json") });
+    const checked = await checkProductUrl(ALLBIRDS_URL);
+    expect(checked.ok && checked.check.record).toBe(true);
+    const page = text(renderPage({ ok: true, intent: "fetch", url: "allbirds.com/products/mens-tree-runners", check: checked.ok ? checked.check : null }));
+    expect(page).toContain("Ready for Google's product results: all required facts found");
+    expect(page).toContain("Found a ProductGroup with 7 variants in the page's HTML, plus 42 linked variants on other pages.");
+    expect(page).toContain("That's how Google suggests doing it, so we check the 7 variants on this page.");
+    expect(page).toContain("Variant names hasVariant[].nameFound");
+    expect(page).toContain("Barcode (GTIN) gtinMissing");
+    expect(page).toContain("Your store has a barcode on 7 of 7 variants, but the product data includes none.");
+    expect(page).not.toMatch(/of 49\)|Missing \d+ facts?/);
   });
 
   it("shows a link result with what we read, two blocks side by side, and errors next to the form", async () => {

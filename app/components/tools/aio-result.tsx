@@ -6,10 +6,11 @@
 import { ResultHeading, SampleLabel, StatusChip, ToolError } from "../tool-ui";
 import { formatUpdated } from "../../lib/tools/format";
 import { toolBySlug } from "../../lib/tools/registry";
-import { bestRank, isCited, meaningLines, sameSite, yourSiteLine, type AioMatch, type AioResult } from "../../lib/tools/aio";
+import { citedAs, meaningLines, sameSite, sourceRank, yourSiteLine, type AioMatch, type AioResult } from "../../lib/tools/aio";
 import {
   ALSO_RANKS,
   CITED_MARK,
+  CITED_SITE_MARK,
   MEANING,
   MEANING_HEADING,
   NEW_TAB,
@@ -17,6 +18,7 @@ import {
   OVERVIEW,
   PAA_HEADING,
   PAA_LINK,
+  SITE_RANKS,
   SMALL_PRINT,
   SOURCES_HEADING,
   SOURCE_TYPE_CHIPS,
@@ -99,7 +101,8 @@ export function AioResultView({
               {result.sources.length ? (
                 <ol className="tl-aio-sources">
                   {result.sources.map((s, i) => {
-                    const rank = bestRank(result, s.domain);
+                    // The exact page first; a match on the website only is worded as the site ranking.
+                    const rank = sourceRank(result, s);
                     return (
                       <li key={`${i}-${s.url}`} className={`tl-aio-source${mine(s.domain) ? " is-mine" : ""}`}>
                         <span className="tl-aio-num" aria-hidden="true">
@@ -111,7 +114,9 @@ export function AioResultView({
                               {s.domain}
                             </OutLink>
                             <StatusChip tone="neutral">{SOURCE_TYPE_CHIPS[s.type ?? "other"]}</StatusChip>
-                            {rank ? <span className="tl-aio-tag">{ALSO_RANKS(rank)}</span> : null}
+                            {rank ? (
+                              <span className={`tl-aio-tag${rank.samePage ? "" : " is-site"}`}>{rank.samePage ? ALSO_RANKS(rank.rank) : SITE_RANKS(rank.rank)}</span>
+                            ) : null}
                             {mine(s.domain) ? <StatusChip tone="good">{YOUR_SITE.label}</StatusChip> : null}
                           </p>
                           {s.title && s.title !== s.domain ? <p className="tl-aio-title">{s.title}</p> : null}
@@ -152,19 +157,22 @@ export function AioResultView({
           {result.organic.length ? (
             <section className="tl-aio-sec" aria-labelledby="aio-organic">
               <h3 className="ck-h3" id="aio-organic">
-                {ORGANIC_HEADING}
+                {ORGANIC_HEADING(result.organic.length)}
               </h3>
               <ol className="tl-aio-organic">
-                {result.organic.map((o) => (
-                  <li key={`${o.position}-${o.url}`}>
-                    <span className="tl-aio-rank">#{o.position}</span>
-                    <OutLink href={o.url} className="tl-aio-domain tl-url">
-                      {o.domain}
-                    </OutLink>
-                    {isCited(result, o.domain) ? <span className="tl-aio-tag is-cited">{CITED_MARK}</span> : null}
-                    {mine(o.domain) ? <StatusChip tone="good">{YOUR_SITE.label}</StatusChip> : null}
-                  </li>
-                ))}
+                {result.organic.map((o) => {
+                  const cited = citedAs(result, o);
+                  return (
+                    <li key={`${o.position}-${o.url}`}>
+                      <span className="tl-aio-rank">#{o.position}</span>
+                      <OutLink href={o.url} className="tl-aio-domain tl-url">
+                        {o.domain}
+                      </OutLink>
+                      {cited ? <span className={`tl-aio-tag is-cited${cited === "page" ? "" : " is-site"}`}>{cited === "page" ? CITED_MARK : CITED_SITE_MARK}</span> : null}
+                      {mine(o.domain) ? <StatusChip tone="good">{YOUR_SITE.label}</StatusChip> : null}
+                    </li>
+                  );
+                })}
               </ol>
             </section>
           ) : null}

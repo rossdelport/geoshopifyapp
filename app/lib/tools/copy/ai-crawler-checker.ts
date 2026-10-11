@@ -181,7 +181,7 @@ export interface HowItem {
 export const howItWorks = (checked: string): HowItem[] => [
   // Google reads the first 500 KiB: Google's robots.txt rules, "File format" (read 11 Oct 2026).
   {
-    text: "We fetch /robots.txt from your site's main address, following up to 4 redirects, and read up to 512 KB of it. Google reads the first 500 KB.",
+    text: "We find your home page first (yourstore.com often sends visitors to www.yourstore.com), then fetch /robots.txt from that address, following up to 4 redirects, and read up to 512 KB of it. Google reads the first 500 KB.",
     source: GOOGLE_ROBOTS_SPEC,
   },
   {

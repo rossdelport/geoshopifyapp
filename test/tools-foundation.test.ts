@@ -24,7 +24,9 @@ const html = await import("../app/lib/tools/html");
 const { publicHostRedirect, requestHost } = await import("../app/lib/tools/host.server");
 const { allowedPost, honeypot, readToolForm, startToolPost, CROSS_SITE_COPY, TOO_BIG_COPY } = await import("../app/lib/tools/guard.server");
 const limits = await import("../app/lib/tools/limits.server");
-const { fetchSiteFile, outcomeMessage, OUTCOME_COPY, HTML_ACCEPT } = await import("../app/lib/tools/fetch.server");
+const { fetchSiteFile, outcomeMessage, OUTCOME_COPY, HTML_ACCEPT, looksLikeRedirectPage, movedNote, resolveSiteHome, twinHost, MOVED_COPY } = await import(
+  "../app/lib/tools/fetch.server"
+);
 const ui = await import("../app/components/tool-ui");
 const { SiteFooter } = await import("../app/components/site-footer");
 const { CheckShell } = await import("../app/components/check-ui");
@@ -621,6 +623,136 @@ describe("fetchSiteFile", () => {
     expect(outcomeMessage({ kind: "server-error", status: 502 })).toBe("Your site answered with a server error (502). Try again in a few minutes.");
     expect(outcomeMessage({ kind: "missing", status: 404 })).toBeNull();
     expect(Object.values(OUTCOME_COPY).join(" ")).not.toMatch(/\u2014|\s\u2013\s/);
+  });
+});
+
+describe("resolveSiteHome: where a site really lives", () => {
+  type Outcome = Awaited<ReturnType<typeof fetchSiteFile>>;
+  /** Real pages captured on 11 Oct 2026 (each file says where from). */
+  const hosts = (name: string) => read(`test/fixtures/tools/hosts-${name}`);
+  const page = (url: string, text: string): Outcome => ({ kind: "ok", status: 200, url, text, html: true });
+  const HOME = "<!doctype html><html><head><title>Cedar &amp; Co</title></head><body><a href='/products/oil'>Oil</a> Beard oil made in small batches.</body></html>";
+  /** A fake guarded fetch: each address's answer (after its redirects), and every address asked for. */
+  function site(answers: Record<string, Outcome | Error>) {
+    const calls: string[] = [];
+    const fetch = async (url: string): Promise<Outcome> => {
+      calls.push(url);
+      const a = answers[url] ?? { kind: "missing", status: 404 };
+      if (a instanceof Error) throw a;
+      return a;
+    };
+    return { fetch, calls };
+  }
+  const typed = (host: string, scheme = "https") => ({ origin: `${scheme}://${host}`, host });
+
+  it("spots a page that only sends visitors on, and never a real home page", () => {
+    expect(looksLikeRedirectPage(hosts("gymshark-redirect-page.html"))).toBe(true);
+    expect(looksLikeRedirectPage(hosts("gymshark-www-home.html"))).toBe(false);
+    expect(looksLikeRedirectPage(hosts("allbirds-home.html"))).toBe(false);
+    expect(looksLikeRedirectPage('<html><head><meta http-equiv="Refresh" content="0; url=https://www.a.example/"></head></html>')).toBe(true);
+    expect(looksLikeRedirectPage("<html><head><title>Redirecting…</title></head><body></body></html>")).toBe(true);
+    expect(looksLikeRedirectPage(HOME)).toBe(false);
+    const long = `<html><body><p>${"Our redirecting guide explains everything about shoes. ".repeat(10)}</p></body></html>`;
+    expect(looksLikeRedirectPage(long)).toBe(false);
+    // A page made of nothing but "<" is read in one pass.
+    const started = performance.now();
+    looksLikeRedirectPage(`<body>${"<".repeat(1_000_000)}`);
+    expect(performance.now() - started).toBeLessThan(500);
+  });
+
+  it("knows a host's www twin, and that a myshopify.com address has none", () => {
+    expect(twinHost("gymshark.com")).toBe("www.gymshark.com");
+    expect(twinHost("www.gymshark.com")).toBe("gymshark.com");
+    expect(twinHost("brand.co.uk")).toBe("www.brand.co.uk");
+    expect(twinHost("cedar.myshopify.com")).toBeNull();
+    expect(twinHost("www.com")).toBeNull();
+  });
+
+  it("reads the typed address when it is the site: one read, no note", async () => {
+    const s = site({ "https://cedar.example/": page("https://cedar.example/", HOME) });
+    const where = await resolveSiteHome(typed("cedar.example"), s.fetch);
+    expect(where).toMatchObject({ origin: "https://cedar.example", host: "cedar.example", moved: null });
+    expect(where.home).toMatchObject({ kind: "ok", url: "https://cedar.example/" });
+    expect(s.calls).toEqual(["https://cedar.example/"]);
+    expect(movedNote("cedar.example", where)).toBeNull();
+  });
+
+  it("follows the site's own redirect to www, and says so in one line", async () => {
+    const s = site({ "https://cedar.example/": page("https://www.cedar.example/", HOME) });
+    const where = await resolveSiteHome(typed("cedar.example"), s.fetch);
+    expect(where).toMatchObject({ origin: "https://www.cedar.example", host: "www.cedar.example", moved: { how: "redirect" } });
+    expect(s.calls).toEqual(["https://cedar.example/"]);
+    expect(movedNote("cedar.example", where)).toBe("cedar.example sends visitors to www.cedar.example, so we checked that address.");
+  });
+
+  it("skips gymshark.com's checkout domain and its Redirecting... page for the store at www (11 Oct 2026)", async () => {
+    const s = site({
+      "https://gymshark.com/": page("https://us.checkout.gymshark.com/", hosts("gymshark-redirect-page.html")),
+      "https://www.gymshark.com/": page("https://www.gymshark.com/", hosts("gymshark-www-home.html")),
+    });
+    const where = await resolveSiteHome(typed("gymshark.com"), s.fetch);
+    expect(where).toMatchObject({ origin: "https://www.gymshark.com", host: "www.gymshark.com", moved: { how: "twin", landed: "us.checkout.gymshark.com", redirectPage: true } });
+    expect(where.home).toMatchObject({ kind: "ok", url: "https://www.gymshark.com/" });
+    expect(s.calls).toEqual(["https://gymshark.com/", "https://www.gymshark.com/"]);
+    expect(movedNote("gymshark.com", where)).toBe("gymshark.com goes to us.checkout.gymshark.com, so we checked www.gymshark.com, where your home page is.");
+  });
+
+  it("tries www when the typed host itself shows a redirect page", async () => {
+    const stub = '<html><head><meta http-equiv="refresh" content="0;url=https://www.cedar.example/"></head><body>Redirecting...</body></html>';
+    const s = site({ "https://cedar.example/": page("https://cedar.example/", stub), "https://www.cedar.example/": page("https://www.cedar.example/", HOME) });
+    const where = await resolveSiteHome(typed("cedar.example"), s.fetch);
+    expect(where.origin).toBe("https://www.cedar.example");
+    expect(movedNote("cedar.example", where)).toBe("cedar.example shows a redirect page, so we checked www.cedar.example, where your home page is.");
+  });
+
+  it("stays where the typed address went when www doesn't answer with a real home page on the same site", async () => {
+    const landed = page("https://checkout.cedar.example/", hosts("gymshark-redirect-page.html"));
+    for (const www of [
+      { kind: "missing", status: 404 } as Outcome,
+      { kind: "unreachable" } as Outcome,
+      new Error("This address points to a private network: 10.0.0.1"),
+      page("https://checkout.cedar.example/", hosts("gymshark-redirect-page.html")), // back to the checkout domain
+      page("https://www.cedar.example/", "<html><body>Redirecting...</body></html>"), // another redirect page
+      page("https://other.example/", HOME), // another site
+      { kind: "ok", status: 200, url: "https://www.cedar.example/", text: "plain text", html: false } as Outcome,
+    ]) {
+      const s = site({ "https://cedar.example/": landed, "https://www.cedar.example/": www });
+      const where = await resolveSiteHome(typed("cedar.example"), s.fetch);
+      expect(where.origin).toBe("https://checkout.cedar.example");
+      expect(where.home).toBe(landed);
+      expect(s.calls).toHaveLength(2);
+      expect(movedNote("cedar.example", where)).toBe("cedar.example sends visitors to checkout.cedar.example, so we checked that address.");
+    }
+  });
+
+  it("follows a myshopify.com address to the store's own domain without trying www", async () => {
+    const s = site({ "https://cedar.myshopify.com/": page("https://cedar.example/", HOME) });
+    const where = await resolveSiteHome(typed("cedar.myshopify.com"), s.fetch);
+    expect(where).toMatchObject({ origin: "https://cedar.example", host: "cedar.example", moved: { how: "redirect" } });
+    expect(s.calls).toEqual(["https://cedar.myshopify.com/"]);
+  });
+
+  it("keeps the typed address when its home page can't be read, and never throws", async () => {
+    for (const answer of [{ kind: "missing", status: 404 } as Outcome, { kind: "turned-away", status: 403 } as Outcome, new Error("getaddrinfo ENOTFOUND")]) {
+      const s = site({ "https://cedar.example/": answer });
+      const where = await resolveSiteHome(typed("cedar.example"), s.fetch);
+      expect(where.origin).toBe("https://cedar.example");
+      expect(where.moved).toBeNull();
+      expect(s.calls).toEqual(["https://cedar.example/"]);
+    }
+    const s = site({});
+    expect((await resolveSiteHome(typed("cedar.example"), s.fetch)).home).toEqual({ kind: "missing", status: 404 });
+  });
+
+  it("asks for www with the scheme that was typed", async () => {
+    const s = site({ "http://cedar.example/": page("http://checkout.cedar.example/", "<html><title>Redirecting</title></html>") });
+    await resolveSiteHome(typed("cedar.example", "http"), s.fetch);
+    expect(s.calls).toEqual(["http://cedar.example/", "http://www.cedar.example/"]);
+  });
+
+  it("words the note plainly, with no em dash", () => {
+    const all = [MOVED_COPY.redirect("a.example", "www.a.example"), MOVED_COPY.otherHost("a.example", "b.a.example", "www.a.example"), MOVED_COPY.redirectPage("a.example", "www.a.example")];
+    for (const line of all) expect(line).not.toMatch(/\u2014|\s\u2013\s/);
   });
 });
 

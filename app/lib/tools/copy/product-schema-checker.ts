@@ -105,8 +105,23 @@ export const WHERE = {
 } as const;
 
 export const FOUND = {
-  group: (variants: number, where: string) =>
-    variants ? `Found a ProductGroup with ${plural(variants, "variant")} in ${where}.` : `Found a ProductGroup with no variants in ${where}.`,
+  /** `linked`: variants written only as a link to their own page elsewhere (Google's multi-page pattern). */
+  group: (variants: number, where: string, linked = 0) =>
+    linked
+      ? variants
+        ? `Found a ProductGroup with ${plural(variants, "variant")} in ${where}, plus ${plural(linked, "linked variant")} on other pages.`
+        : `Found a ProductGroup in ${where} with no variants of its own, only ${plural(linked, "link")} to variants on other pages.`
+      : variants
+        ? `Found a ProductGroup with ${plural(variants, "variant")} in ${where}.`
+        : `Found a ProductGroup with no variants in ${where}.`,
+  // Google's product variants guide (updated 8 Sep 2026), multi-page sites: the group on each page has "a full
+  // definition of the variants on the page as well as a variant with only the url property to link to the
+  // variants on the other page, which helps Google find your variants", and "each page must have full and
+  // self-contained markup for the entities defined on that page".
+  linked: (linked: number, variants: number) =>
+    variants
+      ? `${linked === 1 ? "The linked variant only gives the link to its own page" : `The ${linked} linked variants only give the link to their own page`}, like another colour. That's how Google suggests doing it, so we check the ${plural(variants, "variant")} on this page.`
+      : "Google asks each page to fully describe the variants it sells: a name, image, price and currency for each.",
   product: (offers: number, where: string) => (offers > 1 ? `Found a Product with ${plural(offers, "offer")} in ${where}.` : `Found a Product in ${where}.`),
   listing: (products: number, where: string) => `Found ${plural(products, "product")} in ${where}. The facts below are for the most complete one.`,
   agreeing: (more: number) =>
@@ -299,6 +314,10 @@ export const PROBLEM = {
   priceFormat: (raw: string) =>
     `The price is written as "${raw}". Google needs a plain number like 24.00: no currency sign, no comma, and the currency in its own field.`,
   currencyFormat: (raw: string) => `The currency is written as "${raw}". Google needs a 3-letter code like USD or EUR.`,
+  // Merchant listing guide (updated 8 Sep 2026): the Offer needs `price` or `priceSpecification.price`; an
+  // AggregateOffer's lowPrice is only listed for product snippets (facts-2026.md 2.2).
+  priceRange: (low: string) =>
+    `Your product data gives a price range ("from ${low}") instead of a price. For product results on store pages, Google needs each offer to have its own price.`,
   barcodes: (inStore: number, variants: number, inData: number) =>
     `Your store has a barcode on ${inStore} of ${plural(variants, "variant")}, but the product data includes ${inData ? inData : "none"}. Your theme may leave barcodes out of its product data.`,
   microdata: "This page describes the product with microdata. This tool reads JSON-LD only, which is what Shopify themes use.",

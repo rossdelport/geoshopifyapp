@@ -82,7 +82,10 @@ const idOf = (node: Obj) => (typeof node["@id"] === "string" && node["@id"] ? no
 export interface ProductEntity {
   kind: "ProductGroup" | "Product";
   node: Obj;
+  /** The variants described on this page: the ones the checks read. */
   variants: Obj[];
+  /** Variants that only link to their own page elsewhere, like another colour (Google's multi-page pattern): counted, not checked. */
+  linked: number;
 }
 
 export interface Extracted {
@@ -249,8 +252,59 @@ function tooDeep(raw: string): boolean {
   return false;
 }
 
-/** Find the product data: JSON-LD blocks (from HTML) or the pasted JSON-LD, parsed and walked. */
-export function extractNodes(input: string, source: InputSource = detectSource(input)): Extracted {
+// Google's product variants guide (updated 8 Sep 2026), multi-page sites: the group on each page has "a full
+// definition of the variants on the page as well as a variant with only the url property to link to the
+// variants on the other page, which helps Google find your variants". Its examples write that link as
+// { "url": ... } inside hasVariant, or as a Product with only isVariantOf and url.
+/** What a link to a variant on another page may carry besides its url. */
+const LINK_KEYS = new Set(["@context", "@type", "@id", "url", "name", "sku", "isVariantOf", "inProductGroupWithID"]);
+/** A variant that only links to its own page: a url, maybe a name or SKU, and nothing else (no offer, no image). */
+function isLinkOnly(n: Obj): boolean {
+  if (textOf(n.url, 1_000) === null) return false;
+  for (const k in n) if (!LINK_KEYS.has(k)) return false; // stops at the first other fact, however many keys
+  return true;
+}
+
+/** A link's page: its path without the query, from /products/ on ("/en-au/collections/x/products/y?v=1" -> "/products/y"). */
+function pagePath(u: unknown): string | null {
+  const s = textOf(u, 1_000);
+  if (!s) return null;
+  try {
+    const path = new URL(s, "https://page.invalid").pathname.toLowerCase().replace(/\/+$/, "") || "/";
+    const at = path.indexOf("/products/");
+    return at > 0 ? path.slice(at) : path;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Set a group's links to variants on other pages apart: they're counted, and the checks read the variants
+ * described on this page. A bare variant that links back to this page (the page we read, or a link one of its
+ * full variants uses) is a variant here with facts missing, so it stays.
+ */
+function splitLinked(e: ProductEntity, pageUrl: string | undefined) {
+  if (!e.variants.some(isLinkOnly)) return;
+  const here = new Set<string>();
+  const add = (u: unknown) => {
+    const p = pagePath(u);
+    if (p) here.add(p);
+  };
+  add(pageUrl);
+  for (const v of e.variants.filter((x) => !isLinkOnly(x)).slice(0, MAX_VARIANTS)) {
+    add(v.url);
+    for (const o of offersOf(v).slice(0, 5)) add(o.url);
+  }
+  const elsewhere = (v: Obj) => isLinkOnly(v) && !here.has(pagePath(v.url) ?? "");
+  e.linked = e.variants.filter(elsewhere).length;
+  e.variants = e.variants.filter((v) => !elsewhere(v));
+}
+
+/**
+ * Find the product data: JSON-LD blocks (from HTML) or the pasted JSON-LD, parsed and walked. `pageUrl` is the
+ * page we fetched (link mode), so a variant that links back to it isn't taken for a variant on another page.
+ */
+export function extractNodes(input: string, source: InputSource = detectSource(input), pageUrl?: string): Extracted {
   const text = input ?? "";
   const blocks = source === "json" ? [text] : jsonLdBlocks(text, 20);
   const w: Walk = { count: 0, ids: new Map(), groups: [], products: [], stubs: new Set(), inList: new Set(), others: new Set(), listed: 0, found: false };
@@ -277,15 +331,17 @@ export function extractNodes(input: string, source: InputSource = detectSource(i
   const groups = mergeSame(w.groups, w.stubs, groupKeys);
   const products = mergeSame(w.products, new Set(), productKeys);
   const used = new Set<Obj>();
-  const entities: ProductEntity[] = groups.merged.map((g) => ({ kind: "ProductGroup" as const, node: g, variants: [] as Obj[] }));
+  const entities: ProductEntity[] = groups.merged.map((g) => ({ kind: "ProductGroup" as const, node: g, variants: [] as Obj[], linked: 0 }));
   const entityOf = new Map<Obj, ProductEntity>(entities.map((e) => [e.node, e]));
 
-  // A group's own hasVariant list: Products, or { "@id" } references to Products elsewhere on the page.
+  // A group's own hasVariant list: Products, { "@id" } references to Products elsewhere on the page, or links
+  // to variants on other pages that have no @type at all (Google's example writes them as { "url": ... }).
   for (const e of entities) {
     for (const v of objs(e.node.hasVariant)) {
       const ref = idOf(v);
-      const node = isProductNode(v) ? v : ref ? w.ids.get(ref) : undefined;
-      if (!node || !isProductNode(node)) continue;
+      const found = isProductNode(v) ? v : ref ? w.ids.get(ref) : undefined;
+      const node = found && isProductNode(found) ? found : v["@type"] === undefined && isLinkOnly(v) ? v : undefined;
+      if (!node) continue;
       const mergedNode = products.byOriginal.get(node) ?? node;
       if (!e.variants.includes(mergedNode)) e.variants.push(mergedNode);
       used.add(mergedNode);
@@ -303,7 +359,8 @@ export function extractNodes(input: string, source: InputSource = detectSource(i
     if (!e.variants.includes(p)) e.variants.push(p);
     used.add(p);
   }
-  for (const p of products.merged) if (!used.has(p)) entities.push({ kind: "Product", node: p, variants: [] });
+  for (const e of entities) splitLinked(e, pageUrl);
+  for (const p of products.merged) if (!used.has(p)) entities.push({ kind: "Product", node: p, variants: [], linked: 0 });
 
   // Entities whose every block sits inside an ItemList: a collection, or a "related products" list.
   const direct = new Set<Obj>();
@@ -387,9 +444,11 @@ export interface Problem {
 export interface SchemaReport {
   source: InputSource;
   kind: "ProductGroup" | "Product" | null;
-  /** Variants (a group) or offers (a product), all of them; the checks read the first MAX_VARIANTS. */
+  /** Variants on this page (a group) or offers (a product), all of them; the checks read the first MAX_VARIANTS. */
   units: number;
   unitNoun: "variant" | "offer";
+  /** A group's links to variants on other pages (Google's multi-page pattern): counted, not checked. */
+  linked: number;
   verdict: { state: VerdictState; headline: string };
   /** One line: what we found and where. */
   found: string;
@@ -412,10 +471,15 @@ interface Unit {
 
 const offersOf = (node: Obj): Obj[] => objs(node.offers, 50);
 
-const priceRaw = (o: Obj | undefined): unknown => {
+/**
+ * The offer's price, or with `range` its lowest price (an AggregateOffer's lowPrice) when it has no price of its
+ * own. Google's merchant listing guide needs `price` or `priceSpecification.price` on the Offer; lowPrice is for
+ * product snippets, so the required check reads the price alone and comparisons may use the range.
+ */
+const priceRaw = (o: Obj | undefined, range = true): unknown => {
   if (!o) return null;
   const spec = objs(o.priceSpecification, 10).find((s) => s.price !== undefined && s.price !== null && s.price !== "");
-  const v = o.price ?? spec?.price ?? o.lowPrice;
+  const v = o.price ?? spec?.price ?? (range ? o.lowPrice : undefined);
   return v === undefined || v === "" ? null : v;
 };
 const currencyRaw = (o: Obj | undefined): unknown => {
@@ -424,8 +488,8 @@ const currencyRaw = (o: Obj | undefined): unknown => {
   const v = o.priceCurrency ?? spec?.priceCurrency;
   return v === undefined || v === "" ? null : v;
 };
-/** The unit's main offer: the first with a price, else the first. */
-const mainOffer = (u: Unit): Obj | undefined => u.offers.find((o) => priceRaw(o) !== null) ?? u.offers[0];
+/** The unit's main offer: the first with a price, else the first with a price range, else the first. */
+const mainOffer = (u: Unit): Obj | undefined => u.offers.find((o) => priceRaw(o, false) !== null) ?? u.offers.find((o) => priceRaw(o) !== null) ?? u.offers[0];
 
 /** A price Google can read: a number, or a string of digits with an optional decimal point. */
 function readPrice(v: unknown): { ok: true; n: number; text: string } | { ok: false; text: string } | null {
@@ -611,6 +675,7 @@ export function evaluate(x: Extracted, record: ShopifyRecord | null = null, opts
       kind: null,
       units: 0,
       unitNoun: "offer",
+      linked: 0,
       verdict,
       found: pasted
         ? x.invalid
@@ -632,6 +697,8 @@ export function evaluate(x: Extracted, record: ShopifyRecord | null = null, opts
   const others = pool.filter((e) => e !== main);
   if (own.length && x.fromList.size) notes.push(FOUND.listed(x.fromList.size));
   const { units, total, noun } = unitsOf(main);
+  const linked = main.kind === "ProductGroup" ? main.linked : 0;
+  if (linked) notes.unshift(FOUND.linked(linked, total));
   if (main.kind === "ProductGroup" && total > MAX_VARIANTS) problems.push({ id: "many-variants", tone: "info", text: PROBLEM.manyVariants(total) });
 
   // Other product blocks: do they agree with the one we report on? (A collection page lists many on purpose.)
@@ -697,12 +764,13 @@ export function evaluate(x: Extracted, record: ShopifyRecord | null = null, opts
     kind: main.kind,
     units: total,
     unitNoun: noun,
+    linked,
     verdict,
     found:
       listing && pool.length > 1
         ? FOUND.listing(pool.length, where)
         : main.kind === "ProductGroup"
-          ? FOUND.group(total, where)
+          ? FOUND.group(total, where, linked)
           : FOUND.product(total, where),
     notes,
     fields,
@@ -769,15 +837,18 @@ function checkFields(main: ProductEntity, units: Unit[], all: ProductEntity[], p
 
   // Price and currency: a value Google can't read ("$24.00", "dollars") is its own status and a problem.
   let badPrice: string | null = null;
+  // An offer with only a price range (an AggregateOffer's lowPrice): enough for product snippets, not for stores.
+  let rangeOnly: string | null = null;
   const prices: { n: number; text: string }[] = [];
   let badCurrency: string | null = null;
   const currencies: string[] = [];
   let curFound = 0;
   for (const u of units) {
     const o = mainOffer(u);
-    const p = readPrice(priceRaw(o));
+    const p = readPrice(priceRaw(o, false));
     if (p?.ok) prices.push(p);
     else if (p) badPrice ??= p.text;
+    else rangeOnly ??= readPrice(priceRaw(o))?.text ?? null;
     const c = readCurrency(currencyRaw(o));
     if (c?.ok) {
       curFound++;
@@ -789,6 +860,7 @@ function checkFields(main: ProductEntity, units: Unit[], all: ProductEntity[], p
     problems.push({ id: "price-format", tone: "bad", text: PROBLEM.priceFormat(badPrice) });
   } else {
     add({ id: "price", group: "required", status: statusOf(prices.length, of), value: priceText(prices, currencies) ?? undefined, found: prices.length, of });
+    if (rangeOnly !== null) problems.push({ id: "price-range", tone: "bad", text: PROBLEM.priceRange(rangeOnly) });
   }
   if (badCurrency !== null) {
     add({ id: "currency", group: "required", status: "unreadable", value: badCurrency });
@@ -861,7 +933,7 @@ function audienceText(v: unknown): string {
 
 /** Read and check pasted text or a fetched page in one step. */
 export function checkSchema(text: string, opts: { source?: InputSource; record?: ShopifyRecord | null; url?: string } = {}): SchemaReport {
-  return evaluate(extractNodes(text, opts.source ?? detectSource(text)), opts.record ?? null, { url: opts.url });
+  return evaluate(extractNodes(text, opts.source ?? detectSource(text), opts.url), opts.record ?? null, { url: opts.url });
 }
 
 /** How many facts Google needs are missing (tests and the page's announcement). */

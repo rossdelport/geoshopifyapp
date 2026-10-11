@@ -479,7 +479,7 @@ export interface CrawlerReport {
   /** Every bot in TOOL_BOTS order. */
   bots: BotRow[];
   notes: ReportNote[];
-  /** Sitemap lines in the file (at most 10). */
+  /** Sitemap addresses in the file, each once (at most 10). */
   sitemaps: string[];
   hasRules: boolean;
   /** Directives to delete so every bot that affects AI answers can read every tested page, in file order. */
@@ -624,10 +624,10 @@ function runCheck(text: string, paths: TestedPath[], m: Matcher): CrawlerReport 
   }
 
   const hasRules = groups.some((g) => g.rules.length > 0);
-  const sitemaps = entries
-    .filter((e) => e.key === "sitemap" && e.value)
+  // Each address once: a file that repeats its Sitemap line in every group (www.gymshark.com has it 3 times) lists it once.
+  const sitemaps = [...new Set(entries.filter((e) => e.key === "sitemap" && e.value).map((e) => e.value))]
     .slice(0, MAX_SITEMAPS)
-    .map((e) => (e.value.length > 300 ? `${e.value.slice(0, 300)}…` : e.value));
+    .map((v) => (v.length > 300 ? `${v.slice(0, 300)}…` : v));
   const notes: ReportNote[] = [];
   if (!hasRules) notes.push({ id: "no-rules", tone: "info", text: NOTE_COPY.noRules });
   for (const o of orphans.slice(0, MAX_ORPHAN_NOTES)) notes.push({ id: "orphan", tone: "info", text: NOTE_COPY.orphan(o.line) });
@@ -647,8 +647,12 @@ export type RobotsStatus = "file" | "no-file" | "turned-away" | "server-error";
 
 /** A fetched site's result (crawler.server.ts checkSite), as the page shows it. */
 export interface SiteCheck {
+  /** The host we read (the store's own address when the typed one sent us elsewhere). */
   host: string;
+  /** The robots.txt address we read (after redirects), or tried when there was no file. */
   robotsUrl: string;
+  /** "gymshark.com goes to us.checkout.gymshark.com, so we checked www.gymshark.com, ..." when we read another host than the one typed. */
+  hostNote?: string;
   status: RobotsStatus;
   /** The status code when it wasn't a file (404, 403, 503), or when the address showed a web page. */
   httpStatus?: number;
@@ -680,7 +684,11 @@ export interface Verdict {
   headline: string;
   /** The line about training bots. */
   training: string;
-  /** The file is Shopify's standard robots.txt and nothing that matters is blocked. */
+  /**
+   * The file is Shopify's standard robots.txt (the 2026 default) and nothing that matters is blocked. Never
+   * for the older layout: Shopify's standard file is the new one now, and a store still serving the old
+   * layout has usually edited it (and we can't tell which lines are Shopify's).
+   */
   shopifyStandard: boolean;
   blocked: number;
   trainingBlocked: number;
@@ -708,7 +716,7 @@ export function verdict(report: CrawlerReport): Verdict {
     tone: blocked ? "bad" : "good",
     headline: blocked ? VERDICT_COPY.blocked(blocked) : VERDICT_COPY.allClear,
     training: trainingBlocked ? VERDICT_COPY.trainingBlocked(trainingBlocked) : VERDICT_COPY.trainingAllowed,
-    shopifyStandard: isShopifyDefault(report.kind) && !blocked,
+    shopifyStandard: report.kind === "shopify-new-default" && !blocked,
     blocked,
     trainingBlocked,
   };

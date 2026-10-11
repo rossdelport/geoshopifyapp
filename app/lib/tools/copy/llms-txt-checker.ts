@@ -186,7 +186,7 @@ export const WHAT_IT_CHECKS = [
 ];
 
 export const HOW_IT_WORKS = [
-  "We fetch /llms.txt, /llms-full.txt and /agents.md from your site's main address, following up to 4 redirects, up to 512 KB each, and read your home page for the starter file.",
+  "We find your home page first (yourstore.com often sends visitors to www.yourstore.com), then fetch /llms.txt, /llms-full.txt and /agents.md from that address, following up to 4 redirects, up to 512 KB each, and read the home page for the starter file.",
   "We check /llms.txt against version 2 of the llmstxt.org proposal (August 2026): a title line first, then an optional > summary, optional notes, then ## sections that list links as - [name](url): notes. Checks marked 'our tip' are our own advice.",
   "/llms-full.txt isn't part of the llmstxt.org format, so we only say whether it's there.",
   "We spot Shopify's automatic file by its first line (# Agent Instructions) and its links for shopping agents.",
