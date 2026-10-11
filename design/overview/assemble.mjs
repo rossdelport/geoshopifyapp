@@ -38,18 +38,38 @@ if (!only && outName === 'index.html') {
   const root = path.join(dir, '..', '..');
   const head = out.slice(0, out.indexOf('<div class="page">')).trim();
   const body = out.slice(out.indexOf('<div class="page">'));
+  // The page head for search engines, link previews and AI assistants: one canonical address (www and the
+  // Railway address also serve this page), Open Graph tags, and who GEO is as JSON-LD. The Organization node is
+  // the same as ORG_NODE in app/lib/tools/seo.ts (test/tools-foundation.test.ts checks they match).
+  const title = 'GEO · Get your products recommended by AI';
+  const description = 'Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO helps your Shopify products get recommended in those AI answers, then counts the orders it can trace back to AI.';
+  const org = { '@type': 'Organization', '@id': 'https://usegeo.app/#org', name: 'GEO', alternateName: 'GEO for Shopify', url: 'https://usegeo.app/', logo: 'https://usegeo.app/apple-touch-icon.png' };
+  const website = { '@type': 'WebSite', '@id': 'https://usegeo.app/#website', name: 'GEO', alternateName: 'GEO for Shopify', url: 'https://usegeo.app/', publisher: { '@id': 'https://usegeo.app/#org' } };
+  const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': [org, website] }).replaceAll('<', '\\u003c');
   const site = `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO helps your Shopify products get recommended in those AI answers, then counts the orders it can trace back to AI.">
+<meta name="description" content="${description}">
+<link rel="canonical" href="https://usegeo.app/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GEO">
+<meta property="og:title" content="${title}">
+<meta property="og:description" content="${description}">
+<meta property="og:url" content="https://usegeo.app/">
+<meta property="og:image" content="https://usegeo.app/og/home.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A small clay shop with a star in a speech bubble above it">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">${jsonLd}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>[hidden]:not([hidden="until-found"]){display:none!important}</style>
 <script>window.GEO_LIVE=true</script>
-${head.replace('<title>GEO Overview</title>', '<title>GEO · Get your products recommended by AI</title>')}
+${head.replace('<title>GEO Overview</title>', `<title>${title}</title>`)}
 </head>
 <body>
 ${body}</body>

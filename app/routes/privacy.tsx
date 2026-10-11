@@ -1,13 +1,33 @@
-import type { MetaFunction } from "react-router";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { useLoaderData } from "react-router";
 import { RETENTION } from "../lib/retention.server";
 import { senderIdentity } from "../lib/email.server";
+import { publicHostRedirect } from "../lib/tools/host.server";
+import { pageMeta } from "../lib/tools/seo";
+import { PRIVACY_UPDATED } from "../lib/tools/site";
+import { formatUpdated } from "../lib/tools/format";
+import { SiteFooter } from "../components/site-footer";
 
 // Public privacy policy (also used for the Shopify App Store listing and the data protection form).
+// After a real change, update PRIVACY_UPDATED in app/lib/tools/site.ts (shown below and in the sitemap).
 
-export const meta: MetaFunction = () => [{ title: "GEO privacy policy" }];
+export const meta: MetaFunction = () =>
+  pageMeta({
+    path: "/privacy",
+    title: "GEO privacy policy",
+    description: "What data GEO collects and why, how long we keep it, and who helps us run GEO, its free product check and its free tools.",
+    image: "/og/home.png",
+    imageAlt: "A small clay shop with a star in a speech bubble above it",
+  });
 
-export const loader = async () => ({
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  // One public address: www.usegeo.app and the Railway address send visitors to https://usegeo.app.
+  const moved = publicHostRedirect(request);
+  if (moved) throw moved;
+  return privacyData();
+};
+
+const privacyData = () => ({
   contact: process.env.SUPPORT_EMAIL ?? null,
   // Who runs GEO (GEO_LEGAL_NAME, GEO_ABN, GEO_POSTAL_ADDRESS): the same words as every email's footer.
   owner: (({ legalName, abn, postal }) => (legalName ? { legalName, abn, postal } : null))(senderIdentity()),
@@ -24,12 +44,22 @@ const page = { maxWidth: 720, margin: "0 auto", padding: "48px 20px 80px", fontF
 const h2 = { fontSize: 20, margin: "36px 0 8px", color: "#0b0c2b" };
 
 export default function Privacy() {
+  return (
+    <>
+      <PrivacyText />
+      {/* The same footer as the free tools and the check pages: every free tool, the hub and the main site. */}
+      <SiteFooter />
+    </>
+  );
+}
+
+function PrivacyText() {
   const { contact, owner, inactiveYears, visitIdDays, uninstalledDays, publicCheckDays, checkIpHours, reportEmailDays, unsubscribedDays } =
     useLoaderData<typeof loader>();
   return (
     <main style={page}>
       <h1 style={{ fontSize: 34, color: "#0b0c2b", marginBottom: 4 }}>GEO privacy policy</h1>
-      <p style={{ color: "#707075", marginTop: 0 }}>Last updated 11 October 2026</p>
+      <p style={{ color: "#707075", marginTop: 0 }}>Last updated {formatUpdated(PRIVACY_UPDATED)}</p>
 
       <p>
         GEO is a Shopify app that shows store owners how AI assistants (like ChatGPT, Gemini and Perplexity) recommend
@@ -101,6 +131,32 @@ export default function Privacy() {
         We never sell your email address. We share it only with Resend, which sends our emails for us. We don&apos;t
         upload it to Facebook, Google or any other advertising service.
       </p>
+
+      <h2 style={h2}>Free tools</h2>
+      <p>
+        Our free tools at <a href="/tools">usegeo.app/tools</a> work without an account.
+      </p>
+      <ul>
+        <li>
+          Tools that run in your browser (the FAQ Schema Generator, the AI Bot Checker with pasted text, and pasted
+          robots.txt, llms.txt or product data) don&apos;t send what you type to us. If JavaScript is off in your
+          browser, the form is sent to our server once to build the result, and we don&apos;t keep it.
+        </li>
+        <li>
+          When you enter a web address, our server fetches public files from that site (such as robots.txt, llms.txt or
+          a product page) to check them. We don&apos;t keep the files.
+        </li>
+        <li>
+          The AI Overview Checker sends your search phrase to our data provider, Treg, which passes it to a Google
+          results service (Crawl4AI, or AnyAPI as a backup). We keep the result in memory for up to 24 hours so a repeat
+          search is fast. If you add your website, we only use it to compare with the results.
+        </li>
+        <li>
+          To stop abuse we count requests using a scrambled (hashed) version of your IP address, held in memory and
+          cleared within a day. We record what each search cost us, without your IP address or your search.
+        </li>
+      </ul>
+      <p>The AI Visibility Checker is our free product check, described above.</p>
 
       <h2 style={h2}>Why we use it</h2>
       <p>

@@ -1,0 +1,82 @@
+/* Product Schema Checker (/tools/product-schema-checker). Loaded after check.css and tools.css; everything is
+   prefixed tl-schema- and neutral (white and warm cards, grey chips, navy links): purple stays on the band,
+   the form and the one button card (docs/copy-deck.md 14b). Long values, links and code wrap or scroll inside
+   their card, never the page. */
+
+/* the paste card: the label, the code box and its button */
+.tl-schema-paste form { display: flex; flex-direction: column; gap: 12px; }
+.tl-schema-paste .tl-textarea-code { min-height: 260px; }
+
+/* the report */
+.tl-schema-report { gap: 24px; }
+.tl-schema-verdict { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.tl-schema-verdict .tl-result-h { margin-top: 2px; }
+.tl-schema-lead { max-width: 760px; font-size: 16px; line-height: 1.6; color: var(--ink-2); }
+.tl-schema-code, .tl-schema-prop {
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 0.86em;
+  padding: 1px 6px; border-radius: 6px; background: var(--warm-100); color: var(--navy); overflow-wrap: anywhere; word-break: break-word;
+}
+.tl-schema-prop { font-weight: 400; color: var(--text); }
+
+/* problems, worst first */
+.tl-schema-problems { display: flex; flex-direction: column; gap: 10px; }
+.tl-schema-problems ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.tl-schema-problem {
+  display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 14px;
+  background: var(--warm-50); box-shadow: var(--ring-soft); font-size: 14.5px; line-height: 1.55; color: var(--ink-2); min-width: 0;
+}
+.tl-schema-problem.is-bad { background: var(--red-bg); box-shadow: inset 0 0 0 1px rgba(239, 90, 90, 0.18); }
+.tl-schema-problem.is-warn { background: var(--amber-bg); box-shadow: inset 0 0 0 1px rgba(240, 177, 80, 0.3); }
+.tl-schema-problem .ck-chip { flex: none; margin-top: 1px; background: #fff; }
+.tl-schema-problem-body { display: flex; flex-direction: column; gap: 10px; min-width: 0; flex: 1; overflow-wrap: anywhere; }
+
+/* two blocks side by side: the table scrolls inside its box on narrow phones */
+.tl-schema-compare { max-width: 100%; overflow-x: auto; border-radius: 12px; background: #fff; box-shadow: var(--ring-soft); }
+.tl-schema-compare:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+.tl-schema-compare table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.tl-schema-compare th, .tl-schema-compare td { padding: 8px 10px; text-align: left; vertical-align: top; border-top: 1px solid var(--line-soft); overflow-wrap: break-word; }
+.tl-schema-compare thead th, .tl-schema-compare thead td { border-top: 0; font-weight: 600; color: var(--navy); }
+.tl-schema-compare tbody th { font-weight: 600; color: var(--navy); width: 1%; white-space: nowrap; }
+
+/* the three groups of facts */
+.tl-schema-group { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.tl-schema-group-intro { max-width: 760px; font-size: 14.5px; line-height: 1.6; color: var(--text); }
+.tl-schema-group .tl-rows { margin-top: 4px; }
+.tl-schema-row { display: flex; flex-direction: column; gap: 4px; }
+/* the field name (and its property) on the left, the status chip always on the right */
+.tl-schema-row-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.tl-schema-label { flex: 1; min-width: 0; font-size: 15.5px; font-weight: 600; line-height: 1.5; color: var(--navy); overflow-wrap: anywhere; }
+.tl-schema-row-head .ck-chip { flex: none; margin-top: 1px; }
+.tl-schema-label .tl-schema-prop { margin-left: 4px; font-size: 12.5px; }
+.tl-schema-value { font-size: 14.5px; line-height: 1.55; color: var(--ink-2); overflow-wrap: anywhere; }
+.tl-schema-why { font-size: 14px; line-height: 1.55; color: var(--text); }
+.tl-schema-fix { font-size: 14px; line-height: 1.55; color: var(--ink-2); padding-left: 12px; border-left: 2px solid var(--line-soft); }
+.tl-schema-fix b { font-weight: 600; color: var(--navy); }
+
+/* the fix box */
+.tl-schema-fixbox { display: flex; flex-direction: column; gap: 12px; padding: 20px; border-radius: 18px; background: var(--warm-50); box-shadow: var(--ring-soft); font-size: 15px; line-height: 1.65; }
+
+/* the product data we read: closed, it's raw code */
+.tl-schema-raw { border-radius: 14px; box-shadow: var(--ring-soft); background: #fff; }
+.tl-schema-raw > summary {
+  display: list-item; padding: 13px 16px; cursor: pointer; line-height: 22px;
+  font-size: 14.5px; font-weight: 600; color: var(--navy); border-radius: 14px; list-style-position: inside;
+}
+.tl-schema-raw > summary:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+.tl-schema-raw[open] > summary { border-bottom: 1px solid var(--line-soft); border-radius: 14px 14px 0 0; }
+.tl-schema-raw .tl-copy { border-radius: 0 0 14px 14px; box-shadow: none; }
+
+/* after a link result: the way back to the paste card */
+.tl-schema-back { font-size: 14.5px; color: var(--text); }
+.tl-schema-back a { display: inline-flex; align-items: center; min-height: 44px; color: var(--navy); font-weight: 500; text-decoration: underline; text-decoration-color: rgba(11, 12, 43, 0.35); }
+.tl-schema-source { color: var(--navy); text-decoration: underline; text-decoration-color: rgba(11, 12, 43, 0.35); font-size: 14px; }
+
+@media (max-width: 640px) {
+  .tl-schema-report { gap: 20px; }
+  .tl-schema-problem { padding: 10px 12px; flex-direction: column; align-items: stretch; gap: 6px; }
+  .tl-schema-problem .ck-chip { align-self: flex-start; }
+  .tl-schema-compare table { font-size: 13px; }
+  .tl-schema-compare th, .tl-schema-compare td { padding: 8px; }
+  .tl-schema-fixbox { padding: 16px; }
+  .tl-schema-paste .tl-textarea-code { min-height: 200px; }
+}

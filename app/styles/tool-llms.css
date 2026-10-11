@@ -1,0 +1,94 @@
+/* llms.txt Checker (/tools/llms-txt-checker). Loaded after check.css and tools.css; everything is prefixed
+   tl-llms- and neutral (white and warm cards, grey chips, navy links): purple stays on the band, the form and
+   the one button card (docs/copy-deck.md 14b). Long lines, excerpts and addresses wrap or scroll inside their
+   card, never the page. */
+
+/* the paste box: the label, the text box and its button */
+.tl-llms-paste form { display: flex; flex-direction: column; gap: 12px; }
+.tl-llms-paste .tl-textarea-code { min-height: 240px; }
+
+/* links inside result cards: navy with an underline, 44px to tap where they stand alone */
+.tl-llms-report a, .tl-llms-starter a, .tl-llms-evidence a, .tl-llms-back a {
+  color: var(--navy); text-decoration: underline; text-decoration-color: rgba(11, 12, 43, 0.35);
+}
+.tl-llms-report a:hover, .tl-llms-starter a:hover, .tl-llms-evidence a:hover, .tl-llms-back a:hover { text-decoration-color: currentColor; }
+.tl-llms-back { font-size: 15px; color: var(--ink-2); }
+.tl-llms-back a, .tl-llms-next a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 500; }
+
+.tl-llms-code {
+  padding: 1px 6px; border-radius: 6px; background: var(--warm-100); color: var(--navy);
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 0.9em;
+  overflow-wrap: anywhere; word-break: break-word;
+}
+
+/* the report */
+.tl-llms-report { gap: 22px; }
+.tl-llms-top { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.tl-llms-verdict { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.tl-llms-verdict .tl-result-h { min-width: 0; }
+.tl-llms-dot { flex: none; width: 12px; height: 12px; border-radius: 50%; background: #9a9bb0; box-shadow: 0 0 0 4px #f1f1f5; }
+.tl-llms-verdict.is-good .tl-llms-dot { background: var(--green); box-shadow: 0 0 0 4px var(--green-bg); }
+.tl-llms-verdict.is-warn .tl-llms-dot { background: #e9a23b; box-shadow: 0 0 0 4px var(--amber-bg); }
+.tl-llms-verdict-line { font-family: var(--font-head); font-size: 17px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.35; color: var(--navy); }
+
+/* /llms.txt, /llms-full.txt, /agents.md */
+.tl-llms-files { display: flex; flex-direction: column; gap: 10px; }
+.tl-llms-files ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.tl-llms-files li {
+  display: inline-flex; align-items: center; gap: 8px; max-width: 100%; padding: 6px 8px 6px 10px;
+  border-radius: 100px; background: var(--warm-50); box-shadow: var(--ring-soft); font-size: 14px;
+}
+.tl-llms-files .tl-llms-code { background: transparent; padding: 0; }
+
+/* the checks */
+.tl-llms-checks { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.tl-llms-check { display: flex; flex-direction: column; gap: 8px; }
+.tl-llms-check-head { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
+.tl-llms-check-head .ck-chip { flex: none; margin-top: 1px; }
+.tl-llms-check-text { min-width: 0; font-size: 15px; line-height: 1.55; color: var(--ink-2); overflow-wrap: anywhere; }
+.tl-llms-excerpt {
+  display: flex; align-items: baseline; gap: 10px; min-width: 0; padding: 8px 12px; border-radius: 10px;
+  background: var(--code-bg); box-shadow: var(--ring-soft); font-size: 13px; line-height: 1.5;
+}
+.tl-llms-lineno { flex: none; font-size: 12.5px; font-weight: 600; color: var(--text); white-space: nowrap; }
+.tl-llms-excerpt code { min-width: 0; color: var(--navy); white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
+
+/* what passed: small green pills with a tick */
+.tl-llms-passed { display: flex; flex-direction: column; gap: 8px; padding-top: 6px; }
+.tl-llms-passed-h { font-size: 14px; font-weight: 600; color: var(--green-ink); }
+.tl-llms-passed ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 8px; }
+.tl-llms-passed li {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 100px;
+  background: var(--green-bg); color: var(--green-ink); font-size: 13px; font-weight: 500; line-height: 1.35;
+}
+.tl-llms-passed li::before { content: "\2713"; font-weight: 700; }
+
+/* Shopify's automatic file */
+.tl-llms-box {
+  display: flex; flex-direction: column; gap: 8px; padding: 16px 18px; border-radius: 16px;
+  background: var(--warm-50); box-shadow: var(--ring-soft);
+}
+.tl-llms-box p { max-width: 760px; font-size: 15px; line-height: 1.65; color: var(--ink-2); }
+
+/* the starter file */
+.tl-llms-starter { gap: 14px; }
+.tl-llms-starter > p, .tl-llms-shopify > p { max-width: 760px; line-height: 1.65; }
+.tl-llms-starter .tl-textarea-code { min-height: 220px; }
+.tl-llms-note {
+  max-width: 760px; padding: 10px 14px; border-radius: 12px; background: var(--amber-bg); color: #6b4a12;
+  font-size: 14.5px; line-height: 1.55; box-shadow: inset 0 0 0 1px rgba(240, 177, 80, 0.3);
+}
+.tl-llms-mini { display: flex; flex-direction: column; gap: 12px; padding: 16px 18px; border-radius: 16px; background: var(--warm-50); box-shadow: var(--ring-soft); }
+.tl-llms-mini .ck-h3 { font-size: 16px; letter-spacing: -0.2px; }
+.tl-llms-shopify { display: flex; flex-direction: column; gap: 12px; padding-top: 18px; border-top: 1px solid var(--line-soft); }
+
+/* the evidence box */
+.tl-llms-evidence { gap: 10px; }
+.tl-llms-evidence p { max-width: 760px; line-height: 1.65; }
+.tl-llms-next { font-size: 15px; color: var(--ink-2); }
+
+@media (max-width: 640px) {
+  .tl-llms-mini, .tl-llms-box { padding: 14px; }
+  .tl-llms-excerpt { flex-direction: column; gap: 2px; }
+  .tl-llms-paste .tl-textarea-code { min-height: 200px; }
+}

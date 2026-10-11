@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import type { LoaderFunctionArgs } from "react-router";
 import { loader } from "../app/routes/_index/route";
+import { TOOLS } from "../app/lib/tools/registry";
 
 const imgDir = join(fileURLToPath(new URL("..", import.meta.url)), "public", "home", "img");
 const call = (url: string) => loader({ request: new Request(url), params: {}, context: {} } as unknown as LoaderFunctionArgs);
@@ -89,6 +90,41 @@ describe("home page", () => {
     expect(files.length).toBeGreaterThanOrEqual(5);
     // The phone poster is swapped in by script, so it must ship too.
     for (const f of [...files, "free-check-phone-poster.jpg"]) expect(existsSync(join(imgDir, f)), `public/home/img/${f} is missing`).toBe(true);
+  });
+
+  it("shows GEO's method as five numbered steps, each with an Example screen", async () => {
+    const html = await (await call("https://geo.test/")).text();
+    const start = html.indexOf('<section class="section alt how" id="how"');
+    expect(start).toBeGreaterThan(-1);
+    const how = html.slice(start, html.indexOf("</section>", start));
+    expect(how).toContain('<h2 class="h2 how-h2" id="how-title" data-rise>How GEO works to get you recommended</h2>');
+    expect(how).toContain('<ol class="how-steps">');
+    const steps = [...how.matchAll(/<h3 class="how-t">([^<]+)<\/h3>/g)].map((m) => m[1]);
+    expect(steps).toEqual(["Find where AI looks", "Let AI read your store", "Product pages AI can quote", "Guide pages, kept fresh", "Get named where AI looks"]);
+    // the two kinds of work, and every small screen labelled "Example" with a sentence for screen readers
+    expect(how).toContain("On your store</span>");
+    expect(how).toContain("Across the web</span>");
+    expect(how.match(/<div class="how-vis" role="img" aria-label="Example: [^"]+">/g)).toHaveLength(5);
+    expect(how.match(/<span class="hv-tag">Example<\/span>/g)).toHaveLength(5);
+    expect(how).toContain("Done-for-you:</b> we send pitches, add listings and follow up.");
+    for (const chip of ["One-click undo", "Only your store’s facts", "No fake reviews or posts"]) expect(how).toContain(`${chip}</li>`);
+    // honest about outreach: threads are joined by the store itself, and nothing promises rankings or sales
+    expect(how).toContain("You join in");
+    expect(how).not.toMatch(/guarantee|rank #?1|more sales/i);
+    // it no longer repeats the hero cards or the sample app's money numbers
+    expect(how).not.toContain("$4,820");
+    expect(how).not.toContain("You get the sale");
+  });
+
+  it("links the free tools hub and every tool from the footer, and the hub from the nav", async () => {
+    const html = await (await call("https://geo.test/")).text();
+    const start = html.indexOf('<nav class="foot-tools" aria-label="Free tools">');
+    expect(start).toBeGreaterThan(-1);
+    const footer = html.slice(start, html.indexOf("</nav>", start));
+    expect(footer).toContain('<a href="/tools">All free tools</a>');
+    for (const t of TOOLS) expect(footer, t.path).toContain(`<a href="${t.path}">${t.name}</a>`);
+    expect(html).toContain('<li><a href="/tools">Free tools</a></li>');
+    expect(html).toContain('<link rel="canonical" href="https://usegeo.app/">');
   });
 
   it("sends Shopify app opens straight into the app", async () => {

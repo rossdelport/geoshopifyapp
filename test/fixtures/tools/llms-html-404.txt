@@ -1,0 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><title>404 Not Found | Made-up Store</title></head>
+<body><h1>Page not found</h1><p>A made-up page for tests: a site that shows a web page at /llms.txt.</p></body>
+</html>

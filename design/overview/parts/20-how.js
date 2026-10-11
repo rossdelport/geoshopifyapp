@@ -1,25 +1,29 @@
-// How it works screens (CSS in 20-how.css): once a screen is well in view, step 2's Approve turns into
-// "Pushed to Shopify" (once, after a short pause) and step 3's bars grow. Never with reduced motion: the
-// screens then stay as they are in the page (Approve waiting, the bars full).
+// How it works screens (CSS in 20-how.css): once a small screen is well in view, its parts play in once (the
+// sites appear, the ticks pop, the opening line gets its highlight, the "Updated" line lands, the next steps slide
+// in). Only for screens below the fold at load, so nothing on screen ever blinks. Never with reduced motion, for
+// crawlers or without IntersectionObserver: the screens then simply show their finished picture.
 (function () {
   if (!window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (/bot|crawl|spider|slurp|lighthouse|facebookexternalhit|embedly|preview/i.test(navigator.userAgent || '')) return;
   if (!('IntersectionObserver' in window)) return;
-  var fix = document.querySelector('.hs-fix');
-  var money = document.querySelector('.hs-money');
-  if (!fix && !money) return;
-  if (money) money.classList.add('hs-wait');
+  var vh = window.innerHeight || document.documentElement.clientHeight;
+  var screens = Array.prototype.filter.call(document.querySelectorAll('.how-vis'), function (el) {
+    return el.getBoundingClientRect().top > vh - 8;
+  });
+  if (!screens.length) return;
+  screens.forEach(function (el) { el.classList.add('hv-wait'); });
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (en) {
       if (!en.isIntersecting) return;
-      io.unobserve(en.target);
-      if (en.target === money) {
-        money.classList.add('hs-grow');
-        money.classList.remove('hs-wait');
-      } else {
-        setTimeout(function () { fix.classList.add('is-done'); }, 1400);
-      }
+      var el = en.target;
+      io.unobserve(el);
+      el.classList.add('hv-go');
+      el.classList.remove('hv-wait');
+      // the longest part ends about 1.1s in; then the screen goes back to its own styles
+      setTimeout(function () { el.classList.remove('hv-go'); }, 1800);
     });
   }, { threshold: 0.6 });
-  if (fix) io.observe(fix);
-  if (money) io.observe(money);
+  screens.forEach(function (el) { io.observe(el); });
+  // Printing or saving the page shows every screen finished.
+  window.addEventListener('beforeprint', function () { screens.forEach(function (el) { el.classList.remove('hv-wait'); }); });
 })();

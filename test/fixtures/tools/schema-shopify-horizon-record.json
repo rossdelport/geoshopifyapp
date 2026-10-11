@@ -1,0 +1,178 @@
+{
+  "_note": "OBSERVED, then trimmed: Shopify's public product record /products/test-alex-merino-wool-open-placket-polo-324.js on Shopify's Horizon demo store, fetched 11 Oct 2026 (via Treg crawl4ai.web.scrape). Only the fields the checker reads are kept; values are unchanged.",
+  "title": "Alex Merino Wool Open Placket Polo",
+  "price": 14500,
+  "price_min": 14500,
+  "price_max": 14500,
+  "available": true,
+  "variants": [
+    {
+      "title": "Ivory / XS",
+      "sku": "SAT-MF2420PL01-FA24ECOM-IVR-XS",
+      "barcode": "810160302155",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Ivory / S",
+      "sku": "SAT-MF2420PL01-FA24ECOM-IVR-S",
+      "barcode": "810160302162",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Ivory / M",
+      "sku": "SAT-MF2420PL01-FA24ECOM-IVR-M",
+      "barcode": "810160302179",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Ivory / L",
+      "sku": "SAT-MF2420PL01-FA24ECOM-IVR-L",
+      "barcode": "810160302186",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Ivory / XL",
+      "sku": "SAT-MF2420PL01-FA24ECOM-IVR-XL",
+      "barcode": "810160302193",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Ivory / XXL",
+      "sku": "SAT-MF2420PL01-FA24ECOM-IVR-XXL",
+      "barcode": "810160302209",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Army Green / XS",
+      "sku": "SAT-MF2420PL01-FA24ECOM-ARM-XS",
+      "barcode": "810160302339",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Army Green / S",
+      "sku": "SAT-MF2420PL01-FA24ECOM-ARM-S",
+      "barcode": "810160302346",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Army Green / M",
+      "sku": "SAT-MF2420PL01-FA24ECOM-ARM-M",
+      "barcode": "810160302353",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Army Green / L",
+      "sku": "SAT-MF2420PL01-FA24ECOM-ARM-L",
+      "barcode": "810160302360",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Army Green / XL",
+      "sku": "SAT-MF2420PL01-FA24ECOM-ARM-XL",
+      "barcode": "810160302377",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Army Green / XXL",
+      "sku": "SAT-MF2420PL01-FA24ECOM-ARM-XXL",
+      "barcode": "810160302384",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Rhubarb / XS",
+      "sku": "SAT-MF2420PL01-FA24ECOM-RHB-XS",
+      "barcode": "810160302278",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Rhubarb / S",
+      "sku": "SAT-MF2420PL01-FA24ECOM-RHB-S",
+      "barcode": "810160302285",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Rhubarb / M",
+      "sku": "SAT-MF2420PL01-FA24ECOM-RHB-M",
+      "barcode": "810160302292",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Rhubarb / L",
+      "sku": "SAT-MF2420PL01-FA24ECOM-RHB-L",
+      "barcode": "810160302308",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Rhubarb / XL",
+      "sku": "SAT-MF2420PL01-FA24ECOM-RHB-XL",
+      "barcode": "810160302315",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Rhubarb / XXL",
+      "sku": "SAT-MF2420PL01-FA24ECOM-RHB-XXL",
+      "barcode": "810160302322",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Dusty Turquoise / XS",
+      "sku": "SAT-MF2420PL01-FA24ECOM-DST-XS",
+      "barcode": "810160302216",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Dusty Turquoise / S",
+      "sku": "SAT-MF2420PL01-FA24ECOM-DST-S",
+      "barcode": "810160302223",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Dusty Turquoise / M",
+      "sku": "SAT-MF2420PL01-FA24ECOM-DST-M",
+      "barcode": "810160302230",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Dusty Turquoise / L",
+      "sku": "SAT-MF2420PL01-FA24ECOM-DST-L",
+      "barcode": "810160302247",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Dusty Turquoise / XL",
+      "sku": "SAT-MF2420PL01-FA24ECOM-DST-XL",
+      "barcode": "810160302254",
+      "available": true,
+      "price": 14500
+    },
+    {
+      "title": "Dusty Turquoise / XXL",
+      "sku": "SAT-MF2420PL01-FA24ECOM-DST-XXL",
+      "barcode": "810160302261",
+      "available": true,
+      "price": 14500
+    }
+  ]
+}

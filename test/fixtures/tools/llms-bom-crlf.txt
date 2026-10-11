@@ -1,0 +1,7 @@
+﻿# Made-up Store
+
+> A made-up llms.txt for tests: a byte-order mark and Windows line endings.
+
+## Main pages
+
+- [Beard oils](https://made-up-store.example/collections/beard-oil): all our oils

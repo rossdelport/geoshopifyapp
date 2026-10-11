@@ -1,0 +1,103 @@
+/* FAQ Schema Generator (/tools/faq-schema-generator). Loaded after check.css and tools.css; everything is
+   prefixed tl-faq- and neutral (warm rows inside the white form, white result cards, grey chips, navy links):
+   purple stays on the band, the form's glow and the one button card (docs/copy-deck.md 14b). Code scrolls
+   inside its card, never the page. */
+
+/* the honest note under the intro, with a link to its source */
+.tl-faq-honest strong { color: var(--navy); font-weight: 600; }
+.tl-faq-honest a { color: var(--navy); text-decoration: underline; text-decoration-color: rgba(11, 12, 43, 0.35); white-space: nowrap; }
+
+/* ---------- the rows ---------- */
+.tl-faq-rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.tl-faq-row {
+  min-width: 0; padding: 4px 14px 12px; border-radius: 14px; background: var(--warm-50); box-shadow: var(--ring-soft);
+  display: flex; flex-direction: column; gap: 6px;
+}
+/* the label and, with JavaScript, the row's buttons: always 44px high, so nothing moves when they appear */
+.tl-faq-row-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 40px; }
+.tl-faq-row-tools { display: flex; gap: 6px; flex: none; }
+.tl-faq-tool {
+  min-height: 36px; padding: 0 12px; border: 0; border-radius: 10px; cursor: pointer; background: #fff;
+  font: 500 13px/1 var(--font-body); color: var(--navy); box-shadow: var(--ring-soft);
+  position: relative; transition: background .2s ease;
+}
+.tl-faq-tool::after { content: ""; position: absolute; inset: -4px -2px; } /* 44px to tap, though the line is 40px */
+.tl-faq-tool:hover:not(:disabled) { background: var(--warm-100); }
+.tl-faq-tool:disabled { cursor: default; color: #9a9bad; box-shadow: none; background: transparent; }
+.tl-faq-tool:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+.tl-faq-row .tl-label + .tl-input { margin-top: 0; }
+.tl-faq-answer { min-height: 96px; }
+.tl-faq-count { align-self: flex-end; margin-top: -2px; font-size: 12px; line-height: 1.3; color: var(--text); font-variant-numeric: tabular-nums; }
+.tl-faq-count.is-full { color: #8a5a0e; font-weight: 600; }
+
+/* add a question, and the starter questions */
+.tl-faq-add { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.tl-faq-add-btn {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 0; border-radius: 12px; cursor: pointer;
+  font: 600 14px/1 var(--font-body); color: var(--navy); background: #fff; box-shadow: inset 0 0 0 1px var(--lav-line), 0 1px 2px rgba(56, 64, 160, 0.08);
+}
+.tl-faq-add-btn svg { width: 18px; height: 18px; color: var(--cobalt); }
+.tl-faq-add-btn:hover:not(:disabled) { background: var(--warm-50); }
+.tl-faq-add-btn:disabled, .tl-faq-starters .tl-example:disabled { cursor: default; opacity: .55; }
+.tl-faq-add-btn:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+.tl-faq-starters { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+.tl-faq-starters-lead { width: 100%; font-size: 13.5px; color: var(--text); }
+.tl-faq-submit { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+
+/* ---------- the result ---------- */
+.tl-faq-result { gap: 18px; }
+.tl-faq-verdict { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.tl-faq-notes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.tl-faq-note {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 10px; padding: 10px 14px; border-radius: 12px;
+  background: var(--warm-50); box-shadow: var(--ring-soft); font-size: 14.5px; line-height: 1.55; color: var(--ink-2); overflow-wrap: anywhere;
+}
+.tl-faq-note .ck-chip { flex: none; }
+.tl-faq-note.is-warn { background: var(--amber-bg); box-shadow: inset 0 0 0 1px rgba(240, 177, 80, 0.3); }
+.tl-faq-note > span:last-child { flex: 1 1 240px; min-width: 0; }
+
+.tl-faq-outputs { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+/* the switcher (JavaScript only): three plain segments, neutral */
+.tl-faq-tabs { display: flex; gap: 4px; padding: 4px; border-radius: 14px; background: var(--warm-100); overflow-x: auto; }
+.tl-faq-tab {
+  flex: 1 0 auto; min-height: 44px; padding: 0 14px; border: 0; border-radius: 10px; cursor: pointer; background: transparent;
+  font: 600 14px/1.2 var(--font-body); color: var(--text); white-space: nowrap; transition: background .2s ease, color .2s ease;
+}
+.tl-faq-tab[aria-selected="true"] { background: #fff; color: var(--navy); box-shadow: var(--ring-soft), 0 1px 3px rgba(28, 28, 40, 0.08); }
+.tl-faq-tab:hover { color: var(--navy); }
+.tl-faq-tab:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 1px; }
+.tl-faq-panel { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+/* without JavaScript every panel shows, divided by a line */
+.tl-faq-panel + .tl-faq-panel { padding-top: 18px; border-top: 1px solid var(--line-soft); }
+.tl-faq-tabs ~ .tl-faq-panel { padding-top: 0; border-top: 0; }
+.tl-faq-off { display: none; }
+.tl-faq-lead { max-width: 760px; font-size: 15.5px; line-height: 1.65; color: var(--ink-2); }
+.tl-faq-steps { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 14px; }
+.tl-faq-steps li { min-width: 0; }
+.tl-faq-steps li > * + * { margin-top: 10px; }
+.tl-faq-steps li::marker { color: var(--navy-3); font-weight: 600; }
+.tl-faq-steps p { font-size: 15px; line-height: 1.65; color: var(--ink-2); }
+.tl-faq-source { color: var(--navy); text-decoration: underline; text-decoration-color: rgba(11, 12, 43, 0.35); }
+.tl-faq-source:hover { text-decoration-color: currentColor; }
+
+/* the preview: plain text, the way a store page would show it */
+.tl-faq-preview { gap: 12px; }
+.tl-faq-preview-list { margin: 0; display: flex; flex-direction: column; }
+.tl-faq-preview-item { padding: 14px 0; border-top: 1px solid var(--line-soft); min-width: 0; }
+.tl-faq-preview-item:first-child { border-top: 0; padding-top: 2px; }
+.tl-faq-preview-item dt { font-family: var(--font-head); font-size: 17px; font-weight: 600; letter-spacing: -0.3px; color: var(--navy); overflow-wrap: anywhere; }
+.tl-faq-preview-item dd { margin: 4px 0 0; font-size: 15.5px; line-height: 1.65; color: var(--ink-2); white-space: pre-line; overflow-wrap: anywhere; }
+
+/* ---------- phones ---------- */
+@media (max-width: 640px) {
+  /* keep the first question in view on a 360 x 740 screen */
+  .tl-faq-honest { padding: 10px 14px; font-size: 13.5px; line-height: 1.55; }
+  .tl-faq-form .tl-sample { display: block; line-height: 1.6; }
+  .tl-faq-form .tl-sample .ck-chip { display: inline-flex; vertical-align: 1px; margin-right: 8px; height: 22px; }
+  .tl-faq-row { padding: 2px 10px 10px; }
+  .tl-faq-tool { padding: 0 10px; }
+  /* three equal tabs; long labels wrap inside their tab instead of scrolling */
+  .tl-faq-tabs { overflow-x: visible; }
+  .tl-faq-tab { flex: 1 1 0; min-width: 0; padding: 6px 6px; font-size: 13.5px; white-space: normal; }
+  .tl-faq-submit .tl-submit { width: 100%; }
+}

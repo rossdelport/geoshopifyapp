@@ -1,0 +1,11 @@
+<!doctype html>
+<!-- MADE UP for tests: one product block has a trailing comma (not valid JSON); the other still reads. -->
+<html><head>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Product","name":"Broken Block","offers":{"price":"10.00",},}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Product","name":"Beard Balm","image":"https://balm.example/b.jpg",
+ "offers":{"@type":"Offer","price":"22.00","priceCurrency":"NZD","availability":"https://schema.org/InStock"}}
+</script>
+</head><body></body></html>

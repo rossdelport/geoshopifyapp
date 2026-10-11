@@ -1,0 +1,11 @@
+# Test fixture (made up): Allow rules that win over Disallow rules.
+User-agent: *
+Disallow: /products/
+Allow: /products/example
+Disallow: /collections
+Allow: /collections
+
+User-agent: PerplexityBot
+Disallow: /
+Allow: /$
+Allow: /products/

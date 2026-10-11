@@ -1,73 +1,124 @@
 <section class="section alt how" id="how" aria-labelledby="how-title">
-  <div class="wrap">
-    <div class="sec-head">
-      <h2 class="h2" id="how-title">How GEO helps you get recommended</h2>
+  <div class="wrap how-grid">
+    <div class="how-side">
+      <h2 class="h2 how-h2" id="how-title" data-rise>How GEO works to get you recommended</h2>
+      <ul class="how-chips" aria-label="Your safeguards">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>One-click undo</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Only your store’s facts</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>No fake reviews or posts</li>
+      </ul>
     </div>
 
+    <!-- GEO's method, in the order it works (checked against the code, see docs/copy-deck.md section 7).
+         Small screens: example data with the made-up store and sites from the sample data list. -->
     <ol class="how-steps">
       <li class="how-step">
-        <!-- small app screens (example data, the same store and rivals as the sample app below) -->
-        <div class="how-scr" role="img" aria-label="Example: asked for the best beard oil for dry skin, ChatGPT names you third. Gemini and Perplexity name rivals, not you.">
-          <div class="hs-top"><span class="hs-app"><span class="hs-mark"><i></i><i></i></span>Questions</span><span class="hs-tag">Example</span></div>
-          <div class="hs-panel hs-ask">
-            <p class="hs-q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>best beard oil for dry skin</p>
-            <ul class="hs-rows">
-              <li class="hs-row"><span class="hs-eng"><i class="dot" style="background:var(--e-chatgpt)"></i>ChatGPT</span><span class="hs-names"><b>Ridgeback</b><b>Saltbush</b><b class="is-you">You</b></span><span class="pill pill-lav hs-st">#3</span></li>
-              <li class="hs-row"><span class="hs-eng"><i class="dot" style="background:var(--e-gemini)"></i>Gemini</span><span class="hs-names"><b>Ridgeback</b><b>Banksia</b></span><span class="pill pill-amber hs-st">Not named</span></li>
-              <li class="hs-row"><span class="hs-eng"><i class="dot" style="background:var(--e-perplexity)"></i>Perplexity</span><span class="hs-names"><b>Ridgeback</b></span><span class="pill pill-amber hs-st">Not named</span></li>
-            </ul>
+        <span class="how-n" aria-hidden="true">1</span>
+        <div class="how-body">
+          <div class="how-tx">
+            <h3 class="how-t">Find where AI looks</h3>
+            <p class="how-p">We ask each AI your buyers’ questions and list the sites it uses.</p>
           </div>
-        </div>
-        <div class="how-tx">
-          <span class="how-n" aria-hidden="true">1</span>
-          <h3 class="how-t">See if AI recommends you</h3>
-          <p class="how-p">We ask AI your buyers’ questions every week.</p>
+          <div class="how-vis" role="img" aria-label="Example: for “beard oil under $40”, each AI uses different sites, such as examplereviews.com, examplebeardblog.com and reddit.com.">
+            <span class="hv-tag">Example</span>
+            <div class="hv-panel hv-find">
+              <span class="hv-q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>beard oil under $40</span>
+              <span class="hv-src">
+                <span><i class="dot" style="background:var(--e-chatgpt)"></i>examplereviews.com</span>
+                <span><i class="dot" style="background:var(--e-gemini)"></i>examplebeardblog.com</span>
+                <span><i class="dot" style="background:var(--e-perplexity)"></i>reddit.com</span>
+              </span>
+            </div>
+          </div>
         </div>
       </li>
-      <li class="how-step">
-        <div class="how-scr" role="img" aria-label="Example: a clearer product description, before and after. One click on Approve pushes it to Shopify.">
-          <div class="hs-top"><span class="hs-app"><span class="hs-mark"><i></i><i></i></span>Fixes</span><span class="hs-tag">Example</span></div>
-          <div class="hs-panel hs-fix">
-            <p class="hs-prod"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>Gentle Beard Wash</p>
-            <div class="hs-ba">
-              <div class="hs-before"><span class="hs-l">Before</span><p>Our best seller. Smells amazing.</p></div>
-              <div class="hs-after"><span class="hs-l">After</span><p>Soap-free beard wash for sensitive skin. 200ml.</p></div>
-            </div>
-            <span class="hs-approve"><span class="hs-ap-a">Approve</span><span class="hs-ap-b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Pushed to Shopify</span></span>
+      <li class="how-step g-top">
+        <span class="how-n" aria-hidden="true">2</span>
+        <div class="how-body">
+          <span class="how-lane"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>On your store</span>
+          <div class="how-tx">
+            <h3 class="how-t">Let AI read your store</h3>
+            <p class="how-p">We check that each AI is allowed to read your pages.</p>
           </div>
-        </div>
-        <div class="how-tx">
-          <span class="how-n" aria-hidden="true">2</span>
-          <h3 class="how-t">Fix it in one click</h3>
-          <p class="how-p">GEO writes clearer product pages, so AI can pick you.</p>
+          <div class="how-vis" role="img" aria-label="Example: ChatGPT and Google may read your pages; Perplexity is blocked, so GEO shows how to fix it.">
+            <span class="hv-tag">Example</span>
+            <div class="hv-panel hv-read">
+              <span class="hv-row"><span class="hv-eng"><i class="dot" style="background:var(--e-chatgpt)"></i>ChatGPT</span><span class="hv-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></span>
+              <span class="hv-row"><span class="hv-eng"><i class="dot" style="background:var(--e-google)"></i>Google</span><span class="hv-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></span>
+              <span class="hv-row"><span class="hv-eng"><i class="dot" style="background:var(--e-perplexity)"></i>Perplexity</span><span class="pill pill-amber hv-block">Blocked</span></span>
+            </div>
+          </div>
         </div>
       </li>
-      <li class="how-step">
-        <div class="how-scr" role="img" aria-label="Example: AI revenue $4,820, up 38%, and 61 AI orders, up 22%, against your starting point.">
-          <div class="hs-top"><span class="hs-app"><span class="hs-mark"><i></i><i></i></span>Money</span><span class="hs-tag">Example</span></div>
-          <div class="hs-panel hs-money">
-            <div class="hs-kpis">
-              <div class="hs-kpi"><span class="hs-kl">AI revenue</span><span class="hs-kv">$4,820</span><span class="delta-up">▲ 38%</span></div>
-              <div class="hs-kpi"><span class="hs-kl">AI orders</span><span class="hs-kv">61</span><span class="delta-up">▲ 22%</span></div>
-            </div>
-            <div class="hs-chart">
-              <span class="hs-bars"><i style="--h:.42"></i><i style="--h:.38"></i><i style="--h:.47"></i><i style="--h:.55"></i><i style="--h:.52"></i><i style="--h:.68"></i><i style="--h:.79"></i><i style="--h:.92"></i></span>
-              <span class="hs-base"><em>Starting point</em></span>
+      <li class="how-step g-mid">
+        <span class="how-n" aria-hidden="true">3</span>
+        <div class="how-body">
+          <div class="how-tx">
+            <h3 class="how-t">Product pages AI can quote</h3>
+            <p class="how-p">We open descriptions with who it’s for and key facts, and add FAQs.</p>
+          </div>
+          <div class="how-vis" role="img" aria-label="Example: a product page that opens with who it’s for and its size, with a product type and FAQs.">
+            <span class="hv-tag">Example</span>
+            <div class="hv-panel hv-prod">
+              <span class="hv-pd">
+                <span class="hv-pimg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></span>
+                <span class="hv-pinfo"><span class="hv-bar hv-bar-t"></span><span class="hv-type">Type: Beard Oil</span></span>
+              </span>
+              <span class="hv-hl"><span>For dry beards. 30ml.</span></span>
+              <span class="hv-lines"><span class="hv-bar"></span><span class="hv-bar hv-bar-s"></span></span>
+              <span class="hv-faq">
+                <span class="hv-faq-h">FAQ</span>
+                <span class="hv-fq"><span class="hv-bar"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+                <span class="hv-fq"><span class="hv-bar hv-bar-s"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+                <span class="hv-fq"><span class="hv-bar hv-bar-m"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+              </span>
             </div>
           </div>
         </div>
-        <div class="how-tx">
-          <span class="how-n" aria-hidden="true">3</span>
-          <h3 class="how-t">See the money</h3>
-          <p class="how-p">Orders, revenue and clicks from AI, against your starting point.</p>
+      </li>
+      <li class="how-step g-end">
+        <span class="how-n" aria-hidden="true">4</span>
+        <div class="how-body">
+          <div class="how-tx">
+            <h3 class="how-t">Guide pages, kept fresh</h3>
+            <p class="how-p">We write buying guides and review them every 60 to 90 days.</p>
+          </div>
+          <div class="how-vis" role="img" aria-label="Example: a buying guide marked “Updated October 2026”, linked to two more specific guides.">
+            <span class="hv-tag">Example</span>
+            <div class="hv-panel hv-guide">
+              <span class="hv-gmain">
+                <span class="hv-gtitle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span class="hv-bar hv-bar-t"></span></span>
+                <span class="hv-stamp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>Updated October 2026</span>
+              </span>
+              <span class="hv-fork"></span>
+              <span class="hv-gsubs">
+                <span class="hv-gsub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg><span class="hv-bar"></span></span>
+                <span class="hv-gsub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg><span class="hv-bar hv-bar-s"></span></span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="how-step g-solo">
+        <span class="how-n" aria-hidden="true">5</span>
+        <div class="how-body">
+          <span class="how-lane"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>Across the web</span>
+          <div class="how-tx">
+            <h3 class="how-t">Get named where AI looks</h3>
+            <p class="how-p">We find pages each AI cites that name rivals, not you, and draft pitches.</p>
+            <p class="how-dfy"><b>Done-for-you:</b> we send pitches, add listings and follow up.</p>
+          </div>
+          <div class="how-vis" role="img" aria-label="Example: pages AI cites that skip you, each with an honest next step: a pitch, a review request, a thread you join yourself, a listing.">
+            <span class="hv-tag">Example</span>
+            <div class="hv-panel hv-out">
+              <span class="hv-orow"><span class="hv-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18h-5"/><path d="M18 14h-8"/><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2"/><rect width="8" height="4" x="10" y="6" rx="1"/></svg></span><span class="hv-kind">Roundup</span><span class="hv-next">Pitch drafted</span></span>
+              <span class="hv-orow"><span class="hv-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg></span><span class="hv-kind">YouTube</span><span class="hv-next">Review request</span></span>
+              <span class="hv-orow"><span class="hv-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg></span><span class="hv-kind">Reddit</span><span class="hv-next">You join in</span></span>
+              <span class="hv-orow"><span class="hv-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span><span class="hv-kind">Directory</span><span class="hv-next">Add listing</span></span>
+            </div>
+          </div>
         </div>
       </li>
     </ol>
-
-    <ul class="how-chips" aria-label="Your safeguards for every fix">
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>You stay in control</li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>One-click undo</li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Never invents facts</li>
-    </ul>
   </div>
 </section>

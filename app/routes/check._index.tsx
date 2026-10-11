@@ -1,7 +1,9 @@
-import type { ActionFunctionArgs, LinksFunction, MetaFunction } from "react-router";
+import type { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
 import { data, redirect, useActionData } from "react-router";
 import { createCheck } from "../lib/check.server";
 import { env } from "../lib/env.server";
+import { publicHostRedirect } from "../lib/tools/host.server";
+import { abs } from "../lib/tools/site";
 import { CHECK_FONT_LINKS, CheckIntro, CheckPerks, CheckShell } from "../components/check-ui";
 import styles from "../styles/check.css?url";
 
@@ -16,7 +18,17 @@ export const meta: MetaFunction = () => [
     content:
       "Paste a product link and see whether ChatGPT, Gemini and Perplexity recommend it, who they pick instead, and which sites they trust. Free, no sign-up.",
   },
+  // The AI Visibility Checker page is the one page search engines should show for this (spec decision R1);
+  // this page keeps working for the home page form, and leaves the sitemap.
+  { tagName: "link", rel: "canonical", href: abs("/tools/ai-visibility-checker") },
 ];
+
+// One public address: www.usegeo.app and the Railway address send visitors to https://usegeo.app.
+export const loader = ({ request }: LoaderFunctionArgs) => {
+  const moved = publicHostRedirect(request);
+  if (moved) throw moved;
+  return null;
+};
 
 export const links: LinksFunction = () => [...CHECK_FONT_LINKS, { rel: "stylesheet", href: styles }];
 

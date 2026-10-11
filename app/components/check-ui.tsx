@@ -20,6 +20,7 @@ import { aiReadyNote } from "../lib/ai-ready";
 import type { SourceType } from "../lib/sources";
 import { sameBrand } from "../lib/match";
 import { LeadProvider, LockIcon, MailIcon, planLine, useLead, type LeadView } from "./check-lead";
+import { SiteFooter } from "./site-footer";
 
 const SOURCE_CHIPS: Record<SourceType, string> = {
   editorial: "Review site",
@@ -156,9 +157,7 @@ export function CheckShell({
           </p>
         ) : null}
       </main>
-      <footer className="ck-foot">
-        GEO · Helps ChatGPT &amp; co recommend your products · <a href="/privacy">Privacy</a>
-      </footer>
+      <SiteFooter />
     </>
   );
   return <div className="ck">{lead ? <LeadProvider view={lead}>{page}</LeadProvider> : page}</div>;

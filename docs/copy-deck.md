@@ -59,7 +59,7 @@ approve, and counts the orders it can trace back to AI. No ad spend.
 ### How the page tells it (let the reader connect the dots)
 
 1. **The fact:** shoppers ask AI, and AI already sends stores orders (hero, Why now).
-2. **How GEO makes money:** see who AI picks, fix it in one click, see the money (How it works).
+2. **How GEO gets you picked:** the method, on your store and across the web (How it works).
 3. **The proof it's money:** the dashboard with AI revenue, orders and clicks (See the money).
 4. **Their own numbers:** the slider. We show the sum. They decide what's realistic.
 5. **The price, the questions, the free check:** Pricing, FAQ, closing CTA.
@@ -142,7 +142,7 @@ or competitor names (the Proof section is gone).
 | Rival 2 | **Saltbush Beard Co.** | SB (S) |
 | Rival 3 | **Banksia Beard Co.** | BA (B) |
 | Rival 4 | **Wattlebird Grooming** | WG (W) |
-| Outreach articles | **examplereviews.com.au**, **examplegiftguide.com.au**, **examplebeardblog.com.au**, **examplegrooming.com.au** | |
+| Outreach articles | **examplereviews.com**, **examplegiftguide.com.au**, **examplebeardblog.com**, **examplegrooming.com.au** | |
 
 Order when an answer lists all four: Ridgeback Beard Co., Wattlebird Grooming, Banksia Beard Co. and
 Saltbush Beard Co. Rankings by share of answers: Ridgeback, Saltbush, Banksia, you (4th), Wattlebird.
@@ -180,7 +180,7 @@ to sentences. Each section says one thing; don't repeat another section's job.
 | 2b | Watch a free check | `11v-video.html` | `watch` | 47-second recording of a real check (made-up store) |
 | 3 | Engines strip | `12-engines.html` | | Which AI we check |
 | 4 | Why now | `12w-why.html` | `why` | Three big numbers with sources |
-| 5 | How it works | `20-how.html` | `how` | How GEO helps you get recommended: see it, fix it, see the money |
+| 5 | How it works | `20-how.html` | `how` | GEO's method in five steps: find where AI looks, let AI read your store, product pages AI can quote, guide pages kept fresh, get named where AI looks |
 | 6 | See the sales | `20m-money.html` | `money` | Clickable sample app: Money, Questions, Fixes, Rivals |
 | 7 | What's it worth | `20w-worth.html` | `worth` | Two sliders and the sum |
 | 8 | Pricing | `42-pricing.html` | `pricing` | Monthly / Yearly switch, two cards, 6 bullets each |
@@ -273,23 +273,58 @@ Card lines stay at 8 words or fewer. On phones (760px and below) the cards sit i
 
 ## 7. How it works (`20-how.html`, id `how`)
 
-- **H2:** How GEO helps you get recommended
+Rewritten 11 Oct 2026. Ross: the old three cards (see it, fix it, see the money) repeated the hero cards and the
+sample app, so this section now shows **GEO's method**: the steps GEO really takes, checked against the code, in the
+order it works. Two kinds of work, each shown once as a band label: changes **On your store** (steps 2 to 4) and
+getting named **Across the web** (step 5). It must not repeat the hero cards, the money numbers or the sample app's tabs.
 
-Each step shows a small app screen (tag **Example**, the sample app's store and rivals, numbers as in the sample app)
-instead of a clay picture. Each screen is `role="img"` with a one-sentence description.
+- **H2:** How GEO works to get you recommended ("works to" on purpose: a method, not a promise. Alternative:
+  "What GEO does to get you recommended". Not "How GEO gets you recommended", which reads as a promise.)
+- **Intro line:** none (the band labels carry the two kinds of work). If the labels are dropped, use: "AI picks stores it can
+  read clearly and sees on sites it trusts."
 
-| Step | Screen | Title | Line |
-|---|---|---|---|
-| 1 | **Questions**: "best beard oil for dry skin"; ChatGPT: Ridgeback, Saltbush, You · #3; Gemini: Ridgeback, Banksia · Not named; Perplexity: Ridgeback · Not named | See if AI recommends you | We ask AI your buyers' questions every week. (was "We ask ChatGPT, Gemini and Perplexity your buyers' questions every week.") |
-| 2 | **Fixes**: Gentle Beard Wash; Before "Our best seller. Smells amazing." After "Soap-free beard wash for sensitive skin. 200ml."; **Approve** turns into "Pushed to Shopify" once in view (not with reduced motion) | Fix it in one click | GEO writes clearer product pages, so AI can pick you. |
-| 3 | **Money**: AI revenue $4,820 ▲ 38%, AI orders 61 ▲ 22%; weekly bars over a dashed "Starting point" line | See the money | Orders, revenue and clicks from AI, against your starting point. |
+Layout (built 11 Oct 2026): a numbered timeline (`ol`), navy numbers on one grey rail. Each step: title, one line and
+one small screen tagged **Example** (made-up store and sites from the sample data list; `role="img"` with the
+description below). Steps 2 to 4 sit in one outlined band whose label **On your store** sits on its top edge; step 5
+in a band labelled **Across the web**. So the "Tag" column below shows once per band, not on every step. Wide screens
+(1280px and up): heading and safeguard chips on the left (they stay in view while scrolling), steps on the right
+with the words left of each screen. Tablets: heading centred above, chips under the steps. Phones: the screen
+under the words, the rail on the left.
 
-Safeguard chips, one centred row under the three cards (they replace the guardrails section):
-**You stay in control** · **One-click undo** · **Never invents facts**. (Was "You approve every change", which
-isn't true on Done-for-you, where fixes are applied for the store. Standard approves each one; Done-for-you can be
-switched off, and every change can be undone.)
+| # | Tag | Title | Line | Mini screen (exact labels) | Screen description (aria-label) |
+|---|---|---|---|---|---|
+| 1 | | Find where AI looks | We ask each AI your buyers' questions and list the sites it uses. (Review 11 Oct: "Every week," cut, the engines strip and the sample app already say every week.) | A question chip **beard oil under $40**; under it three source chips, each with an AI's colour dot: **examplereviews.com**, **examplebeardblog.com**, **reddit.com** | Example: for "beard oil under $40", each AI uses different sites, such as examplereviews.com, examplebeardblog.com and reddit.com. |
+| 2 | On your store | Let AI read your store | We check that each AI is allowed to read your pages. (Review 11 Oct: the screen already names ChatGPT, Google and Perplexity; the check covers every AI crawler in `robots.ts`.) | Three rows: **ChatGPT** (tick), **Google** (tick), **Perplexity** with an amber pill **Blocked** | Example: ChatGPT and Google may read your pages; Perplexity is blocked, so GEO shows how to fix it. |
+| 3 | On your store | Product pages AI can quote | We open descriptions with who it's for and key facts, and add FAQs. | A product page: chip **Type: Beard Oil**, first line highlighted **For dry beards. 30ml.**, grey lines, then **FAQ** with three closed questions | Example: a product page that opens with who it's for and its size, with a product type and FAQs. |
+| 4 | On your store | Guide pages, kept fresh | We write buying guides and review them every 60 to 90 days. | A guide page with the stamp **Updated October 2026** (the app's own wording), linked to two smaller guide pages | Example: a buying guide marked "Updated October 2026", linked to two more specific guides. |
+| 5 | Across the web | Get named where AI looks | We find pages each AI cites that name rivals, not you, and draft pitches. Small line under it: **Done-for-you: we send pitches, add listings and follow up.** | Four rows, icon, kind and next step: **Roundup** · **Pitch drafted**; **YouTube** · **Review request**; **Reddit** · **You join in**; **Directory** · **Add listing** | Example: pages AI cites that skip you, each with an honest next step: a pitch, a review request, a thread you join yourself, a listing. |
 
----
+Safeguard chips (under the heading on wide screens, under the steps on tablets and phones): **One-click undo** ·
+**Only your store's facts** · **No fake reviews or posts**. (Review 11 Oct: "You stay in control" cut as vague; the
+undo chip carries it and the FAQ answer "Will GEO change my store without asking?" explains approval. Never "You
+approve every change": Done-for-you applies fixes for the store.)
+
+Optional sixth step, only if the layout wants a 3 × 2 grid: **Repeat
+every week** · "We ask again weekly, daily on Done-for-you, and work on what's still missing." · mini screen **Next
+check: Monday**. About 20 more words.
+
+Words: 164 visible words by `wordcount.py` after the review (172 as first built; the old section had 116; each band
+label shows once instead of a tag on every step), so the page grows by 48; Ross asked for the method to be explained.
+Never more than 220 for this section.
+
+Colour (14b): the one purple focal point is the highlighted opening line in step 3. Step numbers and ticks navy,
+"Blocked" the existing amber pill, the "Updated" line the green status pill, band labels, tags and chips grey.
+
+Honesty notes for this section (checked in the code, 11 Oct 2026):
+- GEO checks robots.txt weekly and shows the fix; it can't edit the theme, and firewall blocks don't show in
+  robots.txt. Never say "we unblock you".
+- A guide is reviewed after 90 days (Standard) or 60 (Done-for-you) and only updated when its facts or questions
+  changed. Never say every guide is updated every 60 days. Product FAQs are refreshed too, but only guides show an
+  "Updated" date.
+- Reddit and forum threads: the store joins in as itself. GEO never writes or posts for the store, never writes
+  reviews (review sites: claim the free profile). Done-for-you's team sends pitches and review requests, adds listings
+  and follows up, starting after the trial; threads stay with the store.
+- No rankings, sales or timing promised. The FAQ answer "Will GEO change my store without asking?" covers approval.
 
 ## 8. See the sales (`20m-money.html`, id `money`)
 
@@ -579,7 +614,7 @@ No longer used on the home page: `clay-answer.jpg`, `clay-support.jpg`, `guide-*
 
 Purple (lilac, periwinkle, cobalt) is a highlight for the main point only. Kept purple: the hero band (the brand
 moment), the link form and its glow, the logo, the Standard card and its badge, the closing call-to-action card, and
-one key element per section (Why now: the middle number "nearly 60×"; How it works: "You" in step 1 and the bars in
+one key element per section (Why now: the middle number "nearly 60×"; How it works: the highlighted opening line in
 step 3; the sample app: its data bars and line only; What's it worth: the result box with $160; FAQ: the asked
 question as a light cobalt bubble). Everything else is neutral: sections on white or the very light warm grey
 `--warm-50`, white cards with a thin light grey line (`--line-soft`) and a soft neutral shadow, grey chips and tags,

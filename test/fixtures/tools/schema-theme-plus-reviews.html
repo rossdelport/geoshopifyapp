@@ -1,0 +1,16 @@
+<!doctype html>
+<!-- MADE UP for tests: the theme's ProductGroup and a reviews app's Product agree; the app adds the rating. -->
+<html><head>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"ProductGroup","@id":"/products/cedar-beard-oil#product","name":"Cedar Beard Oil","productGroupID":"1",
+ "brand":{"@type":"Brand","name":"Example Grooming Co"},"description":"Beard oil with jojoba.",
+ "hasVariant":[
+  {"@type":"Product","name":"Cedar Beard Oil - 30 ml","sku":"CBO-30","image":"https://x.example/a.jpg","offers":{"@type":"Offer","price":"24.00","priceCurrency":"USD","availability":"https://schema.org/InStock"}},
+  {"@type":"Product","name":"Cedar Beard Oil - 50 ml","sku":"CBO-50","image":"https://x.example/b.jpg","offers":{"@type":"Offer","price":"34.00","priceCurrency":"USD","availability":"https://schema.org/InStock"}}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Product","name":"Cedar Beard Oil",
+ "aggregateRating":{"@type":"AggregateRating","ratingValue":"4.8","reviewCount":"12"},
+ "offers":{"@type":"Offer","price":"24.00","priceCurrency":"USD","availability":"https://schema.org/InStock"}}
+</script>
+</head><body></body></html>

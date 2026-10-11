@@ -1,0 +1,9 @@
+# Made-up Store
+
+> A made-up llms.txt for tests: short (relative) links.
+
+## Main pages
+
+- [Beard oils](/collections/beard-oil): all our oils
+- [About us](pages/about)
+- [Contact](https://made-up-store.example/pages/contact)

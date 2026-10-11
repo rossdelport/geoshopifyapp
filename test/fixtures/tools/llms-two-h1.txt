@@ -1,0 +1,9 @@
+# Made-up Store
+
+> A made-up llms.txt for tests: two title lines.
+
+# Made-up Store Guides
+
+## Guides
+
+- [Beard care guide](https://made-up-store.example/blogs/guides/beard-care)

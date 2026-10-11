@@ -76,6 +76,20 @@
 .foot-links a { font-size: 15px; font-weight: 500; line-height: 1.6; color: var(--navy); transition: color .2s ease; }
 .foot-links a:hover { color: var(--navy); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(11, 12, 43, 0.35); }
 
+/* The free tools: a second row under the logo and the main links (the main row stays as it was),
+   four columns on wide screens, two on phones. Neutral like the rest of the footer. */
+.foot-main { flex-wrap: wrap; }
+.foot-tools {
+  flex: 1 1 100%; display: grid; grid-template-columns: repeat(4, minmax(0, max-content)); gap: 0 48px;
+  padding-top: 24px; border-top: 1px solid var(--line-soft);
+}
+.foot-tools-h { grid-column: 1 / -1; margin-bottom: 4px; font-family: var(--font-head); font-size: 14px; font-weight: 600; line-height: 1.6; color: var(--navy); }
+.foot-tools a {
+  display: inline-flex; align-items: center; min-height: 40px;
+  font-size: 15px; font-weight: 500; line-height: 1.4; color: var(--navy); transition: color .2s ease;
+}
+.foot-tools a:hover { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(11, 12, 43, 0.35); }
+
 .foot-bottom {
   margin-top: 48px; padding: 24px 0 30px;
   border-top: 1px solid var(--line-soft);
@@ -88,6 +102,7 @@
   .foot-cta { grid-template-columns: minmax(0, 1fr) minmax(0, 380px); min-height: 400px; }
   .foot-cta-tx { padding: 72px 16px 72px 48px; }
   .foot-main { margin-top: 64px; }
+  .foot-tools { grid-template-columns: repeat(3, minmax(0, max-content)); column-gap: 40px; }
 }
 @media (max-width: 760px) {
   .foot-sec { padding: 4px 8px 8px; }
@@ -110,5 +125,7 @@
   .foot-main { margin-top: 48px; flex-direction: column; align-items: flex-start; gap: 28px; }
   .foot-links { gap: 8px 24px; }
   .foot-links a { font-size: 14px; }
+  .foot-tools { align-self: stretch; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 20px; padding-top: 20px; }
+  .foot-tools a { min-height: 44px; font-size: 14px; }
   .foot-bottom { margin-top: 36px; padding: 20px 0 24px; font-size: 13px; }
 }

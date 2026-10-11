@@ -1,0 +1,89 @@
+/* AI Overview Checker (/tools/ai-overview-checker). Loaded after check.css and tools.css; classes are
+   prefixed tl-aio-. Neutral result cards (purple stays on the band, the form and the one button). */
+
+/* the example buttons sit close under the fields */
+.tl-aio-form .tl-examples { margin-top: -2px; }
+
+/* while a search runs, the current result dims a little (nothing moves) */
+.tl-aio-busy { opacity: .55; transition: opacity .2s ease; }
+@media (prefers-reduced-motion: reduce) { .tl-aio-busy { transition: none; } }
+
+/* a failed search: the error takes focus after a JavaScript run (the example stays below it) */
+.tl-aio-error { margin-bottom: 12px; border-radius: 14px; }
+.tl-aio-error:focus { outline: none; }
+.tl-aio-error:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 3px; }
+
+.tl-aio { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.tl-aio-main { gap: 14px; }
+.tl-aio-search { overflow-wrap: anywhere; }
+.tl-aio-main .tl-verdict .tl-result-h { margin: 0; }
+.tl-aio-line { font-size: 15px; line-height: 1.6; color: var(--text); max-width: 760px; }
+
+/* the visitor's site: a soft line, green edge when cited */
+.tl-aio-you {
+  display: flex; flex-direction: column; gap: 2px; padding: 12px 16px; border-radius: 14px;
+  background: var(--warm-50); box-shadow: var(--ring-soft); font-size: 15px; line-height: 1.55; color: var(--navy);
+}
+.tl-aio-you.is-cited { box-shadow: inset 3px 0 0 var(--green), var(--ring-soft); }
+.tl-aio-you-label { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+
+.tl-aio-sec { display: flex; flex-direction: column; gap: 10px; min-width: 0; padding-top: 16px; border-top: 1px solid var(--line-soft); }
+.tl-aio-more .tl-aio-sec:first-child { padding-top: 0; border-top: 0; }
+
+/* the overview text, as Google shows it (plain text, line breaks kept) */
+.tl-aio-quote {
+  margin: 0; padding: 14px 18px; border-radius: 14px; background: var(--warm-50);
+  box-shadow: inset 3px 0 0 #c9c7d8, var(--ring-soft);
+}
+.tl-aio-quote p { font-size: 15.5px; line-height: 1.65; color: var(--ink-2); white-space: pre-line; overflow-wrap: anywhere; }
+
+/* cited sites: number, domain, type, tags, then the page title */
+.tl-aio-sources { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.tl-aio-source { display: flex; gap: 12px; padding: 4px 0 12px; border-top: 1px solid var(--line-soft); min-width: 0; }
+.tl-aio-source:first-child { border-top: 0; padding-top: 0; }
+.tl-aio-source.is-mine { background: linear-gradient(90deg, rgba(53, 167, 107, 0.07), transparent 70%); border-radius: 10px; }
+.tl-aio-num {
+  flex: none; width: 28px; height: 28px; margin-top: 8px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  font: 600 13px/1 var(--font-head); color: var(--navy); background: var(--warm-100);
+}
+.tl-aio-source-body { min-width: 0; display: flex; flex-direction: column; gap: 0; }
+.tl-aio-source-top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; min-width: 0; }
+.tl-aio-domain {
+  /* 44 px high, so each link is easy to tap on a phone (the text itself stays compact) */
+  display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; font-size: 15.5px; color: var(--navy);
+  text-decoration: underline; text-decoration-color: rgba(11, 12, 43, 0.3);
+}
+.tl-aio-domain:hover { text-decoration-color: currentColor; }
+.tl-aio-title { font-size: 14px; line-height: 1.5; color: var(--text); overflow-wrap: anywhere; }
+.tl-aio-tag {
+  display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border-radius: 100px;
+  font-size: 12.5px; font-weight: 500; color: var(--ink-2); background: var(--warm-100); white-space: nowrap;
+}
+.tl-aio-tag.is-cited { color: #2d3566; background: #eef0f6; }
+
+.tl-aio-meaning { gap: 6px; }
+.tl-aio-meaning a { color: var(--navy); text-decoration: underline; text-decoration-color: rgba(11, 12, 43, 0.35); }
+
+/* normal results and "People also ask": side by side on wide screens */
+.tl-aio-more { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px 32px; }
+.tl-aio-more .tl-aio-sec { padding-top: 0; border-top: 0; }
+.tl-aio-more:has(> .tl-aio-sec:only-child) { grid-template-columns: minmax(0, 1fr); }
+.tl-aio-organic { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.tl-aio-organic li { display: flex; flex-wrap: wrap; align-items: center; gap: 0 10px; min-height: 44px; padding: 0; border-top: 1px solid var(--line-soft); min-width: 0; }
+.tl-aio-organic li:first-child { border-top: 0; }
+.tl-aio-rank { flex: none; min-width: 32px; font: 600 13.5px/1 var(--font-head); color: var(--ink-2); }
+.tl-aio-organic .tl-aio-domain { font-size: 14.5px; font-weight: 500; }
+.tl-aio-next { font-size: 15px; }
+.tl-aio-next a { display: inline-flex; align-items: center; min-height: 44px; color: var(--navy); text-decoration: underline; text-decoration-color: rgba(11, 12, 43, 0.35); }
+.tl-aio-print { text-align: center; max-width: 720px; margin: 0 auto; }
+
+@media (max-width: 900px) {
+  .tl-aio-more { grid-template-columns: minmax(0, 1fr); }
+  .tl-aio-more .tl-aio-sec + .tl-aio-sec { padding-top: 16px; border-top: 1px solid var(--line-soft); }
+}
+@media (max-width: 640px) {
+  .tl-aio-quote { padding: 12px 14px; }
+  .tl-aio-quote p { font-size: 15px; }
+  .tl-aio-source { gap: 10px; }
+  .tl-aio-num { width: 26px; height: 26px; margin-top: 9px; font-size: 12.5px; }
+}

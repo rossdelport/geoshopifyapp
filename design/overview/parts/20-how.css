@@ -1,122 +1,186 @@
-/* How it works: three white step cards, each a small app screen (example data, the same store and rivals
-   as the sample app below), then a number, a title and one line. The safeguards for step 2's fixes sit as
-   one centred row of chips under the cards, so the cards stay even.
-   The screens are pictures (role="img" with a plain sentence for screen readers). Motion, only once in view
-   and never with reduced motion (20-how.js adds the classes): step 2's Approve turns into "Pushed to
-   Shopify", step 3's bars grow. Without JavaScript or with reduced motion the screens are still.
-   Phones: the screen sits on top of the words, full width. */
-/* .section.alt (base.css) gives the very light warm grey band. Purple only for the data: "You" in step 1
-   and the bars in step 3. */
-.how-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
-.how-step {
-  display: flex; flex-direction: column; min-width: 0;
-  padding: 12px; border-radius: var(--r-xl); background: var(--white);
-  box-shadow: var(--ring-soft), var(--shadow-soft);
+/* How it works: GEO's method as a numbered timeline (ol). A navy number per step on one grey rail, then the
+   step's title and line, and one small screen (example data, the made-up store and sites from the sample data
+   list; role="img" with a plain sentence for screen readers). Steps 2 to 4 sit in one outlined band labelled
+   "On your store", step 5 in a band labelled "Across the web", so the two kinds of work read at a glance.
+   Wide screens (1280px and up): the heading and the safeguard chips stay on the left (sticky), the steps on the
+   right, words left of each screen. Tablets: heading centred above, chips under the steps. Phones: the screen
+   sits under the words, the rail stays on the left.
+   Colour (copy deck 14b): one purple focal point, the highlighted opening line in step 3. Numbers and ticks
+   navy, "Blocked" the amber pill, everything else grey. .section.alt (base.css) gives the warm grey band. */
+.how {
+  --rail: #dcdbd5;
+  --band-line: #e1e0da;
+  --band-bg: rgba(255, 255, 255, 0.55);
 }
 
-.how-tx { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 22px 16px 16px; min-width: 0; }
+/* ---- layout: heading, steps, chips ---- */
+.how-grid { display: flex; flex-direction: column; align-items: center; }
+.how-side { display: contents; }
+.how-h2 { order: 0; max-width: 760px; margin-bottom: 56px; text-align: center; }
+.how-steps { order: 1; width: 100%; max-width: 900px; }
+.how-chips { order: 2; }
+
+@media (min-width: 1280px) {
+  .how-grid { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); column-gap: 72px; align-items: start; }
+  .how-side { display: flex; flex-direction: column; align-items: flex-start; gap: 32px; position: sticky; top: 132px; padding-top: 18px; }
+  .how-h2 { max-width: none; margin: 0; text-align: left; }
+  .how-steps { max-width: none; }
+  .how-chips { flex-direction: column; align-items: flex-start; margin: 0; }
+}
+
+/* ---- the steps ---- */
+.how-steps {
+  list-style: none; margin: 0; padding: 0;
+  /* number size, padding above a title, title line height: the number lines up with the title */
+  --n: 32px; --pt: 22px; --tl: 28px; --gap-band: 30px; --gap-top: 12px;
+  --n-top: calc(1px + var(--pt) + (var(--tl) - var(--n)) / 2);
+}
+.how-step { position: relative; display: grid; grid-template-columns: var(--n) minmax(0, 1fr); column-gap: 18px; }
+/* the rail: one grey line through the numbers, from the first to the last */
+.how-step::before {
+  content: ""; position: absolute; left: calc(var(--n) / 2 - 1px); top: 0; bottom: 0; width: 2px;
+  border-radius: 2px; background: var(--rail); transform-origin: 50% 0;
+}
+.how-step:first-child::before { top: calc(var(--n-top) + var(--n) / 2); }
+/* room above each band, so its label never touches the screen above it (step 1 has no outline of its own) */
+.how-step.g-top { margin-top: var(--gap-top); }
+.how-step.g-top::before { top: calc(-1 * var(--gap-top)); }
+.how-step.g-solo { margin-top: var(--gap-band); }
+.how-step.g-solo::before { top: calc(-1 * var(--gap-band)); }
+.how-step:last-child::before { bottom: calc(100% - var(--n-top) - var(--n) / 2); }
+
 .how-n {
-  width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center;
+  grid-column: 1; grid-row: 1; position: relative; z-index: 1; margin-top: var(--n-top);
+  width: var(--n); height: var(--n); border-radius: 50%; display: grid; place-items: center;
   background: var(--navy); color: var(--white);
-  font-family: var(--font-head); font-weight: 600; font-size: 15px; line-height: 1;
-  box-shadow: 0 8px 16px -8px rgba(11, 12, 43, 0.5);
-}
-.how-t { font-size: 24px; letter-spacing: -0.7px; line-height: 1.25; color: var(--navy); margin-top: 4px; }
-.how-p { font-size: 16px; line-height: 1.55; color: var(--text); max-width: 34ch; }
-
-/* ---- the small app screens ---- */
-.how-scr {
-  container: hscr / inline-size;
-  position: relative; display: flex; flex-direction: column; gap: 10px; min-width: 0;
-  height: 262px; padding: 12px; border-radius: 22px; overflow: hidden;
-  background: #f3f3f5; box-shadow: inset 0 0 0 1px #e8e8ec;
-  font-family: var(--font-body); font-size: 13px; line-height: 1.4; color: #303030; text-align: left;
-}
-.hs-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 2px 4px 0; }
-.hs-app { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; color: #303030; }
-.hs-mark { position: relative; width: 16px; height: 16px; flex: none; }
-.hs-mark i { position: absolute; width: 11px; height: 11px; border-radius: 50%; }
-.hs-mark i:first-child { left: 0; top: 0; background: var(--peri-300); }
-.hs-mark i:last-child { right: 0; bottom: 0; background: var(--cobalt); mix-blend-mode: multiply; }
-.hs-tag { font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; line-height: 1; color: var(--text-2); background: #fff; border-radius: 6px; padding: 4px 7px; box-shadow: inset 0 0 0 1px #e4e4e8; }
-.hs-panel {
-  flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px;
-  padding: 14px; border-radius: 14px; background: #fff;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04), 0 10px 20px -16px rgba(11, 12, 43, 0.25);
-}
-.how-scr svg { width: 15px; height: 15px; flex: none; }
-
-/* step 1: one buyer question, a row per AI: who it named, and where you came */
-.hs-q { display: flex; align-items: center; gap: 8px; padding-bottom: 10px; border-bottom: 1px solid #ededf0; font-size: 13.5px; font-weight: 650; color: var(--navy); }
-.hs-q svg { color: var(--text-2); }
-.hs-rows { list-style: none; margin: 0; padding: 0; flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; gap: 6px; }
-.hs-row { display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; align-items: center; gap: 8px; }
-.hs-eng { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; color: #4a4a4a; white-space: nowrap; }
-.hs-names { display: flex; gap: 4px; min-width: 0; overflow: hidden; }
-.hs-names b { flex: none; padding: 3px 7px; border-radius: 6px; background: #f3f3f5; font-size: 11.5px; font-weight: 600; line-height: 1.3; color: #4a4a4a; white-space: nowrap; }
-.hs-names b.is-you { background: var(--lav-chip); color: var(--cobalt-deep); }
-.hs-st { height: 22px; padding: 0 8px; font-size: 11.5px; font-weight: 600; }
-
-/* step 2: one suggested change, before and after, and the Approve button */
-.hs-prod { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 650; color: #303030; }
-.hs-prod svg { color: var(--text-2); }
-.hs-ba { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
-.hs-ba > div { position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 4px; padding: 9px 10px; border-radius: 10px; font-size: 12.5px; line-height: 1.45; }
-.hs-l { font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; line-height: 1.2; }
-.hs-before { background: #f7f7f7; box-shadow: inset 0 0 0 1px #e8e8e8; color: #707070; transition: opacity .4s ease; }
-.hs-before .hs-l { color: #7a7a7a; }
-.hs-after { background: #fbfffc; box-shadow: inset 0 0 0 1px rgba(31, 157, 85, 0.28); color: #303030; }
-.hs-after .hs-l { color: var(--green-ink); }
-.hs-after::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 25%, rgba(108, 214, 140, 0.3) 50%, transparent 75%); opacity: 0; transform: translateX(-100%); pointer-events: none; }
-/* both labels share one cell, so the button keeps its width when it changes */
-.hs-approve {
-  position: relative; isolation: isolate; overflow: hidden; align-self: flex-start;
-  display: inline-grid; align-items: center; height: 34px; padding: 0 14px; border-radius: 9px;
-  color: #fff; font-size: 12.5px; font-weight: 600; background: var(--grad-btn);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 0 0 1px #15163c, 0 2px 4px -1px rgba(21, 22, 60, 0.4);
-}
-.hs-approve::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--green-ink); opacity: 0; transition: opacity .4s ease; }
-.hs-approve > span { grid-area: 1 / 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; transition: opacity .3s ease, transform .4s cubic-bezier(.3, .8, .25, 1); }
-.hs-approve svg { width: 14px; height: 14px; }
-.hs-ap-b { opacity: 0; transform: translateY(10px); }
-.is-done .hs-ap-a { opacity: 0; transform: translateY(-10px); }
-.is-done .hs-ap-b { opacity: 1; transform: none; }
-.is-done .hs-approve { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 0 0 1px #0f5c32, 0 2px 4px -1px rgba(15, 92, 50, 0.4); }
-.is-done .hs-approve::before { opacity: 1; }
-.is-done .hs-before { opacity: .55; }
-.is-done .hs-after::after { animation: hs-sweep 1.1s .15s ease-out; }
-@keyframes hs-sweep { 0% { opacity: 1; transform: translateX(-100%); } 100% { opacity: 1; transform: translateX(100%); } }
-
-/* step 3: AI revenue and orders, then weekly bars over a dashed "starting point" line */
-.hs-kpis { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-.hs-kpi { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.hs-kpi + .hs-kpi { padding-left: 14px; border-left: 1px solid #ededf0; }
-.hs-kl { font-size: 12px; font-weight: 600; color: #616161; }
-.hs-kv { font-family: var(--font-head); font-size: 26px; font-weight: 600; letter-spacing: -0.8px; line-height: 1.1; color: var(--navy); font-variant-numeric: tabular-nums; }
-.hs-kpi .delta-up { font-size: 12px; font-variant-numeric: tabular-nums; }
-.hs-chart { position: relative; flex: 1; min-height: 44px; margin-top: 2px; }
-.hs-bars { position: absolute; inset: 0; display: flex; align-items: flex-end; gap: 6px; }
-.hs-bars i { flex: 1; height: calc(var(--h) * 100%); border-radius: 4px 4px 2px 2px; background: #d6d5d0; transform-origin: 50% 100%; }
-.hs-bars i:nth-child(n+5) { background: var(--cobalt-mid); }
-.hs-bars i:last-child { background: var(--cobalt); }
-/* the starting point: your weekly AI revenue before you joined */
-.hs-base { position: absolute; left: 0; right: 0; bottom: 42%; border-top: 1.5px dashed #8a8ba0; }
-.hs-base em { position: absolute; left: 0; bottom: 3px; padding: 1px 5px; border-radius: 4px; background: rgba(255, 255, 255, 0.92); font-style: normal; font-size: 10.5px; font-weight: 600; line-height: 1.3; color: #5f6070; }
-.hs-wait .hs-bars i { transform: scaleY(0); }
-.hs-grow .hs-bars i { transform: none; transition: transform .8s cubic-bezier(.25, .8, .25, 1) calc(var(--i, 0) * 70ms + 150ms); }
-.hs-bars i:nth-child(2) { --i: 1; } .hs-bars i:nth-child(3) { --i: 2; } .hs-bars i:nth-child(4) { --i: 3; }
-.hs-bars i:nth-child(5) { --i: 4; } .hs-bars i:nth-child(6) { --i: 5; } .hs-bars i:nth-child(7) { --i: 6; } .hs-bars i:nth-child(8) { --i: 7; }
-
-/* narrow screens (tablet columns, small phones): smaller type, one rival less */
-@container hscr (max-width: 330px) {
-  .hs-row { grid-template-columns: 74px minmax(0, 1fr) auto; gap: 6px; }
-  .hs-eng { gap: 6px; font-size: 12px; }
-  .hs-names b:nth-child(2):not(.is-you) { display: none; }
-  .hs-ba > div { padding: 8px; font-size: 12px; }
-  .hs-kv { font-size: 22px; }
+  font-family: var(--font-head); font-weight: 600; font-size: 14px; line-height: 1;
+  box-shadow: 0 0 0 5px var(--warm-50), 0 8px 16px -8px rgba(11, 12, 43, 0.5);
 }
 
-.how-chips { list-style: none; margin: 28px 0 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.how-body {
+  grid-column: 2; grid-row: 1; position: relative; min-width: 0;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr); align-items: start; column-gap: 28px;
+  padding: var(--pt) 22px 22px; border: 1px solid transparent;
+}
+/* the two bands: steps 2 to 4 share one outline (the joins are transparent borders over the same fill) */
+.g-top .how-body, .g-mid .how-body, .g-end .how-body, .g-solo .how-body { border-color: var(--band-line); background: var(--band-bg); }
+.g-top .how-body { border-bottom-color: transparent; border-radius: 22px 22px 0 0; }
+.g-mid .how-body { border-top-color: transparent; border-bottom-color: transparent; }
+.g-end .how-body { border-top-color: transparent; border-radius: 0 0 22px 22px; }
+.g-solo .how-body { border-radius: 22px; }
+.how-lane {
+  position: absolute; top: 0; left: 18px; transform: translateY(-50%);
+  display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px 0 10px; border-radius: 100px;
+  background: var(--white); box-shadow: var(--ring-soft), 0 4px 10px -8px rgba(17, 17, 26, 0.3);
+  font-size: 13px; font-weight: 600; line-height: 1; color: var(--navy); white-space: nowrap;
+}
+.how-lane svg { width: 14px; height: 14px; flex: none; color: var(--text-2); }
+
+.how-tx { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; }
+.how-t { font-size: 21px; line-height: var(--tl); letter-spacing: -0.5px; color: var(--navy); }
+.how-p { font-size: 15.5px; line-height: 1.55; color: var(--text); max-width: 36ch; text-wrap: pretty; }
+.how-dfy {
+  margin-top: 6px; padding: 8px 12px; border-radius: 10px; background: var(--warm-100);
+  font-size: 13.5px; line-height: 1.5; color: var(--ink-2); max-width: 40ch; text-wrap: pretty;
+}
+.how-dfy b { font-weight: 600; color: var(--navy); }
+
+/* ---- the small screens: a white card, its Example tag sitting on the top edge like the band labels ---- */
+.how-vis {
+  container: hvis / inline-size;
+  position: relative; display: flex; flex-direction: column; min-width: 0;
+  padding: 14px; border-radius: 16px; background: var(--white);
+  box-shadow: 0 0 0 1px #e4e4e8, 0 1px 2px rgba(17, 17, 26, 0.04), 0 14px 28px -20px rgba(11, 12, 43, 0.28);
+  font-family: var(--font-body); font-size: 12.5px; line-height: 1.4; color: #303030; text-align: left;
+}
+.hv-tag {
+  position: absolute; top: 0; right: 14px; transform: translateY(-50%);
+  font-size: 9.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; line-height: 1;
+  color: var(--text-2); background: var(--white); border-radius: 5px; padding: 3px 6px; box-shadow: inset 0 0 0 1px #e2e2e6;
+}
+.hv-panel { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 8px; min-height: 100px; }
+.how-vis svg { width: 14px; height: 14px; flex: none; }
+/* grey placeholder lines for page text */
+.hv-bar { display: block; height: 6px; width: 100%; border-radius: 3px; background: #ececf0; }
+.hv-bar-t { height: 8px; width: 72%; background: #dedee4; }
+.hv-bar-s { width: 62%; }
+.hv-bar-m { width: 80%; }
+
+/* step 1: one buyer question, and the sites the AIs used for it (one AI colour each) */
+.hv-q { display: inline-flex; align-self: flex-start; align-items: center; gap: 7px; height: 28px; padding: 0 11px 0 9px; border-radius: 9px; background: #f3f3f5; font-size: 12.5px; font-weight: 650; color: var(--navy); white-space: nowrap; }
+.hv-q svg { color: var(--text-2); }
+.hv-src { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding-left: 22px; }
+.hv-src::before { content: ""; position: absolute; left: 13px; top: -8px; bottom: 11px; width: 1.5px; border-radius: 1px; background: #dcdce2; }
+.hv-src > span {
+  position: relative; display: inline-flex; align-items: center; gap: 7px; max-width: 100%; height: 22px; padding: 0 9px 0 8px;
+  border-radius: 7px; box-shadow: inset 0 0 0 1px #e6e6ea; font-size: 12px; font-weight: 500; color: var(--ink-2); white-space: nowrap;
+}
+.hv-src > span::before { content: ""; position: absolute; left: -8.5px; top: 50%; width: 8px; height: 1.5px; background: #dcdce2; }
+
+/* step 2: may each AI read the store? */
+.hv-read { gap: 5px; }
+.hv-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 29px; padding: 0 5px 0 11px; border-radius: 8px; background: #f7f7f9; }
+.hv-eng { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--ink-2); white-space: nowrap; }
+.hv-ok { width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; background: #fff; box-shadow: inset 0 0 0 1px #e2e2e6; color: var(--navy); }
+.hv-ok svg { width: 13px; height: 13px; }
+.hv-block { height: 22px; padding: 0 9px; font-size: 11.5px; font-weight: 600; }
+
+/* step 3: a product page that opens with who it's for, then FAQs (the purple focal point: the opening line) */
+.hv-prod { display: grid; grid-template-columns: minmax(0, 1fr); align-content: center; gap: 8px; }
+.hv-pd { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.hv-pimg { width: 36px; height: 36px; flex: none; border-radius: 8px; display: grid; place-items: center; background: #f3f3f5; color: #8a8b9c; }
+.hv-pimg svg { width: 16px; height: 16px; }
+.hv-pinfo { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.hv-type { display: inline-flex; align-items: center; height: 20px; padding: 0 7px; border-radius: 6px; background: #f3f3f5; box-shadow: inset 0 0 0 1px #e6e6ea; font-size: 11px; font-weight: 600; color: var(--ink-2); white-space: nowrap; }
+.hv-hl { display: block; line-height: 1.5; }
+.hv-hl span {
+  padding: 2px 5px; border-radius: 4px; font-weight: 650; color: var(--cobalt-deep);
+  background: linear-gradient(var(--lav-chip), var(--lav-chip)) no-repeat 0 0 / 100% 100%;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+.hv-lines { display: flex; flex-direction: column; gap: 5px; }
+.hv-faq { display: flex; flex-direction: column; gap: 0; padding-top: 2px; }
+.hv-faq-h { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; line-height: 1.2; color: #616161; margin-bottom: 3px; }
+.hv-fq { display: flex; align-items: center; gap: 10px; height: 20px; border-top: 1px solid #f0f0f3; }
+.hv-fq .hv-bar { flex: 1; width: auto; max-width: 78%; margin-right: auto; }
+.hv-fq .hv-bar-s { max-width: 56%; }
+.hv-fq .hv-bar-m { max-width: 68%; }
+.hv-fq svg { width: 12px; height: 12px; color: #9a9bab; }
+/* wider screens: the page on the left, its FAQs on the right; phones: stacked, with one placeholder line less */
+@container hvis (min-width: 285px) {
+  .hv-prod { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); grid-template-areas: "pd faq" "hl faq" "ln faq"; column-gap: 14px; align-items: center; }
+  .hv-pd { grid-area: pd; } .hv-hl { grid-area: hl; } .hv-lines { grid-area: ln; }
+  .hv-faq { grid-area: faq; align-self: center; padding: 0 0 0 14px; border-left: 1px solid #f0f0f3; }
+}
+@container hvis (max-width: 284.98px) {
+  .hv-lines .hv-bar-s { display: none; }
+  .hv-fq { height: 19px; }
+}
+
+/* step 4: a buying guide with its "Updated" line, linked to two more specific guides */
+.hv-guide { gap: 0; }
+.hv-gmain { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 10px; padding: 10px 11px; border-radius: 9px; box-shadow: inset 0 0 0 1px #e6e6ea; }
+.hv-gtitle { flex: 1 1 90px; min-width: 0; display: flex; align-items: center; gap: 7px; color: #8a8b9c; }
+.hv-stamp { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 100px; background: var(--green-bg); color: var(--green-ink); font-size: 11px; font-weight: 600; white-space: nowrap; }
+.hv-stamp svg { width: 11px; height: 11px; }
+/* the links: a short stem down from the guide, splitting to the two smaller guides */
+.hv-fork { position: relative; display: block; height: 13px; margin: 8px 25% 0; border: 1.5px solid #dcdce2; border-bottom: 0; border-radius: 7px 7px 0 0; }
+.hv-fork::before { content: ""; position: absolute; left: calc(50% - 0.75px); top: -9.5px; width: 1.5px; height: 9px; background: #dcdce2; }
+.hv-gsubs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.hv-gsub { display: flex; align-items: center; gap: 7px; height: 30px; padding: 0 9px; border-radius: 8px; box-shadow: inset 0 0 0 1px #e6e6ea; color: #8a8b9c; }
+.hv-gsub svg { width: 13px; height: 13px; }
+
+/* step 5: pages AI cites that skip the store, each with an honest next step */
+.hv-out { gap: 0; }
+.hv-orow { display: flex; align-items: center; gap: 9px; height: 28px; }
+.hv-orow + .hv-orow { border-top: 1px solid #f0f0f3; }
+.hv-ic { width: 22px; height: 22px; flex: none; border-radius: 6px; display: grid; place-items: center; background: #f3f3f5; color: var(--ink-2); }
+.hv-ic svg { width: 13px; height: 13px; }
+.hv-kind { flex: 1; min-width: 0; font-weight: 600; color: var(--ink-2); white-space: nowrap; }
+.hv-next { display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 100px; background: var(--warm-100); box-shadow: inset 0 0 0 1px var(--line-soft); font-size: 11.5px; font-weight: 500; color: var(--navy); white-space: nowrap; }
+
+/* ---- safeguard chips ---- */
+.how-chips { list-style: none; margin: 36px 0 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
 .how-chips li {
   display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 14px 0 12px; border-radius: 100px;
   background: var(--white); box-shadow: var(--ring-soft), 0 6px 14px -10px rgba(17, 17, 26, 0.25);
@@ -124,43 +188,72 @@
 }
 .how-chips svg { width: 14px; height: 14px; flex: none; color: var(--navy); }
 
-/* Rise in (05-shared.js): a card's step number pops in just after it; the safeguard chips rise one by one
-   and their ticks pop. With reduced motion base.css stops it all and the finished state shows. */
+/* ---- motion ----
+   Rise in (05-shared.js marks each .how-step): here a step only fades, so the bands stay in one piece, while its
+   words and screen rise; the number pops and the rail draws down. The chips rise one by one, their ticks pop.
+   Then, once a screen is well in view, 20-how.js plays its small parts once (.hv-wait, then .hv-go). Without
+   JavaScript, for reduced motion (base.css also stops all transitions) and for crawlers: the finished picture. */
+.how-steps .how-step.rise { transform: none; }
+.how-step.rise .how-tx, .how-step.rise .how-vis { transform: translate3d(0, 14px, 0); }
+.how-step.rise-go .how-tx, .how-step.rise-go .how-vis { transform: none; transition: transform .8s cubic-bezier(.2, .7, .2, 1) var(--rise-d, 0ms); }
+.how-step.rise-go .how-vis { transition-delay: calc(var(--rise-d, 0ms) + 90ms); }
 .how-step.rise .how-n { opacity: 0; transform: scale(.4); }
 .how-step.rise-go .how-n {
   opacity: 1; transform: none;
-  transition: opacity .3s ease calc(var(--rise-d, 0ms) + 380ms), transform .6s cubic-bezier(.34, 1.56, .64, 1) calc(var(--rise-d, 0ms) + 380ms);
+  transition: opacity .3s ease calc(var(--rise-d, 0ms) + 200ms), transform .6s cubic-bezier(.34, 1.56, .64, 1) calc(var(--rise-d, 0ms) + 200ms);
 }
+.how-step.rise::before { transform: scaleY(0); }
+.how-step.rise-go::before { transform: none; transition: transform .7s cubic-bezier(.3, .7, .3, 1) calc(var(--rise-d, 0ms) + 100ms); }
 .how-chips li.rise svg { transform: scale(0) rotate(-45deg); }
 .how-chips li.rise-go svg { transform: none; transition: transform .55s cubic-bezier(.34, 1.56, .64, 1) calc(var(--rise-d, 0ms) + 260ms); }
 
+/* step 1: the sites appear one by one */
+.hv-wait .hv-src > span { opacity: 0; transform: translateX(-6px); }
+.hv-go .hv-src > span { transition: opacity .35s ease, transform .5s cubic-bezier(.2, .7, .2, 1); }
+.hv-go .hv-src > span:nth-child(1) { transition-delay: .1s; }
+.hv-go .hv-src > span:nth-child(2) { transition-delay: .25s; }
+.hv-go .hv-src > span:nth-child(3) { transition-delay: .4s; }
+/* step 2: the ticks pop, then "Blocked" shows */
+.hv-wait .hv-ok { transform: scale(0); }
+.hv-go .hv-ok { transition: transform .5s cubic-bezier(.34, 1.56, .64, 1) .1s; }
+.hv-go .hv-row:nth-child(2) .hv-ok { transition-delay: .25s; }
+.hv-wait .hv-block { opacity: 0; transform: scale(.85); }
+.hv-go .hv-block { transition: opacity .3s ease .5s, transform .5s cubic-bezier(.34, 1.56, .64, 1) .5s; }
+/* step 3: the opening line gets its highlight */
+.hv-wait .hv-hl span { background-size: 0% 100%; }
+.hv-go .hv-hl span { transition: background-size .8s cubic-bezier(.3, .8, .25, 1) .2s; }
+/* step 4: the "Updated" line lands, then the linked guides */
+.hv-wait .hv-stamp { opacity: 0; transform: translateY(-4px) scale(.95); }
+.hv-go .hv-stamp { transition: opacity .3s ease .15s, transform .5s cubic-bezier(.34, 1.56, .64, 1) .15s; }
+.hv-wait .hv-gsub { opacity: 0; transform: translateY(6px); }
+.hv-go .hv-gsub { transition: opacity .35s ease .4s, transform .5s cubic-bezier(.2, .7, .2, 1) .4s; }
+.hv-go .hv-gsub + .hv-gsub { transition-delay: .52s; }
+/* step 5: each page's next step slides in */
+.hv-wait .hv-next { opacity: 0; transform: translateX(6px); }
+.hv-go .hv-next { transition: opacity .3s ease .1s, transform .45s cubic-bezier(.2, .7, .2, 1) .1s; }
+.hv-go .hv-orow:nth-child(2) .hv-next { transition-delay: .22s; }
+.hv-go .hv-orow:nth-child(3) .hv-next { transition-delay: .34s; }
+.hv-go .hv-orow:nth-child(4) .hv-next { transition-delay: .46s; }
+
+/* ---- smaller screens ---- */
 @media (max-width: 1100px) {
-  .how-steps { gap: 16px; }
-  .how-step { padding: 10px; }
-  .how-scr { height: 252px; padding: 10px; border-radius: 20px; }
-  .how-tx { padding: 18px 10px 10px; }
-  .how-t { font-size: 21px; }
+  .how-t { font-size: 20px; }
   .how-p { font-size: 15px; }
 }
-/* tablets: one card per row, the screen left and the words right */
-@media (min-width: 761px) and (max-width: 1023px) {
-  .how-steps { grid-template-columns: minmax(0, 1fr); max-width: 720px; margin-inline: auto; gap: 14px; }
-  .how-step { flex-direction: row; align-items: center; }
-  .how-scr { flex: none; width: 360px; height: 236px; }
-  .how-tx { flex: 1; padding: 12px 18px 12px 24px; }
-}
 @media (max-width: 760px) {
-  .how-steps { grid-template-columns: 1fr; gap: 12px; }
-  .how-step { padding: 8px; border-radius: var(--r-lg); }
-  .how-scr { height: auto; min-height: 0; gap: 8px; padding: 9px; border-radius: 17px; }
-  .hs-panel { padding: 12px; gap: 9px; border-radius: 12px; }
-  .hs-chart { min-height: 64px; }
-  .hs-ba { min-height: 76px; }
-  .how-tx { flex-direction: row; flex-wrap: wrap; align-items: center; column-gap: 10px; row-gap: 4px; padding: 12px 8px 8px; }
-  .how-n { width: 26px; height: 26px; font-size: 13px; }
-  .how-t { font-size: 19px; letter-spacing: -0.4px; margin-top: 0; }
-  .how-p { flex-basis: 100%; font-size: 14.5px; line-height: 1.5; }
-  .how-chips { margin-top: 16px; gap: 6px; }
+  .how-h2 { margin-bottom: 40px; }
+  .how-steps { --n: 28px; --pt: 20px; --tl: 26px; --gap-band: 26px; --gap-top: 14px; }
+  .how-step { column-gap: 10px; }
+  .how-n { font-size: 13px; box-shadow: 0 0 0 4px var(--warm-50), 0 6px 12px -6px rgba(11, 12, 43, 0.5); }
+  .how-body { grid-template-columns: minmax(0, 1fr); row-gap: 14px; padding: var(--pt) 14px 16px; }
+  .g-top .how-body, .g-solo .how-body { border-top-left-radius: 18px; border-top-right-radius: 18px; }
+  .g-end .how-body, .g-solo .how-body { border-bottom-left-radius: 18px; border-bottom-right-radius: 18px; }
+  .how-lane { left: 12px; height: 26px; font-size: 12.5px; }
+  .how-t { font-size: 19px; letter-spacing: -0.4px; }
+  .how-p { font-size: 15px; line-height: 1.5; max-width: none; }
+  .how-dfy { font-size: 13px; max-width: none; }
+  .hv-panel { min-height: 0; }
+  .how-chips { margin-top: 24px; gap: 6px; }
   .how-chips li { height: 30px; padding: 0 11px 0 9px; gap: 6px; font-size: 13px; }
   .how-chips svg { width: 12px; height: 12px; }
 }

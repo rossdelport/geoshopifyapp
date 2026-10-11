@@ -1,0 +1,11 @@
+# Made-up Store
+
+> A made-up llms.txt for tests: an Optional section and links to .md pages.
+
+## Docs
+
+- [Size guide](https://made-up-store.example/pages/size-guide.md): how our sizes fit
+
+## Optional
+
+- [Press](https://made-up-store.example/pages/press.md)

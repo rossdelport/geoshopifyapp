@@ -1,0 +1,11 @@
+# Test fixture (made up): rules before any User-agent line are ignored (RFC 9309).
+Disallow: /
+Disallow: /products/
+Sitemap: https://example.com/sitemap.xml
+
+User-agent: Googlebot
+Disallow: /collections/
+
+User-agent: *
+Crawl-delay: 5
+Disallow: /cart

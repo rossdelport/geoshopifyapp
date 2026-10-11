@@ -1,0 +1,15 @@
+<!doctype html>
+<!-- MADE UP for tests: the theme's ProductGroup and an app's Product disagree on the price. -->
+<html><head>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"ProductGroup","@id":"/products/cedar-beard-oil#product","name":"Cedar Beard Oil","productGroupID":"1",
+ "brand":{"@type":"Brand","name":"Example Grooming Co"},
+ "hasVariant":[
+  {"@type":"Product","name":"Cedar Beard Oil - 30 ml","sku":"CBO-30","image":"https://x.example/a.jpg","offers":{"@type":"Offer","price":"24.00","priceCurrency":"USD","availability":"https://schema.org/InStock"}},
+  {"@type":"Product","name":"Cedar Beard Oil - 50 ml","sku":"CBO-50","image":"https://x.example/b.jpg","offers":{"@type":"Offer","price":"34.00","priceCurrency":"USD","availability":"https://schema.org/InStock"}}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Product","name":"Cedar Beard Oil","image":"https://x.example/a.jpg",
+ "offers":{"@type":"Offer","price":"26.00","priceCurrency":"USD","availability":"https://schema.org/InStock"}}
+</script>
+</head><body></body></html>

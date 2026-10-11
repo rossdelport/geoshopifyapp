@@ -1,0 +1,11 @@
+# Made-up Store
+
+> A made-up llms.txt for tests: a ### heading before the first ## section.
+
+### About us
+
+We sell beard oil.
+
+## Main pages
+
+- [Beard oils](https://made-up-store.example/collections/beard-oil): all our oils

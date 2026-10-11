@@ -1,0 +1,9 @@
+# Made-up Store
+
+> A made-up llms.txt for tests: list items without links.
+
+## Main pages
+
+- [Beard oils](https://made-up-store.example/collections/beard-oil): all our oils
+- Shipping: we ship worldwide
+- https://made-up-store.example/pages/contact

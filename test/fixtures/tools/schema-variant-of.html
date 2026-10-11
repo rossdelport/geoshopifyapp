@@ -1,0 +1,10 @@
+<!doctype html>
+<!-- MADE UP for tests: variants written as Products that point to their group with isVariantOf. -->
+<html><head><script type="application/ld+json">
+[{"@context":"https://schema.org","@type":"Product","name":"Wool Beanie - Navy","sku":"WB-N","color":"Navy","image":"https://hats.example/n.jpg",
+  "isVariantOf":{"@type":"ProductGroup","@id":"#beanie","name":"Wool Beanie","productGroupID":"WB","variesBy":"https://schema.org/color"},
+  "offers":{"@type":"Offer","price":"30.00","priceCurrency":"CAD","availability":"https://schema.org/InStock"}},
+ {"@context":"https://schema.org","@type":"Product","name":"Wool Beanie - Grey","sku":"WB-G","color":"Grey","image":"https://hats.example/g.jpg",
+  "isVariantOf":{"@id":"#beanie"},
+  "offers":{"@type":"Offer","price":"30.00","priceCurrency":"CAD","availability":"https://schema.org/InStock"}}]
+</script></head><body></body></html>

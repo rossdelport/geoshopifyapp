@@ -1,0 +1,55 @@
+/* AI Visibility Checker (/tools/ai-visibility-checker): the free check's form in the band (check.css styles
+   it), and the sample report card, a compact copy of the real report (/check/:id). Loaded after check.css and
+   tools.css; it reuses their ring, dots, tracks and chips, and adds only the card's layout. Neutral surfaces:
+   the ring and the assistant colours are the only colour, as on the real report. */
+
+.tl-vis { gap: 22px; }
+.tl-vis-product { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.tl-vis-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; font-family: var(--font-head); font-size: 19px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.35; color: var(--navy); overflow-wrap: anywhere; }
+.tl-vis-price { font-family: var(--font-body); font-size: 14px; font-weight: 500; letter-spacing: 0; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+/* the ring beside the chip, the heading and the summary */
+.tl-vis-score { display: flex; align-items: center; gap: 24px; padding-top: 18px; border-top: 1px solid var(--line-soft); }
+.tl-vis-head { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 0; }
+.tl-vis-h { margin: 0; }
+.tl-vis-sum { max-width: 560px; font-size: 15px; line-height: 1.6; }
+
+/* one row per assistant: name, a bar (named / answers) and the count. The rows share the list's columns
+   (subgrid), so every bar is the same length; without subgrid each row keeps its own columns. */
+.tl-vis-engines { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 112px minmax(0, 1fr) auto; gap: 12px; }
+.tl-vis-engines li { grid-column: 1 / -1; display: grid; grid-template-columns: 112px minmax(0, 1fr) auto; grid-template-columns: subgrid; align-items: center; font-size: 14px; }
+.tl-vis-engines .ck-chip { justify-self: start; }
+/* what the ring and the score mean, right under the rows (as on the real report) */
+.tl-vis-meaning { max-width: 720px; margin-top: -6px; }
+.tl-vis-meaning b { color: var(--navy); font-weight: 600; }
+
+/* brands named instead, and the sites the answers cite, side by side */
+.tl-vis-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 32px; padding-top: 18px; border-top: 1px solid var(--line-soft); }
+.tl-vis-part { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.tl-vis-part-h { font-size: 17px; letter-spacing: -0.3px; }
+.tl-vis-list { list-style: none; margin: 0; padding: 0; display: grid; }
+.tl-vis-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; min-width: 0; padding: 10px 0; border-top: 1px solid var(--line-soft); font-size: 14.5px; }
+.tl-vis-list li:first-child { border-top: 0; padding-top: 2px; }
+.tl-vis-n { width: 26px; height: 24px; flex: none; display: grid; place-items: center; border-radius: 8px; background: var(--warm-100); color: var(--ink-2); font-size: 12px; font-weight: 600; }
+.tl-vis-name { min-width: 0; color: var(--navy); font-weight: 600; }
+.tl-vis-count { margin-left: auto; color: var(--text); font-size: 13.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* the questions asked */
+.tl-vis > .tl-vis-part { padding-top: 18px; border-top: 1px solid var(--line-soft); }
+.tl-vis-qs { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.55; color: var(--navy); }
+.tl-vis-qs li::marker { color: var(--text); font-weight: 600; }
+.tl-vis-more { padding: 12px 14px; border-radius: 14px; background: var(--warm-50); box-shadow: var(--ring-soft); }
+
+@media (max-width: 640px) {
+  .tl-vis { gap: 18px; }
+  .tl-vis-title { font-size: 17px; }
+  /* check.css shrinks the ring to 96px here */
+  .tl-vis-score { align-items: flex-start; gap: 16px; }
+  .tl-vis-h { font-size: 21px; letter-spacing: -0.5px; }
+  .tl-vis-sum { font-size: 14.5px; }
+  .tl-vis-engines { grid-template-columns: 88px minmax(0, 1fr); gap: 6px 10px; }
+  .tl-vis-engines li { grid-template-columns: 88px minmax(0, 1fr); grid-template-columns: subgrid; row-gap: 6px; font-size: 13.5px; }
+  .tl-vis-engines li + li { margin-top: 6px; }
+  .tl-vis-engines li .ck-chip { grid-column: 1 / -1; }
+  .tl-vis-two { grid-template-columns: minmax(0, 1fr); }
+}

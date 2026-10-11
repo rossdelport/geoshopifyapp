@@ -1,0 +1,3 @@
+# Test fixture (made up): only comments, no rules.
+
+# Nothing else here.

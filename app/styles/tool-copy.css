@@ -1,0 +1,74 @@
+/* AI Bot Checker (/tools/ai-bot-checker). Loaded after check.css and tools.css; everything is prefixed
+   tl-bot- (tl-copy- already belongs to CopyBox in tools.css) and neutral (white and warm cards, grey chips,
+   soft yellow and peach marks, navy links): purple stays on the band, the form's glow and the one button
+   card (docs/copy-deck.md 14b). The visitor's text wraps or scrolls inside its box, never the page. */
+
+/* ---------- the two forms in one white box: paste, then a product link ---------- */
+.tl-bot-paste, .tl-bot-link { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.tl-bot-link { padding-top: 14px; border-top: 1px solid var(--line-soft); }
+.tl-bot-paste .tl-textarea { min-height: 132px; }
+.tl-bot-honest { max-width: 760px; }
+.tl-bot-honest strong { color: var(--navy); font-weight: 600; }
+
+/* ---------- the report ---------- */
+.tl-bot-report { gap: 24px; }
+.tl-bot-verdict { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.tl-bot-verdict .tl-result-h { margin-top: 2px; }
+.tl-bot-line { max-width: 760px; font-size: 16px; line-height: 1.6; color: var(--ink-2); }
+.tl-bot-sec { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.tl-bot-sec .tl-rows { margin-top: 2px; }
+.tl-bot-none { font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+
+/* the text with its marks: wraps inside its box, and a very long text scrolls inside it */
+.tl-bot-text {
+  max-height: 360px; overflow: auto; padding: 14px 16px; border-radius: 14px; background: var(--warm-50); box-shadow: var(--ring-soft);
+  font-size: 15.5px; line-height: 1.8; color: var(--ink-2); white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word;
+}
+.tl-bot-text:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+.tl-bot-mark { color: inherit; border-radius: 4px; padding: 1px 3px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.tl-bot-mark.is-filler { background: #fff1b8; }
+.tl-bot-mark.is-hype { background: #fde3cf; }
+.tl-bot-text .tl-bot-mark { cursor: help; }
+
+/* phrases to rewrite */
+.tl-bot-phrase { display: flex; flex-direction: column; gap: 4px; }
+.tl-bot-phrase-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 15.5px; font-weight: 600; color: var(--navy); overflow-wrap: anywhere; }
+.tl-bot-phrase-item { display: inline-flex; align-items: baseline; gap: 4px; min-width: 0; }
+.tl-bot-count { font-size: 12.5px; font-weight: 500; color: var(--text); white-space: nowrap; }
+.tl-bot-kind { font-size: 13px; font-weight: 500; color: var(--text); }
+.tl-bot-why { font-size: 14.5px; line-height: 1.55; color: var(--ink-2); }
+.tl-bot-how { font-size: 14px; line-height: 1.55; color: var(--ink-2); padding-left: 12px; border-left: 2px solid var(--line-soft); }
+
+/* the 7 facts: the name on the left, the chip always on the right */
+.tl-bot-fact { display: flex; flex-direction: column; gap: 4px; }
+.tl-bot-fact-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.tl-bot-fact-label { flex: 1; min-width: 0; font-size: 15.5px; font-weight: 600; line-height: 1.5; color: var(--navy); }
+.tl-bot-fact-head .ck-chip { flex: none; margin-top: 1px; }
+.tl-bot-question { font-size: 14.5px; line-height: 1.55; color: var(--ink-2); }
+.tl-bot-found { font-size: 14px; line-height: 1.55; color: var(--text); overflow-wrap: anywhere; }
+
+/* in numbers */
+.tl-bot-numbers { margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.tl-bot-numbers > div { min-width: 0; padding: 12px 14px; border-radius: 14px; background: var(--warm-50); box-shadow: var(--ring-soft); display: flex; flex-direction: column; gap: 2px; }
+.tl-bot-numbers dt { font-size: 13px; line-height: 1.4; color: var(--text); }
+.tl-bot-numbers dd { margin: 0; font-family: var(--font-head); font-size: 20px; font-weight: 600; letter-spacing: -0.3px; color: var(--navy); font-variant-numeric: tabular-nums; }
+
+/* ---------- the made-up before and after ---------- */
+.tl-bot-rewrite { gap: 12px; }
+.tl-bot-ba { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.tl-bot-ba-col { min-width: 0; padding: 16px 18px; border-radius: 16px; background: #fff; box-shadow: var(--ring-soft); display: flex; flex-direction: column; gap: 6px; }
+.tl-bot-ba-label { font-size: 12.5px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; color: var(--text); }
+.tl-bot-ba-col.is-after .tl-bot-ba-label { color: var(--green-ink); }
+.tl-bot-ba-text { font-size: 15px; line-height: 1.7; color: var(--ink-2); overflow-wrap: anywhere; }
+
+/* the source link after a "How this tool works" line */
+.tl-bot-source { font-size: 13.5px; white-space: normal; }
+
+@media (max-width: 760px) {
+  .tl-bot-ba { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .tl-bot-text { padding: 12px; font-size: 15px; max-height: 320px; }
+  .tl-bot-numbers { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .tl-bot-ba-col { padding: 14px; }
+}

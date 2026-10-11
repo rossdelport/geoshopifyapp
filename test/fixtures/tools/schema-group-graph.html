@@ -1,0 +1,30 @@
+<!doctype html>
+<!-- MADE UP for tests: a ProductGroup inside an @graph with other kinds of data; one of three variants has no image. -->
+<html lang="en"><head><meta charset="utf-8"><title>Linen Tee</title>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "Organization", "@id": "https://tees.example/#org", "name": "Tees Example", "url": "https://tees.example/" },
+    { "@type": "BreadcrumbList", "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tees.example/" },
+      { "@type": "ListItem", "position": 2, "name": "Linen Tee" } ] },
+    { "@type": "WebPage", "@id": "https://tees.example/products/linen-tee", "name": "Linen Tee",
+      "mainEntity": {
+        "@type": "ProductGroup", "@id": "https://tees.example/products/linen-tee#product",
+        "name": "Linen Tee", "brand": { "@type": "Brand", "name": "Tees Example" },
+        "productGroupID": "2000000002", "variesBy": ["https://schema.org/size"],
+        "hasVariant": [
+          { "@type": "Product", "name": "Linen Tee - S", "sku": "LT-S", "size": "S", "image": "https://tees.example/cdn/lt-s.jpg",
+            "offers": { "@type": "Offer", "price": 45, "priceCurrency": "EUR", "availability": "https://schema.org/InStock", "url": "https://tees.example/products/linen-tee?variant=11" } },
+          { "@type": "Product", "name": "Linen Tee - M", "sku": "LT-M", "size": "M", "image": { "@type": "ImageObject", "url": "https://tees.example/cdn/lt-m.jpg" },
+            "offers": { "@type": "Offer", "price": 45, "priceCurrency": "EUR", "availability": "https://schema.org/InStock", "url": "https://tees.example/products/linen-tee?variant=12" } },
+          { "@type": "Product", "name": "Linen Tee - L", "sku": "LT-L", "size": "L",
+            "offers": { "@type": "Offer", "price": 49, "priceCurrency": "EUR", "availability": "https://schema.org/OutOfStock", "url": "https://tees.example/products/linen-tee?variant=13" } }
+        ]
+      }
+    }
+  ]
+}
+</script>
+</head><body><h1>Linen Tee</h1></body></html>
