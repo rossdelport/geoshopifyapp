@@ -40,6 +40,22 @@ vi.mock("../app/lib/email.server", () => ({ emailConfigured: () => true, sendEma
 
 const DAY = 86_400_000;
 
+// A guide as Claude returns it (GuideSchema): strict questions and answers, products by index, sources.
+const GUIDE_DRAFT = {
+  question: "What is the best beard oil for dry skin in Australia",
+  handle: "best-beard-oil",
+  short_answer: "Look for a light oil that softens the beard and the skin under it. A 30 ml bottle lasts most people a month.",
+  sections: [
+    { question: "What should a beard oil for dry skin contain?", answer: "Light plant oils that soak in quickly suit dry skin best." },
+    { question: "How often should you use beard oil?", answer: "Most people use a few drops once a day after a shower." },
+    { question: "Is beard oil good for short stubble?", answer: "Yes, a few drops soften stubble and the skin under it." },
+    { question: "How much beard oil do you need?", answer: "Three to five drops cover a short to medium beard." },
+  ],
+  picks: [{ product_index: 0, why: "A light beard oil from the store's range." }],
+  source_urls: ["https://made-up-review-site.com/best-beard-oil"],
+  missing_info: [],
+};
+
 describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
   let db: typeof import("../app/db.server").default;
   let shopId: string;
@@ -176,13 +192,22 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
       if (opts.label === "fix-ideas") {
         return { ideas: [0, 1, 2].map(() => ({ type: "guide_page", product_index: null, question_indexes: [0], reason: "Shoppers ask this", impact: "high" })) };
       }
-      if (opts.label === "fix-guide") return { title: "Best beard oil for dry skin", handle: "best-beard-oil", body_html: "<p>Guide</p>", missing_info: [] };
+      if (opts.label === "fix-guide") return GUIDE_DRAFT;
       if (opts.label === "claims-check") return { ok: true, problems: [], fixed_text: null };
       throw new Error(`unexpected AI call ${opts.label}`);
     }) as any);
     try {
       // Standard: 2 a month, 1 used, so 1 of the 3 suggested guides is written.
       expect(await generateFixes(shopId, scan.id)).toBe(1);
+      // The page is built by us in strict Q&A form: the question as its title, our UTM on product links,
+      // and the review site Claude named isn't on the store's allowlist, so it's dropped (and no "Sources").
+      const written = await db.fix.findFirstOrThrow({ where: { shopId, type: "guide_page", reason: "Shoppers ask this" }, orderBy: { createdAt: "desc" } });
+      const after = written.after as { title: string; bodyHtml: string };
+      expect(after.title).toBe("What is the best beard oil for dry skin in Australia?");
+      expect(after.bodyHtml.match(/<h2>/g)).toHaveLength(5);
+      expect(after.bodyHtml).toContain("utm_campaign=");
+      expect(after.bodyHtml).not.toContain("made-up-review-site");
+      expect(after.bodyHtml).not.toContain("Sources");
       expect(await generateFixes(shopId, scan.id)).toBe(0);
       expect(ai.mock.calls.at(-1)![0].prompt).toContain("no guide_page");
       // Done-for-you: 8 a month, 2 used.
@@ -204,12 +229,14 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
     const { unauthenticated } = await import("../app/shopify.server");
     const { askJson } = await import("../app/lib/ai.server");
     const pagesCreated: string[] = [];
+    const pageInputs: any[] = [];
     const productUpdates: any[] = [];
     const admin = {
       graphql: async (query: string, opts?: { variables?: any }) => {
         let data: any;
         if (query.includes("pageCreate")) {
           pagesCreated.push(opts?.variables.page.title);
+          pageInputs.push(opts?.variables.page);
           data = { pageCreate: { page: { id: "gid://shopify/Page/9", handle: "best-beard-oil" }, userErrors: [] } };
         } else if (query.includes("ProductForFix")) {
           data = { product: { id: "gid://shopify/Product/1", title: "Stubble Bros Beard Oil", handle: "beard-oil", descriptionHtml: "<p>Old</p>", productType: "", seo: { title: "", description: "" }, metafield: null, onlineStoreUrl: null } };
@@ -230,7 +257,11 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
       if (opts.prompt.includes("Claude is down")) throw new Error("Claude unavailable");
       return { ok: true, problems: [], fixed_text: null };
     }) as any);
-    const guide = { title: "Best beard oil", handle: "best-beard-oil", bodyHtml: "<p>Guide</p>" };
+    const guide = {
+      title: "Best beard oil?",
+      handle: "best-beard-oil",
+      bodyHtml: "<p><strong>Short answer:</strong> A light oil. Use daily.</p>\n<h2>How often?</h2>\n<p>Once a day.</p>\n<h2>Products that fit</h2>\n<ul><li>x</li></ul>",
+    };
     await db.fix.deleteMany({ where: { shopId, status: "pending" } }); // left over from earlier tests
     const mk = (data: any) => db.fix.create({ data: { shopId, reason: "test", targetTitle: "x", ...data } });
     const clean = await mk({ type: "guide_page", targetTitle: "Clean guide", after: guide });
@@ -251,12 +282,18 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
       await db.shop.update({ where: { id: shopId }, data: { plan: "pro", autopilot: true } });
       await run();
       // Live: the guide and the clean description (new descriptions and titles go live on Done-for-you too).
-      expect(pagesCreated).toEqual(["Best beard oil"]);
+      expect(pagesCreated).toEqual(["Best beard oil?"]);
+      // The guide's questions and answers go in the page metafield the theme embed turns into FAQPage data.
+      expect(JSON.parse(pageInputs[0].metafields[0].value)).toEqual([
+        { q: "Best beard oil?", a: "A light oil. Use daily." },
+        { q: "How often?", a: "Once a day." },
+      ]);
+      expect(pageInputs[0].metafields[0]).toMatchObject({ namespace: "geo", key: "faq", type: "json" });
       expect((await get(clean.id)).status).toBe("applied");
       expect((await get(description.id)).status).toBe("applied");
       expect(productUpdates).toEqual([{ id: "gid://shopify/Product/1", descriptionHtml: "<p>Clearer</p>" }]);
       // The check always ran on the text going live, health words or not, and never on a flagged fix.
-      expect(checked.some((p) => p.includes("<p>Guide</p>"))).toBe(true);
+      expect(checked.some((p) => p.includes("Short answer"))).toBe(true);
       expect(checked.some((p) => p.includes("<p>Clearer</p>"))).toBe(true);
       expect(checked).toHaveLength(4);
       // Waiting: the fix that needs facts, the one the check softened (with the softer wording saved and
@@ -289,7 +326,7 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
       if (opts.label.startsWith("fix-product_")) {
         return { title: null, description_html: null, seo_title: "Beard oil for dry skin", seo_description: "50ml beard oil.", product_type: "Beard Oil", faq: [{ q: "Size?", a: "50ml." }], missing_info: missing };
       }
-      if (opts.label === "fix-guide") return { title: "Beard oil guide", handle: "beard-oil-guide", body_html: "<p>Guide</p>", missing_info: [] };
+      if (opts.label === "fix-guide") return GUIDE_DRAFT;
       if (opts.label === "claims-check") return { ok: true, problems: [], fixed_text: null };
       throw new Error(`unexpected AI call ${opts.label}`);
     }) as any);

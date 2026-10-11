@@ -134,6 +134,16 @@ Shared shapes: `app/lib/check-types.ts` (do not change them without updating bot
      (< 300 chars); no product structured data; roundup/editorial sites that shape answers (name the
      top 2–3 domains); competitors AI picks. If Claude is available it may rewrite `summary` in one
      friendly sentence, but never add facts. Then `done`.
+     AI-ready score (`scoreAiReady` in `app/lib/ai-ready.ts`, pure, unit-tested; no extra paid calls):
+     6 pass/fail checks from what `readProduct` already fetched (Shopify product JSON, JSON-LD, the
+     page's visible text from `<main>`, read with bounded windows by `parseAiSignals` in
+     `check-read.ts`): says who it's for (20 points), key facts: 2 of size, ingredients/materials and
+     price (20), description 300+ characters and under 6% praise words (20), FAQ: FAQPage JSON-LD, an
+     "FAQ" heading or 3+ question headings or accordion titles (15), JSON-LD Product with brand, price
+     and stock status (15), where it ships or is made (10). Skipped when we couldn't read the HTML
+     page. Saved as the optional `report.aiReady` (older reports have none and still render). Failed
+     checks feed the tips: description and product data reuse the existing tips; the rest become one
+     tip (its own title when only one fails, "Make your page easier for AI to quote" when several).
   - On a thrown error: status `failed`, `error` = plain-English message (never raw provider errors).
   - Brand fallback for answers when Claude can't read them (`parseAnswer` returns `byClaude: false`;
     never when Claude read the answer, even if it found no brands): shopping-card brands, else
@@ -197,7 +207,9 @@ Google Fonts link for Geist + Inter. Works at 390px wide (no sideways scroll). H
   (named X of 6); "Who AI recommends instead" (ranked bars, share %); "Sites AI trusts for this"
   (domain, type chip, "you're on it" if isOwn); per question: the question, engine cells (named in
   N of 2), and an expandable answer snippet (`<details>`) with brand names highlighted (build text
-  segments; never `dangerouslySetInnerHTML`); "Quick wins" tips; CTA card "Track this every week and
+  segments; never `dangerouslySetInnerHTML`); "Is your page easy for AI to quote?" card (score
+  /100, a tick or cross per check with its reason, "How to fix" on failed ones, one line on how the
+  points work; only when `report.aiReady` exists); "Quick wins" tips; CTA card "Track this every week and
   fix it in one click" → `installUrl` button "Start your 7-day free trial" (with the line "Weekly
   tracking and one-click fixes are on Standard, US$97/mo after the trial.") + link "Check another
   product" → `/#check`.
@@ -212,6 +224,8 @@ Google Fonts link for Geist + Inter. Works at 390px wide (no sideways scroll). H
   URL validation and SSRF IP checks (pure helpers exported from a non-`.server` module, e.g.
   `app/lib/check-read.ts`, so tests don't need network).
 - `test/check-report.test.ts`: `buildReport` and the bold/list brand extractor.
+- `test/ai-ready.test.ts`: the AI-ready scorer (strong page, thin page, FAQ JSON-LD page, fluff,
+  shipping banner), bounded `parseAiSignals` (a 2 MB page of unclosed tags), and the tips it feeds.
 - `test/check-country.test.ts`: `detectCountry` (store country, domain, language, currency, en-US,
   unsupported countries, nothing found, chosen country) and the signals read from the page.
 - Extend `test/integration.test.ts` (or a new integration test using `TEST_DATABASE_URL`) with

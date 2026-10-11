@@ -177,8 +177,8 @@ export function decodeEntities(s: string): string {
 const TEXT_MAX = 20_000; // descriptions are cut to 1,500 characters later anyway
 
 /** HTML -> plain text. Walks the tags with indexOf (linear time) and skips script, style and noscript. */
-export function htmlToText(html: string): string {
-  const s = html.length > TEXT_MAX ? html.slice(0, TEXT_MAX) : html;
+export function htmlToText(html: string, max = TEXT_MAX): string {
+  const s = html.length > max ? html.slice(0, max) : html;
   const lower = s.toLowerCase();
   let out = "";
   let i = 0;
@@ -268,6 +268,7 @@ export interface LdProduct {
   currency: string | null;
   image: string | null;
   category: string | null; // e.g. "Health & Beauty > Personal Care > Beard Oil"
+  availability: string | null; // e.g. "InStock" (schema.org ItemAvailability, without the URL)
 }
 
 export interface PageFacts {
@@ -286,6 +287,15 @@ export interface PageFacts {
   shopifyCdn: boolean;
   ogLocale: string | null; // e.g. "en_AU"
   htmlLang: string | null; // <html lang="en-AU">
+  ai: AiPageSignals; // what the "Is your page easy for AI to quote?" card needs from the HTML
+}
+
+/** What the HTML tells us about how easy the page is for AI to quote (see ai-ready.ts). */
+export interface AiPageSignals {
+  faqSchema: boolean; // JSON-LD FAQPage
+  faqHeading: boolean; // a heading like "FAQ", "Frequently asked questions" or "Questions & answers"
+  questionHeadings: number; // headings (h2 to h4) and accordion titles (<summary>) that end with "?"
+  text: string; // the page's visible text from <main> (or <body>), max 8,000 characters
 }
 
 const MAX_META_TAGS = 300; // real pages have well under 100
@@ -359,9 +369,13 @@ function readLdProduct(p: any, pageUrl: string): LdProduct {
   const offers = [p.offers, p.hasVariant?.map?.((v: any) => v?.offers)].flat(2).filter(Boolean).slice(0, 50);
   let price: string | null = null;
   let currency: string | null = null;
+  let availability: string | null = null;
   for (const o of offers) {
     price ??= money(o.price ?? o.lowPrice ?? o.priceSpecification?.price ?? firstOf(o.priceSpecification)?.price);
     currency ??= o.priceCurrency ?? o.priceSpecification?.priceCurrency ?? null;
+    if (!availability && typeof o.availability === "string" && o.availability.trim()) {
+      availability = o.availability.trim().replace(/^https?:\/\/schema\.org\//i, "").slice(0, 40) || null;
+    }
   }
   const image = firstOf(p.image);
   return {
@@ -372,12 +386,86 @@ function readLdProduct(p: any, pageUrl: string): LdProduct {
     currency: typeof currency === "string" ? currency.slice(0, 3).toUpperCase() : null,
     image: absoluteImage(typeof image === "object" && image ? image.url ?? image.contentUrl : image, pageUrl),
     category: textOf(p.category),
+    availability,
+  };
+}
+
+const isFaqType = (t: unknown) =>
+  (Array.isArray(t) ? t : [t]).some((x) => typeof x === "string" && /^(https?:\/\/schema\.org\/)?FAQPage$/i.test(x));
+
+function hasLdFaq(node: any, depth = 0): boolean {
+  if (!node || typeof node !== "object" || depth > 6) return false;
+  if (Array.isArray(node)) return node.slice(0, 50).some((n) => hasLdFaq(n, depth + 1));
+  return isFaqType(node["@type"]) || hasLdFaq(node["@graph"], depth + 1) || hasLdFaq(node.mainEntity, depth + 1);
+}
+
+const MAX_HEADINGS = 300; // tags read; a real product page has far fewer
+const MAX_TAG_SCAN = 5000; // "<h" or "<summary" hits looked at (header, hr and html tags included)
+const FAQ_HEADING = /\b(faqs?|frequently asked|questions?\s*(&|and)\s*answers?|q\s*&\s*a)\b/i;
+
+/**
+ * Headings and accordion titles: found with indexOf from left to right, each read only up to its
+ * closing tag (max 400 characters on), so the work stays linear whatever the page holds.
+ */
+function pageHeadings(html: string, lower: string): { level: number; text: string }[] {
+  const out: { level: number; text: string }[] = [];
+  for (const [open, close] of [["<h", "</h"], ["<summary", "</summary"]] as const) {
+    for (let i = 0, scans = 0; out.length < MAX_HEADINGS && scans < MAX_TAG_SCAN; scans++) {
+      const at = lower.indexOf(open, i);
+      if (at === -1) break;
+      i = at + open.length;
+      let level = 0;
+      if (open === "<h") {
+        const d = lower.charCodeAt(at + 2) - 48;
+        const next = lower[at + 3];
+        if (!(d >= 1 && d <= 6) || (next !== ">" && next !== " " && next !== "\n" && next !== "\t")) continue;
+        level = d;
+      }
+      // Searched only in a short window: a tag that never closes can't send us to the end of the page.
+      const tagEnd = lower.slice(at, at + 1000).indexOf(">");
+      if (tagEnd === -1) continue;
+      const gt = at + tagEnd;
+      const closeAt = lower.slice(gt, gt + 400).indexOf(close);
+      if (closeAt === -1) continue;
+      const end = gt + closeAt;
+      const text = htmlToText(html.slice(gt + 1, end), 400).slice(0, 200);
+      if (text) out.push({ level, text });
+      i = end;
+    }
+  }
+  return out;
+}
+
+/** Bounded reading of the HTML for the AI-ready card: FAQ data, FAQ headings and the visible text. */
+export function parseAiSignals(html: string, blocks: string[] = jsonLdBlocks(html)): AiPageSignals {
+  let faqSchema = false;
+  for (const block of blocks) {
+    try {
+      if (hasLdFaq(JSON.parse(block.trim()))) {
+        faqSchema = true;
+        break;
+      }
+    } catch {
+      /* broken JSON-LD: skip it */
+    }
+  }
+  const lower = html.toLowerCase();
+  const headings = pageHeadings(html, lower);
+  const main = lower.indexOf("<main");
+  const body = lower.indexOf("<body");
+  const start = main !== -1 ? main : body !== -1 ? body : 0;
+  return {
+    faqSchema,
+    faqHeading: headings.some((h) => h.text.length <= 80 && FAQ_HEADING.test(h.text)),
+    questionHeadings: headings.filter((h) => (h.level === 0 || h.level >= 2) && h.level <= 4 && /\?\s*$/.test(h.text)).length,
+    text: htmlToText(html.slice(start, start + 200_000), 200_000).slice(0, 8000),
   };
 }
 
 export function parseProductHtml(html: string, pageUrl: string): PageFacts {
   let ld: LdProduct | null = null;
-  for (const block of jsonLdBlocks(html)) {
+  const blocks = jsonLdBlocks(html);
+  for (const block of blocks) {
     try {
       const found = findLdProduct(JSON.parse(block.trim()));
       if (found) {
@@ -409,6 +497,7 @@ export function parseProductHtml(html: string, pageUrl: string): PageFacts {
     ogLocale: meta.get("og:locale")?.slice(0, 20) || null,
     // lang= only as its own attribute (not data-lang= or xml:lang=)
     htmlLang: /(?:^|\s)lang\s{0,5}=\s{0,5}["']?([a-z]{2,3}(?:[-_][a-z0-9]{1,8}){0,3})/i.exec(htmlTag)?.[1] ?? null,
+    ai: parseAiSignals(html, blocks),
   };
 }
 
@@ -550,6 +639,8 @@ export type ReadProduct = Omit<CheckProduct, "category"> & {
   descriptionSource: DescriptionSource; // "meta" = only the short og/meta summary
   pageRead: boolean; // we read the HTML page, not only Shopify's JSON
   looksLikeProduct: boolean; // Shopify product JSON, JSON-LD Product, og:type product or a price
+  ldFacts: { brand: boolean; price: boolean; availability: boolean } | null; // what the JSON-LD Product gives
+  aiSignals: AiPageSignals | null; // null when we couldn't read the HTML page
   countrySignals: Omit<CountrySignals, "override">; // check.server adds storeCountry from /meta.json
 };
 
@@ -594,6 +685,8 @@ export function mergeProduct(url: string, js: ShopifyJsFacts | null, page: PageF
     descriptionSource,
     pageRead: Boolean(page),
     looksLikeProduct: productPage && Boolean(js || ld || /product/.test(page?.ogType ?? "") || page?.ogPrice),
+    ldFacts: ld ? { brand: Boolean(ld.brand), price: Boolean(ld.price), availability: Boolean(ld.availability) } : null,
+    aiSignals: page?.ai ?? null,
     countrySignals: {
       storeCountry: null,
       domain,

@@ -3,6 +3,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
+  type AiReady,
   CHECK_COUNTRIES,
   CHECK_ENGINES,
   CHECK_RUNS,
@@ -14,6 +15,7 @@ import {
   type CheckView,
 } from "../lib/check-types";
 import { ENGINE_LABELS, PLANS } from "../lib/plans";
+import { AI_READY_NOTE } from "../lib/ai-ready";
 import type { SourceType } from "../lib/sources";
 import { sameBrand } from "../lib/match";
 
@@ -551,6 +553,51 @@ function Snippet({ answer, brand }: { answer: CheckAnswer; brand: string }) {
   );
 }
 
+/** "Is your page easy for AI to quote?": ticks and crosses from what we read on the page (ai-ready.ts). */
+export function AiReadyCard({ ready }: { ready: AiReady }) {
+  const passed = ready.checks.filter((c) => c.pass).length;
+  const tone = ready.score >= 80 ? "green" : ready.score >= 50 ? "amber" : "red";
+  return (
+    <section className="ck-card ck-ready" aria-labelledby="ck-ready-h">
+      <div className="ck-ready-head">
+        <div>
+          <h2 id="ck-ready-h" className="ck-h3">
+            Is your page easy for AI to quote?
+          </h2>
+          <p className="ck-small">
+            {passed} of {ready.checks.length} checks passed, from what we read on your product page.
+          </p>
+        </div>
+        <span className={`ck-ready-score is-${tone}`}>
+          <b>{ready.score}</b>/100
+        </span>
+      </div>
+      <ul className="ck-ready-list">
+        {ready.checks.map((c) => (
+          <li key={c.id} className={c.pass ? "is-pass" : "is-fail"}>
+            <span className="ck-ready-ic" aria-hidden="true">
+              {c.pass ? "\u2713" : "\u2715"}
+            </span>
+            <div>
+              <h3 className="ck-ready-t">
+                <span className="ck-sr">{c.pass ? "Passed: " : "Needs work: "}</span>
+                {c.label}
+              </h3>
+              <p>{c.reason}</p>
+              {c.pass ? null : (
+                <p className="ck-ready-fix">
+                  <b>How to fix:</b> {c.fix}
+                </p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+      <p className="ck-small ck-ready-note">{AI_READY_NOTE}</p>
+    </section>
+  );
+}
+
 export function CheckReport({ view }: { view: CheckView }) {
   const report = view.report;
   if (!report) return <CheckFailed view={{ ...view, error: view.error ?? "We couldn’t write this report. Please try again." }} />;
@@ -695,6 +742,8 @@ export function CheckReport({ view }: { view: CheckView }) {
           ))}
         </div>
       </section>
+
+      {report.aiReady ? <AiReadyCard ready={report.aiReady} /> : null}
 
       {report.tips.length ? (
         <section className="ck-card ck-card-lav">

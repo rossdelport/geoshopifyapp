@@ -32,7 +32,7 @@ Postgres (Supabase, "geo" schema only)  ◄──  background worker (same proce
 | `app/routes/` | Screens (`app.*`), webhooks, the pixel endpoint and `/healthz`. |
 | `app/components/ui.tsx` | Score ring, trend line, bars and other visuals. |
 | `extensions/ai-pixel` | Web Pixel that counts visits and spots AI referrals. |
-| `extensions/geo-faq` | Theme block that shows approved product FAQs (+ FAQ structured data). |
+| `extensions/geo-faq` | Theme block that shows approved product FAQs (+ FAQ structured data), and the app embed "AI-ready guide data" that adds FAQPage data to guide pages (from the page metafield `geo.faq`; the store switches it on once in the theme editor). |
 | `prisma/` | Database tables and migrations. |
 | `test/` | Unit tests and a full-flow test against Postgres. |
 

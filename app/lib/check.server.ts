@@ -43,6 +43,7 @@ import {
   titleCase,
   type ReadProduct,
 } from "./check-read";
+import { scoreAiReady } from "./ai-ready";
 import { brandsWithFallback, buildReport, dropPhraseBrands, isPhraseBrand, plainSnippet, shopDomains, type BrandFilter } from "./check-report";
 import {
   CHECK_COUNTRIES,
@@ -623,6 +624,17 @@ export async function runCheck(id: string, jobId?: string, attempt = 1) {
       descriptionSource: read.descriptionSource,
       pageRead: read.pageRead,
       textFallback: results.some((r) => r.readByText),
+      // From what we already read: no extra calls.
+      aiReady: scoreAiReady({
+        title: read.title,
+        description: read.description,
+        descriptionSource: read.descriptionSource,
+        tags: read.tags,
+        productType: read.productType,
+        price: read.price,
+        ldFacts: read.ldFacts,
+        signals: read.aiSignals,
+      }),
     });
     await setStatus(id, { status: "done", report: json(report), done: TOTAL, finishedAt: new Date() });
   } catch (err) {

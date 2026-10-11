@@ -72,6 +72,21 @@ export interface CheckAnswer {
   snippet: string; // first ~700 characters of the answer, plain text
 }
 
+/** One check on the "Is your page easy for AI to quote?" card (see ai-ready.ts). */
+export type AiReadyCheckId = "audience" | "facts" | "faq" | "description" | "schema" | "origin";
+export interface AiReadyCheck {
+  id: AiReadyCheckId;
+  label: string; // e.g. "Says who it's for"
+  pass: boolean;
+  weight: number; // points out of 100
+  reason: string; // one plain sentence: what we saw
+  fix: string; // short "how to fix" (shown when it fails)
+}
+export interface AiReady {
+  score: number; // 0-100: the points of the checks that passed
+  checks: AiReadyCheck[];
+}
+
 export interface CheckReport {
   score: number; // 0-100, same formula as the app (score.ts)
   label: string; // Not named yet | Rarely named | Weak | Growing | Strong
@@ -82,6 +97,7 @@ export interface CheckReport {
   sources: { domain: string; type: SourceType; count: number; isOwn: boolean; exampleUrl: string }[]; // top 8
   tips: { title: string; body: string }[]; // 2-4 quick wins, based only on what we saw
   summary: string; // one or two plain sentences
+  aiReady?: AiReady; // how easy the page is for AI to quote (reports from before Oct 2026 have none)
 }
 
 export interface CheckView {

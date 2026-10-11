@@ -169,6 +169,7 @@ describe("reading a product", () => {
       currency: "AUD",
       image: "https://coolabahgrooming.com.au/cdn/shop/files/ld.jpg",
       category: null,
+      availability: null,
     });
     expect(f.ogTitle).toBe("Sandalwood Beard Oil");
     expect(f.ogSiteName).toBe("Coolabah Grooming Co");

@@ -15,6 +15,17 @@ import { enqueue, registerJob } from "./jobs.server";
 import { adminFor } from "./onboard-job.server";
 import { countryName } from "./onboarding.server";
 import { parseFaq } from "./faq";
+import {
+  applyClaimsText,
+  buildAllowlist,
+  buildGuideHtml,
+  faqFromGuideHtml,
+  filterSourceLinks,
+  guideClaimsText,
+  guideProblems,
+  tidyGuide,
+  type GuideProductLink,
+} from "./guide";
 
 export { FIX_TYPE_LABELS } from "./fix-labels";
 import type { FixAfter, FixBefore } from "./fix-labels";
@@ -58,10 +69,18 @@ export const ProductWriteSchema = z.object({
   missing_info: z.array(z.string()),
 });
 
+// Strict question-and-answer guide (see guide.ts). Claude never writes HTML or links: we build both.
 export const GuideSchema = z.object({
-  title: z.string(),
+  question: z.string().describe("The shopper's question, as they would ask an AI assistant. This is the page title (H1)."),
   handle: z.string().describe("url-friendly, lowercase, hyphens"),
-  body_html: z.string().describe("Simple HTML. Link products using the exact URLs given."),
+  short_answer: z.string().describe("2 to 3 sentences that answer the question directly and make sense on their own"),
+  sections: z
+    .array(z.object({ question: z.string().describe("A real buyer question"), answer: z.string().describe("One self-contained paragraph") }))
+    .describe("4 to 6 sections"),
+  picks: z
+    .array(z.object({ product_index: z.number().int().describe("Index from the product list"), why: z.string().describe("One sentence: why it fits, from the product data only") }))
+    .describe("1 to 4 of the store's products that fit"),
+  source_urls: z.array(z.string()).describe("URLs from the allowed sources list that you used facts from; may be empty"),
   missing_info: z.array(z.string()),
 });
 
@@ -347,6 +366,15 @@ function currentValues(p: Product, type: string): Record<string, unknown> {
   }
 }
 
+/** The store's own pages a guide may cite: the home page (read at onboarding) and the catalog's product pages. */
+export function guideSourceUrls(shop: { primaryDomain: string | null; domain: string; profile: { brandName: string } | null }, products: Product[]) {
+  const base = storeUrl(shop);
+  return [
+    { url: `${base}/`, label: `${shop.profile?.brandName ?? "Store"} home page` },
+    ...products.map((p) => ({ url: `${base}/products/${p.handle}`, label: p.title })),
+  ];
+}
+
 async function writeGuide(
   shop: { id: string; domain: string; primaryDomain: string | null; country: string; profile: { brandName: string; summary: string } | null },
   products: Product[],
@@ -361,7 +389,9 @@ async function writeGuide(
   if ((await countGuidePagesThisMonth(shop.id)) >= plan.guidePagesPerMonth) return null;
   const where = countryName(shop.country);
   const slug = questions[0].text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 50);
-  const list = products.slice(0, 15).map((p) => `- ${p.title} | ${trackedProductUrl(shop, p.handle, "ai-guide", slug)} | ${(p.description ?? "").slice(0, 200)}`);
+  const shortlist = products.slice(0, 15);
+  const links: GuideProductLink[] = shortlist.map((p) => ({ title: p.title, url: trackedProductUrl(shop, p.handle, "ai-guide", slug) }));
+  const allowed = guideSourceUrls(shop, shortlist);
 
   const out = await askJson({
     schema: GuideSchema,
@@ -369,29 +399,68 @@ async function writeGuide(
     label: "fix-guide",
     shopId: shop.id,
     maxTokens: 8000,
-    system: `You write helpful, honest buying guides for a store's own website. The guide explains how to choose, then shows the store's own suitable products. It must be genuinely useful even to someone who doesn't buy.\n${GUARDRAILS}`,
+    system: `You write helpful, honest buying guides for a store's own website, in strict question-and-answer form, so AI assistants can quote any part on its own. It must be genuinely useful even to someone who doesn't buy.\n${GUARDRAILS}\n- Plain text only: no HTML, no markdown, no links or URLs in any answer.\n- Never use an em dash or a spaced en dash.`,
     prompt: `Store: ${shop.profile?.brandName} (${where}). ${shop.profile?.summary}
 
 Write one guide page (400-700 words) that answers these shopper questions:
 ${questions.map((q) => `- ${q.text}`).join("\n")}
 
-Structure: short intro; "What to look for" (3-5 points); "Our picks" featuring 2-4 relevant products from the list below (link each with its exact URL); short FAQ (3 questions). Mention shipping in ${where} only if it's in the store info.
+Structure:
+- question: the main shopper question, worded the way a shopper asks an AI assistant. It becomes the page title.
+- short_answer: 2 to 3 sentences that answer it directly and make sense on their own.
+- sections: 4 to 6 real buyer questions (how to choose, what to look for, who it suits, how to use, sizes) each answered in one self-contained paragraph. Never refer to other sections ("as mentioned above", "see below").
+- picks: 1 to 4 relevant products from the list below, by index, each with one sentence on why it fits (only facts from its description).
+- source_urls: only URLs copied exactly from "Allowed sources" whose facts you used. Never any other URL.
+Mention shipping in ${where} only if it's in the store info.
 
-Products (title | link | description):
-${list.join("\n")}`,
+Products (index. title: description):
+${shortlist.map((p, i) => `${i}. ${p.title}: ${(p.description ?? "").slice(0, 200)}`).join("\n")}
+
+Allowed sources (the only URLs you may list):
+${allowed.map((a) => `- ${a.url}`).join("\n")}`,
   });
 
-  const checked = HEALTH_WORDS.test(`${shop.profile?.summary}`) ? await claimsCheck(shop.id, out.body_html) : { text: out.body_html, note: null };
-  const missing = [checked.note, ...out.missing_info].filter(Boolean).join("\n");
+  let draft = tidyGuide(
+    {
+      question: out.question,
+      shortAnswer: out.short_answer,
+      sections: out.sections,
+      picks: out.picks.map((p) => ({ productIndex: p.product_index, why: p.why })),
+      sources: out.source_urls,
+    },
+    shortlist.length,
+  );
+  const problems = guideProblems(draft);
+  if (problems.blocking.length) {
+    console.warn(`[fixes] guide skipped: ${problems.blocking.join(" ")}`);
+    return null;
+  }
+
+  let claimsNote: string | null = null;
+  if (HEALTH_WORDS.test(`${shop.profile?.summary}`)) {
+    const original = guideClaimsText(draft);
+    const checked = await claimsCheck(shop.id, original);
+    claimsNote = checked.note;
+    if (checked.text !== original) {
+      const softened = applyClaimsText(draft, parseFaq(checked.text));
+      if (softened) draft = tidyGuide(softened, shortlist.length);
+      else claimsNote = `Please check this wording before it goes live: ${checked.note ?? "some phrases may read as claims"}`;
+    }
+  }
+
+  // Sources: only the store's own pages we know about. Anything else Claude listed is dropped.
+  const sources = filterSourceLinks(draft.sources, buildAllowlist(allowed));
+  const bodyHtml = buildGuideHtml(draft, links, sources);
+  const missing = [claimsNote, ...problems.notes, ...out.missing_info].filter(Boolean).join("\n");
   if (missing && skipIfHeld) return null;
   return db.fix.create({
     data: {
       shopId: shop.id,
       type: "guide_page",
       targetGid: null,
-      targetTitle: out.title,
+      targetTitle: draft.question,
       before: {},
-      after: { title: out.title, handle: out.handle.toLowerCase().replace(/[^a-z0-9-]/g, "-").slice(0, 80), bodyHtml: checked.text },
+      after: { title: draft.question, handle: out.handle.toLowerCase().replace(/[^a-z0-9-]/g, "-").slice(0, 80), bodyHtml },
       reason,
       impact: impact as string,
       questionIds: questions.map((q) => q.id),
@@ -450,8 +519,18 @@ export async function applyFix(fixId: string, admin: AdminClient) {
 
   try {
     if (fix.type === "guide_page") {
+      // The Q&A pairs also go in the page metafield geo.faq, read from the HTML that goes live. The theme
+      // app embed "AI-ready guide data" turns them into FAQPage structured data (the same way product
+      // FAQs work). Deleting the page on undo deletes the metafield with it.
+      const faq = faqFromGuideHtml(after.title ?? "", after.bodyHtml ?? "");
       const data = await gql(admin, PAGE_CREATE, {
-        page: { title: after.title, handle: after.handle, body: after.bodyHtml, isPublished: true },
+        page: {
+          title: after.title,
+          handle: after.handle,
+          body: after.bodyHtml,
+          isPublished: true,
+          ...(faq.length ? { metafields: [{ namespace: "geo", key: "faq", type: "json", value: JSON.stringify(faq) }] } : {}),
+        },
       });
       assertNoUserErrors(data.pageCreate);
       const page = data.pageCreate.page;

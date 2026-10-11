@@ -5,7 +5,7 @@ import { visibilityScore, scoreLabel } from "./score";
 import { brandKey, sameBrand } from "./match";
 import { ENGINE_LABELS } from "./plans";
 import { decodeEntities, domainStem, type DescriptionSource } from "./check-read";
-import { CHECK_ENGINES, type CheckAnswer, type CheckProduct, type CheckReport } from "./check-types";
+import { CHECK_ENGINES, type AiReady, type AiReadyCheckId, type CheckAnswer, type CheckProduct, type CheckReport } from "./check-types";
 import { guessSourceType, type SourceType } from "./sources";
 
 // ---------- Brands when Claude can't read the answer ----------
@@ -316,6 +316,7 @@ export interface ReportOptions {
   descriptionSource?: DescriptionSource; // "meta" = we only found the short og/meta summary
   pageRead?: boolean; // false when we only read Shopify's product JSON, not the page itself
   textFallback?: boolean; // some answers were read by text matching because Claude couldn't read them
+  aiReady?: AiReady | null; // the "Is your page easy for AI to quote?" checks (ai-ready.ts); failed ones feed the tips
 }
 
 const FALLBACK_NOTE =
@@ -398,6 +399,7 @@ export function buildReport(
     ...report,
     tips: buildTips(report, product, [...siteCounts.values()], rivalNames, opts),
     summary: opts.textFallback && answerCount ? `${summary} ${FALLBACK_NOTE}` : summary,
+    ...(opts.aiReady ? { aiReady: opts.aiReady } : {}),
   };
 }
 
@@ -420,6 +422,15 @@ function buildSummary(r: Omit<CheckReport, "tips" | "summary">, product: ReportP
     ? `${where} ${top.name} was named more often, in ${top.count} answers.`
     : `${where} No other brand was named more often.`;
 }
+
+const AI_READY_TIP_TITLES: Record<AiReadyCheckId, string> = {
+  audience: "Say who it’s for",
+  facts: "Spell out the key facts",
+  faq: "Add questions and answers",
+  description: "Make the description more specific",
+  schema: "Complete your product data",
+  origin: "Say where it ships or is made",
+};
 
 function buildTips(
   r: Omit<CheckReport, "tips" | "summary">,
@@ -446,8 +457,11 @@ function buildTips(
     }
   }
 
+  // Checks from the AI-ready card that a tip below already covers (so the same advice isn't given twice).
+  const covered = new Set<AiReadyCheckId>();
   // Only judge the description's length when we read the real one (Shopify's JSON or the page's product data).
   const desc = product.description.trim();
+  if (desc.length < 300 || opts.descriptionSource === "meta") covered.add("description");
   if (!desc) {
     tips.push({
       title: "Add a product description",
@@ -466,9 +480,21 @@ function buildTips(
   }
 
   if (!product.hasProductSchema && opts.pageRead !== false) {
+    covered.add("schema");
     tips.push({
       title: "Add product data AI can read",
       body: "We didn’t find structured product data (name, brand, price) on the page we read. Shopping assistants read this behind-the-scenes data.",
+    });
+  }
+
+  // The AI-ready checks that failed and no tip above covers: one tip for one, a combined tip for several.
+  const failed = (opts.aiReady?.checks ?? []).filter((c) => !c.pass && !covered.has(c.id)).sort((a, b) => b.weight - a.weight);
+  if (failed.length === 1) {
+    tips.push({ title: AI_READY_TIP_TITLES[failed[0].id], body: `${failed[0].reason} ${failed[0].fix}` });
+  } else if (failed.length > 1) {
+    tips.push({
+      title: "Make your page easier for AI to quote",
+      body: `AI assistants repeat clear facts from product pages. ${failed.map((c) => c.fix).join(" ")}`,
     });
   }
 

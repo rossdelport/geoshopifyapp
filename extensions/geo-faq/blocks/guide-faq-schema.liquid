@@ -1,0 +1,34 @@
+{%- comment -%}
+  App embed: FAQPage structured data for buying guides published by the GEO app.
+  The questions and answers are saved in the page metafield geo.faq when the guide is published,
+  read from the page's own text (the H2 questions and their answers), so nothing new shows on the page.
+  Only outputs on pages that have them.
+{%- endcomment -%}
+{%- if request.page_type == 'page' -%}
+  {%- assign faq = page.metafields.geo.faq.value -%}
+  {%- if faq and faq.size > 0 -%}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {%- for item in faq -%}
+            {
+              "@type": "Question",
+              "name": {{ item.q | json }},
+              "acceptedAnswer": { "@type": "Answer", "text": {{ item.a | json }} }
+            }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ]
+      }
+    </script>
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "AI-ready guide data",
+  "target": "head",
+  "settings": []
+}
+{% endschema %}
