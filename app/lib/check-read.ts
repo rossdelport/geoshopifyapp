@@ -506,6 +506,7 @@ export function parseProductHtml(html: string, pageUrl: string): PageFacts {
 export interface ShopifyMeta {
   country: string; // e.g. "AU"
   myshopifyDomain: string | null; // the shop's own xxx.myshopify.com, to make sure it's the same shop
+  currency?: string | null; // the shop's own currency, e.g. "USD" (prices on the page can be converted for the visitor)
 }
 
 /** Shopify's public /meta.json: the shop's home country from its settings, the same for every visitor. */
@@ -514,7 +515,8 @@ export function parseShopifyMeta(json: any): ShopifyMeta | null {
   const c = typeof json.country === "string" ? json.country.trim() : "";
   if (!/^[a-z]{2}$/i.test(c)) return null;
   const d = typeof json.myshopify_domain === "string" ? json.myshopify_domain.trim().toLowerCase() : "";
-  return { country: c.toUpperCase(), myshopifyDomain: /^[a-z0-9][a-z0-9-]{0,60}\.myshopify\.com$/.test(d) ? d : null };
+  const cur = typeof json.currency === "string" && /^[a-z]{3}$/i.test(json.currency.trim()) ? json.currency.trim().toUpperCase() : null;
+  return { country: c.toUpperCase(), myshopifyDomain: /^[a-z0-9][a-z0-9-]{0,60}\.myshopify\.com$/.test(d) ? d : null, currency: cur };
 }
 
 /**

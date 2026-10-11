@@ -392,6 +392,13 @@ export async function readProduct(url: string, opts: { storeCountry?: boolean } 
       shopDomain: product.shopDomain,
       host: new URL(page?.url ?? url).hostname,
     });
+    // Shopify can show prices converted to the visitor's currency (our server is in Singapore). If the
+    // page's currency isn't the shop's own, don't show a price the shop never set.
+    const shopCurrency = product.countrySignals.storeCountry ? storeCountry?.currency : null;
+    if (shopCurrency && product.currency && product.currency !== shopCurrency) {
+      product.price = null;
+      product.currency = null;
+    }
   }
   return product;
 }

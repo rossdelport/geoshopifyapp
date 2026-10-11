@@ -71,15 +71,15 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .hero-check { position: relative; isolation: isolate; } /* the glow sits under the box, over the page */
 .hero-check-box::before {
   content: ""; position: absolute; z-index: -1; inset: -4px; border-radius: 24px; pointer-events: none;
-  filter: blur(14px); opacity: .5; background: linear-gradient(90deg, #b5a8e0, #bfc9fa 50%, #6878d8);
+  filter: blur(14px); opacity: .2; background: linear-gradient(90deg, #b5a8e0, #bfc9fa 50%, #6878d8);
   transition: opacity .35s ease;
 }
-.hero-check-box:hover::before { opacity: .65; }
-.hero-check-box:focus-within::before { opacity: .8; }
+.hero-check-box:hover::before { opacity: .28; }
+.hero-check-box:focus-within::before { opacity: .35; }
 .hc-glow { display: none; }
 .hc-halo, .hc-ring { position: absolute; z-index: -1; pointer-events: none; transition: opacity .35s ease; }
-.hc-halo { inset: 0; opacity: .75; }
-.hc-ring { inset: -2px; border-radius: 22px; overflow: hidden; opacity: .9; }
+.hc-halo { inset: 0; opacity: .3; }
+.hc-ring { inset: -2px; border-radius: 22px; overflow: hidden; opacity: .4; }
 .hc-run { position: absolute; inset: 0; }
 .hc-ring .hc-run { inset: 1px; } /* runs along the middle of the 2px band */
 .hc-run > i { position: absolute; left: 0; top: 0; border-radius: 50%; }
@@ -96,9 +96,9 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 @media (prefers-reduced-motion: no-preference) {
   .hero-check.hc-live .hc-glow { display: block; }
   .hero-check.hc-live .hc-run { animation: hc-run 10.5s linear infinite; will-change: transform; }
-  .hero-check.hc-live .hero-check-box:hover .hc-halo { opacity: .95; }
-  .hero-check.hc-live .hero-check-box:focus-within .hc-halo { opacity: 1; }
-  .hero-check.hc-live .hero-check-box:hover .hc-ring, .hero-check.hc-live .hero-check-box:focus-within .hc-ring { opacity: 1; }
+  .hero-check.hc-live .hero-check-box:hover .hc-halo { opacity: .42; }
+  .hero-check.hc-live .hero-check-box:focus-within .hc-halo { opacity: .5; }
+  .hero-check.hc-live .hero-check-box:hover .hc-ring, .hero-check.hc-live .hero-check-box:focus-within .hc-ring { opacity: .6; }
   .hero-check.hc-off .hc-run { animation-play-state: paused; }
 }
 /* one-row box (about 11:1): each long side takes 46% of the loop, each short end 4% */

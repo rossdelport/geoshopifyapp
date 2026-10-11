@@ -149,15 +149,15 @@ body { margin: 0; background: #fff; }
 .ck-form-glow { --ck-r: 20px; position: relative; isolation: isolate; width: 100%; border-radius: var(--ck-r); }
 .ck-form-box::before {
   content: ""; position: absolute; z-index: -1; inset: -4px; border-radius: calc(var(--ck-r, 20px) + 4px); pointer-events: none;
-  filter: blur(14px); opacity: .5; background: linear-gradient(90deg, #b5a8e0, #bfc9fa 50%, #6878d8);
+  filter: blur(14px); opacity: .2; background: linear-gradient(90deg, #b5a8e0, #bfc9fa 50%, #6878d8);
   transition: opacity .35s ease;
 }
-.ck-form-box:hover::before { opacity: .65; }
-.ck-form-box:focus-within::before { opacity: .8; }
+.ck-form-box:hover::before { opacity: .28; }
+.ck-form-box:focus-within::before { opacity: .35; }
 .ck-glow { display: none; }
 .ck-halo, .ck-ring { position: absolute; z-index: -1; pointer-events: none; transition: opacity .35s ease; }
-.ck-halo { inset: 0; opacity: .75; }
-.ck-ring { inset: -2px; border-radius: calc(var(--ck-r, 20px) + 2px); overflow: hidden; opacity: .9; }
+.ck-halo { inset: 0; opacity: .3; }
+.ck-ring { inset: -2px; border-radius: calc(var(--ck-r, 20px) + 2px); overflow: hidden; opacity: .4; }
 .ck-run { position: absolute; inset: 0; }
 .ck-ring .ck-run { inset: 1px; }
 .ck-run > i { position: absolute; left: 0; top: 0; border-radius: 50%; }
@@ -172,9 +172,9 @@ body { margin: 0; background: #fff; }
 @media (prefers-reduced-motion: no-preference) {
   .ck-form-glow.is-live .ck-glow { display: block; }
   .ck-form-glow.is-live .ck-run { animation: ck-run 10.5s linear infinite; will-change: transform; }
-  .ck-form-glow.is-live .ck-form-box:hover .ck-halo { opacity: .95; }
-  .ck-form-glow.is-live .ck-form-box:focus-within .ck-halo { opacity: 1; }
-  .ck-form-glow.is-live .ck-form-box:hover .ck-ring, .ck-form-glow.is-live .ck-form-box:focus-within .ck-ring { opacity: 1; }
+  .ck-form-glow.is-live .ck-form-box:hover .ck-halo { opacity: .42; }
+  .ck-form-glow.is-live .ck-form-box:focus-within .ck-halo { opacity: .5; }
+  .ck-form-glow.is-live .ck-form-box:hover .ck-ring, .ck-form-glow.is-live .ck-form-box:focus-within .ck-ring { opacity: .6; }
   .ck-form-glow.is-paused .ck-run { animation-play-state: paused; }
 }
 /* one-row box (about 12:1): each long side takes 46% of the loop, each short end 4% */

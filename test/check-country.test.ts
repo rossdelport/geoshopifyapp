@@ -63,8 +63,9 @@ describe("detectCountry", () => {
 
 describe("country signals", () => {
   it("reads the store country from /meta.json and ignores anything else", () => {
-    expect(parseShopifyMeta({ country: "nz", myshopify_domain: "Wattlebird.myshopify.com" })).toEqual({ country: "NZ", myshopifyDomain: "wattlebird.myshopify.com" });
-    expect(parseShopifyMeta({ country: "AU", myshopify_domain: "evil.com" })).toEqual({ country: "AU", myshopifyDomain: null });
+    expect(parseShopifyMeta({ country: "nz", myshopify_domain: "Wattlebird.myshopify.com" })).toEqual({ country: "NZ", myshopifyDomain: "wattlebird.myshopify.com", currency: null });
+    expect(parseShopifyMeta({ country: "US", currency: "usd", myshopify_domain: "x.myshopify.com" })?.currency).toBe("USD");
+    expect(parseShopifyMeta({ country: "AU", myshopify_domain: "evil.com" })).toEqual({ country: "AU", myshopifyDomain: null, currency: null });
     for (const junk of [null, "AU", [], { country: "Australia" }, { country: 36 }, { currency: "AUD" }]) expect(parseShopifyMeta(junk)).toBeNull();
   });
 
