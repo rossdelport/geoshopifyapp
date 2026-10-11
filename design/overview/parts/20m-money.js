@@ -35,7 +35,7 @@
   // ---------- numbers ----------
   function commas(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
   var fmt = {
-    aud: function (n) { return 'A$' + commas(n); },
+    aud: function (n) { return '$' + commas(n); },
     int: function (n) { return commas(n); },
     pct: function (n) { return Math.round(n) + '%'; }
   };

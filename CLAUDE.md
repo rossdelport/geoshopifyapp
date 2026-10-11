@@ -14,7 +14,7 @@ A self-serve Shopify app that gets ecommerce brands **recommended by AI shopping
 
 ## 2. Who it's for
 
-- Shopify DTC brands, starting with **AU/NZ** (English, AUD), any size. Sweet spot: brands with real catalogs (beauty, grooming, skincare, supplements, apparel, home).
+- Shopify DTC brands **worldwide** (English-language stores; Ross decided 2026-10-11, was AU/NZ first), any size. Never say "for AU/NZ" in user-facing copy. Sweet spot: brands with real catalogs (beauty, grooming, skincare, supplements, apparel, home).
 - Merchant is non-technical. Copy must be plain English, short, no jargon (no "GEO", "AEO", "LLM" in UI; say "AI search", "ChatGPT & co").
 - **Never use em dashes (—) in any copy** (site, app UI, emails, reports). Use a full stop, comma, colon or "and" instead. Ross's rule.
 
@@ -185,7 +185,7 @@ Multi-tenant: every row scoped by `shop_id`; enable Supabase RLS or enforce in t
 2. Treg HTTP API endpoint/auth (vs CLI/MCP only).
 3. Hosting choice for long jobs (Vercel cron + queue vs a worker on Fly/Render).
 4. Outreach v1: copy/mailto only, or Gmail sending from day one?
-5. AU/NZ only at launch, or global English?
+5. ~~AU/NZ only at launch, or global English?~~ Decided 2026-10-11: worldwide.
 
 ## 17. Context
 
