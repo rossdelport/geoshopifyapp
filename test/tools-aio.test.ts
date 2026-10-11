@@ -298,10 +298,10 @@ describe("matchDomain", () => {
     const line = (r: any, host: string) => aio.yourSiteLine(r, aio.matchDomain(r, host));
     expect(line(AIO_SAMPLE, "allure.com")).toBe("Your site is cited: source 3 of 5.");
     expect(line(AIO_SAMPLE, "realskindiaries.com")).toBe("Your site isn't cited, but it ranks #1 in the normal results below.");
-    expect(line(AIO_SAMPLE, "yourstore.com")).toBe("Your site isn't cited and isn't in the top 10 normal results.");
+    expect(line(AIO_SAMPLE, "yourstore.com")).toBe("Your site isn't cited and isn't in the normal results on the first page.");
     const none = aio.parseCrawl4ai(NONE_RAW, "youtube", "d")!;
     expect(line(none, "youtube.com")).toBe("No AI Overview here. Your site ranks #1 in the normal results.");
-    expect(line(none, "yourstore.com")).toBe("No AI Overview here. Your site isn't in the top 10 normal results.");
+    expect(line(none, "yourstore.com")).toBe("No AI Overview here. Your site isn't in the normal results on the first page.");
     const backup = aio.parseAnyApi(ANYAPI_RAW, "q", "d")!;
     expect(line(backup, "gq.com")).toBe("Your site is cited: source 2 of 5.");
     expect(line(backup, "yourstore.com")).toBe("Your site isn't cited in this overview.");

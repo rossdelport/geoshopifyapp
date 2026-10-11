@@ -52,11 +52,11 @@ export const YOUR_SITE = {
   label: "Your site",
   cited: (n: number, total: number) => `Your site is cited: source ${n} of ${total}.`,
   ranksNotCited: (k: number) => `Your site isn't cited, but it ranks #${k} in the normal results below.`,
-  notCitedNotRanked: "Your site isn't cited and isn't in the top 10 normal results.",
+  notCitedNotRanked: "Your site isn't cited and isn't in the normal results on the first page.",
   // The backup provider gives no normal results, so the rank is unknown.
   notCitedNoRanks: "Your site isn't cited in this overview.",
   noneRanks: (k: number) => `No AI Overview here. Your site ranks #${k} in the normal results.`,
-  noneNotRanked: "No AI Overview here. Your site isn't in the top 10 normal results.",
+  noneNotRanked: "No AI Overview here. Your site isn't in the normal results on the first page.",
 } as const;
 
 export const OVERVIEW = {

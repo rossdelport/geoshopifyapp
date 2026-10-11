@@ -3,6 +3,7 @@
 // The same component shows the on-load example (with its "Example" label) and a visitor's own search.
 // Provider text is rendered as plain text by React (never as HTML). Styles: app/styles/tool-aio.css.
 
+import type { ReactNode } from "react";
 import { ResultHeading, SampleLabel, StatusChip, ToolError } from "../tool-ui";
 import { formatUpdated } from "../../lib/tools/format";
 import { toolBySlug } from "../../lib/tools/registry";
@@ -32,13 +33,23 @@ import {
 const OUT = { rel: "nofollow noopener noreferrer", target: "_blank" } as const;
 
 /** A link to another site, in a new tab, said out loud for screen readers. */
-function OutLink({ href, children, className }: { href: string; children: string; className?: string }) {
+function OutLink({ href, children, className }: { href: string; children: ReactNode; className?: string }) {
   return (
     <a href={href} {...OUT} className={className}>
       {children}
       <span className="ck-sr"> {NEW_TAB}</span>
     </a>
   );
+}
+
+/** A result's page, short: "/groups/flatfeet/posts/123" from its address, cut to 40 characters. */
+function pagePath(url: string): string {
+  try {
+    const path = new URL(url).pathname.replace(/\/+$/, "") || "/";
+    return path.length > 40 ? `${path.slice(0, 39)}…` : path;
+  } catch {
+    return "";
+  }
 }
 
 export function AioResultView({
@@ -162,11 +173,14 @@ export function AioResultView({
               <ol className="tl-aio-organic">
                 {result.organic.map((o) => {
                   const cited = citedAs(result, o);
+                  // Two results from one site (two facebook.com posts) would look like the same row: show the page too.
+                  const twice = result.organic.filter((x) => x.domain === o.domain).length > 1;
                   return (
                     <li key={`${o.position}-${o.url}`}>
                       <span className="tl-aio-rank">#{o.position}</span>
                       <OutLink href={o.url} className="tl-aio-domain tl-url">
                         {o.domain}
+                        {twice ? <span className="tl-aio-path">{pagePath(o.url)}</span> : null}
                       </OutLink>
                       {cited ? <span className={`tl-aio-tag is-cited${cited === "page" ? "" : " is-site"}`}>{cited === "page" ? CITED_MARK : CITED_SITE_MARK}</span> : null}
                       {mine(o.domain) ? <StatusChip tone="good">{YOUR_SITE.label}</StatusChip> : null}

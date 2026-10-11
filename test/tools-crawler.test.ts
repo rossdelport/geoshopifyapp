@@ -295,7 +295,8 @@ describe("robotsKind and the fixtures", () => {
     const report = checkBots(www, PASTE_PATHS);
     expect(verdict(report).blocked).toBe(0);
     expect(verdict(report).shopifyStandard).toBe(false);
-    expect(report.notes.map((n) => n.id)).toContain("crawl-delay");
+    // Its Crawl-delay lines only slow AhrefsBot, MJ12bot and Pinterest: nothing to say about AI bots.
+    expect(report.notes.map((n) => n.id)).not.toContain("crawl-delay");
     // Its Sitemap line is repeated in three groups: listed once.
     expect(report.sitemaps).toEqual(["https://www.gymshark.com/sitemap.xml"]);
     // The made-up old layout without its Amazonbot block is not "standard" either.
@@ -317,8 +318,18 @@ describe("robotsKind and the fixtures", () => {
     expect(v.blocked).toBe(0);
     expect(v.trainingBlocked).toBe(1);
     expect(row(report, "Amzn-SearchBot").blocked).toBe(false);
-    expect(report.notes.map((n) => n.id)).toEqual(["crawl-delay"]);
-    expect(report.notes[0].text).toBe("Google ignores Crawl-delay. Some other bots follow it.");
+    // Shopify's Crawl-delay lines are for SEO crawlers (AhrefsBot, MJ12bot, Pinterest), not AI bots.
+    expect(report.notes).toEqual([]);
+  });
+
+  it("notes Crawl-delay only when it applies to every bot or to a bot we list", () => {
+    const seoOnly = checkBots("User-agent: AhrefsBot\nCrawl-delay: 10\n\nUser-agent: *\nDisallow: /cart\n", PASTE_PATHS);
+    expect(seoOnly.notes.map((n) => n.id)).not.toContain("crawl-delay");
+    const everyBot = checkBots("User-agent: *\nCrawl-delay: 5\nDisallow: /cart\n", PASTE_PATHS);
+    expect(everyBot.notes.map((n) => n.id)).toContain("crawl-delay");
+    expect(everyBot.notes.find((n) => n.id === "crawl-delay")!.text).toBe("Google ignores Crawl-delay. Some other bots follow it.");
+    const aiBot = checkBots("User-agent: Bingbot\nUser-agent: GPTBot\nCrawl-delay: 2\nDisallow: /cart\n", PASTE_PATHS);
+    expect(aiBot.notes.map((n) => n.id)).toContain("crawl-delay");
   });
 
   it("counts many blocks on a CDN-style file, and plans deletions that open every bot that matters", () => {
@@ -564,7 +575,7 @@ describe("checkSite reads the store's real address", () => {
     const report = out.site.report!;
     expect(report.kind).toBe("shopify-old-default");
     expect(report.sitemaps).toEqual(["https://www.gymshark.com/sitemap.xml"]);
-    expect(report.notes.map((n) => n.id)).toContain("crawl-delay");
+    expect(report.notes.map((n) => n.id)).not.toContain("crawl-delay");
     expect(verdict(report).shopifyStandard).toBe(false);
     expect(verdict(report).headline).toBe("All the bots that affect AI answers can read your pages");
   });
@@ -585,7 +596,7 @@ describe("checkSite reads the store's real address", () => {
     const page = text(renderPage({ ok: true, intent: "fetch", url: "gymshark.com", site: out.ok ? out.site : null }));
     expect(page).toContain("We read https://www.gymshark.com/robots.txt");
     expect(page).toContain("gymshark.com goes to us.checkout.gymshark.com, so we checked www.gymshark.com, where your home page is.");
-    expect(page).toContain("Google ignores Crawl-delay. Some other bots follow it.");
+    expect(page).not.toContain("Google ignores Crawl-delay");
     expect(page).not.toContain(crawler.VERDICT_COPY.shopifyStandard);
   });
 

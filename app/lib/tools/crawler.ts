@@ -246,6 +246,30 @@ function groupEntries(entries: Entry[]): { groups: LineGroup[]; orphans: Entry[]
 
 const rulePath = (e: Entry) => e.value.slice(0, MAX_PATTERN);
 
+const LISTED_TOKENS = new Set(TOOL_BOTS.map((b) => b.token.toLowerCase()));
+
+/**
+ * Does a Crawl-delay line sit in a group for every bot ("*") or for a bot we list? Shopify's standard file
+ * slows down a few SEO crawlers (AhrefsBot and the like), which says nothing about AI bots, so that alone
+ * gets no note. Groups are read the same way as groupEntries.
+ */
+function crawlDelayForListedBots(entries: Entry[]): boolean {
+  let agents: string[] = [];
+  let lastWasAgent = false;
+  for (const e of entries) {
+    if (e.key === "user-agent") {
+      if (!lastWasAgent) agents = [];
+      if (e.token) agents.push(e.token);
+      lastWasAgent = true;
+    } else if (e.key === "allow" || e.key === "disallow") {
+      lastWasAgent = false;
+    } else if (e.key === "crawl-delay" && agents.some((a) => a === "*" || LISTED_TOKENS.has(a))) {
+      return true;
+    }
+  }
+  return false;
+}
+
 // ---------- bounded matching ----------
 
 /** Thrown when one check runs out of its work budget (a file built to be slow, or simply too complex). */
@@ -631,7 +655,7 @@ function runCheck(text: string, paths: TestedPath[], m: Matcher): CrawlerReport 
   const notes: ReportNote[] = [];
   if (!hasRules) notes.push({ id: "no-rules", tone: "info", text: NOTE_COPY.noRules });
   for (const o of orphans.slice(0, MAX_ORPHAN_NOTES)) notes.push({ id: "orphan", tone: "info", text: NOTE_COPY.orphan(o.line) });
-  if (entries.some((e) => e.key === "crawl-delay")) notes.push({ id: "crawl-delay", tone: "info", text: NOTE_COPY.crawlDelay });
+  if (crawlDelayForListedBots(entries)) notes.push({ id: "crawl-delay", tone: "info", text: NOTE_COPY.crawlDelay });
   if (byteLength(text) >= GOOGLE_MAX_BYTES) notes.push({ id: "large", tone: "warn", text: NOTE_COPY.large });
   for (const row of bots) {
     const bot = BY_TOKEN.get(row.token)!;

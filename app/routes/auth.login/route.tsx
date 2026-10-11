@@ -1,11 +1,16 @@
 import { useState } from "react";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "react-router";
 import { Form, useActionData, useLoaderData } from "react-router";
 
 import { login } from "../../shopify.server";
 import { savePlanIntentFromLogin } from "../../lib/plan-intent.server";
 import { parsePlanChoice } from "../../lib/plans";
 import { loginErrorMessage } from "./error.server";
+
+export const meta: MetaFunction = () => [{ title: "Log in · GEO" }, { name: "robots", content: "noindex" }];
+
+/** Shopify's login reads a form; anything else posted here (a bot sending JSON) used to crash with a 500. */
+const isFormPost = (request: Request) => /^(application\/x-www-form-urlencoded|multipart\/form-data)\b/i.test(request.headers.get("content-type") ?? "");
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const errors = loginErrorMessage(await login(request));
@@ -17,6 +22,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  if (!isFormPost(request)) return { errors: {} };
   // Save the picked plan by shop domain before Shopify takes over (login() redirects on success).
   if (request.method === "POST") await savePlanIntentFromLogin(await request.clone().formData(), new URL(request.url));
   const errors = loginErrorMessage(await login(request));
