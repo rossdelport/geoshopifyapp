@@ -1,3 +1,5 @@
 .cache
 build
 node_modules
+design/video/node_modules
+design/video/out
