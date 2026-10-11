@@ -59,7 +59,7 @@ ${body}</body>
     // Pricing card buttons carry their plan to the login page (42-pricing.js switches cycle= with the toggle).
     .replace(/(<a class="btn[^"]*" href=)"#pricing" data-plan="(core|pro)"/g, '$1"/auth/login?plan=$2&amp;cycle=monthly" data-plan="$2"')
     .replace(/(<a class="btn[^"]*" href=)"#pricing"/g, '$1"/auth/login"')
-    .replace('href="https://geo-shopify-app-production.up.railway.app/privacy" target="_blank" rel="noopener"', 'href="/privacy"');
+    .replace('href="https://usegeo.app/privacy" target="_blank" rel="noopener"', 'href="/privacy"');
   fs.mkdirSync(path.join(root, 'app', 'home'), { recursive: true });
   fs.writeFileSync(path.join(root, 'app', 'home', 'home.html'), site);
 
