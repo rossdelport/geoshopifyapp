@@ -1,4 +1,5 @@
-/* What's it worth to you: a lilac gradient band with a white calculator card and the clay coins. Two real range inputs, vanilla JS.
+/* What's it worth to you: a very light warm grey band with a white calculator card and the clay coins. Two real range inputs, vanilla JS.
+   The result (the sum a month) is the section's one purple accent; the sliders and their values are navy.
    It follows the dashboard straight on, so it adds no top padding of its own (one normal section gap, not two). */
 .worth-sec { background: var(--white); padding-top: 0; }
 .worth-band {
@@ -12,8 +13,8 @@
   row-gap: 40px;
   padding: 72px 64px;
   border-radius: var(--r-xl);
-  background: var(--grad-main);
-  box-shadow: inset 0 0 0 1px rgba(181, 168, 224, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 32px 64px -44px rgba(64, 80, 176, 0.45);
+  background: var(--warm-50);
+  box-shadow: var(--ring-soft);
 }
 .worth-band::before {
   content: ""; position: absolute; inset: 0; pointer-events: none;
@@ -26,7 +27,7 @@
 /* clay coins: no frame, the render floats on the band (its edges fade out); hidden on phones */
 .worth-art { grid-area: art; align-self: end; justify-self: center; width: 100%; max-width: 400px; aspect-ratio: 1; margin: -24px 0 -48px; }
 .worth-art > img { display: block; width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply;
-  -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent 100%); mask-image: radial-gradient(closest-side, #000 62%, transparent 100%); }
+  -webkit-mask-image: radial-gradient(closest-side, #000 52%, transparent 90%); mask-image: radial-gradient(closest-side, #000 52%, transparent 90%); }
 
 /* the coins drift up and down slowly (paused off screen by 05-shared.js; still with reduced motion) */
 .worth-art > img { animation: worth-bob 8s ease-in-out infinite; }
@@ -39,19 +40,19 @@
   padding: 32px 32px 28px;
   border-radius: var(--r-lg);
   background: var(--white);
-  box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.35), 0 30px 60px -30px rgba(43, 50, 130, 0.35), 0 8px 18px -10px rgba(43, 50, 130, 0.12);
+  box-shadow: var(--ring-soft), 0 30px 60px -34px rgba(17, 17, 26, 0.22), 0 8px 18px -12px rgba(17, 17, 26, 0.08);
   color: var(--navy);
 }
 .worth-field + .worth-field { margin-top: 26px; }
 .worth-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .worth-lab { font-size: 15px; font-weight: 600; line-height: 1.35; color: var(--navy); cursor: pointer; }
-.worth-val { flex: none; min-width: 64px; text-align: right; padding: 5px 10px; border-radius: 9px; background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lilac-100); font-family: var(--font-head); font-size: 20px; font-weight: 600; letter-spacing: -0.4px; line-height: 1.1; color: var(--cobalt); }
+.worth-val { flex: none; min-width: 64px; text-align: right; padding: 5px 10px; border-radius: 9px; background: var(--warm-100); box-shadow: inset 0 0 0 1px var(--line-soft); font-family: var(--font-head); font-size: 20px; font-weight: 600; letter-spacing: -0.4px; line-height: 1.1; color: var(--navy); }
 
 /* range: the wrapper draws the track and the filled part; the input on top keeps the real control and the thumb */
 .worth-range { --thumb: 24px; --h: 32px; position: relative; height: var(--h); margin-top: 10px; }
 .worth-range::before, .worth-range::after { content: ""; position: absolute; left: 0; top: 50%; height: 8px; margin-top: -4px; border-radius: 100px; pointer-events: none; }
-.worth-range::before { right: 0; background: var(--lilac-100); box-shadow: inset 0 1px 2px rgba(56, 64, 160, 0.12); }
-.worth-range::after { width: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--p, 0)); background: linear-gradient(90deg, var(--cobalt-mid) 0%, var(--cobalt) 100%); }
+.worth-range::before { right: 0; background: #e9e8e3; box-shadow: inset 0 1px 2px rgba(17, 17, 26, 0.08); }
+.worth-range::after { width: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--p, 0)); background: linear-gradient(90deg, var(--navy-3) 0%, var(--navy) 100%); }
 .worth-range input {
   position: relative; z-index: 1; display: block; width: 100%; height: var(--h); margin: 0; padding: 0;
   background: transparent; cursor: pointer; -webkit-appearance: none; appearance: none;
@@ -64,13 +65,13 @@
   -webkit-appearance: none; appearance: none;
   width: var(--thumb); height: var(--thumb); margin-top: calc((var(--h) - var(--thumb)) / 2); border-radius: 50%;
   background: var(--navy); border: 3px solid var(--white);
-  box-shadow: 0 0 0 1px rgba(56, 64, 160, 0.25), 0 4px 10px -2px rgba(11, 12, 43, 0.35);
+  box-shadow: 0 0 0 1px rgba(11, 12, 43, 0.2), 0 4px 10px -2px rgba(11, 12, 43, 0.35);
   transition: transform .15s ease, box-shadow .15s ease;
 }
 .worth-range input::-moz-range-thumb {
   width: var(--thumb); height: var(--thumb); box-sizing: border-box; border-radius: 50%;
   background: var(--navy); border: 3px solid var(--white);
-  box-shadow: 0 0 0 1px rgba(56, 64, 160, 0.25), 0 4px 10px -2px rgba(11, 12, 43, 0.35);
+  box-shadow: 0 0 0 1px rgba(11, 12, 43, 0.2), 0 4px 10px -2px rgba(11, 12, 43, 0.35);
   transition: transform .15s ease, box-shadow .15s ease;
 }
 .worth-range input:hover::-webkit-slider-thumb { transform: scale(1.08); }
@@ -90,7 +91,7 @@
 /* "a month in sales" drops under a big number on a narrow phone instead of running past the box */
 .worth-big { flex-wrap: wrap; row-gap: 4px; }
 .worth-m { font-family: var(--font-head); font-size: 52px; font-weight: 500; letter-spacing: -2px; line-height: 1; color: var(--cobalt); }
-.worth-y { font-family: var(--font-head); font-size: 26px; font-weight: 500; letter-spacing: -0.8px; line-height: 1; color: var(--cobalt-deep); }
+.worth-y { font-family: var(--font-head); font-size: 26px; font-weight: 500; letter-spacing: -0.8px; line-height: 1; color: var(--navy); }
 .worth-unit { font-size: 15px; font-weight: 500; color: var(--navy); }
 /* the "2 orders × $80 = $160 a month" sum: screen readers only (it is the live region; the big numbers say it on screen) */
 .worth-sum { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }

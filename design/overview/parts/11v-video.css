@@ -1,0 +1,64 @@
+/* "Watch a free check": a short screen recording of the real check page (a made-up store), right under the
+   hero. Calm: white page, the video in a rounded white frame with a soft shadow and an "Example" tag.
+   11v-video.js loads it only near the screen and plays it muted and looped; a small button pauses it.
+   With reduced motion it doesn't start: the poster shows with a big play button. Without JavaScript the
+   browser's own controls show. Phones get a portrait recording of the phone layout (the <source media>). */
+.vid-sec { background: var(--bg); padding: 80px 0 0; }
+.vid-sec + .eng { padding-top: 76px; }
+.vid-title { text-align: center; font-size: 30px; letter-spacing: -1px; line-height: 1.2; color: var(--navy); }
+.vid-frame {
+  position: relative; max-width: 1000px; margin: 26px auto 0; padding: 10px; border-radius: 28px; background: var(--white);
+  box-shadow: 0 0 0 1px rgba(11, 12, 43, 0.07), 0 30px 60px -30px rgba(11, 12, 43, 0.22), 0 10px 24px -14px rgba(11, 12, 43, 0.1);
+}
+.vid { display: block; width: 100%; height: auto; aspect-ratio: 1280 / 800; object-fit: cover; border-radius: 19px; background: #f3f3f5; }
+/* a slim window bar on the frame: three dots and the "Example" tag, so the tag never covers the recording */
+.vid-bar { display: flex; align-items: center; justify-content: space-between; height: 30px; padding: 0 6px 8px 8px; }
+.vid-dots { display: inline-flex; gap: 6px; }
+.vid-dots i { width: 9px; height: 9px; border-radius: 50%; background: #e2e2e6; }
+.vid-tag {
+  font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; line-height: 1; color: var(--text-2);
+  background: var(--white); border-radius: 6px; padding: 5px 8px; box-shadow: inset 0 0 0 1px var(--line);
+}
+
+/* play / pause: big in the middle while paused, small in the corner while playing */
+.vid-btn {
+  position: absolute; z-index: 2; left: 50%; top: calc(50% + 14px); width: 76px; height: 76px; margin: -38px 0 0 -38px;
+  display: grid; place-items: center; border-radius: 50%; color: var(--white); background: var(--grad-btn);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 14px 30px -10px rgba(21, 22, 60, 0.55);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.vid-btn:hover { transform: scale(1.05); }
+.vid-btn:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 3px; }
+.vid-btn svg { width: 30px; height: 30px; }
+.vid-ic-play { margin-left: 3px; }
+.vid-ic-pause { display: none; }
+.vid-frame.is-playing .vid-btn {
+  left: auto; top: auto; right: 22px; bottom: 22px; margin: 0; width: 38px; height: 38px;
+  color: var(--navy); background: rgba(255, 255, 255, 0.9); box-shadow: inset 0 0 0 1px var(--line), 0 4px 12px -4px rgba(11, 12, 43, 0.25);
+  opacity: .8;
+}
+.vid-frame.is-playing .vid-btn:hover, .vid-frame.is-playing .vid-btn:focus-visible { opacity: 1; transform: none; }
+.vid-frame.is-playing .vid-btn svg { width: 16px; height: 16px; }
+.vid-frame.is-playing .vid-ic-play { display: none; }
+.vid-frame.is-playing .vid-ic-pause { display: block; }
+
+@media (max-width: 1100px) {
+  .vid-sec { padding-top: 64px; }
+  .vid-sec + .eng { padding-top: 64px; }
+}
+@media (max-width: 760px) {
+  .vid-sec { padding-top: 44px; }
+  .vid-sec + .eng { padding-top: 52px; }
+  .vid-title { font-size: 23px; letter-spacing: -0.6px; }
+  .vid-frame { margin-top: 16px; padding: 6px; border-radius: 22px; }
+  .vid { border-radius: 16px; }
+  .vid-bar { height: 26px; padding: 0 4px 6px 6px; }
+  .vid-dots i { width: 8px; height: 8px; }
+  .vid-tag { font-size: 10px; padding: 4px 7px; }
+  .vid-frame.is-playing .vid-btn { right: 14px; bottom: 14px; }
+}
+/* phones: the portrait recording of the phone layout */
+@media (max-width: 600px) {
+  .vid-frame { max-width: 360px; }
+  .vid { aspect-ratio: 390 / 640; }
+}

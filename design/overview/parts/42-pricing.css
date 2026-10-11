@@ -1,16 +1,17 @@
-/* Pricing: full-width lilac gradient block, navy text, a Monthly / Yearly switch and two cards: Standard
+/* Pricing: full-width very light warm grey block, navy text, a Monthly / Yearly switch and two cards: Standard
    (plan id "core", our pick: the indigo card with the filled button and the edge light) and Done-for-you
-   (plan id "pro", white card, quieter outline button). 42-pricing.js runs the switch. */
+   (plan id "pro", white card, quieter outline button). Purple stays on the Standard card and its badge
+   only (our pick); the switch, Done-for-you and the links under the cards are neutral. 42-pricing.js runs the switch. */
 .price-sec { background: var(--bg); padding-top: 24px; }
 .price-band {
   margin-inline: 16px;
   border-radius: var(--r-xl);
-  background: var(--grad-main);
+  background: var(--warm-50);
   padding: 120px 0 112px;
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+  box-shadow: var(--ring-soft);
 }
 .price-band::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
@@ -26,24 +27,24 @@
   margin-top: 28px;
   display: inline-flex; align-items: center; gap: 4px;
   padding: 5px; border-radius: 999px;
-  background: rgba(255, 255, 255, 0.55);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.95), 0 10px 24px -14px rgba(56, 64, 160, 0.45);
+  background: var(--warm-100);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
 }
 .price-tg {
   display: inline-flex; align-items: center; gap: 8px;
   height: 42px; padding: 0 18px; border-radius: 999px;
-  font-size: 15px; line-height: 1; font-weight: 600; color: var(--text-lilac);
+  font-size: 15px; line-height: 1; font-weight: 600; color: var(--text);
   transition: background-color .25s ease, color .25s ease, box-shadow .25s ease;
 }
 .price-tg:hover { color: var(--navy); }
 .price-tg[aria-pressed="true"] {
   background: var(--white); color: var(--navy);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 0 0 1px rgba(56, 64, 160, 0.08), 0 6px 14px -8px rgba(56, 64, 160, 0.55);
+  box-shadow: 0 0 0 1px rgba(11, 12, 43, 0.06), 0 4px 10px -6px rgba(17, 17, 26, 0.3);
 }
 .price-save {
-  font-size: 12px; line-height: 1; font-weight: 600; color: var(--indigo-900);
-  background: var(--lilac-pedestal); border-radius: 999px; padding: 6px 8px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  font-size: 12px; line-height: 1; font-weight: 600; color: var(--ink-2);
+  background: var(--white); border-radius: 999px; padding: 6px 8px;
+  box-shadow: inset 0 0 0 1px var(--line-soft);
 }
 .page .price-sec .price-tg:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
 /* screen readers hear "Yearly prices shown" after a switch */
@@ -62,7 +63,7 @@
   border-radius: var(--r-lg);
   background: var(--white);
   color: var(--text);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8), var(--shadow-clay);
+  box-shadow: var(--ring-soft), var(--shadow-soft);
 }
 .price-name { font-family: var(--font-body); font-size: 18px; line-height: 1.3; font-weight: 600; letter-spacing: -0.2px; color: var(--navy); }
 .price-amt { margin-top: 22px; display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 8px; row-gap: 2px; }
@@ -75,11 +76,11 @@
 @keyframes price-swap { from { opacity: 0; transform: translate3d(0, 6px, 0); } to { opacity: 1; transform: none; } }
 .price-desc { margin-top: 14px; font-size: 14px; line-height: 1.6; color: var(--text); }
 .price-btn { margin-top: 30px; width: 100%; height: 50px; font-size: 15px; }
-.price-btn-line { color: var(--navy); background: var(--white); box-shadow: inset 0 0 0 1.5px rgba(56, 64, 160, 0.3); }
-.price-btn-line:hover { background: var(--lilac-50); box-shadow: inset 0 0 0 1.5px var(--cobalt-mid); }
+.price-btn-line { color: var(--navy); background: var(--white); box-shadow: inset 0 0 0 1.5px #d3d2cc; }
+.price-btn-line:hover { background: var(--warm-50); box-shadow: inset 0 0 0 1.5px var(--navy-3); }
 .price-list { list-style: none; margin: 34px 0 0; padding: 0; display: flex; flex-direction: column; gap: 15px; }
 .price-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; line-height: 22px; color: var(--text); }
-.price-list .check-chip { margin-top: 0; background: var(--lilac-100); color: var(--cobalt); }
+.price-list .check-chip { margin-top: 0; background: var(--warm-100); color: var(--navy); box-shadow: inset 0 0 0 1px var(--line-soft); }
 
 /* Standard: deep indigo card */
 .price-card-dark { background: var(--grad-indigo); color: var(--on-dark); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 36px 64px -28px rgba(21, 22, 60, 0.6); }
@@ -144,11 +145,11 @@
 }
 
 /* Under the cards: the free check for anyone not ready yet, then billing in one line. */
-.price-foot { margin: 36px auto 0; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; font-size: 15px; line-height: 1.6; color: var(--text-lilac); text-wrap: balance; }
-.price-foot-link { color: var(--cobalt-deep); font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: rgba(56, 64, 160, 0.45); transition: text-decoration-color .2s ease; }
+.price-foot { margin: 36px auto 0; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; font-size: 15px; line-height: 1.6; color: var(--text); text-wrap: balance; }
+.price-foot-link { color: var(--navy); font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: rgba(11, 12, 43, 0.4); transition: text-decoration-color .2s ease; }
 .price-foot-link:hover { text-decoration-color: currentColor; }
 
-/* focus rings: the shared rule makes them white on this band; cobalt reads on lilac and white cards */
+/* focus rings: the shared rule makes them white on this band; cobalt reads on the grey band and white cards */
 .page .price-sec .price-band a:focus-visible { outline-color: var(--cobalt); }
 .page .price-sec .price-card-dark a:focus-visible { outline-color: var(--white); }
 

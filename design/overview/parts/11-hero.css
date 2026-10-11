@@ -26,16 +26,20 @@
   display: inline-flex; align-items: center; gap: 8px;
   min-height: 32px; padding: 4px 10px 4px 4px;
   border-radius: 10px; background: rgba(255, 255, 255, 0.88);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 0 1px rgba(181, 168, 224, 0.45), 0 4px 14px -8px rgba(56, 64, 160, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 0 1px rgba(11, 12, 43, 0.08), 0 4px 14px -8px rgba(17, 17, 26, 0.18);
   font-size: 13px; font-weight: 500; line-height: 1.3; color: var(--navy); text-align: left;
   transition: box-shadow .2s ease, transform .2s ease;
 }
 a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep), 0 8px 18px -8px rgba(56, 64, 160, 0.45); transform: translateY(-1px); }
-.hero-pill-new { flex: none; display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 7px; background: var(--lilac-pedestal); color: var(--cobalt-deep); font-weight: 650; font-size: 12.5px; font-variant-numeric: tabular-nums; letter-spacing: -0.1px; }
+/* neutral label; the tiny cobalt dot is its only accent */
+.hero-pill-new { flex: none; display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 7px; background: var(--warm-100); box-shadow: inset 0 0 0 1px var(--line-soft); color: var(--navy); font-weight: 650; font-size: 12.5px; font-variant-numeric: tabular-nums; letter-spacing: -0.1px; }
+.hero-pill-new::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--cobalt); }
 .hero-pill svg { flex: none; width: 14px; height: 14px; color: var(--cobalt); }
 
 .hero-title { margin-top: 28px; max-width: 900px; }
 .hero-lead { margin-top: 24px; max-width: 610px; font-size: 17px; line-height: 1.65; color: var(--navy-3); text-wrap: balance; }
+/* The comparison line: the whole idea in six words, on its own line above the explanation. */
+.hero-like { display: block; margin-bottom: 6px; font-family: var(--font-head); font-size: 21px; font-weight: 500; letter-spacing: -0.4px; line-height: 1.35; color: var(--navy); }
 
 /* free product check form (posts to /check on the live site). The server works out the store's
    country itself, so the form is just the product link and the button. */
@@ -124,7 +128,10 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 }
 
 /* ---------- three animated cards ---------- */
+/* The slogan over the three cards is their title: the cards follow its three beats. */
+.hw-slogan { margin-top: 64px; font-family: var(--font-head); font-size: 22px; font-weight: 500; letter-spacing: -0.5px; line-height: 1.3; color: var(--navy); text-wrap: balance; }
 .hw-wrap { position: relative; width: 100%; max-width: 1100px; margin-top: 72px; }
+.hw-slogan + .hw-wrap { margin-top: 28px; }
 .hw { position: relative; z-index: 1; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; text-align: left; }
 .hw-card {
   --art-h: 208px;
@@ -512,6 +519,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 @media (max-width: 1023px) {
   /* tablets: one column of cards (phones: one sideways row, below) */
   .hw-wrap { max-width: 460px; margin-top: 56px; }
+  .hw-slogan { margin-top: 52px; }
   .hw { grid-template-columns: minmax(0, 1fr); gap: 14px; }
   .hero-deco { display: none; }
 }
@@ -530,6 +538,9 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .hero-br { display: none; }
   .hero-title { margin-top: 22px; }
   .hero-lead { margin-top: 16px; font-size: 15.5px; }
+  .hero-like { margin-bottom: 4px; font-size: 18px; letter-spacing: -0.3px; }
+  .hw-slogan { margin-top: 30px; font-size: 18px; letter-spacing: -0.3px; }
+  .hw-slogan + .hw-wrap { margin-top: 12px; }
   .hero-check { margin-top: 28px; }
   .hero-pill { font-size: 12.5px; }
   /* one sideways row that runs to the edges of the lilac band: swipe for the next card, which peeks in */

@@ -34,6 +34,16 @@
   --lav-chip: #e2e2fc;
   /* faint grid lines: cobalt at low opacity, so they show on white and on the lilac gradient */
   --grid-line: rgba(64, 80, 176, 0.075);
+  /* Neutrals (Oct 2026 colour pass): purple is a highlight for the main point only (the hero band, the link
+     form, main buttons, the Standard card, the closing card and one key number per section). Everything else
+     sits on white or this very light warm grey, in white cards with a thin light grey line and a soft shadow. */
+  --warm-50: #f8f7f4;
+  --warm-100: #f1f0ec;
+  --line-soft: #e6e5e0;
+  --ink-2: #3d3e52;
+  --grid-line-neutral: rgba(11, 12, 43, 0.045);
+  --shadow-soft: 0 1px 2px rgba(17, 17, 26, 0.04), 0 16px 32px -22px rgba(17, 17, 26, 0.18);
+  --ring-soft: 0 0 0 1px var(--line-soft);
   --bg: #ffffff;
   --bg-2: #fafafa;
   --bg-3: #f7f8f7;
@@ -105,7 +115,7 @@ p { margin: 0; }
 /* layout */
 .wrap { width: 100%; max-width: calc(var(--wrap) + 2 * var(--gutter)); margin-inline: auto; padding-inline: var(--gutter); }
 .section { padding-block: var(--section-y); }
-.section.alt { background: var(--lilac-50); }
+.section.alt { background: var(--warm-50); }
 .section.lilac { background: var(--grad-main); }
 .center { text-align: center; }
 .stack-c { display: flex; flex-direction: column; align-items: center; text-align: center; }
@@ -153,7 +163,7 @@ p { margin: 0; }
 /* small UI atoms used in mockups */
 .pill { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 100px; font-size: 12px; font-weight: 500; line-height: 1; white-space: nowrap; }
 .pill-blue { background: var(--blue); color: var(--white); }
-.pill-lav { background: var(--lav-2); color: var(--blue); }
+.pill-lav { background: var(--warm-100); color: var(--navy); box-shadow: inset 0 0 0 1px var(--line-soft); }
 .pill-green { background: var(--green-bg); color: var(--green-ink); }
 .pill-amber { background: var(--amber-bg); color: #9a6411; }
 .pill-red { background: var(--red-bg); color: #b33a3a; }
@@ -187,7 +197,7 @@ p { margin: 0; }
 .kpi { font-family: var(--font-head); font-size: 26px; letter-spacing: -0.8px; font-weight: 600; color: var(--navy); font-variant-numeric: tabular-nums; line-height: 1.1; }
 .delta-up { color: var(--green-ink); font-size: 12px; font-weight: 600; }
 .hl { background: #fff3c4; border-radius: 3px; padding: 0 2px; }
-.hl-you { background: var(--lav-chip); color: var(--blue); border-radius: 3px; padding: 0 2px; font-weight: 600; }
+.hl-you { background: var(--warm-100); color: var(--navy); border-radius: 3px; padding: 0 2px; font-weight: 600; box-shadow: inset 0 0 0 1px var(--line-soft); }
 
 /* scale-to-fit wrapper for wide mockups on small screens */
 .fit { width: 100%; overflow: hidden; }

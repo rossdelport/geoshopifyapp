@@ -10,12 +10,12 @@
 .scr-sec:not(.scr-js) .scr-app button { pointer-events: none; }
 
 /* "Try the app" hint under the heading */
-.scr-hint { display: inline-flex; align-items: center; gap: 8px; padding: 6px 13px 6px 10px; border-radius: 100px; background: var(--lilac-50); color: var(--text-lilac); font-size: 13.5px; font-weight: 500; line-height: 1.2; }
-.scr-hint svg { width: 16px; height: 16px; flex: none; color: var(--cobalt); }
+.scr-hint { display: inline-flex; align-items: center; gap: 8px; padding: 6px 13px 6px 10px; border-radius: 100px; background: var(--warm-100); color: var(--ink-2); box-shadow: inset 0 0 0 1px var(--line-soft); font-size: 13.5px; font-weight: 500; line-height: 1.2; }
+.scr-hint svg { width: 16px; height: 16px; flex: none; color: var(--navy); }
 
 /* stage + frame */
 .scr-stage { position: relative; }
-.scr-grid { position: absolute; left: 50%; top: -60px; width: min(1500px, 140%); height: 640px; transform: translateX(-50%); pointer-events: none; z-index: 0; }
+.scr-grid { --grid-line: var(--grid-line-neutral); position: absolute; left: 50%; top: -60px; width: min(1500px, 140%); height: 640px; transform: translateX(-50%); pointer-events: none; z-index: 0; }
 .scr-frame { position: relative; z-index: 1; max-width: 960px; margin-inline: auto; padding: 12px; border-radius: var(--r-lg); background: var(--white); box-shadow: 0 0 0 1px rgba(11, 12, 43, 0.05), var(--shadow-lg); transform-origin: 50% 0; transition: transform 1.1s cubic-bezier(.2, .7, .2, 1); }
 /* before it scrolls into view: tipped back a little, then it settles flat */
 .scr-wait .scr-frame { transform: perspective(1600px) rotateX(8deg) translateY(28px) scale(.97); }
@@ -43,15 +43,15 @@
 .scr-tab svg { width: 16px; height: 16px; flex: none; }
 .scr-tab:hover { background: rgba(0, 0, 0, 0.04); }
 .scr-tab[aria-selected="true"] { color: #1a1a1a; font-weight: 650; background: none; }
-.scr-tab[aria-selected="true"] svg { color: var(--cobalt); }
+.scr-tab[aria-selected="true"] svg { color: var(--navy); }
 .scr-tab:focus-visible, .scr-seg button:focus-visible, .scr-q:focus-visible, .scr-go:focus-visible, .scr-approve:focus-visible, .scr-undo:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
 .scr-q:focus-visible { outline-offset: -2px; }
 .scr-panel:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 4px; border-radius: 6px; }
 .scr-ind { position: absolute; left: 0; top: 0; width: 100%; height: 36px; border-radius: 8px; background: #fff; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03); transform: translateY(calc(var(--n, 0) * (100% + 2px))); transition: transform .4s cubic-bezier(.3, .8, .25, 1); }
-.scr-badge { margin-left: auto; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--cobalt); color: #fff; font-size: 10.5px; font-weight: 700; line-height: 18px; text-align: center; transition: transform .3s cubic-bezier(.3, 1.5, .5, 1), opacity .2s ease; }
+.scr-badge { margin-left: auto; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--navy); color: #fff; font-size: 10.5px; font-weight: 700; line-height: 18px; text-align: center; transition: transform .3s cubic-bezier(.3, 1.5, .5, 1), opacity .2s ease; }
 .scr-badge.is-bump { animation: scr-pop .4s cubic-bezier(.3, 1.6, .5, 1); }
 /* "click me" ring on the next tab until someone clicks anything in the app */
-.scr-tab.is-nudge::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: rgba(104, 120, 216, 0.08); box-shadow: 0 0 0 2px var(--cobalt-mid); opacity: 0; pointer-events: none; animation: scr-ping 2.4s ease-out infinite; }
+.scr-tab.is-nudge::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: rgba(11, 12, 43, 0.04); box-shadow: 0 0 0 2px rgba(11, 12, 43, 0.45); opacity: 0; pointer-events: none; animation: scr-ping 2.4s ease-out infinite; }
 
 /* screens: all in one grid cell (the tallest sets the height); only the chosen one is visible */
 .scr-main { container: scrmain / inline-size; display: grid; min-width: 0; padding: 20px 20px 22px; background: #f1f1f1; font-size: 13px; }
@@ -70,7 +70,7 @@
 .scr-seg-ind { position: absolute; top: 2px; bottom: 2px; left: 2px; width: calc(50% - 2px); border-radius: 7px; background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.14), 0 0 0 .5px rgba(0, 0, 0, 0.06); transition: transform .35s cubic-bezier(.3, .8, .25, 1); }
 .scr-seg[data-p="all"] .scr-seg-ind { transform: translateX(100%); }
 
-.scr-money { padding-block: 18px 14px; background: linear-gradient(180deg, #f6f5fe 0%, #fff 70%); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.07), inset 0 0 0 1px rgba(64, 80, 176, 0.12); }
+.scr-money { padding-block: 18px 14px; }
 .scr-kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .scr-kpi { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; padding-right: 16px; }
 .scr-kpi + .scr-kpi { border-left: 1px solid var(--scr-ln2); padding-left: 18px; }
@@ -111,8 +111,8 @@
 .scr-q { position: relative; width: 100%; min-height: 50px; padding-block: 9px; text-align: left; border-bottom: 1px solid var(--scr-ln2); }
 .scr-q:last-child { border-bottom: 0; }
 .scr-q:hover { background: #fafafb; }
-.scr-q[aria-pressed="true"] { background: var(--lav); }
-.scr-q[aria-pressed="true"]::before { content: ""; position: absolute; left: 0; top: 7px; bottom: 7px; width: 3px; border-radius: 0 3px 3px 0; background: var(--cobalt); }
+.scr-q[aria-pressed="true"] { background: var(--warm-50); }
+.scr-q[aria-pressed="true"]::before { content: ""; position: absolute; left: 0; top: 7px; bottom: 7px; width: 3px; border-radius: 0 3px 3px 0; background: var(--navy); }
 .scr-q-t { font-size: 13px; font-weight: 500; line-height: 1.35; color: #303030; }
 .scr-q[aria-pressed="true"] .scr-q-t { font-weight: 600; color: var(--navy); }
 /* "Fix live" chip under a question once its fix is approved (sample) */
@@ -127,8 +127,8 @@
 /* each dot opens that AI's answer; the one being shown gets a ring */
 .scr-q .scr-st { cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; }
 .scr-q .scr-st:hover { transform: scale(1.12); }
-.scr-q[aria-pressed="true"] .scr-st.is-sel { box-shadow: inset 0 0 0 1.5px #d9d9e0, 0 0 0 2px #fff, 0 0 0 3.5px var(--cobalt); }
-.scr-q[aria-pressed="true"] .scr-st.is-y.is-sel { box-shadow: inset 0 0 0 1px rgba(31, 157, 85, 0.3), 0 0 0 2px #fff, 0 0 0 3.5px var(--cobalt); }
+.scr-q[aria-pressed="true"] .scr-st.is-sel { box-shadow: inset 0 0 0 1.5px #d9d9e0, 0 0 0 2px #fff, 0 0 0 3.5px var(--navy); }
+.scr-q[aria-pressed="true"] .scr-st.is-y.is-sel { box-shadow: inset 0 0 0 1px rgba(31, 157, 85, 0.3), 0 0 0 2px #fff, 0 0 0 3.5px var(--navy); }
 
 .scr-ans { display: grid; padding: 14px 16px; }
 .scr-an { grid-area: 1 / 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; visibility: hidden; }
@@ -138,7 +138,7 @@
 .scr-an p { font-size: 13.5px; line-height: 1.65; color: #303030; }
 .scr-an .hl, .scr-an .hl-you { display: inline-block; font-weight: 600; white-space: nowrap; }
 /* "See GEO's fix" sits under every answer's place and shows for the question GEO has a fix for */
-.scr-go { grid-area: 2 / 1; justify-self: start; display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 2px 0; font-size: 12.5px; font-weight: 600; color: var(--cobalt); visibility: hidden; }
+.scr-go { grid-area: 2 / 1; justify-self: start; display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 2px 0; font-size: 12.5px; font-weight: 600; color: var(--navy); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(11, 12, 43, 0.35); visibility: hidden; }
 .scr-go.is-shown { visibility: inherit; }
 .scr-go svg { width: 14px; height: 14px; transition: transform .2s ease; }
 .scr-go:hover svg { transform: translateX(3px); }
@@ -146,7 +146,7 @@
 /* Fixes: one suggested change, Approve pushes it (sample), Undo puts it back */
 .scr-fix { display: flex; flex-direction: column; gap: 12px; }
 .scr-fix-h { display: flex; align-items: center; gap: 10px; }
-.scr-tile { width: 32px; height: 32px; border-radius: 8px; flex: none; display: grid; place-items: center; background: var(--lav); color: var(--blue); box-shadow: inset 0 0 0 1px var(--lav-line); }
+.scr-tile { width: 32px; height: 32px; border-radius: 8px; flex: none; display: grid; place-items: center; background: var(--warm-100); color: var(--ink-2); box-shadow: inset 0 0 0 1px var(--line-soft); }
 .scr-tile svg { width: 16px; height: 16px; }
 .scr-fix-t { display: flex; flex-direction: column; min-width: 0; margin-right: auto; line-height: 1.3; }
 .scr-fix-t b { font-size: 13px; color: #303030; }
@@ -197,11 +197,11 @@
 .scr-rv { display: flex; flex-direction: column; gap: 14px; }
 .scr-rvl { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .scr-rvl li { display: grid; grid-template-columns: 210px minmax(0, 1fr) 40px; align-items: center; gap: 12px; padding: 9px 10px; border-radius: 9px; font-size: 13px; color: #303030; }
-.scr-rvl li.is-you { background: var(--lav); box-shadow: inset 0 0 0 1px var(--lav-line); font-weight: 600; }
+.scr-rvl li.is-you { background: var(--warm-50); box-shadow: inset 0 0 0 1px var(--line-soft); font-weight: 600; }
 .scr-rv-n { display: inline-flex; align-items: center; gap: 6px; min-width: 0; white-space: nowrap; }
-.scr-rv-n em { font-style: normal; padding: 2px 6px; border-radius: 5px; background: var(--cobalt); color: #fff; font-size: 10.5px; font-weight: 700; line-height: 1.3; }
+.scr-rv-n em { font-style: normal; padding: 2px 6px; border-radius: 5px; background: var(--navy); color: #fff; font-size: 10.5px; font-weight: 700; line-height: 1.3; }
 .scr-rv-t { height: 10px; border-radius: 5px; }
-.scr-rv-t i { background: #8f91a8; }
+.scr-rv-t i { background: #a9a8a2; }
 .is-you .scr-rv-t i { background: var(--cobalt); }
 .scr-rvl b { text-align: right; font-weight: 650; font-variant-numeric: tabular-nums; }
 .scr-rv-note { padding-top: 12px; border-top: 1px solid var(--scr-ln2); font-size: 12.5px; color: var(--scr-sub); }

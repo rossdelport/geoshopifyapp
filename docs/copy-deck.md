@@ -4,7 +4,9 @@ Written for the redesign in `docs/redesign-brief.md`. External facts come only f
 Product facts come from `CLAUDE.md`. Sections 1 to 12 are the lean home page as built in
 `design/overview/parts/*.html` (rewritten 10 Oct 2026: about 750 words, down from 5,716; copy pass the same day for the
 "recommended in AI answers" message, now about 920 words with the clickable sample app; the two-plan pricing with
-the Monthly / Yearly switch, the same day, keeps it under 1,000).
+the Monthly / Yearly switch, the same day, keeps it under 1,000). 11 Oct 2026: Ross's four approved changes (the
+"Like SEO" line, the slogan, small app screens in How it works, the free check video) and a colour pass; the
+budget is now **1,050 words** (the page is at 1,048).
 
 > ### Copy rules (every writer, every line)
 >
@@ -173,7 +175,8 @@ to sentences. Each section says one thing; don't repeat another section's job.
 | # | Part | File | id | Job |
 |---|---|---|---|---|
 | 1 | Nav | `10-nav.html` | | 3 links + free check button |
-| 2 | Hero | `11-hero.html` | `overview`, form `check` | Headline, one line, free check, 3 story cards |
+| 2 | Hero | `11-hero.html` | `overview`, form `check` | Headline, "Like SEO" line, free check, slogan, 3 story cards |
+| 2b | Watch a free check | `11v-video.html` | `watch` | 47-second recording of a real check (made-up store) |
 | 3 | Engines strip | `12-engines.html` | | Which AI we check |
 | 4 | Why now | `12w-why.html` | `why` | Three big numbers with sources |
 | 5 | How it works | `20-how.html` | `how` | How GEO helps you get recommended: see it, fix it, see the money |
@@ -203,16 +206,21 @@ the ~50M number only in Why now; "no cost per click" in hero card 3 (and FAQ 5 l
 
 ## 4. Hero (`11-hero.html`, id `overview`)
 
-- **Pill** (plain label, not a link): **AU & NZ** For Shopify stores
+- **Pill** (plain label, not a link): **Worldwide** For Shopify stores
 - **H1 (fixed):** The free sales channel `<br class="hero-br">` your store is missing
-- **Line:** GEO helps your products get recommended in ChatGPT, Gemini and Perplexity answers, then shows the
-  sales you can trace back to AI. (Honesty rule: every line about sales keeps "can trace", never "the sales
+- **Line:** **Like SEO, but for ChatGPT's answers.** (the comparison line, its own line in navy) GEO helps AI
+  recommend your products, then shows the sales you can trace back to AI. (Was: "GEO helps your products get
+  recommended in ChatGPT, Gemini and Perplexity answers, then shows the sales you can trace back to AI." "Built for
+  Shopify" is left out because the pill right above already says "For Shopify stores".) (Honesty rule: every line about sales keeps "can trace", never "the sales
   AI sends".)
 - **Free check form** (`#check`, posts to `/check`): placeholder "Paste your product link" in the page (it
   fits phones, also without JavaScript); wider screens swap in "Paste a product link, e.g.
   yourstore.com/products/...". Button **Check my product** (busy: "Starting your check…"). No country
   picker: the check works out where the store is. A soft light travels slowly round the link box.
-- **Under the form:** See if AI recommends your product. Free, no sign-up, usually a few minutes.
+- **Under the form:** See if AI recommends your product. Free, no sign-up. ("usually a few minutes" went to make room
+  for the video; the check page says how long it takes.)
+- **Slogan** (over the three cards, their title; also the footer line): **Shoppers ask. AI recommends. You get the
+  sale.** Its three beats are the three cards. Use it in these two places only.
 - **Cards:**
 
 | Card | Title | Line |
@@ -226,6 +234,21 @@ Card lines stay at 8 words or fewer. On phones (760px and below) the cards sit i
 (swipe, the next card peeking in), so the engines strip starts within about one screen.
 
 ---
+
+## 4b. Watch a free check (`11v-video.html`, id `watch`)
+
+- **H2 (small):** Watch a free check · frame tag **Example**
+- A screen recording of the real check page (`/check/:id`) run on a local copy with a seeded, made-up check:
+  Coolabah Grooming Co., "Dry Skin Beard Oil 30ml", US$34, coolabahgrooming.com, shoppers in the US; rivals
+  Ridgeback, Saltbush, Banksia, Wattlebird; made-up cited sites (beardbuyersguide.com, groomedmonthly.com,
+  beardtalkforum.com, groomhouse.com). It shows the link typed into the hero, the live "AI at work" view (reading,
+  writing questions, asking ChatGPT, Gemini and Perplexity, 18 answers), then the report (11% ring, "Who AI
+  recommends instead", the locked action plan). Waiting parts are sped up.
+- Files in `design/overview/img/`: `free-check.mp4` / `.webm` (1280×800) and `free-check-phone.mp4` / `.webm`
+  (390×640, chosen by `<source media>` at 600px and below), posters `free-check-poster.jpg` and
+  `free-check-phone-poster.jpg` (`11v-video.js` swaps it in on phones; `assemble.mjs` copies it).
+- Loads only near the screen, plays muted and looped, pauses off screen; one small pause button. Reduced motion:
+  never starts by itself (poster and a big play button). No JavaScript: the browser's own controls.
 
 ## 5. Engines strip (`12-engines.html`)
 
@@ -251,11 +274,14 @@ Card lines stay at 8 words or fewer. On phones (760px and below) the cards sit i
 
 - **H2:** How GEO helps you get recommended
 
-| Step | Image | Title | Line |
+Each step shows a small app screen (tag **Example**, the sample app's store and rivals, numbers as in the sample app)
+instead of a clay picture. Each screen is `role="img"` with a one-sentence description.
+
+| Step | Screen | Title | Line |
 |---|---|---|---|
-| 1 | `clay-magnifier.jpg` | See if AI recommends you | We ask ChatGPT, Gemini and Perplexity your buyers' questions every week. |
-| 2 | `clay-shield.jpg` | Fix it in one click | GEO writes clearer product pages, so AI can pick you. |
-| 3 | `clay-money.jpg` | See the money | Orders, revenue and clicks from AI, against your starting point. |
+| 1 | **Questions**: "best beard oil for dry skin"; ChatGPT: Ridgeback, Saltbush, You · #3; Gemini: Ridgeback, Banksia · Not named; Perplexity: Ridgeback · Not named | See if AI recommends you | We ask AI your buyers' questions every week. (was "We ask ChatGPT, Gemini and Perplexity your buyers' questions every week.") |
+| 2 | **Fixes**: Gentle Beard Wash; Before "Our best seller. Smells amazing." After "Soap-free beard wash for sensitive skin. 200ml."; **Approve** turns into "Pushed to Shopify" once in view (not with reduced motion) | Fix it in one click | GEO writes clearer product pages, so AI can pick you. |
+| 3 | **Money**: AI revenue $4,820 ▲ 38%, AI orders 61 ▲ 22%; weekly bars over a dashed "Starting point" line | See the money | Orders, revenue and clicks from AI, against your starting point. |
 
 Safeguard chips, one centred row under the three cards (they replace the guardrails section):
 **You stay in control** · **One-click undo** · **Never invents facts**. (Was "You approve every change", which
@@ -348,7 +374,7 @@ net for stores that install without starting a trial).
 |---|---|
 | What does GEO actually do? (starts open) | It helps ChatGPT, Gemini and Perplexity recommend your products. It checks their answers, writes fixes and counts the sales it can trace back to them. |
 | How do you know a sale came from AI? | ChatGPT usually adds `utm_source=chatgpt.com` to its links. We spot other AI visits too. Google AI Overviews can't be cleanly separated. |
-| Can I pay to appear in AI answers? | Not on ChatGPT. OpenAI says ads can't shape its answers. Google sells ads in AI Overviews in Australia and New Zealand. GEO helps you earn the unpaid ones. Sources: OpenAI and Google Ads Help [F6] |
+| Can I pay to appear in AI answers? | Not on ChatGPT. OpenAI says ads can't shape its answers. Google sells ads in AI Overviews in many countries. GEO helps you earn the unpaid ones. Sources: OpenAI and Google Ads Help [F6] |
 | Will GEO change my store without asking? | Not on Standard: you approve every change. Done-for-you makes them for you, except risky ones like product claims. Undo takes one click. |
 | If GEO costs money, what's free? | The product check, the free scan after install, the 7-day free trial and AI's clicks. After that, Standard is US$97 a month. |
 | How long does setup take? | About five minutes. Install from Shopify, tick your questions and the first scan starts. |
@@ -363,8 +389,8 @@ first question; How it works step 2 now carries "so AI can pick you").
 - **H2:** Is AI recommending your products?
 - **Line:** Paste a product link to see if AI picks you. Free, no sign-up.
 - **Button:** Check my product → `#check`
-- **Footer:** logo · "Helps AI recommend your products, and counts the sales it can trace." · links How it works, Pricing, FAQ,
-  Privacy (`/privacy` on the live site) · "© 2026 GEO · Made for Shopify stores in Australia & New Zealand"
+- **Footer:** logo · "Shoppers ask. AI recommends. You get the sale." (the slogan) · links How it works, Pricing, FAQ,
+  Privacy (`/privacy` on the live site) · "© 2026 GEO · Made for Shopify stores worldwide"
 
 ---
 
@@ -538,9 +564,8 @@ Tip copy (in `buildTips`, keep the variables and the rules, no dashes):
 |---|---|---|
 | `clay-bubble.png`, `clay-bag.png` | Hero, floating beside the cards; `clay-bubble.png` also by the FAQ chat | `""` |
 | `clay-coin.png` | Hero card 3, "New order" row | `""` |
-| `clay-magnifier.jpg` | How it works step 1 (also the free check, running state) | Clay magnifying glass over a bottle of beard oil |
-| `clay-shield.jpg` | How it works step 2 | Clay shield with a tick |
-| `clay-money.jpg` | How it works step 3 | Clay chat bubble with shopping bags and gold coins spilling out |
+| `clay-magnifier.jpg` | Not on the home page any more; the free check pages still use it (copied by `assemble.mjs`) | |
+| `free-check-poster.jpg`, `free-check-phone-poster.jpg` | Watch a free check (posters of the video) | the video has an aria-label |
 | `clay-coins.jpg` | What's it worth (no frame, edges fade into the band; hidden on phones) | `""` |
 | `clay-storefront.jpg` | Closing CTA card | `""` |
 
@@ -549,16 +574,27 @@ No longer used on the home page: `clay-answer.jpg`, `clay-support.jpg`, `guide-*
 
 ---
 
+## 14b. Colour (11 Oct 2026, Ross: "too much of the purple highlight colour")
+
+Purple (lilac, periwinkle, cobalt) is a highlight for the main point only. Kept purple: the hero band (the brand
+moment), the link form and its glow, the logo, the Standard card and its badge, the closing call-to-action card, and
+one key element per section (Why now: the middle number "nearly 60×"; How it works: "You" in step 1 and the bars in
+step 3; the sample app: its data bars and line only; What's it worth: the result box with $160; FAQ: the asked
+question as a light cobalt bubble). Everything else is neutral: sections on white or the very light warm grey
+`--warm-50`, white cards with a thin light grey line (`--line-soft`) and a soft neutral shadow, grey chips and tags,
+navy links with an underline, navy step numbers and ticks. Focus rings stay cobalt.
+
 ## 15. Final checks before shipping
 
-- [ ] Whole page 1,000 words or fewer (`wordcount.py` over the parts).
+- [ ] Whole page 1,050 words or fewer (`wordcount.py` over the parts).
 - [ ] Headline reads exactly "The free sales channel your store is missing".
 - [ ] No em dashes and no spaced en dashes in `design/overview/index.html` or `app/home/home.html`.
 - [ ] Every `href="#..."` points at an id on the page.
 - [ ] Every number shows a small source link (Why now, FAQ ads answer).
 - [ ] 50 million is "our 2025 estimate". Triple Whale is "nearly 60×, Q4 2025 vs all of 2024", its own
       stores. Adobe is US retail.
-- [ ] The dashboard mockup has "Sample data" and hero card 3 has "Example". Only fictional names.
+- [ ] The dashboard mockup has "Sample data"; hero card 3, the How it works screens and the video have "Example".
+      Only fictional names.
 - [ ] "Free" only describes the free product check, the free scan, the trial, or the AI clicks. GEO Standard is
       US$97 a month (or US$873 a year) after a 7-day free trial; Done-for-you is US$497 a month (or US$4,473 a year).
 - [ ] No struck-through or "was" prices, no "10x", no savings claim beyond "3 months free".

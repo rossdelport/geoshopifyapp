@@ -1,4 +1,5 @@
-/* Why now: three big numbers on clay gradient cards, each with a one-line label and a small source link. */
+/* Why now: three big numbers on white cards, each with a one-line label and a small source link.
+   Numbers are navy; only the middle one (the orders AI already sends) is cobalt, the section's one accent. */
 .why { padding-top: 40px; }
 .why-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 
@@ -6,19 +7,20 @@
 .why-stat {
   display: flex; flex-direction: column; gap: 12px; min-width: 0;
   padding: 40px 36px 28px; border-radius: var(--r-xl);
-  background: radial-gradient(ellipse 70% 60% at 0% 0%, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 70%), var(--grad-main);
-  box-shadow: var(--shadow-clay), inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+  background: var(--white);
+  box-shadow: var(--ring-soft), var(--shadow-soft);
 }
 
-/* the number: big cobalt, tabular */
-.why-num { display: flex; align-items: baseline; font-family: var(--font-head); font-weight: 500; font-size: 96px; line-height: 1; letter-spacing: -4.5px; color: var(--cobalt); font-variant-numeric: tabular-nums; }
+/* the number: big navy, tabular (the middle one cobalt) */
+.why-num { display: flex; align-items: baseline; font-family: var(--font-head); font-weight: 500; font-size: 96px; line-height: 1; letter-spacing: -4.5px; color: var(--navy); font-variant-numeric: tabular-nums; }
+.why-stat:nth-child(2) .why-num { color: var(--cobalt); }
 .why-num > span[aria-hidden] { display: inline-flex; align-items: baseline; }
-.why-unit { color: var(--cobalt-mid); margin-left: 2px; letter-spacing: -2px; }
-.why-pre { font-size: .6em; letter-spacing: 0; margin-right: 2px; position: relative; top: -0.24em; color: var(--cobalt-mid); }
+.why-unit { color: inherit; margin-left: 2px; letter-spacing: -2px; }
+.why-pre { font-size: .6em; letter-spacing: 0; margin-right: 2px; position: relative; top: -0.24em; color: inherit; }
 .why-pre-w { top: 0; font-size: 22px; letter-spacing: -0.4px; color: var(--navy); margin-right: 10px; }
 
 .why-what { font-family: var(--font-head); font-weight: 500; font-size: 20px; line-height: 1.35; letter-spacing: -0.4px; color: var(--navy); text-wrap: balance; }
-.why-src { margin-top: auto; padding-top: 14px; border-top: 1px dashed rgba(56, 64, 160, 0.22); font-size: 12.5px; line-height: 1.55; color: var(--text-lilac); }
+.why-src { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--line-soft); font-size: 12.5px; line-height: 1.55; color: var(--text); }
 
 /* Rolling counter (12w-why.js): each digit is a column. The real digit stays in place, transparent, to hold
    the width and the baseline; a strip of digits (drawn by ::before) slides up to it. The column's mask shows

@@ -72,6 +72,25 @@ describe("home page", () => {
     for (const f of imgs) expect(existsSync(join(imgDir, f)), `public/home/img/${f} is missing`).toBe(true);
   });
 
+  it("explains itself in one line and shows a free check video that ships", async () => {
+    const html = await (await call("https://geo.test/")).text();
+    expect(html).toContain("Like SEO, but for ChatGPT’s answers.");
+    expect(html).toContain("Shoppers ask. AI recommends. You get the sale.");
+    const start = html.indexOf('<video class="vid"');
+    expect(start).toBeGreaterThan(-1);
+    const video = html.slice(start, html.indexOf("</video>", start));
+    // Muted and inline so it may play; no autoplay attribute (11v-video.js starts it, never with reduced motion).
+    expect(video).toContain(" muted ");
+    expect(video).toContain(" playsinline ");
+    expect(video).not.toMatch(/\sautoplay[\s>]/);
+    expect(video).toContain('type="video/mp4"');
+    expect(video).toContain('type="video/webm"');
+    const files = [...video.matchAll(/(?:src|poster)="\/home\/img\/([^"]+)"/g)].map((m) => m[1]);
+    expect(files.length).toBeGreaterThanOrEqual(5);
+    // The phone poster is swapped in by script, so it must ship too.
+    for (const f of [...files, "free-check-phone-poster.jpg"]) expect(existsSync(join(imgDir, f)), `public/home/img/${f} is missing`).toBe(true);
+  });
+
   it("sends Shopify app opens straight into the app", async () => {
     const res = await call("https://geo.test/?shop=demo.myshopify.com&host=abc").catch((r: Response) => r);
     expect(res.status).toBe(302);

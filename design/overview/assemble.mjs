@@ -56,6 +56,7 @@ ${body}</body>
 </html>
 `
     .replaceAll('src="img/', 'src="/home/img/')
+    .replaceAll('poster="img/', 'poster="/home/img/')
     // Pricing card buttons carry their plan to the login page (42-pricing.js switches cycle= with the toggle).
     .replace(/(<a class="btn[^"]*" href=)"#pricing" data-plan="(core|pro)"/g, '$1"/auth/login?plan=$2&amp;cycle=monthly" data-plan="$2"')
     .replace(/(<a class="btn[^"]*" href=)"#pricing"/g, '$1"/auth/login"')
@@ -66,10 +67,11 @@ ${body}</body>
   const imgOut = path.join(root, 'public', 'home', 'img');
   fs.rmSync(imgOut, { recursive: true, force: true });
   fs.mkdirSync(imgOut, { recursive: true });
-  const used = [...new Set([...out.matchAll(/src="img\/([^"]+)"/g)].map((m) => m[1]))];
+  const used = [...new Set([...out.matchAll(/(?:src|poster)="img\/([^"]+)"/g)].map((m) => m[1]))];
   // Images other pages load from /home/img/ even when the home page doesn't use them
   // (the free product check pages: app/components/check-ui.tsx).
-  const extra = ['clay-magnifier.jpg', 'clay-bubble.png', 'clay-bag.png', 'clay-storefront.jpg'].filter((f) => !used.includes(f));
+  // The phone poster of the free check video, which 11v-video.js swaps in on phones.
+  const extra = ['clay-magnifier.jpg', 'clay-bubble.png', 'clay-bag.png', 'clay-storefront.jpg', 'free-check-phone-poster.jpg'].filter((f) => !used.includes(f));
   for (const f of [...used, ...extra]) fs.copyFileSync(path.join(dir, 'img', f), path.join(imgOut, f));
-  console.log(`app/home/home.html: ${(site.length / 1024).toFixed(0)} KB, ${used.length} images used, ${used.length + extra.length} copied to public/home/img`);
+  console.log(`app/home/home.html: ${(site.length / 1024).toFixed(0)} KB, ${used.length} images and videos used, ${used.length + extra.length} copied to public/home/img`);
 }

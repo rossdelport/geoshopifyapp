@@ -1,4 +1,4 @@
-/* Engines marquee (replaces Qarin's "Trusted by" logo strip). Sits on white just under the lilac hero band. */
+/* Engines marquee (replaces Qarin's "Trusted by" logo strip). Neutral: grey marks on white. */
 .eng { background: var(--bg); padding: 88px 0 112px; }
 .eng-title { text-align: center; font-size: 16px; font-weight: 500; color: var(--navy); line-height: 1.5; }
 .eng-marquee {
@@ -21,15 +21,15 @@
 .eng-mono {
   width: 34px; height: 34px; border-radius: 50%; flex: none;
   display: grid; place-items: center;
-  background: var(--lilac-50); color: var(--cobalt-mid);
-  box-shadow: inset 0 0 0 1px var(--lav-line);
+  background: var(--warm-50); color: var(--text-2);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
   transition: color .25s ease, background-color .25s ease, transform .35s cubic-bezier(.34, 1.56, .64, 1);
 }
-.eng-item:hover .eng-mono { color: var(--cobalt); background: var(--lilac-100); transform: translateY(-2px) scale(1.08); }
+.eng-item:hover .eng-mono { color: var(--navy); background: var(--warm-100); transform: translateY(-2px) scale(1.08); }
 .eng-mono svg { width: 17px; height: 17px; }
 .eng-pro {
   margin-left: 2px; font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0;
-  color: var(--cobalt-deep); background: var(--lilac-pedestal); border-radius: 6px; padding: 4px 6px; line-height: 1;
+  color: var(--ink-2); background: var(--warm-100); box-shadow: inset 0 0 0 1px var(--line-soft); border-radius: 6px; padding: 4px 6px; line-height: 1;
 }
 @keyframes eng-scroll { from { transform: translateX(0); } to { transform: translateX(-33.3333%); } }
 
