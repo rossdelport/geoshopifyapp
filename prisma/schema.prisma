@@ -397,3 +397,54 @@ model PublicCheck {
   @@index([ipHash, createdAt])
   @@index([createdAt])
 }
+
+// Someone who asked for the free check's full report by email. One row per address. Asking for a report
+// is not a newsletter sign-up: tips go only to people who ticked the box (tipsConsentAt) and then clicked
+// "Yes, keep sending me tips" in the report email (tipsConfirmedAt), and who haven't unsubscribed since
+// (see tipsListWhere in check-lead.server.ts). A form post never clears unsubscribedAt; only that
+// confirmation click from the inbox can. Kept until 30 days after unsubscribing, or 24 months after the
+// last request or click (retention.server.ts), then deleted with its ReportEmail rows.
+model Subscriber {
+  id               String    @id @default(cuid())
+  email            String    @unique // lowercased
+  source           String    @default("free-check")
+  consentText      String // the exact words shown with the email form on the first request
+  consentAt        DateTime // the first request
+  consentCheckId   String? // the check that first request was for
+  tipsConsentText  String? // the exact words of the tips box, when ticked
+  tipsConsentAt    DateTime? // when the tips box was last ticked
+  tipsCheckId      String? // the check page it was ticked on
+  tipsConfirmedAt  DateTime? // "Yes, keep sending me tips" clicked in the report email
+  lastActiveAt     DateTime  @default(now()) // last request or click, for the 24-month clean-up
+  unsubscribedAt   DateTime?
+  unsubscribeToken String    @unique // random, in every email's unsubscribe and confirm links
+  createdAt        DateTime  @default(now())
+}
+
+// Addresses that unsubscribed and were then deleted, kept only as a hash (no address), so a later import
+// or tips send can never email them again by mistake. Never deleted.
+model EmailSuppression {
+  emailHash String   @id // sha256 of "geo:suppress:" + the lowercased address (see suppressionHash)
+  createdAt DateTime @default(now())
+}
+
+// One emailed copy of a free check's report (PDF attached). Sent by the "check.email" job once the
+// check is done. Deleted after 90 days, or with its Subscriber. ipHash = HMAC of the IP (cleared after a
+// day), only for limits.
+model ReportEmail {
+  id        String    @id @default(cuid())
+  email     String // lowercased
+  checkId   String // PublicCheck id (no foreign key: checks are deleted after 30 days, these after 90)
+  status    String    @default("pending") // pending | sending (a worker is sending it) | sent | failed | skipped
+  attempts  Int       @default(0)
+  error     String?
+  sentAt    DateTime?
+  lockedAt  DateTime? // when a worker claimed it ("sending"); a claim older than 10 minutes goes back to pending
+  ipHash    String?
+  createdAt DateTime  @default(now())
+
+  @@index([checkId])
+  @@index([ipHash, createdAt])
+  @@index([email, createdAt])
+  @@index([createdAt])
+}

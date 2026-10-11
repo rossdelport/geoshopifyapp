@@ -156,9 +156,9 @@ function originCheck(i: AiReadyInput): AiReadyCheck {
     pass,
     weight: AI_READY_WEIGHTS.origin,
     reason: pass
-      ? "The page mentions where it ships or where it’s made, which helps with “in Australia” questions."
+      ? "The page mentions where it ships or where it’s made, which helps with questions that name a country."
       : "We didn’t see where it ships or where it’s made.",
-    fix: "Add a line like “Made in Melbourne, ships Australia-wide” (only what’s true).",
+    fix: "Add a line like “Made in Melbourne, ships worldwide” (only what’s true).",
   };
 }
 

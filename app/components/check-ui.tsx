@@ -1,7 +1,7 @@
 // Free product check pages (/check and /check/:id): the public, no-install report.
 // Plain presentational components; the routes load the data. Styles: app/styles/check.css (ck-*).
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import {
   type AiReady,
   CHECK_COUNTRIES,
@@ -10,6 +10,7 @@ import {
   type CheckAnswer,
   type CheckCountry,
   type CheckEngine,
+  type CheckPlanTeaser,
   type CountryHow,
   type CheckProduct,
   type CheckView,
@@ -18,6 +19,7 @@ import { ENGINE_LABELS, PLANS } from "../lib/plans";
 import { AI_READY_NOTE } from "../lib/ai-ready";
 import type { SourceType } from "../lib/sources";
 import { sameBrand } from "../lib/match";
+import { LeadProvider, LockIcon, MailIcon, planLine, useLead, type LeadView } from "./check-lead";
 
 const SOURCE_CHIPS: Record<SourceType, string> = {
   editorial: "Review site",
@@ -34,21 +36,6 @@ export const CHECK_FONT_LINKS = [
   { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" as const },
   { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" },
 ];
-
-export const CHECK_STEPS = [
-  "Reading your product",
-  "Writing buyer questions",
-  "Asking ChatGPT, Gemini and Perplexity",
-  "Writing your report",
-];
-
-/** Which of CHECK_STEPS is happening now (4 = all done). */
-export function stepIndex(view: Pick<CheckView, "status" | "product" | "questions">): number {
-  if (view.status === "done") return CHECK_STEPS.length;
-  if (view.status === "writing") return 3;
-  if (view.status === "asking" || view.questions.length) return 2;
-  return view.product ? 1 : 0;
-}
 
 export type Segment = { text: string; kind: "you" | "brand" | null };
 
@@ -80,7 +67,7 @@ const safeHref = (url: string | null | undefined) => (url && /^https?:\/\//i.tes
 
 const pct = (fraction: number) => `${Math.round(fraction * 100)}%`;
 
-function formatPrice(price: string | null, currency: string | null): string | null {
+export function formatPrice(price: string | null, currency: string | null): string | null {
   if (!price) return null;
   const n = Number(price);
   if (!currency || !Number.isFinite(n)) return currency ? `${price} ${currency}` : price;
@@ -100,8 +87,6 @@ const LinkIcon = () => (
 );
 
 // Clay illustrations, served from /home/img/ (design/overview/assemble.mjs copies them to public/home/img).
-/** The "checking" state. */
-export const CHECK_RUNNING_IMAGE = "/home/img/clay-magnifier.jpg";
 /** Floating decorations on the /check band (white backgrounds, multiplied away over the lilac). */
 const CHECK_DECOS = ["/home/img/clay-bubble.png", "/home/img/clay-bag.png"];
 /** The clay shop front on the closing card, as on the home page. */
@@ -115,37 +100,68 @@ const Tick = () => (
 
 // ---------- page frame ----------
 
-/**
- * The page: floating header over a lilac gradient band (like the home page hero). `hero` sits in the
- * band (the intro, or the product card); `children` follow on white.
- */
-export function CheckShell({ hero, children }: { hero?: ReactNode; children?: ReactNode }) {
+/** Header button on check pages: opens the email popup for the action plan (the plan is email-only). */
+function HeaderAsk() {
+  const { lead, open } = useLead();
+  const sent = lead.status !== "none";
   return (
-    <div className="ck">
-      <header className="ck-top-wrap">
-        <div className="ck-top">
-          <a className="ck-logo" href="/" aria-label="GEO home">
-            <span className="ck-mark" aria-hidden="true">
-              <i />
-              <i />
-            </span>
-            <span className="ck-word">GEO</span>
-          </a>
-          <span className="ck-pill">Free product check</span>
-        </div>
-      </header>
-      <main>
+    <button type="button" className="ck-pill ck-pill-btn" onClick={() => open("ask")}>
+      {sent ? "Action plan on its way" : "Get actionable steps"}
+    </button>
+  );
+}
+
+
+/**
+ * The page, the same while a check runs and when it is done: a lilac gradient band (like the home page
+ * hero) with a slim header in normal flow at its top, then `hero` (the intro, or the product card).
+ * `children` follow on white in a container of the same width. Only what is inside changes.
+ * With `lead` (running and done check pages), the email popup and its triggers are on (check-lead.tsx).
+ * The polite live region (`announce`) sits here, outside the running view, so "Your report is ready"
+ * is still heard when the live view is swapped for the report.
+ */
+export function CheckShell({
+  hero,
+  children,
+  lead,
+  announce,
+}: {
+  hero?: ReactNode;
+  children?: ReactNode;
+  lead?: LeadView | null;
+  /** Read out politely when it changes: the step while a check runs, then "Your report is ready". */
+  announce?: string;
+}) {
+  const page = (
+    <>
+      <main className="ck-page">
         <div className="ck-band">
           <div className="ck-band-grid" aria-hidden="true" />
+          <header className="ck-top">
+            <a className="ck-logo" href="/" aria-label="GEO home">
+              <span className="ck-mark" aria-hidden="true">
+                <i />
+                <i />
+              </span>
+              <span className="ck-word">GEO</span>
+            </a>
+            {lead ? <HeaderAsk /> : <span className="ck-pill">Free product check</span>}
+          </header>
           <div className="ck-band-in">{hero}</div>
         </div>
         {children ? <div className="ck-main">{children}</div> : null}
+        {announce !== undefined ? (
+          <p className="ck-sr" aria-live="polite">
+            {announce}
+          </p>
+        ) : null}
       </main>
       <footer className="ck-foot">
         GEO · Helps ChatGPT &amp; co recommend your products · <a href="/privacy">Privacy</a>
       </footer>
-    </div>
+    </>
   );
+  return <div className="ck">{lead ? <LeadProvider view={lead}>{page}</LeadProvider> : page}</div>;
 }
 
 // ---------- the form (same fields as the home page hero form) ----------
@@ -193,13 +209,13 @@ export function CheckForm({ url = "", error = null }: { url?: string; error?: st
       <div className="ck-form-glow" ref={glow}>
         <div className="ck-form-box">
           <span className="ck-glow" aria-hidden="true">
-            <span className="ck-halo">
-              <span className="ck-run">
+            <span className="ck-glow-halo">
+              <span className="ck-glow-run">
                 <i />
               </span>
             </span>
-            <span className="ck-ring">
-              <span className="ck-run">
+            <span className="ck-glow-ring">
+              <span className="ck-glow-run">
                 <i />
               </span>
             </span>
@@ -283,7 +299,7 @@ const PERK_ICONS: ReactNode[] = [
 const PERKS: [string, string][] = [
   ["Are you recommended?", "A score out of 100, and how often each AI names your brand."],
   ["Who wins instead", "The brands AI picks for your buyers, and the websites it quotes."],
-  ["What to fix first", "Plain-English steps to help AI recommend you, based only on its answers and your page."],
+  ["What to fix first", "Plain-English steps to help AI recommend you, based only on its answers and your page. Emailed to you free."],
 ];
 
 /** What the report shows, and why we ask twice. Under the band on /check. */
@@ -315,15 +331,41 @@ const SURE_OF_STORE: CountryHow[] = ["store", "domain"];
 const UNSURE: CountryHow[] = ["default", "unsupported", "language", "currency"];
 const COUNTRY_BUTTONS: Record<CheckCountry, string> = { AU: "Australia", NZ: "New Zealand", US: "US", GB: "UK", CA: "Canada" };
 
-/** "Checked on ChatGPT, Gemini and Perplexity as a shopper in Australia (where your store is) · ..." (no country until we know it). */
-export function checkedLine(country: CheckCountry | null, how?: CountryHow): string {
-  const tail = " · 3 questions, each asked twice";
+/** One piece of the "Checked on..." line; `wide` pieces are left out on phones (check.css, .ck-wide). */
+export type LinePart = { text: string; wide?: boolean };
+
+/**
+ * "Checked on ChatGPT, Gemini and Perplexity as a shopper in Australia (where your store is) · ...", or
+ * "Checking on..." while the check runs (then "as a shopper where your store is" until we know the country,
+ * so the line is about as long in every state and the card doesn't change height). On phones the notes in
+ * brackets and "each" are left out, so it fits in about 3 lines.
+ */
+export function checkedParts(country: CheckCountry | null, how?: CountryHow, running = false): LinePart[] {
+  const tail: LinePart[] = [{ text: " · 3 questions, " }, { text: "each ", wide: true }, { text: "asked twice" }];
   if (country && how === "unsupported") {
-    return `Your store is in a country we don’t check yet, so we asked ChatGPT, Gemini and Perplexity as a shopper in ${CHECK_COUNTRIES[country]}${tail}`;
+    return [
+      { text: `Your store is in a country we don’t check yet, so we ${running ? "are asking" : "asked"} ChatGPT, Gemini and Perplexity as a shopper in ${CHECK_COUNTRIES[country]}` },
+      ...tail,
+    ];
   }
   const note = how && SURE_OF_STORE.includes(how) ? " (where your store is)" : how === "default" ? " (we couldn’t tell where your store is)" : "";
-  const where = country ? ` as a shopper in ${CHECK_COUNTRIES[country]}${note}` : "";
-  return `Checked on ChatGPT, Gemini and Perplexity${where}${tail}`;
+  const where = country ? ` as a shopper in ${CHECK_COUNTRIES[country]}` : running ? " as a shopper where your store is" : "";
+  return [{ text: `${running ? "Checking" : "Checked"} on ChatGPT, Gemini and Perplexity${where}` }, ...(note ? [{ text: note, wide: true }] : []), ...tail];
+}
+
+/** The whole line as plain text (all pieces). */
+export function checkedLine(country: CheckCountry | null, how?: CountryHow, running = false): string {
+  return checkedParts(country, how, running)
+    .map((p) => p.text)
+    .join("");
+}
+
+function CheckedLine({ parts }: { parts: LinePart[] }) {
+  return (
+    <p className="ck-product-line">
+      {parts.map((p, i) => (p.wide ? <span key={i} className="ck-wide">{p.text}</span> : <span key={i}>{p.text}</span>))}
+    </p>
+  );
 }
 
 /** A guessed country can be corrected: the same link, asked again as a shopper in another country. */
@@ -345,25 +387,113 @@ function WrongCountry({ url, country }: { url: string; country: CheckCountry }) 
   );
 }
 
+/** "coolabahgrooming.com.au" from a pasted link (no www), or null when it isn't a web address. */
+export function domainOf(url: string | null | undefined): string | null {
+  if (!url) return null;
+  try {
+    const host = new URL(/^https?:\/\//i.test(url) ? url : `https://${url}`).hostname.replace(/^www\./i, "");
+    return host.includes(".") ? host : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The email button at the right of the product card, on running and finished checks alike, so the card
+ * (and everything under it) sits at the same height in both. While the check runs: "Don't want to wait?
+ * Email me the report". Once done: "Your action plan is ready. Email it to me". Once this browser
+ * saved an email: where the report goes (masked).
+ */
+function LeadNudge() {
+  const { lead, running, open } = useLead();
+  if (lead.status !== "none") {
+    const to = lead.maskedEmail ? <b>{lead.maskedEmail}</b> : "you";
+    return (
+      <div className="ck-product-aside">
+        <p className="ck-nudge is-set" role="status">
+          <span className="ck-nudge-tick">
+            <Tick />
+          </span>
+          <span>
+            {running ? (
+              <>We’ll email your full report to {to} when it’s ready.</>
+            ) : lead.status === "sent" ? (
+              <>Your full report and action plan went to {to}.</>
+            ) : (
+              <>Your full report and action plan are on their way to {to}.</>
+            )}
+          </span>
+        </p>
+      </div>
+    );
+  }
+  return (
+    <div className="ck-product-aside">
+      <button type="button" className="ck-nudge" onClick={() => open(running ? "ask" : "plan")}>
+        <MailIcon className="ck-nudge-ic" />
+        <span className="ck-nudge-tx">
+          <small>{running ? "Don’t want to wait?" : "Your action plan is ready"}</small>
+          {running ? "Email me the report" : "Email it to me"}
+        </span>
+      </button>
+    </div>
+  );
+}
+
 export function ProductCard({
   product,
   country,
   done = false,
+  running = false,
+  nudge = false,
+  url = null,
 }: {
   product: CheckProduct | null;
   country: CheckCountry | null;
   /** The report is ready: a guessed country can be corrected. */
   done?: boolean;
+  /** The check is still running (the card says it is busy while we read the page). */
+  running?: boolean;
+  /** Show the email button at the right (running and finished checks; never a failed one). */
+  nudge?: boolean;
+  /** The pasted link, shown while we read the page. */
+  url?: string | null;
 }) {
-  const line = checkedLine(country, product?.countryFrom);
+  const line = <CheckedLine parts={checkedParts(country, product?.countryFrom, running)} />;
   if (!product) {
+    const domain = domainOf(url);
     return (
-      <section className="ck-card ck-product">
-        <div className="ck-product-img ck-skel" aria-hidden="true" />
-        <div className="ck-product-body">
-          <h1 className="ck-product-title">Reading your product…</h1>
-          <p className="ck-product-line">{line}</p>
+      <section className="ck-card ck-product" aria-busy={running ? true : undefined}>
+        <div className="ck-product-img ck-product-scan" aria-hidden="true">
+          <span className="ck-scan-page">
+            <i />
+            <i />
+            <i />
+            <i />
+          </span>
+          <span className="ck-scan-beam" />
         </div>
+        <div className="ck-product-body">
+          {domain ? (
+            <p className="ck-domain">
+              <LinkIcon />
+              <span>{domain}</span>
+            </p>
+          ) : null}
+          <h1 className="ck-product-title">
+            Reading your product page
+            <span className="ck-dots" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </span>
+          </h1>
+          <span className="ck-skel-lines" aria-hidden="true">
+            <i />
+          </span>
+          {line}
+        </div>
+        {nudge ? <LeadNudge /> : null}
       </section>
     );
   }
@@ -387,79 +517,12 @@ export function ProductCard({
             {product.domain}
           </a>
         </p>
-        <p className="ck-product-line">{line}</p>
+        {line}
         {done && country && product.countryFrom && UNSURE.includes(product.countryFrom) && safeHref(product.url) ? (
           <WrongCountry url={product.url} country={country} />
         ) : null}
       </div>
-    </section>
-  );
-}
-
-// ---------- running ----------
-
-export function CheckRunning({ view }: { view: CheckView }) {
-  const current = stepIndex(view);
-  const share = view.total ? Math.min(1, view.done / view.total) : 0;
-  return (
-    <section className="ck-card ck-run">
-      <div className="ck-run-head">
-        <img className="ck-run-img" src={CHECK_RUNNING_IMAGE} alt="" width={200} height={200} />
-        <div className="ck-run-body">
-          <h2 className="ck-h2">Checking your product</h2>
-          <p className="ck-muted" aria-live="polite">
-            {view.step}
-          </p>
-          <ol className="ck-steps">
-            {CHECK_STEPS.map((s, i) => (
-              <li key={s} className={i < current ? "is-done" : i === current ? "is-now" : undefined}>
-                <span className="ck-step-dot">{i < current ? <Tick /> : i + 1}</span>
-                <span>{s}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </div>
-      <div className="ck-progress">
-        <div
-          className="ck-bar"
-          role="progressbar"
-          aria-label="AI answers in"
-          aria-valuemin={0}
-          aria-valuemax={view.total}
-          aria-valuenow={view.done}
-        >
-          <i style={{ width: `${Math.max(2, share * 100)}%` }} />
-        </div>
-        <p className="ck-bar-tx">
-          <b>{view.done}</b> of {view.total} answers in
-        </p>
-      </div>
-      <div className="ck-run-boxes">
-        {view.questions.length ? (
-          <div className="ck-run-box">
-            <h3 className="ck-h3">The questions we’re asking</h3>
-            <ol className="ck-run-qs">
-              {view.questions.map((q, i) => (
-                <li key={i}>{q.text}</li>
-              ))}
-            </ol>
-          </div>
-        ) : null}
-        <div className="ck-run-box is-soft">
-          <h3 className="ck-h3">What’s happening now</h3>
-          <p>
-            Each AI assistant gets the same 3 questions, twice. For every answer we note which brands it names, in what
-            order, and which websites it links to. Those links show where AI gets its opinions.
-          </p>
-        </div>
-      </div>
-      <div className="ck-note">
-        <p>A check usually takes a few minutes. You can leave this page and come back to this link.</p>
-        <a className="ck-btn ck-btn-light ck-btn-sm" href={`/check/${view.id}`}>
-          Refresh
-        </a>
-      </div>
+      {nudge ? <LeadNudge /> : null}
     </section>
   );
 }
@@ -488,31 +551,166 @@ export function CheckFailed({ view, url = null, asTitle = false }: { view: Check
 // Chip and ring colours for scoreLabel() labels. "Not named yet" is a plain fact, so it stays neutral.
 const TONES: Record<string, string> = { "Not named yet": "grey", "Rarely named": "amber", Weak: "amber", Growing: "blue", Strong: "green" };
 
-function ScoreRing({ score, label }: { score: number; label: string }) {
-  const r = 52;
-  const c = 2 * Math.PI * r;
-  const tone = TONES[label] ?? "blue";
+/**
+ * A circular percentage ring: a lilac track and a coloured arc (tone by the score's label), the percentage
+ * in the middle with a small caption under it. The arc sweeps from 0 and the number counts up (CSS only,
+ * so it also works before the page's script loads). If the ring mounts out of view (the report replacing
+ * the live view while the visitor is scrolled down), the sweep waits until it scrolls into view.
+ * Reduced motion shows the value straight away.
+ */
+export function PercentRing({ value, tone, caption, label }: { value: number; tone: string; caption: string; label: string }) {
+  const v = Math.round(Math.max(0, Math.min(100, Number.isFinite(value) ? value : 0)));
+  const grad = `ck-score-grad-${useId().replace(/[^a-z0-9_-]/gi, "")}`;
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const box = el.getBoundingClientRect();
+    if (box.bottom > 0 && box.top < window.innerHeight) return; // in view: the sweep is already running
+    el.classList.add("is-waiting");
+    const watch = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        el.classList.remove("is-waiting");
+        watch.disconnect();
+      },
+      { threshold: 0.6 },
+    );
+    watch.observe(el);
+    return () => watch.disconnect();
+  }, []);
   return (
-    <div className={`ck-ring is-${tone}`}>
+    <div ref={ref} className={`ck-score-ring is-${tone}`} role="img" aria-label={label} style={{ "--ck-score": v } as CSSProperties}>
       <svg viewBox="0 0 120 120" aria-hidden="true">
-        <circle cx="60" cy="60" r={r} fill="none" stroke="var(--lilac-100)" strokeWidth="11" />
-        <circle
-          cx="60"
-          cy="60"
-          r={r}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="11"
-          strokeLinecap="round"
-          strokeDasharray={`${(c * Math.max(0, Math.min(100, score))) / 100} ${c}`}
-          transform="rotate(-90 60 60)"
-        />
+        <defs>
+          <linearGradient id={grad} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" className="ck-score-a" />
+            <stop offset="100%" className="ck-score-b" />
+          </linearGradient>
+        </defs>
+        <circle className="ck-score-track" cx="60" cy="60" r="50" fill="none" strokeWidth="12" />
+        {v > 0 ? (
+          <circle
+            className="ck-score-arc"
+            cx="60"
+            cy="60"
+            r="50"
+            fill="none"
+            stroke={`url(#${grad})`}
+            strokeWidth="12"
+            strokeLinecap="round"
+            pathLength={100}
+            strokeDasharray="100"
+            strokeDashoffset={100 - v}
+            transform="rotate(-90 60 60)"
+          />
+        ) : null}
       </svg>
-      <span className="ck-ring-v">
-        <b>{score}</b>
-        <span>/100</span>
+      <span className="ck-score-v" aria-hidden="true">
+        <span className="ck-score-num">
+          <b className="ck-score-n" data-n={v} />
+          <span className="ck-score-pc">%</span>
+        </span>
+        <span className="ck-score-cap">{caption}</span>
       </span>
     </div>
+  );
+}
+
+/** Bar widths for the blurred lines on the placeholder cards (never real content: the page doesn't have it). */
+const GHOST_LINES = [
+  ["72%", "94%", "58%"],
+  ["64%", "88%", "70%"],
+  ["80%", "90%", "46%"],
+  ["56%", "84%", "66%"],
+  ["68%", "92%", "52%"],
+  ["60%", "86%", "74%"],
+];
+
+/**
+ * One placeholder card per step of the emailed plan (3 to 6), in the plan's order (check-plan.ts: page
+ * fixes first, the sites and rivals just before the last step). Only the counts the page already has
+ * label a card ("3 fixes for your page"); everything else on it is a blurred bar.
+ */
+export function ghostCards(plan: CheckPlanTeaser | null): (string | null)[] {
+  const n = Math.min(6, Math.max(3, plan?.steps ?? 4));
+  const count = (k: number, one: string, many: string) => `${k} ${k === 1 ? one : many}`;
+  const head = plan?.pageFixes ? [count(plan.pageFixes, "fix for your page", "fixes for your page")] : [];
+  const tail = [
+    plan?.sitesToPitch ? count(plan.sitesToPitch, "site to get featured on", "sites to get featured on") : null,
+    plan?.rivalsToStudy ? count(plan.rivalsToStudy, "rival to study", "rivals to study") : null,
+  ].filter((c): c is string => Boolean(c));
+  const fill = Math.max(0, n - head.length - tail.length - 1);
+  return [...head, ...Array<null>(fill).fill(null), ...tail, null].slice(0, n);
+}
+
+/** "What to fix first": the action plan is only sent by email, so the page shows it locked. */
+function LockedPlan({ plan }: { plan: CheckPlanTeaser | null }) {
+  const { lead, open } = useLead();
+  const to = lead.maskedEmail ? <b>{lead.maskedEmail}</b> : "your inbox";
+  const sent = lead.status !== "none";
+  return (
+    <section className={`ck-card ck-plan${sent ? " is-sent" : ""}`} aria-labelledby="ck-plan-h">
+      <div className="ck-plan-ghosts" aria-hidden="true" onClick={() => open("plan")}>
+        {ghostCards(plan).map((chip, i) => (
+          <div key={i} className="ck-ghost">
+            <span className="ck-tip-n">{i + 1}</span>
+            <span className="ck-ghost-tx">
+              {chip ? <span className="ck-ghost-chip">{chip}</span> : null}
+              {GHOST_LINES[i % GHOST_LINES.length].slice(0, chip ? 2 : 3).map((w, j) => (
+                <i key={j} className={j === 0 && !chip ? "is-t" : undefined} style={{ width: w }} />
+              ))}
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className="ck-plan-lock">
+        <span className="ck-plan-badge">
+          {sent ? (
+            <>
+              <MailIcon className="ck-plan-badge-ic" />
+              <span className="ck-plan-badge-tick">
+                <Tick />
+              </span>
+            </>
+          ) : (
+            <LockIcon className="ck-plan-badge-ic" />
+          )}
+        </span>
+        <p className="ck-eyebrow">What to fix first</p>
+        <h2 id="ck-plan-h" className="ck-h2 ck-plan-h">
+          {sent ? (lead.status === "sent" ? "Your action plan is in your inbox" : "Your action plan is on its way") : "Your action plan is ready"}
+        </h2>
+        <p className="ck-plan-line">{planLine(plan)}</p>
+        {!sent ? (
+          <>
+            <button type="button" className="ck-btn ck-btn-dark ck-plan-btn" onClick={() => open("plan")}>
+              <MailIcon className="ck-plan-btn-ic" />
+              Email me my action plan
+            </button>
+            <p className="ck-plan-small">Free. It comes as a PDF with your full report.</p>
+          </>
+        ) : (
+          <>
+            <p className="ck-plan-sent" role="status">
+              <span className="ck-nudge-tick">
+                <Tick />
+              </span>
+              <span>
+                {lead.status === "sent" ? (
+                  <>Sent to {to}. Check your inbox (and the promotions tab).</>
+                ) : (
+                  <>On its way to {to}. Check your inbox in a minute (and the promotions tab).</>
+                )}
+              </span>
+            </p>
+            <button type="button" className="ck-plan-again" onClick={() => open("plan")}>
+              Send it to a different email
+            </button>
+          </>
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -555,6 +753,7 @@ function Snippet({ answer, brand }: { answer: CheckAnswer; brand: string }) {
 
 /** "Is your page easy for AI to quote?": ticks and crosses from what we read on the page (ai-ready.ts). */
 export function AiReadyCard({ ready }: { ready: AiReady }) {
+  const { open } = useLead();
   const passed = ready.checks.filter((c) => c.pass).length;
   const tone = ready.score >= 80 ? "green" : ready.score >= 50 ? "amber" : "red";
   return (
@@ -585,9 +784,13 @@ export function AiReadyCard({ ready }: { ready: AiReady }) {
               </h3>
               <p>{c.reason}</p>
               {c.pass ? null : (
-                <p className="ck-ready-fix">
-                  <b>How to fix:</b> {c.fix}
-                </p>
+                // The fix itself is only in the emailed action plan (the page never gets it).
+                <button type="button" className="ck-ready-lock" onClick={() => open("fix")}>
+                  <LockIcon className="ck-ready-lock-ic" />
+                  <span>
+                    <b>How to fix:</b> in your emailed action plan
+                  </span>
+                </button>
               )}
             </div>
           </li>
@@ -603,6 +806,8 @@ export function CheckReport({ view }: { view: CheckView }) {
   if (!report) return <CheckFailed view={{ ...view, error: view.error ?? "We couldn’t write this report. Please try again." }} />;
   const brand = view.product?.brand || "your product";
   const youShare = report.answerCount ? report.namedCount / report.answerCount : 0;
+  // The ring and "Who AI recommends instead" show the same number: the share of answers that named you.
+  const youPct = Math.round(youShare * 100);
   const topShare = Math.max(youShare, ...report.competitors.map((c) => c.share), 0.01);
 
   return (
@@ -611,14 +816,22 @@ export function CheckReport({ view }: { view: CheckView }) {
         {report.answerCount ? (
           <>
             <div className="ck-score-main">
-              <ScoreRing score={report.score} label={report.label} />
-              <div>
-                <span className={`ck-chip is-${TONES[report.label] ?? "blue"}`}>{report.label}</span>
-                <h2 className="ck-h2 ck-score-h">
-                  AI named {brand} in {report.namedCount} of {report.answerCount} answers
+              <PercentRing
+                value={youPct}
+                tone={TONES[report.label] ?? "blue"}
+                caption="of answers"
+                label={`AI named ${brand} in ${youPct}% of answers (${report.namedCount} of ${report.answerCount})`}
+              />
+              <div className="ck-score-head">
+                <span className={`ck-chip is-${TONES[report.label] ?? "blue"}`}>
+                  {report.label} · score {report.score}/100
+                </span>
+                <h2 className="ck-h2 ck-score-h" id="ck-score-h" tabIndex={-1}>
+                  AI named {brand.length <= 28 ? <span className="ck-nowrap">{brand}</span> : brand} in {report.namedCount} of{" "}
+                  {report.answerCount} answers
                 </h2>
-                <p className="ck-muted">{report.summary}</p>
               </div>
+              <p className="ck-muted ck-score-sum">{report.summary}</p>
             </div>
             <ul className="ck-engines">
               {CHECK_ENGINES.map((e) => {
@@ -638,9 +851,9 @@ export function CheckReport({ view }: { view: CheckView }) {
               })}
             </ul>
             <p className="ck-small ck-score-note">
-              <b>What this means:</b> full points when AI names you in its top 3, two-thirds when it names you lower
-              down, one-third when it only links to your website, averaged across each AI assistant. 0 means no AI named
-              or linked to you.
+              <b>What this means:</b> the ring is the share of answers that named you. Your AI visibility score (
+              {report.score} out of 100) also counts where you were named: full points when AI names you in its top 3,
+              two-thirds lower down, one-third when it only links to your website, averaged across each AI assistant.
             </p>
           </>
         ) : (
@@ -706,6 +919,8 @@ export function CheckReport({ view }: { view: CheckView }) {
         </section>
       </div>
 
+      <LockedPlan plan={view.plan} />
+
       <section className="ck-card">
         <h2 className="ck-h3">What we asked</h2>
         <p className="ck-small">
@@ -744,23 +959,6 @@ export function CheckReport({ view }: { view: CheckView }) {
       </section>
 
       {report.aiReady ? <AiReadyCard ready={report.aiReady} /> : null}
-
-      {report.tips.length ? (
-        <section className="ck-card ck-card-lav">
-          <h2 className="ck-h3">What to fix first</h2>
-          <ol className="ck-tips">
-            {report.tips.map((t, i) => (
-              <li key={i}>
-                <span className="ck-tip-n">{i + 1}</span>
-                <div>
-                  <h3 className="ck-tip-t">{t.title}</h3>
-                  <p>{t.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
-      ) : null}
 
       <section className="ck-cta">
         <div className="ck-cta-tx">

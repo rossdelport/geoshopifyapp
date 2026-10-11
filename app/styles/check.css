@@ -60,16 +60,19 @@ body { margin: 0; background: #fff; }
 :where(.ck) :is(h1, h2, h3) { font-family: var(--font-head); color: var(--navy); font-weight: 500; text-wrap: balance; }
 :where(.ck) img { display: block; max-width: 100%; }
 :where(.ck) :focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+.ck-nowrap { white-space: nowrap; }
 .ck-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 
-/* header: floating frosted bar on the gradient band, like the home nav */
-.ck-top-wrap { position: absolute; top: 28px; left: 0; right: 0; z-index: 5; padding: 0 28px; }
+/* Page frame, the same while a check runs and when it is done: the band (header + hero), then the
+   main container. The band's content and the main container are both 1040px wide at most, with the same
+   side space (16px + 16px on desktop, 8px + 8px or 16px on phones), so the edges line up. */
+/* header: a slim frosted bar in normal flow at the top of the band (never on top of the content) */
 .ck-top {
-  max-width: 1040px; margin: 0 auto; height: 68px; padding: 0 12px 0 16px;
+  position: relative; max-width: 1040px; margin: 0 auto 28px; height: 60px; padding: 0 10px 0 14px;
   display: flex; align-items: center; gap: 12px;
-  border-radius: 18px; background: rgba(255, 255, 255, 0.72);
-  -webkit-backdrop-filter: saturate(160%) blur(16px); backdrop-filter: saturate(160%) blur(16px);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.85), 0 0 0 1px rgba(181, 168, 224, 0.28), 0 10px 30px -18px rgba(56, 64, 160, 0.22);
+  border-radius: 16px; background: rgba(255, 255, 255, 0.66);
+  -webkit-backdrop-filter: saturate(160%) blur(12px); backdrop-filter: saturate(160%) blur(12px);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.85), 0 0 0 1px rgba(181, 168, 224, 0.24), 0 10px 26px -20px rgba(56, 64, 160, 0.28);
 }
 .ck-logo { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; border-radius: 10px; }
 .ck-mark { position: relative; width: 34px; height: 34px; flex: none; }
@@ -77,12 +80,15 @@ body { margin: 0; background: #fff; }
 .ck-mark i:first-child { left: 0; top: 0; background: var(--peri-300); opacity: .92; mix-blend-mode: multiply; } /* behind the cobalt circle, as on the home page and the favicon */
 .ck-mark i:last-child { right: 0; bottom: 0; background: var(--cobalt); }
 .ck-word { font-family: var(--font-head); font-weight: 600; font-size: 25px; letter-spacing: -1px; line-height: 1; color: var(--navy); }
+.ck-pill-btn { border: 0; cursor: pointer; font: inherit; font-size: 13px; font-weight: 600; transition: background .2s ease, transform .2s ease; }
+.ck-pill-btn:hover { background: #d6bff3; transform: translateY(-1px); }
+.ck-pill-btn:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
 .ck-pill { margin-left: auto; display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border-radius: 9px; background: var(--lilac-pedestal); color: var(--cobalt-deep); font-size: 13px; font-weight: 600; white-space: nowrap; }
 
 /* the lilac gradient band (with the faint grid) that holds the intro or the product card */
 .ck-band {
   position: relative; isolation: isolate; overflow: hidden;
-  margin: 16px 16px 0; padding: 136px 16px 48px; border-radius: 32px;
+  margin: 16px 16px 0; padding: 16px 16px 40px; border-radius: 32px;
   background: radial-gradient(ellipse 60% 42% at 50% 0%, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 70%), var(--grad-main);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
 }
@@ -95,7 +101,8 @@ body { margin: 0; background: #fff; }
 }
 .ck-band-in { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
 
-.ck-main { max-width: 1072px; margin: 0 auto; padding: 32px 16px 36px; display: flex; flex-direction: column; gap: 20px; }
+/* 32px at the sides, like the band (16px margin + 16px padding), so the edges line up at every width */
+.ck-main { max-width: 1104px; margin: 0 auto; padding: 28px 32px 36px; display: flex; flex-direction: column; gap: 20px; }
 .ck-foot { max-width: 1040px; margin: 0 auto; padding: 32px 16px 40px; text-align: center; font-size: 13px; color: var(--text); }
 .ck-foot a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--lilac-deep); }
 .ck-foot a:hover { color: var(--cobalt-deep); }
@@ -140,8 +147,8 @@ body { margin: 0; background: #fff; }
 /* Glow round the link box, so the eye goes to it: the same light as the home page hero form
    (design/overview/parts/11-hero.css, .hero-check). Both layers sit under the box, which covers their middle:
    ::before is a still, soft halo (always there, painted once), and .ck-glow is a soft light that travels
-   slowly round the whole box: a pale bloom (.ck-halo) and a brighter copy clipped to a 2px band just outside
-   the edge (.ck-ring). Each light is a pre-softened blob moved by transform only (.ck-run is the size of its
+   slowly round the whole box: a pale bloom (.ck-glow-halo) and a brighter copy clipped to a 2px band just outside
+   the edge (.ck-glow-ring). Each light is a pre-softened blob moved by transform only (.ck-glow-run is the size of its
    layer, so translate(100%, 0) is the top right corner), and each side gets time to match its length, so the
    speed stays even (the stacked phone box has its own keyframes). Brighter on hover and while typing.
    check-ui.tsx adds .is-live when motion is allowed and .is-paused while the box is off screen. Without JS, or
@@ -155,30 +162,30 @@ body { margin: 0; background: #fff; }
 .ck-form-box:hover::before { opacity: .28; }
 .ck-form-box:focus-within::before { opacity: .35; }
 .ck-glow { display: none; }
-.ck-halo, .ck-ring { position: absolute; z-index: -1; pointer-events: none; transition: opacity .35s ease; }
-.ck-halo { inset: 0; opacity: .3; }
-.ck-ring { inset: -2px; border-radius: calc(var(--ck-r, 20px) + 2px); overflow: hidden; opacity: .4; }
-.ck-run { position: absolute; inset: 0; }
-.ck-ring .ck-run { inset: 1px; }
-.ck-run > i { position: absolute; left: 0; top: 0; border-radius: 50%; }
-.ck-halo .ck-run > i {
+.ck-glow-halo, .ck-glow-ring { position: absolute; z-index: -1; pointer-events: none; transition: opacity .35s ease; }
+.ck-glow-halo { inset: 0; opacity: .3; }
+.ck-glow-ring { inset: -2px; border-radius: calc(var(--ck-r, 20px) + 2px); overflow: hidden; opacity: .4; }
+.ck-glow-run { position: absolute; inset: 0; }
+.ck-glow-ring .ck-glow-run { inset: 1px; }
+.ck-glow-run > i { position: absolute; left: 0; top: 0; border-radius: 50%; }
+.ck-glow-halo .ck-glow-run > i {
   width: 96px; height: 96px; margin: -48px 0 0 -48px;
   background: radial-gradient(closest-side, rgba(238, 241, 255, 1) 0%, rgba(176, 186, 248, 0.92) 22%, rgba(138, 150, 240, 0.7) 42%, rgba(138, 150, 240, 0.42) 62%, rgba(160, 170, 244, 0.16) 82%, rgba(191, 201, 250, 0) 100%);
 }
-.ck-ring .ck-run > i {
+.ck-glow-ring .ck-glow-run > i {
   width: 180px; height: 180px; margin: -90px 0 0 -90px;
   background: radial-gradient(closest-side, #fff 0%, #dfe4ff 18%, #9ba6f3 42%, rgba(138, 150, 240, 0.55) 66%, rgba(191, 201, 250, 0) 100%);
 }
 @media (prefers-reduced-motion: no-preference) {
   .ck-form-glow.is-live .ck-glow { display: block; }
-  .ck-form-glow.is-live .ck-run { animation: ck-run 10.5s linear infinite; will-change: transform; }
-  .ck-form-glow.is-live .ck-form-box:hover .ck-halo { opacity: .42; }
-  .ck-form-glow.is-live .ck-form-box:focus-within .ck-halo { opacity: .5; }
-  .ck-form-glow.is-live .ck-form-box:hover .ck-ring, .ck-form-glow.is-live .ck-form-box:focus-within .ck-ring { opacity: .6; }
-  .ck-form-glow.is-paused .ck-run { animation-play-state: paused; }
+  .ck-form-glow.is-live .ck-glow-run { animation: ck-glow-move 10.5s linear infinite; will-change: transform; }
+  .ck-form-glow.is-live .ck-form-box:hover .ck-glow-halo { opacity: .42; }
+  .ck-form-glow.is-live .ck-form-box:focus-within .ck-glow-halo { opacity: .5; }
+  .ck-form-glow.is-live .ck-form-box:hover .ck-glow-ring, .ck-form-glow.is-live .ck-form-box:focus-within .ck-glow-ring { opacity: .6; }
+  .ck-form-glow.is-paused .ck-glow-run { animation-play-state: paused; }
 }
 /* one-row box (about 12:1): each long side takes 46% of the loop, each short end 4% */
-@keyframes ck-run {
+@keyframes ck-glow-move {
   0% { transform: translate(0, 0); }
   46% { transform: translate(100%, 0); }
   50% { transform: translate(100%, 100%); }
@@ -186,7 +193,7 @@ body { margin: 0; background: #fff; }
   100% { transform: translate(0, 0); }
 }
 /* stacked phone box (about 3:1): 37% per long side, 13% per end */
-@keyframes ck-run-tall {
+@keyframes ck-glow-move-tall {
   0% { transform: translate(0, 0); }
   37% { transform: translate(100%, 0); }
   50% { transform: translate(100%, 100%); }
@@ -195,7 +202,7 @@ body { margin: 0; background: #fff; }
 }
 /* the box stacks at 640px and below (see the phone rules further down) */
 @media (max-width: 640px) and (prefers-reduced-motion: no-preference) {
-  .ck-form-glow.is-live .ck-run { animation-name: ck-run-tall; }
+  .ck-form-glow.is-live .ck-glow-run { animation-name: ck-glow-move-tall; }
 }
 .ck-form-box {
   position: relative; width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: var(--ck-r, 20px); background: #fff;
@@ -240,12 +247,58 @@ body { margin: 0; background: #fff; }
 .ck-product-ph { display: grid; place-items: center; font-family: var(--font-head); font-size: 40px; font-weight: 600; color: var(--cobalt); background: var(--grad-main); }
 .ck-skel { animation: ck-pulse 1.4s ease-in-out infinite; background: var(--lilac-100); }
 @keyframes ck-pulse { 50% { opacity: .55; } }
-.ck-product-body { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.ck-product-body { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+/* while we read the page: a page sketch with a soft beam scanning it, the pasted domain, shimmer lines */
+.ck-product-scan { position: relative; overflow: hidden; background: linear-gradient(180deg, #f6f4fe 0%, #e2e2fc 100%); }
+.ck-scan-page { position: absolute; inset: 18px 20px; display: flex; flex-direction: column; gap: 9px; padding: 12px; border-radius: 10px; background: #fff; box-shadow: 0 0 0 1px var(--lav-line), 0 8px 16px -10px rgba(56, 64, 160, 0.35); }
+.ck-scan-page i { display: block; height: 7px; border-radius: 4px; background: var(--lilac-100); }
+.ck-scan-page i:first-child { height: 22px; border-radius: 6px; background: var(--peri-300); opacity: .7; }
+.ck-scan-page i:nth-child(2) { width: 82%; }
+.ck-scan-page i:nth-child(3) { width: 64%; }
+.ck-scan-page i:nth-child(4) { width: 74%; }
+.ck-scan-beam { position: absolute; left: 0; right: 0; top: 0; height: 34px; background: linear-gradient(180deg, rgba(104, 120, 216, 0) 0%, rgba(104, 120, 216, 0.32) 85%, rgba(64, 80, 176, 0.75) 100%); border-bottom: 2px solid var(--cobalt-mid); opacity: 0; }
+.ck-domain { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; max-width: 100%; height: 28px; padding: 0 10px; border-radius: 9px; background: var(--lilac-50); box-shadow: inset 0 0 0 1px var(--lav-line); color: var(--cobalt-deep); font-size: 13px; font-weight: 600; }
+.ck-domain .ck-ic { width: 15px; height: 15px; }
+.ck-domain span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ck-dots { display: inline-flex; gap: 4px; margin-left: 6px; vertical-align: middle; }
+.ck-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--cobalt-mid); opacity: .35; }
+.ck-skel-lines { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+.ck-skel-lines i { display: block; height: 10px; width: 46%; border-radius: 6px; background: linear-gradient(90deg, var(--lilac-100) 0%, var(--lilac-50) 50%, var(--lilac-100) 100%); background-size: 200% 100%; }
+.ck-skel-lines i + i { width: 30%; }
+@media (prefers-reduced-motion: no-preference) {
+  .ck-scan-beam { animation: ck-scan 2.2s cubic-bezier(.45, 0, .55, 1) infinite; }
+  .ck-dots i { animation: ck-dot 1.2s ease-in-out infinite; }
+  .ck-dots i:nth-child(2) { animation-delay: .15s; }
+  .ck-dots i:nth-child(3) { animation-delay: .3s; }
+  .ck-skel-lines i { animation: ck-shimmer 1.6s linear infinite; }
+}
+@keyframes ck-scan { 0% { transform: translateY(-34px); opacity: 0; } 12% { opacity: 1; } 88% { opacity: 1; } 100% { transform: translateY(112px); opacity: 0; } }
+@keyframes ck-dot { 0%, 80%, 100% { opacity: .3; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
+@keyframes ck-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+/* while a check runs: "Don't want to wait? Email me the report" (or where it will go), at the card's right */
+/* a fixed width, so the card's text column is the same width whatever the button says (running or done) */
+.ck-product-aside { flex: none; align-self: center; width: 236px; }
+.ck-nudge {
+  display: flex; width: 100%; align-items: center; gap: 10px; padding: 11px 16px 11px 12px;
+  border: 0; border-radius: 14px; cursor: pointer; text-align: left;
+  font: 600 14px/1.3 var(--font-body); color: var(--cobalt-deep); background: var(--lilac-50);
+  box-shadow: inset 0 0 0 1px var(--lav-line); transition: background .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.ck-nudge:hover { background: #fff; box-shadow: inset 0 0 0 1px var(--cobalt-mid), 0 8px 18px -10px rgba(64, 80, 176, 0.5); transform: translateY(-1px); }
+.ck-nudge-ic { width: 30px; height: 30px; flex: none; padding: 6px; border-radius: 9px; color: #fff; background: var(--cobalt); }
+.ck-nudge-tx { display: flex; flex-direction: column; gap: 1px; }
+.ck-nudge-tx small { font-size: 12px; font-weight: 500; color: var(--text); }
+.ck-nudge.is-set { cursor: default; align-items: flex-start; padding: 12px 14px; background: var(--green-bg); color: var(--green-ink); box-shadow: none; font-size: 13.5px; font-weight: 500; line-height: 1.45; transform: none; }
+.ck-nudge.is-set b { font-weight: 600; }
+.ck-nudge-tick { width: 20px; height: 20px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--green); color: #fff; }
+.ck-nudge-tick svg { width: 12px; height: 12px; }
 .ck-product-title { font-size: 30px; letter-spacing: -1.1px; line-height: 1.2; overflow-wrap: anywhere; }
 .ck-product-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: 14px; }
 .ck-product-price { font-weight: 600; color: var(--navy); font-variant-numeric: tabular-nums; }
 .ck-product-meta a { color: var(--cobalt); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--lilac-deep); overflow-wrap: anywhere; }
 .ck-product-meta a:hover { color: var(--cobalt-deep); text-decoration-color: currentColor; }
+/* the "Checked on..." line: about as long while running (even before we know the country) as when done,
+   so it wraps the same and the card doesn't change height (checkedParts in check-ui.tsx) */
 .ck-product-line { margin-top: 6px; font-size: 13.5px; line-height: 1.55; color: var(--text); }
 /* "Wrong country?": the same link, asked again as a shopper in another country (only for guessed countries) */
 .ck-country { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 6px; font-size: 13px; color: var(--text); }
@@ -261,31 +314,6 @@ body { margin: 0; background: #fff; }
 .ck-country-btn:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
 
 /* running: clay magnifier beside the steps, progress, what's happening */
-.ck-run { display: flex; flex-direction: column; gap: 22px; }
-.ck-run-head { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 28px; align-items: center; }
-.ck-run-img { width: 200px; height: 200px; border-radius: 24px; object-fit: cover; box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.35), 0 22px 44px -22px rgba(64, 80, 176, 0.45); }
-.ck-run-body { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
-.ck-steps { list-style: none; padding: 0; margin-top: 10px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.ck-steps li { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 14px; background: #f8f8fc; box-shadow: inset 0 0 0 1px var(--line); font-size: 14px; font-weight: 500; line-height: 1.35; color: var(--text); }
-.ck-step-dot { width: 26px; height: 26px; flex: none; border-radius: 8px; display: grid; place-items: center; background: #fff; box-shadow: inset 0 0 0 1px var(--lav-line); color: var(--text); font-size: 12.5px; font-weight: 600; }
-.ck-step-dot svg { width: 14px; height: 14px; }
-.ck-steps li.is-done { color: var(--navy); background: #fff; }
-.ck-steps li.is-done .ck-step-dot { background: var(--green-bg); color: var(--green-ink); box-shadow: none; }
-.ck-steps li.is-now { color: var(--navy); background: var(--grad-soft); box-shadow: inset 0 0 0 1px var(--cobalt-mid), 0 6px 18px -10px rgba(64, 80, 176, 0.5); }
-.ck-steps li.is-now .ck-step-dot { background: var(--cobalt); color: #fff; box-shadow: none; animation: ck-pulse 1.4s ease-in-out infinite; }
-.ck-progress { display: flex; flex-direction: column; gap: 8px; }
-.ck-bar { height: 10px; border-radius: 100px; background: var(--lilac-100); overflow: hidden; }
-.ck-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--cobalt-mid) 0%, var(--cobalt) 100%); transition: width .6s ease; }
-.ck-bar-tx { font-size: 14px; color: var(--text); font-variant-numeric: tabular-nums; }
-.ck-bar-tx b { color: var(--navy); }
-.ck-run-boxes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 14px; }
-.ck-run-box { padding: 18px 20px; border-radius: 18px; background: #fff; box-shadow: inset 0 0 0 1px var(--lav-line); }
-.ck-run-box.is-soft { background: var(--lilac-50); }
-.ck-run-box .ck-h3 { font-size: 16px; letter-spacing: -0.2px; }
-.ck-run-box p { margin-top: 6px; font-size: 14.5px; line-height: 1.6; }
-.ck-run-qs { margin-top: 8px; padding-left: 20px; color: var(--navy); font-size: 15px; display: grid; gap: 4px; }
-.ck-run-qs li::marker { color: var(--cobalt); font-weight: 600; }
-.ck-note { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 13.5px; color: var(--text); }
 
 /* failed / not found */
 .ck-msg { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 40px 28px; }
@@ -295,17 +323,47 @@ body { margin: 0; background: #fff; }
 
 /* score */
 .ck-score { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 20px 40px; align-items: center; }
-.ck-score-main { display: flex; align-items: center; gap: 24px; }
-.ck-score-h { margin: 10px 0 6px; }
+/* the ring (share of answers that named you) on the left of the chip (label and score) and the
+   "AI named X in Y of 18 answers" heading, the summary under them */
+.ck-score-main { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "ring head" "ring sum"; align-items: center; column-gap: 24px; row-gap: 6px; }
+.ck-score-main > .ck-score-ring { grid-area: ring; }
+.ck-score-head { grid-area: head; align-self: end; }
+.ck-score-sum { grid-area: sum; align-self: start; }
+.ck-score-h { margin-top: 10px; scroll-margin-top: 16px; }
+.ck-score-h:focus { outline: none; }
 .ck-score-note { grid-column: 1 / -1; padding: 14px 16px; border-radius: 14px; background: var(--lilac-50); }
-.ck-ring { position: relative; width: 132px; height: 132px; flex: none; color: var(--cobalt); }
-.ck-ring.is-red { color: var(--red); }
-.ck-ring.is-amber { color: var(--amber); }
-.ck-ring.is-green { color: var(--green); }
-.ck-ring svg { width: 100%; height: 100%; display: block; }
-.ck-ring-v { position: absolute; inset: 0; display: flex; align-items: baseline; justify-content: center; gap: 1px; padding-top: 46px; font-variant-numeric: tabular-nums; }
-.ck-ring-v b { font-family: var(--font-head); font-size: 38px; font-weight: 600; letter-spacing: -1.5px; color: var(--navy); line-height: 1; }
-.ck-ring-v span { font-size: 13px; color: var(--text); }
+/* The percentage ring (PercentRing): lilac track, coloured arc (pathLength 100, so the dash offset is 100 - value)
+   and the number in the middle. The arc sweeps in and the number counts up from 0 when it first shows
+   (registered --ck-n drives a CSS counter); the global reduced-motion rule below turns both off. */
+@property --ck-n { syntax: "<integer>"; inherits: false; initial-value: 0; }
+.ck-score-ring {
+  --ring-a: #8f9cf0; --ring-b: var(--cobalt); --ring-glow: rgba(64, 80, 176, 0.32);
+  position: relative; width: 132px; height: 132px; flex: none; border-radius: 50%;
+  background: radial-gradient(closest-side, #fff 0%, #fff 70%, rgba(239, 236, 253, 0.9) 71%, rgba(239, 236, 253, 0) 100%);
+}
+.ck-score-ring.is-green { --ring-a: #7fe0a0; --ring-b: #1f9d55; --ring-glow: rgba(31, 157, 85, 0.3); }
+.ck-score-ring.is-amber { --ring-a: #f8cf7f; --ring-b: #e08a1e; --ring-glow: rgba(224, 138, 30, 0.3); }
+.ck-score-ring.is-red { --ring-a: #f59a9a; --ring-b: #d63e3e; --ring-glow: rgba(214, 62, 62, 0.28); }
+.ck-score-ring.is-grey { --ring-a: #c9cadc; --ring-b: #9a9bb4; --ring-glow: rgba(90, 92, 130, 0.18); }
+.ck-score-ring svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.ck-score-a { stop-color: var(--ring-a); }
+.ck-score-b { stop-color: var(--ring-b); }
+.ck-score-track { stroke: var(--lilac-100); }
+.ck-score-arc { filter: drop-shadow(0 3px 6px var(--ring-glow)); }
+.ck-score-v { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-variant-numeric: tabular-nums; }
+.ck-score-num { display: flex; align-items: flex-start; }
+.ck-score-n { --ck-n: var(--ck-score, 0); counter-reset: ck-score var(--ck-n); font-family: var(--font-head); font-size: 36px; font-weight: 600; letter-spacing: -1.5px; color: var(--navy); line-height: 1; }
+.ck-score-n::after { content: counter(ck-score); }
+.ck-score-pc { margin: 3px 0 0 1px; font-family: var(--font-head); font-size: 17px; font-weight: 600; line-height: 1; color: var(--navy-3); }
+.ck-score-cap { font-size: 11.5px; font-weight: 500; line-height: 1; color: var(--text); }
+@media (prefers-reduced-motion: no-preference) {
+  .ck-score-arc { animation: ck-arc 1.5s cubic-bezier(.22, .8, .24, 1) .15s both; }
+  .ck-score-n { animation: ck-count 1.5s cubic-bezier(.22, .8, .24, 1) .15s both; }
+  /* mounted out of view (check-ui.tsx): hold at the start until it scrolls in */
+  .ck-score-ring.is-waiting .ck-score-arc, .ck-score-ring.is-waiting .ck-score-n { animation-play-state: paused; }
+}
+@keyframes ck-arc { from { stroke-dashoffset: 100; opacity: 0; } 8% { opacity: 1; } }
+@keyframes ck-count { from { --ck-n: 0; } }
 .ck-engines { list-style: none; padding: 0; display: grid; gap: 14px; }
 .ck-engine { display: grid; grid-template-columns: 112px minmax(0, 1fr) auto; align-items: center; gap: 12px; font-size: 14px; }
 .ck-engine-n, .ck-q-e { display: inline-flex; align-items: center; gap: 8px; color: var(--navy); font-weight: 500; }
@@ -364,8 +422,6 @@ body { margin: 0; background: #fff; }
 .ck-hl { background: #fff3c4; color: inherit; border-radius: 3px; padding: 0 2px; }
 .ck-hl-you { background: var(--lilac-pedestal); color: var(--cobalt-deep); border-radius: 3px; padding: 0 2px; font-weight: 600; }
 
-/* what to fix first: white tips on the gradient (a big feature card) */
-.ck-card.ck-card-lav { background: var(--grad-main); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), var(--shadow-soft); }
 /* "Is your page easy for AI to quote?" */
 .ck-ready-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 .ck-ready-score { flex: none; display: inline-flex; align-items: baseline; gap: 2px; padding: 6px 12px; border-radius: 12px; font-size: 14px; font-weight: 600; }
@@ -380,14 +436,83 @@ body { margin: 0; background: #fff; }
 .ck-ready-list li.is-fail .ck-ready-ic { background: var(--red-bg); color: #ab3434; }
 .ck-ready-t { font-size: 15px; letter-spacing: -0.2px; line-height: 1.35; }
 .ck-ready-list p { margin-top: 2px; font-size: 13.5px; line-height: 1.55; color: var(--text); }
-.ck-ready-list .ck-ready-fix { margin-top: 4px; }
-.ck-ready-fix b { color: var(--navy); font-weight: 600; }
+/* "How to fix: in your emailed action plan": the fix is only in the email, so it is a locked button */
+.ck-ready-lock {
+  display: inline-flex; align-items: center; gap: 7px; margin-top: 8px; padding: 5px 11px 5px 8px;
+  border: 0; border-radius: 9px; cursor: pointer; text-align: left;
+  font: 500 13px/1.4 var(--font-body); color: var(--cobalt-deep); background: var(--lilac-50);
+  box-shadow: inset 0 0 0 1px var(--lav-line); transition: background .2s ease, box-shadow .2s ease;
+}
+.ck-ready-lock b { font-weight: 600; color: var(--navy); }
+.ck-ready-lock:hover { background: #fff; box-shadow: inset 0 0 0 1px var(--cobalt-mid), 0 4px 12px -6px rgba(64, 80, 176, 0.4); }
+.ck-ready-lock-ic { width: 15px; height: 15px; flex: none; color: var(--cobalt); }
 .ck-ready-note { margin-top: 8px; }
-.ck-tips { list-style: none; padding: 0; margin-top: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.ck-tips li { display: flex; gap: 12px; padding: 18px; border-radius: 18px; background: #fff; box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.35), var(--shadow-clay); }
+/* "What to fix first", locked: the action plan is only emailed (the page never has it). Grey placeholder
+   cards, blurred, behind a lock with the plan's counts and the email button. Clicking anywhere opens the
+   email popup (check-lead.tsx). */
+.ck-card.ck-plan {
+  position: relative; isolation: isolate; overflow: hidden; padding: 24px;
+  background: var(--grad-main); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), var(--shadow-soft);
+}
+.ck-plan::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 48px 48px; background-position: center;
+}
+.ck-plan-ghosts {
+  min-height: 330px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 12px;
+  cursor: pointer; user-select: none; -webkit-user-select: none;
+}
+.ck-ghost { display: flex; gap: 12px; padding: 16px; border-radius: 16px; background: #fff; box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.35), var(--shadow-clay); }
 .ck-tip-n { width: 28px; height: 28px; flex: none; border-radius: 8px; display: grid; place-items: center; background: var(--lilac-pedestal); color: var(--cobalt-deep); font-size: 13px; font-weight: 700; }
-.ck-tip-t { font-size: 16px; letter-spacing: -0.2px; line-height: 1.35; }
-.ck-tips p { margin-top: 4px; font-size: 14px; line-height: 1.6; }
+.ck-ghost-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding-top: 3px; }
+/* only the bars are blurred: the chip (a count the page already shows) stays sharp */
+.ck-ghost-tx i { display: block; height: 8px; border-radius: 5px; background: #cfd1e6; filter: blur(3px); }
+.ck-ghost-tx i.is-t { height: 12px; margin-bottom: 2px; background: #a4a8cf; }
+.ck-ghost-chip {
+  display: inline-flex; align-items: center; max-width: 100%; height: 24px; padding: 0 10px; margin-bottom: 2px; border-radius: 100px;
+  background: var(--lilac-100); color: var(--cobalt-deep); font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ck-plan.is-sent .ck-ghost-tx i { filter: blur(2.5px); }
+/* two columns mirror each other (number and chip on the outer edge), so the chips stay clear of the lock
+   in the middle; an odd last card spans both columns */
+.ck-ghost:nth-child(even) { flex-direction: row-reverse; }
+.ck-ghost:nth-child(even) .ck-ghost-tx { align-items: flex-end; }
+.ck-ghost:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.ck-plan-lock {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  padding: 24px; text-align: center; pointer-events: none;
+  background: radial-gradient(ellipse 44% 60% at 50% 50%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.78) 50%, rgba(255, 255, 255, 0.18) 82%, rgba(255, 255, 255, 0) 100%);
+}
+.ck-plan-lock :is(button, a) { pointer-events: auto; }
+.ck-plan-badge {
+  position: relative; width: 60px; height: 60px; margin-bottom: 6px; border-radius: 20px; display: grid; place-items: center;
+  color: #fff; background: linear-gradient(160deg, #7d8ce6 0%, var(--cobalt) 55%, var(--cobalt-deep) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 6px rgba(21, 22, 60, 0.25), 0 14px 26px -12px rgba(56, 64, 160, 0.7);
+}
+.ck-plan-badge::after { content: ""; position: absolute; inset: -6px; border-radius: 24px; box-shadow: 0 0 0 1px rgba(104, 120, 216, 0.35); }
+.ck-plan-badge-ic { width: 28px; height: 28px; }
+/* after the email: the lock becomes a letter with a green tick */
+.ck-plan.is-sent .ck-plan-badge { background: linear-gradient(160deg, #7d8ce6 0%, var(--cobalt) 60%, var(--cobalt-deep) 100%); }
+.ck-plan-badge-tick {
+  position: absolute; right: -7px; bottom: -7px; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+  color: #fff; background: linear-gradient(160deg, #6fdc94 0%, #22a35a 100%); box-shadow: 0 0 0 3px #fff, 0 6px 12px -6px rgba(22, 122, 67, 0.6);
+}
+.ck-plan-badge-tick svg { width: 14px; height: 14px; }
+.ck-plan-h { font-size: 28px; letter-spacing: -1px; }
+.ck-plan-line { max-width: 460px; font-size: 15.5px; line-height: 1.55; color: var(--navy-3); text-wrap: balance; }
+.ck-plan-btn { margin-top: 10px; height: 50px; padding: 0 24px; }
+.ck-plan-btn-ic { width: 19px; height: 19px; }
+.ck-plan-small { font-size: 13px; color: var(--text-lilac); }
+.ck-plan-sent {
+  margin-top: 10px; display: inline-flex; align-items: center; gap: 10px; max-width: 560px; padding: 10px 16px 10px 12px;
+  border-radius: 14px; background: #fff; box-shadow: inset 0 0 0 1px #bfe9cd, 0 8px 18px -12px rgba(22, 122, 67, 0.4);
+  color: var(--green-ink); font-size: 14px; font-weight: 500; line-height: 1.45; text-align: left;
+}
+.ck-plan-sent b { font-weight: 600; }
+.ck-plan-sent > span:last-child { text-wrap: balance; }
+.ck-plan-again { padding: 4px 6px; border: 0; background: none; cursor: pointer; font: 600 13.5px/1.4 var(--font-body); color: var(--cobalt); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--lilac-deep); border-radius: 6px; }
+.ck-plan-again:hover { color: var(--cobalt-deep); text-decoration-color: currentColor; }
 
 /* closing CTA: the main lilac gradient card (navy text, navy button) with the clay shop front on the
    right, the same way the home page closes */
@@ -420,26 +545,29 @@ body { margin: 0; background: #fff; }
 }
 .ck-honest { text-align: center; font-size: 13px; color: var(--text); max-width: 620px; margin: 0 auto; }
 
+/* tablets: the email button goes under the product, so the title and the line keep a wide column */
+@media (max-width: 880px) {
+  .ck-product { flex-wrap: wrap; }
+  .ck-product-body { flex: 1 1 0; }
+  .ck-product-aside { flex-basis: 100%; width: auto; }
+}
 @media (max-width: 900px) {
   .ck-two, .ck-score { grid-template-columns: minmax(0, 1fr); }
   .ck-perks { grid-template-columns: minmax(0, 1fr); gap: 14px; }
   .ck-perk { display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 16px; row-gap: 4px; }
   .ck-perk-ic { grid-row: span 2; margin-bottom: 0; }
-  .ck-run-head { grid-template-columns: 160px minmax(0, 1fr); gap: 22px; }
-  .ck-run-img { width: 160px; height: 160px; }
   .ck-cta { grid-template-columns: minmax(0, 1fr) minmax(0, 280px); }
   .ck-cta-tx { padding: 44px 8px 44px 36px; }
 }
 @media (max-width: 640px) {
   .ck-ready-list { grid-template-columns: 1fr; gap: 0; }
   .ck-ready-head { flex-direction: column; gap: 8px; }
-  .ck-top-wrap { top: 18px; padding: 0 16px; }
-  .ck-top { height: 60px; padding: 0 10px 0 12px; border-radius: 16px; }
+  .ck-top { height: 54px; margin-bottom: 14px; padding: 0 8px 0 10px; border-radius: 14px; }
   .ck-mark { width: 30px; height: 30px; }
   .ck-mark i { width: 20px; height: 20px; }
   .ck-word { font-size: 22px; }
   .ck-pill { height: 28px; padding: 0 10px; font-size: 12px; }
-  .ck-band { margin: 8px 8px 0; padding: 100px 8px 24px; border-radius: 24px; }
+  .ck-band { margin: 8px 8px 0; padding: 8px 8px 20px; border-radius: 24px; }
   .ck-band-grid { background-size: 48px 48px; }
   .ck-band-in { gap: 14px; }
   .ck-main { padding: 20px 16px 24px; gap: 14px; }
@@ -455,21 +583,27 @@ body { margin: 0; background: #fff; }
   .ck-form-field { height: 50px; padding-left: 10px; }
   .ck-perk { padding: 20px 16px; }
   .ck-explain { padding: 12px 14px; font-size: 13.5px; text-align: left; }
-  .ck-product { align-items: flex-start; gap: 14px; }
+  .ck-product { flex-wrap: wrap; align-items: flex-start; gap: 14px; }
+  .ck-product-body { flex: 1 1 0; }
   .ck-product-img { width: 72px; height: 72px; border-radius: 14px; }
   .ck-product-ph { font-size: 28px; }
   .ck-product-title { font-size: 21px; letter-spacing: -0.5px; }
-  .ck-run { gap: 18px; }
-  .ck-run-head { grid-template-columns: minmax(0, 1fr); gap: 16px; justify-items: center; }
-  .ck-run-img { width: 160px; height: 160px; border-radius: 20px; }
-  .ck-run-body { width: 100%; }
-  .ck-steps { grid-template-columns: minmax(0, 1fr); gap: 8px; }
-  .ck-run-box { padding: 16px; }
-  .ck-note .ck-btn { width: 100%; }
-  .ck-score-main { flex-direction: column; align-items: flex-start; gap: 14px; }
-  .ck-ring { width: 112px; height: 112px; }
-  .ck-ring-v b { font-size: 32px; }
-  .ck-ring-v { padding-top: 39px; }
+  .ck-wide { display: none; } /* the notes in brackets, "each": the line fits in about 3 lines */
+  .ck-scan-page { inset: 10px 12px; gap: 5px; padding: 7px; border-radius: 7px; }
+  .ck-scan-page i { height: 5px; }
+  .ck-scan-page i:first-child { height: 12px; border-radius: 4px; }
+  /* price and web address on one line (the address is cut short if it must be), as long as the reading card's rows */
+  .ck-product-meta { flex-wrap: nowrap; gap: 12px; }
+  .ck-product-meta a { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ck-product-price { flex: none; }
+  /* phones: the ring beside the label and heading, the summary under both */
+  .ck-score-main { grid-template-areas: "ring head" "sum sum"; column-gap: 16px; row-gap: 12px; }
+  .ck-score-head { align-self: center; }
+  .ck-score-h { margin-top: 8px; font-size: 19px; letter-spacing: -0.4px; }
+  .ck-score-ring { width: 96px; height: 96px; }
+  .ck-score-n { font-size: 27px; letter-spacing: -1px; }
+  .ck-score-pc { margin-top: 2px; font-size: 13px; }
+  .ck-score-cap { font-size: 10.5px; }
   .ck-engine { grid-template-columns: 92px minmax(0, 1fr) auto; gap: 10px; font-size: 13.5px; }
   .ck-rank li { grid-template-columns: 30px minmax(0, 1fr) 64px 40px; gap: 8px; }
   /* sites: domain over its chips on the left, the count on the right, so the counts line up */
@@ -482,8 +616,20 @@ body { margin: 0; background: #fff; }
   .ck-q-cells { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .ck-q-cells li { flex-direction: row; align-items: center; justify-content: space-between; padding: 9px 12px; }
   .ck-snip { padding: 12px; }
-  .ck-tips { grid-template-columns: minmax(0, 1fr); }
-  .ck-tips li { padding: 16px; }
+  .ck-card.ck-plan { padding: 16px; }
+  /* phones: the first cards (with their labels) stay clear above the lock, which sits under them on a
+     soft white panel that fades up over the last card */
+  .ck-plan-ghosts { min-height: 0; grid-template-columns: minmax(0, 1fr); grid-auto-rows: auto; gap: 10px; }
+  .ck-ghost:nth-child(n + 4) { display: none; }
+  .ck-ghost:nth-child(even) { flex-direction: row; }
+  .ck-ghost:nth-child(even) .ck-ghost-tx { align-items: flex-start; }
+  .ck-plan-lock {
+    position: relative; inset: auto; margin: -72px -16px -16px; padding: 64px 16px 22px; border-radius: 0 0 20px 20px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.92) 64px, rgba(255, 255, 255, 0.96) 100%);
+  }
+  .ck-plan-h { font-size: 24px; letter-spacing: -0.7px; }
+  .ck-plan-line { font-size: 14.5px; }
+  .ck-plan-btn { width: 100%; max-width: 320px; }
   /* phones: shop front above the heading, everything centred */
   .ck-cta { grid-template-columns: minmax(0, 1fr); border-radius: 22px; padding: 24px 20px 40px; }
   .ck-cta-art { order: -1; justify-self: center; width: 100%; max-width: 240px; min-height: 0; }
@@ -497,7 +643,107 @@ body { margin: 0; background: #fff; }
   .ck-cta-h { font-size: 26px; letter-spacing: -0.8px; }
   .ck-msg { padding: 28px 16px; }
 }
+/* "Get your full report": the email popup (check-lead.tsx). A soft navy veil, then a rounded card with the
+   clay coins on the lilac gradient at the top, the form on white below. */
+/* pinned near the top (not centred), so it doesn't jump as its height changes (form, error, done) */
+.ck-lead-back {
+  position: fixed; inset: 0; z-index: 100; display: grid; justify-items: center; align-items: start; padding: max(16px, 9vh) 16px 16px;
+  overflow-y: auto; overscroll-behavior: contain;
+  background: rgba(11, 12, 43, 0.46); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  opacity: 0; transition: opacity .25s ease;
+}
+.ck-lead-back.is-in { opacity: 1; }
+.ck-lead-dlg {
+  position: relative; width: min(100%, 460px); border-radius: 24px; overflow: hidden; background: #fff; outline: none;
+  box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.4), 0 40px 80px -30px rgba(11, 12, 43, 0.55), 0 16px 32px -20px rgba(56, 64, 160, 0.4);
+  transform: translateY(14px) scale(.97); transition: transform .35s cubic-bezier(.2, .9, .25, 1.15);
+}
+.ck-lead-back.is-in .ck-lead-dlg { transform: none; }
+.ck-lead-x {
+  position: absolute; top: 12px; right: 12px; z-index: 2; width: 36px; height: 36px; border: 0; border-radius: 50%; cursor: pointer;
+  display: grid; place-items: center; color: var(--navy); background: rgba(255, 255, 255, 0.78);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.4), 0 4px 10px -4px rgba(56, 64, 160, 0.3);
+  transition: background .2s ease, transform .2s ease;
+}
+.ck-lead-x:hover { background: #fff; transform: rotate(90deg); }
+.ck-lead-x svg { width: 16px; height: 16px; }
+.ck-lead-art { position: relative; height: 168px; background: var(--grad-main); overflow: hidden; }
+.ck-lead-art img {
+  width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%;
+  -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent 100%); mask-image: linear-gradient(180deg, #000 62%, transparent 100%);
+}
+.ck-lead-art::after { content: ""; position: absolute; inset: auto 0 0; height: 40px; background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #fff 100%); }
+.ck-lead-pdf {
+  position: absolute; left: 16px; top: 16px; z-index: 1; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px;
+  border-radius: 9px; background: rgba(255, 255, 255, 0.8); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  color: var(--cobalt-deep); font-size: 12.5px; font-weight: 600; box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.4);
+}
+.ck-lead-pdf-ic { width: 15px; height: 15px; }
+.ck-lead-body { position: relative; padding: 4px 28px 26px; display: flex; flex-direction: column; gap: 8px; }
+.ck-lead-eyebrow { font-size: 13px; font-weight: 600; color: var(--cobalt); }
+.ck-lead-h { font-size: 28px; letter-spacing: -1px; line-height: 1.15; }
+.ck-lead-p { font-size: 15px; line-height: 1.55; color: var(--text); }
+.ck-lead-p b { color: var(--navy); font-weight: 600; }
+.ck-lead-list { list-style: none; padding: 0; margin: 4px 0 2px; display: grid; gap: 7px; }
+.ck-lead-list li { display: flex; align-items: center; gap: 10px; font-size: 14.5px; font-weight: 500; color: var(--navy); }
+.ck-lead-li-tick { width: 22px; height: 22px; flex: none; border-radius: 7px; display: grid; place-items: center; background: var(--lilac-100); color: var(--cobalt); }
+.ck-lead-li-tick svg { width: 13px; height: 13px; }
+.ck-lead-form { margin-top: 8px; display: flex; flex-direction: column; gap: 10px; }
+.ck-lead-field {
+  display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 14px; border-radius: 14px; background: #fff; cursor: text;
+  box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.55), 0 8px 18px -14px rgba(56, 64, 160, 0.4); transition: box-shadow .2s ease;
+}
+.ck-lead-field:focus-within { box-shadow: 0 0 0 1px var(--cobalt-mid), 0 0 0 5px rgba(64, 80, 176, 0.14); }
+.ck-lead-field-ic { width: 20px; height: 20px; flex: none; color: var(--cobalt); }
+.ck-lead-field input {
+  flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; padding: 0; background: transparent;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500; color: var(--navy);
+}
+.ck-lead-field input::placeholder { color: var(--placeholder); font-weight: 400; opacity: 1; }
+.ck-lead-field:has(input[aria-invalid="true"]) { box-shadow: 0 0 0 1px var(--red), 0 0 0 4px rgba(239, 90, 90, 0.14); }
+.ck-lead-err { padding: 8px 12px; border-radius: 10px; background: var(--red-bg); color: #9b2f2f; font-size: 13.5px; font-weight: 500; line-height: 1.45; }
+.ck-lead-btn { width: 100%; height: 52px; font-size: 15.5px; border-radius: 14px; }
+/* the optional tips box (unticked) */
+.ck-lead-tips { position: relative; display: flex; align-items: flex-start; gap: 10px; padding: 2px 0; cursor: pointer; font-size: 13px; line-height: 1.45; color: var(--navy-3); }
+.ck-lead-tips input { position: absolute; opacity: 0; width: 20px; height: 20px; margin: 0; cursor: pointer; }
+.ck-lead-box {
+  width: 20px; height: 20px; flex: none; margin-top: 0; border-radius: 6px; display: grid; place-items: center; color: transparent;
+  background: #fff; box-shadow: inset 0 0 0 1.5px var(--lilac-deep); transition: background .15s ease, box-shadow .15s ease, color .15s ease;
+}
+.ck-lead-box svg { width: 13px; height: 13px; }
+.ck-lead-tips input:checked + .ck-lead-box { background: var(--cobalt); color: #fff; box-shadow: none; }
+.ck-lead-tips input:focus-visible + .ck-lead-box { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+.ck-lead-tips:hover .ck-lead-box { box-shadow: inset 0 0 0 1.5px var(--cobalt-mid); }
+.ck-lead-tips input:checked:hover + .ck-lead-box { box-shadow: none; }
+.ck-lead-consent { font-size: 12.5px; line-height: 1.5; color: var(--text); text-align: center; text-wrap: pretty; }
+.ck-lead-consent a { color: var(--cobalt); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--lilac-deep); }
+.ck-lead-done { align-items: center; text-align: center; padding-top: 0; }
+.ck-lead-tick {
+  width: 52px; height: 52px; margin-top: -18px; border-radius: 50%; display: grid; place-items: center; color: #fff;
+  background: linear-gradient(160deg, #6fdc94 0%, #22a35a 100%); box-shadow: 0 0 0 6px #fff, 0 12px 22px -10px rgba(22, 122, 67, 0.6);
+}
+.ck-lead-tick svg { width: 26px; height: 26px; }
+.ck-lead-note { font-size: 13.5px; color: var(--text); }
+.ck-lead-actions { width: 100%; margin-top: 10px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.ck-lead-link { padding: 6px; border: 0; background: none; cursor: pointer; font: 600 13.5px/1.4 var(--font-body); color: var(--cobalt); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--lilac-deep); border-radius: 6px; }
+.ck-lead-link:hover { color: var(--cobalt-deep); text-decoration-color: currentColor; }
+@media (max-width: 640px) {
+  .ck-lead-back { padding: 12px; align-items: end; }
+  .ck-lead-art img { object-position: 50% 30%; }
+  .ck-lead-dlg { border-radius: 22px; }
+  .ck-lead-art { height: 132px; }
+  .ck-lead-body { padding: 2px 20px 20px; }
+  .ck-lead-h { font-size: 24px; letter-spacing: -0.7px; }
+  .ck-lead-p { font-size: 14.5px; }
+  .ck-lead-list li { font-size: 14px; }
+}
+@media (max-height: 640px) {
+  .ck-lead-back { align-items: start; }
+  .ck-lead-art { height: 112px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ck *, .ck *::before, .ck *::after { animation: none !important; transition: none !important; }
+  .ck-lead-dlg { transform: none; }
   /* the form keeps its still, soft halo (.ck-form-box::before above) */
 }

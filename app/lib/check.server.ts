@@ -1,9 +1,8 @@
 // Free product check (public, no install). See docs/free-check.md.
 // A visitor pastes a product link; we read the page, work out where the store is, write 3 buyer
 // questions, ask ChatGPT, Gemini and Perplexity each question twice, and build a report.
-// Runs as the "check.run" job.
+// Runs as the "check.run" job. The report's action plan is only sent by email (check-lead.server.ts).
 
-import { createHmac, randomBytes } from "node:crypto";
 import { Resolver } from "node:dns/promises";
 import type { LookupFunction } from "node:net";
 import { Prisma } from "@prisma/client";
@@ -19,6 +18,9 @@ import { env } from "./env.server";
 import { emailConfigured, sendEmail } from "./email.server";
 import { httpGet, type RawResponse } from "./http-get.server";
 import { pool } from "./pool";
+import { hashIp } from "./public-form.server";
+import { buildActionPlan } from "./check-plan";
+import { CHECK_STALE_MS, installPath, leadStateFor, queueReportEmails, skipReportEmails } from "./check-lead.server";
 import {
   NOT_YOUR_STORE,
   cleanCheckUrl,
@@ -28,7 +30,6 @@ import {
   isIpLiteral,
   isMarketplaceLink,
   isPrivateIp,
-  ipBucket,
   mergeProduct,
   normalizeCheckUrl,
   parseProductHtml,
@@ -73,7 +74,7 @@ const TOTAL = CHECK_QUESTIONS * CHECK_ENGINES.length * CHECK_RUNS; // 18
 // calls open (see gate.ts); the rest wait their turn. Each process has its own gates, so two
 // processes (a deploy overlap, or more replicas) can have twice as many open.
 const ASK_AT_ONCE = TOTAL;
-const STALE_MS = 30 * 60_000; // a check still "running" after this never will
+const STALE_MS = CHECK_STALE_MS; // a check still "running" after this never will (30 minutes)
 // A new check's country until the job reads the page and works out where the store is.
 // Any value that isn't a country we check means "find it" (detectCountry in check-read.ts).
 const DETECT = "auto";
@@ -90,11 +91,7 @@ const BUSY = "We’re very busy right now. Please try again later.";
 const LIMIT = "This connection has reached the free check limit for now (3 checks in 24 hours). Try again tomorrow, or install GEO for a free scan of 10 questions.";
 
 // ---------- Limits ----------
-
-// HMAC with a secret key: without the key, the stored hashes can't be turned back into IP addresses
-// by trying every address. With no key set, a random one per process (limits reset on each deploy).
-const IP_KEY = env.checkIpSecret || randomBytes(32).toString("hex");
-const hashIp = (ip: string) => createHmac("sha256", IP_KEY).update(ipBucket(ip)).digest("hex");
+// IPs are hashed with CHECK_IP_SECRET (hashIp in public-form.server.ts, shared with the report email form).
 
 /** A number from the environment; unset or unreadable means the default, and 0 means 0 (checks off). */
 function envNumber(name: string, fallback: number): number {
@@ -150,7 +147,7 @@ export async function createCheck(input: {
   const chosen: CheckCountry | null = isCheckCountry(code) ? code : null;
   const since = new Date(Date.now() - DAY);
   // Visitors with no address share one allowance, so a missing header can't skip the limit.
-  const ipHash = hashIp(input.ip || "unknown");
+  const ipHash = hashIp(input.ip);
 
   // The limits are counted and the row created under one lock, so posts sent at the same moment
   // can't all see "room left" and slip past them.
@@ -219,7 +216,20 @@ function stepText(status: CheckStatus, hasProduct: boolean): string {
 
 const STATUSES: CheckStatus[] = ["queued", "reading", "asking", "writing", "done", "failed"];
 
-export async function getCheckView(id: string): Promise<CheckView | null> {
+/** The report as the page gets it: no tips and no "how to fix" lines (the action plan is only emailed). */
+export function pageReport(report: CheckReport): CheckReport {
+  return {
+    ...report,
+    tips: [],
+    ...(report.aiReady ? { aiReady: { ...report.aiReady, checks: report.aiReady.checks.map((c) => ({ ...c, fix: "" })) } } : {}),
+  };
+}
+
+/**
+ * A check as the page shows it. Pass the request so the page learns whether this browser asked for the
+ * report by email (`lead`); without it, `lead` is always "none".
+ */
+export async function getCheckView(id: string, request?: Request): Promise<CheckView | null> {
   if (!id || id.length > 64) return null;
   const row = await db.publicCheck.findUnique({ where: { id } });
   if (!row) return null;
@@ -231,6 +241,10 @@ export async function getCheckView(id: string): Promise<CheckView | null> {
     error = TOO_SLOW;
   }
   const product = (row.product as unknown as CheckProduct | null) ?? null;
+  const questions = (row.questions as unknown as CheckQuestion[]) ?? [];
+  const answers = status === "done" ? ((row.answers as unknown as CheckAnswer[]) ?? []) : [];
+  const full = status === "done" ? ((row.report as unknown as CheckReport | null) ?? null) : null;
+  const installUrl = installPath(product);
   return {
     id: row.id,
     status,
@@ -239,13 +253,16 @@ export async function getCheckView(id: string): Promise<CheckView | null> {
     country: isCheckCountry(row.country) ? row.country : null,
     createdAt: row.createdAt.toISOString(),
     product,
-    questions: (row.questions as unknown as CheckQuestion[]) ?? [],
+    questions,
     total: row.total,
     done: Math.min(row.done, row.total),
-    answers: status === "done" ? ((row.answers as unknown as CheckAnswer[]) ?? []) : [],
-    report: status === "done" ? ((row.report as unknown as CheckReport | null) ?? null) : null,
+    answers,
+    report: full ? pageReport(full) : null,
     error,
-    installUrl: product?.shopDomain ? `/auth/login?shop=${encodeURIComponent(product.shopDomain)}` : "/auth/login",
+    installUrl,
+    // Counts only, for the locked teaser: the plan itself is only emailed.
+    plan: full && product ? buildActionPlan({ product, questions, answers, report: full, installUrl }).teaser : null,
+    lead: await leadStateFor(request, row.id),
   };
 }
 
@@ -562,6 +579,8 @@ async function failCheck(id: string, error: string) {
   await db.publicCheck
     .update({ where: { id }, data: { status: "failed", error, finishedAt: new Date() } })
     .catch((err) => console.error(`[check] ${id}: could not save the failure:`, (err as Error).message));
+  // Anyone who asked for this report by email gets nothing (no report to send).
+  await skipReportEmails(id).catch((err) => console.error(`[check] ${id}: could not skip its report emails:`, (err as Error).message));
 }
 
 /**
@@ -644,6 +663,8 @@ export async function runCheck(id: string, jobId?: string, attempt = 1) {
       }),
     });
     await setStatus(id, { status: "done", report: json(report), done: TOTAL, finishedAt: new Date() });
+    // Emails left while the check ran go out now (a failure here must not fail the finished check).
+    await queueReportEmails(id).catch((err) => console.error(`[check] ${id}: could not queue its report emails:`, (err as Error).message));
   } catch (err) {
     if (!(err instanceof CheckError)) console.error(`[check] ${id} failed:`, err);
     await failCheck(id, err instanceof CheckError ? err.message : GENERIC);

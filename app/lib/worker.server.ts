@@ -19,6 +19,7 @@ import "./billing.server";
 import "./check.server";
 import { maybeRunSelftest } from "./selftest.server";
 import { purgeOldData } from "./retention.server";
+import { queueStrandedReportEmails } from "./check-lead.server";
 
 const MAX_RUNNING = 4; // store jobs: onboarding, scans, orders, fixes...
 // Free checks from the public website get their own small share, so a rush of them never holds up
@@ -74,6 +75,8 @@ export async function scheduleDueWork(now = new Date()) {
     lastPurge = now.getTime();
     await purgeOldData(now).catch((err) => console.error("[retention] failed:", err.message));
   }
+  // Free check report emails that missed their queue (check-lead.server.ts also registers check.email).
+  await queueStrandedReportEmails(now).catch((err) => console.error("[check] report email sweep failed:", err.message));
   const shops = await db.shop.findMany({ where: { status: "installed", onboarding: "done" } });
 
   for (const shop of shops) {

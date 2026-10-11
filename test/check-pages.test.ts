@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { createRoutesStub, type ActionFunctionArgs, type LoaderFunctionArgs } from "react-router";
 import type { CheckAnswer, CheckView } from "../app/lib/check-types";
 
 vi.mock("../app/lib/check.server", () => ({ createCheck: vi.fn(), getCheckView: vi.fn(), getCheckUrl: vi.fn() }));
@@ -9,8 +9,12 @@ vi.mock("../app/lib/check.server", () => ({ createCheck: vi.fn(), getCheckView: 
 const { createCheck, getCheckView, getCheckUrl } = await import("../app/lib/check.server");
 const { action } = await import("../app/routes/check._index");
 const { loader } = await import("../app/routes/check.$id");
-const { CheckFailed, CheckForm, CheckIntro, CheckPerks, CheckReport, CheckRunning, ProductCard, checkedLine, highlightSegments, stepIndex } =
+const { CheckFailed, CheckForm, CheckIntro, CheckPerks, CheckReport, CheckShell, ProductCard, checkedLine, highlightSegments } =
   await import("../app/components/check-ui");
+const { CheckLive, stageOf, liveAnnouncement } = await import("../app/components/check-live");
+const { LeadDialog } = await import("../app/components/check-lead");
+const { REPORT_CONSENT_TEXT, TIPS_CONSENT_TEXT } = await import("../app/lib/check-consent");
+const text = (html: string) => html.replace(/<[^>]+>/g, "");
 
 const post = (fields: Record<string, string>, headers: Record<string, string> = {}) =>
   action({
@@ -79,6 +83,8 @@ const doneView: CheckView = {
   },
   error: null,
   installUrl: "/auth/login?shop=coolabah-grooming.myshopify.com",
+  plan: { steps: 4, pageFixes: 3, sitesToPitch: 2, rivalsToStudy: 3 },
+  lead: { status: "none", maskedEmail: null },
 };
 
 beforeEach(() => {
@@ -182,15 +188,15 @@ describe("report page", () => {
   });
 
   it("knows which step is running", () => {
-    expect(stepIndex({ status: "queued", product: null, questions: [] })).toBe(0);
-    expect(stepIndex({ status: "reading", product: doneView.product, questions: [] })).toBe(1);
-    expect(stepIndex({ status: "asking", product: doneView.product, questions: doneView.questions })).toBe(2);
-    expect(stepIndex({ status: "writing", product: doneView.product, questions: doneView.questions })).toBe(3);
+    expect(stageOf({ status: "queued", product: null, questions: [] })).toBe(0);
+    expect(stageOf({ status: "reading", product: doneView.product, questions: [] })).toBe(1);
+    expect(stageOf({ status: "asking", product: doneView.product, questions: doneView.questions })).toBe(2);
+    expect(stageOf({ status: "writing", product: doneView.product, questions: doneView.questions })).toBe(3);
   });
 
   it("renders the finished report safely", () => {
     const html = renderToStaticMarkup(createElement(CheckReport, { view: doneView }));
-    expect(html).toContain("AI named Coolabah Grooming Co in 1 of 2 answers");
+    expect(html.replace(/<[^>]+>/g, "")).toContain("AI named Coolabah Grooming Co in 1 of 2 answers");
     expect(html).toContain("Who AI recommends instead");
     expect(html).toContain("Named in 1 of 2");
     expect(html).toContain('<mark class="ck-hl-you">Coolabah Grooming Co</mark>');
@@ -209,6 +215,12 @@ describe("report page", () => {
     expect(html).toContain("What to fix first");
     expect(html).not.toMatch(/[\u2014\u2013]/); // no em or en dashes in the copy
     expect(html).not.toMatch(/real buyer questions/i);
+    // The ring shows the same number as the sentence beside it and the "You" row: 1 of 2 answers is 50%.
+    expect(html).toContain('aria-label="AI named Coolabah Grooming Co in 50% of answers (1 of 2)"');
+    expect(html).toContain('style="--ck-score:50"');
+    expect(html).toContain("of answers");
+    expect(text(html)).toContain("Growing · score 33/100"); // the score is still there, named
+    expect(html).toContain('id="ck-score-h" tabindex="-1"'); // focus lands here when the report arrives
   });
 
   it("labels every brand's website as a brand site (we don't guess who is a rival)", () => {
@@ -251,10 +263,20 @@ describe("report page", () => {
   });
 
   it("names the shopper country only once the check knows it", () => {
-    const reading = renderToStaticMarkup(createElement(ProductCard, { product: null, country: null }));
+    const reading = text(renderToStaticMarkup(createElement(ProductCard, { product: null, country: null })));
     expect(reading).toContain("Checked on ChatGPT, Gemini and Perplexity · 3 questions, each asked twice");
     expect(reading).not.toContain("shopper in");
-    const store = renderToStaticMarkup(createElement(ProductCard, { product: { ...doneView.product!, countryFrom: "store" }, country: "NZ", done: true }));
+    // While it runs the line says so, and is about as long as the finished one (so the card keeps its height).
+    const running = text(renderToStaticMarkup(createElement(ProductCard, { product: null, country: null, running: true })));
+    expect(running).toContain("Checking on ChatGPT, Gemini and Perplexity as a shopper where your store is · 3 questions, each asked twice");
+    expect(checkedLine("NZ", "store", true)).toBe(
+      "Checking on ChatGPT, Gemini and Perplexity as a shopper in New Zealand (where your store is) · 3 questions, each asked twice",
+    );
+    const storeHtml = renderToStaticMarkup(createElement(ProductCard, { product: { ...doneView.product!, countryFrom: "store" }, country: "NZ", done: true }));
+    // On phones the note in brackets and "each" are left out (.ck-wide), so the line fits in about 3 lines.
+    expect(storeHtml).toContain('<span class="ck-wide"> (where your store is)</span>');
+    expect(storeHtml).toContain('<span class="ck-wide">each </span>');
+    const store = text(storeHtml);
     expect(store).toContain("Checked on ChatGPT, Gemini and Perplexity as a shopper in New Zealand (where your store is) · 3 questions, each asked twice");
     expect(store).not.toContain("Wrong country?"); // the shop's own settings: nothing to correct
     expect(checkedLine("GB", "domain")).toContain("as a shopper in the UK (where your store is)");
@@ -300,13 +322,84 @@ describe("report page", () => {
     expect(html).not.toContain("<select");
   });
 
-  it("renders progress while running", () => {
-    const html = renderToStaticMarkup(createElement(CheckRunning, { view: { ...doneView, status: "asking", done: 11, report: null } }));
-    expect(html).toContain("<b>11</b> of 18 answers in");
+  it("renders the live check while running: real progress, the questions, no made-up results", () => {
+    const view: CheckView = { ...doneView, status: "asking", done: 7, report: null, answers: [], plan: null };
+    const html = renderToStaticMarkup(createElement(CheckLive, { view, url: view.product!.url }));
+    expect(html).toContain("<b>7</b> of 18 answers in");
+    expect(html).toContain('aria-valuenow="7"');
+    expect(html).toContain("Checking Coolabah Grooming Co");
     expect(html).toContain("best beard oil for dry skin in Australia");
-    expect(html).toContain("A check usually takes a few minutes. You can leave this page and come back to this link.");
+    // Next to the slow step: the email ask, not "you can leave".
+    expect(html).toContain("No need to wait here");
+    expect(html).toContain("Email me the report");
+    expect(html).toContain("usually 3 to 6 min");
+    expect(html).toContain("One dot for every answer we get back (18 in all)");
+    expect(html).toContain("Asking ChatGPT, Gemini and Perplexity (now)"); // the step strip, for screen readers
+    expect(liveAnnouncement(view)).toBe("Step 3 of 4: Asking ChatGPT, Gemini and Perplexity");
+    // 7 of the 18 dots are filled (one per answer in), the rest wait.
+    expect(html.match(/class="is-in"/g)).toHaveLength(7);
+    expect(html).not.toContain("Milkman"); // no brand names before the report
     expect(html).not.toMatch(/[\u2014\u2013]/);
-    expect(html).toContain("What’s happening now");
-    expect(html).toContain('src="/home/img/clay-magnifier.jpg"');
+  });
+
+  it("shows the pasted web address while the page is being read", () => {
+    const view: CheckView = { ...doneView, status: "reading", product: null, questions: [], done: 0, report: null, answers: [], plan: null };
+    const html = renderToStaticMarkup(createElement(CheckLive, { view, url: "https://coolabahgrooming.com.au/products/oil" }));
+    expect(html).toContain("coolabahgrooming.com.au");
+    expect(html).toContain("<b>0</b> of 18 answers in");
+    expect(html).not.toMatch(/[\u2014\u2013]/);
+  });
+
+  it("locks the action plan: no tips or fixes in the page, a button that asks for an email", () => {
+    const view: CheckView = {
+      ...doneView,
+      report: {
+        ...doneView.report!,
+        tips: [],
+        aiReady: {
+          score: 50,
+          checks: [
+            { id: "faq", label: "Answers common questions", pass: false, weight: 50, reason: "We found no questions and answers.", fix: "" },
+            { id: "facts", label: "Lists key facts", pass: true, weight: 50, reason: "Size and ingredients are listed.", fix: "" },
+          ],
+        },
+      },
+    };
+    const html = renderToStaticMarkup(createElement(CheckReport, { view }));
+    expect(html).toContain("Your action plan is ready");
+    expect(html).toContain("4 steps: 3 fixes for your page, 2 sites to get featured on and 3 rivals to study.");
+    // One placeholder card per step, labelled only with the counts the page already has.
+    expect(html.match(/class="ck-ghost"/g)).toHaveLength(4);
+    expect(html).toContain('<span class="ck-ghost-chip">3 fixes for your page</span>');
+    expect(html).toContain('<span class="ck-ghost-chip">2 sites to get featured on</span>');
+    expect(html).toContain('<span class="ck-ghost-chip">3 rivals to study</span>');
+    expect(html).toContain("Email me my action plan");
+    expect(html).toContain("in your emailed action plan");
+    expect(html).not.toContain("Get onto stuga.com.au");
+    // Once this browser left its email, the page says where it went (masked) instead of asking again.
+    const saved: CheckView = { ...view, lead: { status: "sent", maskedEmail: "ro***@gmail.com" } };
+    const Page = createRoutesStub([{ path: "/", Component: () => createElement(CheckShell, { lead: saved }, createElement(CheckReport, { view: saved })) }]);
+    const sent = renderToStaticMarkup(createElement(Page));
+    expect(sent).toContain("Sent to <b>ro***@gmail.com</b>");
+    expect(sent).not.toContain("Email me my action plan");
+    expect(sent).toContain("Your action plan is in your inbox");
+    expect(sent).toContain("ck-plan-badge-tick"); // the lock becomes a letter with a tick
+  });
+
+  it("shows the popup with the exact consent words the server stores, and an unticked tips box", () => {
+    const props = { id: "ckabc123", reason: "plan" as const, lead: { status: "none" as const, maskedEmail: null }, plan: doneView.plan, onClose: () => {}, onSaved: () => {} };
+    const done = renderToStaticMarkup(createElement(LeadDialog, { ...props, running: false }));
+    expect(done).toContain(`${REPORT_CONSENT_TEXT} <a href="/privacy"`);
+    expect(done).toContain(`<span>${TIPS_CONSENT_TEXT}</span>`);
+    expect(done).toMatch(/<input type="checkbox" name="tips" value="1"\/>/); // not checked
+    expect(done).toContain("Get your action plan");
+    expect(done).toContain("Email me my action plan");
+    const running = renderToStaticMarkup(createElement(LeadDialog, { ...props, reason: "away", running: true }));
+    expect(running).toContain("Welcome back");
+    expect(running).toContain("Get your full report");
+    expect(running).toContain("Email me the full report");
+    // The consent line no longer repeats the button word for word.
+    expect(REPORT_CONSENT_TEXT.startsWith("Email me")).toBe(false);
+    expect(done + running).not.toMatch(/[\u2014]|\s\u2013\s/);
   });
 });

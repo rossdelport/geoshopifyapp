@@ -38,20 +38,20 @@ describe("detectCountry", () => {
 
   it("skips signals for countries we don't check (they may just follow our server, which is in Singapore)", () => {
     expect(detectCountry({ domain: "saltbush.com", locales: ["en-SG"], currencies: ["SGD", "GBP"] })).toEqual({ country: "GB", how: "currency" });
-    expect(detectCountry({ domain: "shop.co", locales: ["en-SG"], currencies: ["SGD"] })).toEqual({ country: "AU", how: "default" });
+    expect(detectCountry({ domain: "shop.co", locales: ["en-SG"], currencies: ["SGD"] })).toEqual({ country: "US", how: "default" });
   });
 
-  it("for a store based somewhere we don't check yet, uses its web address or own currency, else Australia", () => {
+  it("for a store based somewhere we don't check yet, uses its web address or own currency, else the US", () => {
     // USD and en-US say nothing about where it is (they often follow the visitor), so they are skipped.
-    expect(detectCountry({ storeCountry: "DE", domain: "shop.com", locales: ["en-US"], currencies: ["USD"] })).toEqual({ country: "AU", how: "unsupported" });
-    expect(detectCountry({ storeCountry: "DE", domain: "shop.com", locales: ["en-GB"] })).toEqual({ country: "AU", how: "unsupported" });
+    expect(detectCountry({ storeCountry: "DE", domain: "shop.com", locales: ["en-US"], currencies: ["USD"] })).toEqual({ country: "US", how: "unsupported" });
+    expect(detectCountry({ storeCountry: "DE", domain: "shop.com", locales: ["en-GB"] })).toEqual({ country: "US", how: "unsupported" });
     expect(detectCountry({ storeCountry: "DE", domain: "banksia.co.uk", currencies: ["EUR"] })).toEqual({ country: "GB", how: "domain" });
     expect(detectCountry({ storeCountry: "SG", domain: "shop.com", currencies: ["SGD", "GBP"] })).toEqual({ country: "GB", how: "currency" });
   });
 
-  it("uses Australia when nothing is found", () => {
-    expect(detectCountry({})).toEqual({ country: "AU", how: "default" });
-    expect(detectCountry({ storeCountry: "", domain: "shop.myshopify.com", locales: ["en"], currencies: ["", null] })).toEqual({ country: "AU", how: "default" });
+  it("uses the US when nothing is found", () => {
+    expect(detectCountry({})).toEqual({ country: "US", how: "default" });
+    expect(detectCountry({ storeCountry: "", domain: "shop.myshopify.com", locales: ["en"], currencies: ["", null] })).toEqual({ country: "US", how: "default" });
   });
 
   it("lets a chosen country (old forms and links) win, if it's one we check", () => {

@@ -114,7 +114,35 @@ export interface CheckView {
   report: CheckReport | null;
   error: string | null; // plain English, safe to show
   installUrl: string; // /auth/login?shop=... when we know the store, else /auth/login
+  /**
+   * The action plan (report.tips and every aiReady check's `fix`) is only sent by email, never in the page.
+   * getCheckView always blanks them: report.tips is [] and each aiReady check's fix is "".
+   * `plan` says what the emailed plan holds, so the page can show a locked teaser.
+   */
+  plan: CheckPlanTeaser | null; // null until the report is done
+  /** Email capture state for this check, for this visitor's browser session (never another visitor's email). */
+  lead: CheckLeadState;
 }
+
+/** What the emailed action plan contains (counts only, no content). */
+export interface CheckPlanTeaser {
+  steps: number; // numbered steps in the plan (tips + page fixes), at least 1
+  pageFixes: number; // failed AI-ready checks with a fix
+  sitesToPitch: number; // review/editorial sites AI cited that the plan lists with their article links
+  rivalsToStudy: number; // competitor brands the plan compares against
+}
+
+/**
+ * "none": no email yet. "pending": saved, the report email is queued (sent when the check finishes).
+ * "sent": emailed. The masked address ("ro***@gmail.com") is only shown back to the browser that sent it.
+ */
+export interface CheckLeadState {
+  status: "none" | "pending" | "sent";
+  maskedEmail: string | null;
+}
+
+/** POST /check/:id/email (urlencoded: email, website = honeypot). JSON reply. */
+export type CheckEmailResult = { ok: true; lead: CheckLeadState } | { ok: false; error: string };
 
 export type CreateCheckResult = { ok: true; id: string } | { ok: false; error: string };
 

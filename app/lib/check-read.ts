@@ -567,7 +567,7 @@ export interface CountrySignals {
  * shown to a visitor unless they are the shop's own); 5. a language region other than US; 6. USD prices;
  * 7. en-US (many sites keep USD and en-US as their "international" default).
  * A store in a country we don't check yet only looks at the domain and a non-USD currency, then uses
- * Australia ("unsupported"). Nothing at all: Australia ("default"), our launch market.
+ * the US ("unsupported"). Nothing at all: the US ("default"), the biggest English-language market.
  */
 export function detectCountry(s: CountrySignals): { country: CheckCountry; how: CountryHow } {
   const override = (s.override ?? "").trim().toUpperCase();
@@ -580,13 +580,13 @@ export function detectCountry(s: CountrySignals): { country: CheckCountry; how: 
   const currencies = (s.currencies ?? []).map((c) => (c ?? "").trim().toUpperCase());
   const byCurrency = currencies.map((c) => (c === "USD" ? undefined : CURRENCY_COUNTRY[c])).find(Boolean);
   if (byCurrency) return { country: byCurrency, how: "currency" };
-  if (knownStore) return { country: "AU", how: "unsupported" };
+  if (knownStore) return { country: "US", how: "unsupported" };
   const regions = (s.locales ?? []).map(localeRegion);
   const byLanguage = regions.find((r): r is CheckCountry => r !== null && r !== "US" && isCheckCountry(r));
   if (byLanguage) return { country: byLanguage, how: "language" };
   if (currencies.includes("USD")) return { country: "US", how: "currency" };
   if (regions.includes("US")) return { country: "US", how: "language" };
-  return { country: "AU", how: "default" };
+  return { country: "US", how: "default" };
 }
 
 // ---------- Putting it together ----------

@@ -3,7 +3,8 @@
 // posts), working out where the store is, the full check.run job, the SSRF guard (redirects, DNS
 // rebinding, size and time caps), no paid re-runs, non-product and marketplace links, stale checks
 // and the clean-up.
-// Only touches the PublicCheck table (the job queue is faked so this can run beside integration.test.ts).
+// Only touches the PublicCheck table, plus one ReportEmail row it deletes again (the job queue is faked so
+// this can run beside integration.test.ts).
 
 import type { LookupFunction } from "node:net";
 import { Prisma } from "@prisma/client";
@@ -341,11 +342,17 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
     const queued = await check.getCheckView(id);
     expect(queued).toMatchObject({ status: "queued", step: "Getting started", country: null, answers: [], report: null, installUrl: "/auth/login" });
 
+    // Someone left their email while the check was running: the report email goes when it finishes.
+    const waiting = await db.reportEmail.create({ data: { email: "waiting@check-integration.example", checkId: id, status: "pending" } });
+
     const { getHandler } = await import("../app/lib/jobs.server");
     state.mostOpen = 0;
     fetchMock.mockClear();
+    enqueue.mockClear();
     await getHandler("check.run")!({ id: "job-1", payload: { id } } as never);
     expect(state.mostOpen).toBe(18); // all 18 engine calls at once
+    expect(enqueue).toHaveBeenCalledWith("check.email", { id: waiting.id }, { dedupeKey: `check-email:${waiting.id}` });
+    await db.reportEmail.delete({ where: { id: waiting.id } });
 
     const view = (await check.getCheckView(id))!;
     expect(view.status).toBe("done");
@@ -399,7 +406,11 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
       { name: "Bulldog", count: 10, share: 0.63 },
     ]);
     expect(r.sources[0]).toMatchObject({ domain: "stuga.com.au", count: 16, type: "editorial" });
-    expect(r.tips.map((t) => t.title)).toContain("Gemini doesn’t mention you yet");
+    // The tips (the action plan) are only emailed: the page gets none, the saved report keeps them.
+    expect(r.tips).toEqual([]);
+    const saved = (await db.publicCheck.findUniqueOrThrow({ where: { id } })).report as unknown as { tips: { title: string }[] };
+    expect(saved.tips.map((t) => t.title)).toContain("Gemini doesn’t mention you yet");
+    expect(view.plan?.steps).toBeGreaterThan(1);
 
     expect(r.summary).toContain("simple text matching"); // no Claude in this test
 

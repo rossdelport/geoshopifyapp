@@ -129,7 +129,7 @@ export default function Questions() {
           <div className="geo-grow">
             <s-text-field
               label="Add a question"
-              placeholder="e.g. best natural deodorant for sensitive skin in Australia"
+              placeholder="e.g. best natural deodorant for sensitive skin"
               value={text}
               onInput={(e) => setText(e.currentTarget.value)}
               onChange={(e) => setText(e.currentTarget.value)}
