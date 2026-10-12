@@ -271,7 +271,7 @@ Card lines stay at 8 words or fewer. On phones (760px and below) the cards sit i
 
 ## 6. Why now (`12w-why.html`, id `why`)
 
-- **H2:** AI is already sending stores orders
+- **H2:** AI sales are exploding (white text on a purple band)
 
 | Big number | Label | Source line (links) |
 |---|---|---|

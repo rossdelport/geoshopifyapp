@@ -17,6 +17,8 @@
   --peri-300: #bfc9fa;
   --lilac-pedestal: #e1ccf7;
   --lilac-deep: #b5a8e0;
+  /* deeper purple for white text on it (4.6:1): the "AI sales are exploding" heading band */
+  --purple: #8a5cd8;
   --cobalt: #4050b0;
   --cobalt-mid: #6878d8;
   --cobalt-deep: #3840a0;

@@ -1,6 +1,8 @@
 /* Why now: three big numbers on white cards, each with a one-line label and a small source link.
    Numbers are navy; only the middle one (the orders AI already sends) is cobalt, the section's one accent. */
 .why { padding-top: 40px; }
+/* the heading sits on a purple band with white text, like a highlighter mark */
+.why-h { padding: .06em .32em .1em; border-radius: 12px; background: var(--purple); color: var(--white); }
 .why-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 
 .why-stats { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }

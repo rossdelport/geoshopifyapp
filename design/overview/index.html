@@ -22,6 +22,8 @@
   --peri-300: #bfc9fa;
   --lilac-pedestal: #e1ccf7;
   --lilac-deep: #b5a8e0;
+  /* deeper purple for white text on it (4.6:1): the "AI sales are exploding" heading band */
+  --purple: #8a5cd8;
   --cobalt: #4050b0;
   --cobalt-mid: #6878d8;
   --cobalt-deep: #3840a0;
@@ -1209,6 +1211,8 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 /* Why now: three big numbers on white cards, each with a one-line label and a small source link.
    Numbers are navy; only the middle one (the orders AI already sends) is cobalt, the section's one accent. */
 .why { padding-top: 40px; }
+/* the heading sits on a purple band with white text, like a highlighter mark */
+.why-h { padding: .06em .32em .1em; border-radius: 12px; background: var(--purple); color: var(--white); }
 .why-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 
 .why-stats { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
@@ -2682,7 +2686,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 <section class="section why" id="why" aria-labelledby="why-h">
   <div class="wrap">
     <div class="sec-head">
-      <h2 class="h2" id="why-h">AI is already sending stores orders</h2>
+      <h2 class="h2 why-h" id="why-h">AI sales are exploding</h2>
     </div>
 
     <ul class="why-stats">
