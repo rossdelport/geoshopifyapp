@@ -290,13 +290,16 @@ getting named **Across the web** (step 5). It must not repeat the hero cards, th
 
 - **H2:** How GEO works to get you recommended ("works to" on purpose: a method, not a promise. Alternative:
   "What GEO does to get you recommended". Not "How GEO gets you recommended", which reads as a promise.)
-- **Intro line (12 Oct 2026):** Six steps we repeat every week. We do the work. You approve it in one click, or pick
-  Done-for-you and we do that part too.
+- **Intro line (12 Oct 2026):** We do the work. You click approve, or on Done-for-you we do that too.
 
 Clarity pass, 12 Oct 2026 (Ross: make every step we do for them clear). Each step now has a fuller line saying exactly
 what we do, and a grey **Your part:** line saying what the store does and what Done-for-you takes over. Step 3 lists the
 exact changes. A sixth step, **Check again every week**, closes the loop (the optional sixth step below, now built). The
 old 220-word cap is lifted for this pass: clarity over brevity, at about 330 visible words.
+
+Word cut, 12 Oct 2026 (Ross: simpler words, half as many). 316 visible words (screens left out) down to 153. Each step
+is now a title, one short line and a **You:** line (the store's part on Standard; the intro line covers Done-for-you).
+Step 3's list is gone (the line names titles, descriptions and FAQs). The table below is the current copy.
 
 Layout (built 11 Oct 2026): a numbered timeline (`ol`), navy numbers on one grey rail. Each step: title, one line and
 one small screen tagged **Example** (made-up store and sites from the sample data list; `role="img"` with the
@@ -306,14 +309,14 @@ in a band labelled **Across the web**. So the "Tag" column below shows once per 
 with the words left of each screen. Tablets: heading centred above, chips under the steps. Phones: the screen
 under the words, the rail on the left.
 
-| # | Tag | Title | Line | Your part | Mini screen (exact labels) | Screen description (aria-label) |
+| # | Tag | Title | Line | You: | Mini screen (exact labels) | Screen description (aria-label) |
 |---|---|---|---|---|---|---|
-| 1 | | Find where AI looks | We ask ChatGPT, Gemini, Perplexity and Google AI the questions your buyers ask. We see who gets named and which sites each AI trusts. | pick the questions to track. We suggest them for you. | A question chip **beard oil under $40**; under it three source chips, each with an AI's colour dot: **examplereviews.com**, **examplebeardblog.com**, **reddit.com** | Example: for "beard oil under $40", each AI uses different sites, such as examplereviews.com, examplebeardblog.com and reddit.com. |
-| 2 | On your store | Make sure AI can read your store | We check that no AI is blocked from reading your pages. If one is, we show you the simple fix. | make the fix, only if something is blocked. (The app has no theme access, so the store makes this fix on every plan.) | Three rows: **ChatGPT** (tick), **Google** (tick), **Perplexity** with an amber pill **Blocked** | Example: ChatGPT and Google may read your pages; Perplexity is blocked, so GEO shows how to fix it. |
-| 3 | On your store | Rewrite your product pages | We make each product page clear, so AI can tell who it's for and why it fits. We change: then a ticked list **Titles and descriptions** · **FAQs on each product** · **Product type and Google search title** (the fix types in `fix-labels.ts`) | approve each change in one click. On Done-for-you, we make the changes for you. | A product page: chip **Type: Beard Oil**, first line highlighted **For dry beards. 30ml.**, grey lines, then **FAQ** with three closed questions | Example: a product page that opens with who it's for and its size, with a product type and FAQs. |
-| 4 | On your store | Write buying guides | We write guides like "Best beard oil for dry skin" that link to your products. We check them every 60 to 90 days and update them when needed. | approve each guide. On Done-for-you, we publish them for you. | A guide page with the stamp **Updated October 2026** (the app's own wording), linked to two smaller guide pages | Example: a buying guide marked "Updated October 2026", linked to two more specific guides. |
-| 5 | Across the web | Get you named on sites AI trusts | We find articles, videos and lists that AI uses, where rivals are named and you're not. Then we write short, honest pitches to get you added. | send the pitches we write. On Done-for-you, we send them, add your listings and follow up. | Four rows, icon, kind and next step: **Roundup** · **Pitch drafted**; **YouTube** · **Review request**; **Reddit** · **You join in**; **Directory** · **Add listing** | Example: pages AI cites that skip you, each with an honest next step: a pitch, a review request, a thread you join yourself, a listing. |
-| 6 | | Check again every week | We ask AI again, show you what changed and the sales that came from AI, then start on what's still missing. | nothing. Read your monthly report when it lands. | Three rows: **Asked AI again** (tick), **New fixes ready** · **3**, **Next check** · **Monday** | Example: this week's check is done, 3 new fixes are ready, and the next check is on Monday. |
+| 1 | | Find where AI looks | We ask AI your buyers' questions and see who it picks. | pick the questions. | A question chip **beard oil under $40**; under it three source chips, each with an AI's colour dot: **examplereviews.com**, **examplebeardblog.com**, **reddit.com** | Example: for "beard oil under $40", each AI uses different sites, such as examplereviews.com, examplebeardblog.com and reddit.com. |
+| 2 | On your store | Let AI read your store | We check AI isn't blocked from your store. | a quick fix, if needed. (The app has no theme access, so the store makes this fix on every plan.) | Three rows: **ChatGPT** (tick), **Google** (tick), **Perplexity** with an amber pill **Blocked** | Example: ChatGPT and Google may read your pages; Perplexity is blocked, so GEO shows how to fix it. |
+| 3 | On your store | Rewrite your product pages | Clear titles, descriptions and FAQs that AI can quote. | click approve. | A product page: chip **Type: Beard Oil**, first line highlighted **For dry beards. 30ml.**, grey lines, then **FAQ** with three closed questions | Example: a product page that opens with who it's for and its size, with a product type and FAQs. |
+| 4 | On your store | Write buying guides | Guides like "Best beard oil for dry skin", kept up to date. (Reviewed every 60 to 90 days, updated when needed.) | click approve. | A guide page with the stamp **Updated October 2026** (the app's own wording), linked to two smaller guide pages | Example: a buying guide marked "Updated October 2026", linked to two more specific guides. |
+| 5 | Across the web | Get you on sites AI trusts | We find sites AI uses that skip you, and write pitches. | send them. | Four rows, icon, kind and next step: **Roundup** · **Pitch drafted**; **YouTube** · **Review request**; **Reddit** · **You join in**; **Directory** · **Add listing** | Example: pages AI cites that skip you, each with an honest next step: a pitch, a review request, a thread you join yourself, a listing. |
+| 6 | | Check again every week | We check again, show your AI sales, and fix what's left. | nothing. | Three rows: **Asked AI again** (tick), **New fixes ready** · **3**, **Next check** · **Monday** | Example: this week's check is done, 3 new fixes are ready, and the next check is on Monday. |
 
 Safeguard chips (under the heading on wide screens, under the steps on tablets and phones): **One-click undo** ·
 **Only your store's facts** · **No fake reviews or posts**. (Review 11 Oct: "You stay in control" cut as vague; the

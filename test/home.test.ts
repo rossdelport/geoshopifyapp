@@ -160,21 +160,20 @@ describe("home page", () => {
     const steps = [...how.matchAll(/<h3 class="how-t">([^<]+)<\/h3>/g)].map((m) => m[1]);
     expect(steps).toEqual([
       "Find where AI looks",
-      "Make sure AI can read your store",
+      "Let AI read your store",
       "Rewrite your product pages",
       "Write buying guides",
-      "Get you named on sites AI trusts",
+      "Get you on sites AI trusts",
       "Check again every week",
     ]);
-    // who does what: one line up top, then "Your part" on every step
-    expect(how).toContain("We do the work. You approve it in one click");
-    expect(how.match(/<p class="how-you"><b>Your part:<\/b>/g)).toHaveLength(6);
+    // who does what: one line up top, then "You:" on every step
+    expect(how).toContain('We do the work. You click approve, or on <span class="nw">Done-for-you</span> we do that too.');
+    expect(how.match(/<p class="how-you"><b>You:<\/b>/g)).toHaveLength(6);
     // the two kinds of work, and every small screen labelled "Example" with a sentence for screen readers
     expect(how).toContain("On your store</span>");
     expect(how).toContain("Across the web</span>");
     expect(how.match(/<div class="how-vis" role="img" aria-label="Example: [^"]+">/g)).toHaveLength(6);
     expect(how.match(/<span class="hv-tag">Example<\/span>/g)).toHaveLength(6);
-    expect(how).toContain('<span class="nw">Done-for-you</span>, we send them, add your listings and follow up.');
     for (const chip of ["One-click undo", "Only your store’s facts", "No fake reviews or posts"]) expect(how).toContain(`${chip}</li>`);
     // honest about outreach: threads are joined by the store itself, and nothing promises rankings or sales
     expect(how).toContain("You join in");
