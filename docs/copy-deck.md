@@ -236,18 +236,28 @@ Card lines stay at 8 words or fewer. On phones (760px and below) the cards sit i
 
 ---
 
-## 4b. Watch a free check (`11v-video.html`, id `watch`)
+## 4b. What you get when you join (`11v-video.html`, id `watch`)
 
-- **H2 (small):** Watch a free check · frame tag **Example**
-- A screen recording of the real check page (`/check/:id`) run on a local copy with a seeded, made-up check:
-  Coolabah Grooming Co., "Dry Skin Beard Oil 30ml", US$34, coolabahgrooming.com, shoppers in the US; rivals
-  Ridgeback, Saltbush, Banksia, Wattlebird; made-up cited sites (beardbuyersguide.com, groomedmonthly.com,
-  beardtalkforum.com, groomhouse.com). It shows the link typed into the hero, the live "AI at work" view (reading,
-  writing questions, asking ChatGPT, Gemini and Perplexity, 18 answers), then the report (11% ring, "Who AI
-  recommends instead", the locked action plan). Waiting parts are sped up.
-- Files in `design/overview/img/`: `free-check.mp4` / `.webm` (1280×800) and `free-check-phone.mp4` / `.webm`
-  (390×640, chosen by `<source media>` at 600px and below), posters `free-check-poster.jpg` and
-  `free-check-phone-poster.jpg` (`11v-video.js` swaps it in on phones; `assemble.mjs` copies it).
+- **H2 (small):** What you get when you join · frame tag **Example**
+- A silent, looping 56 s tour of what a store gets after it joins, made with Remotion (`design/video`, storyboard
+  and every on-screen line in `docs/video/storyboard.md`, sources in `docs/video/research.md`). Made-up store
+  Coolabah Grooming Co., rivals Ridgeback, Saltbush, Banksia, Wattlebird, made-up example sites only; every number a
+  sample, with a small "Example" tag on every frame. Scenes: questions written minutes after install; day one
+  (score 29/100, who AI picks instead, sites AI trusts); approve a fix and it's live (undo any time); every month
+  (guide pages, pitches ready to send); every week (a fresh check, the trend moves both ways); the money ($4,820,
+  61 orders, 1,940 clicks vs before you joined) and the monthly email; then the end card "What to expect, and
+  when": Day one, See where you stand · The day you approve, Fixes go live on your store · Weeks to months, AI
+  answers catch up. Nobody can promise when. Button "Start 7-day free trial", "Billed through Shopify. Cancel any
+  time." Done-for-you differences show as a small note on each scene.
+- **aria-label:** Example tour with a made-up store: GEO writes the questions shoppers ask AI, shows who AI picks
+  instead, puts fixes live when you approve them, adds guide pages and pitches each month, checks AI every week
+  and counts sales from AI; AI answers can take weeks or months to catch up.
+- **Button labels:** Play the example tour · Pause the example tour
+- Files in `design/overview/img/`: `member-tour.mp4` / `.webm` (1280×800) and `member-tour-phone.mp4` / `.webm`
+  (780×1280, the 390×640 phone layout drawn at 2x, chosen by `<source media>` at 600px and below), posters
+  `member-tour-poster.jpg` and `member-tour-phone-poster.jpg` (frame 1325, the money scene; `11v-video.js` swaps
+  the phone one in on phones; `assemble.mjs` copies it). Render: `./render.sh MemberTour MemberTourPhone
+  member-tour 1325` in `design/video` (README there).
 - Loads only near the screen, plays muted and looped, pauses off screen; one small pause button. Reduced motion:
   never starts by itself (poster and a big play button). No JavaScript: the browser's own controls.
 
@@ -601,7 +611,7 @@ Tip copy (in `buildTips`, keep the variables and the rules, no dashes):
 | `clay-bubble.png`, `clay-bag.png` | Hero, floating beside the cards; `clay-bubble.png` also by the FAQ chat | `""` |
 | `clay-coin.png` | Hero card 3, "New order" row | `""` |
 | `clay-magnifier.jpg` | Not on the home page any more; the free check pages still use it (copied by `assemble.mjs`) | |
-| `free-check-poster.jpg`, `free-check-phone-poster.jpg` | Watch a free check (posters of the video) | the video has an aria-label |
+| `member-tour-poster.jpg`, `member-tour-phone-poster.jpg` | What you get when you join (posters of the video) | the video has an aria-label |
 | `clay-coins.jpg` | What's it worth (no frame, edges fade into the band; hidden on phones) | `""` |
 | `clay-storefront.jpg` | Closing CTA card | `""` |
 

@@ -90,8 +90,8 @@ ${body}</body>
   const used = [...new Set([...out.matchAll(/(?:src|poster)="img\/([^"]+)"/g)].map((m) => m[1]))];
   // Images other pages load from /home/img/ even when the home page doesn't use them
   // (the free product check pages: app/components/check-ui.tsx).
-  // The phone poster of the free check video, which 11v-video.js swaps in on phones.
-  const extra = ['clay-magnifier.jpg', 'clay-bubble.png', 'clay-bag.png', 'clay-storefront.jpg', 'free-check-phone-poster.jpg'].filter((f) => !used.includes(f));
+  // The phone poster of the member tour video, which 11v-video.js swaps in on phones.
+  const extra = ['clay-magnifier.jpg', 'clay-bubble.png', 'clay-bag.png', 'clay-storefront.jpg', 'member-tour-phone-poster.jpg'].filter((f) => !used.includes(f));
   for (const f of [...used, ...extra]) fs.copyFileSync(path.join(dir, 'img', f), path.join(imgOut, f));
   console.log(`app/home/home.html: ${(site.length / 1024).toFixed(0)} KB, ${used.length} images and videos used, ${used.length + extra.length} copied to public/home/img`);
 }
