@@ -88,6 +88,9 @@ describe("home page", () => {
     const html = await (await call("https://geo.test/")).text();
     expect(html).toContain("Like SEO, but for ChatGPT’s answers.");
     expect(html).toContain("Shoppers ask. AI recommends. You get the sale.");
+    // the video section is hidden on phones (Ross); it only loads when on screen, so phones never download it
+    expect(html).toMatch(/@media \(max-width: 760px\) \{\s*\.vid-sec \{ display: none; \}/);
+    expect(html).toContain('preload="none"');
     const start = html.indexOf('<video class="vid"');
     expect(start).toBeGreaterThan(-1);
     const video = html.slice(start, html.indexOf("</video>", start));

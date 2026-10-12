@@ -1170,20 +1170,11 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .vid-sec { padding-top: 64px; }
   .vid-sec + .eng { padding-top: 64px; }
 }
+/* phones: no video section (Ross, 12 Oct 2026); 11v-video.js only loads the video when it's on screen, so phones
+   never download it */
 @media (max-width: 760px) {
-  .vid-sec { padding-top: 44px; }
+  .vid-sec { display: none; }
   .vid-sec + .eng { padding-top: 52px; }
-  .vid-title { font-size: 23px; letter-spacing: -0.6px; }
-  .vid-frame { margin-top: 16px; padding: 6px; border-radius: 22px; }
-  .vid { border-radius: 16px; }
-  .vid-bar { height: 26px; padding: 0 4px 6px 6px; }
-  .vid-dots i { width: 8px; height: 8px; }
-  .vid-frame.is-playing .vid-btn { right: 14px; bottom: 14px; }
-}
-/* phones: the portrait recording of the phone layout */
-@media (max-width: 600px) {
-  .vid-frame { max-width: 360px; }
-  .vid { aspect-ratio: 390 / 640; }
 }
 
 /* 12-engines.css */
