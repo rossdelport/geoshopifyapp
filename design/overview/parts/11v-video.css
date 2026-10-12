@@ -16,10 +16,6 @@
 .vid-bar { display: flex; align-items: center; justify-content: space-between; height: 30px; padding: 0 6px 8px 8px; }
 .vid-dots { display: inline-flex; gap: 6px; }
 .vid-dots i { width: 9px; height: 9px; border-radius: 50%; background: #e2e2e6; }
-.vid-tag {
-  font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; line-height: 1; color: var(--text-2);
-  background: var(--white); border-radius: 6px; padding: 5px 8px; box-shadow: inset 0 0 0 1px var(--line);
-}
 
 /* play / pause: big in the middle while paused, small in the corner while playing */
 .vid-btn {
@@ -55,7 +51,6 @@
   .vid { border-radius: 16px; }
   .vid-bar { height: 26px; padding: 0 4px 6px 6px; }
   .vid-dots i { width: 8px; height: 8px; }
-  .vid-tag { font-size: 10px; padding: 4px 7px; }
   .vid-frame.is-playing .vid-btn { right: 14px; bottom: 14px; }
 }
 /* phones: the portrait recording of the phone layout */
