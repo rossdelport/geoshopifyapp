@@ -150,7 +150,7 @@ describe("home page", () => {
     expect(html).toContain('<a href="/stories">Stories</a>');
   });
 
-  it("shows GEO's method as six numbered steps, each with what we do, the store's part and an Example screen", async () => {
+  it("shows GEO's method as six numbered steps, each with what we do and an Example screen", async () => {
     const html = await (await call("https://geo.test/")).text();
     const start = html.indexOf('<section class="section alt how" id="how"');
     expect(start).toBeGreaterThan(-1);
@@ -166,9 +166,8 @@ describe("home page", () => {
       "Get you on sites AI trusts",
       "Check again every week",
     ]);
-    // who does what: one line up top, then "You:" on every step
+    // who does what, in one line up top
     expect(how).toContain('We do the work. You click approve, or on <span class="nw">Done-for-you</span> we do that too.');
-    expect(how.match(/<p class="how-you"><b>You:<\/b>/g)).toHaveLength(6);
     // the two kinds of work, and every small screen labelled "Example" with a sentence for screen readers
     expect(how).toContain("On your store</span>");
     expect(how).toContain("Across the web</span>");

@@ -1269,7 +1269,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 
 /* 20-how.css */
 /* How it works: GEO's method as a numbered timeline (ol). A navy number per step on one grey rail, then the
-   step's title, what we do, a "You:" line (what the store does), and one small screen (example data, the made-up store and sites from the sample data
+   step's title, what we do, and one small screen (example data, the made-up store and sites from the sample data
    list; role="img" with a plain sentence for screen readers). Steps 2 to 4 sit in one outlined band labelled
    "On your store", step 5 in a band labelled "Across the web", so the two kinds of work read at a glance.
    Wide screens (1280px and up): the heading and the safeguard chips stay on the left (sticky), the steps on the
@@ -1354,12 +1354,6 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .how-tx { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; }
 .how-t { font-size: 21px; line-height: var(--tl); letter-spacing: -0.5px; color: var(--navy); }
 .how-p { font-size: 15.5px; line-height: 1.55; color: var(--text); max-width: 40ch; text-wrap: pretty; }
-/* what the store does at this step (and what Done-for-you takes over) */
-.how-you {
-  margin-top: 8px; padding: 9px 12px; border-radius: 10px; background: var(--warm-100);
-  font-size: 13.5px; line-height: 1.5; color: var(--ink-2); max-width: 44ch; text-wrap: pretty;
-}
-.how-you b { font-weight: 600; color: var(--navy); }
 .how .nw { white-space: nowrap; }
 
 /* ---- the small screens: a white card, its Example tag sitting on the top edge like the band labels ---- */
@@ -1537,7 +1531,6 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .how-lane { left: 12px; height: 26px; font-size: 12.5px; }
   .how-t { font-size: 19px; letter-spacing: -0.4px; }
   .how-p { font-size: 15px; line-height: 1.5; max-width: none; }
-  .how-you { font-size: 13px; max-width: none; }
   .hv-panel { min-height: 0; }
   .how-chips { margin-top: 24px; gap: 6px; }
   .how-chips li { height: 30px; padding: 0 11px 0 9px; gap: 6px; font-size: 13px; }
@@ -2738,7 +2731,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
       </ul>
     </div>
 
-    <!-- GEO's method, in the order it works, each step with "You:" (what the store does on Standard; the intro says Done-for-you does that too) (checked against the code, see docs/copy-deck.md section 7).
+    <!-- GEO's method, in the order it works, the intro line says who does what (checked against the code, see docs/copy-deck.md section 7).
          Small screens: example data with the made-up store and sites from the sample data list. -->
     <ol class="how-steps">
       <li class="how-step">
@@ -2747,7 +2740,6 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
           <div class="how-tx">
             <h3 class="how-t">Find where AI looks</h3>
             <p class="how-p">We ask AI your buyers’ questions and see who it picks.</p>
-            <p class="how-you"><b>You:</b> pick the questions.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Example: for “beard oil under $40”, each AI uses different sites, such as examplereviews.com, examplebeardblog.com and reddit.com.">
             <span class="hv-tag">Example</span>
@@ -2769,7 +2761,6 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
           <div class="how-tx">
             <h3 class="how-t">Let AI read your store</h3>
             <p class="how-p">We check AI isn’t blocked from your store.</p>
-            <p class="how-you"><b>You:</b> a quick fix, if needed.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Example: ChatGPT and Google may read your pages; Perplexity is blocked, so GEO shows how to fix it.">
             <span class="hv-tag">Example</span>
@@ -2787,7 +2778,6 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
           <div class="how-tx">
             <h3 class="how-t">Rewrite your product pages</h3>
             <p class="how-p">Clear titles, descriptions and FAQs that AI can quote.</p>
-            <p class="how-you"><b>You:</b> click approve.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Example: a product page that opens with who it’s for and its size, with a product type and FAQs.">
             <span class="hv-tag">Example</span>
@@ -2814,7 +2804,6 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
           <div class="how-tx">
             <h3 class="how-t">Write buying guides</h3>
             <p class="how-p">Guides like “Best beard oil for dry skin”, kept up to date.</p>
-            <p class="how-you"><b>You:</b> click approve.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Example: a buying guide marked “Updated October 2026”, linked to two more specific guides.">
             <span class="hv-tag">Example</span>
@@ -2839,7 +2828,6 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
           <div class="how-tx">
             <h3 class="how-t">Get you on sites AI trusts</h3>
             <p class="how-p">We find sites AI uses that skip you, and write pitches.</p>
-            <p class="how-you"><b>You:</b> send them.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Example: pages AI cites that skip you, each with an honest next step: a pitch, a review request, a thread you join yourself, a listing.">
             <span class="hv-tag">Example</span>
@@ -2858,7 +2846,6 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
           <div class="how-tx">
             <h3 class="how-t">Check again every week</h3>
             <p class="how-p">We check again, show your AI sales, and fix what’s left.</p>
-            <p class="how-you"><b>You:</b> nothing.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Example: this week’s check is done, 3 new fixes are ready, and the next check is on Monday.">
             <span class="hv-tag">Example</span>

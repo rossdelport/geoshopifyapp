@@ -301,6 +301,9 @@ Word cut, 12 Oct 2026 (Ross: simpler words, half as many). 316 visible words (sc
 is now a title, one short line and a **You:** line (the store's part on Standard; the intro line covers Done-for-you).
 Step 3's list is gone (the line names titles, descriptions and FAQs). The table below is the current copy.
 
+Same day, Ross: the grey **You:** boxes looked ugly, so they are gone. Each step is a title and one line; the intro line
+says who does what. The **You:** column below is kept as notes only (not shown).
+
 Layout (built 11 Oct 2026): a numbered timeline (`ol`), navy numbers on one grey rail. Each step: title, one line and
 one small screen tagged **Example** (made-up store and sites from the sample data list; `role="img"` with the
 description below). Steps 2 to 4 sit in one outlined band whose label **On your store** sits on its top edge; step 5

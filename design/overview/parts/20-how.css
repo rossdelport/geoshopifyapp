@@ -1,5 +1,5 @@
 /* How it works: GEO's method as a numbered timeline (ol). A navy number per step on one grey rail, then the
-   step's title, what we do, a "You:" line (what the store does), and one small screen (example data, the made-up store and sites from the sample data
+   step's title, what we do, and one small screen (example data, the made-up store and sites from the sample data
    list; role="img" with a plain sentence for screen readers). Steps 2 to 4 sit in one outlined band labelled
    "On your store", step 5 in a band labelled "Across the web", so the two kinds of work read at a glance.
    Wide screens (1280px and up): the heading and the safeguard chips stay on the left (sticky), the steps on the
@@ -84,12 +84,6 @@
 .how-tx { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; }
 .how-t { font-size: 21px; line-height: var(--tl); letter-spacing: -0.5px; color: var(--navy); }
 .how-p { font-size: 15.5px; line-height: 1.55; color: var(--text); max-width: 40ch; text-wrap: pretty; }
-/* what the store does at this step (and what Done-for-you takes over) */
-.how-you {
-  margin-top: 8px; padding: 9px 12px; border-radius: 10px; background: var(--warm-100);
-  font-size: 13.5px; line-height: 1.5; color: var(--ink-2); max-width: 44ch; text-wrap: pretty;
-}
-.how-you b { font-weight: 600; color: var(--navy); }
 .how .nw { white-space: nowrap; }
 
 /* ---- the small screens: a white card, its Example tag sitting on the top edge like the band labels ---- */
@@ -267,7 +261,6 @@
   .how-lane { left: 12px; height: 26px; font-size: 12.5px; }
   .how-t { font-size: 19px; letter-spacing: -0.4px; }
   .how-p { font-size: 15px; line-height: 1.5; max-width: none; }
-  .how-you { font-size: 13px; max-width: none; }
   .hv-panel { min-height: 0; }
   .how-chips { margin-top: 24px; gap: 6px; }
   .how-chips li { height: 30px; padding: 0 11px 0 9px; gap: 6px; font-size: 13px; }
