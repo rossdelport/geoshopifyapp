@@ -1149,6 +1149,43 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .why-src { padding-top: 10px; font-size: 12px; }
 }
 
+/* 12x-stories.css */
+/* Stores already getting sales from AI: four other brands' results, each in the article's own words with a link.
+   Neutral cards (white, soft ring); no accent colour, so the stats above keep the section's one cobalt number. */
+.stories { padding-top: 32px; }
+.stories-sub { margin-top: 10px; font-size: 16px; line-height: 1.5; color: var(--text); }
+
+.stories-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.story {
+  display: flex; flex-direction: column; gap: 12px; min-width: 0;
+  padding: 32px 32px 24px; border-radius: var(--r-xl);
+  background: var(--white);
+  box-shadow: var(--ring-soft), var(--shadow-soft);
+}
+.story-brand { font-family: var(--font-head); font-weight: 600; font-size: 15px; letter-spacing: -0.1px; color: var(--navy); display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.story-brand span { font-family: var(--font-body); font-weight: 400; font-size: 13px; color: var(--text); }
+.story-result { font-family: var(--font-head); font-weight: 500; font-size: 26px; line-height: 1.2; letter-spacing: -0.8px; color: var(--navy); text-wrap: balance; }
+.story-quote { margin: 0; font-size: 16px; line-height: 1.55; color: var(--ink-2, var(--navy)); text-wrap: pretty; }
+.story-who { font-size: 13.5px; color: var(--text); }
+.story-src { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--line-soft); font-size: 13px; line-height: 1.5; }
+.story-src a { display: inline-flex; align-items: center; gap: 4px; }
+.story-src svg { width: 14px; height: 14px; flex: none; }
+
+.stories-note { margin: 20px auto 0; max-width: 640px; text-align: center; font-size: 13px; line-height: 1.55; color: var(--text); }
+
+@media (max-width: 1100px) {
+  .story { padding: 28px 26px 22px; }
+  .story-result { font-size: 23px; }
+}
+@media (max-width: 760px) {
+  .stories { padding-top: 20px; }
+  .stories-list { grid-template-columns: 1fr; gap: 12px; }
+  .story { padding: 22px 20px 18px; border-radius: var(--r-lg); gap: 8px; }
+  .story-result { font-size: 21px; letter-spacing: -0.5px; }
+  .story-quote { font-size: 15px; }
+  .story-src { padding-top: 10px; }
+}
+
 /* 20-how.css */
 /* How it works: GEO's method as a numbered timeline (ol). A navy number per step on one grey rail, then the
    step's title and line, and one small screen (example data, the made-up store and sites from the sample data
@@ -2523,6 +2560,50 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
         <p class="why-src"><a class="src-link" href="https://www.digitalcommerce360.com/2026/08/19/adobe-ai-referral-traffic-data-july-2026/" target="_blank" rel="noopener">Adobe, US retail, July 2026</a></p>
       </li>
     </ul>
+  </div>
+</section>
+
+<!-- 12x-stories.html -->
+<section class="section stories" id="stories" aria-labelledby="stories-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="h2" id="stories-h">Stores already getting sales from AI</h2>
+      <p class="stories-sub">Other brands, in their own words. Not GEO customers.</p>
+    </div>
+
+    <!-- Every figure and quote is copied word for word from the linked article (checked 12 Oct 2026, docs/case-studies.md). Never round them or present them as GEO results. -->
+    <ul class="stories-list">
+      <li class="story" data-rise>
+        <p class="story-brand">Viv <span>Period care, online store</span></p>
+        <p class="story-result">Sales from ChatGPT recommendations up 436%</p>
+        <blockquote class="story-quote">“We ended up selling out of about six months of tampon inventory in three weeks, driven by Google’s AI-powered recommendations.”</blockquote>
+        <p class="story-who">Kelly Donohue, marketing and design director</p>
+        <p class="story-src"><a class="src-link" href="https://www.modernretail.co/marketing/brands-are-seeing-an-influx-of-traffic-from-chatgpt-and-google-gemini/" target="_blank" rel="noopener">Modern Retail, Jan 2025 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg><span class="why-sr">(opens the article)</span></a></p>
+      </li>
+      <li class="story" data-rise>
+        <p class="story-brand">La Joya Jewelry <span>Lab-grown diamonds, online store</span></p>
+        <p class="story-result">AI shoppers convert at more than 13%, against a normal 3%</p>
+        <blockquote class="story-quote">“What I found is that that traffic is very focused, and it converts much better than normal organic traffic or paid traffic.”</blockquote>
+        <p class="story-who">Nishit Mehta, founder</p>
+        <p class="story-src"><a class="src-link" href="https://www.digitalcommerce360.com/2026/09/16/how-ai-referrals-impact-traffic-4-online-retailers/" target="_blank" rel="noopener">Digital Commerce 360, Sep 2026 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg><span class="why-sr">(opens the article)</span></a></p>
+      </li>
+      <li class="story" data-rise>
+        <p class="story-brand">Draco Diamond <span>Diamond jewellery, online store</span></p>
+        <p class="story-result">AI shoppers add to cart 5 times as often as Google Ads visitors</p>
+        <blockquote class="story-quote">“It seems that a lot of our AI traffic is at the end of that research funnel, and they’re almost ready to buy.”</blockquote>
+        <p class="story-who">Garrett McMartin, founder</p>
+        <p class="story-src"><a class="src-link" href="https://www.digitalcommerce360.com/2026/08/26/draco-diamond-aeo-ai-traffic-cyber-5/" target="_blank" rel="noopener">Digital Commerce 360, Aug 2026 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg><span class="why-sr">(opens the article)</span></a></p>
+      </li>
+      <li class="story" data-rise>
+        <p class="story-brand">Levenger <span>Notebooks and pens, online store</span></p>
+        <p class="story-result">$20,500 in sales from ChatGPT in 2025, up from $790 in all of 2024</p>
+        <blockquote class="story-quote">“$92 value per AI-driven visitor, compared to a $6 site-wide average.”</blockquote>
+        <p class="story-who">Volume Nine, Levenger’s marketing agency</p>
+        <p class="story-src"><a class="src-link" href="https://www.v9digital.com/success-stories/levenger-2/" target="_blank" rel="noopener">Volume Nine case study, 2025 results <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg><span class="why-sr">(opens the article)</span></a></p>
+      </li>
+    </ul>
+
+    <p class="stories-note">Results these companies reported, from the articles linked. Every store is different, and nobody can promise these numbers.</p>
   </div>
 </section>
 
