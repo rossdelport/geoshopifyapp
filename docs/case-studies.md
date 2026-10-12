@@ -18,7 +18,7 @@ Research for the GEO home page (https://usegeo.app). Compiled 12 October 2026.
   - "What’s more, many of the people who were directed to Viv’s blog by ChatGPT ended up buying products. Sales converted from these recommendations jumped 436%." (the reporter's words, based on Viv's figures)
   - “We ended up selling out of about six months of tampon inventory in three weeks, driven by Google’s AI-powered recommendations,” Donohue said.
 - **Who said it:** Kelly Donohue, marketing and design director at Viv.
-- **Article:** "Brands see an influx of traffic from ChatGPT and Google Gemini"
+- **Article:** "Brands are seeing an influx of traffic from ChatGPT and Google Gemini" (headline corrected 12 Oct 2026; the page headline reads "are seeing")
 - **Publisher / author:** Modern Retail (Digiday Media), by Gabriela Barkho
 - **Date:** 14 January 2025 (describes events from July 2024 onwards)
 - **URL:** https://www.modernretail.co/marketing/brands-are-seeing-an-influx-of-traffic-from-chatgpt-and-google-gemini/
@@ -85,7 +85,7 @@ Research for the GEO home page (https://usegeo.app). Compiled 12 October 2026.
 - **URL:** https://www.thedrum.com/awards-case-study/how-steelseries-claimed-the-top-ai-search-spot-before-competitors-arrived
 - **Also:** Winner of the GEO category at the 18th Shorty Awards (https://shortyawards.com/category/18th/geo). Agency page: https://nogood.io/case-study/steelseries
 - **Ecommerce:** Yes (consumer products sold online)
-- **Trust:** Medium. Big named brand and two award wins, but the text is written by the agency, not a journalist. The numbers do not match across pages: NoGood's page says "7.1X increase in conversions" in the body and "27x" in the header, and the Goodie software page says "3.2x". Use only the Drum wording above if used at all.
+- **Trust:** Medium. Big named brand and two award wins, but the text is written by the agency, not a journalist. The numbers do not match across pages: NoGood's page says "7.1X increase in conversions" in the body and "27x" in the header (and its body also says AI traffic "grew 6.7X", against "23x" in the header; rechecked 12 Oct 2026), and the Goodie software page says "3.2x". Use only the Drum wording above if used at all.
 
 ## 6. Levenger (premium notebooks, pens and desk accessories, online store)
 
@@ -101,7 +101,7 @@ Research for the GEO home page (https://usegeo.app). Compiled 12 October 2026.
 - **Date:** Not shown on the page. Results are "Year to date (2025)"; page images were uploaded January 2026.
 - **URL:** https://www.v9digital.com/success-stories/levenger-2/
 - **Ecommerce:** Yes
-- **Trust:** Medium. Agency marketing page, but it names the client and gives small, specific dollar figures rather than vague percentages.
+- **Trust:** Medium. Agency marketing page, but it names the client and gives small, specific dollar figures rather than vague percentages. Note (rechecked 12 Oct 2026): the same page's summary boxes show lower figures ("$7,841" product sales from ChatGPT, "871%" increase, "$35" value per AI visitor) than its intro and results text ($20,500, 2,275%, $92), with no explanation.
 
 ## 7. Argaux (online wine shop)
 
@@ -164,7 +164,7 @@ Research for the GEO home page (https://usegeo.app). Compiled 12 October 2026.
 ## 11. Tally (online form builder) [NOT ECOMMERCE]
 
 - **Business:** Bootstrapped form-building software (SaaS) from Belgium.
-- **Result in plain words:** ChatGPT became Tally's number one referral source in 2025, bringing over 2,000 tracked sign-ups a week. By April 2026, AI search was its biggest way of finding new users, ahead of word of mouth.
+- **Result in plain words:** ChatGPT became Tally's number one referral source in 2025, with "over 2,000 new users signing up via AI tools" in "the past months" (only the tracked ones; the text does not say per week, though the chart beside it is captioned "Weekly signups coming from AI search"; corrected 12 Oct 2026). By April 2026, AI search was its biggest way of finding new users, ahead of word of mouth.
 - **Exact quotes:**
   - "But this year, something new happened: ChatGPT became our #1 referral source." (June 2025)
   - "The past months, we see over 2,000 new users signing up via AI tools and those are just the ones we could track." (June 2025)
@@ -203,7 +203,7 @@ Research for the GEO home page (https://usegeo.app). Compiled 12 October 2026.
 ## 14. RAVE Coffee (coffee roaster, UK, online store) [brand shown by logo only]
 
 - **Business:** UK coffee roaster selling coffee and equipment online. The case study shows the RAVE Coffee logo but the text only says "this leading coffee brand".
-- **Result in plain words:** Sales attributed to AI referrals rose 78% in a year, and ChatGPT made up more than 95% of those sales.
+- **Result in plain words:** Sales attributed to AI referrals rose 78%, and ChatGPT made up more than 95% of AI-driven transactions. (Corrected 12 Oct 2026: the page does not tie the 78% to a stated period; "within twelve months" is said of AI referral growth.)
 - **Exact quote:** "From a commercial perspective, there was a 78% uplift in sales directly attributed to AI referrals. ChatGPT accounted for more than 95% of AI-driven transactions, making it the most significant generative referral source."
 - **Who said it:** The SEO Works (agency). No one at the brand is quoted.
 - **Article:** "AI Search and GEO Case Study Drives 78% Ecommerce Revenue Growth from ChatGPT Referrals"
@@ -216,7 +216,7 @@ Research for the GEO home page (https://usegeo.app). Compiled 12 October 2026.
 ## 15. Edible Brands (gift baskets and fruit arrangements) [mixed result]
 
 - **Business:** Large US gifting retailer (No. 182 in the Digital Commerce 360 Top 1000).
-- **Result in plain words:** Orders from AI visitors are $5.50 bigger than average, but AI visitors convert at just over 5%, below the site's usual rate of over 10%.
+- **Result in plain words:** Orders from AI visitors are $5.50 bigger than average, but AI visitors convert at "more than 5%", below the site's usual rate of "more than 10%". (Corrected 12 Oct 2026: the article says "more than 5%", not "just over".)
 - **Exact quotes:**
   - "The average order value (AOV) from that traffic is $5.50 greater than the retailer’s site average."
   - "The conversion rate from AI traffic referrals to Edible Brands’ website is strong, too, she said, at more than 5%." and “But I will say: That’s lower than our site average,” Randerson noted.

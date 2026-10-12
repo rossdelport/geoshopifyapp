@@ -1,0 +1,1104 @@
+[
+  {
+    "slug": "viv-chatgpt-sales",
+    "brand": "Viv",
+    "business": "Period care, online store",
+    "ecommerce": true,
+    "onShopify": true,
+    "shopifyEvidence": "vivforyourv.com home page loads cdn.shopify.com assets and a Shopify.theme object; store handle viv-for-your-v.myshopify.com (checked 12 Oct 2026)",
+    "logo": "logos/viv.png",
+    "logoIsMonogram": false,
+    "logoShape": "square",
+    "cardHeadline": "Sales from ChatGPT recommendations up 436%",
+    "title": "Viv's ChatGPT sales jumped 436% | GEO",
+    "description": "Period care brand Viv saw sales from ChatGPT recommendations jump 436%. Here is what it had published that AI tools picked up.",
+    "h1": "Viv saw sales from ChatGPT recommendations jump 436%",
+    "intro": "Period care brand Viv told Modern Retail that many shoppers sent to its blog by ChatGPT went on to buy, and sales from those recommendations jumped 436%. The brand also credits Google's AI recommendations for selling out about six months of tampon stock in three weeks.",
+    "keyNumbers": [
+      {
+        "value": "436%",
+        "label": "jump in sales converted from ChatGPT recommendations"
+      },
+      {
+        "value": "400%",
+        "label": "spike in monthly traffic in July 2024, driven mainly by Gemini and ChatGPT"
+      },
+      {
+        "value": "3 weeks",
+        "label": "to sell out about six months of tampon stock"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "What happened",
+        "paragraphs": [
+          "In July 2024 Viv's monthly traffic spiked by 400%. Marketing and design director Kelly Donohue said it came out of nowhere. When she dug in, she found most of it came from Google Gemini and ChatGPT recommending non-toxic period care.",
+          "The timing mattered. A study in the journal Environment International had just reported heavy metals such as lead and arsenic in many popular tampon brands. People were asking AI assistants about toxins in tampons, and the answers pointed them to Viv's blog. Many of those visitors bought."
+        ]
+      },
+      {
+        "heading": "What Viv had published",
+        "paragraphs": [
+          "Right after the study came out, Viv posted an article titled \"Lead & Arsenic in Tampons?! Here's Why Viv is Your Safest Tampon Choice.\" Donohue said it was the brand's top converting post of 2024.",
+          "Viv's website and social posts go into fine detail about how its products are made, ingredient safety and product testing. The brand also put its safety standards at the centre of its email, SMS and social media. Donohue believes having information about the brand in as many places as possible helped AI tools pick it up."
+        ]
+      },
+      {
+        "heading": "The Google side",
+        "paragraphs": [
+          "The effect carried on in the months that followed. Donohue credits Google's AI-powered recommendations for a sell-out of tampon stock that was meant to last about six months."
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "text": "We ended up selling out of about six months of tampon inventory in three weeks, driven by Google's AI-powered recommendations.",
+        "who": "Kelly Donohue, marketing and design director at Viv"
+      },
+      {
+        "text": "These AI tools are specifically scraping through content, but looking for more than just keywords.",
+        "who": "Kelly Donohue, marketing and design director at Viv"
+      }
+    ],
+    "lessons": [
+      "Answer the question people are asking right now. Viv's article on lead and arsenic in tampons went up as soon as the study made news, and it became the brand's top converting post of 2024.",
+      "Go into detail. Viv explains manufacturing, ingredient safety and testing, the kind of context Donohue says AI tools look for when they build an answer.",
+      "Say the same thing everywhere. Viv carried its safety message across its blog, email, SMS and social media."
+    ],
+    "caveat": "The 436% figure is Modern Retail's summary of Viv's results. The article does not give the sales figure it grew from.",
+    "source": {
+      "publisher": "Modern Retail",
+      "title": "Brands are seeing an influx of traffic from ChatGPT and Google Gemini",
+      "url": "https://www.modernretail.co/marketing/brands-are-seeing-an-influx-of-traffic-from-chatgpt-and-google-gemini/",
+      "date": "2025-01-14",
+      "author": "Gabriela Barkho"
+    },
+    "trust": "high",
+    "related": [
+      "joe-and-bella-chatgpt-customers",
+      "hingees-chatgpt-first-order",
+      "levenger-chatgpt-sales"
+    ]
+  },
+  {
+    "slug": "draco-diamond-ai-traffic",
+    "brand": "Draco Diamond",
+    "business": "Lab-grown diamond jewellery, online store",
+    "ecommerce": true,
+    "onShopify": true,
+    "shopifyEvidence": "dracodiamond.com home page loads cdn.shopify.com assets and a Shopify.theme object (Prestige theme); store handle sehfbb-k1.myshopify.com (checked 12 Oct 2026)",
+    "logo": "logos/draco-diamond.png",
+    "logoIsMonogram": false,
+    "logoShape": "square",
+    "cardHeadline": "AI tools went from 0.18% to 5.45% of site traffic",
+    "title": "Draco Diamond: AI traffic up to 5.45% | GEO",
+    "description": "Jeweller Draco Diamond's share of traffic from AI tools rose from 0.18% to 5.45%, and those shoppers add to cart far more often.",
+    "h1": "Draco Diamond's traffic from AI rose from 0.18% to 5.45%",
+    "intro": "Canadian jeweller Draco Diamond told Digital Commerce 360 that after its founder worked on showing up in AI answers in spring 2026, AI tools went from 0.18% to 5.45% of its traffic. Revenue also rose sharply in the months after, which the article describes as a correlation, not proof.",
+    "keyNumbers": [
+      {
+        "value": "5.45%",
+        "label": "share of traffic from AI answer engines after the push, up from 0.18%"
+      },
+      {
+        "value": "5x",
+        "label": "how often AI visitors add items to cart, compared with Google Ads visitors"
+      },
+      {
+        "value": "84%",
+        "label": "of AI referral traffic comes from ChatGPT alone"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "What changed",
+        "paragraphs": [
+          "Draco Diamond sells made-to-order lab-grown diamond jewellery online. In spring 2026, founder Garrett McMartin focused on getting the brand to show up in AI answers. Afterwards, AI tools made up 5.45% of the site's traffic, up from 0.18% before. In May and July, AI's share of sessions reached 7.3% and 6.6%.",
+          "ChatGPT alone accounts for 84% of the store's AI referral traffic. Over the same period, the traffic mix shifted away from paid ads toward organic search and AI."
+        ]
+      },
+      {
+        "heading": "How AI shoppers behave",
+        "paragraphs": [
+          "McMartin said shoppers who arrive from AI add items to their cart five times as often as Google Ads visitors, and at more than double the site average. They also stay on the site 20% longer. Returning customers who come from AI add to cart 3.7 times more than first-time visitors. McMartin said buyers often research, leave and come back to buy."
+        ]
+      },
+      {
+        "heading": "Revenue, with a caution",
+        "paragraphs": [
+          "In April and May 2026, revenue was up 5% and 10% on the same months a year earlier. In June and July, after the push was done, it grew 78% and 195%. The article is careful to call this a correlation that McMartin spotted, so it does not show the AI work caused the jump."
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "text": "It seems that a lot of our AI traffic is at the end of that research funnel, and they're almost ready to buy, so that's why we're getting such a high add to cart from these users.",
+        "who": "Garrett McMartin, founder of Draco Diamond"
+      }
+    ],
+    "lessons": [
+      "Measure AI as its own channel. McMartin tracked AI's share of sessions month by month, which is how he could see it move from 0.18% to 5.45%.",
+      "Expect shoppers who are still deciding. Many of Draco's AI visitors research, leave and return later to buy, so the first visit is often not the sale.",
+      "Look past traffic. AI visitors were Draco's highest-intent group, adding to cart five times as often as Google Ads visitors."
+    ],
+    "caveat": "The revenue growth is a correlation the founder noticed, as the article says. It does not prove the AI work caused it.",
+    "source": {
+      "publisher": "Digital Commerce 360",
+      "title": "Draco Diamond credits AEO, AI traffic trends ahead of Cyber 5",
+      "url": "https://www.digitalcommerce360.com/2026/08/26/draco-diamond-aeo-ai-traffic-cyber-5/",
+      "date": "2026-08-26",
+      "author": "Abbas Haleem"
+    },
+    "trust": "high",
+    "related": [
+      "la-joya-ai-conversion-rate",
+      "levenger-chatgpt-sales",
+      "argaux-chatgpt-wine-sales"
+    ]
+  },
+  {
+    "slug": "la-joya-ai-conversion-rate",
+    "brand": "La Joya Jewelry",
+    "business": "Lab-grown diamond jewellery, online store",
+    "ecommerce": true,
+    "onShopify": false,
+    "shopifyEvidence": "lajoyajewelry.com runs on WordPress with WooCommerce; no Shopify signals on the home page (checked 12 Oct 2026)",
+    "logo": "logos/la-joya.png",
+    "logoIsMonogram": false,
+    "logoShape": "wide",
+    "cardHeadline": "AI shoppers convert at more than 13%, versus a normal 3%",
+    "title": "La Joya: AI shoppers convert above 13% | GEO",
+    "description": "La Joya Jewelry's founder says shoppers from AI tools convert at more than 13%, against a normal 3%. They don't spend more per order.",
+    "h1": "La Joya Jewelry's AI shoppers convert at more than 13%",
+    "intro": "Founder Nishit Mehta told Digital Commerce 360 that shoppers who reach La Joya Jewelry through AI tools convert at more than 13%, where the store's normal rate is 3%. AI's share of its referral traffic grew from about 2% to 3% at the start of 2026 to about 5% or 6%.",
+    "keyNumbers": [
+      {
+        "value": "13%+",
+        "label": "conversion rate for shoppers arriving through AI, against a normal 3%"
+      },
+      {
+        "value": "5% or 6%",
+        "label": "of referral traffic now comes from AI, up from about 2% to 3% at the start of 2026"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "The numbers",
+        "paragraphs": [
+          "La Joya Jewelry sells lab-grown diamonds online. At the start of 2026, about 2% to 3% of its referral traffic came from AI sources. By early September it was about 5% or 6%.",
+          "Mehta said conversion rates for these visitors are double digits higher. As an example, he said that if the store's conversion rate is normally 3%, it rises to more than 13% for shoppers arriving through AI."
+        ]
+      },
+      {
+        "heading": "Why he thinks it works",
+        "paragraphs": [
+          "Mehta's view is that a recommendation carries trust. A shopper who has been told a company is good is more likely to believe it. He also said the biggest trend is that these shoppers have already done their research.",
+          "That shows up in what people no longer ask. In 2024 and 2025 the store had to explain how lab-grown diamonds differ from natural ones. In 2026 that has become a negligible part of its traffic."
+        ]
+      },
+      {
+        "heading": "What did not change",
+        "paragraphs": [
+          "AI shoppers are not necessarily spending more. Mehta said he has not seen any sign that they spend more than other customers, and pointed out that jewellery buyers usually arrive with a budget already in mind."
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "text": "But what I found is that that traffic is very focused, and it converts much better than normal organic traffic or paid traffic.",
+        "who": "Nishit Mehta, founder of La Joya Jewelry"
+      },
+      {
+        "text": "I guess the thinking behind it is you've been told that this is a good company, so you're more likely to believe it, and that's why conversions are better.",
+        "who": "Nishit Mehta, founder of La Joya Jewelry"
+      }
+    ],
+    "lessons": [
+      "A recommendation carries trust. Mehta believes shoppers who are told by an AI assistant that a store is good are more likely to buy from it.",
+      "AI shoppers arrive informed. La Joya's visitors from AI have usually done their research, so they need less convincing on the basics.",
+      "Don't expect bigger baskets. La Joya saw no sign that AI shoppers spend more per order."
+    ],
+    "caveat": "The 3% and 13% figures were given by the founder as an example, not as audited numbers.",
+    "source": {
+      "publisher": "Digital Commerce 360",
+      "title": "How AI referrals are impacting traffic at 4 online retailers",
+      "url": "https://www.digitalcommerce360.com/2026/09/16/how-ai-referrals-impact-traffic-4-online-retailers/",
+      "date": "2026-09-16",
+      "author": "Abbas Haleem"
+    },
+    "trust": "high",
+    "related": [
+      "draco-diamond-ai-traffic",
+      "edible-ai-shoppers-mixed-results",
+      "levenger-chatgpt-sales"
+    ]
+  },
+  {
+    "slug": "hingees-chatgpt-first-order",
+    "brand": "Hingees",
+    "business": "Leather goods and lifestyle brand, Nigeria",
+    "ecommerce": true,
+    "onShopify": false,
+    "shopifyEvidence": "hingees.com runs on WordPress with WooCommerce; no Shopify signals on the home page (checked 12 Oct 2026)",
+    "logo": "logos/hingees.png",
+    "logoIsMonogram": false,
+    "logoShape": "square",
+    "cardHeadline": "A first-time buyer spent over ₦250,000 after asking ChatGPT",
+    "title": "Hingees: a big first order from ChatGPT | GEO",
+    "description": "A shopper asked ChatGPT for Nigerian leather brands, found Hingees and placed a first order of over ₦250,000. One sale, but a telling one.",
+    "h1": "One ChatGPT question brought Hingees an order of over ₦250,000",
+    "intro": "Nigerian lifestyle brand Hingees received a first-time order of over ₦250,000 from a shopper who had asked ChatGPT for Nigerian leather brands, TechCabal reported. It is one order, not a trend, but it surprised the founder.",
+    "keyNumbers": [
+      {
+        "value": "₦250,000+",
+        "label": "spent by one first-time buyer who found Hingees through ChatGPT"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "The order",
+        "paragraphs": [
+          "Hingees sells leather goods and clothing. First-time buyers usually start small, with a shirt or maybe a notebook. So when a new customer placed a leather goods order of over ₦250,000, it looked like it might be fraud, and someone from the team called to confirm.",
+          "The order was real. The customer explained she had not found Hingees through Instagram ads, Google search or a friend. She had asked ChatGPT for Nigerian leather brands, and Hingees showed up."
+        ]
+      },
+      {
+        "heading": "The groundwork behind it",
+        "paragraphs": [
+          "Founder Hammed Okunade describes Hingees as obsessive about clean metadata, tagged photos and smart keywords, work it did for years to show up in Google. TechCabal's point is that AI assistants now squeeze research, comparison and the decision into one conversation, and that groundwork is what they can read.",
+          "The article argues that a small brand with good product data and images can appear next to bigger brands without paying for ads, while sellers who only use Instagram or WhatsApp risk being invisible to AI tools."
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "text": "I always thought large orders came from returning customers or ads, and they still do. I just never imagined a chatbot would also be bringing us customers.",
+        "who": "Hammed Okunade, founder of Hingees"
+      }
+    ],
+    "lessons": [
+      "Clean product details keep paying off. Okunade spent years on tidy metadata, tagged photos and keywords, the kind of information TechCabal says AI tools can read.",
+      "Small brands can appear next to big ones. TechCabal argues good product data and images can get a small store recommended without paying for ads.",
+      "Find out how new buyers found you. Hingees only learned about ChatGPT because the customer mentioned it on the confirmation call."
+    ],
+    "caveat": "This is a single order. It shows what can happen, not what usually happens.",
+    "source": {
+      "publisher": "TechCabal",
+      "title": "Small businesses spent years optimising for Google. ChatGPT turned that into sales",
+      "url": "https://techcabal.com/2025/10/24/businesses-finding-customers-in-chatgpt/",
+      "date": "2025-10-24",
+      "author": "Fuad Lawal"
+    },
+    "trust": "high",
+    "related": [
+      "joe-and-bella-chatgpt-customers",
+      "viv-chatgpt-sales",
+      "argaux-chatgpt-wine-sales"
+    ]
+  },
+  {
+    "slug": "steelseries-ai-search-revenue",
+    "brand": "SteelSeries",
+    "business": "Gaming headsets, keyboards and mice",
+    "ecommerce": true,
+    "onShopify": false,
+    "shopifyEvidence": "steelseries.com is a custom site with Contentful-hosted assets; no Shopify signals on the home page (checked 12 Oct 2026)",
+    "logo": "logos/steelseries.svg",
+    "logoIsMonogram": false,
+    "logoShape": "square",
+    "cardHeadline": "Revenue from AI search platforms grew 3.7X",
+    "title": "SteelSeries: AI search revenue grew 3.7X | GEO",
+    "description": "Gaming brand SteelSeries and its agency report traffic from AI search up 23X and revenue from AI search platforms up 3.7X.",
+    "h1": "SteelSeries grew revenue from AI search platforms 3.7X",
+    "intro": "Gaming gear brand SteelSeries and its agency, NoGood, report that over a ten-month program, traffic from AI search platforms grew 23X year over year, conversions from that traffic grew 27X and revenue from AI search platforms grew 3.7X. The figures come from an award-winning case study published by The Drum.",
+    "keyNumbers": [
+      {
+        "value": "23X",
+        "label": "year-over-year growth in traffic from AI search platforms"
+      },
+      {
+        "value": "27X",
+        "label": "growth in conversions from those visitors"
+      },
+      {
+        "value": "3.7X",
+        "label": "growth in revenue from AI search platforms"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "What they found first",
+        "paragraphs": [
+          "Early research showed that AI recommendations for gaming hardware were shaped by a surprisingly small number of sources: a handful of review publications and a cluster of Reddit threads. So getting recommended meant earning coverage and community trust, not just improving SteelSeries' own site."
+        ]
+      },
+      {
+        "heading": "What they changed",
+        "paragraphs": [
+          "Product pages were rebuilt with short answers near the top, question and answer sections and simple tables that AI tools can quote. Structured data was added across the site, and rendering problems that were stopping crawlers from reading pages were fixed.",
+          "Outreach went to the specific publishers and reviewers shaping AI answers in the category, and stale coverage was replaced with current mentions. On Reddit, the team joined the exact threads AI was citing with genuinely useful posts rather than promotion. Product feeds were also prepared for ChatGPT Shopping, Amazon Rufus and Google AI Mode shopping."
+        ]
+      },
+      {
+        "heading": "The results",
+        "paragraphs": [
+          "Traffic from AI search platforms grew 23X year over year, reaching more than 1,500 daily visitors by October 2025. Conversions from those visitors grew 27X, with conversion rates that beat traditional search, and revenue from AI search platforms grew 3.7X. By the end, SteelSeries held the top spot for gaming headsets, keyboards and earbuds on Gemini, ChatGPT and Perplexity."
+        ]
+      }
+    ],
+    "quotes": [],
+    "lessons": [
+      "Find the sources AI trusts in your category. For SteelSeries it was a few review sites and Reddit threads, so that is where the effort went.",
+      "Make product pages easy to quote. Short answers up top, question and answer sections and clear tables give AI tools clean text to use.",
+      "Check nothing is blocking crawlers. Fixing pages that crawlers could not read was part of the work.",
+      "Join conversations honestly. The team added useful posts to the Reddit threads AI cited, not brand promotion."
+    ],
+    "caveat": "These numbers come from the agency's award entry, not independent reporting. NoGood's own case study page gives different figures in its body text (6.7X traffic growth and a 7.1X rise in conversions), so treat them with care.",
+    "source": {
+      "publisher": "The Drum",
+      "title": "How SteelSeries claimed the top AI search spot before competitors arrived",
+      "url": "https://www.thedrum.com/awards-case-study/how-steelseries-claimed-the-top-ai-search-spot-before-competitors-arrived",
+      "date": "2026-06-05",
+      "author": "The Drum, Editorial"
+    },
+    "moreSources": [
+      {
+        "publisher": "NoGood (agency)",
+        "title": "SteelSeries: Driving a 27x Increase in YoY Conversions From AI Platforms",
+        "url": "https://nogood.io/case-study/steelseries",
+        "date": null,
+        "author": null,
+        "dateNote": "No date on the page."
+      }
+    ],
+    "trust": "medium",
+    "related": [
+      "jbl-ai-referrals-black-friday",
+      "levenger-chatgpt-sales",
+      "rave-coffee-ai-sales"
+    ]
+  },
+  {
+    "slug": "levenger-chatgpt-sales",
+    "brand": "Levenger",
+    "business": "Notebooks, pens and desk accessories, online store",
+    "ecommerce": true,
+    "onShopify": true,
+    "shopifyEvidence": "levenger.com home page loads cdn.shopify.com assets and a Shopify.theme object; store handle levenger.myshopify.com (checked 12 Oct 2026)",
+    "logo": "logos/levenger.png",
+    "logoIsMonogram": false,
+    "logoShape": "square",
+    "cardHeadline": "ChatGPT sales: $790 in all of 2024, $20,500 in 2025 so far",
+    "title": "Levenger: $20,500 in ChatGPT sales | GEO",
+    "description": "Stationery retailer Levenger went from $790 in ChatGPT sales in 2024 to $20,500 in 2025 so far, its agency reports. Each AI visitor was worth $92.",
+    "h1": "Levenger's sales from ChatGPT went from $790 to $20,500",
+    "intro": "Premium stationery retailer Levenger made $790 from ChatGPT referrals in all of 2024 and $20,500 in 2025 up to the time of the report, according to a case study by its agency, Volume Nine. The agency also reports $92 of value per AI visitor, against a $6 site average.",
+    "keyNumbers": [
+      {
+        "value": "$790",
+        "label": "total sales from ChatGPT referrals in all of 2024"
+      },
+      {
+        "value": "$20,500",
+        "label": "sales directly from ChatGPT, 2025 year to date"
+      },
+      {
+        "value": "$92",
+        "label": "value per AI visitor, against a $6 site-wide average"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "Where Levenger started",
+        "paragraphs": [
+          "Levenger sells notebooks, pens and workspace products to writers, readers and professionals. Organic search had long brought in customers, but it was becoming less predictable as traffic fell and competition grew. More buyers were doing their research inside AI tools instead.",
+          "In 2024, ChatGPT referrals brought in just $790 in total sales. AI search existed for the brand, but it was not a reliable source of customers."
+        ]
+      },
+      {
+        "heading": "What changed",
+        "paragraphs": [
+          "The agency worked on three things: technical changes so AI tools could crawl the site and cite it accurately, clearer product education content, and more visibility off the site through social media and editorial coverage. Every decision was tested against one question: if a buyer asked ChatGPT for recommendations for serious writers or professionals, would Levenger show up?"
+        ]
+      },
+      {
+        "heading": "The results",
+        "paragraphs": [
+          "For 2025 year to date, the agency reports $20,500 in sales directly from ChatGPT, a 2,275% increase in AI-driven revenue year over year, and $92 of value per AI visitor against a $6 site-wide average. It says visitors from ChatGPT were more informed and more likely to convert than visitors from other channels."
+        ]
+      }
+    ],
+    "quotes": [],
+    "lessons": [
+      "Teach before you sell. Levenger's work focused on clear product education, because premium buyers want context before they spend.",
+      "Picture the exact question. The work was judged by whether Levenger would come up when someone asked ChatGPT for products for serious writers.",
+      "Value per visitor matters more than volume. A small number of AI visitors can count when each is worth $92 against a $6 average."
+    ],
+    "caveat": "This is the agency's own case study and no one at Levenger is quoted. The same page shows lower figures in its summary boxes ($7,841 in ChatGPT sales, an 871% increase and $35 per AI visitor) without explaining the difference.",
+    "source": {
+      "publisher": "Volume Nine (agency)",
+      "title": "Levenger",
+      "url": "https://www.v9digital.com/success-stories/levenger-2/",
+      "date": null,
+      "author": null,
+      "dateNote": "No date on the page. Results are labelled \"Year to date (2025)\" and the page images were uploaded in January 2026."
+    },
+    "trust": "medium",
+    "related": [
+      "argaux-chatgpt-wine-sales",
+      "draco-diamond-ai-traffic",
+      "viv-chatgpt-sales"
+    ]
+  },
+  {
+    "slug": "argaux-chatgpt-wine-sales",
+    "brand": "Argaux",
+    "business": "Wine shop, online store",
+    "ecommerce": true,
+    "onShopify": true,
+    "shopifyEvidence": "argaux.com home page loads cdn.shopify.com assets and a Shopify.theme object (Prestige theme); store handle argaux-wine.myshopify.com (checked 12 Oct 2026)",
+    "logo": "logos/argaux.png",
+    "logoIsMonogram": false,
+    "logoShape": "square",
+    "cardHeadline": "From zero AI sales in 2024 to $11,304.81 from ChatGPT",
+    "title": "Argaux: $11,304.81 in sales from ChatGPT | GEO",
+    "description": "Online wine shop Argaux made no sales from AI tools in 2024, then $11,304.81 from ChatGPT in 2025 to November, its agency reports.",
+    "h1": "Argaux went from no AI sales to $11,304.81 from ChatGPT",
+    "intro": "California wine retailer Argaux made no sales from AI tools in 2024. In 2025, up to November, it made $11,304.81 in revenue attributed to ChatGPT alone, according to its agency, Volume Nine.",
+    "keyNumbers": [
+      {
+        "value": "Zero",
+        "label": "sales from AI tools in 2024"
+      },
+      {
+        "value": "$11,304.81",
+        "label": "revenue attributed to ChatGPT, 2025 to November"
+      },
+      {
+        "value": "4,000%",
+        "label": "increase in AI traffic, 2025 against 2024"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "The starting point",
+        "paragraphs": [
+          "Argaux sells wines from independent producers online, and also runs pairing classes, tasting kits and corporate gifts. In 2024 its organic search traffic began to fall and rankings got harder to hold. AI search was not just weak for Argaux, it was a channel that did not exist: the brand had limited visibility in AI tools and made zero sales from them."
+        ]
+      },
+      {
+        "heading": "What changed",
+        "paragraphs": [
+          "The agency rewrote content so AI tools could find, cite and recommend it. It worked on making sure AI tools clearly understood what Argaux is and how it differs from other wine sellers, and made technical changes so AI tools could crawl the site and credit it properly.",
+          "The test for every change was simple: if a customer asks ChatGPT about products in this category, will Argaux show up and make sense as the answer?"
+        ]
+      },
+      {
+        "heading": "The results",
+        "paragraphs": [
+          "For 2025 to November, the agency reports $11,304.81 in revenue directly attributed to ChatGPT and a 4,000% increase in AI traffic compared with 2024. It says AI visitors arrived with stronger intent and clearer expectations than other traffic."
+        ]
+      }
+    ],
+    "quotes": [],
+    "lessons": [
+      "Be easy to describe. Part of the work was making sure AI tools understood what Argaux sells and what makes it different.",
+      "Write for the questions buyers ask. Argaux's content was rewritten so AI tools could find, cite and recommend it.",
+      "A modest number can still be a real start. Going from zero to $11,304.81 turned a channel that did not exist into one that sells."
+    ],
+    "caveat": "This is the agency's own case study, and no one at Argaux is quoted.",
+    "source": {
+      "publisher": "Volume Nine (agency)",
+      "title": "Argaux",
+      "url": "https://www.v9digital.com/success-stories/argaux/",
+      "date": null,
+      "author": null,
+      "dateNote": "No date on the page. Results are labelled \"Year to date (November 2025)\" and the page images were uploaded in January 2026."
+    },
+    "trust": "medium",
+    "related": [
+      "rave-coffee-ai-sales",
+      "levenger-chatgpt-sales",
+      "edible-ai-shoppers-mixed-results"
+    ]
+  },
+  {
+    "slug": "ahrefs-ai-search-signups",
+    "brand": "Ahrefs",
+    "business": "Marketing software (not a store)",
+    "ecommerce": false,
+    "onShopify": false,
+    "shopifyEvidence": "Software company, not a Shopify store",
+    "logo": "logos/ahrefs.png",
+    "logoIsMonogram": false,
+    "logoShape": "square",
+    "cardHeadline": "0.5% of visitors came from AI search but brought 12.1% of sign-ups",
+    "title": "Ahrefs: 12.1% of sign-ups from AI search | GEO",
+    "description": "At Ahrefs, visitors from AI search were 0.5% of traffic but brought 12.1% of sign-ups, converting 23 times better than Google visitors.",
+    "h1": "At Ahrefs, 0.5% of visitors brought 12.1% of sign-ups",
+    "intro": "Marketing software company Ahrefs found that visitors from AI search made up just 0.5% of its traffic over 30 days, but brought 12.1% of its sign-ups. On its numbers, AI search visitors converted 23 times better than visitors from traditional organic search.",
+    "keyNumbers": [
+      {
+        "value": "0.5%",
+        "label": "of Ahrefs' traffic came from AI search over the last 30 days"
+      },
+      {
+        "value": "12.1%",
+        "label": "of sign-ups came from AI search in the same period"
+      },
+      {
+        "value": "23x",
+        "label": "better conversion than visitors from traditional organic search"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "What Ahrefs measured",
+        "paragraphs": [
+          "Patrick Stox looked at Ahrefs' own website data. He counted AI search as visits from assistants like ChatGPT, Copilot and Gemini. Over the last 30 days they made up 0.5% of traffic, and 0.3% for the year to date. Most of that traffic came from ChatGPT, and so did the vast majority of the sign-ups.",
+          "Even so, those visitors produced 12.1% of all sign-ups, making AI search Ahrefs' channel with the highest conversions per visit."
+        ]
+      },
+      {
+        "heading": "Not all good news",
+        "paragraphs": [
+          "Other measures were mixed. Fewer AI visitors left straight away and they viewed 50% more pages, but they spent less time on the site. Stox also estimated, from rough modelling, that people in AI search click links 75% less than in traditional search, and he was not sure the higher conversion rate would scale up enough to make up for it."
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "text": "That's crazy right? 12.1% of signups from 0.5% of the traffic. This channel performs really well for us.",
+        "who": "Patrick Stox, Technical SEO at Ahrefs when he wrote the post"
+      }
+    ],
+    "lessons": [
+      "Judge AI by results, not visits. A tiny slice of traffic produced an outsized share of sign-ups.",
+      "Check where AI visitors land. Ahrefs found most went to its home page, free tools and product pages, so those pages need to be ready.",
+      "Expect fewer clicks overall. If people click less in AI answers, each visit you do get counts for more."
+    ],
+    "caveat": "This is one software company's 30-day snapshot. Ahrefs sells subscriptions, not products, and sign-ups are not sales.",
+    "source": {
+      "publisher": "Ahrefs blog",
+      "title": "Does AI Search Traffic Convert Better Than Traditional Search? For Ahrefs, Yes: 0.5% of Visitors Drove 12.1% of Signups",
+      "url": "https://ahrefs.com/blog/ai-search-traffic-conversions-ahrefs/",
+      "date": "2025-06-16",
+      "author": "Patrick Stox"
+    },
+    "trust": "high",
+    "related": [
+      "webflow-chatgpt-signups",
+      "vercel-chatgpt-signups",
+      "tally-ai-search-top-channel"
+    ]
+  },
+  {
+    "slug": "webflow-chatgpt-signups",
+    "brand": "Webflow",
+    "business": "Website builder software (not a store)",
+    "ecommerce": false,
+    "onShopify": false,
+    "shopifyEvidence": "Software company, not a Shopify store",
+    "logo": "logos/webflow.svg",
+    "logoIsMonogram": false,
+    "logoShape": "square",
+    "cardHeadline": "10% of sign-ups now come from AI tools, up 4x in a year",
+    "title": "Webflow: 10% of sign-ups from AI tools | GEO",
+    "description": "Webflow gets 10% of sign-ups from AI tools, up 4x in a year, and ChatGPT visitors convert at 24%. What its growth team learned.",
+    "h1": "Webflow now gets 10% of its sign-ups from AI tools",
+    "intro": "Website builder Webflow gets 10% of its sign-ups from AI discovery, up 4x year on year, according to figures from its VP of Growth, Josh Grant, in Kyle Poyar's Growth Unhinged newsletter. Visitors from ChatGPT convert at 24%, six times the rate of Google.",
+    "keyNumbers": [
+      {
+        "value": "10%",
+        "label": "of Webflow's sign-ups come from AI discovery, up 4x year on year"
+      },
+      {
+        "value": "24%",
+        "label": "conversion rate for traffic from ChatGPT, 6x higher than Google"
+      },
+      {
+        "value": "91%",
+        "label": "of Webflow's AI referrals come from ChatGPT alone"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "The numbers",
+        "paragraphs": [
+          "Webflow is a website building company with about 300,000 customers. 10% of its sign-ups now come from AI tools, up 4x in a year, and the newsletter notes this tracked figure likely understates the full effect.",
+          "91% of those AI referrals come from ChatGPT, followed by Perplexity (4%), Copilot (2%), Gemini (2%) and Claude (1%). ChatGPT traffic converts at 24%, six times Google's rate, and two in three AI-referred conversions happen within seven days."
+        ]
+      },
+      {
+        "heading": "What Webflow learned",
+        "paragraphs": [
+          "Total traffic can mislead: Webflow's lower-value visits fell while higher-quality visits grew. AI answers also change constantly, so showing up one day does not guarantee showing up the next.",
+          "The team tracks three things: how often Webflow appears in AI answers, how accurately AI tools describe it compared with competitors, and how many sign-ups come from AI. It tried an llms.txt file and saw no significant lift. And it treats Reddit as an important signal, answering real questions there instead of dropping links."
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "text": "A lot of our lower value and lower intent traffic has gone down, but there's higher quality traffic occurring even as the aggregate declines.",
+        "who": "Josh Grant, VP of Growth at Webflow"
+      },
+      {
+        "text": "When I say AI engines are volatile, I mean it's not like Google where you rank once and hold it.",
+        "who": "Josh Grant, VP of Growth at Webflow"
+      }
+    ],
+    "lessons": [
+      "Don't judge by total traffic. Webflow's weaker visits fell while better ones grew.",
+      "Check what AI says about you. Webflow compares how different AI assistants describe it against competitors and fixes what is wrong.",
+      "Skip the shortcuts. Webflow saw no significant lift from an llms.txt file and focuses on content instead.",
+      "Be useful on Reddit. Webflow answers the questions people actually ask rather than posting links."
+    ],
+    "caveat": "Webflow sells software, not products, and sign-ups are not sales. The rest of the newsletter post is for paid subscribers.",
+    "source": {
+      "publisher": "Growth Unhinged",
+      "title": "Traffic is no longer a reliable growth metric",
+      "url": "https://www.growthunhinged.com/p/traffic-is-no-longer-reliable",
+      "date": "2025-11-02",
+      "author": "Kyle Poyar"
+    },
+    "trust": "high",
+    "related": [
+      "ahrefs-ai-search-signups",
+      "vercel-chatgpt-signups",
+      "tally-ai-search-top-channel"
+    ]
+  },
+  {
+    "slug": "vercel-chatgpt-signups",
+    "brand": "Vercel",
+    "business": "Web hosting software (not a store)",
+    "ecommerce": false,
+    "onShopify": false,
+    "shopifyEvidence": "Software company, not a Shopify store",
+    "logo": "logos/vercel.svg",
+    "logoIsMonogram": false,
+    "logoShape": "square",
+    "cardHeadline": "ChatGPT now sends about 10% of new sign-ups, up from 1%",
+    "title": "Vercel: about 10% of sign-ups via ChatGPT | GEO",
+    "description": "ChatGPT now refers around 10% of Vercel's new sign-ups, up from 1% six months earlier. Here is how Vercel says it adapted its content.",
+    "h1": "ChatGPT now refers around 10% of Vercel's new sign-ups",
+    "intro": "Developer platform Vercel says ChatGPT now refers around 10% of its new sign-ups, up from 4.8% the month before and 1% six months earlier. The figure comes from a June 2025 post on Vercel's own blog.",
+    "keyNumbers": [
+      {
+        "value": "10%",
+        "label": "of new Vercel sign-ups now referred by ChatGPT (around)"
+      },
+      {
+        "value": "4.8%",
+        "label": "the month before"
+      },
+      {
+        "value": "1%",
+        "label": "six months earlier"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "The shift",
+        "paragraphs": [
+          "Vercel's post starts from a simple observation: AI tools now answer many questions directly, often without a single click. Even so, ChatGPT went from referring 1% of Vercel's new sign-ups to around 10% in six months. The post also cites research suggesting Google's AI Overviews may cut clicks by as much as 34.5% compared with similar searches without one."
+        ]
+      },
+      {
+        "heading": "How Vercel adapted",
+        "paragraphs": [
+          "Vercel kept doing traditional search work and added to it. Its advice is to be the clearest, deepest explanation of a topic, with original data and examples others cannot easily copy. Pages should have a clean heading structure and structured data, and should not depend on JavaScript, because most AI crawlers fetch pages but do not run it.",
+          "It also recommends earning genuine mentions in communities, avoiding paid links, and reviewing content at 30, 90 and 180 days so it stays accurate. To track results, it suggests watching citations in AI answers and visits from sites such as chat.openai.com and perplexity.ai."
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "text": "Search isn't just about ranking anymore. It's about being surfaced in new places, under new rules.",
+        "who": "Kevin Corbett and Malte Ubl, in their post on the Vercel blog"
+      }
+    ],
+    "lessons": [
+      "Make sure pages work without JavaScript. Vercel notes most AI crawlers read pages but do not run JavaScript.",
+      "Be the clearest answer. Vercel says AI tools favour the clearest, most complete explanation, not the page that repeats a keyword most.",
+      "Keep content fresh. Vercel reviews pages at 30, 90 and 180 days, because stale pages get used less."
+    ],
+    "caveat": "Vercel is a software company, and the figure is for sign-ups, not sales.",
+    "source": {
+      "publisher": "Vercel blog",
+      "title": "How we're adapting SEO for LLMs and AI search",
+      "url": "https://vercel.com/blog/how-were-adapting-seo-for-llms-and-ai-search",
+      "date": "2025-06-10",
+      "author": "Kevin Corbett and Malte Ubl"
+    },
+    "trust": "high",
+    "related": [
+      "tally-ai-search-top-channel",
+      "webflow-chatgpt-signups",
+      "ahrefs-ai-search-signups"
+    ]
+  },
+  {
+    "slug": "tally-ai-search-top-channel",
+    "brand": "Tally",
+    "business": "Online form builder software (not a store)",
+    "ecommerce": false,
+    "onShopify": false,
+    "shopifyEvidence": "Software company, not a Shopify store",
+    "logo": "logos/tally.png",
+    "logoIsMonogram": false,
+    "logoShape": "square",
+    "cardHeadline": "AI search became its biggest channel for new users",
+    "title": "Tally: AI search is its top growth channel | GEO",
+    "description": "ChatGPT became form builder Tally's number one referral source in 2025. By April 2026, AI search was its biggest channel for new users.",
+    "h1": "AI search became Tally's biggest source of new users",
+    "intro": "Form builder Tally says ChatGPT became its number one referral source in 2025, with over 2,000 tracked new users signing up through AI tools in the months before its June post. By April 2026, AI-powered search had overtaken its word-of-mouth loop as its biggest acquisition channel.",
+    "keyNumbers": [
+      {
+        "value": "#1",
+        "label": "ChatGPT's rank among Tally's referral sources in 2025"
+      },
+      {
+        "value": "2,000+",
+        "label": "new users signing up via AI tools in recent months, counting only those Tally could track"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "2025: ChatGPT moves to the top",
+        "paragraphs": [
+          "Tally has always grown through word of mouth and organic search. In its June 2025 milestone post, the team wrote that ChatGPT had become its number one referral source, with over 2,000 new users signing up via AI tools in the past months. Those were only the ones it could track, and its onboarding survey suggested the real number was a lot higher.",
+          "Tally's best guess at the cause was ChatGPT browsing the web by default, which made forums, Reddit posts and blog mentions part of what it reads. Tally had spent years showing up in those places by sharing what it learned and answering questions."
+        ]
+      },
+      {
+        "heading": "2026: AI search leads",
+        "paragraphs": [
+          "By April 2026, co-founder Marie Martens wrote that Tally's viral loop of word of mouth and its \"Made with Tally\" badge was no longer its biggest acquisition channel. AI-powered search was. ChatGPT, Claude, Gemini and AI Overviews were all growing as referral sources, with Claude growing fast."
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "text": "But this year, something new happened: ChatGPT became our #1 referral source.",
+        "who": "Team Tally, June 2025 milestone post"
+      },
+      {
+        "text": "What has changed, since last year, is that this viral loop is no longer our biggest acquisition channel. AI-powered search is.",
+        "who": "Marie Martens, co-founder of Tally, April 2026 milestone post"
+      }
+    ],
+    "lessons": [
+      "Be present where people talk. Tally credits years of honest answers and sharing in forums and on Reddit, which AI tools now read.",
+      "Ask new customers how they found you. Tally's onboarding survey showed far more AI-driven sign-ups than its tracking could see.",
+      "Look beyond ChatGPT. By 2026 Tally saw Claude, Gemini and AI Overviews growing as sources too."
+    ],
+    "caveat": "Tally sells software, and sign-ups are not the same as paying customers. By its own account, its tracking undercounts AI.",
+    "source": {
+      "publisher": "Tally blog",
+      "title": "The road from $4M to $5M ARR",
+      "url": "https://blog.tally.so/the-road-from-4m-to-5m-arr/",
+      "date": "2026-04-15",
+      "author": "Marie Martens"
+    },
+    "moreSources": [
+      {
+        "publisher": "Tally blog",
+        "title": "From 2 to $3M ARR: How We Bootstrapped Tally With a Tiny Team",
+        "url": "https://blog.tally.so/from-2-to-3m-arr-how-we-bootstrapped-tally-with-a-tiny-team/",
+        "date": "2025-06-10",
+        "author": "Team Tally"
+      }
+    ],
+    "trust": "high",
+    "related": [
+      "webflow-chatgpt-signups",
+      "vercel-chatgpt-signups",
+      "ahrefs-ai-search-signups"
+    ]
+  },
+  {
+    "slug": "joe-and-bella-chatgpt-customers",
+    "brand": "Joe & Bella",
+    "business": "Adaptive clothing, online store",
+    "ecommerce": true,
+    "onShopify": true,
+    "shopifyEvidence": "joeandbella.com home page loads cdn.shopify.com assets and a Shopify.theme object (Dawn theme); store handle joebella.myshopify.com (checked 12 Oct 2026)",
+    "logo": "logos/joe-and-bella.png",
+    "logoIsMonogram": false,
+    "logoShape": "wide",
+    "cardHeadline": "Visitors sent by ChatGPT made holiday purchases",
+    "title": "Joe & Bella: holiday sales from ChatGPT | GEO",
+    "description": "Adaptive clothing brand Joe & Bella saw new customers arrive from ChatGPT, and some bought over the holidays. What the brand thinks helped.",
+    "h1": "ChatGPT sent Joe & Bella new customers who bought over the holidays",
+    "intro": "Adaptive clothing brand Joe & Bella saw an influx of new customers arriving from ChatGPT, and a number of them bought during the 2024 holiday season, Modern Retail reported. The article gives no sales figures.",
+    "keyNumbers": [],
+    "sections": [
+      {
+        "heading": "What happened",
+        "paragraphs": [
+          "Joe & Bella sells clothing that makes dressing easier for older adults and people living with conditions such as Parkinson's. In the months before the article, the brand saw an influx of new customers coming to its website from ChatGPT, and a number of those visitors bought over the holidays.",
+          "Co-founder and CEO Jimmy Zollo admitted he did not know what those shoppers had asked ChatGPT to find the brand."
+        ]
+      },
+      {
+        "heading": "What the brand thinks helped",
+        "paragraphs": [
+          "Zollo's theory is that the search keywords the brand keeps investing in, and its blog, are the likely reasons. Its search ads often use terms such as \"adaptive clothing\".",
+          "Joe & Bella planned to keep investing in content about its products' technology, along with related keywords that AI chatbots can pick up."
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "text": "I don't really know how or what they would have typed or asked ChatGPT to have found us over the holidays.",
+        "who": "Jimmy Zollo, co-founder and CEO of Joe & Bella"
+      },
+      {
+        "text": "It was pretty cool and unexpected, but we need to better understand how to optimize for these searches going forward.",
+        "who": "Jimmy Zollo, co-founder and CEO of Joe & Bella"
+      }
+    ],
+    "lessons": [
+      "Steady content work can surface in AI answers. Zollo believes the brand's ongoing keyword work and blog are why ChatGPT found it.",
+      "Explain what makes your products different. Joe & Bella planned more content about its products' technology for AI chatbots to pick up.",
+      "You may never see the question. Even the CEO did not know what shoppers typed into ChatGPT before they arrived."
+    ],
+    "caveat": "The article gives no numbers. It shows that shoppers from ChatGPT bought, not how many or how much.",
+    "source": {
+      "publisher": "Modern Retail",
+      "title": "Brands are seeing an influx of traffic from ChatGPT and Google Gemini",
+      "url": "https://www.modernretail.co/marketing/brands-are-seeing-an-influx-of-traffic-from-chatgpt-and-google-gemini/",
+      "date": "2025-01-14",
+      "author": "Gabriela Barkho"
+    },
+    "trust": "high",
+    "related": [
+      "viv-chatgpt-sales",
+      "hingees-chatgpt-first-order",
+      "levenger-chatgpt-sales"
+    ]
+  },
+  {
+    "slug": "jbl-ai-referrals-black-friday",
+    "brand": "JBL",
+    "business": "Headphones and speakers",
+    "ecommerce": true,
+    "onShopify": false,
+    "shopifyEvidence": "jbl.com runs on Salesforce Commerce Cloud (demandware paths); no Shopify signals on the home page (checked 12 Oct 2026)",
+    "logo": "logos/jbl.svg",
+    "logoIsMonogram": false,
+    "logoShape": "square",
+    "cardHeadline": "AI referrals up 2,434% over Black Friday and Cyber Monday",
+    "title": "JBL: AI referrals up 2,434% at Black Friday | GEO",
+    "description": "Audio brand JBL saw referrals from AI tools rise 2,434% over Black Friday and Cyber Monday 2025 after rethinking its content for AI.",
+    "h1": "JBL's referrals from AI tools rose 2,434% over Black Friday",
+    "intro": "Audio brand JBL, working with agency Code and Theory, saw referrals from AI tools rise 2,434% across Black Friday and Cyber Monday 2025, according to data the two companies shared with Marketing Brew. The article reports visits, not sales.",
+    "keyNumbers": [
+      {
+        "value": "2,434%",
+        "label": "rise in referrals from AI tools over Black Friday and Cyber Monday"
+      },
+      {
+        "value": "200x",
+        "label": "higher engagement on four search-tuned YouTube Shorts than JBL's 30-day average"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "What JBL changed",
+        "paragraphs": [
+          "JBL worked with Code and Theory to audit its search practices, rethink its website and build an editorial plan that works for human readers and automated crawlers alike. The stories aim to be fun to read but also clear on features, and they tackle everyday doubts such as whether a soundbar is actually worth buying.",
+          "For Black Friday, JBL published a gift guide showing which of its products suit different kinds of gift recipients. The team also studied how people search on YouTube and TikTok, and made short videos to match, such as a YouTube Short comparing two speakers."
+        ]
+      },
+      {
+        "heading": "The results",
+        "paragraphs": [
+          "Across Black Friday and Cyber Monday 2025, referrals from AI tools were up 2,434%. Four optimised YouTube Shorts reached a 2.61% engagement rate by view, which the agency says is 200x JBL's 30-day average of 0.013%.",
+          "The agency described the work as slow and steady rather than an overnight win, and JBL is still working out how to roll it out across regions."
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "text": "We wanted to identify what was the best strategy for JBL, and not just a generic strategy for SEO.",
+        "who": "Carolina González, manager, global digital content strategy at JBL"
+      },
+      {
+        "text": "The way that we see it, search is everywhere now. But that doesn't mean that people search the same way on every platform.",
+        "who": "Bryn Dodson, creative director, copy, at Code and Theory (JBL's agency)"
+      }
+    ],
+    "lessons": [
+      "Answer the doubts buyers have. JBL writes around everyday questions, like whether a soundbar is worth buying.",
+      "Let your gift guide do the matching. JBL's Black Friday guide said which products suit which kind of recipient.",
+      "Treat it as a long game. JBL's agency calls this slow and steady work, not overnight growth."
+    ],
+    "caveat": "The press article confirms the jump in referrals only. JBL's award entry also claims \"10x more revenue than the next highest period\" but does not say what that revenue covers, so we don't count it as a sales result.",
+    "source": {
+      "publisher": "Marketing Brew",
+      "title": "'Search is everywhere': How JBL is retooling its search efforts for AI",
+      "url": "https://www.marketingbrew.com/stories/2025/12/04/jbl-search-strategy-AI-GEO-LLMs",
+      "date": "2025-12-04",
+      "author": "Kristina Monllos"
+    },
+    "moreSources": [
+      {
+        "publisher": "The Shorty Awards (award entry)",
+        "title": "JBL: Showing Up Loud in AI Search",
+        "url": "https://shortyawards.com/18th/jbl-showing-up-loud-in-ai-search",
+        "date": null,
+        "author": null,
+        "dateNote": "No date on the page."
+      }
+    ],
+    "trust": "medium",
+    "related": [
+      "steelseries-ai-search-revenue",
+      "edible-ai-shoppers-mixed-results",
+      "viv-chatgpt-sales"
+    ]
+  },
+  {
+    "slug": "rave-coffee-ai-sales",
+    "brand": "RAVE Coffee",
+    "business": "Coffee roaster, UK online store",
+    "ecommerce": true,
+    "onShopify": true,
+    "shopifyEvidence": "ravecoffee.co.uk home page loads cdn.shopify.com assets and a Shopify.theme object; store handle ravecoffee.myshopify.com (checked 12 Oct 2026)",
+    "logo": "logos/rave-coffee.png",
+    "logoIsMonogram": false,
+    "logoShape": "wide",
+    "cardHeadline": "Sales from AI referrals up 78%, mostly via ChatGPT",
+    "title": "RAVE Coffee: AI-referred sales up 78% | GEO",
+    "description": "An agency reports a 78% rise in sales attributed to AI referrals for UK roaster RAVE Coffee, with ChatGPT behind over 95% of them.",
+    "h1": "RAVE Coffee's agency reports a 78% rise in AI-referred sales",
+    "intro": "UK agency The SEO Works reports a 78% uplift in sales directly attributed to AI referrals for a coffee brand, shown on the case study by the RAVE Coffee logo. ChatGPT accounted for more than 95% of those AI-driven transactions.",
+    "keyNumbers": [
+      {
+        "value": "78%",
+        "label": "uplift in sales directly attributed to AI referrals"
+      },
+      {
+        "value": "95%+",
+        "label": "of AI-driven transactions came from ChatGPT"
+      },
+      {
+        "value": "36.5%",
+        "label": "year-on-year rise in AI-assisted conversions"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "What the agency did",
+        "paragraphs": [
+          "The SEO Works audited the content and mapped what shoppers were looking for, then broke each product, category and guide page into clear blocks that AI tools and search engines can lift as answers. It strengthened signs of expertise, such as product knowledge, origin information and real-world experience, and added a page for the brand's café.",
+          "It also reviewed the site's structured data with a plan to support FAQs and product details, linked brewing guides, blends and educational content together, and suggested ways to earn more brand mentions in forums. Custom tracking separated visits from AI chatbots such as ChatGPT, Copilot and Gemini, so AI revenue could be reported for the first time."
+        ]
+      },
+      {
+        "heading": "The results",
+        "paragraphs": [
+          "Within twelve months, AI referrals grew from a small starting point to a steady source of traffic, with a 91% engagement rate. AI-assisted conversions rose 36.5% year on year, site searches rose 182% and product quiz completions rose 247%.",
+          "Sales directly attributed to AI referrals rose 78%, and ChatGPT made up more than 95% of AI-driven transactions. AI shoppers tended to buy higher-value items such as espresso machines, gift subscriptions and brewing gear, and the brand's signature blend became the top AI-attributed product, with sales up 900% year on year."
+        ]
+      }
+    ],
+    "quotes": [],
+    "lessons": [
+      "Break pages into clear answers. The agency split product and guide pages into blocks that AI tools can quote.",
+      "Show where your products come from. Origin details and real expertise were added to build trust.",
+      "Track AI on its own. Custom tracking let the brand see AI visits, conversions and revenue apart from normal search for the first time."
+    ],
+    "caveat": "This is an agency case study we rate low on trust. The brand appears only as a logo, the text says \"this leading coffee brand\", the 78% has no starting figure, and no one at the brand is quoted.",
+    "source": {
+      "publisher": "The SEO Works (agency)",
+      "title": "Generating ecommerce revenue from AI engines",
+      "url": "https://www.seoworks.co.uk/case-studies/ecommerce-revenue-from-ai/",
+      "date": null,
+      "author": null,
+      "dateNote": "No date on the page. Its images were uploaded in November 2025 and April 2026."
+    },
+    "trust": "low",
+    "related": [
+      "argaux-chatgpt-wine-sales",
+      "levenger-chatgpt-sales",
+      "edible-ai-shoppers-mixed-results"
+    ]
+  },
+  {
+    "slug": "edible-ai-shoppers-mixed-results",
+    "brand": "Edible Brands",
+    "business": "Gift baskets and fruit arrangements",
+    "ecommerce": true,
+    "onShopify": false,
+    "shopifyEvidence": "ediblearrangements.com is a custom React storefront; no Shopify signals on the home page (checked 12 Oct 2026)",
+    "logo": "logos/edible.png",
+    "logoIsMonogram": false,
+    "logoShape": "wide",
+    "cardHeadline": "AI shoppers spend $5.50 more per order but convert less",
+    "title": "Edible: AI shoppers spend more, convert less | GEO",
+    "description": "At gifting retailer Edible Brands, orders from AI shoppers are $5.50 bigger than average, but they convert below the site's usual rate.",
+    "h1": "At Edible Brands, AI shoppers spend more but convert less",
+    "intro": "Gifting retailer Edible Brands told Digital Commerce 360 that orders from AI visitors are $5.50 bigger than its site average. But those visitors convert at more than 5%, below the site's usual rate of more than 10%.",
+    "keyNumbers": [
+      {
+        "value": "$5.50",
+        "label": "higher average order value from AI traffic than the site average"
+      },
+      {
+        "value": "5%+",
+        "label": "conversion rate from AI traffic, below a site average of more than 10%"
+      },
+      {
+        "value": "95%",
+        "label": "of AI referral traffic comes from ChatGPT (about)"
+      }
+    ],
+    "sections": [
+      {
+        "heading": "The good part",
+        "paragraphs": [
+          "Edible Brands is a large US gifting retailer, No. 182 in the Digital Commerce 360 Top 1000. Chief digital officer Erica Randerson said AI is still a small slice of its traffic, less than 10%, and ChatGPT accounts for about 95% of it.",
+          "Those shoppers spend more. The average order from AI traffic is $5.50 greater than the site average, and Randerson said AI traffic seems a little more immune to the pull of lower-priced goods."
+        ]
+      },
+      {
+        "heading": "The less good part",
+        "paragraphs": [
+          "AI visitors convert at more than 5%, which Randerson called strong. But it is lower than Edible's site average of more than 10%. She put that high average down to the kind of store Edible is: people arrive to buy a gift, usually knowing who it is for."
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "text": "But I will say: That's lower than our site average.",
+        "who": "Erica Randerson, chief digital officer at Edible Brands"
+      },
+      {
+        "text": "We have a high intent audience. They're coming in knowing who they're shopping for most of the time.",
+        "who": "Erica Randerson, chief digital officer at Edible Brands"
+      }
+    ],
+    "lessons": [
+      "Compare AI shoppers with your own average. At Edible they looked strong on their own but converted below the site's usual rate.",
+      "Know your baseline. Edible's regular shoppers already arrive with a clear goal, which is why its normal conversion rate is so high.",
+      "Look at order value too. Even with lower conversion, Edible's AI orders were $5.50 bigger on average."
+    ],
+    "caveat": "A mixed result: AI shoppers spend a little more per order but convert below the site's usual rate. Results like this vary from store to store.",
+    "source": {
+      "publisher": "Digital Commerce 360",
+      "title": "How AI referrals are impacting traffic at 4 online retailers",
+      "url": "https://www.digitalcommerce360.com/2026/09/16/how-ai-referrals-impact-traffic-4-online-retailers/",
+      "date": "2026-09-16",
+      "author": "Abbas Haleem"
+    },
+    "trust": "high",
+    "related": [
+      "la-joya-ai-conversion-rate",
+      "jbl-ai-referrals-black-friday",
+      "argaux-chatgpt-wine-sales"
+    ]
+  }
+]
