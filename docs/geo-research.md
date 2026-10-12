@@ -135,6 +135,22 @@ they went stale; competitor gap: get into listicles, reviews and Reddit threads;
 your own videos or creators). Their "why now" figures (reported, check before reuse): AI traffic grew 9.7
 times in a year; ChatGPT grew 85% since January and sends more traffic than Reddit or LinkedIn.
 
+Ahrefs' chart "ChatGPT, AI Mode & AI Overviews compared: factors that correlate with AI mentions" (about 75,000
+brands; Ahrefs Brand Radar and Site Explorer; shared by Ross 12 Oct 2026). Correlation with how often a brand is
+mentioned in AI answers:
+
+| Factor | ChatGPT | AI Mode | AI Overviews |
+|---|---|---|---|
+| YouTube mentions | 0.735 | 0.736 | 0.740 |
+| YouTube mention impressions | 0.721 | 0.712 | 0.719 |
+| Branded web mentions | 0.656 | 0.709 | 0.664 |
+| Branded anchors | 0.511 | 0.628 | (cut off in the screenshot) |
+
+Read with care: these are correlations, not proof that one causes the other (big, well-known brands score high
+on all of them). "YouTube mentions" means the brand being named in YouTube videos, mostly by other people, which
+is the same "consensus" signal as web mentions; a brand's own new channel with few views is a much weaker
+version of it.
+
 ### What this means for GEO (suggestions, Oct 2026)
 
 Already built (section 2 table): long-tail questions grouped into topics (fan-out), crawler check, answer-first
