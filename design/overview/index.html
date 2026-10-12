@@ -1269,7 +1269,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 
 /* 20-how.css */
 /* How it works: GEO's method as a numbered timeline (ol). A navy number per step on one grey rail, then the
-   step's title and line, and one small screen (example data, the made-up store and sites from the sample data
+   step's title, what we do, a "Your part" line (what the store does, and what Done-for-you takes over), and one small screen (example data, the made-up store and sites from the sample data
    list; role="img" with a plain sentence for screen readers). Steps 2 to 4 sit in one outlined band labelled
    "On your store", step 5 in a band labelled "Across the web", so the two kinds of work read at a glance.
    Wide screens (1280px and up): the heading and the safeguard chips stay on the left (sticky), the steps on the
@@ -1286,7 +1286,8 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 /* ---- layout: heading, steps, chips ---- */
 .how-grid { display: flex; flex-direction: column; align-items: center; }
 .how-side { display: contents; }
-.how-h2 { order: 0; max-width: 760px; margin-bottom: 56px; text-align: center; }
+.how-h2 { order: 0; max-width: 760px; margin-bottom: 16px; text-align: center; }
+.how-lead { order: 0; max-width: 560px; margin: 0 auto 56px; font-size: 17px; line-height: 1.55; color: var(--text); text-align: center; text-wrap: balance; }
 .how-steps { order: 1; width: 100%; max-width: 900px; }
 .how-chips { order: 2; }
 
@@ -1294,6 +1295,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .how-grid { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); column-gap: 72px; align-items: start; }
   .how-side { display: flex; flex-direction: column; align-items: flex-start; gap: 32px; position: sticky; top: 132px; padding-top: 18px; }
   .how-h2 { max-width: none; margin: 0; text-align: left; }
+  .how-lead { margin: -12px 0 0; text-align: left; text-wrap: pretty; }
   .how-steps { max-width: none; }
   .how-chips { flex-direction: column; align-items: flex-start; margin: 0; }
 }
@@ -1317,6 +1319,9 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .how-step.g-top::before { top: calc(-1 * var(--gap-top)); }
 .how-step.g-solo { margin-top: var(--gap-band); }
 .how-step.g-solo::before { top: calc(-1 * var(--gap-band)); }
+/* step 6 sits after the bands, outside them like step 1 */
+.how-step.g-after { margin-top: var(--gap-top); }
+.how-step.g-after::before { top: calc(-1 * var(--gap-top)); }
 .how-step:last-child::before { bottom: calc(100% - var(--n-top) - var(--n) / 2); }
 
 .how-n {
@@ -1348,12 +1353,21 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 
 .how-tx { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; }
 .how-t { font-size: 21px; line-height: var(--tl); letter-spacing: -0.5px; color: var(--navy); }
-.how-p { font-size: 15.5px; line-height: 1.55; color: var(--text); max-width: 36ch; text-wrap: pretty; }
-.how-dfy {
-  margin-top: 6px; padding: 8px 12px; border-radius: 10px; background: var(--warm-100);
-  font-size: 13.5px; line-height: 1.5; color: var(--ink-2); max-width: 40ch; text-wrap: pretty;
+.how-p { font-size: 15.5px; line-height: 1.55; color: var(--text); max-width: 40ch; text-wrap: pretty; }
+/* step 3: the exact changes, each with a small navy tick */
+.how-list { list-style: none; margin: 2px 0 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+.how-list li { position: relative; padding-left: 22px; font-size: 15px; line-height: 1.45; font-weight: 500; color: var(--ink-2); }
+.how-list li::before {
+  content: ""; position: absolute; left: 3px; top: .42em; width: 9px; height: 5px;
+  border-left: 2px solid var(--navy); border-bottom: 2px solid var(--navy); transform: rotate(-45deg);
 }
-.how-dfy b { font-weight: 600; color: var(--navy); }
+/* what the store does at this step (and what Done-for-you takes over) */
+.how-you {
+  margin-top: 8px; padding: 9px 12px; border-radius: 10px; background: var(--warm-100);
+  font-size: 13.5px; line-height: 1.5; color: var(--ink-2); max-width: 44ch; text-wrap: pretty;
+}
+.how-you b { font-weight: 600; color: var(--navy); }
+.how .nw { white-space: nowrap; }
 
 /* ---- the small screens: a white card, its Example tag sitting on the top edge like the band labels ---- */
 .how-vis {
@@ -1394,6 +1408,10 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .hv-ok { width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; background: #fff; box-shadow: inset 0 0 0 1px #e2e2e6; color: var(--navy); }
 .hv-ok svg { width: 13px; height: 13px; }
 .hv-block { height: 22px; padding: 0 9px; font-size: 11.5px; font-weight: 600; }
+
+/* step 6: this week's check done, new fixes waiting, the next check */
+.hv-loop .hv-eng svg { color: var(--text-2); }
+.hv-val { display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 100px; background: #fff; box-shadow: inset 0 0 0 1px #e2e2e6; font-size: 11.5px; font-weight: 600; color: var(--navy); white-space: nowrap; }
 
 /* step 3: a product page that opens with who it's for, then FAQs (the purple focal point: the opening line) */
 .hv-prod { display: grid; grid-template-columns: minmax(0, 1fr); align-content: center; gap: 8px; }
@@ -1498,6 +1516,10 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .hv-wait .hv-gsub { opacity: 0; transform: translateY(6px); }
 .hv-go .hv-gsub { transition: opacity .35s ease .4s, transform .5s cubic-bezier(.2, .7, .2, 1) .4s; }
 .hv-go .hv-gsub + .hv-gsub { transition-delay: .52s; }
+/* step 6: the tick pops, then the values land */
+.hv-wait .hv-val { opacity: 0; transform: translateX(6px); }
+.hv-go .hv-val { transition: opacity .3s ease .3s, transform .45s cubic-bezier(.2, .7, .2, 1) .3s; }
+.hv-go .hv-row:nth-child(3) .hv-val { transition-delay: .45s; }
 /* step 5: each page's next step slides in */
 .hv-wait .hv-next { opacity: 0; transform: translateX(6px); }
 .hv-go .hv-next { transition: opacity .3s ease .1s, transform .45s cubic-bezier(.2, .7, .2, 1) .1s; }
@@ -1511,7 +1533,8 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .how-p { font-size: 15px; }
 }
 @media (max-width: 760px) {
-  .how-h2 { margin-bottom: 40px; }
+  .how-h2 { margin-bottom: 12px; }
+  .how-lead { margin-bottom: 40px; font-size: 16px; }
   .how-steps { --n: 28px; --pt: 20px; --tl: 26px; --gap-band: 26px; --gap-top: 14px; }
   .how-step { column-gap: 10px; }
   .how-n { font-size: 13px; box-shadow: 0 0 0 4px var(--warm-50), 0 6px 12px -6px rgba(11, 12, 43, 0.5); }
@@ -1521,7 +1544,8 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .how-lane { left: 12px; height: 26px; font-size: 12.5px; }
   .how-t { font-size: 19px; letter-spacing: -0.4px; }
   .how-p { font-size: 15px; line-height: 1.5; max-width: none; }
-  .how-dfy { font-size: 13px; max-width: none; }
+  .how-you { font-size: 13px; max-width: none; }
+  .how-list li { font-size: 14.5px; }
   .hv-panel { min-height: 0; }
   .how-chips { margin-top: 24px; gap: 6px; }
   .how-chips li { height: 30px; padding: 0 11px 0 9px; gap: 6px; font-size: 13px; }
@@ -2714,6 +2738,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   <div class="wrap how-grid">
     <div class="how-side">
       <h2 class="h2 how-h2" id="how-title" data-rise>How GEO works to get you recommended</h2>
+      <p class="how-lead" data-rise>Six steps we repeat every week. We do the work. You approve it in one click, or pick <span class="nw">Done-for-you</span> and we do that part too.</p>
       <ul class="how-chips" aria-label="Your safeguards">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>One-click undo</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Only your store’s facts</li>
@@ -2721,7 +2746,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
       </ul>
     </div>
 
-    <!-- GEO's method, in the order it works (checked against the code, see docs/copy-deck.md section 7).
+    <!-- GEO's method, in the order it works, each step with "Your part" (what the store does) (checked against the code, see docs/copy-deck.md section 7).
          Small screens: example data with the made-up store and sites from the sample data list. -->
     <ol class="how-steps">
       <li class="how-step">
@@ -2729,7 +2754,8 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
         <div class="how-body">
           <div class="how-tx">
             <h3 class="how-t">Find where AI looks</h3>
-            <p class="how-p">We ask each AI your buyers’ questions and list the sites it uses.</p>
+            <p class="how-p">We ask ChatGPT, Gemini, Perplexity and Google AI the questions your buyers ask. We see who gets named and which sites each AI trusts.</p>
+            <p class="how-you"><b>Your part:</b> pick the questions to track. We suggest them for you.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Example: for “beard oil under $40”, each AI uses different sites, such as examplereviews.com, examplebeardblog.com and reddit.com.">
             <span class="hv-tag">Example</span>
@@ -2749,8 +2775,9 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
         <div class="how-body">
           <span class="how-lane"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>On your store</span>
           <div class="how-tx">
-            <h3 class="how-t">Let AI read your store</h3>
-            <p class="how-p">We check that each AI is allowed to read your pages.</p>
+            <h3 class="how-t">Make sure AI can read your store</h3>
+            <p class="how-p">We check that no AI is blocked from reading your pages. If one is, we show you the simple fix.</p>
+            <p class="how-you"><b>Your part:</b> make the fix, only if something is blocked.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Example: ChatGPT and Google may read your pages; Perplexity is blocked, so GEO shows how to fix it.">
             <span class="hv-tag">Example</span>
@@ -2766,8 +2793,14 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
         <span class="how-n" aria-hidden="true">3</span>
         <div class="how-body">
           <div class="how-tx">
-            <h3 class="how-t">Product pages AI can quote</h3>
-            <p class="how-p">We open descriptions with who it’s for and key facts, and add FAQs.</p>
+            <h3 class="how-t">Rewrite your product pages</h3>
+            <p class="how-p">We make each product page clear, so AI can tell who it’s for and why it fits. We change:</p>
+            <ul class="how-list">
+              <li>Titles and descriptions</li>
+              <li>FAQs on each product</li>
+              <li>Product type and Google search title</li>
+            </ul>
+            <p class="how-you"><b>Your part:</b> approve each change in one click. On <span class="nw">Done-for-you</span>, we make the changes for you.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Example: a product page that opens with who it’s for and its size, with a product type and FAQs.">
             <span class="hv-tag">Example</span>
@@ -2792,8 +2825,9 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
         <span class="how-n" aria-hidden="true">4</span>
         <div class="how-body">
           <div class="how-tx">
-            <h3 class="how-t">Guide pages, kept fresh</h3>
-            <p class="how-p">We write buying guides and review them every 60 to 90 days.</p>
+            <h3 class="how-t">Write buying guides</h3>
+            <p class="how-p">We write guides like “Best beard oil for dry skin” that link to your products. We check them every 60 to 90 days and update them when needed.</p>
+            <p class="how-you"><b>Your part:</b> approve each guide. On <span class="nw">Done-for-you</span>, we publish them for you.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Example: a buying guide marked “Updated October 2026”, linked to two more specific guides.">
             <span class="hv-tag">Example</span>
@@ -2816,9 +2850,9 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
         <div class="how-body">
           <span class="how-lane"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>Across the web</span>
           <div class="how-tx">
-            <h3 class="how-t">Get named where AI looks</h3>
-            <p class="how-p">We find pages each AI cites that name rivals, not you, and draft pitches.</p>
-            <p class="how-dfy"><b>Done-for-you:</b> we send pitches, add listings and follow up.</p>
+            <h3 class="how-t">Get you named on sites AI trusts</h3>
+            <p class="how-p">We find articles, videos and lists that AI uses, where rivals are named and you’re not. Then we write short, honest pitches to get you added.</p>
+            <p class="how-you"><b>Your part:</b> send the pitches we write. On <span class="nw">Done-for-you</span>, we send them, add your listings and follow up.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Example: pages AI cites that skip you, each with an honest next step: a pitch, a review request, a thread you join yourself, a listing.">
             <span class="hv-tag">Example</span>
@@ -2827,6 +2861,24 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
               <span class="hv-orow"><span class="hv-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg></span><span class="hv-kind">YouTube</span><span class="hv-next">Review request</span></span>
               <span class="hv-orow"><span class="hv-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg></span><span class="hv-kind">Reddit</span><span class="hv-next">You join in</span></span>
               <span class="hv-orow"><span class="hv-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span><span class="hv-kind">Directory</span><span class="hv-next">Add listing</span></span>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="how-step g-after">
+        <span class="how-n" aria-hidden="true">6</span>
+        <div class="how-body">
+          <div class="how-tx">
+            <h3 class="how-t">Check again every week</h3>
+            <p class="how-p">We ask AI again, show you what changed and the sales that came from AI, then start on what’s still missing.</p>
+            <p class="how-you"><b>Your part:</b> nothing. Read your monthly report when it lands.</p>
+          </div>
+          <div class="how-vis" role="img" aria-label="Example: this week’s check is done, 3 new fixes are ready, and the next check is on Monday.">
+            <span class="hv-tag">Example</span>
+            <div class="hv-panel hv-read hv-loop">
+              <span class="hv-row"><span class="hv-eng"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>Asked AI again</span><span class="hv-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></span>
+              <span class="hv-row"><span class="hv-eng"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>New fixes ready</span><span class="hv-val">3</span></span>
+              <span class="hv-row"><span class="hv-eng"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>Next check</span><span class="hv-val">Monday</span></span>
             </div>
           </div>
         </div>

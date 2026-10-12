@@ -1,5 +1,5 @@
 /* How it works: GEO's method as a numbered timeline (ol). A navy number per step on one grey rail, then the
-   step's title and line, and one small screen (example data, the made-up store and sites from the sample data
+   step's title, what we do, a "Your part" line (what the store does, and what Done-for-you takes over), and one small screen (example data, the made-up store and sites from the sample data
    list; role="img" with a plain sentence for screen readers). Steps 2 to 4 sit in one outlined band labelled
    "On your store", step 5 in a band labelled "Across the web", so the two kinds of work read at a glance.
    Wide screens (1280px and up): the heading and the safeguard chips stay on the left (sticky), the steps on the
@@ -16,7 +16,8 @@
 /* ---- layout: heading, steps, chips ---- */
 .how-grid { display: flex; flex-direction: column; align-items: center; }
 .how-side { display: contents; }
-.how-h2 { order: 0; max-width: 760px; margin-bottom: 56px; text-align: center; }
+.how-h2 { order: 0; max-width: 760px; margin-bottom: 16px; text-align: center; }
+.how-lead { order: 0; max-width: 560px; margin: 0 auto 56px; font-size: 17px; line-height: 1.55; color: var(--text); text-align: center; text-wrap: balance; }
 .how-steps { order: 1; width: 100%; max-width: 900px; }
 .how-chips { order: 2; }
 
@@ -24,6 +25,7 @@
   .how-grid { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); column-gap: 72px; align-items: start; }
   .how-side { display: flex; flex-direction: column; align-items: flex-start; gap: 32px; position: sticky; top: 132px; padding-top: 18px; }
   .how-h2 { max-width: none; margin: 0; text-align: left; }
+  .how-lead { margin: -12px 0 0; text-align: left; text-wrap: pretty; }
   .how-steps { max-width: none; }
   .how-chips { flex-direction: column; align-items: flex-start; margin: 0; }
 }
@@ -47,6 +49,9 @@
 .how-step.g-top::before { top: calc(-1 * var(--gap-top)); }
 .how-step.g-solo { margin-top: var(--gap-band); }
 .how-step.g-solo::before { top: calc(-1 * var(--gap-band)); }
+/* step 6 sits after the bands, outside them like step 1 */
+.how-step.g-after { margin-top: var(--gap-top); }
+.how-step.g-after::before { top: calc(-1 * var(--gap-top)); }
 .how-step:last-child::before { bottom: calc(100% - var(--n-top) - var(--n) / 2); }
 
 .how-n {
@@ -78,12 +83,21 @@
 
 .how-tx { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; }
 .how-t { font-size: 21px; line-height: var(--tl); letter-spacing: -0.5px; color: var(--navy); }
-.how-p { font-size: 15.5px; line-height: 1.55; color: var(--text); max-width: 36ch; text-wrap: pretty; }
-.how-dfy {
-  margin-top: 6px; padding: 8px 12px; border-radius: 10px; background: var(--warm-100);
-  font-size: 13.5px; line-height: 1.5; color: var(--ink-2); max-width: 40ch; text-wrap: pretty;
+.how-p { font-size: 15.5px; line-height: 1.55; color: var(--text); max-width: 40ch; text-wrap: pretty; }
+/* step 3: the exact changes, each with a small navy tick */
+.how-list { list-style: none; margin: 2px 0 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+.how-list li { position: relative; padding-left: 22px; font-size: 15px; line-height: 1.45; font-weight: 500; color: var(--ink-2); }
+.how-list li::before {
+  content: ""; position: absolute; left: 3px; top: .42em; width: 9px; height: 5px;
+  border-left: 2px solid var(--navy); border-bottom: 2px solid var(--navy); transform: rotate(-45deg);
 }
-.how-dfy b { font-weight: 600; color: var(--navy); }
+/* what the store does at this step (and what Done-for-you takes over) */
+.how-you {
+  margin-top: 8px; padding: 9px 12px; border-radius: 10px; background: var(--warm-100);
+  font-size: 13.5px; line-height: 1.5; color: var(--ink-2); max-width: 44ch; text-wrap: pretty;
+}
+.how-you b { font-weight: 600; color: var(--navy); }
+.how .nw { white-space: nowrap; }
 
 /* ---- the small screens: a white card, its Example tag sitting on the top edge like the band labels ---- */
 .how-vis {
@@ -124,6 +138,10 @@
 .hv-ok { width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; background: #fff; box-shadow: inset 0 0 0 1px #e2e2e6; color: var(--navy); }
 .hv-ok svg { width: 13px; height: 13px; }
 .hv-block { height: 22px; padding: 0 9px; font-size: 11.5px; font-weight: 600; }
+
+/* step 6: this week's check done, new fixes waiting, the next check */
+.hv-loop .hv-eng svg { color: var(--text-2); }
+.hv-val { display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 100px; background: #fff; box-shadow: inset 0 0 0 1px #e2e2e6; font-size: 11.5px; font-weight: 600; color: var(--navy); white-space: nowrap; }
 
 /* step 3: a product page that opens with who it's for, then FAQs (the purple focal point: the opening line) */
 .hv-prod { display: grid; grid-template-columns: minmax(0, 1fr); align-content: center; gap: 8px; }
@@ -228,6 +246,10 @@
 .hv-wait .hv-gsub { opacity: 0; transform: translateY(6px); }
 .hv-go .hv-gsub { transition: opacity .35s ease .4s, transform .5s cubic-bezier(.2, .7, .2, 1) .4s; }
 .hv-go .hv-gsub + .hv-gsub { transition-delay: .52s; }
+/* step 6: the tick pops, then the values land */
+.hv-wait .hv-val { opacity: 0; transform: translateX(6px); }
+.hv-go .hv-val { transition: opacity .3s ease .3s, transform .45s cubic-bezier(.2, .7, .2, 1) .3s; }
+.hv-go .hv-row:nth-child(3) .hv-val { transition-delay: .45s; }
 /* step 5: each page's next step slides in */
 .hv-wait .hv-next { opacity: 0; transform: translateX(6px); }
 .hv-go .hv-next { transition: opacity .3s ease .1s, transform .45s cubic-bezier(.2, .7, .2, 1) .1s; }
@@ -241,7 +263,8 @@
   .how-p { font-size: 15px; }
 }
 @media (max-width: 760px) {
-  .how-h2 { margin-bottom: 40px; }
+  .how-h2 { margin-bottom: 12px; }
+  .how-lead { margin-bottom: 40px; font-size: 16px; }
   .how-steps { --n: 28px; --pt: 20px; --tl: 26px; --gap-band: 26px; --gap-top: 14px; }
   .how-step { column-gap: 10px; }
   .how-n { font-size: 13px; box-shadow: 0 0 0 4px var(--warm-50), 0 6px 12px -6px rgba(11, 12, 43, 0.5); }
@@ -251,7 +274,8 @@
   .how-lane { left: 12px; height: 26px; font-size: 12.5px; }
   .how-t { font-size: 19px; letter-spacing: -0.4px; }
   .how-p { font-size: 15px; line-height: 1.5; max-width: none; }
-  .how-dfy { font-size: 13px; max-width: none; }
+  .how-you { font-size: 13px; max-width: none; }
+  .how-list li { font-size: 14.5px; }
   .hv-panel { min-height: 0; }
   .how-chips { margin-top: 24px; gap: 6px; }
   .how-chips li { height: 30px; padding: 0 11px 0 9px; gap: 6px; font-size: 13px; }

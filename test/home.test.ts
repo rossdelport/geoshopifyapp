@@ -150,7 +150,7 @@ describe("home page", () => {
     expect(html).toContain('<a href="/stories">Stories</a>');
   });
 
-  it("shows GEO's method as five numbered steps, each with an Example screen", async () => {
+  it("shows GEO's method as six numbered steps, each with what we do, the store's part and an Example screen", async () => {
     const html = await (await call("https://geo.test/")).text();
     const start = html.indexOf('<section class="section alt how" id="how"');
     expect(start).toBeGreaterThan(-1);
@@ -158,13 +158,23 @@ describe("home page", () => {
     expect(how).toContain('<h2 class="h2 how-h2" id="how-title" data-rise>How GEO works to get you recommended</h2>');
     expect(how).toContain('<ol class="how-steps">');
     const steps = [...how.matchAll(/<h3 class="how-t">([^<]+)<\/h3>/g)].map((m) => m[1]);
-    expect(steps).toEqual(["Find where AI looks", "Let AI read your store", "Product pages AI can quote", "Guide pages, kept fresh", "Get named where AI looks"]);
+    expect(steps).toEqual([
+      "Find where AI looks",
+      "Make sure AI can read your store",
+      "Rewrite your product pages",
+      "Write buying guides",
+      "Get you named on sites AI trusts",
+      "Check again every week",
+    ]);
+    // who does what: one line up top, then "Your part" on every step
+    expect(how).toContain("We do the work. You approve it in one click");
+    expect(how.match(/<p class="how-you"><b>Your part:<\/b>/g)).toHaveLength(6);
     // the two kinds of work, and every small screen labelled "Example" with a sentence for screen readers
     expect(how).toContain("On your store</span>");
     expect(how).toContain("Across the web</span>");
-    expect(how.match(/<div class="how-vis" role="img" aria-label="Example: [^"]+">/g)).toHaveLength(5);
-    expect(how.match(/<span class="hv-tag">Example<\/span>/g)).toHaveLength(5);
-    expect(how).toContain("Done-for-you:</b> we send pitches, add listings and follow up.");
+    expect(how.match(/<div class="how-vis" role="img" aria-label="Example: [^"]+">/g)).toHaveLength(6);
+    expect(how.match(/<span class="hv-tag">Example<\/span>/g)).toHaveLength(6);
+    expect(how).toContain('<span class="nw">Done-for-you</span>, we send them, add your listings and follow up.');
     for (const chip of ["One-click undo", "Only your store’s facts", "No fake reviews or posts"]) expect(how).toContain(`${chip}</li>`);
     // honest about outreach: threads are joined by the store itself, and nothing promises rankings or sales
     expect(how).toContain("You join in");
