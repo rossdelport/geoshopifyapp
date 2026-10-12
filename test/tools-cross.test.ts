@@ -14,11 +14,12 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { createRoutesStub, type MetaDescriptor } from "react-router";
 import { HUB, TOOLS, TOOL_GROUPS, isToolSlug, type ToolEntry } from "../app/lib/tools/registry";
 import { SITE, abs } from "../app/lib/tools/site";
-import { SITEMAP_PAGES, siteLlmsTxt, siteRobotsTxt, sitemapXml } from "../app/lib/tools/site-files";
+import { siteLlmsTxt, siteRobotsTxt, sitemapPages, sitemapXml } from "../app/lib/tools/site-files";
 import { toolHeaders } from "../app/lib/tools/http";
 import { llmsReport } from "../app/lib/tools/llms";
 import { TOOL_BOTS, VERDICT_COPY, checkBots, verdict } from "../app/lib/tools/crawler";
 import { SiteFooter } from "../app/components/site-footer";
+import { STORIES } from "../app/lib/stories";
 import * as layout from "../app/routes/tools";
 import * as hub from "../app/routes/tools._index";
 import * as privacy from "../app/routes/privacy";
@@ -206,13 +207,13 @@ describe("one list of seven pages everywhere", () => {
     expect(home).toContain('href="/tools"');
   });
 
-  it("the sitemap lists exactly the ten public pages, each with its date", () => {
+  it("the sitemap lists exactly the public pages (the tools, the stories and the rest), each with its date", () => {
     const xml = sitemapXml();
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-    expect(locs).toEqual([abs("/"), abs("/tools"), ...SEVEN.map(abs), abs("/privacy")]);
+    expect(locs).toEqual([abs("/"), abs("/tools"), ...SEVEN.map(abs), abs("/stories"), ...STORIES.map((s) => abs(`/stories/${s.slug}`)), abs("/privacy")]);
     expect(locs).not.toContain(abs("/check"));
     const lastmods = [...xml.matchAll(/<lastmod>([^<]+)<\/lastmod>/g)].map((m) => m[1]);
-    expect(lastmods).toEqual(SITEMAP_PAGES.map((p) => p.updated));
+    expect(lastmods).toEqual(sitemapPages().map((p) => p.updated));
     for (const d of lastmods) {
       expect(d).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(Date.parse(d)).toBeLessThanOrEqual(Date.now());

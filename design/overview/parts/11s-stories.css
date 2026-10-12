@@ -1,0 +1,84 @@
+/* Stores already getting sales from AI: right under the hero, 15 other brands' results as cards that drift from
+   right to left in a loop. Each card opens our page about that story (/stories/<slug>). On white, neutral cards
+   (the hero band above is the purple moment); lots of room above, below and around the row.
+   The cards themselves are app/styles/story-card.css, included here by assemble.mjs (also used by /stories).
+   Motion: 11s-stories.js adds .is-live when motion is allowed; the track holds the cards twice and slides by
+   one copy (-50%) per loop, so it never jumps. It stops on hover, while a card has keyboard focus, with the
+   Pause button and while off screen (05-shared.js). Without JavaScript or with reduced motion there is no
+   motion: one copy of the cards in a row you can scroll sideways, snapping card by card. */
+/* include: app/styles/story-card.css */
+
+.stories {
+  --stories-card: 320px; --stories-gap: 24px; --stories-dur: 86s; --stories-fade: min(12vw, 168px);
+  padding: 120px 0 112px; background: var(--bg); overflow: hidden; overflow: clip;
+}
+/* the video section follows: the room above it is ours already */
+.stories + .vid-sec { padding-top: 0; }
+.stories-head { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+.stories-sub { max-width: 720px; font-size: 17px; line-height: 1.6; color: var(--text); text-wrap: balance; }
+
+/* the row: full width, so cards come in at the right edge of the screen and leave at the left */
+.stories-view {
+  position: relative; margin-top: 52px; padding: 20px 0 44px;
+  overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter);
+  scrollbar-width: thin; scrollbar-color: var(--line-soft) transparent;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--gutter), #000 calc(100% - var(--gutter)), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 var(--gutter), #000 calc(100% - var(--gutter)), transparent 100%);
+}
+.stories-track { display: flex; width: max-content; }
+.stories-group { list-style: none; margin: 0; padding: 0 var(--gutter); display: flex; gap: var(--stories-gap); }
+.stories-group[aria-hidden="true"] { display: none; }
+.stories-group > li { flex: none; display: flex; width: var(--stories-card); scroll-snap-align: start; }
+
+/* moving (11s-stories.js): soft fades at both edges, both copies, one copy's width per loop */
+.stories.is-live .stories-view {
+  overflow: hidden; scroll-snap-type: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--stories-fade), #000 calc(100% - var(--stories-fade)), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 var(--stories-fade), #000 calc(100% - var(--stories-fade)), transparent 100%);
+}
+/* a card with keyboard focus shows in full (the script brings it into view) */
+.stories.is-live .stories-view:has(:focus-visible) { -webkit-mask-image: none; mask-image: none; }
+.stories.is-live .stories-group { padding: 0 var(--stories-gap) 0 0; }
+.stories.is-live .stories-group[aria-hidden="true"] { display: flex; }
+@media (prefers-reduced-motion: no-preference) {
+  .stories.is-live .stories-track { animation: stories-run var(--stories-dur) linear infinite; will-change: transform; }
+  .stories.is-live .stories-view:hover .stories-track,
+  .stories.is-live .stories-view:focus-within .stories-track,
+  .stories.is-paused .stories-track { animation-play-state: paused; }
+}
+@keyframes stories-run {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* under the row: what the bag means, the pause button and the link to every story */
+.stories-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; }
+.stories-key { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; line-height: 1.4; color: var(--text); }
+.stories-key img { width: 16px; height: 16px; flex: none; }
+.stories-actions { display: flex; align-items: center; gap: 10px; }
+.stories-toggle {
+  display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 12px; border-radius: 8px;
+  font-size: 13px; font-weight: 600; line-height: 1; color: var(--navy); background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--line-2), 0 1px 2px rgba(0, 0, 0, 0.04); transition: background .2s ease;
+}
+.stories-toggle[hidden] { display: none; }
+.stories-toggle:hover { background: var(--warm-50); }
+.stories-toggle:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 3px; }
+.stories-toggle svg { width: 13px; height: 13px; flex: none; }
+.stories-ic-play { display: none; }
+.stories.is-paused .stories-ic-pause { display: none; }
+.stories.is-paused .stories-ic-play { display: block; }
+.stories-all svg { width: 15px; height: 15px; transition: transform .3s cubic-bezier(.34, 1.56, .64, 1); }
+.stories-all:hover svg { transform: translateX(3px); }
+.stories-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+@media (max-width: 1100px) {
+  .stories { padding: 104px 0 96px; }
+}
+@media (max-width: 760px) {
+  .stories { --stories-card: 280px; --stories-gap: 16px; --stories-dur: 74s; padding: 72px 0 72px; }
+  .stories-head { gap: 12px; }
+  .stories-sub { font-size: 16px; }
+  .stories-view { margin-top: 32px; padding: 16px 0 36px; }
+  .stories-bar { flex-direction: column; justify-content: center; gap: 16px; }
+}

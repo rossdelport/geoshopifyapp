@@ -11,8 +11,10 @@ import { createRoutesStub, type LoaderFunctionArgs, type MetaDescriptor } from "
 import { isAllowed, parseRobots } from "../app/lib/robots";
 import { PLANS } from "../app/lib/plans";
 import { HUB, TOOLS } from "../app/lib/tools/registry";
+import { STORIES } from "../app/lib/stories";
+import { STORIES_UPDATED } from "../app/lib/stories/pages";
 import { HOME_UPDATED, PRIVACY_UPDATED } from "../app/lib/tools/site";
-import { SITEMAP_PAGES, siteLlmsTxt, siteRobotsTxt, sitemapXml } from "../app/lib/tools/site-files";
+import { siteLlmsTxt, siteRobotsTxt, sitemapPages, sitemapXml } from "../app/lib/tools/site-files";
 import { loader as robotsLoader } from "../app/routes/robots[.]txt";
 import { loader as sitemapLoader } from "../app/routes/sitemap[.]xml";
 import { loader as llmsLoader } from "../app/routes/llms[.]txt";
@@ -84,23 +86,34 @@ describe("sitemap.xml", () => {
   it("is a well-formed sitemaps.org file", () => {
     expect(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')).toBe(true);
     expect(xml.trimEnd().endsWith("</urlset>")).toBe(true);
-    expect(xml.match(/<url>/g)).toHaveLength(10);
-    expect(xml.match(/<\/url>/g)).toHaveLength(10);
+    // home, tools hub, 7 tools, stories hub, 15 stories, privacy
+    expect(xml.match(/<url>/g)).toHaveLength(11 + STORIES.length);
+    expect(xml.match(/<\/url>/g)).toHaveLength(11 + STORIES.length);
     expect(xml).not.toMatch(/priority|changefreq/);
     expect(xml).not.toMatch(/&(?!amp;|lt;|gt;|quot;|apos;)/);
   });
 
-  it("lists exactly the home page, the hub, the 7 tools and the privacy page, with their dates", () => {
+  it("lists exactly the home page, the hub, the 7 tools, the stories and the privacy page, with their dates", () => {
     expect(locs).toEqual([
       "https://usegeo.app/",
       "https://usegeo.app/tools",
       ...TOOLS.map((t) => `https://usegeo.app${t.path}`),
+      "https://usegeo.app/stories",
+      ...STORIES.map((s) => `https://usegeo.app/stories/${s.slug}`),
       "https://usegeo.app/privacy",
     ]);
+    expect(STORIES).toHaveLength(15);
     for (const l of locs) expect(l.startsWith("https://usegeo.app/")).toBe(true);
-    expect(lastmods).toEqual([HOME_UPDATED, HUB.updated, ...TOOLS.map((t) => t.updated), PRIVACY_UPDATED]);
+    expect(lastmods).toEqual([
+      HOME_UPDATED,
+      HUB.updated,
+      ...TOOLS.map((t) => t.updated),
+      STORIES_UPDATED,
+      ...STORIES.map(() => STORIES_UPDATED),
+      PRIVACY_UPDATED,
+    ]);
     for (const d of lastmods) expect(d).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    expect(SITEMAP_PAGES.map((p) => p.path)).not.toContain("/check");
+    expect(sitemapPages().map((p) => p.path)).not.toContain("/check");
   });
 
   it("is served as XML, and www sends it to usegeo.app", async () => {
@@ -129,7 +142,7 @@ describe("llms.txt for usegeo.app", () => {
     expect(lines[0]).toBe("# GEO");
     expect(lines[2].startsWith("> GEO is a Shopify app that helps stores get their products recommended by AI assistants")).toBe(true);
     expect(txt.match(/^# /gm)).toHaveLength(1);
-    expect(txt.match(/^## /gm)).toEqual(["## ", "## "]);
+    expect(txt.match(/^## .*/gm)).toEqual(["## Free tools", "## About GEO"]);
     expect(txt).toContain("\n## Free tools\n\n");
     expect(txt).toContain("\n## About GEO\n\n");
     expect(txt.endsWith("\n")).toBe(true);
@@ -141,6 +154,9 @@ describe("llms.txt for usegeo.app", () => {
     expect(toolLines).toEqual(TOOLS.map((t) => `- [${t.name}](https://usegeo.app${t.path}): ${t.short}`));
     expect(txt).toContain("- [Home](https://usegeo.app/): what GEO does, how it works and pricing");
     expect(txt).toContain("- [All free tools](https://usegeo.app/tools): the full list of free tools");
+    expect(txt).toContain(
+      "- [Stories](https://usegeo.app/stories): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are GEO customers)",
+    );
     expect(txt).toContain("- [Privacy policy](https://usegeo.app/privacy): what data GEO collects and why");
   });
 

@@ -1,9 +1,11 @@
-// The site files for usegeo.app: robots.txt, sitemap.xml and llms.txt, built from the tool registry and
-// the plans, so they never drift from the pages. Pure. Served by routes/robots[.]txt.ts,
+// The site files for usegeo.app: robots.txt, sitemap.xml and llms.txt, built from the tool registry, the
+// stories and the plans, so they never drift from the pages. Pure. Served by routes/robots[.]txt.ts,
 // sitemap[.]xml.ts and llms[.]txt.ts. Never add public/robots.txt, public/sitemap.xml or public/llms.txt:
 // static files are served before routes and would hide these.
 
 import { PLANS, formatUsd } from "../plans";
+import { STORIES } from "../stories";
+import { STORIES_HUB, STORIES_UPDATED, storyPath } from "../stories/pages";
 import { HOME_UPDATED, PRIVACY_UPDATED, SITE, abs } from "./site";
 import { HUB, TOOLS } from "./registry";
 
@@ -34,20 +36,26 @@ export function siteRobotsTxt(): string {
 /**
  * The pages in the sitemap, with the date each last really changed. Not listed: /check (its canonical
  * is the AI Visibility Checker), report pages, /auth, /app, /tips and /unsubscribe.
+ * A function, not a constant: the llms.txt Checker imports this module in the browser (for siteLlmsTxt), and a
+ * list built when the module loads would ship stories.json with that page.
  */
-export const SITEMAP_PAGES: { path: string; updated: string }[] = [
-  { path: "/", updated: HOME_UPDATED },
-  { path: HUB.path, updated: HUB.updated },
-  ...TOOLS.map((t) => ({ path: t.path, updated: t.updated })),
-  { path: "/privacy", updated: PRIVACY_UPDATED },
-];
+export function sitemapPages(): { path: string; updated: string }[] {
+  return [
+    { path: "/", updated: HOME_UPDATED },
+    { path: HUB.path, updated: HUB.updated },
+    ...TOOLS.map((t) => ({ path: t.path, updated: t.updated })),
+    { path: STORIES_HUB.path, updated: STORIES_UPDATED },
+    ...STORIES.map((s) => ({ path: storyPath(s.slug), updated: STORIES_UPDATED })),
+    { path: "/privacy", updated: PRIVACY_UPDATED },
+  ];
+}
 
 const xmlEscape = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 
 /** sitemaps.org format: <loc> and <lastmod> only (Google and Bing ignore priority and changefreq). */
 export function sitemapXml(): string {
-  const urls = SITEMAP_PAGES.map(
+  const urls = sitemapPages().map(
     (p) => `  <url>\n    <loc>${xmlEscape(abs(p.path))}</loc>\n    <lastmod>${p.updated}</lastmod>\n  </url>`,
   ).join("\n");
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
@@ -63,7 +71,11 @@ function plansLine(): string {
   return `GEO has two plans: ${core.name} at ${formatUsd(core.priceUsd)} a month and ${pro.name} at ${formatUsd(pro.priceUsd)} a month, ${trial}. The free tools below need no sign-up.`;
 }
 
-/** llms.txt in the llmstxt.org format: H1, a blockquote summary, a line of detail, then H2 link lists. */
+/**
+ * llms.txt in the llmstxt.org format: H1, a blockquote summary, a line of detail, then H2 link lists. The stories
+ * get one line (their hub): the llms.txt Checker shows this file as its example in the browser, and a line per story
+ * would ship every story's text with that page (the sitemap lists each story).
+ */
 export function siteLlmsTxt(): string {
   return [
     "# GEO",
@@ -80,6 +92,7 @@ export function siteLlmsTxt(): string {
     "",
     `- [Home](${abs("/")}): what GEO does, how it works and pricing`,
     `- [All free tools](${abs(HUB.path)}): the full list of free tools`,
+    `- [Stories](${abs(STORIES_HUB.path)}): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are GEO customers)`,
     `- [Privacy policy](${abs("/privacy")}): what data GEO collects and why`,
     "",
   ].join("\n");

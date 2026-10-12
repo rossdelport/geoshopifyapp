@@ -10,10 +10,37 @@ const parts = path.join(dir, 'parts');
 const arg = (k) => process.argv.find((a) => a.startsWith(`--${k}=`))?.split('=')[1];
 const only = arg('only')?.split(',');
 const outName = arg('out') || 'index.html';
+const root = path.join(dir, '..', '..');
 const files = fs.readdirSync(parts).sort().filter((f) => !only || only.some((p) => f.startsWith(p)));
 const read = (f) => fs.readFileSync(path.join(parts, f), 'utf8').trim();
-const css = [fs.readFileSync(path.join(dir, 'base.css'), 'utf8').trim(), ...files.filter((f) => f.endsWith('.css')).map((f) => `/* ${f} */\n${read(f)}`)].join('\n\n');
-const html = files.filter((f) => f.endsWith('.html')).map((f) => `<!-- ${f} -->\n${read(f)}`).join('\n\n');
+// A part's CSS can pull in a stylesheet the React pages share, with a line like /* include: app/styles/story-card.css */.
+const withIncludes = (src) =>
+  src.replace(/\/\* include: ([\w./-]+) \*\//g, (_, p) => `/* ${p} */\n${fs.readFileSync(path.join(root, p), 'utf8').trim()}`);
+const css = [fs.readFileSync(path.join(dir, 'base.css'), 'utf8').trim(), ...files.filter((f) => f.endsWith('.css')).map((f) => `/* ${f} */\n${withIncludes(read(f))}`)].join('\n\n');
+
+// The story cards (11s-stories.html, in place of <!-- STORY_CARDS -->): one per story in app/lib/stories/stories.json,
+// in its order, read here with fs so the home page and the /stories pages share one source. Written twice so the
+// moving row can loop: the second copy is hidden from screen readers and skipped by the keyboard. The same card as
+// StoryCard in app/components/story-ui.tsx (styles: app/styles/story-card.css). The Shopify bag only shows for
+// stores we checked run on Shopify (onShopify).
+const stories = JSON.parse(fs.readFileSync(path.join(root, 'app', 'lib', 'stories', 'stories.json'), 'utf8'));
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const cardArrow = '<svg class="sc-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>';
+function storyCardHtml(s, copy) {
+  const wide = s.logoShape === 'wide';
+  const shop = s.onShopify ? '<img class="sc-shop" src="img/logos/shopify.svg" alt="Shopify store" width="22" height="22" decoding="async">' : '';
+  const logo = `<span class="sc-logo${wide ? ' is-wide' : ''}"><img src="img/${esc(s.logo)}" alt="" width="${wide ? 76 : 28}" height="${wide ? 20 : 28}" decoding="async"></span>`;
+  return `<li><a class="story-card${s.onShopify ? ' is-shopify' : ''}" href="/stories/${esc(s.slug)}"${copy ? ' tabindex="-1"' : ''}>`
+    + `<span class="sc-head">${esc(s.cardHeadline)}</span>${shop}<span class="sc-foot">${logo}<span class="sc-name">${esc(s.brand)}</span>${cardArrow}</span></a></li>`;
+}
+const storyGroup = (copy) =>
+  `<ul class="stories-group" role="list"${copy ? ' aria-hidden="true"' : ''}>\n${stories.map((s) => storyCardHtml(s, copy)).join('\n')}\n</ul>`;
+
+const html = files
+  .filter((f) => f.endsWith('.html'))
+  .map((f) => `<!-- ${f} -->\n${read(f)}`)
+  .join('\n\n')
+  .replace('<!-- STORY_CARDS -->', `${storyGroup(false)}\n${storyGroup(true)}`);
 const js = files.filter((f) => f.endsWith('.js')).map((f) => `// ${f}\n${read(f)}`).join('\n\n');
 const out = `<title>GEO Overview</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,7 +62,6 @@ console.log(`${outName}: ${(out.length / 1024).toFixed(0)} KB from ${files.lengt
 // Same page as a proper HTML document; images come from /home/img/, the sign-up buttons
 // go to the Shopify install (log in) page with the picked plan, and window.GEO_LIVE lets the hero check form post to /check.
 if (!only && outName === 'index.html') {
-  const root = path.join(dir, '..', '..');
   const head = out.slice(0, out.indexOf('<div class="page">')).trim();
   const body = out.slice(out.indexOf('<div class="page">'));
   // The page head for search engines, link previews and AI assistants: one canonical address (www and the
@@ -91,7 +117,14 @@ ${body}</body>
   // Images other pages load from /home/img/ even when the home page doesn't use them
   // (the free product check pages: app/components/check-ui.tsx).
   // The phone poster of the member tour video, which 11v-video.js swaps in on phones.
-  const extra = ['clay-magnifier.jpg', 'clay-bubble.png', 'clay-bag.png', 'clay-storefront.jpg', 'member-tour-phone-poster.jpg'].filter((f) => !used.includes(f));
-  for (const f of [...used, ...extra]) fs.copyFileSync(path.join(dir, 'img', f), path.join(imgOut, f));
+  // Every story's logo and the Shopify bag (logos/), for the /stories pages (app/components/story-ui.tsx).
+  const extra = [
+    'clay-magnifier.jpg', 'clay-bubble.png', 'clay-bag.png', 'clay-storefront.jpg', 'member-tour-phone-poster.jpg',
+    ...stories.map((s) => s.logo), 'logos/shopify.svg',
+  ].filter((f, i, all) => !used.includes(f) && all.indexOf(f) === i);
+  for (const f of [...used, ...extra]) {
+    fs.mkdirSync(path.dirname(path.join(imgOut, f)), { recursive: true });
+    fs.copyFileSync(path.join(dir, 'img', f), path.join(imgOut, f));
+  }
   console.log(`app/home/home.html: ${(site.length / 1024).toFixed(0)} KB, ${used.length} images and videos used, ${used.length + extra.length} copied to public/home/img`);
 }

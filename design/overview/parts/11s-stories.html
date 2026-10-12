@@ -1,0 +1,31 @@
+<section class="stories" id="stories" aria-labelledby="stories-h">
+  <div class="wrap">
+    <div class="stories-head" data-rise>
+      <h2 class="h2" id="stories-h">Stores already getting sales from AI</h2>
+      <p class="stories-sub">As reported by Modern Retail, Digital&nbsp;Commerce&nbsp;360 and others. Pick a story to read it.</p>
+    </div>
+  </div>
+
+  <!-- The cards come from app/lib/stories/stories.json: assemble.mjs writes them in place of the marker below, twice
+       (the second copy is hidden from screen readers and the keyboard, so the loop has no seam). Each card links to
+       our page about the story; every figure is the source's own, never a GEO result. -->
+  <div class="stories-view" data-rise>
+    <div class="stories-track">
+      <!-- STORY_CARDS -->
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="stories-bar">
+      <p class="stories-key"><img src="img/logos/shopify.svg" alt="" width="16" height="16" decoding="async"> Runs on Shopify</p>
+      <div class="stories-actions">
+        <button class="stories-toggle" type="button" hidden>
+          <svg class="stories-ic-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>
+          <svg class="stories-ic-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5Z"/></svg>
+          <span class="stories-toggle-tx">Pause</span><span class="stories-sr"> the moving stories</span>
+        </button>
+        <a class="btn btn-light btn-sm stories-all" href="/stories">See all stories <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>

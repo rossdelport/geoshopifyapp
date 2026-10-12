@@ -84,11 +84,12 @@ export const WEBSITE_NODE = {
 } as const;
 
 /** What a page says it belongs to (short form of WEBSITE_NODE). */
-const PART_OF = { "@type": "WebSite", "@id": WEBSITE_ID, url: HOME, name: BRAND };
+export const PART_OF = { "@type": "WebSite", "@id": WEBSITE_ID, url: HOME, name: BRAND };
 
-type Crumb = { name: string; path?: string };
+export type Crumb = { name: string; path?: string };
 
-function breadcrumbs(id: string, crumbs: Crumb[]) {
+/** A BreadcrumbList; the last crumb (the page itself) has no link. */
+export function breadcrumbs(id: string, crumbs: Crumb[]) {
   return {
     "@type": "BreadcrumbList",
     "@id": id,

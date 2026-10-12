@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import type { LoaderFunctionArgs } from "react-router";
 import { loader } from "../app/routes/_index/route";
 import { TOOLS } from "../app/lib/tools/registry";
+import { STORIES } from "../app/lib/stories";
 
 const imgDir = join(fileURLToPath(new URL("..", import.meta.url)), "public", "home", "img");
 const call = (url: string) => loader({ request: new Request(url), params: {}, context: {} } as unknown as LoaderFunctionArgs);
@@ -98,6 +99,55 @@ describe("home page", () => {
     // The phone poster is swapped in by script, so it must ship too.
     expect(files).toEqual(expect.arrayContaining(["member-tour.mp4", "member-tour.webm", "member-tour-phone.mp4", "member-tour-phone.webm"]));
     for (const f of [...files, "member-tour-phone-poster.jpg"]) expect(existsSync(join(imgDir, f)), `public/home/img/${f} is missing`).toBe(true);
+  });
+
+  it("shows every story as a card in a moving row right under the hero, each linking to its own page", async () => {
+    const html = await (await call("https://geo.test/")).text();
+    const hero = html.indexOf('<section class="hero" id="overview">');
+    const start = html.indexOf('<section class="stories" id="stories" aria-labelledby="stories-h">');
+    const video = html.indexOf('<section class="vid-sec" id="watch"');
+    expect(hero).toBeGreaterThan(-1);
+    expect(start).toBeGreaterThan(hero);
+    expect(video).toBeGreaterThan(start);
+    // nothing else between the hero and the stories, and the old four-card version further down is gone
+    expect(html.slice(hero + 1, start).match(/<section[\s>]/g)).toBeNull();
+    expect(html.match(/<section class="[^"]*\bstories\b/g)).toHaveLength(1);
+    const sec = html.slice(start, video);
+    expect(sec).toContain('<h2 class="h2" id="stories-h">Stores already getting sales from AI</h2>');
+    // one short line saying these are press stories (so the logos never read as GEO's customer list)
+    expect(sec).toContain("As reported by Modern Retail, Digital&nbsp;Commerce&nbsp;360 and others.");
+    expect(sec).toContain('<a class="btn btn-light btn-sm stories-all" href="/stories">See all stories');
+
+    // The track holds the cards twice: the second copy is hidden from screen readers and skipped by the keyboard.
+    const groups = [...sec.matchAll(/<ul class="stories-group" role="list"( aria-hidden="true")?>([\s\S]*?)<\/ul>/g)];
+    expect(groups.map((g) => Boolean(g[1]))).toEqual([false, true]);
+    const esc = (t: string) => t.replace(/&/g, "&amp;");
+    for (const [, hidden, body] of groups) {
+      const cards = body.split("<li>").slice(1);
+      expect(cards).toHaveLength(STORIES.length);
+      cards.forEach((card, i) => {
+        const story = STORIES[i];
+        expect(card).toContain(` href="/stories/${story.slug}"`);
+        expect(card).toContain(`<span class="sc-head">${esc(story.cardHeadline)}</span>`);
+        expect(card).toContain(`<span class="sc-name">${esc(story.brand)}</span>`);
+        expect(card).toContain(`src="/home/img/${story.logo}"`);
+        // the Shopify bag only on stores that run on Shopify
+        expect(card.includes("logos/shopify.svg"), story.slug).toBe(story.onShopify);
+        expect(card.includes('tabindex="-1"'), story.slug).toBe(Boolean(hidden));
+      });
+      expect(body.match(/logos\/shopify\.svg/g)).toHaveLength(STORIES.filter((st) => st.onShopify).length);
+    }
+    expect(STORIES).toHaveLength(15);
+    expect(STORIES.filter((st) => st.onShopify)).toHaveLength(6);
+    // a way to stop the motion for people who can't hover (shown by 11s-stories.js, which also starts the motion)
+    expect(sec).toContain('<button class="stories-toggle" type="button" hidden>');
+    // every logo ships, also for the /stories pages that load them from /home/img/logos/
+    for (const f of [...STORIES.map((st) => st.logo), "logos/shopify.svg"]) expect(existsSync(join(imgDir, f)), `public/home/img/${f} is missing`).toBe(true);
+
+    // "Not GEO customers" moved to each story page, next to the link to the original.
+    expect(html).not.toMatch(/not GEO customers/i);
+    expect(sec).not.toMatch(/\u2014|\s\u2013\s/);
+    expect(html).toContain('<a href="/stories">Stories</a>');
   });
 
   it("shows GEO's method as five numbered steps, each with an Example screen", async () => {

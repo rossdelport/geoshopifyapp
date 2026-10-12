@@ -406,7 +406,7 @@ describe("publicHostRedirect", () => {
     expect(publicHostRedirect(req("https://www.usegeo.app/tools"))?.headers.get("location")).toBe("https://usegeo.app/tools");
     // Railway's proxy says which host the visitor asked for
     expect(publicHostRedirect(req("http://10.0.0.5:8080/privacy", { headers: { "x-forwarded-host": "www.usegeo.app" } }))?.status).toBe(301);
-    for (const p of ["/check", "/tools", "/sitemap.xml", "/llms.txt", "/privacy"]) {
+    for (const p of ["/check", "/tools", "/sitemap.xml", "/llms.txt", "/privacy", "/stories", "/stories/viv-chatgpt-sales"]) {
       expect(publicHostRedirect(req(`https://www.usegeo.app${p}`)), p).not.toBeNull();
     }
   });
@@ -414,7 +414,7 @@ describe("publicHostRedirect", () => {
   it("leaves usegeo.app, POSTs, the app, Shopify admin visits, report pages, robots.txt and non-production alone", () => {
     expect(publicHostRedirect(req("https://usegeo.app/tools", { host: "usegeo.app" }))).toBeNull();
     expect(publicHostRedirect(req("https://www.usegeo.app/tools", { method: "POST", body: "a=1" }))).toBeNull();
-    for (const p of ["/app", "/app/fixes", "/auth/login", "/webhooks/app/uninstalled", "/api/pixel", "/healthz", "/check/abc123", "/robots.txt", "/tools/x.data"]) {
+    for (const p of ["/app", "/app/fixes", "/auth/login", "/webhooks/app/uninstalled", "/api/pixel", "/healthz", "/check/abc123", "/robots.txt", "/tools/x.data", "/stories/x.data"]) {
       expect(publicHostRedirect(req(`https://geo-shopify-app-production.up.railway.app${p}`)), p).toBeNull();
     }
     expect(publicHostRedirect(req("https://x.up.railway.app/?shop=a.myshopify.com"))).toBeNull();
@@ -857,14 +857,14 @@ describe("the tool page frame and its parts", () => {
 describe("the site footer", () => {
   const footer = renderToStaticMarkup(createElement(SiteFooter));
 
-  it("links the hub, all 7 tools in registry order, and the main pages, as plain links", () => {
+  it("links the hub, all 7 tools in registry order, and the main pages (with the stories), as plain links", () => {
     expect(footer).toContain('<nav class="tl-foot-tools" aria-label="Free tools">');
     expect(footer).toContain('<nav class="tl-foot-site" aria-label="GEO">');
     expect(footer).toContain('<a href="/tools">All free tools</a>');
     const positions = TOOLS.map((t) => footer.indexOf(`<a href="${t.path}">${t.name}</a>`));
     for (const p of positions) expect(p).toBeGreaterThan(-1);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
-    for (const [label, href] of [["Home", "/"], ["How it works", "/#how"], ["Pricing", "/#pricing"], ["Privacy", "/privacy"]]) {
+    for (const [label, href] of [["Home", "/"], ["How it works", "/#how"], ["Pricing", "/#pricing"], ["Stories", "/stories"], ["Privacy", "/privacy"]]) {
       expect(footer).toContain(`<a href="${href}">${label}</a>`);
     }
     expect(footer).toContain("GEO · Helps ChatGPT &amp; co recommend your products");

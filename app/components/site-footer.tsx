@@ -1,6 +1,6 @@
-// The footer of every public React page (the free tools, the hub, the privacy page, and the free check pages
-// through CheckShell): links to all free tools and the main site, as plain <a href> links that work without
-// JavaScript. The static home page writes the same links by hand (design/overview/parts/45-cta-footer.html);
+// The footer of every public React page (the free tools, the hub, the stories, the privacy page, and the free
+// check pages through CheckShell): links to all free tools and the main site, as plain <a href> links that work
+// without JavaScript. The static home page writes the same links by hand (design/overview/parts/45-cta-footer.html);
 // test/tools-foundation.test.ts keeps both in step with the registry.
 // Styles: app/styles/site-footer.css, imported here so every page that shows the footer gets them.
 
@@ -11,6 +11,7 @@ const SITE_LINKS: [string, string][] = [
   ["Home", "/"],
   ["How it works", "/#how"],
   ["Pricing", "/#pricing"],
+  ["Stories", "/stories"],
   ["Privacy", "/privacy"],
 ];
 

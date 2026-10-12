@@ -10,11 +10,11 @@ import { SITE, SITE_HOST } from "./site";
 /** Query parameters Shopify adds when the admin opens the app: those visits must stay where they are. */
 const SHOPIFY_PARAMS = ["shop", "host", "embedded", "hmac", "id_token"];
 
-const EXACT_PUBLIC = new Set(["/", "/check", "/check/", "/tools", "/tools/", "/privacy", "/privacy/", "/sitemap.xml", "/llms.txt"]);
+const EXACT_PUBLIC = new Set(["/", "/check", "/check/", "/tools", "/tools/", "/stories", "/stories/", "/privacy", "/privacy/", "/sitemap.xml", "/llms.txt"]);
 
 function isPublicPath(path: string): boolean {
   if (path.endsWith(".data")) return false; // React Router's own data requests come from the page's host
-  return EXACT_PUBLIC.has(path) || path.startsWith("/tools/");
+  return EXACT_PUBLIC.has(path) || path.startsWith("/tools/") || path.startsWith("/stories/");
 }
 
 /** The host the visitor asked for: x-forwarded-host (Railway's proxy), else host, else the URL's. No port, lowercase. */

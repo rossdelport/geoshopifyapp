@@ -1,10 +1,10 @@
-// Decorative loops (the logo marquee, the hero cards and floating clay pieces, the FAQ chat, the how-it-works
-// renders, the coins, the Standard card's border light (hover only), the closing shop front) pause while their part of the page
-// is off screen, so an idle page does no animation work. Missing parts are skipped.
+// Decorative loops (the logo marquee, the hero cards and floating clay pieces, the moving story cards, the FAQ chat,
+// the how-it-works renders, the coins, the Standard card's border light (hover only), the closing shop front) pause
+// while their part of the page is off screen, so an idle page does no animation work. Missing parts are skipped.
 // The CSS for .is-off is in 05-shared.css. The hero cards and the FAQ manage their own motion as well.
 (function () {
   if (!('IntersectionObserver' in window)) return;
-  var els = document.querySelectorAll('.eng-marquee, .hw-wrap, .faq-main, .how-steps, .worth-art, .price-card-dark, .foot-cta-art');
+  var els = document.querySelectorAll('.eng-marquee, .hw-wrap, .stories-view, .faq-main, .how-steps, .worth-art, .price-card-dark, .foot-cta-art');
   if (!els.length) return;
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (en) { en.target.classList.toggle('is-off', !en.isIntersecting); });
