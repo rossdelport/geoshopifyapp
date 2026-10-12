@@ -64,11 +64,7 @@ export function sitemapXml(): string {
 /** The plans in one sentence, from PLANS (prices are never typed in). */
 function plansLine(): string {
   const { core, pro } = PLANS;
-  const trial =
-    core.trialDays === pro.trialDays
-      ? `both with a ${core.trialDays}-day free trial`
-      : `with a ${core.trialDays}-day and a ${pro.trialDays}-day free trial`;
-  return `GEO has two plans: ${core.name} at ${formatUsd(core.priceUsd)} a month and ${pro.name} at ${formatUsd(pro.priceUsd)} a month, ${trial}. The free tools below need no sign-up.`;
+  return `GEO has two plans: ${core.name} at ${formatUsd(core.priceUsd)} a month and ${pro.name} at ${formatUsd(pro.priceUsd)} a month. New stores join through a waitlist on the home page. The free tools below need no sign-up.`;
 }
 
 /**

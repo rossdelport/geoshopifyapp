@@ -1,0 +1,34 @@
+<!-- Join the waitlist popup. Every [data-waitlist] button and #waitlist link opens it (46-waitlist.js), and so does
+     an address ending in #waitlist. It posts to /waitlist on the live site, then shows "You're on the waitlist"
+     with confetti. The words under the form are saved with each signup (WAITLIST_CONSENT_TEXT in
+     app/lib/waitlist.server.ts): change both together. -->
+<dialog class="wl" id="waitlist-dialog" aria-labelledby="wl-title">
+  <div class="wl-card">
+    <button class="wl-x" type="button" data-wl-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+
+    <form class="wl-form" method="post" action="/waitlist" novalidate>
+      <span class="wl-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5c.6 5 4.5 8.9 9.5 9.5-5 .6-8.9 4.5-9.5 9.5-.6-5-4.5-8.9-9.5-9.5 5-.6 8.9-4.5 9.5-9.5Z"/></svg></span>
+      <h2 class="wl-h" id="wl-title">Join the waitlist</h2>
+      <label class="wl-field">
+        <span class="wl-label">Name</span>
+        <input class="wl-input" type="text" name="name" autocomplete="name" maxlength="80" required placeholder="Your name">
+      </label>
+      <label class="wl-field">
+        <span class="wl-label">Email</span>
+        <input class="wl-input" type="email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" maxlength="254" required placeholder="you@yourstore.com">
+      </label>
+      <div class="wl-hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+      <p class="wl-err" role="alert" hidden></p>
+      <button class="btn btn-dark wl-btn" type="submit">Join the waitlist</button>
+      <p class="wl-small">We’ll only use this to contact you about GEO.</p>
+    </form>
+
+    <div class="wl-done" hidden>
+      <span class="wl-tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+      <h2 class="wl-h" tabindex="-1">You’re on the waitlist!</h2>
+      <p class="wl-p">We’ll reach out shortly.</p>
+      <button class="btn btn-dark wl-btn" type="button" data-wl-close>Done</button>
+    </div>
+  </div>
+  <canvas class="wl-confetti" aria-hidden="true"></canvas>
+</dialog>

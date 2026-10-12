@@ -75,6 +75,14 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .hero-check-note { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.85); box-shadow: inset 0 0 0 1px var(--lav-line); color: var(--navy); font-size: 14px; line-height: 1.5; }
 .hero-check-note a { color: var(--cobalt-deep); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 
+/* Join the waitlist: the same box, now one big button that opens the popup (46-waitlist.*). */
+.hero-join-box { border: 0; margin: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.hero-join-box:hover { box-shadow: 0 0 0 1px var(--cobalt-mid), 0 28px 56px -28px rgba(56, 64, 160, 0.45), 0 8px 18px -12px rgba(56, 64, 160, 0.2); }
+.hero-join-box:focus-visible { outline: 0; box-shadow: 0 0 0 1px var(--cobalt-mid), 0 0 0 5px rgba(64, 80, 176, 0.2), 0 28px 56px -28px rgba(56, 64, 160, 0.38); }
+.hero-join-field { cursor: pointer; }
+.hero-join-tx { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; font-weight: 500; color: var(--navy); }
+.hero-join-box:hover .hero-check-btn { transform: translateY(-1px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 10px 20px -8px rgba(21, 22, 60, 0.55); }
+
 /* Glow around the link box, so the eye goes to it. Two layers, both under the box (it covers their
    middle, so they never sit over the text):
    1. ::before, a still, soft halo: lilac to cobalt, blurred. Always there (also without JS and with
@@ -583,6 +591,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .hero-check-box::before { border-radius: 22px; }
   .hc-ring { border-radius: 20px; }
   .hero-check-field { height: 50px; padding-left: 10px; }
+  .hero-join-field { justify-content: center; padding-left: 0; }
 }
 @media (max-width: 560px) and (prefers-reduced-motion: no-preference) {
   .hero-check.hc-live .hc-run { animation-name: hc-run-tall; }

@@ -82,7 +82,7 @@ const doneView: CheckView = {
     summary: "ChatGPT named you once.",
   },
   error: null,
-  installUrl: "/auth/login?shop=coolabah-grooming.myshopify.com",
+  joinUrl: "/#waitlist",
   plan: { steps: 4, pageFixes: 3, sitesToPitch: 2, rivalsToStudy: 3 },
   lead: { status: "none", maskedEmail: null },
 };
@@ -202,16 +202,16 @@ describe("report page", () => {
     expect(html).toContain('<mark class="ck-hl-you">Coolabah Grooming Co</mark>');
     expect(html).toContain("&lt;script&gt;");
     expect(html).not.toContain("<script>");
-    expect(html).toContain('href="/auth/login?shop=coolabah-grooming.myshopify.com"');
-    expect(html).toContain('href="/#check"');
-    // Honest about what's free: the first scan is; weekly tracking and fixes are the paid plan, after a trial.
-    expect(html).toContain("Install GEO: first scan free");
+    // No trial and no install: the card sends people to the waitlist, and "Check another product" to the form.
+    expect(html).toContain('href="/#waitlist"');
+    expect(html).toContain(">Join the waitlist</a>");
+    expect(html).toContain('href="/check"');
     // The closing card says what GEO is for, and only claims the orders it can trace.
     expect(html).toContain("Help AI recommend you, every week");
     expect(html).toContain("counts the orders it can trace back to AI");
     expect(html).not.toContain("orders AI sends you");
-    expect(html).toContain("Standard is US$97 a month after a 7-day free trial.");
-    expect(html).not.toContain("Install GEO free");
+    expect(html).toContain("Standard is US$97 a month. Join the waitlist and we’ll reach out shortly.");
+    expect(html).not.toMatch(/free trial|Install GEO/);
     expect(html).toContain("What to fix first");
     expect(html).not.toMatch(/[\u2014\u2013]/); // no em or en dashes in the copy
     expect(html).not.toMatch(/real buyer questions/i);

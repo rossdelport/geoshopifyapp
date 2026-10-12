@@ -338,10 +338,8 @@ export function emailSafe(raw: string, max = 160): string {
   return plain.replace(/(\.|@|\/\/)(?=\S)/g, "$1​");
 }
 
-/** Where "Start your free trial" goes: the store's own login when we know it. */
-export function installPath(product: Pick<CheckProduct, "shopDomain"> | null): string {
-  return product?.shopDomain ? `/auth/login?shop=${encodeURIComponent(product.shopDomain)}` : "/auth/login";
-}
+/** Where "Join the GEO waitlist" goes: the home page, which opens the waitlist popup. */
+export const JOIN_PATH = "/#waitlist";
 
 function appUrl(): string {
   if (!env.appUrl) throw new Error("SHOPIFY_APP_URL is not set, so the report email can't link back to GEO");
@@ -364,7 +362,7 @@ export interface ReportEmailInput {
   product: CheckProduct;
   report: CheckReport;
   plan: ActionPlan;
-  installUrl: string; // absolute
+  joinUrl: string; // absolute
   checkUrl: string; // absolute
   unsubscribeUrl: string; // absolute
   confirmTipsUrl: string; // absolute: "Yes, keep sending me tips" (shown only when tips is "ask")
@@ -384,8 +382,8 @@ export function reportEmailContent(i: ReportEmailInput): { subject: string; html
   const rival = top ? `It recommended ${emailSafe(top.name, 80)} most often, in ${top.count} ${top.count === 1 ? "answer" : "answers"}.` : "";
   const steps = plan.steps.filter((s) => s.kind !== "geo").slice(0, 3).map((s) => emailSafe(s.title, 120));
   const core = PLANS.core;
-  const price = `${core.name} is US$${core.priceUsd} a month after the ${core.trialDays}-day free trial.`;
-  const cta = `Start your ${core.trialDays}-day free trial`;
+  const price = `${core.name} is US$${core.priceUsd} a month. Join the waitlist and we’ll reach out shortly.`;
+  const cta = "Join the GEO waitlist";
   const why = "You’re getting this because you asked for this report on the GEO website.";
   const tipsLine =
     i.tips === "on"
@@ -421,7 +419,7 @@ ${p(esc(named) + (rival ? ` ${esc(rival)}` : ""))}
 ${p(steps.length ? "Your full report and action plan are attached as a PDF. Start with these:" : "Your full report and action plan are attached as a PDF.")}
 ${steps.length ? `<ol style="margin:0 0 20px;padding-left:22px;font-size:15px;line-height:1.6;color:#0b0c2b;">${steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>` : ""}
 <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 10px;"><tr><td style="background:#4050b0;border-radius:999px;">
-<a href="${esc(i.installUrl)}" style="display:inline-block;padding:13px 24px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;">${esc(cta)}</a>
+<a href="${esc(i.joinUrl)}" style="display:inline-block;padding:13px 24px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;">${esc(cta)}</a>
 </td></tr></table>
 ${p(esc(price), "font-size:13px;color:#5c5d78;")}
 ${p(`<a href="${esc(i.checkUrl)}" style="${link}">See your report online</a> (for 30 days).`, "font-size:13px;margin:0;")}
@@ -450,7 +448,7 @@ ${esc(sender)} Questions? Reply to this email or write to <a href="mailto:${esc(
     steps.length ? "Your full report and action plan are attached as a PDF. Start with these:" : "Your full report and action plan are attached as a PDF.",
     ...steps.map((s, n) => `${n + 1}. ${s}`),
     "",
-    `${cta}: ${i.installUrl}`,
+    `${cta}: ${i.joinUrl}`,
     price,
     `See your report online (for 30 days): ${i.checkUrl}`,
     ...(i.tips === "ask" ? ["", tipsLine, `${confirmLabel}: ${i.confirmTipsUrl}`, "If you don’t click it, this is the only email we send."] : []),
@@ -500,9 +498,9 @@ export async function sendReportEmail(id: string, attempt = 1): Promise<SendOutc
     if (!product || !report) return await skip(id, "The check has no report");
     const questions = (check.questions as unknown as CheckQuestion[]) ?? [];
     const answers = (check.answers as unknown as CheckAnswer[]) ?? [];
-    const installUrl = `${base}${installPath(product)}`;
+    const joinUrl = `${base}${JOIN_PATH}`;
     const checkUrl = `${base}/check/${check.id}`;
-    const plan = buildActionPlan({ product, questions, answers, report, installUrl });
+    const plan = buildActionPlan({ product, questions, answers, report, joinUrl });
     const pdf = await buildCheckPdf({
       product,
       country: isCheckCountry(check.country) ? check.country : null,
@@ -512,7 +510,7 @@ export async function sendReportEmail(id: string, attempt = 1): Promise<SendOutc
       answers,
       report,
       plan,
-      installUrl,
+      joinUrl,
       checkUrl,
     });
     const token = encodeURIComponent(sub.unsubscribeToken);
@@ -522,7 +520,7 @@ export async function sendReportEmail(id: string, attempt = 1): Promise<SendOutc
       product,
       report,
       plan,
-      installUrl,
+      joinUrl,
       checkUrl,
       unsubscribeUrl,
       confirmTipsUrl: `${base}/tips?t=${token}`,

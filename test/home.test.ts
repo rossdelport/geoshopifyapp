@@ -6,6 +6,7 @@ import type { LoaderFunctionArgs } from "react-router";
 import { loader } from "../app/routes/_index/route";
 import { TOOLS } from "../app/lib/tools/registry";
 import { STORIES } from "../app/lib/stories";
+import { WAITLIST_CONSENT_TEXT } from "../app/lib/waitlist.server";
 
 const imgDir = join(fileURLToPath(new URL("..", import.meta.url)), "public", "home", "img");
 const call = (url: string) => loader({ request: new Request(url), params: {}, context: {} } as unknown as LoaderFunctionArgs);
@@ -23,9 +24,11 @@ describe("home page", () => {
     expect(html).not.toMatch(/<title>[^<]*free/i);
     expect(html).not.toContain("—");
     expect(html).toContain('src="/home/img/');
-    // Each pricing card's trial button carries its plan to the login page (the toggle switches the cycle).
-    expect(html).toContain('href="/auth/login?plan=core&amp;cycle=monthly" data-plan="core"');
-    expect(html).toContain('href="/auth/login?plan=pro&amp;cycle=monthly" data-plan="pro"');
+    // No free trial and no install from the website any more: every sign-up button joins the waitlist.
+    expect(html).not.toMatch(/free trial/i);
+    expect(html).not.toContain("/auth/login");
+    expect(html).toContain('data-waitlist="pricing" data-plan="core" aria-haspopup="dialog">Join the waitlist</button>');
+    expect(html).toContain('data-waitlist="pricing" data-plan="pro" aria-haspopup="dialog">Join the waitlist</button>');
   });
 
   it("uses the GEO logo as its icon (svg, ico and the home screen icon)", async () => {
@@ -38,24 +41,31 @@ describe("home page", () => {
     }
   });
 
-  it("has the free product check form, which posts to /check on the live site", async () => {
+  it("has a Join the waitlist box in the hero, a waitlist button in the nav and footer, and one popup for them all", async () => {
     const html = await (await call("https://geo.test/")).text();
-    expect(html).toContain('<form class="hero-check" id="check" method="post" action="/check">');
-    expect(html).toContain('name="url"');
-    expect(html).toContain('name="website"');
-    expect(html).toContain(">Check my product</button>");
-    expect(html).toContain("<script>window.GEO_LIVE=true</script>");
-    expect(html).toContain('href="#check"><span class="nav-cta-long">Check a product free</span>');
-  });
-
-  it("has no country picker on the hero form (the server works out the store's country)", async () => {
-    const html = await (await call("https://geo.test/")).text();
-    const start = html.indexOf('<form class="hero-check" id="check"');
+    // the hero: no link box any more, one button that opens the popup
+    expect(html).not.toContain('action="/check"');
+    expect(html).not.toContain('name="url"');
+    expect(html).toContain('<button class="hero-check-box hero-join-box" type="button" data-waitlist="hero" aria-haspopup="dialog">');
+    expect(html).toContain('<span class="btn btn-dark hero-check-btn">Join the waitlist</span>');
+    expect(html).toContain('href="#waitlist" data-waitlist="nav" aria-haspopup="dialog"><span class="nav-cta-long">Join the waitlist</span>');
+    expect(html).toContain('href="#waitlist" data-waitlist="footer" aria-haspopup="dialog">Join the waitlist');
+    // the popup: name, email, a hidden field for bots, the words saved with each signup, and the done screen
+    const start = html.indexOf('<dialog class="wl" id="waitlist-dialog"');
     expect(start).toBeGreaterThan(-1);
-    const form = html.slice(start, html.indexOf("</form>", start));
-    expect(form).toContain('name="url"');
-    expect(form).not.toContain("<select");
-    expect(form).not.toContain('name="country"');
+    const popup = html.slice(start, html.indexOf("</dialog>", start));
+    expect(popup).toContain('<h2 class="wl-h" id="wl-title">Join the waitlist</h2>');
+    expect(popup).not.toContain("Be first to get GEO"); // Ross: just the heading
+    expect(popup).toContain('name="name" autocomplete="name"');
+    expect(popup).toContain('type="email" name="email"');
+    expect(popup).toContain('name="website" tabindex="-1"');
+    expect(popup).toContain(`<p class="wl-small">${WAITLIST_CONSENT_TEXT}</p>`);
+    expect(popup).toContain("You’re on the waitlist!");
+    expect(popup).toContain("We’ll reach out shortly.");
+    expect(popup).toContain('<canvas class="wl-confetti" aria-hidden="true"></canvas>');
+    // the live page posts it for real (the design preview doesn't)
+    expect(html).toContain("<script>window.GEO_LIVE=true</script>");
+    expect(html).toContain("fetch('/waitlist'");
   });
 
   it("has no dead in-page links, keeps its honesty labels and only uses images that ship", async () => {

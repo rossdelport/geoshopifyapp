@@ -281,7 +281,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
     expect(third.ok).toBe(true);
     expect(await check.createCheck({ url: "https://shop-b.com.au/products/b", country: "AU", ip: "1.2.3.4" })).toEqual({
       ok: false,
-      error: "This connection has reached the free check limit for now (3 checks in 24 hours). Try again tomorrow, or install GEO for a free scan of 10 questions.",
+      error: "This connection has reached the free check limit for now (3 checks in 24 hours). Try again tomorrow, or join the GEO waitlist.",
     });
     // Re-using an existing report still works when the allowance is used up.
     expect((await check.createCheck({ url: LINK, ip: "1.2.3.4" })).ok).toBe(true);
@@ -340,7 +340,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
     const created = await check.createCheck({ url: LINK, ip: "1.2.3.4" });
     const id = (created as { id: string }).id;
     const queued = await check.getCheckView(id);
-    expect(queued).toMatchObject({ status: "queued", step: "Getting started", country: null, answers: [], report: null, installUrl: "/auth/login" });
+    expect(queued).toMatchObject({ status: "queued", step: "Getting started", country: null, answers: [], report: null, joinUrl: "/#waitlist" });
 
     // Someone left their email while the check was running: the report email goes when it finishes.
     const waiting = await db.reportEmail.create({ data: { email: "waiting@check-integration.example", checkId: id, status: "pending" } });
@@ -376,7 +376,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
       hasProductSchema: false,
     });
     expect(view.product).not.toHaveProperty("tags");
-    expect(view.installUrl).toBe("/auth/login?shop=coolabah-grooming.myshopify.com");
+    expect(view.joinUrl).toBe("/#waitlist");
     expect(view.questions.map((q) => q.text)).toEqual([
       "best beard oil in Australia",
       "what's the best beard oil to buy right now",

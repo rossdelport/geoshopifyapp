@@ -4,13 +4,13 @@ import { buildReport } from "../app/lib/check-report";
 import type { CheckAnswer } from "../app/lib/check-types";
 import { sampleAnswers, sampleProduct, sampleQuestions, sampleReport } from "./fixtures/check-sample";
 
-const INSTALL = "https://geo.test/auth/login?shop=kowhai-and-co.myshopify.com";
+const INSTALL = "https://geo.test/#waitlist";
 const input = (o: Partial<PlanInput> = {}): PlanInput => ({
   product: sampleProduct,
   questions: sampleQuestions,
   answers: sampleAnswers,
   report: sampleReport,
-  installUrl: INSTALL,
+  joinUrl: INSTALL,
   ...o,
 });
 const EM_DASH = String.fromCharCode(0x2014);
@@ -62,10 +62,10 @@ describe("buildActionPlan", () => {
     expect(rivals.items).toEqual(sampleReport.competitors.map((c) => ({ label: c.name, detail: `Named in ${c.count} of ${sampleReport.answerCount} answers.` })));
   });
 
-  it("ends with GEO: the install link and the price", () => {
+  it("ends with GEO: the waitlist link and the price", () => {
     const geo = plan.steps.at(-1)!;
     expect(geo.title).toBe("Let GEO do this every week");
-    expect(geo.items[0]).toEqual({ label: "Start your 7-day free trial", detail: "Standard is US$97 a month after the trial.", urls: [INSTALL] });
+    expect(geo.items[0]).toEqual({ label: "Join the GEO waitlist", detail: "Standard is US$97 a month. We’ll reach out shortly.", urls: [INSTALL] });
   });
 
   it("says what the plan holds, for the page's locked teaser", () => {

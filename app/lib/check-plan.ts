@@ -41,7 +41,7 @@ export interface PlanInput {
   questions: CheckQuestion[];
   answers: CheckAnswer[];
   report: CheckReport; // the full report, tips and fixes included
-  installUrl: string; // absolute link to start the free trial
+  joinUrl: string; // absolute link to the waitlist
 }
 
 export const MAX_PLAN_SITES = 8;
@@ -212,7 +212,7 @@ function rivalsStep(report: CheckReport): PlanStep | null {
   };
 }
 
-function geoStep(installUrl: string): PlanStep {
+function geoStep(joinUrl: string): PlanStep {
   const plan = PLANS.core;
   return {
     kind: "geo",
@@ -220,9 +220,9 @@ function geoStep(installUrl: string): PlanStep {
     body: `GEO checks up to ${plan.questions} buyer questions every week on ChatGPT, Gemini, Perplexity and Google AI Overviews, writes these fixes for you to approve in one click, and drafts your pitches.`,
     items: [
       {
-        label: `Start your ${plan.trialDays}-day free trial`,
-        detail: `${plan.name} is US$${plan.priceUsd} a month after the trial.`,
-        urls: [installUrl],
+        label: "Join the GEO waitlist",
+        detail: `${plan.name} is US$${plan.priceUsd} a month. We’ll reach out shortly.`,
+        urls: [joinUrl],
       },
     ],
   };
@@ -250,7 +250,7 @@ export function buildActionPlan(input: PlanInput): ActionPlan {
     })
     .map((t) => ({ kind: "tip", title: t.title, body: t.body, items: [] }));
 
-  const steps = [page, ...tips, questions, sites, rivals, geoStep(input.installUrl)].filter((s): s is PlanStep => Boolean(s));
+  const steps = [page, ...tips, questions, sites, rivals, geoStep(input.joinUrl)].filter((s): s is PlanStep => Boolean(s));
   return {
     steps,
     teaser: {

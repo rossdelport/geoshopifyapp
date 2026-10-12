@@ -257,7 +257,7 @@ section[id], footer[id] { scroll-margin-top: 96px; }
 
 /* Clear keyboard focus on links and buttons (the browser default is faint on navy and lilac). */
 .page a:focus-visible, .page .btn:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 3px; border-radius: 10px; }
-.page .price-card-dark a:focus-visible { outline-color: var(--white); }
+.page .price-card-dark a:focus-visible, .page .price-card-dark .btn:focus-visible { outline-color: var(--white); }
 
 /* Source links under numbers: small, navy, underlined (every number links to where it came from). */
 .src-link { color: var(--navy); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; text-decoration-color: rgba(11, 12, 43, 0.35); transition: text-decoration-color .2s ease; }
@@ -459,6 +459,14 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .hero-check-hint { margin-top: 14px; max-width: 640px; font-size: 13.5px; line-height: 1.55; color: var(--text-lilac); text-wrap: balance; }
 .hero-check-note { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.85); box-shadow: inset 0 0 0 1px var(--lav-line); color: var(--navy); font-size: 14px; line-height: 1.5; }
 .hero-check-note a { color: var(--cobalt-deep); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Join the waitlist: the same box, now one big button that opens the popup (46-waitlist.*). */
+.hero-join-box { border: 0; margin: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.hero-join-box:hover { box-shadow: 0 0 0 1px var(--cobalt-mid), 0 28px 56px -28px rgba(56, 64, 160, 0.45), 0 8px 18px -12px rgba(56, 64, 160, 0.2); }
+.hero-join-box:focus-visible { outline: 0; box-shadow: 0 0 0 1px var(--cobalt-mid), 0 0 0 5px rgba(64, 80, 176, 0.2), 0 28px 56px -28px rgba(56, 64, 160, 0.38); }
+.hero-join-field { cursor: pointer; }
+.hero-join-tx { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; font-weight: 500; color: var(--navy); }
+.hero-join-box:hover .hero-check-btn { transform: translateY(-1px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 10px 20px -8px rgba(21, 22, 60, 0.55); }
 
 /* Glow around the link box, so the eye goes to it. Two layers, both under the box (it covers their
    middle, so they never sit over the text):
@@ -968,6 +976,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .hero-check-box::before { border-radius: 22px; }
   .hc-ring { border-radius: 20px; }
   .hero-check-field { height: 50px; padding-left: 10px; }
+  .hero-join-field { justify-content: center; padding-left: 0; }
 }
 @media (max-width: 560px) and (prefers-reduced-motion: no-preference) {
   .hero-check.hc-live .hc-run { animation-name: hc-run-tall; }
@@ -2473,6 +2482,79 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .foot-tools a { min-height: 44px; font-size: 14px; }
   .foot-bottom { margin-top: 36px; padding: 20px 0 24px; font-size: 13px; }
 }
+
+/* 46-waitlist.css */
+/* Join the waitlist popup (46-waitlist.html). The dialog fills the screen and is see-through; the dim layer is
+   its ::backdrop and the white card sits in the middle (near the top on phones, so the keyboard never covers
+   the button). Clicking outside the card closes it. The confetti canvas covers the whole screen, above the card,
+   and lets clicks through. Inputs use 16px text so phones don't zoom in. */
+.wl {
+  position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none;
+  margin: 0; padding: 24px 16px; border: 0; background: transparent; overflow-y: auto; overscroll-behavior: contain;
+}
+.wl[open] { display: flex; align-items: center; justify-content: center; }
+.wl::backdrop { background: rgba(11, 12, 43, 0.55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+html.wl-lock { overflow: hidden; }
+
+.wl-card {
+  position: relative; width: 100%; max-width: 440px; margin: auto;
+  padding: 36px 32px 28px; border-radius: 24px; background: var(--white);
+  box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.5), 0 40px 80px -30px rgba(11, 12, 43, 0.55);
+  color: var(--navy); text-align: center;
+  animation: wl-in .35s cubic-bezier(.2, .8, .2, 1);
+}
+@keyframes wl-in { from { opacity: 0; transform: translateY(12px) scale(.98); } }
+
+.wl-x {
+  position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border-radius: 12px;
+  display: grid; place-items: center; color: var(--text); transition: background .15s ease, color .15s ease;
+}
+.wl-x:hover { background: var(--lilac-50); color: var(--navy); }
+.wl-x:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+.wl-x svg { width: 20px; height: 20px; }
+
+.wl-form, .wl-done { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.wl [hidden] { display: none !important; }
+.wl-mark, .wl-tick { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; margin-bottom: 4px; }
+.wl-mark { background: var(--lilac-50); color: var(--purple); box-shadow: inset 0 0 0 1px var(--lilac-100); }
+.wl-mark svg { width: 24px; height: 24px; }
+.wl-tick { border-radius: 50%; background: var(--purple); color: var(--white); box-shadow: 0 10px 24px -10px rgba(138, 92, 216, 0.8); animation: wl-pop .5s cubic-bezier(.34, 1.56, .64, 1); }
+.wl-tick svg { width: 26px; height: 26px; }
+@keyframes wl-pop { from { transform: scale(.4); opacity: 0; } }
+
+.wl-h { font-family: var(--font-head); font-weight: 500; font-size: 28px; line-height: 1.2; letter-spacing: -0.8px; color: var(--navy); text-wrap: balance; outline: 0; }
+.wl-p { margin-top: -6px; font-size: 16px; line-height: 1.5; color: var(--text); text-wrap: balance; }
+
+.wl-field { width: 100%; display: flex; flex-direction: column; gap: 6px; text-align: left; }
+.wl-field:first-of-type { margin-top: 6px; }
+.wl-label { font-size: 14px; font-weight: 600; color: var(--navy); }
+.wl-input {
+  width: 100%; height: 50px; padding: 0 14px; border: 0; border-radius: 12px; background: var(--white);
+  box-shadow: inset 0 0 0 1px #d9d8e6; font-family: var(--font-body); font-size: 16px; color: var(--navy);
+  transition: box-shadow .15s ease;
+}
+.wl-input::placeholder { color: #8586a0; opacity: 1; }
+.wl-input:focus { outline: 0; box-shadow: inset 0 0 0 1.5px var(--cobalt), 0 0 0 4px rgba(64, 80, 176, 0.14); }
+.wl-input[aria-invalid="true"] { box-shadow: inset 0 0 0 1.5px var(--red), 0 0 0 4px rgba(239, 90, 90, 0.12); }
+.wl-hp { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+.wl-err { width: 100%; padding: 10px 12px; border-radius: 10px; background: var(--red-bg); color: #9f2a2a; font-size: 14px; line-height: 1.45; text-align: left; }
+.wl-btn { width: 100%; height: 52px; margin-top: 4px; font-size: 16px; border-radius: 12px; }
+.wl-btn[disabled] { opacity: .7; cursor: default; transform: none; }
+.wl-small { font-size: 13px; line-height: 1.5; color: var(--text); }
+.wl-done { padding: 8px 0 4px; }
+.wl-done .wl-btn { margin-top: 10px; }
+
+.wl-confetti { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+
+@media (max-width: 600px) {
+  .wl[open] { align-items: flex-start; padding-top: max(16px, 7vh); }
+  .wl-card { padding: 30px 20px 22px; border-radius: 20px; }
+  .wl-h { font-size: 25px; }
+  .wl-x { top: 8px; right: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wl-card, .wl-tick { animation: none; }
+}
 </style>
 </head>
 <body>
@@ -2491,7 +2573,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
         <li><a href="#faq">FAQ</a></li>
         <li><a href="/tools">Free tools</a></li>
       </ul>
-      <a class="btn btn-dark nav-cta" href="#check"><span class="nav-cta-long">Check a product free</span><span class="nav-cta-short">Free check</span></a>
+      <a class="btn btn-dark nav-cta" href="#waitlist" data-waitlist="nav" aria-haspopup="dialog"><span class="nav-cta-long">Join the waitlist</span><span class="nav-cta-short">Join waitlist</span></a>
     </nav>
   </div>
 </header>
@@ -2506,20 +2588,18 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
     </p>
     <h1 class="h1 hero-title">The free sales channel <br class="hero-br">your store is missing</h1>
     <p class="lead hero-lead"><strong class="hero-like">Like SEO, but for ChatGPT’s answers.</strong> GEO helps AI recommend your products, then shows the sales you can trace back to AI.</p>
-    <form class="hero-check" id="check" method="post" action="/check">
-      <div class="hero-check-box">
+    <!-- Join the waitlist: the whole box is one button that opens the popup (46-waitlist.*). -->
+    <div class="hero-check hero-join" id="waitlist">
+      <button class="hero-check-box hero-join-box" type="button" data-waitlist="hero" aria-haspopup="dialog">
         <span class="hc-glow" aria-hidden="true"><span class="hc-halo"><span class="hc-run"><i></i></span></span><span class="hc-ring"><span class="hc-run"><i></i></span></span></span>
-        <label class="hero-check-field">
-          <svg class="hero-check-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-          <span class="hero-check-sr">Product link</span>
-          <input class="hero-check-input" type="text" name="url" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" maxlength="2000" required placeholder="Paste your product link">
-        </label>
-        <button class="btn btn-dark hero-check-btn" type="submit">Check my product</button>
-      </div>
-      <div class="hero-check-hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
-      <p class="hero-check-hint">See if AI recommends your product. Free, no sign-up.</p>
-      <p class="hero-check-note" role="status" hidden>Checks run on <a href="https://usegeo.app/#check" target="_blank" rel="noopener">the live site</a>.</p>
-    </form>
+        <span class="hero-check-field hero-join-field">
+          <svg class="hero-check-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5c.6 5 4.5 8.9 9.5 9.5-5 .6-8.9 4.5-9.5 9.5-.6-5-4.5-8.9-9.5-9.5 5-.6 8.9-4.5 9.5-9.5Z"/></svg>
+          <span class="hero-join-tx">Get early access for your store</span>
+        </span>
+        <span class="btn btn-dark hero-check-btn">Join the waitlist</span>
+      </button>
+      <p class="hero-check-hint">Free to join. We’ll reach out shortly.</p>
+    </div>
 
     <p class="hw-slogan" id="hw-slogan">Shoppers ask. AI recommends. You get the sale.</p>
     <div class="hw-wrap">
@@ -3168,7 +3248,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
           <p class="price-amt"><span class="price-num" data-m="US$97" data-y="US$873">US$97</span><span class="price-per" data-m="a month" data-y="a year">a month</span></p>
           <p class="price-alt" data-m="Or US$873 a year." data-y="About US$73 a month. 3 months free.">Or US$873 a year.</p>
           <p class="price-desc">You approve, AI does the work.</p>
-          <a class="btn price-btn price-btn-white" href="/auth/login?plan=core&amp;cycle=monthly" data-plan="core">Start 7-day free trial</a>
+          <button class="btn price-btn price-btn-white" type="button" data-waitlist="pricing" data-plan="core" aria-haspopup="dialog">Join the waitlist</button>
           <ul class="price-list">
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>50 buyer questions, scanned weekly</li>
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>ChatGPT, Gemini, Perplexity, Google AI Overviews</li>
@@ -3185,7 +3265,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
           <p class="price-amt"><span class="price-num" data-m="US$497" data-y="US$4,473">US$497</span><span class="price-per" data-m="a month" data-y="a year">a month</span></p>
           <p class="price-alt" data-m="Or US$4,473 a year." data-y="About US$373 a month. 3 months free.">Or US$4,473 a year.</p>
           <p class="price-desc">AI and our team do it for you.</p>
-          <a class="btn btn-light price-btn price-btn-line" href="/auth/login?plan=pro&amp;cycle=monthly" data-plan="pro">Start 7-day free trial</a>
+          <button class="btn btn-light price-btn price-btn-line" type="button" data-waitlist="pricing" data-plan="pro" aria-haspopup="dialog">Join the waitlist</button>
           <ul class="price-list">
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>100 buyer questions, scanned daily</li>
             <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Also checks Claude</li>
@@ -3198,7 +3278,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
       </div>
 
       <div class="price-foot">
-        <p>Not sure yet? <a class="price-foot-link" href="#check">Run a free product check first.</a></p>
+        <p>Join the waitlist today. We’ll reach out shortly.</p>
         <p>Billed in US dollars through Shopify. Cancel any time.</p>
       </div>
     </div>
@@ -3259,7 +3339,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
               <div class="faq-pair" id="faq-p5">
                 <div class="faq-msg faq-msg-q"><h3 class="faq-q">If GEO costs money, what’s free?</h3></div>
                 <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
-                  <p>The product check, the free scan after install, the 7-day free trial and AI’s clicks. After that, Standard is US$97 a month.</p>
+                  <p>Joining the waitlist, our free tools and the first scan of your store. After that, Standard is US$97 a month.</p>
                 </div></div>
               </div>
               <div class="faq-pair" id="faq-p6">
@@ -3291,8 +3371,8 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
     <div class="foot-cta">
       <div class="foot-cta-tx">
         <h2 class="h2 foot-h2" id="foot-cta-title">Is AI recommending your products?</h2>
-        <p class="lead foot-lead">Paste a product link to see if AI picks you. Free, no sign-up.</p>
-        <a class="btn btn-dark foot-btn" href="#check">Check my product <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
+        <p class="lead foot-lead">Join the waitlist and be first to get GEO for your store. Free to join.</p>
+        <a class="btn btn-dark foot-btn" href="#waitlist" data-waitlist="footer" aria-haspopup="dialog">Join the waitlist <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
       </div>
       <!-- the clay shop front in layers: the speech bubble floats and the sparkles twinkle (45-cta-footer.css) -->
       <div class="foot-cta-art" aria-hidden="true">
@@ -3338,6 +3418,42 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
     </div>
   </div>
 </footer>
+
+<!-- 46-waitlist.html -->
+<!-- Join the waitlist popup. Every [data-waitlist] button and #waitlist link opens it (46-waitlist.js), and so does
+     an address ending in #waitlist. It posts to /waitlist on the live site, then shows "You're on the waitlist"
+     with confetti. The words under the form are saved with each signup (WAITLIST_CONSENT_TEXT in
+     app/lib/waitlist.server.ts): change both together. -->
+<dialog class="wl" id="waitlist-dialog" aria-labelledby="wl-title">
+  <div class="wl-card">
+    <button class="wl-x" type="button" data-wl-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+
+    <form class="wl-form" method="post" action="/waitlist" novalidate>
+      <span class="wl-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5c.6 5 4.5 8.9 9.5 9.5-5 .6-8.9 4.5-9.5 9.5-.6-5-4.5-8.9-9.5-9.5 5-.6 8.9-4.5 9.5-9.5Z"/></svg></span>
+      <h2 class="wl-h" id="wl-title">Join the waitlist</h2>
+      <label class="wl-field">
+        <span class="wl-label">Name</span>
+        <input class="wl-input" type="text" name="name" autocomplete="name" maxlength="80" required placeholder="Your name">
+      </label>
+      <label class="wl-field">
+        <span class="wl-label">Email</span>
+        <input class="wl-input" type="email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" maxlength="254" required placeholder="you@yourstore.com">
+      </label>
+      <div class="wl-hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+      <p class="wl-err" role="alert" hidden></p>
+      <button class="btn btn-dark wl-btn" type="submit">Join the waitlist</button>
+      <p class="wl-small">We’ll only use this to contact you about GEO.</p>
+    </form>
+
+    <div class="wl-done" hidden>
+      <span class="wl-tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+      <h2 class="wl-h" tabindex="-1">You’re on the waitlist!</h2>
+      <p class="wl-p">We’ll reach out shortly.</p>
+      <button class="btn btn-dark wl-btn" type="button" data-wl-close>Done</button>
+    </div>
+  </div>
+  <canvas class="wl-confetti" aria-hidden="true"></canvas>
+</dialog>
 </div>
 <script>
 // 05-shared.js
@@ -3469,51 +3585,11 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 })();
 
 // 11-hero.js
-// Hero check form. The live site (window.GEO_LIVE) posts it to /check; the design preview has no
-// server, so it shows a note pointing to the live site instead.
-(function () {
-  var form = document.getElementById('check');
-  if (!form) return;
-  var input = form.querySelector('.hero-check-input');
-  var note = form.querySelector('.hero-check-note');
-  var btn = form.querySelector('.hero-check-btn');
-
-  form.addEventListener('submit', function (e) {
-    if (window.GEO_LIVE !== true) {
-      e.preventDefault();
-      note.hidden = false;
-      return;
-    }
-    form.classList.add('is-busy');
-    btn.textContent = 'Starting your check…';
-  });
-  // Coming back with the browser's back button: make the button usable again.
-  window.addEventListener('pageshow', function () {
-    form.classList.remove('is-busy');
-    btn.textContent = 'Check my product';
-  });
-
-  // The page ships the short placeholder (it fits phones, also without JS); wider screens get the example.
-  var short = input.getAttribute('placeholder');
-  var narrow = window.matchMedia ? window.matchMedia('(max-width: 760px)') : null;
-  function fit() { input.setAttribute('placeholder', narrow && narrow.matches ? short : 'Paste a product link, e.g. yourstore.com/products/...'); }
-  if (narrow) { fit(); if (narrow.addEventListener) narrow.addEventListener('change', fit); }
-
-  // "Check a product free" links scroll here; put the cursor in the box on desktop.
-  var desktop = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
-  function focusSoon() { if (desktop) setTimeout(function () { input.focus({ preventScroll: true }); }, 450); }
-  document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href="#check"]') : null;
-    if (a) focusSoon();
-  });
-  if (location.hash === '#check') focusSoon();
-})();
-
-// Glow round the link box (CSS in 11-hero.css): the travelling light runs once this adds .hc-live, and
-// pauses while the form is off screen (.hc-off). Reduced motion: the CSS keeps the still halo, so
+// Glow round the waitlist box (CSS in 11-hero.css): the travelling light runs once this adds .hc-live, and
+// pauses while the box is off screen (.hc-off). Reduced motion: the CSS keeps the still halo, so
 // nothing here runs.
 (function () {
-  var form = document.getElementById('check');
+  var form = document.getElementById('waitlist');
   if (!form || !window.matchMedia) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   form.classList.add('hc-live');
@@ -4182,11 +4258,6 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
     btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-period') === period)); });
     swaps.forEach(function (el) { el.textContent = el.getAttribute(period === 'y' ? 'data-y' : 'data-m'); });
     Array.prototype.forEach.call(root.querySelectorAll('.price-amt, .price-alt'), replay);
-    // The live page's trial buttons go to /auth/login?plan=..&cycle=..: keep the cycle in step with the toggle.
-    Array.prototype.forEach.call(root.querySelectorAll('a.price-btn[data-plan]'), function (a) {
-      var href = a.getAttribute('href') || '';
-      if (href.indexOf('cycle=') > -1) a.setAttribute('href', href.replace(/cycle=(monthly|yearly)/, 'cycle=' + (period === 'y' ? 'yearly' : 'monthly')));
-    });
     if (status) status.textContent = period === 'y' ? 'Yearly prices shown.' : 'Monthly prices shown.';
   }
 
@@ -4429,6 +4500,198 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
       var first = chips[0] && chips[0].btn;
       if (first) { try { first.focus({ preventScroll: true }); } catch (e) { first.focus(); } }
     });
+  }
+})();
+
+// 46-waitlist.js
+// Join the waitlist popup (46-waitlist.html). Opens from any [data-waitlist] button, any #waitlist link and an
+// address ending in #waitlist (or the old #check). Sends name + email, which button it was, the plan picked
+// on a pricing card and where the visit came from (utm_*, fbclid, the referring site) to /waitlist. The design
+// preview (no window.GEO_LIVE) shows the done screen without saving. Then: "You're on the waitlist", confetti
+// from the top of the screen (not with reduced motion), and a Meta "Lead" event when the Meta pixel is on the page.
+(function () {
+  var dlg = document.getElementById('waitlist-dialog');
+  if (!dlg) return;
+  var form = dlg.querySelector('.wl-form');
+  var done = dlg.querySelector('.wl-done');
+  var err = dlg.querySelector('.wl-err');
+  var btn = form.querySelector('.wl-btn');
+  var nameIn = form.elements.name;
+  var emailIn = form.elements.email;
+  var canvas = dlg.querySelector('.wl-confetti');
+  var modal = typeof dlg.showModal === 'function';
+  var picked = { source: 'link', plan: '' };
+  var busy = false;
+
+  // Where the visit came from, kept for this visit (the address loses its ?utm_ part when people move around).
+  var KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid'];
+  var from = {};
+  try { from = JSON.parse(sessionStorage.getItem('geo-wl-from') || '{}') || {}; } catch (e) { from = {}; }
+  var q = new URLSearchParams(location.search);
+  if (KEYS.some(function (k) { return q.get(k); })) {
+    from = {};
+    KEYS.forEach(function (k) { if (q.get(k)) from[k] = q.get(k).slice(0, 500); });
+  }
+  if (!from.referrer && document.referrer && document.referrer.indexOf(location.origin) !== 0) from.referrer = document.referrer.slice(0, 500);
+  try { sessionStorage.setItem('geo-wl-from', JSON.stringify(from)); } catch (e) { /* private mode: fine */ }
+
+  function showForm() {
+    form.hidden = false;
+    done.hidden = true;
+    err.hidden = true;
+    [nameIn, emailIn].forEach(function (i) { i.removeAttribute('aria-invalid'); });
+  }
+
+  function open(source, plan) {
+    if (dlg.open) return;
+    picked = { source: source || 'link', plan: plan || '' };
+    if (!busy) showForm();
+    document.documentElement.classList.add('wl-lock');
+    if (modal) dlg.showModal(); else dlg.setAttribute('open', '');
+    setTimeout(function () { (form.hidden ? done.querySelector('.wl-btn') : nameIn).focus(); }, 30);
+  }
+  function close() {
+    if (modal) dlg.close(); else { dlg.removeAttribute('open'); onClose(); }
+  }
+  function onClose() {
+    document.documentElement.classList.remove('wl-lock');
+    stopConfetti();
+    if (!form.hidden || busy) return;
+    form.reset();
+    showForm();
+  }
+  dlg.addEventListener('close', onClose);
+  // A click on the dim area round the card closes it.
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) close(); });
+  Array.prototype.forEach.call(dlg.querySelectorAll('[data-wl-close]'), function (b) { b.addEventListener('click', close); });
+
+  document.addEventListener('click', function (e) {
+    var el = e.target && e.target.closest ? e.target.closest('[data-waitlist], a[href="#waitlist"]') : null;
+    if (!el || dlg.contains(el)) return;
+    e.preventDefault();
+    open(el.getAttribute('data-waitlist'), el.getAttribute('data-plan'));
+  });
+  function fromHash() {
+    if (location.hash !== '#waitlist' && location.hash !== '#check') return;
+    if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+    open('link');
+  }
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
+
+  function fail(msg, field) {
+    err.textContent = msg;
+    err.hidden = false;
+    if (field) { field.setAttribute('aria-invalid', 'true'); field.focus(); }
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (busy) return;
+    err.hidden = true;
+    [nameIn, emailIn].forEach(function (i) { i.removeAttribute('aria-invalid'); });
+    var name = nameIn.value.trim();
+    var email = emailIn.value.trim();
+    if (!name) return fail('Please enter your name.', nameIn);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return fail('Please enter a valid email address.', emailIn);
+
+    var body = new URLSearchParams();
+    body.set('name', name);
+    body.set('email', email);
+    body.set('website', form.elements.website.value);
+    body.set('source', picked.source);
+    if (picked.plan) {
+      body.set('plan', picked.plan);
+      var on = document.querySelector('.price-tg[aria-pressed="true"]');
+      body.set('cycle', on && on.getAttribute('data-period') === 'y' ? 'yearly' : 'monthly');
+    }
+    Object.keys(from).forEach(function (k) { body.set(k, from[k]); });
+
+    busy = true;
+    btn.disabled = true;
+    btn.textContent = 'Joining…';
+    var send = window.GEO_LIVE === true
+      ? fetch('/waitlist', { method: 'POST', body: body, headers: { Accept: 'application/json' }, credentials: 'same-origin' })
+        .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+      : new Promise(function (resolve) { setTimeout(function () { resolve({ ok: true }); }, 500); });
+    send.then(function (res) {
+      if (!res || !res.ok) throw new Error((res && res.error) || 'Something went wrong. Please try again.');
+      joined(name);
+    }).catch(function (x) {
+      fail(x && x.message && x.message.indexOf('Failed to fetch') < 0 ? x.message : 'Something went wrong. Please try again.');
+    }).then(function () {
+      busy = false;
+      btn.disabled = false;
+      btn.textContent = 'Join the waitlist';
+    });
+  });
+
+  function joined(name) {
+    var first = name.split(' ')[0];
+    done.querySelector('.wl-p').textContent = 'Thanks, ' + first + '. We’ll reach out shortly.';
+    form.hidden = true;
+    done.hidden = false;
+    done.querySelector('.wl-h').focus();
+    if (typeof window.fbq === 'function') window.fbq('track', 'Lead', { content_name: 'waitlist' });
+    if (!dlg.open) open(picked.source, picked.plan);
+    confetti();
+  }
+
+  // Confetti: brand-coloured paper falling from the top of the screen for about 4 seconds.
+  var raf = 0;
+  function stopConfetti() {
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0;
+    var c = canvas.getContext && canvas.getContext('2d');
+    if (c) c.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  function confetti() {
+    if (!canvas.getContext || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+    stopConfetti();
+    var ctx = canvas.getContext('2d');
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    var W = canvas.clientWidth || window.innerWidth;
+    var H = canvas.clientHeight || window.innerHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var colors = ['#8a5cd8', '#4050b0', '#b5a8e0', '#6878d8', '#e1ccf7', '#6cd68c', '#f0b150', '#0b0c2b'];
+    var bits = [];
+    var n = W < 600 ? 120 : 200;
+    for (var i = 0; i < n; i++) {
+      bits.push({
+        x: Math.random() * W, y: -10 - Math.random() * H * 0.45,
+        w: 6 + Math.random() * 6, h: 9 + Math.random() * 8,
+        vx: -1.2 + Math.random() * 2.4, vy: 3 + Math.random() * 3.5,
+        r: Math.random() * Math.PI * 2, vr: -0.18 + Math.random() * 0.36,
+        sway: Math.random() * Math.PI * 2, color: colors[i % colors.length], round: i % 5 === 0,
+      });
+    }
+    var start = performance.now();
+    function frame(t) {
+      var age = t - start;
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalAlpha = age > 3400 ? Math.max(0, 1 - (age - 3400) / 700) : 1;
+      var falling = false;
+      bits.forEach(function (b) {
+        b.sway += 0.05;
+        b.x += b.vx + Math.sin(b.sway) * 0.9;
+        b.y += b.vy;
+        b.vy = Math.min(b.vy + 0.035, 6.5);
+        b.r += b.vr;
+        if (b.y < H + 20) falling = true;
+        ctx.save();
+        ctx.translate(b.x, b.y);
+        ctx.rotate(b.r);
+        ctx.fillStyle = b.color;
+        if (b.round) { ctx.beginPath(); ctx.arc(0, 0, b.w / 2, 0, Math.PI * 2); ctx.fill(); }
+        else ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h * Math.abs(Math.cos(b.r * 0.7)) + 2);
+        ctx.restore();
+      });
+      if (falling && age < 4100) raf = requestAnimationFrame(frame);
+      else stopConfetti();
+    }
+    raf = requestAnimationFrame(frame);
   }
 })();
 </script>

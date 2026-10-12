@@ -39,6 +39,29 @@ budget is now **1,050 words** (the page is at 1,048).
 
 ---
 
+## Waitlist mode (12 Oct 2026, Ross: "start to run Meta ads to get sign ups")
+
+The website no longer offers the 7-day free trial or an install. Every sign-up button opens one popup,
+`46-waitlist.*`, which saves name + email to `geo.WaitlistSignup` through `POST /waitlist`
+(`app/lib/waitlist.server.ts`).
+
+- **Hero:** the link box is now one big button: "Get early access for your store" + **Join the waitlist**. Line under it:
+  "Free to join. We’ll reach out shortly."
+- **Nav:** **Join the waitlist** (phones: **Join waitlist**). **Closing CTA:** "Join the waitlist and be first to get GEO
+  for your store. Free to join." + **Join the waitlist**.
+- **Pricing:** both cards' buttons say **Join the waitlist** (the card's plan and the Monthly / Yearly choice are saved
+  with the signup). Foot line: "Join the waitlist today. We’ll reach out shortly."
+- **FAQ "what's free":** "Joining the waitlist, our free tools and the first scan of your store."
+- **Popup:** heading **Join the waitlist** only (Ross: no line under it), Name, Email, **Join the waitlist**, small line
+  "We’ll only use this to contact you about GEO." (saved with each signup). Done screen: tick, **You’re on the
+  waitlist!**, "Thanks, {first name}. We’ll reach out shortly.", **Done**, confetti from the top of the screen (not with
+  reduced motion).
+- **Where they came from:** utm_* tags, fbclid and the referring site are saved with each signup, and a Meta pixel
+  "Lead" event fires on success once the Meta pixel is on the page (not added yet).
+- `/waitlist` and any address ending in `#waitlist` (or the old `#check`) open the popup.
+- The free check page, its report email and PDF, and llms.txt point to the waitlist too ("Join the GEO waitlist").
+  The app's own Shopify billing (trial included) is unchanged.
+
 ## 0. Read this first
 
 ### The one thing a skimmer must get

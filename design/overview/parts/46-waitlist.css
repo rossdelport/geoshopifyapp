@@ -1,0 +1,71 @@
+/* Join the waitlist popup (46-waitlist.html). The dialog fills the screen and is see-through; the dim layer is
+   its ::backdrop and the white card sits in the middle (near the top on phones, so the keyboard never covers
+   the button). Clicking outside the card closes it. The confetti canvas covers the whole screen, above the card,
+   and lets clicks through. Inputs use 16px text so phones don't zoom in. */
+.wl {
+  position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none;
+  margin: 0; padding: 24px 16px; border: 0; background: transparent; overflow-y: auto; overscroll-behavior: contain;
+}
+.wl[open] { display: flex; align-items: center; justify-content: center; }
+.wl::backdrop { background: rgba(11, 12, 43, 0.55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+html.wl-lock { overflow: hidden; }
+
+.wl-card {
+  position: relative; width: 100%; max-width: 440px; margin: auto;
+  padding: 36px 32px 28px; border-radius: 24px; background: var(--white);
+  box-shadow: 0 0 0 1px rgba(181, 168, 224, 0.5), 0 40px 80px -30px rgba(11, 12, 43, 0.55);
+  color: var(--navy); text-align: center;
+  animation: wl-in .35s cubic-bezier(.2, .8, .2, 1);
+}
+@keyframes wl-in { from { opacity: 0; transform: translateY(12px) scale(.98); } }
+
+.wl-x {
+  position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border-radius: 12px;
+  display: grid; place-items: center; color: var(--text); transition: background .15s ease, color .15s ease;
+}
+.wl-x:hover { background: var(--lilac-50); color: var(--navy); }
+.wl-x:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+.wl-x svg { width: 20px; height: 20px; }
+
+.wl-form, .wl-done { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.wl [hidden] { display: none !important; }
+.wl-mark, .wl-tick { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; margin-bottom: 4px; }
+.wl-mark { background: var(--lilac-50); color: var(--purple); box-shadow: inset 0 0 0 1px var(--lilac-100); }
+.wl-mark svg { width: 24px; height: 24px; }
+.wl-tick { border-radius: 50%; background: var(--purple); color: var(--white); box-shadow: 0 10px 24px -10px rgba(138, 92, 216, 0.8); animation: wl-pop .5s cubic-bezier(.34, 1.56, .64, 1); }
+.wl-tick svg { width: 26px; height: 26px; }
+@keyframes wl-pop { from { transform: scale(.4); opacity: 0; } }
+
+.wl-h { font-family: var(--font-head); font-weight: 500; font-size: 28px; line-height: 1.2; letter-spacing: -0.8px; color: var(--navy); text-wrap: balance; outline: 0; }
+.wl-p { margin-top: -6px; font-size: 16px; line-height: 1.5; color: var(--text); text-wrap: balance; }
+
+.wl-field { width: 100%; display: flex; flex-direction: column; gap: 6px; text-align: left; }
+.wl-field:first-of-type { margin-top: 6px; }
+.wl-label { font-size: 14px; font-weight: 600; color: var(--navy); }
+.wl-input {
+  width: 100%; height: 50px; padding: 0 14px; border: 0; border-radius: 12px; background: var(--white);
+  box-shadow: inset 0 0 0 1px #d9d8e6; font-family: var(--font-body); font-size: 16px; color: var(--navy);
+  transition: box-shadow .15s ease;
+}
+.wl-input::placeholder { color: #8586a0; opacity: 1; }
+.wl-input:focus { outline: 0; box-shadow: inset 0 0 0 1.5px var(--cobalt), 0 0 0 4px rgba(64, 80, 176, 0.14); }
+.wl-input[aria-invalid="true"] { box-shadow: inset 0 0 0 1.5px var(--red), 0 0 0 4px rgba(239, 90, 90, 0.12); }
+.wl-hp { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+.wl-err { width: 100%; padding: 10px 12px; border-radius: 10px; background: var(--red-bg); color: #9f2a2a; font-size: 14px; line-height: 1.45; text-align: left; }
+.wl-btn { width: 100%; height: 52px; margin-top: 4px; font-size: 16px; border-radius: 12px; }
+.wl-btn[disabled] { opacity: .7; cursor: default; transform: none; }
+.wl-small { font-size: 13px; line-height: 1.5; color: var(--text); }
+.wl-done { padding: 8px 0 4px; }
+.wl-done .wl-btn { margin-top: 10px; }
+
+.wl-confetti { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+
+@media (max-width: 600px) {
+  .wl[open] { align-items: flex-start; padding-top: max(16px, 7vh); }
+  .wl-card { padding: 30px 20px 22px; border-radius: 20px; }
+  .wl-h { font-size: 25px; }
+  .wl-x { top: 8px; right: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wl-card, .wl-tick { animation: none; }
+}

@@ -38,6 +38,7 @@ const privacyData = () => ({
   checkIpHours: RETENTION.checkIpHours,
   reportEmailDays: RETENTION.reportEmailDays,
   unsubscribedDays: RETENTION.unsubscribedDays,
+  waitlistMonths: RETENTION.waitlistMonths,
 });
 
 const page = { maxWidth: 720, margin: "0 auto", padding: "48px 20px 80px", fontFamily: "Inter, system-ui, sans-serif", color: "#30313d", lineHeight: 1.7 };
@@ -54,7 +55,7 @@ export default function Privacy() {
 }
 
 function PrivacyText() {
-  const { contact, owner, inactiveYears, visitIdDays, uninstalledDays, publicCheckDays, checkIpHours, reportEmailDays, unsubscribedDays } =
+  const { contact, owner, inactiveYears, visitIdDays, uninstalledDays, publicCheckDays, checkIpHours, reportEmailDays, unsubscribedDays, waitlistMonths } =
     useLoaderData<typeof loader>();
   return (
     <main style={page}>
@@ -158,6 +159,18 @@ function PrivacyText() {
       </ul>
       <p>The AI Visibility Checker is our free product check, described above.</p>
 
+      <h2 style={h2}>Waitlist</h2>
+      <p>
+        If you join the waitlist on our home page, we keep your name, your email address, the words shown with the form
+        and when you joined. We also keep which button you used and, if you came from an ad or another website, the
+        ad&apos;s tracking tags in the page address (such as utm_campaign or Facebook&apos;s click id) and the name of
+        that website. To stop abuse we keep a scrambled (hashed) version of your IP address for a day.
+      </p>
+      <p>
+        We use this only to contact you about GEO. We delete it {waitlistMonths} months after you joined, or sooner if
+        you ask.
+      </p>
+
       <h2 style={h2}>Why we use it</h2>
       <p>
         <b>Your store&apos;s data:</b> only to run GEO for you: to check AI answers about your products, write suggested
@@ -168,6 +181,9 @@ function PrivacyText() {
         <b>Free product check:</b> to run the check, to email you the report you asked for, and to send occasional tips
         if you ticked the box and confirmed. We don&apos;t use your email address for anything else, and never for
         advertising.
+      </p>
+      <p>
+        <b>Waitlist:</b> only to contact you about GEO.
       </p>
 
       <h2 style={h2}>Shoppers&apos; choices</h2>
@@ -219,7 +235,8 @@ function PrivacyText() {
       </p>
       <p>
         If you asked for a free check report by email, you can ask us for the email address we hold about you, or ask us
-        to delete it, the same way or by replying to any of our emails.
+        to delete it, the same way or by replying to any of our emails. If you joined the waitlist, you can ask us for
+        your details or ask us to delete them the same way.
       </p>
     </main>
   );

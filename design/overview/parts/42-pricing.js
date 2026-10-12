@@ -25,11 +25,6 @@
     btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-period') === period)); });
     swaps.forEach(function (el) { el.textContent = el.getAttribute(period === 'y' ? 'data-y' : 'data-m'); });
     Array.prototype.forEach.call(root.querySelectorAll('.price-amt, .price-alt'), replay);
-    // The live page's trial buttons go to /auth/login?plan=..&cycle=..: keep the cycle in step with the toggle.
-    Array.prototype.forEach.call(root.querySelectorAll('a.price-btn[data-plan]'), function (a) {
-      var href = a.getAttribute('href') || '';
-      if (href.indexOf('cycle=') > -1) a.setAttribute('href', href.replace(/cycle=(monthly|yearly)/, 'cycle=' + (period === 'y' ? 'yearly' : 'monthly')));
-    });
     if (status) status.textContent = period === 'y' ? 'Yearly prices shown.' : 'Monthly prices shown.';
   }
 

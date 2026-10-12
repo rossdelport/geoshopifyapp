@@ -977,14 +977,13 @@ export function CheckReport({ view }: { view: CheckView }) {
             recommend your products (you approve each one), and counts the orders it can trace back to AI.
           </p>
           <p className="ck-cta-price">
-            Your first scan is free. {PLANS.core.name} is US${PLANS.core.priceUsd} a month after a{" "}
-            {PLANS.core.trialDays}-day free trial.
+            {PLANS.core.name} is US${PLANS.core.priceUsd} a month. Join the waitlist and we’ll reach out shortly.
           </p>
           <div className="ck-cta-row">
-            <a className="ck-btn ck-btn-dark" href={view.installUrl}>
-              Install GEO: first scan free
+            <a className="ck-btn ck-btn-dark" href={view.joinUrl}>
+              Join the waitlist
             </a>
-            <a className="ck-cta-link" href="/#check">
+            <a className="ck-cta-link" href="/check">
               Check another product
             </a>
           </div>

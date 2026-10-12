@@ -20,7 +20,7 @@ import { httpGet, type RawResponse } from "./http-get.server";
 import { pool } from "./pool";
 import { hashIp } from "./public-form.server";
 import { buildActionPlan } from "./check-plan";
-import { CHECK_STALE_MS, installPath, leadStateFor, queueReportEmails, skipReportEmails } from "./check-lead.server";
+import { CHECK_STALE_MS, JOIN_PATH, leadStateFor, queueReportEmails, skipReportEmails } from "./check-lead.server";
 import {
   NOT_YOUR_STORE,
   cleanCheckUrl,
@@ -88,7 +88,7 @@ const GENERIC = "Something went wrong while checking this product. Please try ag
 const INTERRUPTED = "This check was interrupted. Please run it again.";
 const TOO_SLOW = "This check took too long. Please try again.";
 const BUSY = "We’re very busy right now. Please try again later.";
-const LIMIT = "This connection has reached the free check limit for now (3 checks in 24 hours). Try again tomorrow, or install GEO for a free scan of 10 questions.";
+const LIMIT = "This connection has reached the free check limit for now (3 checks in 24 hours). Try again tomorrow, or join the GEO waitlist.";
 
 // ---------- Limits ----------
 // IPs are hashed with CHECK_IP_SECRET (hashIp in public-form.server.ts, shared with the report email form).
@@ -244,7 +244,7 @@ export async function getCheckView(id: string, request?: Request): Promise<Check
   const questions = (row.questions as unknown as CheckQuestion[]) ?? [];
   const answers = status === "done" ? ((row.answers as unknown as CheckAnswer[]) ?? []) : [];
   const full = status === "done" ? ((row.report as unknown as CheckReport | null) ?? null) : null;
-  const installUrl = installPath(product);
+  const joinUrl = JOIN_PATH;
   return {
     id: row.id,
     status,
@@ -259,9 +259,9 @@ export async function getCheckView(id: string, request?: Request): Promise<Check
     answers,
     report: full ? pageReport(full) : null,
     error,
-    installUrl,
+    joinUrl,
     // Counts only, for the locked teaser: the plan itself is only emailed.
-    plan: full && product ? buildActionPlan({ product, questions, answers, report: full, installUrl }).teaser : null,
+    plan: full && product ? buildActionPlan({ product, questions, answers, report: full, joinUrl }).teaser : null,
     lead: await leadStateFor(request, row.id),
   };
 }

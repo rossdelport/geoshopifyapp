@@ -18,6 +18,8 @@ export const RETENTION = {
   unsubscribedDays: 30,
   /** An address with no report request or email click for this long is deleted too. */
   inactiveSubscriberMonths: 24,
+  /** Waitlist signups (name, email, where they came from): deleted this long after they first joined. */
+  waitlistMonths: 24,
 };
 
 /**
@@ -71,6 +73,15 @@ export async function purgeOldData(now = new Date()) {
     await db.subscriber.deleteMany({ where: { id: { in: stale.map((x) => x.id) } } });
   }
   const subscribers = { count: stale.length };
+  // Waitlist: the hashed IP only enforces the daily limit, so it goes after a day; the signup 24 months after it
+  // was made (createdAt: clearing the IP moves updatedAt).
+  await db.waitlistSignup.updateMany({
+    where: { ipHash: { not: null }, updatedAt: { lt: new Date(now.getTime() - RETENTION.checkIpHours * 3_600_000) } },
+    data: { ipHash: null },
+  });
+  const waitlist = await db.waitlistSignup.deleteMany({
+    where: { createdAt: { lt: new Date(now.getTime() - RETENTION.waitlistMonths * 30.44 * DAY) } },
+  });
   if (visits.count || shops.count || checks.count || reportEmails.count || subscribers.count) {
     console.log(
       `[retention] cleared ${visits.count} old visit ids, deleted ${shops.count} uninstalled shops, ${checks.count} free checks, ${reportEmails.count} report emails and ${subscribers.count} unsubscribed or inactive addresses`,
@@ -84,5 +95,6 @@ export async function purgeOldData(now = new Date()) {
     reportEmails: reportEmails.count,
     reportEmailIps: reportEmailIps.count,
     subscribers: subscribers.count,
+    waitlist: waitlist.count,
   };
 }

@@ -3,7 +3,7 @@ import { buildActionPlan } from "../app/lib/check-plan";
 import { buildCheckPdf, noDashes, printable, reportFileName, type PdfReportInput } from "../app/lib/check-pdf.server";
 import { sampleAnswers, sampleProduct, sampleQuestions, sampleReport } from "./fixtures/check-sample";
 
-const INSTALL = "https://geo.test/auth/login?shop=kowhai-and-co.myshopify.com";
+const INSTALL = "https://geo.test/#waitlist";
 const EM_DASH = String.fromCharCode(0x2014);
 const EN_DASH = String.fromCharCode(0x2013);
 
@@ -17,8 +17,8 @@ function pdfInput(o: Partial<PdfReportInput> = {}): PdfReportInput {
     questions: sampleQuestions,
     answers: sampleAnswers,
     report,
-    plan: buildActionPlan({ product, questions: sampleQuestions, answers: sampleAnswers, report, installUrl: INSTALL }),
-    installUrl: INSTALL,
+    plan: buildActionPlan({ product, questions: sampleQuestions, answers: sampleAnswers, report, joinUrl: INSTALL }),
+    joinUrl: INSTALL,
     checkUrl: "https://geo.test/check/abc",
     ...o,
   };
@@ -46,7 +46,7 @@ describe("buildCheckPdf", () => {
     expect(raw).toContain("/FontFile2");
     expect(pageCount(pdf)).toBeGreaterThanOrEqual(2);
     expect(pageCount(pdf)).toBeLessThanOrEqual(4);
-    expect(raw).toContain("/URI (https://geo.test/auth/login?shop=kowhai-and-co.myshopify.com)"); // the trial button is a link
+    expect(raw).toContain("/URI (https://geo.test/#waitlist)"); // the waitlist button is a link
   });
 
   it("copes with accents, curly quotes, dashes and an older report with no page checks", async () => {

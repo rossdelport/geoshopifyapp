@@ -17,6 +17,7 @@ import "./outreach.server";
 import "./report.server";
 import "./billing.server";
 import "./check.server";
+import "./waitlist.server";
 import { crawlerCheckDue, queueCrawlerCheck } from "./robots.server";
 import { maybeRunSelftest } from "./selftest.server";
 import { purgeOldData } from "./retention.server";

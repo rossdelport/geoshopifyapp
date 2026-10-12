@@ -31,7 +31,7 @@ export interface PdfReportInput {
   answers: CheckAnswer[];
   report: CheckReport; // the full report (aiReady fixes included)
   plan: ActionPlan;
-  installUrl: string; // absolute
+  joinUrl: string; // absolute
   checkUrl?: string | null; // absolute link to the report on the website
 }
 
@@ -584,7 +584,7 @@ function drawCta(pdf: Pdf, input: PdfReportInput) {
   const plan = PLANS.core;
   const heading = "Track this every week and fix it in one click";
   const body = `GEO checks up to ${plan.questions} buyer questions every week, writes fixes you approve in one click, and counts the orders it can trace back to AI.`;
-  const price = `${plan.name} is US$${plan.priceUsd} a month after the ${plan.trialDays}-day free trial.`;
+  const price = `${plan.name} is US$${plan.priceUsd} a month. Join the waitlist and we’ll reach out shortly.`;
   const iw = CW - 48;
   const online = input.checkUrl ? `See this report online: ${shortUrl(input.checkUrl, 90)}` : "";
   const h = 24 + pdf.height(heading, "bold", 15, iw, 1) + 6 + pdf.height(body, "body", 10, iw) + 16 + 30 + 10 + pdf.height(price, "body", 8.5, iw) + (online ? 16 : 0) + 22;
@@ -595,12 +595,12 @@ function drawCta(pdf: Pdf, input: PdfReportInput) {
   let y = top + 24;
   y += pdf.write(heading, M + 24, y, { key: "bold", size: 15, color: C.white, width: iw, lineGap: 1 }) + 6;
   y += pdf.write(body, M + 24, y, { size: 10, color: C.onDark, width: iw }) + 16;
-  const label = `Start your ${plan.trialDays}-day free trial`;
+  const label = "Join the GEO waitlist";
   pdf.use("bold", 10.5, C.white);
   const bw = d.widthOfString(pdf.t(label, "bold")) + 36;
   d.save().roundedRect(M + 24, y, bw, 30, 15).fill(C.mid).restore();
   pdf.write(label, M + 24, y + 9, { key: "bold", size: 10.5, color: C.white, width: bw, align: "center", lineGap: 0 });
-  d.link(M + 24, y, bw, 30, input.installUrl);
+  d.link(M + 24, y, bw, 30, input.joinUrl);
   y += 30 + 10;
   y += pdf.write(price, M + 24, y, { size: 8.5, color: C.onDark, width: iw });
   if (online && input.checkUrl) {

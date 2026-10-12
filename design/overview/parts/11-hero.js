@@ -1,48 +1,8 @@
-// Hero check form. The live site (window.GEO_LIVE) posts it to /check; the design preview has no
-// server, so it shows a note pointing to the live site instead.
-(function () {
-  var form = document.getElementById('check');
-  if (!form) return;
-  var input = form.querySelector('.hero-check-input');
-  var note = form.querySelector('.hero-check-note');
-  var btn = form.querySelector('.hero-check-btn');
-
-  form.addEventListener('submit', function (e) {
-    if (window.GEO_LIVE !== true) {
-      e.preventDefault();
-      note.hidden = false;
-      return;
-    }
-    form.classList.add('is-busy');
-    btn.textContent = 'Starting your check…';
-  });
-  // Coming back with the browser's back button: make the button usable again.
-  window.addEventListener('pageshow', function () {
-    form.classList.remove('is-busy');
-    btn.textContent = 'Check my product';
-  });
-
-  // The page ships the short placeholder (it fits phones, also without JS); wider screens get the example.
-  var short = input.getAttribute('placeholder');
-  var narrow = window.matchMedia ? window.matchMedia('(max-width: 760px)') : null;
-  function fit() { input.setAttribute('placeholder', narrow && narrow.matches ? short : 'Paste a product link, e.g. yourstore.com/products/...'); }
-  if (narrow) { fit(); if (narrow.addEventListener) narrow.addEventListener('change', fit); }
-
-  // "Check a product free" links scroll here; put the cursor in the box on desktop.
-  var desktop = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
-  function focusSoon() { if (desktop) setTimeout(function () { input.focus({ preventScroll: true }); }, 450); }
-  document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href="#check"]') : null;
-    if (a) focusSoon();
-  });
-  if (location.hash === '#check') focusSoon();
-})();
-
-// Glow round the link box (CSS in 11-hero.css): the travelling light runs once this adds .hc-live, and
-// pauses while the form is off screen (.hc-off). Reduced motion: the CSS keeps the still halo, so
+// Glow round the waitlist box (CSS in 11-hero.css): the travelling light runs once this adds .hc-live, and
+// pauses while the box is off screen (.hc-off). Reduced motion: the CSS keeps the still halo, so
 // nothing here runs.
 (function () {
-  var form = document.getElementById('check');
+  var form = document.getElementById('waitlist');
   if (!form || !window.matchMedia) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   form.classList.add('hc-live');

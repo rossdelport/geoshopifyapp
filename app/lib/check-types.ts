@@ -110,7 +110,7 @@ export interface CheckView {
   answers: CheckAnswer[]; // filled when done
   report: CheckReport | null;
   error: string | null; // plain English, safe to show
-  installUrl: string; // /auth/login?shop=... when we know the store, else /auth/login
+  joinUrl: string; // /#waitlist: the home page opens the waitlist popup
   /**
    * The action plan (report.tips and every aiReady check's `fix`) is only sent by email, never in the page.
    * getCheckView always blanks them: report.tips is [] and each aiReady check's fix is "".

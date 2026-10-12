@@ -7,20 +7,18 @@
     </p>
     <h1 class="h1 hero-title">The free sales channel <br class="hero-br">your store is missing</h1>
     <p class="lead hero-lead"><strong class="hero-like">Like SEO, but for ChatGPT’s answers.</strong> GEO helps AI recommend your products, then shows the sales you can trace back to AI.</p>
-    <form class="hero-check" id="check" method="post" action="/check">
-      <div class="hero-check-box">
+    <!-- Join the waitlist: the whole box is one button that opens the popup (46-waitlist.*). -->
+    <div class="hero-check hero-join" id="waitlist">
+      <button class="hero-check-box hero-join-box" type="button" data-waitlist="hero" aria-haspopup="dialog">
         <span class="hc-glow" aria-hidden="true"><span class="hc-halo"><span class="hc-run"><i></i></span></span><span class="hc-ring"><span class="hc-run"><i></i></span></span></span>
-        <label class="hero-check-field">
-          <svg class="hero-check-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-          <span class="hero-check-sr">Product link</span>
-          <input class="hero-check-input" type="text" name="url" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" maxlength="2000" required placeholder="Paste your product link">
-        </label>
-        <button class="btn btn-dark hero-check-btn" type="submit">Check my product</button>
-      </div>
-      <div class="hero-check-hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
-      <p class="hero-check-hint">See if AI recommends your product. Free, no sign-up.</p>
-      <p class="hero-check-note" role="status" hidden>Checks run on <a href="https://usegeo.app/#check" target="_blank" rel="noopener">the live site</a>.</p>
-    </form>
+        <span class="hero-check-field hero-join-field">
+          <svg class="hero-check-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5c.6 5 4.5 8.9 9.5 9.5-5 .6-8.9 4.5-9.5 9.5-.6-5-4.5-8.9-9.5-9.5 5-.6 8.9-4.5 9.5-9.5Z"/></svg>
+          <span class="hero-join-tx">Get early access for your store</span>
+        </span>
+        <span class="btn btn-dark hero-check-btn">Join the waitlist</span>
+      </button>
+      <p class="hero-check-hint">Free to join. We’ll reach out shortly.</p>
+    </div>
 
     <p class="hw-slogan" id="hw-slogan">Shoppers ask. AI recommends. You get the sale.</p>
     <div class="hw-wrap">

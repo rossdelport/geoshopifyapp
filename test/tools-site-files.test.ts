@@ -160,11 +160,11 @@ describe("llms.txt for usegeo.app", () => {
     expect(txt).toContain("- [Privacy policy](https://usegeo.app/privacy): what data GEO collects and why");
   });
 
-  it("takes the prices and trial from the plans, never typed in", () => {
+  it("takes the prices from the plans, never typed in, and says new stores join through the waitlist", () => {
     expect(txt).toContain(
-      `GEO has two plans: ${PLANS.core.name} at US$${PLANS.core.priceUsd} a month and ${PLANS.pro.name} at US$${PLANS.pro.priceUsd} a month, both with a ${PLANS.core.trialDays}-day free trial.`,
+      `GEO has two plans: ${PLANS.core.name} at US$${PLANS.core.priceUsd} a month and ${PLANS.pro.name} at US$${PLANS.pro.priceUsd} a month. New stores join through a waitlist on the home page.`,
     );
-    expect(PLANS.pro.trialDays).toBe(PLANS.core.trialDays);
+    expect(txt).not.toMatch(/free trial/i);
   });
 
   it("is served as plain text", async () => {
@@ -237,7 +237,7 @@ describe("/privacy after the free tools", () => {
     expect(text).toContain("Crawl4AI, or AnyAPI as a backup");
     expect(text).toContain("held in memory and cleared within a day");
     expect(text).toContain("We record what each search cost us, without your IP address or your search.");
-    expect(text).toContain("Last updated 11 October 2026");
+    expect(text).toContain("Last updated 12 October 2026");
     expect(DASHES.test(text)).toBe(false);
   });
 

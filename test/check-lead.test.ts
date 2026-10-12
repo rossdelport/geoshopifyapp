@@ -366,7 +366,9 @@ describe.skipIf(!url)("free check email capture (needs TEST_DATABASE_URL)", () =
         expect(body).not.toContain("keep sending me tips");
         expect(body).toContain("hello@geo.test");
         expect(body).toContain(`https://geo.test/check/${c.id}`);
-        expect(body).toContain("https://geo.test/auth/login?shop=kowhai-and-co.myshopify.com");
+        expect(body).toContain("https://geo.test/#waitlist");
+        expect(body).toContain("Join the GEO waitlist");
+        expect(body).not.toMatch(/free trial/i);
         expect(body).toContain("Fix these on your product page");
         expect(body).toContain("Café Lip Co");
         expect(body).not.toContain(String.fromCharCode(0x2014));

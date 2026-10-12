@@ -59,8 +59,8 @@ fs.writeFileSync(path.join(dir, outName), out);
 console.log(`${outName}: ${(out.length / 1024).toFixed(0)} KB from ${files.length} part files`);
 
 // Full build only: also write the live home page served at "/" by app/routes/_index/route.tsx.
-// Same page as a proper HTML document; images come from /home/img/, the sign-up buttons
-// go to the Shopify install (log in) page with the picked plan, and window.GEO_LIVE lets the hero check form post to /check.
+// Same page as a proper HTML document; images come from /home/img/, and window.GEO_LIVE lets the waitlist popup
+// post to /waitlist (the design preview shows the "on the waitlist" screen without saving).
 if (!only && outName === 'index.html') {
   const head = out.slice(0, out.indexOf('<div class="page">')).trim();
   const body = out.slice(out.indexOf('<div class="page">'));
@@ -103,9 +103,6 @@ ${body}</body>
 `
     .replaceAll('src="img/', 'src="/home/img/')
     .replaceAll('poster="img/', 'poster="/home/img/')
-    // Pricing card buttons carry their plan to the login page (42-pricing.js switches cycle= with the toggle).
-    .replace(/(<a class="btn[^"]*" href=)"#pricing" data-plan="(core|pro)"/g, '$1"/auth/login?plan=$2&amp;cycle=monthly" data-plan="$2"')
-    .replace(/(<a class="btn[^"]*" href=)"#pricing"/g, '$1"/auth/login"')
     .replace('href="https://usegeo.app/privacy" target="_blank" rel="noopener"', 'href="/privacy"');
   fs.mkdirSync(path.join(root, 'app', 'home'), { recursive: true });
   fs.writeFileSync(path.join(root, 'app', 'home', 'home.html'), site);

@@ -387,6 +387,32 @@ model PlanIntent {
   createdAt DateTime @default(now())
 }
 
+// People who joined the waitlist on the website (the home page popup). Not tied to a shop. One row per
+// address: joining again updates the name and the last time. ipHash = HMAC of the IP, only to stop abuse.
+// utm*/fbclid: where the visit came from (Meta ads), as sent in the page's address.
+model WaitlistSignup {
+  id          String   @id @default(cuid())
+  email       String   @unique // lowercased
+  name        String
+  source      String // the button: hero, nav, pricing, footer, link
+  plan        String? // core | pro, when joined from a pricing card
+  cycle       String? // monthly | yearly, with plan
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmContent  String?
+  utmTerm     String?
+  fbclid      String?
+  referrer    String?
+  consentText String // the exact words shown under the form
+  ipHash      String?
+  joins       Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([ipHash, updatedAt])
+}
+
 // Free product check from the public home page (no install). Not tied to a shop.
 // Deleted after 30 days (retention.server.ts). ipHash = sha256(ip + server secret), only to stop abuse.
 model PublicCheck {
