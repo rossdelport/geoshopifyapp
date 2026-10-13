@@ -117,14 +117,14 @@ export default function Questions() {
   const submit = (data: Record<string, string>) => fetcher.submit(data, { method: "post" });
 
   return (
-    <s-page heading="Questions">
+    <s-page heading="Buying questions">
       <s-button slot="primary-action" onClick={() => submit({ intent: "regenerate" })} {...(fetcher.state !== "idle" && fetcher.formData?.get("intent") === "regenerate" ? { loading: true } : {})}>
         Suggest new questions
       </s-button>
 
       <s-section>
         <s-paragraph>
-          These are the questions shoppers ask AI assistants. We check each one{" "}
+          These are the buying questions shoppers ask AI assistants. We check each one{" "}
           {data.scanned ? "on every scan" : "on your first scan"} and record whether you&apos;re recommended. Tracking{" "}
           <s-text type="strong">
             {data.active} of {data.limit}
@@ -133,14 +133,14 @@ export default function Questions() {
         </s-paragraph>
         <s-paragraph>
           <s-text color="subdued">
-            Questions are grouped by topic. Specific ones (a skin type, an ingredient, a budget, a gift) often have no search numbers we can
+            Buying questions are grouped by topic. Specific ones (a skin type, an ingredient, a budget, a gift) often have no search numbers we can
             measure, but AI answers them with smaller brands, so we always track some of them.
           </s-text>
         </s-paragraph>
         <div className="geo-row" style={{ marginTop: 12, alignItems: "flex-end" }}>
           <div className="geo-grow">
             <s-text-field
-              label="Add a question"
+              label="Add a buying question"
               placeholder="e.g. best natural deodorant for sensitive skin"
               value={text}
               onInput={(e) => setText(e.currentTarget.value)}

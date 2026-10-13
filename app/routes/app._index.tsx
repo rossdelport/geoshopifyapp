@@ -100,7 +100,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 const SETUP_STEPS = [
   "Reading your products",
-  "Writing the questions shoppers ask AI",
+  "Writing the buying questions shoppers ask AI",
   "Asking the AI assistants (twice each)",
   "Working out your score",
 ];
@@ -131,7 +131,7 @@ export default function Dashboard() {
             <div className="geo-welcome">
               <h1>Does ChatGPT recommend your store?</h1>
               <p>
-                Shoppers now ask AI assistants what to buy. We&apos;ll ask them the questions your customers ask, show you who
+                Shoppers now ask AI assistants what to buy. We&apos;ll ask them the buying questions your customers ask, show you who
                 they recommend instead, and how to change that.
               </p>
               <div className="geo-engines">
@@ -262,7 +262,7 @@ export default function Dashboard() {
         <s-banner tone="info" heading="That was your free scan">
           <s-paragraph>
             Start {PLANS.core.name}
-            {data.trialDays > 0 ? ` with a ${data.trialDays}-day free trial` : ""} to track your questions every week, get fixes
+            {data.trialDays > 0 ? ` with a ${data.trialDays}-day free trial` : ""} to track your buying questions every week, get fixes
             you can approve in one click, and see your AI sales.
           </s-paragraph>
         </s-banner>

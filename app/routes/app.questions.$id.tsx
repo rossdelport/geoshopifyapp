@@ -66,7 +66,7 @@ export default function QuestionDetail() {
   return (
     <s-page heading={data.question.text} inlineSize="large">
       <s-link slot="breadcrumb-actions" href="/app/questions">
-        Questions
+        Buying questions
       </s-link>
 
       <s-section>

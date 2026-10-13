@@ -126,7 +126,7 @@ export default function Settings() {
 
       <s-section heading={`Your plan: ${data.plan.name}`}>
         <s-stack direction="block" gap="base">
-          <UsageRow label="Questions tracked" used={data.usage.activeQuestions} limit={data.plan.questions} />
+          <UsageRow label="Buying questions tracked" used={data.usage.activeQuestions} limit={data.plan.questions} />
           {data.plan.id !== "free" && (
             <>
               <UsageRow label="Fixes this month" used={data.usage.fixesThisMonth} limit={data.plan.fixes} />
