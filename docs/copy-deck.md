@@ -45,8 +45,8 @@ The website no longer offers the 7-day free trial or an install. Every sign-up b
 `46-waitlist.*`, which saves name + email to `geo.WaitlistSignup` through `POST /waitlist`
 (`app/lib/waitlist.server.ts`).
 
-- **Hero:** the link box is now one big button: "Get early access for your store" + **Join the waitlist**. Line under it:
-  "Free to join. We’ll reach out shortly."
+- **Hero:** the link box is now one big button: "Get early access for your store" + **Join the waitlist**. No line under it
+  (Ross removed "Free to join. We’ll reach out shortly." on 13 Oct 2026).
 - **Nav:** **Join the waitlist** (phones: **Join waitlist**). **Closing CTA:** "Join the waitlist and be first to get GEO
   for your store. Free to join." + **Join the waitlist**.
 - **Pricing:** both cards' buttons say **Join the waitlist** (the card's plan and the Monthly / Yearly choice are saved
