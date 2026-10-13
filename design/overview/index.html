@@ -2543,6 +2543,21 @@ html.wl-lock { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .wl-card, .wl-tick { animation: none; }
 }
+
+/* 47-cookies.css */
+/* Cookie notice (47-cookies.html): a small card in the bottom left corner; full width on phones. */
+.ck {
+  position: fixed; z-index: 60; left: 16px; bottom: 16px; max-width: 440px;
+  display: flex; align-items: center; gap: 16px; padding: 12px 12px 12px 18px; border-radius: 16px;
+  background: var(--white); box-shadow: 0 0 0 1px rgba(11, 12, 43, 0.08), 0 18px 40px -16px rgba(11, 12, 43, 0.35);
+}
+.ck-tx { font-size: 14px; line-height: 1.45; color: var(--navy); }
+.ck-tx a { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
+.ck-btns { display: flex; gap: 8px; flex: none; }
+@media (max-width: 600px) {
+  .ck { left: 12px; right: 12px; bottom: 12px; max-width: none; flex-direction: column; align-items: stretch; gap: 10px; padding: 14px; }
+  .ck-btns > * { flex: 1; }
+}
 </style>
 
 <div class="page">
@@ -3427,6 +3442,17 @@ html.wl-lock { overflow: hidden; }
   </div>
   <canvas class="wl-confetti" aria-hidden="true"></canvas>
 </dialog>
+
+<!-- 47-cookies.html -->
+<!-- Cookie notice for the Meta pixel (the pixel is in the live page's head: pixel-head.js). Only on the live page,
+     until the visitor picks; 47-cookies.js shows it. -->
+<div class="ck" id="ck" role="region" aria-label="Cookies" hidden>
+  <p class="ck-tx"><span class="ck-q">We use cookies to see which of our ads work.</span> <a href="/privacy#cookies">Privacy</a></p>
+  <div class="ck-btns">
+    <button class="btn btn-light btn-sm ck-no" type="button">No thanks</button>
+    <button class="btn btn-dark btn-sm ck-ok" type="button">OK</button>
+  </div>
+</div>
 </div>
 <script>
 // 05-shared.js
@@ -4713,5 +4739,27 @@ html.wl-lock { overflow: hidden; }
     }
     raf = requestAnimationFrame(frame);
   }
+})();
+
+// 47-cookies.js
+// Cookie notice (47-cookies.html) for the Meta pixel in the live page's head (pixel-head.js), which defines
+// window.geoPixel. Shows until the visitor picks: "OK" starts the pixel (in Europe and the UK it waits for this),
+// "No thanks" stops it. The choice is kept in this browser as "geo-cookies".
+(function () {
+  var box = document.getElementById('ck');
+  if (!box || typeof window.geoPixel !== 'function') return; // the design preview has no pixel and no notice
+  var KEY = 'geo-cookies', choice = null;
+  try { choice = localStorage.getItem(KEY); } catch (e) { /* storage blocked: ask */ }
+  if (choice === 'yes' || choice === 'no') return;
+  if (window.GEO_ASK_FIRST) box.querySelector('.ck-q').textContent = 'Can we use cookies to see which of our ads work?';
+  function pick(value) {
+    try { localStorage.setItem(KEY, value); } catch (e) { /* not saved: asks again next visit */ }
+    if (value === 'yes') window.geoPixel();
+    else if (typeof window.fbq === 'function') window.fbq('consent', 'revoke');
+    box.hidden = true;
+  }
+  box.querySelector('.ck-ok').addEventListener('click', function () { pick('yes'); });
+  box.querySelector('.ck-no').addEventListener('click', function () { pick('no'); });
+  box.hidden = false;
 })();
 </script>

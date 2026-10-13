@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -111,6 +111,23 @@ describe("home page", () => {
     // desktop only: the section is hidden on phones, so there is no phone version
     expect(files).toEqual(["explainer-poster.jpg", "explainer.webm", "explainer.mp4"]);
     for (const f of files) expect(existsSync(join(imgDir, f)), `public/home/img/${f} is missing`).toBe(true);
+  });
+
+  it("loads GEO's Meta pixel in the live page's head, asks first in Europe and the UK, and never in the preview", async () => {
+    const html = await (await call("https://geo.test/")).text();
+    const head = html.slice(0, html.indexOf("</head>"));
+    expect(head).toContain("fbq('init', '28710910728563304');");
+    expect(head).toContain("fbq('track', 'PageView');");
+    expect(head).toContain("window.GEO_ASK_FIRST = /^(Europe\\/");
+    expect(html.match(/28710910728563304/g)).toHaveLength(1);
+    // no <noscript> image: without JavaScript nobody could say no
+    expect(html).not.toContain("facebook.com/tr?");
+    // the cookie notice, and "Lead" when someone joins the waitlist (no name or email in it)
+    expect(html).toContain('<div class="ck" id="ck" role="region" aria-label="Cookies" hidden>');
+    expect(html).toContain('<a href="/privacy#cookies">Privacy</a>');
+    expect(html).toContain("window.fbq('track', 'Lead', { content_name: 'waitlist' });");
+    const preview = readFileSync(join(fileURLToPath(new URL("..", import.meta.url)), "design", "overview", "index.html"), "utf8");
+    expect(preview).not.toContain("28710910728563304");
   });
 
   it("shows every story as a card in a moving row right under the hero, each linking to its own page", async () => {

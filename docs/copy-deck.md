@@ -472,6 +472,20 @@ first question; How it works step 2 now carries "so AI can pick you").
 
 ---
 
+## 11c. Cookie notice (`47-cookies.html`, live page only)
+
+Added 13 Oct 2026 with GEO's own Meta pixel (pixel-head.js, in the live page's head) for Ross's Meta ads. A small
+card bottom left (full width on phones) until the visitor picks; the choice is kept in the browser.
+
+- **Text (most of the world):** We use cookies to see which of our ads work. [Privacy]
+- **Text (Europe and the UK, guessed from the time zone; the pixel waits for OK):** Can we use cookies to see which
+  of our ads work? [Privacy]
+- **Buttons:** No thanks · OK
+- "Privacy" goes to `/privacy#cookies`, the section "Ads and cookies on our home page". Joining the waitlist sends
+  Meta a "Lead" event, never the name or email.
+
+---
+
 ## 12. Closing CTA and footer (`45-cta-footer.html`, id `contact`)
 
 - **H2:** Is AI recommending your products?

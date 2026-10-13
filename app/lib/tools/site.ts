@@ -9,7 +9,7 @@ export const BRAND_ALT = "GEO for Shopify";
 /** The last real change to app/home/home.html (git log -1 --format=%cs app/home/home.html). Sitemap lastmod for "/". */
 export const HOME_UPDATED = "2026-10-12";
 /** The last edit of the privacy page (routes/privacy.tsx). Sitemap lastmod for "/privacy". */
-export const PRIVACY_UPDATED = "2026-10-12";
+export const PRIVACY_UPDATED = "2026-10-13";
 
 /** A site path as an absolute URL on the canonical origin: "/" -> "https://usegeo.app/". */
 export const abs = (path: string) => SITE + (path === "/" ? "/" : path);

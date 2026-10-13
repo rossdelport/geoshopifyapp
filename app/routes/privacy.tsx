@@ -171,6 +171,21 @@ function PrivacyText() {
         you ask.
       </p>
 
+      <h2 style={h2} id="cookies">
+        Ads and cookies on our home page
+      </h2>
+      <p>
+        Our home page uses Meta&apos;s pixel (Meta runs Facebook and Instagram) so we can see which of our ads work and
+        show our ads to people who visited. It tells Meta that a browser looked at the page and, if you join the
+        waitlist, that someone joined. It never sends your name or email address. Meta may set cookies and receives
+        your browser&apos;s details and IP address, as Meta&apos;s own privacy policy describes.
+      </p>
+      <p>
+        In Europe and the UK the pixel only starts after you click OK on the cookie notice. Elsewhere it runs unless you
+        click No thanks. To change your choice, clear this site&apos;s cookies and data in your browser and the notice
+        shows again. The pixel is not part of the GEO app and never sees your store&apos;s data.
+      </p>
+
       <h2 style={h2}>Why we use it</h2>
       <p>
         <b>Your store&apos;s data:</b> only to run GEO for you: to check AI answers about your products, write suggested
@@ -212,6 +227,7 @@ function PrivacyText() {
       <h2 style={h2}>Services we use</h2>
       <ul>
         <li>Railway (Singapore): runs the app.</li>
+        <li>Meta (Facebook and Instagram): our own ads, and the pixel on our home page described above.</li>
         <li>Supabase (Tokyo): stores the data.</li>
         <li>Treg: fetches public AI answers to buyer questions. It gets the questions only, never customer data.</li>
         <li>Anthropic (Claude): reads AI answers and drafts fixes from your product details. It never gets customer data.</li>

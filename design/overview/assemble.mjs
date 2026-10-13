@@ -96,6 +96,11 @@ if (!only && outName === 'index.html') {
 <style>[hidden]:not([hidden="until-found"]){display:none!important}</style>
 <script>window.GEO_LIVE=true</script>
 ${head.replace('<title>GEO Overview</title>', `<title>${title}</title>`)}
+<!-- Meta Pixel Code (GEO's own; asks first in Europe and the UK, see design/overview/pixel-head.js) -->
+<script>
+${fs.readFileSync(path.join(dir, 'pixel-head.js'), 'utf8').trim()}
+</script>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 ${body}</body>
