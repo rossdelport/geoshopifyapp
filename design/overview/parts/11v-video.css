@@ -1,9 +1,9 @@
-/* "What you get when you join": the member tour (a made-up store, sample numbers, made with Remotion in
-   design/video), right under the hero. Calm: white page, the video in a rounded white frame with a soft shadow
-   and an "Example" tag.
+/* "What you get when you join": the explainer (a few words at a time, a made-up store and sample numbers, made
+   with Remotion in design/video), under the stories. Calm: white page, the video in a rounded white frame with
+   a soft shadow; the video carries its own "Example" tags.
    11v-video.js loads it only near the screen and plays it muted and looped; a small button pauses it.
    With reduced motion it doesn't start: the poster shows with a big play button. Without JavaScript the
-   browser's own controls show. Phones get a portrait version laid out for phones (the <source media>). */
+   browser's own controls show. */
 .vid-sec { background: var(--bg); padding: 80px 0 0; }
 .vid-sec + .eng { padding-top: 76px; }
 .vid-title { text-align: center; font-size: 30px; letter-spacing: -1px; line-height: 1.2; color: var(--navy); }

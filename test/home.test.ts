@@ -84,7 +84,7 @@ describe("home page", () => {
     for (const f of imgs) expect(existsSync(join(imgDir, f)), `public/home/img/${f} is missing`).toBe(true);
   });
 
-  it("explains itself in one line and shows the member tour video that ships", async () => {
+  it("explains itself in one line and shows the explainer video that ships", async () => {
     const html = await (await call("https://geo.test/")).text();
     expect(html).toContain("Like SEO, but for ChatGPT’s answers.");
     expect(html).toContain("Shoppers ask. AI recommends. You get the sale.");
@@ -96,11 +96,11 @@ describe("home page", () => {
     const video = html.slice(start, html.indexOf("</video>", start));
     expect(html).toContain(">What you get when you join</h2>");
     // A made-up store: the label says it is an example, and the honest "it takes time" line is in the description.
-    expect(video).toContain('aria-label="Example tour with a made-up store');
+    expect(video).toContain('aria-label="Short explainer, with a made-up store and sample numbers');
     expect(video).toContain("weeks or months to catch up");
     expect(video).toContain(" loop ");
     expect(video).toContain('preload="none"');
-    expect(video).toContain('poster="/home/img/member-tour-poster.jpg"');
+    expect(video).toContain('poster="/home/img/explainer-poster.jpg"');
     // Muted and inline so it may play; no autoplay attribute (11v-video.js starts it, never with reduced motion).
     expect(video).toContain(" muted ");
     expect(video).toContain(" playsinline ");
@@ -108,10 +108,9 @@ describe("home page", () => {
     expect(video).toContain('type="video/mp4"');
     expect(video).toContain('type="video/webm"');
     const files = [...video.matchAll(/(?:src|poster)="\/home\/img\/([^"]+)"/g)].map((m) => m[1]);
-    expect(files.length).toBeGreaterThanOrEqual(5);
-    // The phone poster is swapped in by script, so it must ship too.
-    expect(files).toEqual(expect.arrayContaining(["member-tour.mp4", "member-tour.webm", "member-tour-phone.mp4", "member-tour-phone.webm"]));
-    for (const f of [...files, "member-tour-phone-poster.jpg"]) expect(existsSync(join(imgDir, f)), `public/home/img/${f} is missing`).toBe(true);
+    // desktop only: the section is hidden on phones, so there is no phone version
+    expect(files).toEqual(["explainer-poster.jpg", "explainer.webm", "explainer.mp4"]);
+    for (const f of files) expect(existsSync(join(imgDir, f)), `public/home/img/${f} is missing`).toBe(true);
   });
 
   it("shows every story as a card in a moving row right under the hero, each linking to its own page", async () => {

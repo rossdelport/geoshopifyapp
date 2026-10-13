@@ -113,10 +113,9 @@ ${body}</body>
   const used = [...new Set([...out.matchAll(/(?:src|poster)="img\/([^"]+)"/g)].map((m) => m[1]))];
   // Images other pages load from /home/img/ even when the home page doesn't use them
   // (the free product check pages: app/components/check-ui.tsx).
-  // The phone poster of the member tour video, which 11v-video.js swaps in on phones.
   // Every story's logo and the Shopify bag (logos/), for the /stories pages (app/components/story-ui.tsx).
   const extra = [
-    'clay-magnifier.jpg', 'clay-bubble.png', 'clay-bag.png', 'clay-storefront.jpg', 'member-tour-phone-poster.jpg',
+    'clay-magnifier.jpg', 'clay-bubble.png', 'clay-bag.png', 'clay-storefront.jpg',
     ...stories.map((s) => s.logo), 'logos/shopify.svg',
   ].filter((f, i, all) => !used.includes(f) && all.indexOf(f) === i);
   for (const f of [...used, ...extra]) {

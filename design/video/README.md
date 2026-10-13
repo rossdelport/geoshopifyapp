@@ -1,8 +1,10 @@
 # Home page video (Remotion)
 
 The silent, looping video in the home page's video section (`design/overview/parts/11v-video.*`), made with
-[Remotion](https://www.remotion.dev). Today that is the **member tour** ("What you get when you join"): 56 s,
-compositions `MemberTour` (desktop) and `MemberTourPhone` (phone), built from `docs/video/storyboard.md`. This folder is standalone: its own `package.json` and `node_modules`, not an
+[Remotion](https://www.remotion.dev). Since 13 Oct 2026 that is the **explainer** ("What you get when you join"):
+about 54 s, composition `Explainer` (desktop only, the page hides the section on phones), code in
+`src/explainer/`, scenes and render commands in `docs/video/explainer.md`. Before that it was the **member tour**
+(compositions `MemberTour` and `MemberTourPhone`, `docs/video/storyboard.md`), kept here but no longer on the page. This folder is standalone: its own `package.json` and `node_modules`, not an
 npm workspace, never added to the app's root `package.json`. The root `tsconfig.json` excludes it and
 `.dockerignore` keeps `node_modules/` and `out/` out of the app image.
 
@@ -27,7 +29,8 @@ Setup on a new machine: `cd design/video && npm ci`.
 |---|---|
 | `src/index.ts` | Entry point (`registerRoot`). |
 | `src/Root.tsx` | The compositions: `MemberTour`, `MemberTourPhone` (1,680 frames each), the test card and the font specimen. |
-| `src/tour/` | The member tour. `MemberTour.tsx` puts it together (and the loop seam); `data.ts` holds every word and number on screen (the copy check is one file); `timeline.ts` the scene starts, clicks, tab and badge states and the motion helpers; `geometry.ts` where things sit in each layout; `AppWindow.tsx`, `Caption.tsx`, `Pointer.tsx`, `targets.ts` and `ui.tsx` the shared pieces; `scenes/` one file per screen. |
+| `src/explainer/` | The explainer. `Explainer.tsx` lists the scenes and their lengths (each starts where the one before ends); `kit.tsx` holds the backgrounds, text effects, logo, AI coins and cursor; `scenes-intro.tsx` and `scenes-work.tsx` one component per scene. The AI logos are in `public/logos/` (lobe-icons, MIT). |
+| `src/tour/` | The member tour (retired from the page). `MemberTour.tsx` puts it together (and the loop seam); `data.ts` holds every word and number on screen (the copy check is one file); `timeline.ts` the scene starts, clicks, tab and badge states and the motion helpers; `geometry.ts` where things sit in each layout; `AppWindow.tsx`, `Caption.tsx`, `Pointer.tsx`, `targets.ts` and `ui.tsx` the shared pieces; `scenes/` one file per screen. |
 | `src/fonts.ts` | Loads the site's fonts from `public/fonts` (see "Fonts"). Exports `FONT_HEAD` and `FONT_BODY`. |
 | `src/theme.ts` | The page's colours (`C`), gradients and shadows, copied from `design/overview/base.css`. |
 | `src/global.css` | The page's base CSS (box sizing, body text, `.tnum`). |

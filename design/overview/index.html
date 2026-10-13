@@ -1100,12 +1100,12 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 }
 
 /* 11v-video.css */
-/* "What you get when you join": the member tour (a made-up store, sample numbers, made with Remotion in
-   design/video), right under the hero. Calm: white page, the video in a rounded white frame with a soft shadow
-   and an "Example" tag.
+/* "What you get when you join": the explainer (a few words at a time, a made-up store and sample numbers, made
+   with Remotion in design/video), under the stories. Calm: white page, the video in a rounded white frame with
+   a soft shadow; the video carries its own "Example" tags.
    11v-video.js loads it only near the screen and plays it muted and looped; a small button pauses it.
    With reduced motion it doesn't start: the poster shows with a big play button. Without JavaScript the
-   browser's own controls show. Phones get a portrait version laid out for phones (the <source media>). */
+   browser's own controls show. */
 .vid-sec { background: var(--bg); padding: 80px 0 0; }
 .vid-sec + .eng { padding-top: 76px; }
 .vid-title { text-align: center; font-size: 30px; letter-spacing: -1px; line-height: 1.2; color: var(--navy); }
@@ -2737,14 +2737,12 @@ html.wl-lock { overflow: hidden; }
     <h2 class="vid-title" id="vid-title" data-rise>What you get when you join</h2>
     <div class="vid-frame" data-rise>
       <div class="vid-bar" aria-hidden="true"><span class="vid-dots"><i></i><i></i><i></i></span></div>
-      <!-- The member tour: a made-up store, every number a sample (design/video, docs/video/storyboard.md). 11v-video.js loads and plays it near the screen (never with reduced motion: then it waits for the play button). Without JavaScript the browser's own controls show. -->
-      <video class="vid" muted loop playsinline preload="none" controls width="1280" height="800" poster="img/member-tour-poster.jpg" aria-label="Example tour with a made-up store: GEO writes the questions shoppers ask AI, shows who AI picks instead, puts fixes live when you approve them, adds guide pages and pitches each month, checks AI every week and counts sales from AI; AI answers can take weeks or months to catch up.">
-        <source media="(max-width: 600px)" src="img/member-tour-phone.webm" type="video/webm">
-        <source media="(max-width: 600px)" src="img/member-tour-phone.mp4" type="video/mp4">
-        <source src="img/member-tour.webm" type="video/webm">
-        <source src="img/member-tour.mp4" type="video/mp4">
+      <!-- The explainer: what GEO does, a few words at a time, with a made-up store and sample numbers (design/video, docs/video/explainer.md). 11v-video.js loads and plays it near the screen (never with reduced motion: then it waits for the play button). Without JavaScript the browser's own controls show. The section is hidden on phones. -->
+      <video class="vid" muted loop playsinline preload="none" controls width="1280" height="800" poster="img/explainer-poster.jpg" aria-label="Short explainer, with a made-up store and sample numbers: shoppers don’t just Google anymore, they ask AI, and AI picks a few brands. Every week GEO asks AI your shoppers’ questions and sees who it picks. It rewrites your product pages when you approve, writes buying guides, finds the sites AI trusts and shows you the sales from AI. AI answers can take weeks or months to catch up.">
+        <source src="img/explainer.webm" type="video/webm">
+        <source src="img/explainer.mp4" type="video/mp4">
       </video>
-      <button class="vid-btn" type="button" hidden aria-label="Play the example tour"><svg class="vid-ic-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5Z"/></svg><svg class="vid-ic-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg></button>
+      <button class="vid-btn" type="button" hidden aria-label="Play the video"><svg class="vid-ic-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5Z"/></svg><svg class="vid-ic-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg></button>
     </div>
   </div>
 </section>
@@ -3670,17 +3668,16 @@ html.wl-lock { overflow: hidden; }
 })();
 
 // 11v-video.js
-// "What you get when you join" (11v-video.html): the member tour video only loads once it is near the screen,
+// "What you get when you join" (11v-video.html): the explainer video only loads once it is near the screen,
 // then plays muted and looped, and pauses while it is off screen. Our one small button (play / pause) replaces
 // the browser's controls. With reduced motion it never starts by itself: the poster shows with the big play
-// button. Phones get the poster of the phone version (the <source media> picks the phone video itself).
+// button. The section is hidden on phones, so they never load it.
 (function () {
   var frame = document.querySelector('.vid-frame');
   var v = frame && frame.querySelector('.vid');
   var btn = frame && frame.querySelector('.vid-btn');
   if (!v || !btn) return;
   var mm = window.matchMedia ? function (q) { return window.matchMedia(q).matches; } : function () { return false; };
-  if (mm('(max-width: 600px)')) v.setAttribute('poster', v.getAttribute('poster').replace('member-tour-poster', 'member-tour-phone-poster'));
   v.controls = false;
   v.removeAttribute('controls');
   btn.hidden = false;
@@ -3689,7 +3686,7 @@ html.wl-lock { overflow: hidden; }
   function sync() {
     var playing = !v.paused;
     frame.classList.toggle('is-playing', playing);
-    btn.setAttribute('aria-label', playing ? 'Pause the example tour' : 'Play the example tour');
+    btn.setAttribute('aria-label', playing ? 'Pause the video' : 'Play the video');
   }
   function start() {
     v.preload = 'auto';

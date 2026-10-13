@@ -3,14 +3,12 @@
     <h2 class="vid-title" id="vid-title" data-rise>What you get when you join</h2>
     <div class="vid-frame" data-rise>
       <div class="vid-bar" aria-hidden="true"><span class="vid-dots"><i></i><i></i><i></i></span></div>
-      <!-- The member tour: a made-up store, every number a sample (design/video, docs/video/storyboard.md). 11v-video.js loads and plays it near the screen (never with reduced motion: then it waits for the play button). Without JavaScript the browser's own controls show. -->
-      <video class="vid" muted loop playsinline preload="none" controls width="1280" height="800" poster="img/member-tour-poster.jpg" aria-label="Example tour with a made-up store: GEO writes the questions shoppers ask AI, shows who AI picks instead, puts fixes live when you approve them, adds guide pages and pitches each month, checks AI every week and counts sales from AI; AI answers can take weeks or months to catch up.">
-        <source media="(max-width: 600px)" src="img/member-tour-phone.webm" type="video/webm">
-        <source media="(max-width: 600px)" src="img/member-tour-phone.mp4" type="video/mp4">
-        <source src="img/member-tour.webm" type="video/webm">
-        <source src="img/member-tour.mp4" type="video/mp4">
+      <!-- The explainer: what GEO does, a few words at a time, with a made-up store and sample numbers (design/video, docs/video/explainer.md). 11v-video.js loads and plays it near the screen (never with reduced motion: then it waits for the play button). Without JavaScript the browser's own controls show. The section is hidden on phones. -->
+      <video class="vid" muted loop playsinline preload="none" controls width="1280" height="800" poster="img/explainer-poster.jpg" aria-label="Short explainer, with a made-up store and sample numbers: shoppers don’t just Google anymore, they ask AI, and AI picks a few brands. Every week GEO asks AI your shoppers’ questions and sees who it picks. It rewrites your product pages when you approve, writes buying guides, finds the sites AI trusts and shows you the sales from AI. AI answers can take weeks or months to catch up.">
+        <source src="img/explainer.webm" type="video/webm">
+        <source src="img/explainer.mp4" type="video/mp4">
       </video>
-      <button class="vid-btn" type="button" hidden aria-label="Play the example tour"><svg class="vid-ic-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5Z"/></svg><svg class="vid-ic-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg></button>
+      <button class="vid-btn" type="button" hidden aria-label="Play the video"><svg class="vid-ic-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5Z"/></svg><svg class="vid-ic-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg></button>
     </div>
   </div>
 </section>

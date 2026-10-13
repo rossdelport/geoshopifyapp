@@ -261,28 +261,26 @@ Card lines stay at 8 words or fewer. On phones (760px and below) the cards sit i
 
 ## 4b. What you get when you join (`11v-video.html`, id `watch`)
 
-- **H2 (small):** What you get when you join · frame tag **Example**
-- A silent, looping 56 s tour of what a store gets after it joins, made with Remotion (`design/video`, storyboard
-  and every on-screen line in `docs/video/storyboard.md`, sources in `docs/video/research.md`). Made-up store
-  Coolabah Grooming Co., rivals Ridgeback, Saltbush, Banksia, Wattlebird, made-up example sites only; every number a
-  sample, with a small "Example" tag on every frame. Scenes: questions written minutes after install; day one
-  (score 29/100, who AI picks instead, sites AI trusts); approve a fix and it's live (undo any time); every month
-  (guide pages, pitches ready to send); every week (a fresh check, the trend moves both ways); the money ($4,820,
-  61 orders, 1,940 clicks vs before you joined) and the monthly email; then the end card "What to expect, and
-  when": Day one, See where you stand · The day you approve, Fixes go live on your store · Weeks to months, AI
-  answers catch up. Nobody can promise when. Button "Start 7-day free trial", "Billed through Shopify. Cancel any
-  time." Done-for-you differences show as a small note on each scene.
-- **aria-label:** Example tour with a made-up store: GEO writes the questions shoppers ask AI, shows who AI picks
-  instead, puts fixes live when you approve them, adds guide pages and pitches each month, checks AI every week
-  and counts sales from AI; AI answers can take weeks or months to catch up.
-- **Button labels:** Play the example tour · Pause the example tour
-- Files in `design/overview/img/`: `member-tour.mp4` / `.webm` (1280×800) and `member-tour-phone.mp4` / `.webm`
-  (780×1280, the 390×640 phone layout drawn at 2x, chosen by `<source media>` at 600px and below), posters
-  `member-tour-poster.jpg` and `member-tour-phone-poster.jpg` (frame 1325, the money scene; `11v-video.js` swaps
-  the phone one in on phones; `assemble.mjs` copies it). Render: `./render.sh MemberTour MemberTourPhone
-  member-tour 1325` in `design/video` (README there).
+- **H2 (small):** What you get when you join
+- Since 13 Oct 2026 a silent, looping 54 s **explainer** in the feel of a product launch film Ross shared: one to
+  five words at a time, dark and pastel scenes taking turns, one simple picture per idea. Every scene and line is
+  in `docs/video/explainer.md` (code `design/video/src/explainer/`). The story: Shoppers don’t just Google
+  anymore. They ask AI. AI picks a few brands. Is yours one of them? Introducing GEO (Get recommended by AI).
+  Every week, we ask AI · We see who AI picks · We rewrite your product pages (Approve, Live on your store) · We
+  write buying guides · We find the sites AI trusts (Pitch written) · You see the sales from AI ($4,280, 37 orders,
+  612 clicks) · Shoppers ask. AI recommends. You get the sale. · Join the waitlist usegeo.app · logo. Made-up store
+  and sample numbers, with "Example" tags. The old member tour (`storyboard.md`) is retired.
+- **aria-label:** Short explainer, with a made-up store and sample numbers: shoppers don’t just Google anymore,
+  they ask AI, and AI picks a few brands. Every week GEO asks AI your shoppers’ questions and sees who it picks.
+  It rewrites your product pages when you approve, writes buying guides, finds the sites AI trusts and shows you
+  the sales from AI. AI answers can take weeks or months to catch up.
+- **Button labels:** Play the video · Pause the video
+- Files in `design/overview/img/`: `explainer.mp4` / `.webm` (1280×800) and `explainer-poster.jpg` (frame 1326,
+  the money scene). Desktop only: the section is hidden on phones.
 - Loads only near the screen, plays muted and looped, pauses off screen; one small pause button. Reduced motion:
   never starts by itself (poster and a big play button). No JavaScript: the browser's own controls.
+
+---
 
 ## 5. Engines strip (`12-engines.html`)
 

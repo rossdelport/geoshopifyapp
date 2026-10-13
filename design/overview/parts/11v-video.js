@@ -1,14 +1,13 @@
-// "What you get when you join" (11v-video.html): the member tour video only loads once it is near the screen,
+// "What you get when you join" (11v-video.html): the explainer video only loads once it is near the screen,
 // then plays muted and looped, and pauses while it is off screen. Our one small button (play / pause) replaces
 // the browser's controls. With reduced motion it never starts by itself: the poster shows with the big play
-// button. Phones get the poster of the phone version (the <source media> picks the phone video itself).
+// button. The section is hidden on phones, so they never load it.
 (function () {
   var frame = document.querySelector('.vid-frame');
   var v = frame && frame.querySelector('.vid');
   var btn = frame && frame.querySelector('.vid-btn');
   if (!v || !btn) return;
   var mm = window.matchMedia ? function (q) { return window.matchMedia(q).matches; } : function () { return false; };
-  if (mm('(max-width: 600px)')) v.setAttribute('poster', v.getAttribute('poster').replace('member-tour-poster', 'member-tour-phone-poster'));
   v.controls = false;
   v.removeAttribute('controls');
   btn.hidden = false;
@@ -17,7 +16,7 @@
   function sync() {
     var playing = !v.paused;
     frame.classList.toggle('is-playing', playing);
-    btn.setAttribute('aria-label', playing ? 'Pause the example tour' : 'Play the example tour');
+    btn.setAttribute('aria-label', playing ? 'Pause the video' : 'Play the video');
   }
   function start() {
     v.preload = 'auto';
