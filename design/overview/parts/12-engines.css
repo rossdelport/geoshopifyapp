@@ -1,51 +1,69 @@
-/* Engines marquee (replaces Qarin's "Trusted by" logo strip). Neutral: grey marks on white. */
-.eng { background: var(--bg); padding: 88px 0 112px; }
-.eng-title { text-align: center; font-size: 16px; font-weight: 500; color: var(--navy); line-height: 1.5; }
-.eng-marquee {
-  margin-top: 36px;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
-  mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
-}
-.eng-track { display: flex; width: max-content; animation: eng-scroll 42s linear infinite; will-change: transform; }
-.eng-title { max-width: 640px; margin-inline: auto; text-wrap: balance; }
-.eng-marquee:hover .eng-track { animation-play-state: paused; }
-.eng-group { list-style: none; margin: 0; padding: 0 72px 0 0; display: flex; align-items: center; gap: 72px; flex: none; }
-.eng-item {
-  display: inline-flex; align-items: center; gap: 10px;
-  font-family: var(--font-head); font-weight: 500; font-size: 19px; letter-spacing: -0.4px;
-  color: #5f6078; white-space: nowrap; line-height: 1;
-  transition: color .25s ease;
-}
-.eng-item:hover { color: var(--navy); }
-.eng-mono {
-  width: 34px; height: 34px; border-radius: 50%; flex: none;
-  display: grid; place-items: center;
-  background: var(--warm-50); color: var(--text-2);
-  box-shadow: inset 0 0 0 1px var(--line-soft);
-  transition: color .25s ease, background-color .25s ease, transform .35s cubic-bezier(.34, 1.56, .64, 1);
-}
-.eng-item:hover .eng-mono { color: var(--navy); background: var(--warm-100); transform: translateY(-2px) scale(1.08); }
-.eng-mono svg { width: 17px; height: 17px; }
-.eng-pro {
-  margin-left: 2px; font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0;
-  color: var(--ink-2); background: var(--warm-100); box-shadow: inset 0 0 0 1px var(--line-soft); border-radius: 6px; padding: 4px 6px; line-height: 1;
-}
-@keyframes eng-scroll { from { transform: translateX(0); } to { transform: translateX(-33.3333%); } }
+/* The AI we check: their logos as 3D coins going round a tilted ring (after Ross's reference: flag coins on a
+   ring). Each coin has two numbers, --s (left/right) and --c (front/back): the CSS turns them into the spot on
+   the ring, the size (back coins are smaller), the turn (side coins look narrower), the rim showing its
+   thickness and a little shade. 12-engines.js moves them round; without it they rest with ChatGPT in front. */
+.eng { background: var(--bg); padding: 88px 0 104px; }
+.eng-wrap { display: flex; flex-direction: column; align-items: center; }
 
-@media (max-width: 1100px) { .eng { padding: 80px 0 96px; } }
+.eng-orbit {
+  --d: 100px; /* coin size */
+  --rx: 82px; /* how far the ring reaches left and right: less than a coin, so they overlap in a cluster */
+  --ry: 14px; /* how far it reaches down (front) and up (back) */
+  position: relative;
+  width: calc(2 * var(--rx) + var(--d));
+  height: calc(var(--d) + 2 * var(--ry) + 14px);
+  transform: rotate(-7deg); /* the ring is tilted, like the reference */
+}
+.eng-coin {
+  --s: 0; --c: 1;
+  position: absolute; left: 50%; top: 50%;
+  width: var(--d); height: var(--d); margin: calc(var(--d) / -2) 0 0 calc(var(--d) / -2);
+  transform: translate(calc(var(--s) * var(--rx)), calc(var(--c) * var(--ry))) rotate(7deg) scale(calc(0.78 + 0.22 * var(--c)));
+  will-change: transform;
+}
+/* the rim: the coin's thickness, showing below and to one side */
+.eng-coin::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background: var(--rim);
+  transform: translate(calc(var(--s) * -3px), 5px) scaleX(calc(1 - 0.24 * var(--s) * var(--s)));
+  box-shadow: 0 16px 26px -14px rgba(11, 12, 43, 0.5);
+}
+.eng-face {
+  position: absolute; inset: 0; border-radius: 50%; overflow: hidden;
+  display: grid; place-items: center;
+  color: var(--ink-on, #fff);
+  background: radial-gradient(circle at 34% 28%, var(--hi) 0%, var(--base) 58%, var(--lo) 100%);
+  box-shadow: inset 0 -6px 12px rgba(0, 0, 0, 0.16), inset 0 3px 6px rgba(255, 255, 255, 0.45), inset 0 0 0 1px rgba(11, 12, 43, 0.06);
+  transform: scaleX(calc(1 - 0.24 * var(--s) * var(--s)));
+}
+/* gloss on top, and shade for coins going round the back */
+.eng-face::before, .eng-face::after { content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; }
+.eng-face::before { background: radial-gradient(ellipse 60% 45% at 32% 22%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 70%); }
+.eng-face::after { background: #0b0c2b; opacity: calc((1 - var(--c)) * 0.09); }
+.eng-face svg { position: relative; width: 50%; height: 50%; }
+
+.eng-coin-chatgpt { --hi: #3a3b42; --base: #17181c; --lo: #050506; --rim: #000; --ink-on: #fff; }
+.eng-coin-gemini { --hi: #ffffff; --base: #f6f7fb; --lo: #dfe3f1; --rim: #c3c8de; }
+.eng-coin-claude { --hi: #ec9a7f; --base: #d97757; --lo: #b85b3c; --rim: #96462b; --ink-on: #fff8f2; }
+.eng-coin-perplexity { --hi: #3fb2c0; --base: #20808d; --lo: #155f69; --rim: #0f4a52; --ink-on: #fff; }
+.eng-coin-google { --hi: #ffffff; --base: #f6f7fb; --lo: #dfe3f1; --rim: #c3c8de; }
+
+/* where each coin rests without JavaScript (and with reduced motion): five spots round the ring */
+.eng-coin:nth-child(1) { --s: 0; --c: 1; z-index: 150; }
+.eng-coin:nth-child(2) { --s: 0.951; --c: 0.309; z-index: 115; }
+.eng-coin:nth-child(3) { --s: 0.588; --c: -0.809; z-index: 60; }
+.eng-coin:nth-child(4) { --s: -0.588; --c: -0.809; z-index: 60; }
+.eng-coin:nth-child(5) { --s: -0.951; --c: 0.309; z-index: 115; }
+
+.eng-title { margin-top: 30px; max-width: 640px; text-align: center; font-size: 16px; font-weight: 500; color: var(--navy); line-height: 1.5; text-wrap: balance; }
+.eng-names { margin-top: 4px; max-width: 560px; text-align: center; font-size: 14px; line-height: 1.55; color: var(--text); text-wrap: balance; }
+.eng-nw { white-space: nowrap; }
+
+@media (max-width: 1100px) { .eng { padding: 80px 0 92px; } }
 @media (max-width: 760px) {
   .eng { padding: 56px 0 64px; }
-  .eng-title { font-size: 15px; max-width: 300px; margin-inline: auto; text-wrap: balance; }
-  .eng-marquee { margin-top: 26px; }
-  .eng-group { gap: 44px; padding-right: 44px; }
-  .eng-item { font-size: 17px; gap: 8px; }
-  .eng-mono { width: 30px; height: 30px; }
-  .eng-mono svg { width: 15px; height: 15px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .eng-track { width: auto; justify-content: center; }
-  .eng-group { flex-wrap: wrap; justify-content: center; row-gap: 22px; padding-right: 0; flex: 1; }
-  .eng-group[aria-hidden="true"] { display: none; }
-  .eng-marquee { -webkit-mask-image: none; mask-image: none; }
+  .eng-orbit { --d: 80px; --rx: 66px; --ry: 11px; }
+  .eng-coin::before { transform: translate(calc(var(--s) * -2px), 4px) scaleX(calc(1 - 0.24 * var(--s) * var(--s))); }
+  .eng-title { margin-top: 24px; font-size: 15px; max-width: 300px; }
+  .eng-names { font-size: 13.5px; max-width: 320px; }
 }
