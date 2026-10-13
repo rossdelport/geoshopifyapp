@@ -4662,7 +4662,7 @@ html.wl-lock { overflow: hidden; }
       : new Promise(function (resolve) { setTimeout(function () { resolve({ ok: true }); }, 500); });
     send.then(function (res) {
       if (!res || !res.ok) throw new Error((res && res.error) || 'Something went wrong. Please try again.');
-      joined(name);
+      joined(name, res.isNew === true);
     }).catch(function (x) {
       fail(x && x.message && x.message.indexOf('Failed to fetch') < 0 ? x.message : 'Something went wrong. Please try again.');
     }).then(function () {
@@ -4672,15 +4672,18 @@ html.wl-lock { overflow: hidden; }
     });
   });
 
-  function joined(name) {
+  // The sign-up worked: show "You're on the waitlist!" with confetti, and at that same moment tell Meta "Lead"
+  // (the event the ads optimise for: "find more people like this"). Only for a new person, so someone joining
+  // twice counts once, like the founder's new sign-up email. No name or email goes to Meta.
+  function joined(name, isNew) {
     var first = name.split(' ')[0];
     done.querySelector('.wl-p').textContent = 'Thanks, ' + first + '. We’ll reach out shortly.';
     form.hidden = true;
     done.hidden = false;
     done.querySelector('.wl-h').focus();
-    if (typeof window.fbq === 'function') window.fbq('track', 'Lead', { content_name: 'waitlist' });
     if (!dlg.open) open(picked.source, picked.plan);
     confetti();
+    if (isNew && typeof window.fbq === 'function') window.fbq('track', 'Lead', { content_name: 'waitlist' });
   }
 
   // Confetti: brand-coloured paper falling from the top of the screen for about 4 seconds.

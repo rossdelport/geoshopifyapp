@@ -82,7 +82,7 @@ describe.skipIf(!url)("website waitlist (needs TEST_DATABASE_URL)", () => {
       referrer: "https://l.facebook.com/l.php?u=https%3A%2F%2Fusegeo.app%2F&h=secret",
     });
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ ok: true });
+    expect(await res.json()).toEqual({ ok: true, isNew: true });
     const row = await db.waitlistSignup.findUniqueOrThrow({ where: { email: "sam@beardco.com" } });
     expect(row).toMatchObject({
       name: "Sam Lee",
@@ -124,8 +124,9 @@ describe.skipIf(!url)("website waitlist (needs TEST_DATABASE_URL)", () => {
   });
 
   it("joining again keeps one row and where they first came from, updates the name, and emails the founder once", async () => {
-    await post({ name: "Sam", email: "sam@example.com", source: "hero", utm_campaign: "first" });
-    await post({ name: "Sam Lee", email: "SAM@example.com", source: "footer", utm_campaign: "second" });
+    expect(await (await post({ name: "Sam", email: "sam@example.com", source: "hero", utm_campaign: "first" })).json()).toEqual({ ok: true, isNew: true });
+    // the second time isn't new, so the page doesn't send Meta another "Lead"
+    expect(await (await post({ name: "Sam Lee", email: "SAM@example.com", source: "footer", utm_campaign: "second" })).json()).toEqual({ ok: true, isNew: false });
     const rows = await db.waitlistSignup.findMany();
     expect(rows).toHaveLength(1);
     expect(rows[0]).toMatchObject({ name: "Sam Lee", source: "hero", utmCampaign: "first", joins: 2 });

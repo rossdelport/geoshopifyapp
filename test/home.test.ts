@@ -125,7 +125,7 @@ describe("home page", () => {
     // the cookie notice, and "Lead" when someone joins the waitlist (no name or email in it)
     expect(html).toContain('<div class="ck" id="ck" role="region" aria-label="Cookies" hidden>');
     expect(html).toContain('<a href="/privacy#cookies">Privacy</a>');
-    expect(html).toContain("window.fbq('track', 'Lead', { content_name: 'waitlist' });");
+    expect(html).toContain("if (isNew && typeof window.fbq === 'function') window.fbq('track', 'Lead', { content_name: 'waitlist' });");
     const preview = readFileSync(join(fileURLToPath(new URL("..", import.meta.url)), "design", "overview", "index.html"), "utf8");
     expect(preview).not.toContain("28710910728563304");
   });

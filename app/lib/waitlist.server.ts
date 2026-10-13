@@ -28,7 +28,8 @@ const MAX_PER_IP = 10; // joins per IP per 24 h
 const MAX_PER_DAY = 2_000; // all joins per 24 h, so a bot can't fill the table
 const SOURCES = ["hero", "nav", "pricing", "footer", "link"] as const;
 
-export type WaitlistResult = { ok: true } | { ok: false; error: string };
+/** isNew: a new person (not an address already on the list). The page only tells Meta "Lead" for a new person. */
+export type WaitlistResult = { ok: true; isNew?: boolean } | { ok: false; error: string };
 
 export interface JoinInput {
   name: unknown;
@@ -117,7 +118,7 @@ export async function joinWaitlist(input: JoinInput): Promise<{ status: number; 
     if (env.alertEmail && emailConfigured()) await enqueue("waitlist.notice", { id: row.id });
     else console.log(`[waitlist] new signup ${row.id} (set GEO_ALERT_EMAIL to get an email for each one)`);
   }
-  return { status: 200, result: { ok: true } };
+  return { status: 200, result: { ok: true, isNew: !before } };
 }
 
 const esc = (s: string) =>
