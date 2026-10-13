@@ -1,4 +1,4 @@
-// The home page video ("What you get when you join"): a short explainer in the feel of a product launch film.
+// The home page video ("How GEO can increase your sales"): a short explainer in the feel of a product launch film.
 // A few words at a time, dark and pastel scenes taking turns, and one simple picture per idea: shoppers ask AI,
 // AI picks a few brands, then what GEO does in the background and the money it shows. 1280x800, 30 fps, silent,
 // looped on the page. Storyboard: docs/video/explainer.md.

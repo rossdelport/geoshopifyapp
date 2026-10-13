@@ -1,6 +1,6 @@
 # Home page video: the explainer (since 13 Oct 2026)
 
-Replaces the member tour (`storyboard.md`) in "What you get when you join". Ross: the tour put too much on screen
+Replaces the member tour (`storyboard.md`) in the video section, "How GEO can increase your sales" (was "What you get when you join"). Ross: the tour put too much on screen
 and didn't simply say how GEO helps and what it does in the background. He shared a product launch film from a
 similar company and asked for the same feel with GEO's own story.
 

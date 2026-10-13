@@ -94,7 +94,7 @@ describe("home page", () => {
     const start = html.indexOf('<video class="vid"');
     expect(start).toBeGreaterThan(-1);
     const video = html.slice(start, html.indexOf("</video>", start));
-    expect(html).toContain(">What you get when you join</h2>");
+    expect(html).toContain(">How GEO can increase your sales</h2>");
     // A made-up store: the label says it is an example, and the honest "it takes time" line is in the description.
     expect(video).toContain('aria-label="Short explainer, with a made-up store and sample numbers');
     expect(video).toContain("weeks or months to catch up");

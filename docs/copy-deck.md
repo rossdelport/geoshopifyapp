@@ -259,9 +259,9 @@ Card lines stay at 8 words or fewer. On phones (760px and below) the cards sit i
 
 ---
 
-## 4b. What you get when you join (`11v-video.html`, id `watch`)
+## 4b. How GEO can increase your sales (`11v-video.html`, id `watch`)
 
-- **H2 (small):** What you get when you join
+- **H2 (small):** How GEO can increase your sales (was "What you get when you join" until 13 Oct 2026)
 - Since 13 Oct 2026 a silent, looping 45 s **explainer** in the feel of a product launch film Ross shared: one to
   five words at a time, dark and pastel scenes taking turns, one simple picture per idea. Every scene and line is
   in `docs/video/explainer.md` (code `design/video/src/explainer/`). The story: Shoppers don’t just Google
@@ -653,7 +653,7 @@ Tip copy (in `buildTips`, keep the variables and the rules, no dashes):
 | `clay-bubble.png`, `clay-bag.png` | Hero, floating beside the cards; `clay-bubble.png` also by the FAQ chat | `""` |
 | `clay-coin.png` | Hero card 3, "New order" row | `""` |
 | `clay-magnifier.jpg` | Not on the home page any more; the free check pages still use it (copied by `assemble.mjs`) | |
-| `member-tour-poster.jpg`, `member-tour-phone-poster.jpg` | What you get when you join (posters of the video) | the video has an aria-label |
+| `explainer-poster.jpg` | How GEO can increase your sales (poster of the video) | the video has an aria-label |
 | `clay-coins.jpg` | What's it worth (no frame, edges fade into the band; hidden on phones) | `""` |
 | `clay-storefront.jpg` | Closing CTA card | `""` |
 

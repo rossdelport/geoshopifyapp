@@ -1,4 +1,4 @@
-// "What you get when you join" (11v-video.html): the explainer video only loads once it is near the screen,
+// "How GEO can increase your sales" (11v-video.html): the explainer video only loads once it is near the screen,
 // then plays muted and looped, and pauses while it is off screen. Our one small button (play / pause) replaces
 // the browser's controls. With reduced motion it never starts by itself: the poster shows with the big play
 // button. The section is hidden on phones, so they never load it.
