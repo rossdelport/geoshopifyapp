@@ -7,7 +7,7 @@
 
 .eng-orbit {
   --d: 100px; /* coin size */
-  --rx: 82px; /* how far the ring reaches left and right: less than a coin, so they overlap in a cluster */
+  --rx: 104px; /* how far the ring reaches left and right: about a coin, so they overlap in a cluster */
   --ry: 14px; /* how far it reaches down (front) and up (back) */
   position: relative;
   width: calc(2 * var(--rx) + var(--d));
@@ -47,13 +47,17 @@
 .eng-coin-claude { --hi: #ec9a7f; --base: #d97757; --lo: #b85b3c; --rim: #96462b; --ink-on: #fff8f2; }
 .eng-coin-perplexity { --hi: #3fb2c0; --base: #20808d; --lo: #155f69; --rim: #0f4a52; --ink-on: #fff; }
 .eng-coin-google { --hi: #ffffff; --base: #f6f7fb; --lo: #dfe3f1; --rim: #c3c8de; }
+.eng-coin-copilot { --hi: #ffffff; --base: #f6f7fb; --lo: #dfe3f1; --rim: #c3c8de; }
+.eng-coin-meta { --hi: #3d8bff; --base: #0866ff; --lo: #0550c8; --rim: #033f9e; --ink-on: #fff; }
 
-/* where each coin rests without JavaScript (and with reduced motion): five spots round the ring */
+/* where each coin rests without JavaScript (and with reduced motion): seven spots round the ring */
 .eng-coin:nth-child(1) { --s: 0; --c: 1; z-index: 150; }
-.eng-coin:nth-child(2) { --s: 0.951; --c: 0.309; z-index: 115; }
-.eng-coin:nth-child(3) { --s: 0.588; --c: -0.809; z-index: 60; }
-.eng-coin:nth-child(4) { --s: -0.588; --c: -0.809; z-index: 60; }
-.eng-coin:nth-child(5) { --s: -0.951; --c: 0.309; z-index: 115; }
+.eng-coin:nth-child(2) { --s: 0.782; --c: 0.623; z-index: 131; }
+.eng-coin:nth-child(3) { --s: 0.975; --c: -0.223; z-index: 89; }
+.eng-coin:nth-child(4) { --s: 0.434; --c: -0.901; z-index: 55; }
+.eng-coin:nth-child(5) { --s: -0.434; --c: -0.901; z-index: 55; }
+.eng-coin:nth-child(6) { --s: -0.975; --c: -0.223; z-index: 89; }
+.eng-coin:nth-child(7) { --s: -0.782; --c: 0.623; z-index: 131; }
 
 .eng-title { margin-top: 30px; max-width: 640px; text-align: center; font-size: 16px; font-weight: 500; color: var(--navy); line-height: 1.5; text-wrap: balance; }
 .eng-names { margin-top: 4px; max-width: 560px; text-align: center; font-size: 14px; line-height: 1.55; color: var(--text); text-wrap: balance; }
@@ -62,7 +66,7 @@
 @media (max-width: 1100px) { .eng { padding: 80px 0 92px; } }
 @media (max-width: 760px) {
   .eng { padding: 56px 0 64px; }
-  .eng-orbit { --d: 80px; --rx: 66px; --ry: 11px; }
+  .eng-orbit { --d: 80px; --rx: 84px; --ry: 11px; }
   .eng-coin::before { transform: translate(calc(var(--s) * -2px), 4px) scaleX(calc(1 - 0.24 * var(--s) * var(--s))); }
   .eng-title { margin-top: 24px; font-size: 15px; max-width: 300px; }
   .eng-names { font-size: 13.5px; max-width: 320px; }

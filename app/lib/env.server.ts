@@ -10,7 +10,7 @@ export const env = {
   modelSmart: process.env.AI_MODEL_SMART || "claude-opus-5-5",
   resendKey: process.env.RESEND_API_KEY || "",
   emailFrom: process.env.GEO_EMAIL_FROM || process.env.RESEND_FROM_EMAIL || "",
-  // Who hears when a store starts or leaves Done-for-you (hand outreach, the monthly call).
+  // Who is emailed about new waitlist signups, new stores, and stores starting or leaving Done-for-you.
   alertEmail: process.env.GEO_ALERT_EMAIL || "",
   billingTest: process.env.SHOPIFY_BILLING_TEST !== "false",
   runWorker: process.env.RUN_WORKER !== "false",
@@ -28,5 +28,5 @@ if (isProd && env.billingTest) {
   console.warn("[billing] WARNING: test billing is on (SHOPIFY_BILLING_TEST is not \"false\"). Subscriptions are test charges and nobody is billed.");
 }
 if (isProd && !env.alertEmail) {
-  console.warn("[billing] WARNING: GEO_ALERT_EMAIL is not set. Nobody is emailed when a store starts or leaves Done-for-you.");
+  console.warn("[billing] WARNING: GEO_ALERT_EMAIL is not set. Nobody is emailed about new signups, new stores or Done-for-you changes.");
 }

@@ -287,13 +287,15 @@ Card lines stay at 8 words or fewer. On phones (760px and below) the cards sit i
 ## 5. Engines strip (`12-engines.html`)
 
 Changed 13 Oct 2026 (Ross's reference video: flag coins going round a tilted ring). The logos are now 3D coins
-going round a ring, the front one biggest, one turn every 14 seconds. Pauses off screen; with reduced motion the
-coins stay still, ChatGPT in front. Logos from lobe-icons (MIT).
+going round a ring, the front one biggest, one turn every 18 seconds. Pauses off screen; with reduced motion the
+coins stay still, ChatGPT in front. Logos from lobe-icons (MIT). Ross asked for Copilot and Meta AI too (same
+day): GEO doesn't check their answers, but counts the sales they send, so the line under the ring says so.
 
-- **Coins:** ChatGPT (black), Gemini (white), Claude (orange), Perplexity (teal), Google (white).
-  Shopify is not in the ring: it isn't an AI shoppers ask.
-- **Title:** The AI your shoppers ask, checked every week
-- **Line under it:** ChatGPT, Gemini, Perplexity and Google AI Overviews, plus Claude on Done-for-you.
+- **Coins:** ChatGPT (black), Gemini (white), Claude (orange), Copilot (white), Perplexity (teal), Google (white),
+  Meta AI (Meta blue, Meta's logo). Shopify is not in the ring: it isn't an AI shoppers ask.
+- **Title:** The AI your shoppers ask
+- **Line under it:** We check ChatGPT, Gemini, Perplexity and Google AI Overviews every week, plus Claude on
+  Done-for-you. Sales from Copilot and Meta AI count too.
 
 ---
 
