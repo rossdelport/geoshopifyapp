@@ -323,7 +323,7 @@ function drawTop(pdf: Pdf, input: PdfReportInput) {
   const { product, country } = input;
   const titleH = pdf.height(product.title, "bold", 20, CW, 1);
   const where = country ? ` as a shopper in ${CHECK_COUNTRIES[country]}` : "";
-  const checked = `Checked on ${longDate(new Date(input.createdAt), country)} on ChatGPT, Gemini and Perplexity${where}. 3 buyer questions, each asked twice.`;
+  const checked = `Checked on ${longDate(new Date(input.createdAt), country)} on ChatGPT, Gemini and Perplexity${where}. 3 buying questions, each asked twice.`;
   const checkedH = pdf.height(checked, "body", 9.5, CW);
   const bandH = 92 + titleH + 18 + checkedH + 22;
   const d = pdf.doc;
@@ -583,7 +583,7 @@ function drawQuestions(pdf: Pdf, input: PdfReportInput) {
 function drawCta(pdf: Pdf, input: PdfReportInput) {
   const plan = PLANS.core;
   const heading = "Track this every week and fix it in one click";
-  const body = `GEO checks up to ${plan.questions} buyer questions every week, writes fixes you approve in one click, and counts the orders it can trace back to AI.`;
+  const body = `GEO checks up to ${plan.questions} buying questions every week, writes fixes you approve in one click, and counts the orders it can trace back to AI.`;
   const price = `${plan.name} is US$${plan.priceUsd} a month. Join the waitlist and we’ll reach out shortly.`;
   const iw = CW - 48;
   const online = input.checkUrl ? `See this report online: ${shortUrl(input.checkUrl, 90)}` : "";

@@ -19,7 +19,7 @@ import {
 } from "../lib/check-types";
 import { domainOf, formatPrice } from "./check-ui";
 
-export const STEPS = ["Reading your page", "Writing buyer questions", "Asking ChatGPT, Gemini and Perplexity", "Writing your report"];
+export const STEPS = ["Reading your page", "Writing buying questions", "Asking ChatGPT, Gemini and Perplexity", "Writing your report"];
 /** The same steps, short enough for the slim step strip on a phone. */
 const STEPS_SHORT = ["Reading your page", "Writing questions", "Asking ChatGPT & co", "Writing your report"];
 /** ...and on the smallest phones (360px and below), so the done steps keep their wires. */
@@ -403,7 +403,7 @@ function Writing({ view }: { view: CheckView }) {
         <Browser product={product} domain={product?.domain ?? null} />
         <div className="cl-card cl-compose">
           <div className="cl-card-h">
-            <span>Buyer questions</span>
+            <span>Buying questions</span>
             <span className="cl-pill">
               <Dots />
               Writing

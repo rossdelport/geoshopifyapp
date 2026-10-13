@@ -217,7 +217,7 @@ function geoStep(joinUrl: string): PlanStep {
   return {
     kind: "geo",
     title: "Let GEO do this every week",
-    body: `GEO checks up to ${plan.questions} buyer questions every week on ChatGPT, Gemini, Perplexity and Google AI Overviews, writes these fixes for you to approve in one click, and drafts your pitches.`,
+    body: `GEO checks up to ${plan.questions} buying questions every week on ChatGPT, Gemini, Perplexity and Google AI Overviews, writes these fixes for you to approve in one click, and drafts your pitches.`,
     items: [
       {
         label: "Join the GEO waitlist",

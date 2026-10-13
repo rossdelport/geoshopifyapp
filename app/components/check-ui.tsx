@@ -973,7 +973,7 @@ export function CheckReport({ view }: { view: CheckView }) {
         <div className="ck-cta-tx">
           <h2 className="ck-cta-h">Help AI recommend you, every week</h2>
           <p>
-            GEO {PLANS.core.name} checks up to {PLANS.core.questions} buyer questions every week, writes fixes that help AI
+            GEO {PLANS.core.name} checks up to {PLANS.core.questions} buying questions every week, writes fixes that help AI
             recommend your products (you approve each one), and counts the orders it can trace back to AI.
           </p>
           <p className="ck-cta-price">

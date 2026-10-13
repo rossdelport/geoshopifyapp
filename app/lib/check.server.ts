@@ -202,7 +202,7 @@ function stepText(status: CheckStatus, hasProduct: boolean): string {
     case "queued":
       return "Getting started";
     case "reading":
-      return hasProduct ? "Writing buyer questions" : "Reading your product";
+      return hasProduct ? "Writing buying questions" : "Reading your product";
     case "asking":
       return "Asking ChatGPT, Gemini and Perplexity. This is the slowest step.";
     case "writing":

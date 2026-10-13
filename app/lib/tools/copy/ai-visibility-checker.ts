@@ -22,10 +22,10 @@ const PRIVACY: FaqSource = { url: "/privacy", label: "GEO privacy policy" };
 // Timing: the spec's draft said "about 2 minutes" (from a planning estimate in competitors.md 9, never measured).
 // The check's own running page says "usually 3 to 6 min" (check-live.tsx) and docs/copy-deck.md says "a few
 // minutes", so the intro says that. test/tools-visibility.test.ts fails if check-live.tsx stops saying 3 to 6.
-// "shopper questions", not the spec draft's "real shopper questions": the check writes the 3 questions for the
+// "buying questions" (Ross, 13 Oct 2026; was "shopper questions"), not the spec draft's "real shopper questions": the check writes the 3 questions for the
 // product (understandProduct in check.server.ts); they don't come from real searches.
 export const INTRO =
-  "The AI Visibility Checker is a free tool that asks ChatGPT, Gemini and Perplexity shopper questions about your product and shows whether they recommend it, which brands they name instead, and which websites they trust. It usually takes a few minutes.";
+  "The AI Visibility Checker is a free tool that asks ChatGPT, Gemini and Perplexity buying questions about your product and shows whether they recommend it, which brands they name instead, and which websites they trust. It usually takes a few minutes.";
 
 // ---------- the sample report (on load) ----------
 
@@ -84,7 +84,7 @@ export const SOURCE_TYPE_CHIPS: Record<SourceType, string> = {
 // ---------- sections under the button ----------
 
 export const WHAT_IT_CHECKS = [
-  "3 shopper questions written for your product, asked twice on each assistant",
+  "3 buying questions written for your product, asked twice on each assistant",
   "Whether your brand is named, and how often",
   "The brands named instead of you",
   "The websites the answers cite",
@@ -114,7 +114,7 @@ export const FAQS: ToolFaqItem[] = [
     q: "How is this different from other AI visibility checkers?",
     // source: docs/tools/research/competitors.md section 9 (a database lookup of past prompts; readiness scores
     // built from a site's own signals). No competitor is named on the page.
-    a: "Many free checkers give a readiness score from your site's code, or look your brand up in a database of past prompts. This one asks the assistants live, with questions written for one product, and shows the actual answers, the brands named and the sites cited.",
+    a: "Many free checkers give a readiness score from your site's code, or look your brand up in a database of old AI answers. This one asks the assistants live, with questions written for one product, and shows the actual answers, the brands named and the sites cited.",
   },
   {
     q: "Why does ChatGPT recommend my competitors instead?",

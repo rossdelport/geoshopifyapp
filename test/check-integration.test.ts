@@ -526,7 +526,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
     const reading = await db.publicCheck.create({ data: { url: "https://reading-shop.com.au/products/p", country: "auto", status: "reading", total: 18 } });
     expect((await check.getCheckView(reading.id))!).toMatchObject({ country: null, step: "Reading your product" });
     await db.publicCheck.update({ where: { id: reading.id }, data: { country: "NZ", product: { title: "Oil", brand: "Step Co", countryFrom: "domain" } } });
-    expect((await check.getCheckView(reading.id))!).toMatchObject({ country: "NZ", step: "Writing buyer questions" });
+    expect((await check.getCheckView(reading.id))!).toMatchObject({ country: "NZ", step: "Writing buying questions" });
   });
 
   it("never re-runs (and pays again for) a check that was interrupted", async () => {
@@ -565,7 +565,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
     const row = await db.publicCheck.create({
       data: { url: "https://step-shop.com.au/products/p", status: "reading", total: 18, product: { title: "Oil", brand: "Step Co" } },
     });
-    expect((await check.getCheckView(row.id))!.step).toBe("Writing buyer questions");
+    expect((await check.getCheckView(row.id))!.step).toBe("Writing buying questions");
     await db.publicCheck.update({ where: { id: row.id }, data: { status: "asking" } });
     expect((await check.getCheckView(row.id))!.step).toBe("Asking ChatGPT, Gemini and Perplexity. This is the slowest step.");
     await db.publicCheck.update({ where: { id: row.id }, data: { status: "reading", product: Prisma.DbNull } });

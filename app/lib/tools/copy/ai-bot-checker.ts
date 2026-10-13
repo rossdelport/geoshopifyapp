@@ -281,7 +281,7 @@ export const FAQS: ToolFaqItem[] = [
   {
     q: "Why do vague words hurt with AI shopping assistants?",
     // <!-- source: Microsoft Advertising blog, 8 Oct 2025 -->
-    a: "AI assistants answer shopper questions with facts they can repeat, like “for dry skin”, “30 ml” or “made with jojoba”. Microsoft's Bing team advises avoiding words like “innovative” or “eco” without specifics and anchoring claims in measurable facts: “42 dB dishwasher” instead of “quiet dishwasher”.",
+    a: "AI assistants answer buying questions with facts they can repeat, like “for dry skin”, “30 ml” or “made with jojoba”. Microsoft's Bing team advises avoiding words like “innovative” or “eco” without specifics and anchoring claims in measurable facts: “42 dB dishwasher” instead of “quiet dishwasher”.",
     sources: [MICROSOFT_AI_ANSWERS],
   },
   {

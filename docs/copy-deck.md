@@ -39,6 +39,12 @@ budget is now **1,050 words** (the page is at 1,048).
 
 ---
 
+## Wording: "buying questions" (13 Oct 2026)
+
+Ross: say **buying questions**, not "prompts", "buyer questions", "shopper questions" or "shopping questions", on the
+website, the free check, the free tools, the video and the ads. It reads better to store owners. (The in-app screen is
+still called "Questions".)
+
 ## Waitlist mode (12 Oct 2026, Ross: "start to run Meta ads to get sign ups")
 
 The website no longer offers the 7-day free trial or an install. Every sign-up button opens one popup,
@@ -305,7 +311,7 @@ day): GEO doesn't check their answers, but counts the sales they send, so the li
 
 | Big number | Label | Source line (links) |
 |---|---|---|
-| ~50M | shopping questions a day on ChatGPT | Our 2025 estimate: 2.5B messages × 2.1% (OpenAI) [F1a, F2] |
+| ~50M | buying questions a day on ChatGPT | Our 2025 estimate: 2.5B messages × 2.1% (OpenAI) [F1a, F2] |
 | nearly 60× | more orders from AI, Q4 2025 vs all of 2024 | Triple Whale stores, Jan 2026 [F5a] |
 | 60% | higher conversion from AI visitors | Adobe, US retail, July 2026 [F5c] |
 
@@ -387,7 +393,7 @@ Honesty notes for this section (checked in the code, 11 Oct 2026):
     AI orders 61 / 224, AI clicks 1,940 / 7,310, "▲ Change vs your starting point" (not on phones); By
     source bars; Visibility score 38/100, "How often AI names you".
   - **Questions** (panel title **Does AI name you?**, "Asked every week", first column header "Pick a
-    question"): three buyer questions with a named / not named mark per AI. A row shows its first AI's
+    question"): three buying questions with a named / not named mark per AI. A row shows its first AI's
     answer; each mark shows that AI's answer (9 short sample answers) with "You're #1/#2/#3" or "Not
     named". The beard wash question has **See GEO's fix**.
   - **Fixes** (badge 2): before/after product description, "Why: AI can now tell who it's for. Only
@@ -429,7 +435,7 @@ net for stores that install without starting a trial).
 | Yearly (switch) | **US$873** a year · small line: About US$73 a month. 3 months free. | **US$4,473** a year · small line: About US$373 a month. 3 months free. |
 | Line | You approve, AI does the work. | AI and our team do it for you. |
 | Button | Start 7-day free trial (live: `/auth/login?plan=core&cycle=monthly`, cycle follows the switch) | Start 7-day free trial (`plan=pro`) |
-| 1 | 50 buyer questions, scanned weekly | 100 buyer questions, scanned daily |
+| 1 | 50 buying questions, scanned weekly | 100 buying questions, scanned daily |
 | 2 | ChatGPT, Gemini, Perplexity, Google AI Overviews | Also checks Claude |
 | 3 | Unlimited fixes, one-click approve | Fixes applied for you, undo any time |
 | 4 | 500 products, 2 guide pages a month | 2,000 products, 8 guide pages a month |
@@ -465,7 +471,7 @@ net for stores that install without starting a trial).
 | Can I pay to appear in AI answers? | Not on ChatGPT. OpenAI says ads can't shape its answers. Google sells ads in AI Overviews in many countries. GEO helps you earn the unpaid ones. Sources: OpenAI and Google Ads Help [F6] |
 | Will GEO change my store without asking? | Not on Standard: you approve every change. Done-for-you makes them for you, except risky ones like product claims. Undo takes one click. |
 | If GEO costs money, what's free? | The product check, the free scan after install, the 7-day free trial and AI's clicks. After that, Standard is US$97 a month. |
-| How long does setup take? | About five minutes. Install from Shopify, tick your questions and the first scan starts. |
+| How long does setup take? | About five minutes. Install from Shopify, tick your buying questions and the first scan starts. |
 
 Dropped in the copy pass: "How does AI decide which stores to recommend?" (it overlapped with the new
 first question; How it works step 2 now carries "so AI can pick you").
@@ -555,7 +561,7 @@ shopper where your store is.**
 
 - Before the product is read: **Reading your product…**
 - Title: **Checking your product**
-- Steps: **Reading your product** → **Writing buyer questions** → **Asking ChatGPT, Gemini and
+- Steps: **Reading your product** → **Writing buying questions** → **Asking ChatGPT, Gemini and
   Perplexity** → **Writing your report**
 - Progress: **{done} of {total} answers in** (aria-label: **AI answers in**)
 - **The questions we're asking** (list of the 3 questions once known)
@@ -627,7 +633,7 @@ Tip copy (in `buildTips`, keep the variables and the rules, no dashes):
 
 **CTA card**
 - Heading: **Help AI recommend you, every week**
-- Text: **GEO Standard checks up to 50 buyer questions every week, writes fixes that help AI recommend your
+- Text: **GEO Standard checks up to 50 buying questions every week, writes fixes that help AI recommend your
   products (you approve each one), and counts the orders it can trace back to AI.** [source: P]
 - Price line: **Your first scan is free. Standard is US$97 a month after a 7-day free trial.** [source: P]
   (Plan name, price, questions and trial come from `app/lib/plans.ts`, so they follow any change there.)

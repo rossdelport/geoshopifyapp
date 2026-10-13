@@ -229,7 +229,7 @@ function PrivacyText() {
         <li>Railway (Singapore): runs the app.</li>
         <li>Meta (Facebook and Instagram): our own ads, and the pixel on our home page described above.</li>
         <li>Supabase (Tokyo): stores the data.</li>
-        <li>Treg: fetches public AI answers to buyer questions. It gets the questions only, never customer data.</li>
+        <li>Treg: fetches public AI answers to buying questions. It gets the questions only, never customer data.</li>
         <li>Anthropic (Claude): reads AI answers and drafts fixes from your product details. It never gets customer data.</li>
         <li>
           Resend: sends your monthly email report, and free check reports (and tips, for people who asked for them). It
