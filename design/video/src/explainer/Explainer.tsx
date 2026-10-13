@@ -5,11 +5,13 @@
 import React from "react";
 import { AbsoluteFill, Sequence } from "remotion";
 import { AIPicks, Anymore, BigAI, DontJust, Introducing, IsYours, LogoReveal, SearchBar, Shoppers, TheyAsk } from "./scenes-intro";
+import { SPEED } from "./kit";
 import { EndCard, EveryWeek, Guides, Join, Money, Orbit, Rewrite, Sites, Slogan, WhoPicks } from "./scenes-work";
 
-const END = 90;
+const END = 90; // the end card, in design frames
 
-// [scene, length in frames]. Each scene starts where the one before ends.
+// [scene, length in design frames]. Each plays SPEED times faster (kit.tsx), so it lasts length / SPEED frames,
+// and starts where the one before ends.
 const SCENES: [React.FC, number][] = [
   [Shoppers, 42],
   [DontJust, 30],
@@ -22,37 +24,38 @@ const SCENES: [React.FC, number][] = [
   [Introducing, 38],
   [LogoReveal, 84],
   [EveryWeek, 80],
-  [Orbit, 126],
+  [Orbit, 142],
   [WhoPicks, 96],
   [Rewrite, 130],
   [Guides, 90],
-  [Sites, 100],
+  [Sites, 132],
   [Money, 120],
   [Slogan, 96],
   [Join, 80],
 ];
 
+const real = (len: number) => Math.round(len / SPEED);
 const STARTS: number[] = [];
 let at = 0;
 for (const [, len] of SCENES) {
   STARTS.push(at);
-  at += len;
+  at += real(len);
 }
 const END_AT = at;
 
 export const EXPLAINER_FPS = 30;
-export const EXPLAINER_DURATION = END_AT + END;
+export const EXPLAINER_DURATION = END_AT + real(END);
 /** The poster: the money scene with every number counted up. */
-export const EXPLAINER_POSTER = STARTS[SCENES.findIndex(([s]) => s === Money)] + 100;
+export const EXPLAINER_POSTER = STARTS[SCENES.findIndex(([s]) => s === Money)] + real(100);
 
 export const Explainer: React.FC = () => (
   <AbsoluteFill style={{ background: "#07081f" }}>
     {SCENES.map(([Scene, len], i) => (
-      <Sequence key={i} from={STARTS[i]} durationInFrames={len}>
+      <Sequence key={i} from={STARTS[i]} durationInFrames={real(len)}>
         <Scene />
       </Sequence>
     ))}
-    <Sequence from={END_AT} durationInFrames={END}>
+    <Sequence from={END_AT} durationInFrames={real(END)}>
       <EndCard duration={END} />
     </Sequence>
   </AbsoluteFill>

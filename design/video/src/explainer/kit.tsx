@@ -1,6 +1,6 @@
 // Shared pieces for the explainer (Explainer.tsx): the two backgrounds (dark navy with a cobalt glow, soft pastel
 // mesh), the text effects (a word that streaks in, words that rise out of a blur), the GEO mark, the AI logo coins
-// and the cursor. Everything moves from the scene's own frame (useCurrentFrame), never from timers.
+// and the cursor. Everything moves from the scene's own frame (useF), never from timers.
 import React from "react";
 import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { FONT_HEAD } from "../fonts";
@@ -9,6 +9,12 @@ import { C } from "../theme";
 export const W = 1280;
 export const H = 800;
 export const NIGHT = "#07081f"; // the dark scenes' base (a deeper navy than the page's, like the reference)
+
+/** How fast the video plays its scenes: every scene is timed at 1x in "design frames" and played SPEED times
+ *  faster (Ross, 13 Oct 2026: "speed it up a little"). Explainer.tsx shortens each scene to match. */
+export const SPEED = 1.25;
+/** The scene's own frame, in design frames. Use it instead of useCurrentFrame() in every explainer scene. */
+export const useF = () => useCurrentFrame() * SPEED;
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 export const easeOut = Easing.bezier(0.22, 1, 0.36, 1);
@@ -20,7 +26,7 @@ export const io = (f: number, a: number, b: number, from: number, to: number, ea
 
 /** Dark scene: deep navy, a cobalt glow from the bottom left and dotted columns at the sides. */
 export const Dark: React.FC<{ children?: React.ReactNode; dots?: boolean }> = ({ children, dots = true }) => {
-  const f = useCurrentFrame();
+  const f = useF();
   const drift = Math.sin(f / 60) * 4;
   return (
     <AbsoluteFill style={{ background: NIGHT, overflow: "hidden" }}>
@@ -54,7 +60,7 @@ const BLOBS = [
 
 /** Light scene: near white with soft lilac, periwinkle, pink, peach and mint light drifting slowly. */
 export const Light: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
-  const f = useCurrentFrame();
+  const f = useF();
   return (
     <AbsoluteFill style={{ background: "#f8f7fd", overflow: "hidden" }}>
       {BLOBS.map((b, i) => (
@@ -106,7 +112,7 @@ export const StreakIn: React.FC<{ text: string; size: number; color?: string; at
   at = 0,
   trail = "#7d8cf0",
 }) => {
-  const f = useCurrentFrame();
+  const f = useF();
   const p = io(f, at, at + 14, 0, 1);
   const x = (1 - p) * -220;
   const base = head(size, color, { position: "absolute", left: "50%", top: "50%" });
@@ -151,7 +157,7 @@ export const Rise: React.FC<{
   gap?: number;
   stagger?: number;
 }> = ({ words, style, at = 0, gap = 0.26, stagger = 4 }) => {
-  const f = useCurrentFrame();
+  const f = useF();
   return (
     <span style={{ ...style, display: "inline-flex", gap: `${gap}em`, alignItems: "baseline" }}>
       {words.map((w, i) => {

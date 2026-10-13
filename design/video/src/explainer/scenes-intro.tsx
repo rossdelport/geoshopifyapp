@@ -1,11 +1,11 @@
 // The explainer's first half: the shift (shoppers ask AI now), the stakes (AI picks a few brands) and the
 // GEO logo. Each scene draws only itself and counts frames from its own start.
 import React from "react";
-import { AbsoluteFill, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, spring, useVideoConfig } from "remotion";
 import { ExampleTag } from "../TestCard";
 import { FONT_BODY } from "../fonts";
 import { C, SHADOW_LG } from "../theme";
-import { Center, Coin, Dark, GeoMark, Light, Rise, StreakIn, head, io, lilacText } from "./kit";
+import { Center, Coin, Dark, GeoMark, Light, Rise, StreakIn, head, io, lilacText, useF } from "./kit";
 
 const TAG: React.CSSProperties = { position: "absolute", right: 28, top: 24 };
 
@@ -31,7 +31,7 @@ const SearchIcon: React.FC = () => (
 );
 
 export const SearchBar: React.FC = () => {
-  const f = useCurrentFrame();
+  const f = useF();
   const text = "Google it";
   const n = Math.floor(io(f, 14, 34, 0, text.length, (t) => t));
   const caret = f < 44 && Math.floor(f / 8) % 2 === 0;
@@ -104,7 +104,7 @@ const bubble = (blue: boolean): React.CSSProperties => ({
 });
 
 export const TheyAsk: React.FC = () => {
-  const f = useCurrentFrame();
+  const f = useF();
   const { fps } = useVideoConfig();
   const drop = (at: number) => spring({ frame: f - at, fps, config: { damping: 11, mass: 0.7 } });
   const groupY = io(f, 0, 96, 70, -40, (t) => t);
@@ -156,7 +156,7 @@ export const TheyAsk: React.FC = () => {
 };
 
 export const BigAI: React.FC = () => {
-  const f = useCurrentFrame();
+  const f = useF();
   const tiles = Array.from({ length: 24 }, (_, i) => i);
   return (
     <Dark dots={false}>
@@ -197,7 +197,7 @@ export const BigAI: React.FC = () => {
 const RIVALS = ["Ridgeback Beard Co.", "Saltbush Beard Co.", "Banksia Beard Co."];
 
 export const AIPicks: React.FC = () => {
-  const f = useCurrentFrame();
+  const f = useF();
   const show = (at: number): React.CSSProperties => ({
     opacity: io(f, at, at + 8, 0, 1),
     transform: `translateY(${io(f, at, at + 12, 14, 0)}px)`,
@@ -261,7 +261,7 @@ export const Introducing: React.FC = () => (
 
 /** A lilac circle opens from the middle and the GEO logo comes together on it. */
 export const LogoReveal: React.FC<{ tagAt?: number }> = ({ tagAt = 44 }) => {
-  const f = useCurrentFrame();
+  const f = useF();
   const { fps } = useVideoConfig();
   const r = io(f, 0, 24, 0, 900);
   const join = spring({ frame: f - 10, fps, config: { damping: 14, mass: 0.8 } });

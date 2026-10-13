@@ -2,11 +2,11 @@
 // product pages, writes guides, finds the sites AI trusts), the money, and the close. Made-up store and sample
 // numbers only, so every scene with them carries the "Example" tag.
 import React from "react";
-import { AbsoluteFill, Freeze, Img, spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Freeze, Img, spring, staticFile, useVideoConfig } from "remotion";
 import { ExampleTag } from "../TestCard";
 import { FONT_BODY } from "../fonts";
 import { C, GRAD_BTN, SHADOW_LG } from "../theme";
-import { Center, Coin, Cursor, Dark, Engine, Light, Rise, head, io, lilacText } from "./kit";
+import { Center, Coin, Cursor, Dark, Engine, Light, Rise, head, io, lilacText, useF } from "./kit";
 import { LogoReveal } from "./scenes-intro";
 
 const TAG: React.CSSProperties = { position: "absolute", right: 28, top: 24 };
@@ -14,7 +14,7 @@ const cobalt = (t: string) => ({ t, style: { color: C.cobalt } });
 const lilac = (t: string) => ({ t, style: lilacText });
 
 export const EveryWeek: React.FC = () => {
-  const f = useCurrentFrame();
+  const f = useF();
   const words = ["we", "ask", "AI"];
   return (
     <Light>
@@ -62,14 +62,15 @@ const ORBIT: { engine: Engine; r: number; a: number; size: number }[] = [
   { engine: "claude", r: 440, a: 30, size: 72 },
 ];
 const QUESTIONS = ["best beard oil for dry skin?", "unscented beard oil?", "beard gift under $80?"];
+const Q_LEN = 44; // design frames each question stays (about 1.2 s at SPEED)
 
 export const Orbit: React.FC = () => {
-  const f = useCurrentFrame();
+  const f = useF();
   const local = Math.max(0, f - 8);
-  const qi = Math.min(QUESTIONS.length - 1, Math.floor(local / 38));
-  const t = local - qi * 38;
+  const qi = Math.min(QUESTIONS.length - 1, Math.floor(local / Q_LEN));
+  const t = local - qi * Q_LEN;
   const last = qi === QUESTIONS.length - 1;
-  const qOpacity = io(t, 0, 8, 0, 1) * (last ? 1 : io(t, 30, 38, 1, 0));
+  const qOpacity = io(t, 0, 8, 0, 1) * (last ? 1 : io(t, Q_LEN - 8, Q_LEN, 1, 0));
   return (
     <Dark dots={false}>
       <svg width={1280} height={800} style={{ position: "absolute", inset: 0 }}>
@@ -138,7 +139,7 @@ const PICKS = [
 ];
 
 export const WhoPicks: React.FC = () => {
-  const f = useCurrentFrame();
+  const f = useF();
   const chipY = 590;
   const glow = io(f, 52, 70, 0, 1);
   return (
@@ -196,7 +197,7 @@ export const WhoPicks: React.FC = () => {
 };
 
 export const Rewrite: React.FC = () => {
-  const f = useCurrentFrame();
+  const f = useF();
   const newTitle = "Beard Oil for Dry Skin, Unscented";
   const n = Math.floor(io(f, 36, 62, 0, newTitle.length, (t) => t));
   const press = io(f, 92, 96, 0, 1) * io(f, 98, 104, 1, 0);
@@ -285,7 +286,7 @@ export const Rewrite: React.FC = () => {
 };
 
 export const Guides: React.FC = () => {
-  const f = useCurrentFrame();
+  const f = useF();
   const lines = [94, 88, 91, 62];
   return (
     <Light>
@@ -330,76 +331,158 @@ export const Guides: React.FC = () => {
   );
 };
 
+// Outreach (Ross, 13 Oct 2026: "make it more clear that we contact websites to get your brand listed"): three
+// example sites with a "Best beard oils" list, a pitch flies to each, and the store is added to one list. One of
+// three, not all: a pitch asks, it doesn't promise.
 const SITES = [
-  { name: "The Groom Guide", x: 300, y: 340 },
-  { name: "Beard Weekly", x: 640, y: 300 },
-  { name: "Present Picks", x: 980, y: 340 },
+  { name: "The Groom Guide", x: 300, adds: false },
+  { name: "Beard Weekly", x: 640, adds: true },
+  { name: "Present Picks", x: 980, adds: false },
 ];
+const SITE_Y = 372;
+const MAIL = { x: 640, y: 652 };
+const ARRIVE = (i: number) => 52 + i * 6;
+
+const Envelope: React.FC<{ size: number; color: string }> = ({ size, color }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.9" strokeLinejoin="round">
+    <rect x="3" y="5" width="18" height="14" rx="2.5" />
+    <path d="m4 7 8 6 8-6" />
+  </svg>
+);
 
 export const Sites: React.FC = () => {
-  const f = useCurrentFrame();
-  const mail = { x: 640, y: 600 };
+  const f = useF();
+  // where a flying pitch is: along a curve from the pitch card up to the site's card
+  const flight = (i: number) => {
+    const t = io(f, ARRIVE(i) - 16, ARRIVE(i), 0, 1, (x) => x * x * (3 - 2 * x));
+    const p0 = { x: MAIL.x, y: MAIL.y - 34 };
+    const p1 = { x: (MAIL.x + SITES[i].x) / 2, y: MAIL.y - 210 };
+    const p2 = { x: SITES[i].x, y: SITE_Y + 100 };
+    const u = 1 - t;
+    return { t, x: u * u * p0.x + 2 * u * t * p1.x + t * t * p2.x, y: u * u * p0.y + 2 * u * t * p1.y + t * t * p2.y };
+  };
+  const row = (n: number, name: string, op = 1): React.ReactNode => (
+    <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 17, fontWeight: 500, color: `rgba(255,255,255,${0.62 * op})` }}>
+      <span style={{ width: 16, color: `rgba(255,255,255,${0.4 * op})` }}>{n}</span>
+      {name}
+    </div>
+  );
+  const allSent = f >= ARRIVE(2);
   return (
     <Dark>
       <ExampleTag style={TAG} />
-      <AbsoluteFill style={{ alignItems: "center", paddingTop: 100 }}>
-        <Rise words={["We", "find", "the", "sites", lilac("AI trusts")]} style={head(58, "#fff")} at={0} />
+      <AbsoluteFill style={{ alignItems: "center", paddingTop: 70, gap: 4 }}>
+        <Rise words={["We", "ask", "the", "sites", lilac("AI trusts")]} style={head(58, "#fff")} at={0} />
+        <Rise words={["to", "list", "your", "brand."]} style={head(58, "#fff")} at={12} />
       </AbsoluteFill>
       <svg width={1280} height={800} style={{ position: "absolute", inset: 0 }}>
-        {SITES.map((s, i) => (
+        {SITES.map((site) => (
           <path
-            key={s.name}
-            d={`M ${mail.x} ${mail.y - 40} C ${mail.x} ${mail.y - 140}, ${s.x} ${s.y + 170}, ${s.x} ${s.y + 60}`}
+            key={site.name}
+            d={`M ${MAIL.x} ${MAIL.y - 34} Q ${(MAIL.x + site.x) / 2} ${MAIL.y - 210} ${site.x} ${SITE_Y + 100}`}
             fill="none"
             stroke="#a8c4ff"
-            strokeWidth={2.4}
+            strokeWidth={2.2}
             strokeLinecap="round"
             strokeDasharray="0.5 10"
             strokeDashoffset={f * 2.4}
-            opacity={io(f, 50 + i * 4, 60 + i * 4, 0, 0.9)}
+            opacity={io(f, 30, 40, 0, 0.75)}
           />
         ))}
       </svg>
-      {SITES.map((s, i) => {
-        const p = io(f, 10 + i * 6, 24 + i * 6, 0, 1);
-        const sent = f >= 62 + i * 6;
+      {SITES.map((site, i) => {
+        const p = io(f, 10 + i * 5, 24 + i * 5, 0, 1);
+        const sent = f >= ARRIVE(i);
+        const listed = site.adds ? io(f, ARRIVE(i) + 10, ARRIVE(i) + 22, 0, 1) : 0;
         return (
           <div
-            key={s.name}
+            key={site.name}
             style={{
               position: "absolute",
-              left: s.x,
-              top: s.y,
-              width: 270,
-              padding: "20px 22px",
+              left: site.x,
+              top: SITE_Y,
+              width: 300,
+              padding: "18px 22px 20px",
               borderRadius: 20,
               background: "linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05))",
-              border: "1px solid rgba(255,255,255,0.22)",
-              boxShadow: sent ? "0 0 30px rgba(120, 220, 160, 0.35)" : "0 0 30px rgba(125,140,240,0.2)",
+              border: `1px solid ${listed > 0.5 ? "rgba(201,194,255,0.7)" : "rgba(255,255,255,0.22)"}`,
+              boxShadow: listed > 0 ? `0 0 ${36 * listed}px rgba(160, 150, 255, ${0.6 * listed})` : "0 0 30px rgba(125,140,240,0.2)",
               transform: `translate(-50%, -50%) translateY(${(1 - p) * 30}px)`,
               opacity: p,
               fontFamily: FONT_BODY,
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <span style={{ width: 36, height: 36, borderRadius: 10, display: "grid", placeItems: "center", background: "rgba(255,255,255,0.14)", color: "#fff", fontWeight: 700, fontSize: 17 }}>
-                {s.name[s.name.startsWith("The ") ? 4 : 0]}
+              <span style={{ width: 34, height: 34, borderRadius: 10, display: "grid", placeItems: "center", background: "rgba(255,255,255,0.14)", color: "#fff", fontWeight: 700, fontSize: 16 }}>
+                {site.name[site.name.startsWith("The ") ? 4 : 0]}
               </span>
-              <span style={{ ...head(22, "#fff", { letterSpacing: "-0.3px" }) }}>{s.name}</span>
-              {sent && <span style={{ marginLeft: "auto", color: C.green, fontSize: 22, fontWeight: 700 }}>✓</span>}
+              <span style={head(21, "#fff", { letterSpacing: "-0.3px" })}>{site.name}</span>
             </div>
-            <i style={{ display: "block", height: 9, borderRadius: 5, background: "rgba(255,255,255,0.14)", marginTop: 16, width: "92%" }} />
-            <i style={{ display: "block", height: 9, borderRadius: 5, background: "rgba(255,255,255,0.14)", marginTop: 9, width: "64%" }} />
+            <span style={{ fontSize: 15, fontWeight: 600, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: ".05em" }}>Best beard oils</span>
+            {row(1, "Ridgeback Beard Co.")}
+            {row(2, "Saltbush Beard Co.")}
+            {site.adds ? (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  margin: "0 -10px",
+                  padding: "7px 10px",
+                  borderRadius: 10,
+                  background: `rgba(201, 194, 255, ${0.18 * listed})`,
+                  fontSize: 17,
+                  fontWeight: 600,
+                  color: "#fff",
+                  opacity: listed,
+                  transform: `translateY(${(1 - listed) * 10}px)`,
+                }}
+              >
+                <span style={{ width: 16, color: "#c9c2ff" }}>3</span>
+                Coolabah Grooming
+                <span style={{ marginLeft: "auto", fontSize: 13, fontWeight: 700, color: C.navy, background: "#c9c2ff", borderRadius: 6, padding: "3px 7px" }}>NEW</span>
+              </div>
+            ) : (
+              row(3, "Banksia Beard Co.", 0.8)
+            )}
+            <span style={{ fontSize: 15, fontWeight: 600, color: C.green, opacity: sent ? io(f, ARRIVE(i), ARRIVE(i) + 6, 0, 1) : 0 }}>✓ Pitch sent</span>
           </div>
+        );
+      })}
+      {SITES.map((site, i) => {
+        const { t, x, y } = flight(i);
+        if (t <= 0 || t >= 1) return null;
+        return (
+          <span
+            key={site.name}
+            style={{
+              position: "absolute",
+              left: x,
+              top: y,
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              display: "grid",
+              placeItems: "center",
+              background: "#fff",
+              boxShadow: "0 0 24px rgba(150,165,245,0.7)",
+              transform: `translate(-50%, -50%) scale(${0.8 + 0.2 * Math.sin(t * Math.PI)})`,
+            }}
+          >
+            <Envelope size={24} color={C.cobalt} />
+          </span>
         );
       })}
       <div
         style={{
           position: "absolute",
-          left: mail.x,
-          top: mail.y,
-          transform: `translate(-50%, -50%) translateY(${io(f, 36, 50, 60, 0)}px)`,
-          opacity: io(f, 36, 46, 0, 1),
+          left: MAIL.x,
+          top: MAIL.y,
+          transform: `translate(-50%, -50%) translateY(${io(f, 26, 38, 50, 0)}px)`,
+          opacity: io(f, 26, 34, 0, 1),
           display: "flex",
           alignItems: "center",
           gap: 14,
@@ -409,11 +492,8 @@ export const Sites: React.FC = () => {
           boxShadow: "0 0 40px rgba(150, 165, 245, 0.5)",
         }}
       >
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={C.cobalt} strokeWidth="1.9" strokeLinejoin="round">
-          <rect x="3" y="5" width="18" height="14" rx="2.5" />
-          <path d="m4 7 8 6 8-6" />
-        </svg>
-        <span style={head(25, C.navy, { letterSpacing: "-0.4px" })}>Pitch written</span>
+        <Envelope size={28} color={C.cobalt} />
+        <span style={head(25, C.navy, { letterSpacing: "-0.4px" })}>{allSent ? "3 pitches sent" : "Your pitch"}</span>
       </div>
     </Dark>
   );
@@ -426,7 +506,7 @@ const SOURCES: { engine: Engine; label: string; pct: number }[] = [
 ];
 
 export const Money: React.FC = () => {
-  const f = useCurrentFrame();
+  const f = useF();
   const revenue = Math.round(io(f, 18, 66, 0, 4280));
   const orders = Math.round(io(f, 18, 66, 0, 37));
   const clicks = Math.round(io(f, 18, 66, 0, 612));
@@ -502,7 +582,7 @@ export const Slogan: React.FC = () => (
 );
 
 export const Join: React.FC = () => {
-  const f = useCurrentFrame();
+  const f = useF();
   const site = "usegeo.app";
   return (
     <Dark>
@@ -524,9 +604,9 @@ export const Join: React.FC = () => {
 
 /** The logo end card, which fades back to the opening's dark background so the loop joins up. */
 export const EndCard: React.FC<{ duration: number }> = ({ duration }) => {
-  const f = useCurrentFrame();
+  const f = useF();
   const { fps } = useVideoConfig();
-  const out = io(f, duration - 16, duration, 0, 1, (t) => t);
+  const out = io(f, duration - 18, duration - 2, 0, 1, (t) => t);
   const pop = spring({ frame: f, fps, config: { damping: 200 } });
   return (
     <AbsoluteFill>
