@@ -91,7 +91,7 @@ first fixes. Hand outreach and the call on Done-for-you start after the 7-day tr
 
 ### 1.4 Plan differences the video must not blur
 
-| | Standard (US$97/mo) | Done-for-you (US$497/mo) |
+| | Standard (US$49/mo) | Done-for-you (US$349/mo) |
 |---|---|---|
 | Who does the work | You approve each fix and guide | Fixes and guides go live for you (ones needing your input wait); switch off or undo any time |
 | Questions, how often | 50, checked every week | 100, checked every day (light daily, full weekly) |

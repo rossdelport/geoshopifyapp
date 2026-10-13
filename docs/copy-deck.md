@@ -411,7 +411,7 @@ Honesty notes for this section (checked in the code, 11 Oct 2026):
   kept low so the default never reads as a promised return next to the price)
 - **Result:** **$160** a month in sales · **$1,920** a year. The sum "2 orders × $80 = $160 a month, or $1,920 a
   year." is for screen readers only (the live region). The clay coins are hidden on phones.
-- **Line:** GEO Standard is US$97 a month. You decide what's realistic for your store. [source: P]
+- **Line:** GEO Standard is US$49 a month. You decide what's realistic for your store. [source: P]
 
 ---
 
@@ -431,8 +431,8 @@ net for stores that install without starting a trial).
 
 | | Standard (indigo card, badge "For most stores", edge light on hover) | Done-for-you (white card) |
 |---|---|---|
-| Monthly | **US$97** a month · small line: Or US$873 a year. | **US$497** a month · small line: Or US$4,473 a year. |
-| Yearly (switch) | **US$873** a year · small line: About US$73 a month. 3 months free. | **US$4,473** a year · small line: About US$373 a month. 3 months free. |
+| Monthly | **US$49** a month · small line: Or US$441 a year. | **US$349** a month · small line: Or US$3,141 a year. |
+| Yearly (switch) | **US$441** a year · small line: About US$37 a month. 3 months free. | **US$3,141** a year · small line: About US$262 a month. 3 months free. |
 | Line | You approve, AI does the work. | AI and our team do it for you. |
 | Button | Start 7-day free trial (live: `/auth/login?plan=core&cycle=monthly`, cycle follows the switch) | Start 7-day free trial (`plan=pro`) |
 | 1 | 50 buying questions, scanned weekly | 100 buying questions, scanned daily |
@@ -445,7 +445,7 @@ net for stores that install without starting a trial).
 - **Under the cards:** Not sure yet? **Run a free product check first.** (link to `#check`) · Billed in US dollars
   through Shopify. Cancel any time.
 - Yearly is exactly 9 times the monthly price (12 months for the price of 9), so "3 months free" is true. "About
-  US$73" and "about US$373" are 873 ÷ 12 = 72.75 and 4,473 ÷ 12 = 372.75, rounded to the dollar.
+  US$37" and "about US$262" are 441 ÷ 12 = 36.75 and 3,141 ÷ 12 = 261.75, rounded to the dollar.
 - Honesty: no struck-through or "was" prices (Australian Consumer Law: only a price we really charged can be
   struck through), no "10x value", no savings claim beyond "3 months free", no promised results. The trial is
   Shopify's built-in 7-day free trial on both plans. GEO itself is never called free.
@@ -470,7 +470,7 @@ net for stores that install without starting a trial).
 | How do you know a sale came from AI? | ChatGPT usually adds `utm_source=chatgpt.com` to its links. We spot other AI visits too. Google AI Overviews can't be cleanly separated. |
 | Can I pay to appear in AI answers? | Not on ChatGPT. OpenAI says ads can't shape its answers. Google sells ads in AI Overviews in many countries. GEO helps you earn the unpaid ones. Sources: OpenAI and Google Ads Help [F6] |
 | Will GEO change my store without asking? | Not on Standard: you approve every change. Done-for-you makes them for you, except risky ones like product claims. Undo takes one click. |
-| If GEO costs money, what's free? | The product check, the free scan after install, the 7-day free trial and AI's clicks. After that, Standard is US$97 a month. |
+| If GEO costs money, what's free? | The product check, the free scan after install, the 7-day free trial and AI's clicks. After that, Standard is US$49 a month. |
 | How long does setup take? | About five minutes. Install from Shopify, tick your buying questions and the first scan starts. |
 
 Dropped in the copy pass: "How does AI decide which stores to recommend?" (it overlapped with the new
@@ -635,7 +635,7 @@ Tip copy (in `buildTips`, keep the variables and the rules, no dashes):
 - Heading: **Help AI recommend you, every week**
 - Text: **GEO Standard checks up to 50 buying questions every week, writes fixes that help AI recommend your
   products (you approve each one), and counts the orders it can trace back to AI.** [source: P]
-- Price line: **Your first scan is free. Standard is US$97 a month after a 7-day free trial.** [source: P]
+- Price line: **Your first scan is free. Standard is US$49 a month after a 7-day free trial.** [source: P]
   (Plan name, price, questions and trial come from `app/lib/plans.ts`, so they follow any change there.)
 - Button: **Install GEO: first scan free** (was "Install GEO free", which implies GEO itself is free)
 - Link: **Check another product** (`/#check`)
@@ -704,7 +704,7 @@ navy links with an underline, navy step numbers and ticks. Focus rings stay coba
 - [ ] The dashboard mockup has "Sample data"; hero card 3, the How it works screens and the video have "Example".
       Only fictional names.
 - [ ] "Free" only describes the free product check, the free scan, the trial, or the AI clicks. GEO Standard is
-      US$97 a month (or US$873 a year) after a 7-day free trial; Done-for-you is US$497 a month (or US$4,473 a year).
+      US$49 a month (or US$441 a year) after a 7-day free trial; Done-for-you is US$349 a month (or US$3,141 a year).
 - [ ] No struck-through or "was" prices, no "10x", no savings claim beyond "3 months free".
 - [ ] "Can't be bought" is said about ChatGPT only (Google sells ads inside AI Overviews in AU/NZ).
 - [ ] No promises; GEO counts the orders it can trace back to AI.

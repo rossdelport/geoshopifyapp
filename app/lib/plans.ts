@@ -61,7 +61,7 @@ export const PLANS: Record<PlanId, Plan> = {
     costCapUsd: 1,
     blurb: "See where you stand today.",
     features: [
-      "One scan of 10 buyer questions",
+      "One scan of 10 buying questions",
       "ChatGPT, Gemini and Perplexity",
       "Your visibility score and top competitors",
       "AI sales from the last 60 days",
@@ -70,8 +70,8 @@ export const PLANS: Record<PlanId, Plan> = {
   core: {
     id: "core",
     name: "Standard",
-    priceUsd: 97,
-    priceUsdYearly: 873,
+    priceUsd: 49,
+    priceUsdYearly: 441,
     trialDays: 7,
     questions: 50,
     engines: ["chatgpt", "gemini", "perplexity", "aio"],
@@ -89,7 +89,7 @@ export const PLANS: Record<PlanId, Plan> = {
     costCapUsd: 15,
     blurb: "You click approve, AI does the rest.",
     features: [
-      "50 buyer questions, checked every week",
+      "50 buying questions, checked every week",
       "ChatGPT, Gemini, Perplexity and Google AI Overviews",
       "Unlimited fixes, approved in one click",
       "500 products optimised",
@@ -101,8 +101,8 @@ export const PLANS: Record<PlanId, Plan> = {
   pro: {
     id: "pro",
     name: "Done-for-you",
-    priceUsd: 497,
-    priceUsdYearly: 4473,
+    priceUsd: 349,
+    priceUsdYearly: 3141,
     trialDays: 7,
     questions: 100,
     engines: ["chatgpt", "gemini", "perplexity", "aio", "claude"],
@@ -120,7 +120,7 @@ export const PLANS: Record<PlanId, Plan> = {
     costCapUsd: 150,
     blurb: "AI does the work, and we handle outreach by hand.",
     features: [
-      "100 buyer questions, checked every day",
+      "100 buying questions, checked every day",
       "Everything in Standard, plus Claude",
       "Fixes applied for you. Ones that need your input wait. Switch off or undo any time",
       "2,000 products optimised",
@@ -177,7 +177,7 @@ export function planPrice(plan: Plan, cycle: BillingCycle): number {
   return cycle === "yearly" ? plan.priceUsdYearly : plan.priceUsd;
 }
 
-/** A yearly price as a rounded monthly figure, shown as "about US$73 a month". */
+/** A yearly price as a rounded monthly figure, shown as "about US$37 a month". */
 export function yearlyPerMonth(plan: Plan): number {
   return Math.round(plan.priceUsdYearly / 12);
 }

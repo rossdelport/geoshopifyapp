@@ -82,7 +82,7 @@ Plan features match `app/lib/plans.ts`. Three lines were shortened or split to s
 - Your visibility score and top competitors
 - AI sales from the last 60 days
 
-**Standard** · US$97 a month, or US$873 a year · 7-day free trial
+**Standard** · US$49 a month, or US$441 a year · 7-day free trial
 - 50 buyer questions, checked every week
 - ChatGPT, Gemini, Perplexity and Google AI Overviews
 - Unlimited fixes, approved in one click
@@ -91,7 +91,7 @@ Plan features match `app/lib/plans.ts`. Three lines were shortened or split to s
 - Up to 10 outreach pitches a month, drafted
 - AI sales dashboard and monthly email report
 
-**Done-for-you** · US$497 a month, or US$4,473 a year · 7-day free trial
+**Done-for-you** · US$349 a month, or US$3,141 a year · 7-day free trial
 - 100 buyer questions, checked every day
 - Everything in Standard, plus Claude
 - Fixes applied for you. Ones needing your input wait. Switch off or undo

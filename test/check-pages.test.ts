@@ -210,7 +210,7 @@ describe("report page", () => {
     expect(html).toContain("Help AI recommend you, every week");
     expect(html).toContain("counts the orders it can trace back to AI");
     expect(html).not.toContain("orders AI sends you");
-    expect(html).toContain("Standard is US$97 a month. Join the waitlist and we’ll reach out shortly.");
+    expect(html).toContain("Standard is US$49 a month. Join the waitlist and we’ll reach out shortly.");
     expect(html).not.toMatch(/free trial|Install GEO/);
     expect(html).toContain("What to fix first");
     expect(html).not.toMatch(/[\u2014\u2013]/); // no em or en dashes in the copy

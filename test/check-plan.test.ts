@@ -65,7 +65,7 @@ describe("buildActionPlan", () => {
   it("ends with GEO: the waitlist link and the price", () => {
     const geo = plan.steps.at(-1)!;
     expect(geo.title).toBe("Let GEO do this every week");
-    expect(geo.items[0]).toEqual({ label: "Join the GEO waitlist", detail: "Standard is US$97 a month. We’ll reach out shortly.", urls: [INSTALL] });
+    expect(geo.items[0]).toEqual({ label: "Join the GEO waitlist", detail: "Standard is US$49 a month. We’ll reach out shortly.", urls: [INSTALL] });
   });
 
   it("says what the plan holds, for the page's locked teaser", () => {

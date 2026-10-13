@@ -404,7 +404,7 @@ llms.txt (built from the registry and `PLANS` in `plans.ts`; must pass the T5 ch
 
 > GEO is a Shopify app that helps stores get their products recommended by AI assistants like ChatGPT, Gemini and Perplexity, and shows the sales that come from AI.
 
-GEO has two plans: Standard at US$97 a month and Done-for-you at US$497 a month, both with a 7-day free trial. The free tools below need no sign-up.
+GEO has two plans: Standard at US$49 a month and Done-for-you at US$349 a month, both with a 7-day free trial. The free tools below need no sign-up.
 
 ## Free tools
 

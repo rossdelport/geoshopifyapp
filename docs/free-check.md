@@ -187,7 +187,7 @@ page says so); if Ross wants Meta or Google audiences, the consent words and `/p
      not a rival brand's blog), most cited first, max 8, with up to 2 article links each (falls back
      to the report's `exampleUrl` when answers are missing);
   5. "Study the brands AI picks instead": the report's competitors with counts;
-  6. "Let GEO do this every week": the install link and "Standard is US$97 a month after the trial."
+  6. "Let GEO do this every week": the install link and "Standard is US$49 a month after the trial."
   `plan.teaser` is what the page gets.
 - **Form words** (`app/lib/check-consent.ts`, shared by the popup and the server, and a test checks the
   popup shows them exactly): `REPORT_CONSENT_TEXT` under the button ("We’ll email this report to you

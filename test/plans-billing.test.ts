@@ -40,8 +40,8 @@ describe("plans", () => {
 
   it("has Standard's prices and limits", () => {
     expect(PLANS.core).toMatchObject({
-      priceUsd: 97,
-      priceUsdYearly: 873,
+      priceUsd: 49,
+      priceUsdYearly: 441,
       trialDays: 7,
       questions: 50,
       engines: ["chatgpt", "gemini", "perplexity", "aio"],
@@ -61,8 +61,8 @@ describe("plans", () => {
 
   it("has Done-for-you's prices and limits", () => {
     expect(PLANS.pro).toMatchObject({
-      priceUsd: 497,
-      priceUsdYearly: 4473,
+      priceUsd: 349,
+      priceUsdYearly: 3141,
       trialDays: 7,
       questions: 100,
       engines: ["chatgpt", "gemini", "perplexity", "aio", "claude"],
@@ -98,12 +98,12 @@ describe("plans", () => {
 
   it("prices yearly at 9 months (3 months free) and shows a rounded monthly figure", () => {
     for (const plan of [PLANS.core, PLANS.pro]) expect(plan.priceUsdYearly).toBe(plan.priceUsd * 9);
-    expect(yearlyPerMonth(PLANS.core)).toBe(73);
-    expect(yearlyPerMonth(PLANS.pro)).toBe(373);
-    expect(planPrice(PLANS.core, "monthly")).toBe(97);
-    expect(planPrice(PLANS.pro, "yearly")).toBe(4473);
-    expect(formatUsd(4473)).toBe("US$4,473");
-    expect(formatUsd(97)).toBe("US$97");
+    expect(yearlyPerMonth(PLANS.core)).toBe(37);
+    expect(yearlyPerMonth(PLANS.pro)).toBe(262);
+    expect(planPrice(PLANS.core, "monthly")).toBe(49);
+    expect(planPrice(PLANS.pro, "yearly")).toBe(3141);
+    expect(formatUsd(3141)).toBe("US$3,141");
+    expect(formatUsd(49)).toBe("US$49");
   });
 
   it("never promises an exact outreach count, and says when hand work starts", () => {
@@ -171,10 +171,10 @@ describe("Shopify billing config", () => {
   it("has exactly the four plans with the right amounts, intervals and trial", () => {
     expect(Object.keys(BILLING_CONFIG).sort()).toEqual([...ALL_BILLING_PLAN_NAMES].sort());
     const expected = {
-      "GEO Standard": [97, BillingInterval.Every30Days],
-      "GEO Standard yearly": [873, BillingInterval.Annual],
-      "GEO Done-for-you": [497, BillingInterval.Every30Days],
-      "GEO Done-for-you yearly": [4473, BillingInterval.Annual],
+      "GEO Standard": [49, BillingInterval.Every30Days],
+      "GEO Standard yearly": [441, BillingInterval.Annual],
+      "GEO Done-for-you": [349, BillingInterval.Every30Days],
+      "GEO Done-for-you yearly": [3141, BillingInterval.Annual],
     } as const;
     for (const [name, [amount, interval]] of Object.entries(expected)) {
       const plan = BILLING_CONFIG[name as keyof typeof BILLING_CONFIG];
