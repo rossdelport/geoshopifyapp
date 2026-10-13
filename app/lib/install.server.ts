@@ -14,6 +14,7 @@ const SHOP_QUERY = `#graphql
       myshopifyDomain
       primaryDomain { host url }
       shopAddress { countryCodeV2 }
+      plan { partnerDevelopment }
     }
   }`;
 
@@ -34,6 +35,7 @@ export async function refreshShopInfo(domain: string, admin: AdminClient) {
       country,
       primaryDomain: s.primaryDomain?.host ?? null,
       reportEmails: s.email,
+      devStore: Boolean(s.plan?.partnerDevelopment),
     },
     update: {
       name: s.name,
@@ -41,6 +43,7 @@ export async function refreshShopInfo(domain: string, admin: AdminClient) {
       currency: s.currencyCode,
       ...(existing?.name ? {} : { country }),
       primaryDomain: s.primaryDomain?.host ?? null,
+      devStore: Boolean(s.plan?.partnerDevelopment),
       status: "installed",
       uninstalledAt: null,
     },

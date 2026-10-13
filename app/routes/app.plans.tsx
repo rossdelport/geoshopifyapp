@@ -21,19 +21,20 @@ import {
   type BillingCycle,
   type PaidPlanId,
 } from "../lib/plans";
-import { onPlanChanged, recordTrialStart, syncPlanFromSubscriptions } from "../lib/billing.server";
+import { onPlanChanged, recordTrialStart, syncPlanFromSubscriptions, testChargesFor } from "../lib/billing.server";
 import { clearPlanIntent, planIntentFor } from "../lib/plan-intent.server";
-import { env } from "../lib/env.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { shop, billing } = await requireShop(request);
+  const { shop, billing, admin } = await requireShop(request);
+  // Test stores (and everything in test billing mode) get test charges: free. Real stores pay.
+  const isTest = await testChargesFor(admin, shop);
   // Source of truth is Shopify: sync our copy whenever this page loads (e.g. after approving a charge).
-  const check = await billing.check({ isTest: env.billingTest });
+  const check = await billing.check({ isTest });
   const { active, extras } = pickActiveSubscription(check.appSubscriptions);
   // Approving a new plan replaces the old subscription, so there should never be two. If there are, keep the newest.
   for (const sub of extras) {
     await billing
-      .cancel({ subscriptionId: sub.id, isTest: env.billingTest, prorate: true })
+      .cancel({ subscriptionId: sub.id, isTest, prorate: true })
       .catch((err: Error) => console.error(`[billing] could not cancel extra subscription ${sub.id}: ${err.message}`));
   }
   const planId = planFromBillingName(active?.name);
@@ -72,14 +73,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const { shop, billing, session } = await requireShop(request);
+  const { shop, billing, session, admin } = await requireShop(request);
+  const isTest = await testChargesFor(admin, shop);
   const form = await request.formData();
   const intent = String(form.get("intent") ?? "");
 
   if (intent === "subscribe") {
     const billingPlan = form.get("billingPlan");
     if (!isBillingPlanName(billingPlan)) return { ok: false, message: "Unknown plan" };
-    const check = await billing.check({ isTest: env.billingTest });
+    const check = await billing.check({ isTest });
     const { active } = pickActiveSubscription(check.appSubscriptions);
     if (active?.name === billingPlan) return { ok: true, message: "You're already on this plan." };
     const plan = PLANS[planFromBillingName(billingPlan) as PaidPlanId];
@@ -90,7 +92,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     // Throws a redirect to Shopify's approval page. Approving it replaces any current subscription.
     await billing.request({
       plan: billingPlan,
-      isTest: env.billingTest,
+      isTest,
       // One free trial per store: a switch, or a new plan after cancelling or reinstalling, only gets the
       // whole days left of it (none once it has ended), so the free week never restarts.
       trialDays: trialDaysForNewSubscription(plan, active, new Date(), trialEndsAt),
@@ -98,9 +100,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     });
   }
   if (intent === "cancel") {
-    const check = await billing.check({ isTest: env.billingTest });
+    const check = await billing.check({ isTest });
     for (const sub of check.appSubscriptions) {
-      await billing.cancel({ subscriptionId: sub.id, isTest: env.billingTest, prorate: true });
+      await billing.cancel({ subscriptionId: sub.id, isTest, prorate: true });
     }
     await onPlanChanged(shop.id, "free");
     return { ok: true, message: "Your plan is cancelled. You keep your results." };

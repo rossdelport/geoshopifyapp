@@ -26,10 +26,41 @@ const ACTIVE_SUBSCRIPTIONS = `#graphql
     }
   }`;
 
-/** The store's live subscriptions to this app, straight from Shopify (test ones only in test billing mode). */
-export async function activeSubscriptions(admin: AdminClient): Promise<SubscriptionLike[]> {
+/**
+ * The store's live subscriptions to this app, straight from Shopify. Test ones only count for a store on test
+ * charges (see testChargesFor).
+ */
+export async function activeSubscriptions(admin: AdminClient, includeTest = env.billingTest): Promise<SubscriptionLike[]> {
   const data = await gql<{ currentAppInstallation: { activeSubscriptions: SubscriptionLike[] } | null }>(admin, ACTIVE_SUBSCRIPTIONS);
-  return (data.currentAppInstallation?.activeSubscriptions ?? []).filter((s) => env.billingTest || !s.test);
+  return (data.currentAppInstallation?.activeSubscriptions ?? []).filter((s) => includeTest || !s.test);
+}
+
+const DEV_STORE = `#graphql
+  query ShopDevStore {
+    shop { plan { partnerDevelopment } }
+  }`;
+
+/**
+ * Whether this store's subscriptions are test charges (free). Shopify's development stores can't be charged for
+ * real, and App Store reviewers test on them, so they always get test charges; every other store pays once
+ * SHOPIFY_BILLING_TEST=false. Asks Shopify each time (a test store can move to a paid plan), saves the answer
+ * for webhooks, and keeps the saved answer if Shopify can't be reached.
+ */
+export async function testChargesFor(
+  admin: AdminClient,
+  shop: { id: string; devStore: boolean },
+  billingTest = env.billingTest,
+): Promise<boolean> {
+  if (billingTest) return true;
+  try {
+    const data = await gql<{ shop: { plan: { partnerDevelopment: boolean } | null } }>(admin, DEV_STORE);
+    const dev = Boolean(data.shop?.plan?.partnerDevelopment);
+    if (dev !== shop.devStore) await db.shop.update({ where: { id: shop.id }, data: { devStore: dev } });
+    return dev;
+  } catch (err) {
+    console.error(`[billing] couldn't ask Shopify if ${shop.id} is a test store, using the saved answer: ${(err as Error).message}`);
+    return shop.devStore;
+  }
 }
 
 /**

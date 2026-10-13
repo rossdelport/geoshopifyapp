@@ -53,6 +53,7 @@ model Shop {
   autopilot         Boolean   @default(false)
   autopilotOptOut   Boolean   @default(false) // the store switched autopilot off: keep it off across plan changes
   trialEndsAt       DateTime? // end of the store's one free trial, saved when it first starts (never cleared)
+  devStore          Boolean   @default(false) // a Shopify development (test) store: only ever test charges, so it uses the app free
   crawlers          Json? // last AI crawler check of the store's robots.txt (see lib/robots.ts): which AI bots are blocked
   crawlersCheckedAt DateTime?
   reportEmails      String? // comma separated

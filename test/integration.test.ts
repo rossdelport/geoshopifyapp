@@ -391,6 +391,38 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
     }
   });
 
+  it("gives Shopify test stores test charges (free) and real stores real ones, and keeps the answer for webhooks", async () => {
+    const { testChargesFor, activeSubscriptions } = await import("../app/lib/billing.server");
+    // A fake Shopify: answers the test store question, then the subscriptions question.
+    const shopify = (dev: boolean | Error) => ({
+      graphql: async (query: string) => {
+        if (dev instanceof Error) throw dev;
+        const data = query.includes("partnerDevelopment")
+          ? { shop: { plan: { partnerDevelopment: dev } } }
+          : { currentAppInstallation: { activeSubscriptions: [{ id: "1", name: "GEO Standard", status: "ACTIVE", test: true }, { id: "2", name: "GEO Standard", status: "ACTIVE", test: false }] } };
+        return new Response(JSON.stringify({ data }));
+      },
+    });
+    try {
+      await db.shop.update({ where: { id: shopId }, data: { devStore: false } });
+      // test billing mode on (the default before launch): every store gets test charges, Shopify isn't asked
+      expect(await testChargesFor(shopify(new Error("not asked")) as never, { id: shopId, devStore: false }, true)).toBe(true);
+      // live billing: a development store still gets test charges, and that is saved
+      expect(await testChargesFor(shopify(true) as never, { id: shopId, devStore: false }, false)).toBe(true);
+      expect((await db.shop.findUniqueOrThrow({ where: { id: shopId } })).devStore).toBe(true);
+      // Shopify unreachable: the saved answer stands
+      expect(await testChargesFor(shopify(new Error("down")) as never, { id: shopId, devStore: true }, false)).toBe(true);
+      // the store moved to a paid Shopify plan: real charges from now on
+      expect(await testChargesFor(shopify(false) as never, { id: shopId, devStore: true }, false)).toBe(false);
+      expect((await db.shop.findUniqueOrThrow({ where: { id: shopId } })).devStore).toBe(false);
+      // only a store on test charges counts a test subscription as its plan
+      expect((await activeSubscriptions(shopify(false) as never, false)).map((x) => x.id)).toEqual(["2"]);
+      expect((await activeSubscriptions(shopify(false) as never, true)).map((x) => x.id)).toEqual(["1", "2"]);
+    } finally {
+      await db.shop.update({ where: { id: shopId }, data: { devStore: false } });
+    }
+  });
+
   it("switches plans once, keeps the store's autopilot choice, saves the one trial and tells the founder", async () => {
     const { onPlanChanged, syncPlanFromSubscriptions } = await import("../app/lib/billing.server");
     const { sendEmail } = await import("../app/lib/email.server");

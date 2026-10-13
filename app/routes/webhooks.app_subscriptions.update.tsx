@@ -3,6 +3,7 @@ import { authenticate } from "../shopify.server";
 import db from "../db.server";
 import { planFromBillingName } from "../lib/plans";
 import { activeSubscriptions, onPlanChanged, syncPlanFromSubscriptions } from "../lib/billing.server";
+import { env } from "../lib/env.server";
 
 // Plan changed (approved, cancelled, expired, frozen): keep our copy of the plan in sync.
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -17,7 +18,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     // so the payload alone can't say whether the store still has a plan.
     let live;
     try {
-      live = await activeSubscriptions(admin);
+      live = await activeSubscriptions(admin, env.billingTest || row.devStore);
     } catch (err) {
       // Never guess from the payload here: that could drop a paying store to free. A 500 makes Shopify retry.
       console.error(`[billing] could not read subscriptions for ${shop}, asking Shopify to retry: ${(err as Error).message}`);
