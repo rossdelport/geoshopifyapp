@@ -115,7 +115,15 @@ describe("/app error boundary", () => {
     expect(render(new Minified(401, "Unauthorized", ""))).toBe("<div>Handling response</div>");
   });
 
-  it("still passes real crashes up to the page's own error screen", () => {
-    expect(() => render(new Error("boom"))).toThrow("boom");
+  it("shows a plain message and a way back for a real crash or a missing page, never the raw error", () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const crash = render(new Error("boom"));
+    spy.mockRestore();
+    expect(crash).toContain("Something went wrong");
+    expect(crash).toContain('href="/app"');
+    expect(crash).not.toContain("boom");
+    const missing = render(new ErrorResponseImpl(404, "Not Found", "Not found"));
+    expect(missing).toContain("We couldn&#x27;t find that page");
+    expect(missing).toContain("Back to the dashboard");
   });
 });

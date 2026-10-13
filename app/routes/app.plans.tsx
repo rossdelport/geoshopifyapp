@@ -137,6 +137,7 @@ export default function Plans() {
   const busy = fetcher.state !== "idle";
   const pending = busy ? String(fetcher.formData?.get("billingPlan") ?? fetcher.formData?.get("intent")) : null;
   const subscribed = data.current !== "free";
+  const [confirmCancel, setConfirmCancel] = useState(false);
 
   return (
     <s-page heading="Plans">
@@ -242,14 +243,24 @@ export default function Plans() {
         <s-section heading="Cancel">
           <s-stack direction="block" gap="base">
             <s-paragraph>You keep your results, but new scans and fixes stop.</s-paragraph>
-            <s-button
-              tone="critical"
-              variant="tertiary"
-              onClick={() => fetcher.submit({ intent: "cancel" }, { method: "post" })}
-              {...(pending === "cancel" ? { loading: true } : {})}
-            >
-              Cancel my plan
-            </s-button>
+            {confirmCancel ? (
+              <s-stack direction="inline" gap="base">
+                <s-button
+                  tone="critical"
+                  onClick={() => fetcher.submit({ intent: "cancel" }, { method: "post" })}
+                  {...(pending === "cancel" ? { loading: true } : {})}
+                >
+                  Yes, cancel my plan
+                </s-button>
+                <s-button variant="tertiary" onClick={() => setConfirmCancel(false)}>
+                  Keep my plan
+                </s-button>
+              </s-stack>
+            ) : (
+              <s-button tone="critical" variant="tertiary" onClick={() => setConfirmCancel(true)}>
+                Cancel my plan
+              </s-button>
+            )}
           </s-stack>
         </s-section>
       )}

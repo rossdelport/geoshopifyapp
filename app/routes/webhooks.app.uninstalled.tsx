@@ -22,8 +22,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       // trialEndsAt stays, so reinstalling doesn't start a second free trial.
       data: { status: "uninstalled", uninstalledAt: new Date(), plan: "free", autopilot: false, pixelId: null },
     });
-    // Stop background work for this shop.
+    // Stop background work for this shop, and close any scan it was running, so a reinstall starts afresh
+    // (setup that hadn't finished starts again from the beginning).
     await db.job.updateMany({ where: { shopId: row.id, status: "queued" }, data: { status: "failed", error: "App uninstalled" } });
+    await db.scan.updateMany({
+      where: { shopId: row.id, status: { in: ["queued", "running"] } },
+      data: { status: "failed", finishedAt: new Date(), error: "App uninstalled" },
+    });
+    await db.shop.updateMany({ where: { id: row.id, onboarding: { not: "done" } }, data: { onboarding: "new" } });
     if (leftDoneForYou) await notifyFounder(row, "pro", "free", { reason: "app uninstalled" });
   }
   return new Response();

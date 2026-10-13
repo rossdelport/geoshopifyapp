@@ -391,6 +391,24 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
     }
   });
 
+  it("replaces a scan that has nothing working on it any more (its job gave up or the store reinstalled)", async () => {
+    const { startScan, scanHasWorker } = await import("../app/lib/scan.server");
+    await db.scan.updateMany({ where: { shopId, status: { in: ["queued", "running"] } }, data: { status: "failed" } });
+    const first = await startScan(shopId, "manual");
+    expect(await scanHasWorker(first.id)).toBe(true);
+    // while its job is waiting, asking again returns the same scan
+    expect((await startScan(shopId, "manual")).id).toBe(first.id);
+    // the job gave up: the old scan is closed and a new one starts
+    await db.job.update({ where: { dedupeKey: `scan-run:${first.id}` }, data: { status: "failed" } });
+    expect(await scanHasWorker(first.id)).toBe(false);
+    const second = await startScan(shopId, "manual");
+    expect(second.id).not.toBe(first.id);
+    expect((await db.scan.findUniqueOrThrow({ where: { id: first.id } })).status).toBe("failed");
+    expect(await scanHasWorker(second.id)).toBe(true);
+    await db.scan.updateMany({ where: { id: { in: [first.id, second.id] } }, data: { status: "failed" } });
+    await db.job.deleteMany({ where: { dedupeKey: { in: [`scan-run:${first.id}`, `scan-run:${second.id}`] } } });
+  });
+
   it("gives Shopify test stores test charges (free) and real stores real ones, and keeps the answer for webhooks", async () => {
     const { testChargesFor, activeSubscriptions } = await import("../app/lib/billing.server");
     // A fake Shopify: answers the test store question, then the subscriptions question.

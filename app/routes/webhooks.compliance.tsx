@@ -25,6 +25,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       // 48 hours after uninstall: delete everything we have for this shop.
       await db.session.deleteMany({ where: { shop } });
       await db.shop.deleteMany({ where: { domain: shop } });
+      await db.planIntent.deleteMany({ where: { domain: shop } });
       break;
   }
   return new Response();

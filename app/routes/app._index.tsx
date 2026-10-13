@@ -7,7 +7,7 @@ import db from "../db.server";
 import { requireShop, getUsage } from "../lib/shop.server";
 import { activeScan, moneySummary, topCompetitors, visibilitySummary } from "../lib/dashboard.server";
 import { enqueue } from "../lib/jobs.server";
-import { startScan } from "../lib/scan.server";
+import { startScan, scanHasWorker } from "../lib/scan.server";
 import { canRunManualCheck } from "../lib/limits";
 import { ENGINE_LABELS, PLANS, everyDaysLabel, trialDaysForNewSubscription, type Engine } from "../lib/plans";
 import { planIntentFor } from "../lib/plan-intent.server";
@@ -28,7 +28,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     shopName: shop.name ?? shop.domain,
     plan: { id: plan.id, name: plan.name, engines: plan.engines, scanEveryDays: plan.scanEveryDays },
     onboarding: shop.onboarding,
-    onboardingError: onboardingJob?.status === "failed" ? onboardingJob.error : null,
+    // Setup stopped: its job gave up, or the first scan has nothing working on it any more.
+    setupStuck:
+      shop.onboarding !== "done" &&
+      shop.onboarding !== "new" &&
+      onboardingJob?.status !== "queued" &&
+      onboardingJob?.status !== "running" &&
+      (onboardingJob?.status === "failed" || !scan || !(await scanHasWorker(scan.id))),
     scan: scan ? { done: scan.done, total: scan.total, engines: scan.engines as string[], kind: scan.kind } : null,
   };
   if (shop.onboarding !== "done") return { ...base, view: "setup" as const };
@@ -192,9 +198,18 @@ export default function Dashboard() {
                 page; we&apos;ll keep going.
               </s-text>
             </s-paragraph>
-            {data.onboardingError && (
-              <s-banner tone="critical" heading="Setup hit a problem">
-                <s-paragraph>We&apos;ll retry automatically. Details: {data.onboardingError}</s-paragraph>
+            {data.setupStuck && (
+              <s-banner tone="critical" heading="Setup didn't finish">
+                <s-stack direction="block" gap="base">
+                  <s-paragraph>
+                    This can happen when Shopify or one of the AI assistants is busy. Nothing in your store has changed.
+                  </s-paragraph>
+                  <div>
+                    <s-button onClick={() => fetcher.submit({ intent: "start" }, { method: "post" })} {...(fetcher.state !== "idle" ? { loading: true } : {})}>
+                      Try again
+                    </s-button>
+                  </div>
+                </s-stack>
               </s-banner>
             )}
           </s-stack>

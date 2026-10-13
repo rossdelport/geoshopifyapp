@@ -11,6 +11,7 @@ const db = {
   shop: { findUnique: vi.fn(), update: vi.fn(async () => ({})), updateMany: vi.fn(async () => ({ count: 1 })) },
   session: { deleteMany: vi.fn(async () => ({})) },
   job: { updateMany: vi.fn(async () => ({})) },
+  scan: { updateMany: vi.fn(async () => ({ count: 1 })) },
 };
 vi.mock("../app/db.server", () => ({ default: db }));
 
@@ -87,6 +88,16 @@ describe("app/uninstalled", () => {
     db.shop.updateMany.mockResolvedValueOnce({ count: 0 });
     await call(uninstalled);
     expect(billing.notifyFounder).toHaveBeenCalledTimes(1);
+  });
+
+  it("closes any scan in progress and sends unfinished setup back to the start, so a reinstall never hangs", async () => {
+    webhook.mockResolvedValue({ shop: shopRow.domain, session: {}, topic: "APP_UNINSTALLED" });
+    await call(uninstalled);
+    expect(db.scan.updateMany).toHaveBeenCalledWith({
+      where: { shopId: "shop1", status: { in: ["queued", "running"] } },
+      data: expect.objectContaining({ status: "failed", error: "App uninstalled" }),
+    });
+    expect(db.shop.updateMany).toHaveBeenCalledWith({ where: { id: "shop1", onboarding: { not: "done" } }, data: { onboarding: "new" } });
   });
 
   it("doesn't email for a Standard store", async () => {

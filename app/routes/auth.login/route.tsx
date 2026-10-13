@@ -18,7 +18,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const choice = parsePlanChoice(url.searchParams.get("plan"), url.searchParams.get("cycle"));
 
-  return { errors, choice };
+  // Shopify's App Store rules ban asking a merchant to type their store address, so the live site never shows
+  // the form: GEO opens from the Shopify admin. login() above still sends ?shop= links on to Shopify.
+  return { errors, choice, showForm: process.env.NODE_ENV !== "production" };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -37,6 +39,22 @@ export default function Auth() {
   const actionData = useActionData<typeof action>();
   const [shop, setShop] = useState("");
   const { errors } = actionData || loaderData;
+
+  if (!loaderData.showForm) {
+    return (
+      <>
+        <script src="https://cdn.shopify.com/shopifycloud/polaris.js" />
+        <s-page>
+          <s-section heading="Open GEO from your Shopify admin">
+            <s-paragraph>GEO runs inside your Shopify admin. Go to Apps in your Shopify admin and choose GEO.</s-paragraph>
+            <s-paragraph>
+              Don&apos;t have GEO yet? <s-link href="https://usegeo.app/#waitlist">Join the waitlist</s-link>.
+            </s-paragraph>
+          </s-section>
+        </s-page>
+      </>
+    );
+  }
 
   return (
     <>

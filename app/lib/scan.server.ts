@@ -14,11 +14,21 @@ import { pool } from "./pool";
 const CONCURRENCY = 10;
 const MAX_ANSWER_ATTEMPTS = 2;
 
+/** Whether a queued or running scan still has its scan.run job waiting or working. If not, it will never finish. */
+export async function scanHasWorker(scanId: string): Promise<boolean> {
+  const job = await db.job.findUnique({ where: { dedupeKey: `scan-run:${scanId}` }, select: { status: true } });
+  return job?.status === "queued" || job?.status === "running";
+}
+
 export async function startScan(shopId: string, kind: "free" | "baseline" | "weekly" | "daily" | "manual") {
   const shop = await db.shop.findUniqueOrThrow({ where: { id: shopId } });
   const plan = getPlan(shop.plan);
   const running = await db.scan.findFirst({ where: { shopId, status: { in: ["queued", "running"] } } });
-  if (running) return running;
+  if (running) {
+    if (await scanHasWorker(running.id)) return running;
+    // Its job gave up or was stopped (uninstalled, or failed too often): close it and start a new one.
+    await db.scan.update({ where: { id: running.id }, data: { status: "failed", finishedAt: new Date(), error: "Stopped before it finished" } });
+  }
 
   const { engines, runs } = scanSettings(plan, kind);
   const questions = await db.question.findMany({

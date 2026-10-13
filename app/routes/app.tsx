@@ -60,10 +60,23 @@ export function ErrorBoundary() {
   // boundary.error spots a thrown Response by its class name, but the browser bundle is minified and renames
   // that class, so once the page loaded it threw again and React Router showed "Unhandled Thrown Response!".
   // Give the same markup boundary.error gives on the server; real crashes still go to boundary.error.
-  if (isRouteErrorResponse(error)) {
+  if (isRouteErrorResponse(error) && error.status !== 404) {
     return <div dangerouslySetInnerHTML={{ __html: error.data || "Handling response" }} />;
   }
-  return boundary.error(error);
+  // A page that doesn't exist, or a real crash (React Router logs it): a plain message and a way back.
+  if (!isRouteErrorResponse(error)) console.error(error);
+  const missing = isRouteErrorResponse(error);
+  return (
+    <div style={{ fontFamily: "Inter, system-ui, sans-serif", maxWidth: 560, margin: "64px auto", padding: "0 20px", color: "#303030", lineHeight: 1.6 }}>
+      <h1 style={{ fontSize: 22, margin: "0 0 8px", color: "#0b0c2b" }}>{missing ? "We couldn't find that page" : "Something went wrong"}</h1>
+      <p style={{ margin: "0 0 20px" }}>
+        {missing ? "It may have been removed." : "Sorry, this page didn't load. Please try again in a moment."} Nothing in your store has changed.
+      </p>
+      <a href="/app" style={{ display: "inline-block", padding: "10px 16px", borderRadius: 10, background: "#303030", color: "#fff", textDecoration: "none", fontWeight: 600 }}>
+        Back to the dashboard
+      </a>
+    </div>
+  );
 }
 
 export const headers: HeadersFunction = (headersArgs) => {
