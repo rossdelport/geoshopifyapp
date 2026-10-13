@@ -4,26 +4,25 @@
 // looped on the page. Storyboard: docs/video/explainer.md.
 import React from "react";
 import { AbsoluteFill, Sequence } from "remotion";
-import { AIPicks, Anymore, BigAI, DontJust, Introducing, IsYours, LogoReveal, SearchBar, Shoppers, TheyAsk } from "./scenes-intro";
+import { AIPicks, Anymore, BigAI, Introducing, IsYours, LogoReveal, SearchBar, Shoppers, TheyAsk } from "./scenes-intro";
 import { SPEED } from "./kit";
-import { EndCard, EveryWeek, Guides, Join, Money, Orbit, Rewrite, Sites, Slogan, WhoPicks } from "./scenes-work";
+import { AskAIs, EndCard, Guides, Money, Orbit, Rewrite, Sites, Slogan, Unlock, WhoPicks } from "./scenes-work";
 
 const END = 90; // the end card, in design frames
 
 // [scene, length in design frames]. Each plays SPEED times faster (kit.tsx), so it lasts length / SPEED frames,
 // and starts where the one before ends.
 const SCENES: [React.FC, number][] = [
-  [Shoppers, 42],
-  [DontJust, 30],
+  [Shoppers, 66],
   [SearchBar, 62],
   [Anymore, 34],
-  [TheyAsk, 92],
+  [TheyAsk, 100],
   [BigAI, 50],
   [AIPicks, 110],
   [IsYours, 62],
   [Introducing, 38],
   [LogoReveal, 84],
-  [EveryWeek, 80],
+  [AskAIs, 92],
   [Orbit, 142],
   [WhoPicks, 96],
   [Rewrite, 130],
@@ -31,7 +30,7 @@ const SCENES: [React.FC, number][] = [
   [Sites, 132],
   [Money, 120],
   [Slogan, 96],
-  [Join, 80],
+  [Unlock, 84],
 ];
 
 const real = (len: number) => Math.round(len / SPEED);

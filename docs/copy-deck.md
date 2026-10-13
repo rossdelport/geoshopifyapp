@@ -262,21 +262,22 @@ Card lines stay at 8 words or fewer. On phones (760px and below) the cards sit i
 ## 4b. What you get when you join (`11v-video.html`, id `watch`)
 
 - **H2 (small):** What you get when you join
-- Since 13 Oct 2026 a silent, looping 44 s **explainer** in the feel of a product launch film Ross shared: one to
+- Since 13 Oct 2026 a silent, looping 45 s **explainer** in the feel of a product launch film Ross shared: one to
   five words at a time, dark and pastel scenes taking turns, one simple picture per idea. Every scene and line is
   in `docs/video/explainer.md` (code `design/video/src/explainer/`). The story: Shoppers don’t just Google
-  anymore. They ask AI. AI picks a few brands. Is yours one of them? Introducing GEO (Get recommended by AI).
-  Every week, we ask AI · We see who AI picks · We rewrite your product pages (Approve, Live on your store) · We
+  anymore. They ask (a chat window) AI. AI then picks a few brands. Is yours one of them? Introducing GEO (Get recommended by AI).
+  We ask the top AIs / buying questions about your product · We see who AI picks · We rewrite your product pages (Approve, Live on your store) · We
   write buying guides · We ask the sites AI trusts / to list your brand (a pitch flies to each example site, "Pitch sent", one
   adds the store as "NEW", "3 pitches sent") · You see the sales from AI ($4,280, 37 orders,
-  612 clicks) · Shoppers ask. AI recommends. You get the sale. · Join the waitlist usegeo.app · logo. Made-up store
+  612 clicks) · Shoppers ask. AI recommends. You get the sale. · Unlock the free sales channel usegeo.app · logo. Made-up store
   and sample numbers, with "Example" tags. The old member tour (`storyboard.md`) is retired.
 - **aria-label:** Short explainer, with a made-up store and sample numbers: shoppers don’t just Google anymore,
-  they ask AI, and AI picks a few brands. Every week GEO asks AI your shoppers’ questions and sees who it picks.
+  they ask AI, and AI then picks a few brands. Every week GEO asks the top AIs buying questions about your product
+  and sees who they pick.
   It rewrites your product pages when you approve, writes buying guides, asks the sites AI trusts to list your
   brand and shows you the sales from AI. AI answers can take weeks or months to catch up.
 - **Button labels:** Play the video · Pause the video
-- Files in `design/overview/img/`: `explainer.mp4` / `.webm` (1280×800) and `explainer-poster.jpg` (frame 1101,
+- Files in `design/overview/img/`: `explainer.mp4` / `.webm` (1280×800) and `explainer-poster.jpg` (frame 1112,
   the money scene). Desktop only: the section is hidden on phones.
 - Loads only near the screen, plays muted and looped, pauses off screen; one small pause button. Reduced motion:
   never starts by itself (poster and a big play button). No JavaScript: the browser's own controls.

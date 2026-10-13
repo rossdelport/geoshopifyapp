@@ -9,19 +9,54 @@ import { Center, Coin, Dark, GeoMark, Light, Rise, StreakIn, head, io, lilacText
 
 const TAG: React.CSSProperties = { position: "absolute", right: 28, top: 24 };
 
-export const Shoppers: React.FC = () => (
-  <Dark>
-    <StreakIn text="Shoppers" size={104} at={3} />
-  </Dark>
-);
-
-export const DontJust: React.FC = () => (
-  <Light>
-    <Center>
-      <Rise words={["don’t", "just"]} style={head(84, C.cobalt)} at={1} />
-    </Center>
-  </Light>
-);
+/** "Shoppers" streaks in, then "don’t just" rises beside it (one screen, Ross 13 Oct 2026). The line starts with
+ *  "Shoppers" in the middle and slides left to make room. */
+export const Shoppers: React.FC = () => {
+  const f = useF();
+  const p = io(f, 3, 17, 0, 1);
+  const x = (1 - p) * -220;
+  const word = head(100, "#fff", { textShadow: "0 0 24px rgba(150, 165, 245, 0.35)" });
+  return (
+    <Dark>
+      <Center>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 28, transform: `translateX(${io(f, 16, 30, 236, 0)}px)` }}>
+          <span style={{ position: "relative", display: "inline-block" }}>
+            {[5, 4, 3, 2, 1].map((k) => (
+              <span
+                key={k}
+                style={{
+                  ...word,
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  color: "#7d8cf0",
+                  textShadow: "none",
+                  opacity: (1 - p) * (0.5 - k * 0.07),
+                  filter: `blur(${4 + k * 2}px)`,
+                  transform: `translateX(${x - k * 26 * (1 - p)}px) scaleX(${1 + (1 - p) * 0.5})`,
+                }}
+              >
+                Shoppers
+              </span>
+            ))}
+            <span
+              style={{
+                ...word,
+                display: "inline-block",
+                opacity: io(f, 3, 9, 0, 1),
+                filter: `blur(${(1 - p) * 6}px)`,
+                transform: `translateX(${x}px) scaleX(${1 + (1 - p) * 0.25})`,
+              }}
+            >
+              Shoppers
+            </span>
+          </span>
+          <Rise words={["don’t", "just"].map((t) => ({ t, style: lilacText }))} style={head(100, "#fff")} at={20} />
+        </div>
+      </Center>
+    </Dark>
+  );
+};
 
 const SearchIcon: React.FC = () => (
   <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" strokeWidth="2" strokeLinecap="round">
@@ -89,68 +124,92 @@ export const Anymore: React.FC = () => (
   </Dark>
 );
 
-const BUBBLES = [
-  { x: -170, y: -190, w: 130, h: 54, blue: false, rot: -5, at: 0 },
-  { x: 110, y: -150, w: 200, h: 52, blue: true, rot: 3, at: 5 },
-  { x: -120, y: -80, w: 180, h: 56, blue: false, rot: 2, at: 10 },
-  { x: 130, y: -20, w: 170, h: 50, blue: true, rot: -3, at: 15 },
-  { x: -40, y: 40, w: 150, h: 48, blue: false, rot: -2, at: 20 },
+// "They ask": a chat window where a shopper asks and the AI starts answering (Ross: "more like a chat interface").
+const CHAT: { who: "you" | "ai"; text?: string; at: number; answerAt?: number }[] = [
+  { who: "you", text: "Which beard oil should I buy?", at: 10 },
+  { who: "ai", at: 22, answerAt: 38 },
+  { who: "you", text: "Something for dry skin?", at: 50 },
+  { who: "ai", at: 62 },
 ];
 
-const bubble = (blue: boolean): React.CSSProperties => ({
-  borderRadius: 18,
-  background: blue ? "linear-gradient(180deg, #b4c4ff 0%, #8597f2 100%)" : "linear-gradient(180deg, #c3c3cd 0%, #9d9dab 100%)",
-  boxShadow: "inset 0 -5px 0 rgba(0,0,0,0.08), inset 0 2px 0 rgba(255,255,255,0.35), 0 16px 26px -14px rgba(11,12,43,0.4)",
-});
+const Typing: React.FC<{ f: number }> = ({ f }) => (
+  <span style={{ display: "inline-flex", gap: 6, padding: "4px 2px" }}>
+    {[0, 1, 2].map((k) => (
+      <i key={k} style={{ width: 9, height: 9, borderRadius: "50%", background: C.muted, opacity: 0.35 + 0.65 * Math.max(0, Math.sin((f - k * 4) / 3)) }} />
+    ))}
+  </span>
+);
 
 export const TheyAsk: React.FC = () => {
   const f = useF();
-  const { fps } = useVideoConfig();
-  const drop = (at: number) => spring({ frame: f - at, fps, config: { damping: 11, mass: 0.7 } });
-  const groupY = io(f, 0, 96, 70, -40, (t) => t);
-  const pill = (text: string, x: number, y: number, rot: number, at: number) => {
-    const p = drop(at);
-    return (
-      <span
-        style={{
-          position: "absolute",
-          left: 640 + x,
-          top: 400 + y + groupY - (1 - p) * 420,
-          transform: `translate(-50%, -50%) rotate(${rot * p}deg)`,
-          ...head(48, C.navy),
-          padding: "12px 34px 14px",
-          borderRadius: 18,
-          background: "linear-gradient(180deg, #ffffff 0%, #f1f1f6 100%)",
-          boxShadow: "inset 0 -4px 0 rgba(0,0,0,0.05), 0 18px 30px -14px rgba(11,12,43,0.35)",
-          opacity: f >= at ? 1 : 0,
-        }}
-      >
-        {text}
-      </span>
-    );
-  };
+  const pop = (at: number): React.CSSProperties => ({
+    opacity: io(f, at, at + 6, 0, 1),
+    transform: `translateY(${io(f, at, at + 10, 16, 0)}px) scale(${io(f, at, at + 10, 0.88, 1)})`,
+  });
   return (
     <Light>
-      {BUBBLES.map((b, i) => {
-        const p = drop(b.at);
-        return (
-          <span
-            key={i}
-            style={{
-              position: "absolute",
-              left: 640 + b.x,
-              top: 400 + b.y + groupY - (1 - p) * 420,
-              width: b.w,
-              height: b.h,
-              transform: `translate(-50%, -50%) rotate(${b.rot}deg)`,
-              opacity: f >= b.at ? 1 : 0,
-              ...bubble(b.blue),
-            }}
-          />
-        );
-      })}
-      {pill("They", -110, 130, -4, 32)}
-      {pill("ask", 80, 160, 5, 44)}
+      <AbsoluteFill style={{ alignItems: "center", paddingTop: 70 }}>
+        <Rise words={["They", "ask"]} style={head(76, C.navy)} at={0} />
+        <div
+          style={{
+            marginTop: 30,
+            width: 640,
+            height: 470,
+            display: "flex",
+            flexDirection: "column",
+            borderRadius: 28,
+            overflow: "hidden",
+            background: "#fff",
+            boxShadow: SHADOW_LG,
+            fontFamily: FONT_BODY,
+            opacity: io(f, 2, 12, 0, 1),
+            transform: `translateY(${io(f, 2, 22, 50, 0)}px)`,
+          }}
+        >
+          <div style={{ height: 62, flex: "none", display: "flex", alignItems: "center", gap: 12, padding: "0 22px", borderBottom: `1px solid ${C.line}` }}>
+            <span style={{ width: 34, height: 34, borderRadius: "50%", display: "grid", placeItems: "center", background: "radial-gradient(circle at 35% 30%, #9ea9f5, #4050b0)" }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff">
+                <path d="M12 2.5c.6 5 4.5 8.9 9.5 9.5-5 .6-8.9 4.5-9.5 9.5-.6-5-4.5-8.9-9.5-9.5 5-.6 8.9-4.5 9.5-9.5Z" />
+              </svg>
+            </span>
+            <span style={{ fontSize: 18, fontWeight: 600, color: C.navy }}>AI assistant</span>
+          </div>
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-end", gap: 14, padding: "18px 22px", background: "#fbfbfe" }}>
+            {CHAT.filter((m) => f >= m.at).map((m) =>
+              m.who === "you" ? (
+                <div key={m.at} style={{ alignSelf: "flex-end", transformOrigin: "100% 100%", ...pop(m.at) }}>
+                  <span style={{ display: "block", fontSize: 22, fontWeight: 500, color: "#fff", padding: "13px 20px", borderRadius: "22px 22px 6px 22px", background: "linear-gradient(180deg, #6878d8, #4050b0)" }}>
+                    {m.text}
+                  </span>
+                </div>
+              ) : (
+                <div key={m.at} style={{ alignSelf: "flex-start", transformOrigin: "0% 100%", ...pop(m.at) }}>
+                  <span style={{ display: "block", padding: "14px 20px", borderRadius: "22px 22px 22px 6px", background: C.warm100 }}>
+                    {m.answerAt !== undefined && f >= m.answerAt ? (
+                      <span style={{ display: "flex", flexDirection: "column", gap: 9, width: 300, padding: "4px 0" }}>
+                        {[100, 88, 64].map((w, i) => (
+                          <i key={i} style={{ display: "block", height: 10, borderRadius: 5, background: "#d9d9e3", width: `${io(f, m.answerAt! + i * 4, m.answerAt! + 10 + i * 4, 0, w)}%` }} />
+                        ))}
+                      </span>
+                    ) : (
+                      <Typing f={f} />
+                    )}
+                  </span>
+                </div>
+              ),
+            )}
+          </div>
+          <div style={{ height: 70, flex: "none", display: "flex", alignItems: "center", gap: 12, padding: "0 16px 0 22px", borderTop: `1px solid ${C.line}` }}>
+            <span style={{ flex: 1, fontSize: 18, color: C.muted }}>Ask anything</span>
+            <span style={{ width: 42, height: 42, borderRadius: "50%", display: "grid", placeItems: "center", background: C.navy }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 19V5" />
+                <path d="m5 12 7-7 7 7" />
+              </svg>
+            </span>
+          </div>
+        </div>
+      </AbsoluteFill>
     </Light>
   );
 };
@@ -206,7 +265,7 @@ export const AIPicks: React.FC = () => {
     <Light>
       <ExampleTag style={TAG} />
       <AbsoluteFill style={{ alignItems: "center", paddingTop: 118 }}>
-        <Rise words={["AI", "picks", { t: "a few", style: { color: C.cobalt } }, "brands."]} style={head(60, C.navy)} at={0} />
+        <Rise words={["AI", "then", "picks", { t: "a few", style: { color: C.cobalt } }, "brands."]} style={head(60, C.navy)} at={0} />
         <div
           style={{
             marginTop: 44,

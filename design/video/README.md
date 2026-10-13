@@ -2,7 +2,7 @@
 
 The silent, looping video in the home page's video section (`design/overview/parts/11v-video.*`), made with
 [Remotion](https://www.remotion.dev). Since 13 Oct 2026 that is the **explainer** ("What you get when you join"):
-about 44 s, composition `Explainer` (desktop only, the page hides the section on phones), code in
+about 45 s, composition `Explainer` (desktop only, the page hides the section on phones), code in
 `src/explainer/`, scenes and render commands in `docs/video/explainer.md`. Before that it was the **member tour**
 (compositions `MemberTour` and `MemberTourPhone`, `docs/video/storyboard.md`), kept here but no longer on the page. This folder is standalone: its own `package.json` and `node_modules`, not an
 npm workspace, never added to the app's root `package.json`. The root `tsconfig.json` excludes it and

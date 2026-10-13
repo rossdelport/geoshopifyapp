@@ -13,46 +13,15 @@ const TAG: React.CSSProperties = { position: "absolute", right: 28, top: 24 };
 const cobalt = (t: string) => ({ t, style: { color: C.cobalt } });
 const lilac = (t: string) => ({ t, style: lilacText });
 
-export const EveryWeek: React.FC = () => {
-  const f = useF();
-  const words = ["we", "ask", "AI"];
-  return (
-    <Light>
-      <Center>
-        <span
-          style={{
-            ...head(140, C.cobalt),
-            opacity: io(f, 0, 8, 0, 1),
-            filter: `blur(${io(f, 0, 12, 14, 0)}px)`,
-            transform: `translateY(${io(f, 24, 40, 0, -64)}px) scale(${io(f, 0, 12, 1.12, 1) * io(f, 24, 40, 1, 0.55)})`,
-          }}
-        >
-          Every week,
-        </span>
-      </Center>
-      <Center style={{ paddingTop: 60 }}>
-        <span style={{ display: "inline-flex", gap: 22 }}>
-          {words.map((w, i) => {
-            const s = 38 + i * 6;
-            return (
-              <span
-                key={w}
-                style={{
-                  ...head(84, w === "AI" ? C.cobalt : C.navy),
-                  display: "inline-block",
-                  opacity: io(f, s, s + 6, 0, 1),
-                  transform: `translateY(${io(f, s, s + 14, 80, 0)}px) rotate(${io(f, s, s + 14, i % 2 ? 9 : -9, 0)}deg)`,
-                }}
-              >
-                {w}
-              </span>
-            );
-          })}
-        </span>
-      </Center>
-    </Light>
-  );
-};
+/** The line before the orbit (Ross wanted "8+ AIs"; GEO asks 4 on Standard and 5 on Done-for-you, so "the top AIs"). */
+export const AskAIs: React.FC = () => (
+  <Light>
+    <Center style={{ gap: 14 }}>
+      <Rise words={["We", "ask", "the", cobalt("top AIs")]} style={head(92, C.navy)} at={0} />
+      <Rise words={["buying", "questions", "about", "your", "product."]} style={head(54, C.text, { fontWeight: 500 })} at={14} stagger={3} />
+    </Center>
+  </Light>
+);
 
 const ORBIT: { engine: Engine; r: number; a: number; size: number }[] = [
   { engine: "chatgpt", r: 300, a: 200, size: 66 },
@@ -581,22 +550,20 @@ export const Slogan: React.FC = () => (
   </Dark>
 );
 
-export const Join: React.FC = () => {
+export const Unlock: React.FC = () => {
   const f = useF();
   const site = "usegeo.app";
   return (
     <Dark>
-      <Center>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 30 }}>
-          <Rise words={["Join", "the", "waitlist"]} style={head(64, "#fff")} at={0} />
-          <span style={head(64, "#d4dbff", { textShadow: "0 0 18px rgba(125,140,240,0.9), 0 0 42px rgba(125,140,240,0.5)" })}>
-            {site.split("").map((ch, i) => (
-              <span key={i} style={{ opacity: io(f, 18 + i * 2, 24 + i * 2, 0, 1), filter: `blur(${io(f, 18 + i * 2, 26 + i * 2, 8, 0)}px)` }}>
-                {ch}
-              </span>
-            ))}
-          </span>
-        </div>
+      <Center style={{ gap: 22 }}>
+        <Rise words={["Unlock", "the", lilac("free"), lilac("sales"), lilac("channel")]} style={head(80, "#fff")} at={0} />
+        <span style={head(46, "#d4dbff", { textShadow: "0 0 18px rgba(125,140,240,0.9), 0 0 42px rgba(125,140,240,0.5)" })}>
+          {site.split("").map((ch, i) => (
+            <span key={i} style={{ opacity: io(f, 20 + i * 2, 26 + i * 2, 0, 1), filter: `blur(${io(f, 20 + i * 2, 28 + i * 2, 8, 0)}px)` }}>
+              {ch}
+            </span>
+          ))}
+        </span>
       </Center>
     </Dark>
   );
