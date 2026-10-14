@@ -121,7 +121,7 @@ export function looksRelevant(post: RedditPost, phrase: string): boolean {
 
 const KeepSchema = z.object({ keep: z.array(z.string()) });
 
-async function relevantByAi(posts: RedditPost[], about: string, shopId: string): Promise<Set<string>> {
+async function relevantByAi(posts: RedditPost[], about: string, products: string, shopId: string): Promise<Set<string>> {
   const result = await askJson({
     schema: KeepSchema,
     tier: "fast",
@@ -129,10 +129,13 @@ async function relevantByAi(posts: RedditPost[], about: string, shopId: string):
     shopId,
     style: false,
     maxTokens: 2000,
-    system:
-      "You sort Reddit posts for a store owner who will join some of them openly, as the owner. Keep a post only when the person is asking for advice, recommendations or where to buy something the store sells (or a close alternative), so a helpful reply from the owner would fit naturally. Drop posts about one specific brand's order or complaint, selling or giveaway posts, memes, news, and anything the store's products don't fit. Reply with the ids to keep.",
-    prompt: `The store: ${about}\n\nPosts (id | subreddit | title | start of text):\n${posts
-      .map((p) => `${p.postId} | r/${p.subreddit} | ${p.title} | ${(p.body ?? "").slice(0, 300).replace(/\s+/g, " ")}`)
+    system: `You pick Reddit posts where a store owner could honestly reply and name one of their products. Keep a post only when all three are true:
+1. The person is still choosing what to buy and is open to suggestions of brands, products or shops.
+2. The store sells something that genuinely fits what they want (the kind of product, the style, and roughly their budget if they give one).
+3. A short, honest reply from the owner naming one product would be welcome there.
+Drop: questions about something they already bought or picked (sizing, stock, returns, fakes, care), fan or merch communities for a band or brand, sad or personal posts, posts asking for blanks or wholesale, selling or giveaway posts, memes and news. When unsure, drop it. Reply with the ids to keep.`,
+    prompt: `The store: ${about}\nIts products (title | price):\n${products}\n\nPosts (id | subreddit | title | start of text):\n${posts
+      .map((p) => `${p.postId} | r/${p.subreddit} | ${p.title} | ${(p.body ?? "").slice(0, 400).replace(/\s+/g, " ")}`)
       .join("\n")}`,
   });
   return new Set(result.keep);
@@ -169,7 +172,7 @@ const REPLY_SYSTEM = `You write a Reddit reply for the owner of an online store.
 Rules:
 - Say who is writing in the first line, plainly, for example "(I run Brand, so I'm biased.)". Never hide it.
 - Be genuinely helpful and neutral. Answer what they asked first: what to look for, fit, materials, sizing or care, using common knowledge and the store's own facts.
-- Mention one of the store's products only if it really fits what they asked, by name, once. Say other options could suit them too.
+- Name the one product of the store that fits best, once, with its price if they mentioned a budget. Say other options could suit them too. If none of the products really fits, give helpful advice without naming one.
 - Never pretend to be a customer. Never write "I bought" or "I've been using" about the store's products. Never invent reviews, ratings, discounts, stats, awards, delivery times or any fact that isn't in the product details.
 - No links, no hashtags, no emojis, no sales talk ("check out", "game changer", "amazing deal").
 - 40 to 120 words, casual and friendly, like a normal Reddit comment. Write in the post's language.`;
@@ -231,11 +234,13 @@ export async function findThreads(shopId: string, now = new Date()): Promise<num
   }
 
   // Keep the ones where a reply from the owner fits.
+  const products = await db.product.findMany({ where: { shopId, status: "ACTIVE" }, take: 40 });
   let picks = [...found.values()];
   let byAi: Set<string> | null = null;
   if (aiConfigured() && picks.length) {
     try {
-      byAi = await relevantByAi(picks.map((f) => f.post).slice(0, 80), about, shopId);
+      const short = products.slice(0, 25).map((p) => `${p.title} | ${p.price ?? "?"}`).join("\n");
+      byAi = await relevantByAi(picks.map((f) => f.post).slice(0, 80), about, short, shopId);
     } catch (err) {
       console.error(`[reddit] relevance by AI failed, using word matching: ${(err as Error).message}`);
     }
@@ -245,7 +250,6 @@ export async function findThreads(shopId: string, now = new Date()): Promise<num
   picks = picks.slice(0, free ? KEEP_FREE : KEEP_PER_RUN);
 
   // Draft a reply for each and save.
-  const products = await db.product.findMany({ where: { shopId, status: "ACTIVE" }, take: 40 });
   const productList = products
     .slice(0, 20)
     .map((p) => `${p.title} | ${p.price ?? "?"} | ${(p.description ?? "").slice(0, 160).replace(/\s+/g, " ")}`)
