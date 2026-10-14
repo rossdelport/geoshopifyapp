@@ -233,10 +233,18 @@ export async function keywordVolumes(
 
 // ---------- Author email ----------
 
-export async function findAuthorEmail(
-  articleUrl: string,
-  shopId?: string,
-): Promise<{ email: string | null; name: string | null }> {
+export interface AuthorInfo {
+  email: string | null;
+  name: string | null;
+  position: string | null;
+  company: string | null;
+  linkedin: string | null;
+  twitter: string | null;
+}
+
+/** The writer of an article (Tomba author finder, about US$0.009): name, email, role, company, LinkedIn and X. */
+export async function findAuthor(articleUrl: string, shopId?: string): Promise<AuthorInfo> {
+  const empty = { email: null, name: null, position: null, company: null, linkedin: null, twitter: null };
   try {
     const raw = await tregCall("tomba.people.email.find.author", {
       method: "GET",
@@ -245,9 +253,25 @@ export async function findAuthorEmail(
       timeoutMs: 30_000,
     });
     const d = raw?.data ?? {};
-    const name = d.full_name || [d.first_name, d.last_name].filter(Boolean).join(" ") || null;
-    return { email: d.email || null, name };
+    const text = (v: unknown) => (typeof v === "string" && v.trim() ? v.trim().slice(0, 300) : null);
+    const link = (v: unknown) => {
+      const t = text(v);
+      return t && /^https?:\/\//i.test(t) ? t : null;
+    };
+    return {
+      email: text(d.email),
+      name: text(d.full_name) || text([d.first_name, d.last_name].filter(Boolean).join(" ")),
+      position: text(d.position),
+      company: text(d.company),
+      linkedin: link(d.linkedin),
+      twitter: link(d.twitter) ?? (text(d.twitter) ? `https://x.com/${text(d.twitter)!.replace(/^@/, "")}` : null),
+    };
   } catch {
-    return { email: null, name: null };
+    return empty;
   }
+}
+
+export async function findAuthorEmail(articleUrl: string, shopId?: string): Promise<{ email: string | null; name: string | null }> {
+  const a = await findAuthor(articleUrl, shopId);
+  return { email: a.email, name: a.name };
 }

@@ -22,6 +22,7 @@ const icon = (d: string) => (
 const NAV = [
   { to: "/dash", label: "Dashboard", end: true, d: "M3 10.5 10 4l7 6.5V17h-5v-4H8v4H3z" },
   { to: "/dash/questions", label: "Buying questions", d: "M7.5 7.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M10 15h.01M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" },
+  { to: "/dash/sites", label: "Sites AI trusts", d: "M10 2.5 3.5 5v4.5c0 4 2.8 7 6.5 8 3.7-1 6.5-4 6.5-8V5zM7 10l2 2 4-4" },
   { to: "/dash/tracking", label: "Tracking code", d: "M7 6 3 10l4 4M13 6l4 4-4 4" },
 ];
 

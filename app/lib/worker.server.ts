@@ -19,6 +19,7 @@ import "./billing.server";
 import "./check.server";
 import "./waitlist.server";
 import "./install.server";
+import "./trusted-sites.server";
 import { crawlerCheckDue, queueCrawlerCheck } from "./robots.server";
 import { maybeRunSelftest } from "./selftest.server";
 import { purgeOldData } from "./retention.server";

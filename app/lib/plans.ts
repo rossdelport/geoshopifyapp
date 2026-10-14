@@ -29,6 +29,7 @@ export interface Plan {
   fixesPerMonth: number; // Infinity = unlimited
   guidePagesPerMonth: number;
   outreachPerMonth: number;
+  writersPerMonth: number; // Sites AI trusts: writers looked up (name, role, email, LinkedIn) a month (Ross, 2026-10-14)
   pageReadsPerWeek: number; // free reads of pages AI cites (outreach): polite and bounded, US$0 each
   autopilot: boolean; // fixes applied for the store (on by default, the store can switch it off; held: claims, missing facts)
   doneForYou: boolean; // a person handles outreach and the monthly call
@@ -54,6 +55,7 @@ export const PLANS: Record<PlanId, Plan> = {
     fixesPerMonth: 0,
     guidePagesPerMonth: 0,
     outreachPerMonth: 0,
+    writersPerMonth: 0,
     pageReadsPerWeek: 0,
     autopilot: false,
     doneForYou: false,
@@ -82,6 +84,7 @@ export const PLANS: Record<PlanId, Plan> = {
     fixesPerMonth: Infinity,
     guidePagesPerMonth: 2,
     outreachPerMonth: 10,
+    writersPerMonth: 10,
     pageReadsPerWeek: 15,
     autopilot: false,
     doneForYou: false,
@@ -113,6 +116,7 @@ export const PLANS: Record<PlanId, Plan> = {
     fixesPerMonth: Infinity,
     guidePagesPerMonth: 8,
     outreachPerMonth: 40,
+    writersPerMonth: 50,
     pageReadsPerWeek: 50,
     autopilot: true,
     doneForYou: true,
