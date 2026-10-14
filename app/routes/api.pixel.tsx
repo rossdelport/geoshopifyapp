@@ -3,8 +3,10 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import db from "../db.server";
 import { env } from "../lib/env.server";
 import { classifyVisit } from "../lib/attribution";
+import { recordPixelOrder } from "../lib/tracking-code.server";
 
-// Receives one event per storefront visit from our Web Pixel (first page of each session).
+// Receives one event per storefront visit (first page of each session) from our Shopify app's Web Pixel, or
+// from a web app store's tracking code (a custom pixel, lib/tracking-code.server.ts), which also sends orders.
 // Public endpoint: the pixel runs in shoppers' browsers. No personal data is accepted or stored.
 
 const CORS = {
@@ -18,17 +20,28 @@ export const loader = async ({ request }: LoaderFunctionArgs) =>
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
-  let body: { shop?: string; ref?: string; url?: string; cid?: string } = {};
+  let body: { shop?: string; k?: string; type?: string; ref?: string; url?: string; cid?: string } = {};
   try {
-    body = JSON.parse((await request.text()).slice(0, 4000));
+    body = JSON.parse((await request.text()).slice(0, 12000));
   } catch {
     return new Response(null, { status: 400, headers: CORS });
   }
+  // Our Shopify app's pixel names the shop; a web app store's tracking code (custom pixel) carries its key.
+  const key = typeof body.k === "string" && /^geo_[\w-]{10,60}$/.test(body.k) ? body.k : null;
   const domain = String(body.shop ?? "").toLowerCase();
-  if (!/^[a-z0-9-]+\.myshopify\.com$/.test(domain)) return new Response(null, { status: 400, headers: CORS });
+  if (!key && !/^[a-z0-9-]+\.myshopify\.com$/.test(domain)) return new Response(null, { status: 400, headers: CORS });
 
-  const shop = await db.shop.findUnique({ where: { domain }, select: { id: true, status: true } });
+  const shop = await db.shop.findUnique({
+    where: key ? { trackKey: key } : { domain },
+    select: { id: true, status: true, domain: true, pixelId: true },
+  });
   if (!shop || shop.status !== "installed") return new Response(null, { status: 204, headers: CORS });
+  // The first event from a store's tracking code: it's set up, so the dashboard shows the money.
+  if (key && !shop.pixelId) await db.shop.update({ where: { id: shop.id }, data: { pixelId: "custom-pixel" } });
+  if (key && body.type === "order") {
+    await recordPixelOrder(shop.id, body);
+    return new Response(null, { status: 204, headers: CORS });
+  }
 
   const landingUrl = String(body.url ?? "").slice(0, 1000);
   const referrer = String(body.ref ?? "").slice(0, 1000);
@@ -42,7 +55,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   });
 
   if (visit) {
-    const clientKey = body.cid ? createHash("sha256").update(`${domain}:${body.cid}`).digest("hex").slice(0, 32) : null;
+    const clientKey = body.cid ? createHash("sha256").update(`${shop.domain}:${body.cid}`).digest("hex").slice(0, 32) : null;
     // Keep only the page path + utm_ tags. Other query values (e.g. email tracking ids) are dropped.
     let cleanLanding = landingUrl;
     try {

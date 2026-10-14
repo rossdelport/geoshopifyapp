@@ -987,6 +987,7 @@ export async function clearForAutopilot(fix: Fix): Promise<boolean> {
 registerJob("fixes.autopilot", async (job) => {
   const shop = await db.shop.findUniqueOrThrow({ where: { id: job.shopId! } });
   if (!shop.autopilot || !getPlan(shop.plan).autopilot) return;
+  if (shop.source === "web") return; // no Shopify connection: the store pastes fixes in itself
   const admin = await adminFor(shop.domain);
   // Fixes that need facts from the store (or that the claims check softened before) wait for a person.
   const pending = await db.fix.findMany({ where: { shopId: shop.id, status: "pending", missingInfo: null } });
@@ -1282,7 +1283,7 @@ export async function refreshDueFixes(shopId: string, opts: { admin?: AdminClien
   const shop = await db.shop.findUniqueOrThrow({ where: { id: shopId }, include: { profile: true } });
   const plan = getPlan(shop.plan);
   const perDay = REFRESHES_PER_DAY[plan.id] ?? 0;
-  if (!perDay || shop.status !== "installed") return 0;
+  if (!perDay || shop.status !== "installed" || shop.source === "web") return 0;
   if ((await costThisMonth(shopId)) >= plan.costCapUsd) return 0;
   const due = (await dueForRefresh(shopId, plan.id, now)).slice(0, perDay);
   if (!due.length) return 0;

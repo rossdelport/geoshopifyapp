@@ -7,61 +7,20 @@ import db from "../db.server";
 import { requireShop, getUsage } from "../lib/shop.server";
 import { canTrackMoreQuestions } from "../lib/limits";
 import { generateQuestions } from "../lib/onboarding.server";
-import { sameBrand } from "../lib/match";
+import { questionRows } from "../lib/question-stats.server";
 import { formatNumber, formatPct } from "../lib/format";
 import { looksLongTail } from "../lib/clusters";
 import { Bar, Empty } from "../components/ui";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { shop, plan } = await requireShop(request);
-  const [questions, scan, usage] = await Promise.all([
-    db.question.findMany({ where: { shopId: shop.id }, orderBy: [{ active: "desc" }, { volume: { sort: "desc", nulls: "last" } }] }),
-    db.scan.findFirst({ where: { shopId: shop.id, status: "done" }, orderBy: { startedAt: "desc" } }),
-    getUsage(shop.id),
-  ]);
-
-  const stats = new Map<string, { n: number; named: number; best: number | null; winners: Map<string, number> }>();
-  if (scan) {
-    const answers = await db.aiAnswer.findMany({
-      where: { scanId: scan.id, status: "parsed" },
-      select: { questionId: true, mentioned: true, position: true, mentions: { where: { isMerchant: false }, select: { brand: true }, take: 3 } },
-    });
-    for (const a of answers) {
-      const s = stats.get(a.questionId) ?? { n: 0, named: 0, best: null, winners: new Map() };
-      s.n++;
-      if (a.mentioned) {
-        s.named++;
-        if (a.position !== null && (s.best === null || a.position < s.best)) s.best = a.position;
-      }
-      for (const m of a.mentions) {
-        const key = [...s.winners.keys()].find((k) => sameBrand(k, m.brand)) ?? m.brand;
-        s.winners.set(key, (s.winners.get(key) ?? 0) + 1);
-      }
-      stats.set(a.questionId, s);
-    }
-  }
-
+  const [rows, usage] = await Promise.all([questionRows(shop.id), getUsage(shop.id)]);
   return {
     limit: plan.questions,
     planName: plan.name,
     active: usage.activeQuestions,
-    scanned: Boolean(scan),
-    questions: questions.map((q) => {
-      const s = stats.get(q.id);
-      return {
-        id: q.id,
-        text: q.text,
-        volume: q.volume,
-        active: q.active,
-        source: q.source,
-        cluster: q.cluster,
-        longTail: q.longTail,
-        rate: s && s.n ? s.named / s.n : null,
-        answers: s?.n ?? 0,
-        best: s?.best ?? null,
-        winners: s ? [...s.winners.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([b]) => b) : [],
-      };
-    }),
+    scanned: rows.scanned,
+    questions: rows.questions,
   };
 };
 

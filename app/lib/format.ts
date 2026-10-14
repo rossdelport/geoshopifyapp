@@ -32,7 +32,10 @@ export function timeAgo(date: Date | string | null | undefined): string {
   const s = Math.round((Date.now() - d.getTime()) / 1000);
   if (s < 60) return "just now";
   if (s < 3600) return `${Math.round(s / 60)} min ago`;
-  if (s < 86400) return `${Math.round(s / 3600)} hours ago`;
+  if (s < 86400) {
+    const h = Math.round(s / 3600);
+    return h === 1 ? "an hour ago" : `${h} hours ago`;
+  }
   const days = Math.round(s / 86400);
   return days === 1 ? "yesterday" : `${days} days ago`;
 }

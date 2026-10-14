@@ -61,6 +61,10 @@ model Shop {
   costMonth         String? // "2026-10"
   costThisMonth     Float     @default(0)
   costAlertedAt     DateTime?
+  source            String    @default("shopify") // shopify: installed from Shopify | web: added on the GEO web app
+  userId            String? // web: the GEO account that added it
+  trackKey          String?   @unique // web: the key in the store's tracking code (custom pixel), so only its own code can send orders
+  user              User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
@@ -487,4 +491,26 @@ model ReportEmail {
   @@index([ipHash, createdAt])
   @@index([email, createdAt])
   @@index([createdAt])
+}
+
+// GEO web app accounts (usegeo.app/login). Sign in by email link only: no passwords.
+model User {
+  id          String    @id @default(cuid())
+  email       String    @unique // lowercased
+  createdAt   DateTime  @default(now())
+  lastLoginAt DateTime?
+  shops       Shop[]
+}
+
+// One sign-in link. Only a hash of the token is kept; a link works once, for 30 minutes.
+model LoginLink {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  email     String
+  next      String? // where to go after signing in
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([email, createdAt])
 }

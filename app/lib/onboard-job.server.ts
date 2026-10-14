@@ -5,6 +5,7 @@ import { unauthenticated } from "../shopify.server";
 import { enqueue, registerJob } from "./jobs.server";
 import { buildBrandProfile, generateQuestions, syncCatalog } from "./onboarding.server";
 import { startScan } from "./scan.server";
+import { syncPublicCatalog } from "./public-catalog.server";
 
 export async function adminFor(shopDomain: string) {
   const { admin } = await unauthenticated.admin(shopDomain);
@@ -13,10 +14,12 @@ export async function adminFor(shopDomain: string) {
 
 registerJob("onboard", async (job) => {
   const shop = await db.shop.findUniqueOrThrow({ where: { id: job.shopId! } });
-  const admin = await adminFor(shop.domain);
+  // Web app stores have no Shopify connection: their public catalog, and no orders to read.
+  const web = shop.source === "web";
 
   await db.shop.update({ where: { id: shop.id }, data: { onboarding: "profiling" } });
-  await syncCatalog(shop.id, admin, 250);
+  if (web) await syncPublicCatalog(shop.id, 250);
+  else await syncCatalog(shop.id, await adminFor(shop.domain), 250);
   await buildBrandProfile(shop.id);
 
   await db.shop.update({ where: { id: shop.id }, data: { onboarding: "questions" } });
@@ -24,11 +27,12 @@ registerJob("onboard", async (job) => {
   if (!hasQuestions) await generateQuestions(shop.id);
 
   await db.shop.update({ where: { id: shop.id }, data: { onboarding: "scanning" } });
-  await enqueue("orders.backfill", {}, { shopId: shop.id, dedupeKey: `backfill:${shop.id}` });
+  if (!web) await enqueue("orders.backfill", {}, { shopId: shop.id, dedupeKey: `backfill:${shop.id}` });
   await startScan(shop.id, shop.plan === "free" ? "free" : "baseline");
 });
 
 registerJob("catalog.sync", async (job) => {
   const shop = await db.shop.findUniqueOrThrow({ where: { id: job.shopId! } });
-  await syncCatalog(shop.id, await adminFor(shop.domain), 1000);
+  if (shop.source === "web") await syncPublicCatalog(shop.id, 1000);
+  else await syncCatalog(shop.id, await adminFor(shop.domain), 1000);
 });

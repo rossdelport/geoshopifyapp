@@ -14,6 +14,8 @@ const EXACT_PUBLIC = new Set(["/", "/check", "/check/", "/tools", "/tools/", "/s
 
 function isPublicPath(path: string): boolean {
   if (path.endsWith(".data")) return false; // React Router's own data requests come from the page's host
+  // The web app too (/login, /start, /dash): its sign-in cookie lives on usegeo.app only.
+  if (/^\/(login|start|dash)(\/|$)/.test(path)) return true;
   return EXACT_PUBLIC.has(path) || path.startsWith("/tools/") || path.startsWith("/stories/");
 }
 
