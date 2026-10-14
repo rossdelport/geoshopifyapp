@@ -215,7 +215,7 @@ describe.skipIf(!url)("web app (needs TEST_DATABASE_URL)", () => {
     expect(enqueue).toHaveBeenCalledWith("onboard", {}, { shopId: shop.id, dedupeKey: `onboard:${shop.id}` });
 
     const data = await dash.loader(args(new Request("https://usegeo.app/dash", { headers: { cookie } })));
-    expect(data).toEqual({ email: "ross@beard.com", store: "Beard Co", host: "beard.com", country: "AU", plan: "Free scan", left: null });
+    expect(data).toEqual({ admin: false, email: "ross@beard.com", store: "Beard Co", host: "beard.com", country: "AU", plan: "Free scan", left: null });
   });
 
   it("only adds real Shopify stores, and never one already on GEO", async () => {

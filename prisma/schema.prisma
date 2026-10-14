@@ -67,6 +67,7 @@ model Shop {
   user              User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
   siteWriters       SiteWriter[]
   redditThreads     RedditThread[]
+  supportFlags      SupportFlag[]
   redditCheckedAt   DateTime? // last weekly look for Reddit threads (lib/reddit.server.ts)
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
@@ -563,4 +564,20 @@ model RedditThread {
 
   @@unique([shopId, postId])
   @@index([shopId, createdAt])
+}
+
+/// Ask GEO: a question the help chat passed to the GEO team (status: open | done). Only a short summary is kept,
+/// never the chat itself.
+model SupportFlag {
+  id        String   @id @default(cuid())
+  userId    String?
+  shopId    String?
+  shop      Shop?    @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  email     String
+  reason    String
+  summary   String
+  status    String   @default("open")
+  createdAt DateTime @default(now())
+
+  @@index([status, createdAt])
 }

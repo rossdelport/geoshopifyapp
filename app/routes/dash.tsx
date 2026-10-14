@@ -2,6 +2,7 @@ import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-rout
 import { Form, NavLink, Outlet, useLoaderData } from "react-router";
 import { ICONS, Icon, Logo } from "../components/web";
 import { requireWebShop } from "../lib/web-auth.server";
+import { isAdmin } from "../lib/admin.server";
 import { getPlan } from "../lib/plans";
 import { outreachUsedThisMonth } from "../lib/outreach.server";
 import { writersUsedThisMonth } from "../lib/trusted-sites.server";
@@ -21,6 +22,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     ? await Promise.all([writersUsedThisMonth(shop.id), outreachUsedThisMonth(shop.id)])
     : [0, 0];
   return {
+    admin: isAdmin(user.email),
     email: user.email,
     store: shop.name || shop.primaryDomain || shop.domain,
     host: shop.primaryDomain || shop.domain,
@@ -50,7 +52,7 @@ const flag = (cc: string | null) =>
   cc && /^[A-Z]{2}$/.test(cc) ? String.fromCodePoint(...[...cc].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)) : null;
 
 export default function Dash() {
-  const { email, store, host, country, plan, left } = useLoaderData<typeof loader>();
+  const { admin, email, store, host, country, plan, left } = useLoaderData<typeof loader>();
   return (
     <div className="w">
       <div className="w-shell">
@@ -70,11 +72,24 @@ export default function Dash() {
             ))}
             <div className="w-nav-group">
               <span className="w-nav-label">Support</span>
+              <NavLink to="/dash/ask" className={({ isActive }) => (isActive ? "active" : undefined)}>
+                <Icon d={ICONS.spark} />
+                Ask GEO
+              </NavLink>
               <a href="mailto:ross@usegeo.app">
                 <Icon d={ICONS.mail} />
                 Email us
               </a>
             </div>
+            {admin ? (
+              <div className="w-nav-group">
+                <span className="w-nav-label">Owner</span>
+                <NavLink to="/dash/admin" className={({ isActive }) => (isActive ? "active" : undefined)}>
+                  <Icon d={ICONS.gauge} />
+                  Admin
+                </NavLink>
+              </div>
+            ) : null}
           </nav>
 
           <div className="w-side-foot">

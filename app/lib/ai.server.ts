@@ -78,3 +78,49 @@ export async function askJson<S extends z.ZodType>(opts: AskOptions<S>): Promise
 }
 
 export const aiConfigured = () => Boolean(env.anthropicKey);
+
+interface ChatOptions<S extends z.ZodType> {
+  schema: S;
+  /** Stable instructions and knowledge: cached, so repeat messages read it at a tenth of the price. */
+  system: string;
+  /** Per-request facts (the person's store): after the cache breakpoint, so they don't break the cache. */
+  context: string;
+  messages: { role: "user" | "assistant"; content: string }[];
+  maxTokens?: number;
+  shopId?: string | null;
+  label: string;
+}
+
+/** A multi-turn chat that answers in typed JSON (Ask GEO). Smart model, low effort, cached system prompt. */
+export async function chatJson<S extends z.ZodType>(opts: ChatOptions<S>): Promise<z.infer<S>> {
+  const model = env.modelSmart;
+  const response = await claudeGate.run(() =>
+    getClient().beta.messages.parse({
+      model,
+      max_tokens: opts.maxTokens ?? 4000,
+      system: [
+        { type: "text", text: `${opts.system}\n\n${STYLE_RULE}`, cache_control: { type: "ephemeral" } },
+        { type: "text", text: opts.context },
+      ],
+      messages: opts.messages,
+      output_config: { format: betaZodOutputFormat(opts.schema), effort: "low" },
+      betas: ["server-side-fallback-2026-07-01"],
+      fallbacks: "default" as const,
+    }),
+  );
+
+  const [inPrice, outPrice] = PRICES[response.model] ?? PRICES[model] ?? [4, 20];
+  const u = response.usage;
+  const usd =
+    (u.input_tokens * inPrice +
+      (u.cache_creation_input_tokens ?? 0) * inPrice * 1.25 +
+      (u.cache_read_input_tokens ?? 0) * inPrice * 0.1 +
+      u.output_tokens * outPrice) /
+    1_000_000;
+  await recordCost(opts.shopId, "anthropic", `${opts.label}:${model}`, usd).catch(() => {});
+
+  if (response.stop_reason === "refusal") throw new Error("Claude declined this request");
+  if (response.stop_reason === "max_tokens") throw new Error("Claude ran out of room (max_tokens)");
+  if (!response.parsed_output) throw new Error("Claude returned no usable JSON");
+  return response.parsed_output as z.infer<S>;
+}
