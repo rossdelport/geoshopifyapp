@@ -3,6 +3,7 @@ import { useLoaderData } from "react-router";
 import { requireWebShop } from "../lib/web-auth.server";
 import { questionRows } from "../lib/question-stats.server";
 import { formatNumber, formatPct } from "../lib/format";
+import { PageHead } from "../components/web";
 
 // usegeo.app/dash/questions: every buying question we ask AI for the store, how often AI named the store, its
 // best position, and who AI named instead.
@@ -17,13 +18,12 @@ export default function Questions() {
   const { scanned, questions } = useLoaderData<typeof loader>();
   return (
     <>
-      <div className="w-head">
-        <div>
-          <h1>Buying questions</h1>
-          <p>The questions shoppers ask AI before they buy. We ask each one twice on every AI assistant.</p>
-        </div>
-      </div>
-      <section className="w-panel">
+      <PageHead
+        title="Buying questions"
+        intro="The questions shoppers ask AI before they buy. We ask each one twice on every AI assistant."
+        right={<span className="w-chip">{questions.length} tracked</span>}
+      />
+      <section className="w-box">
         {questions.length ? (
           <div className="w-table-wrap">
             <table className="w-table">
@@ -42,9 +42,9 @@ export default function Questions() {
                     <td className="num">{q.volume ? formatNumber(q.volume) : "Not known"}</td>
                     <td className="num">
                       {q.rate === null ? (
-                        <span className="w-pill">{scanned ? "Not asked yet" : "Checking"}</span>
+                        <span className="w-dot">{scanned ? "Not asked yet" : "Checking"}</span>
                       ) : (
-                        <span className={`w-pill ${q.rate >= 0.5 ? "ok" : q.rate > 0 ? "warn" : "no"}`}>
+                        <span className={`w-dot ${q.rate >= 0.5 ? "ok" : q.rate > 0 ? "warn" : "no"}`}>
                           {q.rate > 0 ? `${formatPct(q.rate)}${q.best ? `, best #${q.best}` : ""}` : "Not named"}
                         </span>
                       )}
@@ -56,7 +56,7 @@ export default function Questions() {
             </table>
           </div>
         ) : (
-          <p>We’re still writing your buying questions. Check back in a few minutes.</p>
+          <p className="w-empty">We’re still writing your buying questions. Check back in a few minutes.</p>
         )}
       </section>
     </>

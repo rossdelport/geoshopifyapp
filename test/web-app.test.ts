@@ -22,6 +22,7 @@ if (url) {
 process.env.SHOPIFY_APP_URL = "https://geo.test";
 
 const sent = vi.hoisted(() => ({ mails: [] as { to: string[]; html: string; text?: string }[], on: true }));
+vi.mock("../app/shopify.server", () => ({ unauthenticated: { admin: vi.fn() }, authenticate: {} }));
 vi.mock("../app/lib/email.server", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../app/lib/email.server")>()),
   emailConfigured: () => sent.on,
@@ -214,7 +215,7 @@ describe.skipIf(!url)("web app (needs TEST_DATABASE_URL)", () => {
     expect(enqueue).toHaveBeenCalledWith("onboard", {}, { shopId: shop.id, dedupeKey: `onboard:${shop.id}` });
 
     const data = await dash.loader(args(new Request("https://usegeo.app/dash", { headers: { cookie } })));
-    expect(data).toEqual({ email: "ross@beard.com", store: "Beard Co" });
+    expect(data).toEqual({ email: "ross@beard.com", store: "Beard Co", host: "beard.com", country: "AU", plan: "Free scan", left: null });
   });
 
   it("only adds real Shopify stores, and never one already on GEO", async () => {

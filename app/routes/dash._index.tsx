@@ -6,7 +6,9 @@ import { requireWebShop } from "../lib/web-auth.server";
 import { activeScan, moneySummary, topCompetitors, visibilitySummary } from "../lib/dashboard.server";
 import { questionRows } from "../lib/question-stats.server";
 import { SCORE_EXPLAINER, scoreLabel } from "../lib/score";
+import { ENGINE_LABELS, type Engine } from "../lib/plans";
 import { formatMoney, formatPct, timeAgo } from "../lib/format";
+import { ICONS, PageHead, Stat } from "../components/web";
 
 // usegeo.app/dash: the web app's home. While setting up: the steps and the scan's progress. Then, money from AI
 // first (Ross's #1 rule), the visibility score, who AI names instead, and the questions where the store is missing.
@@ -51,6 +53,8 @@ const STEPS: { key: string; label: string }[] = [
   { key: "scanning", label: "Asking ChatGPT, Gemini, Perplexity and Google (twice each)" },
 ];
 
+const engineName = (e: string) => ENGINE_LABELS[e as Engine] ?? (e === "ours" ? "Pages we built" : "Other AI");
+
 export default function DashHome() {
   const data = useLoaderData<typeof loader>();
   const revalidator = useRevalidator();
@@ -68,12 +72,7 @@ export default function DashHome() {
     const pct = data.scan && data.scan.total ? Math.round((data.scan.done / data.scan.total) * 100) : 0;
     return (
       <>
-        <div className="w-head">
-          <div>
-            <h1>Setting up {data.storeName}</h1>
-            <p>This takes a few minutes. You can leave this page and come back.</p>
-          </div>
-        </div>
+        <PageHead title={`Setting up ${data.storeName}`} intro="This takes a few minutes. You can leave this page and come back." />
         <section className="w-panel" aria-live="polite">
           <ol className="w-steps">
             {STEPS.map((s, i) => (
@@ -103,111 +102,161 @@ export default function DashHome() {
   }
 
   const { money, visibility } = data;
+  const tracking = money.hasPixel || money.thisMonth.orders > 0;
   const score = visibility.latest?.score ?? 0;
   const label = scoreLabel(score, data.youShare > 0);
   const maxShare = Math.max(data.youShare, ...data.competitors.map((c) => c.share), 0.01);
+  const notYet = (
+    <a href="/dash/tracking">Add the tracking code to see this</a>
+  );
   return (
     <>
-      <div className="w-head">
-        <div>
-          <h1>{data.storeName}</h1>
-          <p>Last checked with AI {data.lastScanAt ? timeAgo(data.lastScanAt) : "not yet"}.</p>
-        </div>
-      </div>
-
-      <section className="w-panel w-money" aria-labelledby="money-h">
-        <h2 id="money-h">Money from AI this month</h2>
-        {money.hasPixel || money.thisMonth.orders > 0 ? (
-          <div className="w-grid">
-            <div>
-              <div className="w-label">AI revenue</div>
-              <div className="w-big">{formatMoney(money.thisMonth.revenue, money.currency)}</div>
-            </div>
-            <div>
-              <div className="w-label">AI orders</div>
-              <div className="w-big">{money.thisMonth.orders}</div>
-            </div>
-            <div>
-              <div className="w-label">AI clicks</div>
-              <div className="w-big">{money.thisMonth.visits}</div>
-            </div>
-          </div>
-        ) : (
+      <PageHead
+        title={data.storeName}
+        right={
           <>
-            <p>See the clicks, orders and money that come from ChatGPT and the other AI assistants. It’s one copy and paste in Shopify.</p>
-            <a className="w-btn" href="/dash/tracking" style={{ justifySelf: "start" }}>
-              Add the tracking code
-            </a>
+            {data.scan ? <span className="w-chip live">Checking with AI now</span> : null}
+            <span className="w-chip">Last checked {data.lastScanAt ? timeAgo(data.lastScanAt) : "not yet"}</span>
           </>
-        )}
+        }
+      />
+
+      <section className="w-sec" aria-labelledby="money-h">
+        <div className="w-sec-head">
+          <h2 id="money-h">Money from AI this month</h2>
+          <p>Orders and clicks from people who came from ChatGPT and the other AI assistants.</p>
+        </div>
+        <div className="w-stats">
+          <Stat
+            hero
+            label="AI revenue"
+            icon={ICONS.money}
+            value={tracking ? formatMoney(money.thisMonth.revenue, money.currency) : "–"}
+            caption={tracking ? (money.thisMonth.share !== null ? `${formatPct(money.thisMonth.share)} of your store’s sales` : "Sales from AI this month") : notYet}
+          />
+          <Stat
+            label="AI orders"
+            icon={ICONS.bag}
+            value={tracking ? money.thisMonth.orders : "–"}
+            caption={tracking ? "Orders from shoppers AI sent you" : notYet}
+          />
+          <Stat
+            label="AI clicks"
+            icon={ICONS.click}
+            value={tracking ? money.thisMonth.visits : "–"}
+            caption={tracking ? "Visits from links in AI answers" : notYet}
+          />
+          <Stat
+            label="Visibility score"
+            icon={ICONS.gauge}
+            value={
+              <>
+                {Math.round(score)}
+                <small> / 100</small>
+              </>
+            }
+            caption={
+              <>
+                <span className={`w-dot ${label.tone === "success" ? "ok" : label.tone === "critical" ? "no" : "warn"}`}>{label.label}</span>
+                <details className="w-how">
+                  <summary>How it works</summary>
+                  {SCORE_EXPLAINER}
+                </details>
+              </>
+            }
+          />
+        </div>
       </section>
 
-      <div className="w-grid">
-        <section className="w-panel" aria-labelledby="score-h">
-          <h2 id="score-h">Visibility score</h2>
-          <div className="w-big">
-            {Math.round(score)}
-            <span className="w-note" style={{ fontSize: 15 }}>
-              {" "}
-              / 100
-            </span>
+      {money.recentOrders.length ? (
+        <section className="w-sec" aria-labelledby="orders-h">
+          <div className="w-sec-head">
+            <h2 id="orders-h">Latest orders from AI</h2>
           </div>
-          <span className={`w-pill ${label.tone === "success" ? "ok" : label.tone === "critical" ? "no" : "warn"}`} style={{ justifySelf: "start" }}>
-            {label.label}
-          </span>
-          <p className="w-note">{SCORE_EXPLAINER}</p>
-        </section>
-
-        <section className="w-panel" aria-labelledby="who-h">
-          <h2 id="who-h">Who AI names</h2>
-          <p className="w-note">Share of AI answers that name each brand, from {data.tracked} buying questions.</p>
-          <ul className="w-rank">
-            <li className="you">
-              <b>{data.brandName} (you)</b>
-              <span>{formatPct(data.youShare)}</span>
-              <span className="bar">
-                <span style={{ width: `${(data.youShare / maxShare) * 100}%` }} />
-              </span>
-            </li>
-            {data.competitors.map((c) => (
-              <li key={c.brand}>
-                <span>{c.brand}</span>
-                <span>{formatPct(c.share)}</span>
-                <span className="bar">
-                  <span style={{ width: `${(c.share / maxShare) * 100}%` }} />
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      </div>
-
-      <section className="w-panel" aria-labelledby="miss-h">
-        <h2 id="miss-h">Questions where AI doesn’t name you</h2>
-        {data.missing.length ? (
-          <div className="w-table-wrap">
+          <div className="w-box w-table-wrap">
             <table className="w-table">
               <thead>
                 <tr>
-                  <th>Buying question</th>
-                  <th>AI names instead</th>
+                  <th>Order</th>
+                  <th>Came from</th>
+                  <th>Amount</th>
+                  <th>When</th>
                 </tr>
               </thead>
               <tbody>
-                {data.missing.map((q) => (
-                  <tr key={q.id}>
-                    <td className="w-q">{q.text}</td>
-                    <td>{q.winners.join(", ") || "No brand named"}</td>
+                {money.recentOrders.map((o) => (
+                  <tr key={o.orderName + String(o.orderedAt)}>
+                    <td className="w-q">{o.orderName}</td>
+                    <td>{engineName(o.engine)}</td>
+                    <td className="num">{formatMoney(o.revenue, money.currency)}</td>
+                    <td className="num">{timeAgo(o.orderedAt)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        ) : (
-          <p>AI names you at least once for every question you track. Nice.</p>
-        )}
-        <a href="/dash/questions">See all buying questions</a>
-      </section>
+        </section>
+      ) : null}
+
+      <div className="w-two">
+        <section className="w-sec" aria-labelledby="who-h">
+          <div className="w-sec-head">
+            <h2 id="who-h">Who AI names</h2>
+            <p>Share of AI answers that name each brand, from {data.tracked} buying questions.</p>
+          </div>
+          <div className="w-box">
+            <ul className="w-rank">
+              <li className="you">
+                <b>{data.brandName} (you)</b>
+                <span>{formatPct(data.youShare)}</span>
+                <span className="bar">
+                  <span style={{ width: `${(data.youShare / maxShare) * 100}%` }} />
+                </span>
+              </li>
+              {data.competitors.map((c) => (
+                <li key={c.brand}>
+                  <span>{c.brand}</span>
+                  <span>{formatPct(c.share)}</span>
+                  <span className="bar">
+                    <span style={{ width: `${(c.share / maxShare) * 100}%` }} />
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section className="w-sec" aria-labelledby="miss-h">
+          <div className="w-sec-head">
+            <h2 id="miss-h">Questions where AI doesn’t name you</h2>
+            <p>
+              Your biggest openings. <a href="/dash/questions">See all buying questions</a>
+            </p>
+          </div>
+          <div className="w-box w-table-wrap">
+            {data.missing.length ? (
+              <table className="w-table">
+                <thead>
+                  <tr>
+                    <th>Buying question</th>
+                    <th>AI names instead</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.missing.map((q) => (
+                    <tr key={q.id}>
+                      <td className="w-q">{q.text}</td>
+                      <td>{q.winners.join(", ") || "No brand named"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="w-empty">AI names you at least once for every question you track. Nice.</p>
+            )}
+          </div>
+        </section>
+      </div>
     </>
   );
 }

@@ -3,6 +3,7 @@ import type { LoaderFunctionArgs } from "react-router";
 import { useLoaderData } from "react-router";
 import { requireWebShop } from "../lib/web-auth.server";
 import { trackKeyFor, trackingCode } from "../lib/tracking-code.server";
+import { PageHead } from "../components/web";
 
 // usegeo.app/dash/tracking: the store's tracking code and how to paste it into Shopify (Settings -> Customer
 // events -> Add custom pixel). Once it sends its first visit, the dashboard shows AI clicks, orders and revenue.
@@ -28,13 +29,11 @@ export default function Tracking() {
   };
   return (
     <>
-      <div className="w-head">
-        <div>
-          <h1>Tracking code</h1>
-          <p>See the clicks, orders and money that come from ChatGPT and the other AI assistants.</p>
-        </div>
-        <span className={`w-pill ${working ? "ok" : "warn"}`}>{working ? "Working" : "Not added yet"}</span>
-      </div>
+      <PageHead
+        title="Tracking code"
+        intro="See the clicks, orders and money that come from ChatGPT and the other AI assistants."
+        right={<span className={`w-chip ${working ? "ok" : "warn"}`}>{working ? "Working" : "Not added yet"}</span>}
+      />
 
       <section className="w-panel">
         <h2>Add it to Shopify in 2 minutes</h2>
@@ -61,7 +60,7 @@ export default function Tracking() {
       </section>
 
       <section className="w-panel">
-        <div className="w-head">
+        <div className="w-row">
           <h2>Your code</h2>
           <button className="w-btn w-btn-sm" type="button" onClick={copy}>
             {copied ? "Copied" : "Copy code"}

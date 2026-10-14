@@ -1,56 +1,116 @@
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
 import { Form, NavLink, Outlet, useLoaderData } from "react-router";
-import { Logo } from "../components/web";
+import { ICONS, Icon, Logo } from "../components/web";
 import { requireWebShop } from "../lib/web-auth.server";
+import { getPlan } from "../lib/plans";
+import { outreachUsedThisMonth } from "../lib/outreach.server";
+import { writersUsedThisMonth } from "../lib/trusted-sites.server";
 import styles from "../styles/web.css?url";
 
-// The GEO web app's frame: the menu on the left (a top bar on phones) and the page on the right.
+// The GEO web app's frame: the menu on the left (a top bar on phones) and the page on the right. Like RankPill's
+// layout (Ross, 2026-10-14) in GEO's colours: menu sections, this month's allowance, the store and the account at
+// the bottom.
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 export const meta: MetaFunction = () => [{ title: "GEO" }, { name: "robots", content: "noindex" }];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { user, shop } = await requireWebShop(request);
-  return { email: user.email, store: shop.name || shop.primaryDomain || shop.domain };
+  const plan = getPlan(shop.plan);
+  const [writersUsed, pitchesUsed] = plan.writersPerMonth
+    ? await Promise.all([writersUsedThisMonth(shop.id), outreachUsedThisMonth(shop.id)])
+    : [0, 0];
+  return {
+    email: user.email,
+    store: shop.name || shop.primaryDomain || shop.domain,
+    host: shop.primaryDomain || shop.domain,
+    country: shop.country,
+    plan: plan.name,
+    left: plan.writersPerMonth
+      ? { writers: Math.max(0, plan.writersPerMonth - writersUsed), pitches: Math.max(0, plan.outreachPerMonth - pitchesUsed) }
+      : null,
+  };
 };
 
-const icon = (d: string) => (
-  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d={d} />
-  </svg>
-);
-const NAV = [
-  { to: "/dash", label: "Dashboard", end: true, d: "M3 10.5 10 4l7 6.5V17h-5v-4H8v4H3z" },
-  { to: "/dash/questions", label: "Buying questions", d: "M7.5 7.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M10 15h.01M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" },
-  { to: "/dash/sites", label: "Sites AI trusts", d: "M10 2.5 3.5 5v4.5c0 4 2.8 7 6.5 8 3.7-1 6.5-4 6.5-8V5zM7 10l2 2 4-4" },
-  { to: "/dash/tracking", label: "Tracking code", d: "M7 6 3 10l4 4M13 6l4 4-4 4" },
+const SECTIONS = [
+  {
+    label: "General",
+    items: [
+      { to: "/dash", label: "Dashboard", end: true, d: ICONS.home },
+      { to: "/dash/questions", label: "Buying questions", d: ICONS.question },
+      { to: "/dash/sites", label: "Sites AI trusts", d: ICONS.shield },
+    ],
+  },
+  { label: "Setup", items: [{ to: "/dash/tracking", label: "Tracking code", d: ICONS.code }] },
 ];
 
+/** "AU" -> the Australian flag emoji. */
+const flag = (cc: string | null) =>
+  cc && /^[A-Z]{2}$/.test(cc) ? String.fromCodePoint(...[...cc].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)) : null;
+
 export default function Dash() {
-  const { email, store } = useLoaderData<typeof loader>();
+  const { email, store, host, country, plan, left } = useLoaderData<typeof loader>();
   return (
     <div className="w">
       <div className="w-shell">
         <aside className="w-side">
           <Logo />
           <nav className="w-nav" aria-label="Main">
-            {NAV.map((n) => (
-              <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => (isActive ? "active" : undefined)}>
-                {icon(n.d)}
-                {n.label}
-              </NavLink>
+            {SECTIONS.map((s) => (
+              <div key={s.label} className="w-nav-group">
+                <span className="w-nav-label">{s.label}</span>
+                {s.items.map((n) => (
+                  <NavLink key={n.to} to={n.to} end={"end" in n ? n.end : false} className={({ isActive }) => (isActive ? "active" : undefined)}>
+                    <Icon d={n.d} />
+                    {n.label}
+                  </NavLink>
+                ))}
+              </div>
             ))}
+            <div className="w-nav-group">
+              <span className="w-nav-label">Support</span>
+              <a href="mailto:ross@usegeo.app">
+                <Icon d={ICONS.mail} />
+                Email us
+              </a>
+            </div>
           </nav>
+
           <div className="w-side-foot">
-            <span>
-              <b>{store}</b>
-              <span className="w-note">{email}</span>
-            </span>
-            <Form method="post" action="/logout">
-              <button className="w-link-btn" type="submit">
-                Sign out
-              </button>
-            </Form>
+            {left ? (
+              <div className="w-allow" title="What’s left of this month’s allowance. It resets on the 1st.">
+                <span className="w-nav-label">Left this month</span>
+                <span>
+                  <Icon d={ICONS.user} /> {left.writers} writer lookups
+                </span>
+                <span>
+                  <Icon d={ICONS.send} /> {left.pitches} pitches
+                </span>
+              </div>
+            ) : null}
+
+            <div className="w-store">
+              <span className="w-store-mark" aria-hidden="true">
+                {flag(country) ?? store.slice(0, 1).toUpperCase()}
+              </span>
+              <span className="w-store-name">
+                <b>{store}</b>
+                <span>{host}</span>
+              </span>
+              <span className="w-plan">{plan}</span>
+            </div>
+
+            <div className="w-me">
+              <span className="w-avatar" aria-hidden="true">
+                {email.slice(0, 1).toUpperCase()}
+              </span>
+              <span className="w-me-email">{email}</span>
+              <Form method="post" action="/logout">
+                <button className="w-icon-btn" type="submit" title="Sign out" aria-label="Sign out">
+                  <Icon d={ICONS.out} />
+                </button>
+              </Form>
+            </div>
           </div>
         </aside>
         <main className="w-main">

@@ -7,6 +7,7 @@ import { getPlan, ENGINE_LABELS, type Engine } from "../lib/plans";
 import { outreachUsedThisMonth } from "../lib/outreach.server";
 import { PITCHABLE, findWriter, pitchSite, trustedSites, writersUsedThisMonth } from "../lib/trusted-sites.server";
 import { formatPct } from "../lib/format";
+import { ICONS, PageHead, Stat } from "../components/web";
 
 // usegeo.app/dash/sites: Sites AI trusts. The websites AI cites most for the store's buying questions, over every
 // scan since it joined, with the writer behind each one and a pitch to send (or, on Done-for-you, that we send).
@@ -192,38 +193,43 @@ export default function Sites() {
   const paid = plan.writers > 0;
   return (
     <>
-      <div className="w-head">
-        <div>
-          <h1>Sites AI trusts</h1>
-          <p>
-            The websites ChatGPT and the other AI assistants read most when they answer your buying questions, counted over every
-            check since you joined. Get mentioned on these and AI is more likely to recommend you.
-          </p>
-        </div>
-      </div>
+      <PageHead
+        title="Sites AI trusts"
+        intro="The websites ChatGPT and the other AI assistants read most when they answer your buying questions, counted over every check since you joined. Get mentioned on these and AI is more likely to recommend you."
+        right={
+          paid ? (
+            <>
+              <span className="w-chip">
+                {writersUsed}/{plan.writers} writers this month
+              </span>
+              <span className="w-chip">
+                {pitchesUsed}/{plan.pitches} pitches this month
+              </span>
+            </>
+          ) : null
+        }
+      />
 
       {paid ? (
-        <div className="w-grid">
-          <section className="w-panel">
-            <div className="w-label">Writers found this month</div>
-            <div className="w-big">
-              {writersUsed} <span className="w-note">of {plan.writers}</span>
-            </div>
-            <p className="w-note">We find the person who wrote the page: name, role, email and LinkedIn.</p>
-          </section>
-          <section className="w-panel">
-            <div className="w-label">Pitches this month</div>
-            <div className="w-big">
-              {pitchesUsed} <span className="w-note">of {plan.pitches}</span>
-            </div>
-            <p className="w-note">
-              {plan.doneForYou ? "We write them, send them for you and follow up." : "A short, honest email from you, written for that page."}
-            </p>
-          </section>
+        <div className="w-stats">
+          <Stat label="Sites found" icon={ICONS.shield} value={sites.length} caption="Websites AI used in its answers to your questions" />
+          <Stat
+            label="Name you"
+            icon={ICONS.gauge}
+            value={sites.filter((s) => s.namedShare > 0).length}
+            caption="Of those, sites whose answers also named you"
+          />
+          <Stat label="Writers found" icon={ICONS.user} value={writersUsed} caption={`Of ${plan.writers} this month: name, role, email and LinkedIn`} />
+          <Stat
+            label="Pitches"
+            icon={ICONS.send}
+            value={pitchesUsed}
+            caption={plan.doneForYou ? `Of ${plan.pitches} this month. We send them and follow up.` : `Of ${plan.pitches} this month. Short, honest emails from you.`}
+          />
         </div>
       ) : null}
 
-      <section className="w-panel">
+      <section className="w-box w-box-pad">
         {sites.length ? (
           <ol className="w-sites">
             {sites.map((s, i) => (
@@ -239,7 +245,7 @@ export default function Sites() {
             ))}
           </ol>
         ) : (
-          <p>Once we’ve asked AI your buying questions, the sites it reads will show up here.</p>
+          <p className="w-empty">Once we’ve asked AI your buying questions, the sites it reads will show up here.</p>
         )}
       </section>
     </>
