@@ -165,3 +165,39 @@ descriptions, guide pages kept fresh, "others only" outreach per assistant. New 
 | Writing rules | Add "entity-rich, one idea per sentence, each section stands alone" to the description and guide prompts | Prompts in fixes.server.ts | Small | Medium |
 | YouTube ideas | For topics where AI cites YouTube, suggest evergreen video topics and creators to approach (honest outreach only) | Citations per engine, outreach "video" kind | Medium | Medium to high |
 | AI bot activity | Not possible on Shopify: stores don't get server logs. Skip, or explain in the app why we can't show it | None | n/a | n/a |
+
+---
+
+## 4. Post: "Railway hacked AI SEO" (shared 15 Oct 2026)
+
+A social post about Railway (app hosting). Its numbers are the post's own (unchecked): about US$20M to about
+US$100M a year in one year; Claude Code picks Railway for 82% of Python apps; 6,653 how-to pages; 127 framework
+guides; 312 weekly changelog pages; a go-to-market team of 7. Don't quote them on the site or in ads.
+
+What Railway did, in short:
+- Treats being recommended by AI as a growth channel with its own team.
+- One page per question people ask ("how do I set up n8n?", "how do I deploy Django?"), each ending with the
+  product doing the job.
+- A comparison page against every competitor, each with a "switch to us" guide. AI quotes comparisons a lot.
+- Help pages easy for AI to read: one file listing every page with a summary (llms.txt) and a plain-text version
+  of every page.
+- Lives inside the AI tools: plugins in ChatGPT and Claude Code, a no-signup "make it live" path for agents.
+- Fresh pages every week (a changelog every Friday since 2021) to stay in front of Google and the models.
+- Its gap: front-end apps, where Claude Code picks Vercel every time. Winning one kind of question doesn't win them all.
+
+### What this means for GEO
+
+For GEO's own growth (being the answer when someone asks "how do I get ChatGPT to recommend my Shopify store?"):
+
+| Idea | What it would do | Effort | Impact |
+|---|---|---|---|
+| Who AI recommends, by product type | Public pages like "Who ChatGPT recommends for beard oil in Australia", from our own scans, refreshed weekly. Real data nobody else has, which AI loves to cite. Only aggregated public answers, never a customer's private data | Medium | High |
+| Comparison pages | GEO vs AgentIQ, Kedra, Mento, RankPill and others, honest and checked, each with a "switching" section | Small to medium | High |
+| How-to pages per question | "How to get ChatGPT to recommend your skincare store", one per niche, each ending with the free check | Medium | Medium to high |
+| Weekly "What's new" page | A short changelog every Friday | Small | Medium (freshness) |
+| Help pages in plain text | Extend llms.txt with a summary per page and a plain-text version of each help page | Small | Medium |
+| GEO inside ChatGPT | A ChatGPT app that runs the free check in the chat | Large | High, later |
+
+For merchants (this is the same playbook GEO sells): guide pages per buying question (the guide calendar),
+comparison guides against the rivals AI names, an llms.txt for the store, and fresh content on a schedule.
+It backs the guide calendar as the next build, with comparison pages as one guide type.
