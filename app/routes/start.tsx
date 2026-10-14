@@ -1,4 +1,5 @@
 import type { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
+import { useEffect, useState } from "react";
 import { Form, redirect, useActionData, useNavigation } from "react-router";
 import db from "../db.server";
 import { Solo } from "../components/web";
@@ -33,9 +34,39 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   throw redirect("/dash");
 };
 
+/** While we check the store (a few seconds): three small steps that tick off, so the page never looks frozen. */
+function Checking({ address }: { address: string }) {
+  const [at, setAt] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setAt((n) => Math.min(n + 1, 2)), 1600);
+    return () => clearInterval(t);
+  }, []);
+  const steps = [`Looking up ${address || "your store"}`, "Checking it’s a Shopify store", "Opening your product catalog"];
+  return (
+    <div className="w-checking" aria-live="polite">
+      <div className="w-progress w-progress-run">
+        <span />
+      </div>
+      <ol className="w-steps">
+        {steps.map((label, i) => (
+          <li key={label} className={i < at ? "done" : i === at ? "now" : undefined}>
+            {label}
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
 export default function Start() {
   const result = useActionData<typeof action>();
-  const busy = useNavigation().state !== "idle";
+  const nav = useNavigation();
+  const busy = nav.state !== "idle";
+  const typed = String(nav.formData?.get("store") ?? "")
+    .trim()
+    .replace(/^https?:\/\//i, "")
+    .replace(/\/.*$/, "")
+    .slice(0, 60);
   return (
     <Solo>
       <div>
@@ -45,16 +76,20 @@ export default function Start() {
       <Form method="post" className="w-form">
         <div className="w-field">
           <label htmlFor="store">Store address</label>
-          <input className="w-input" id="store" name="store" required autoComplete="url" inputMode="url" placeholder="yourstore.com" />
+          <input className="w-input" id="store" name="store" required autoComplete="url" inputMode="url" placeholder="yourstore.com" readOnly={busy} />
         </div>
-        {result?.error ? (
+        {result?.error && !busy ? (
           <p className="w-err" role="alert">
             {result.error}
           </p>
         ) : null}
-        <button className="w-btn" type="submit" disabled={busy}>
-          {busy ? "Finding your store…" : "Add my store"}
-        </button>
+        {busy ? (
+          <Checking address={typed} />
+        ) : (
+          <button className="w-btn" type="submit">
+            Add my store
+          </button>
+        )}
       </Form>
       <p className="w-note">We only read what anyone can see on your store. Nothing in your Shopify admin changes.</p>
     </Solo>

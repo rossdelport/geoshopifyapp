@@ -172,6 +172,14 @@ body { margin: 0; }
 @media (prefers-reduced-motion: reduce) { .w-steps li.now::before { animation: none; border-top-color: var(--cobalt); } }
 .w-progress { height: 8px; border-radius: 999px; background: var(--lilac-50); overflow: hidden; }
 .w-progress span { display: block; height: 100%; background: var(--cobalt); border-radius: inherit; transition: width 0.4s; }
+/* Checking a store on /start: the bar creeps towards the end (never quite full) while the steps tick off. */
+.w-checking { display: grid; gap: 14px; padding: 4px 0; animation: w-in 0.25s ease-out; }
+.w-progress-run span { width: 92%; animation: w-creep 6s cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+@keyframes w-creep { from { width: 4%; } }
+@keyframes w-in { from { opacity: 0; transform: translateY(4px); } }
+.w-checking .w-steps li { font-size: 14px; }
+.w-checking .w-steps li.done, .w-checking .w-steps li.now { animation: w-in 0.25s ease-out; }
+@media (prefers-reduced-motion: reduce) { .w-progress-run span, .w-checking, .w-checking .w-steps li { animation: none; } }
 
 /* ---------- Tables / lists ---------- */
 .w-table-wrap { overflow-x: auto; }
