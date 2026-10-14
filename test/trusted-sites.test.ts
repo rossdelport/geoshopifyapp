@@ -112,8 +112,8 @@ describe.skipIf(!url)("Sites AI trusts (needs TEST_DATABASE_URL)", () => {
     expect((await db.siteWriter.findUniqueOrThrow({ where: { shopId_domain: { shopId: shop.id, domain: "www.reddit.com" } } })).found).toBe(false);
     expect(await ts.writersUsedThisMonth(shop.id)).toBe(2);
 
-    // Standard: 10 a month.
-    await db.siteWriter.createMany({ data: Array.from({ length: 8 }, (_, i) => ({ shopId: shop.id, domain: `x${i}.com`, pageUrl: "https://x.com" })) });
+    // Standard: 4 a month (about 1 a week).
+    await db.siteWriter.createMany({ data: Array.from({ length: 2 }, (_, i) => ({ shopId: shop.id, domain: `x${i}.com`, pageUrl: "https://x.com" })) });
     expect(await ts.findWriter(shop.id, "nope.com")).toEqual({ ok: false, error: ts.SITE_ERRORS.writersUsed });
     expect(await ts.findWriter(shop.id, "beardmag.net")).toEqual({ ok: true }); // already found still fine
   });

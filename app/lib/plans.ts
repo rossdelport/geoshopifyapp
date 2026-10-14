@@ -84,7 +84,7 @@ export const PLANS: Record<PlanId, Plan> = {
     fixesPerMonth: Infinity,
     guidePagesPerMonth: 2,
     outreachPerMonth: 10,
-    writersPerMonth: 10,
+    writersPerMonth: 4, // about 1 a week (Ross, 2026-10-15)
     pageReadsPerWeek: 15,
     autopilot: false,
     doneForYou: false,
@@ -116,7 +116,7 @@ export const PLANS: Record<PlanId, Plan> = {
     fixesPerMonth: Infinity,
     guidePagesPerMonth: 8,
     outreachPerMonth: 40,
-    writersPerMonth: 50,
+    writersPerMonth: 20, // (Ross, 2026-10-15)
     pageReadsPerWeek: 50,
     autopilot: true,
     doneForYou: true,

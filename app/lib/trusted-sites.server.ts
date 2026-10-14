@@ -2,7 +2,7 @@
 // questions, counted over every scan since the store joined (not just the latest). For each site: how many AI
 // answers used it, on which assistants, how often those answers named the store, the rivals named next to it,
 // and its most-used page. Then, within the plan's monthly allowances: look up the writer behind that page
-// (Standard 10, Done-for-you 50) and draft an honest pitch to them (Standard 10, Done-for-you 40). On
+// (Standard 4, Done-for-you 20) and draft an honest pitch to them (Standard 10, Done-for-you 40). On
 // Done-for-you our team sends the pitch and follows up.
 
 import { Prisma } from "@prisma/client";
