@@ -4,6 +4,21 @@
 
 Handoff from planning chat. Read this fully before writing code. Build in the phase order at the bottom. Ask Ross before changing scope, pricing or plan limits.
 
+## Mandatory current direction (Ross, 2026-10-14): web app first, Shopify app paused
+
+**GEO is now a web app.** People sign up and use it on usegeo.app, not through the Shopify App Store. This overrides the "Shopify app" framing in the sections below wherever they clash.
+
+- **Pause Shopify app work:** App Store listing, review, "Built for Shopify", Partner dashboard tasks and protected customer data requests. Don't delete the Shopify code. It keeps working and can come back as a **connection inside the web app** (push fixes to the store, read orders for AI revenue).
+- **Still to decide with Ross:** who can sign up (Shopify stores only, or any online store), billing (Stripe replaces Shopify Billing) and login method. Ask before building those.
+- **Build order (Ross, 2026-10-14):**
+  1. **The moat: "Sites AI trusts".** The sites AI cites most across all of a store's scans (lifetime), with authors enriched (Standard 10 a month, Done-for-you 50 a month) and a pitch drafted for each. On Done-for-you we send the pitches. Pitch limits stay **10 / 40** a month.
+  2. **Reddit thread finder.** It finds threads where buyers ask about the store's kind of product. AI drafts a reply; the store owner copies it, opens the thread and posts it themselves. Every draft says who they are, e.g. "(I'm the founder of X, so I'm biased)". **Never write a reply that poses as a happy customer** (RankPill's drafts do this; it's astroturfing and against Reddit's rules).
+  3. **Guide calendar.** A month view, like RankPill's dashboard: one guide per slot, each with its buyer question and monthly searches, status (queued / writing / published) and an "autofill calendar" button.
+  4. **Link opportunities.** Real pages worth a mention, never link swaps or link networks.
+- **"Ask GEO" chat assistant (Ross's idea).** It answers how-to questions, which cuts support emails. It can also **do things in the app** when asked (add a buying question, run a scan, approve a fix, draft a pitch), but always shows what it will do and waits for the person to tap Confirm.
+- **Settings ideas from RankPill that Ross likes:** a settings menu with sections; "Offerings" (the products to promote, as cards); image style choices for guides (photo, 3D, illustration, clay, custom); and **Integrations** for publishing guides (Shopify, WordPress, Wix, Webflow, Framer, webhooks).
+- **RankPill** (rankpill.com) is the closest web-app reference: Dashboard (article calendar), Articles, Backlinks (a credit-based link swap network between customers, which is a Google "link scheme"; we don't copy it), Reddit Visibility, Settings and Ask RankPill. Our edge stays: we show the money, and we target the exact sites AI cites for the store's buying questions.
+
 ---
 
 ## 1. What we're building (one paragraph)
