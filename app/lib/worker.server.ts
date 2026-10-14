@@ -20,6 +20,7 @@ import "./check.server";
 import "./waitlist.server";
 import "./install.server";
 import "./trusted-sites.server";
+import { redditDue } from "./reddit.server";
 import { crawlerCheckDue, queueCrawlerCheck } from "./robots.server";
 import { maybeRunSelftest } from "./selftest.server";
 import { purgeOldData } from "./retention.server";
@@ -99,6 +100,9 @@ export async function scheduleDueWork(now = new Date()) {
     if (crawlerCheckDue(shop.crawlersCheckedAt, now, lastCrawlerStatus)) await queueCrawlerCheck(shop.id);
     // Freshness: guides and product FAQs due a refresh (60 days on Done-for-you, 90 on Standard), daily.
     if (REFRESH_AFTER_DAYS[plan.id]) await queueRefresh(shop.id, now);
+
+    // Reddit finder: the first look for every store, then weekly on paid plans.
+    if (redditDue(shop, now)) await enqueue("reddit.find", {}, { shopId: shop.id, dedupeKey: `reddit:${shop.id}` });
 
     // Recurring scans.
     if (plan.scanEveryDays) {

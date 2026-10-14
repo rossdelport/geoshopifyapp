@@ -39,6 +39,7 @@ const SECTIONS = [
       { to: "/dash", label: "Dashboard", end: true, d: ICONS.home },
       { to: "/dash/questions", label: "Buying questions", d: ICONS.question },
       { to: "/dash/sites", label: "Sites AI trusts", d: ICONS.shield },
+      { to: "/dash/reddit", label: "Reddit threads", d: ICONS.chat },
     ],
   },
   { label: "Setup", items: [{ to: "/dash/tracking", label: "Tracking code", d: ICONS.code }] },

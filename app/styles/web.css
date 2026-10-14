@@ -241,3 +241,41 @@ body { margin: 0; }
 .w-pitch pre { white-space: pre-wrap; font: 14px/1.55 var(--font-body); color: var(--navy-3); margin: 8px 0 0; }
 .w-pitch-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 @media (max-width: 860px) { .w-site { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- Reddit threads: the list on the left, the post and reply on the right ---------- */
+.w-rd { display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: 16px; align-items: start; }
+.w-rd-list { position: sticky; top: 72px; max-height: calc(100vh - 92px); display: flex; flex-direction: column; overflow: hidden; }
+.w-rd-tabs { display: flex; gap: 4px; padding: 10px; border-bottom: 1px solid var(--line); }
+.w-rd-tabs a { padding: 5px 10px; border-radius: 8px; color: var(--navy-3); text-decoration: none; font-size: 13px; font-weight: 500; }
+.w-rd-tabs a span { color: var(--muted); font-variant-numeric: tabular-nums; margin-left: 2px; }
+.w-rd-tabs a:hover { background: #f1f1f8; }
+.w-rd-tabs a.active { background: var(--lilac-100); color: var(--navy); }
+.w-rd-list ul { list-style: none; margin: 0; padding: 0; overflow-y: auto; }
+.w-rd-list li + li { border-top: 1px solid var(--line); }
+.w-rd-list li a { display: grid; gap: 4px; padding: 12px 14px; color: var(--navy-3); text-decoration: none; border-left: 3px solid transparent; }
+.w-rd-list li a:hover { background: #fbfbfe; }
+.w-rd-list li a.active { background: #f6f5fe; border-left-color: var(--cobalt); }
+.w-rd-list b { color: var(--navy); font-weight: 600; font-size: 13.5px; line-height: 1.35; }
+.w-rd-snip { font-size: 12.5px; color: var(--muted); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.w-rd-row, .w-rd-meta, .w-rd-stats { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 12px; color: var(--muted); }
+.w-rd-sub { color: #c2410c; font-weight: 600; }
+.w-rd-tick { color: var(--green-ink); font-weight: 600; }
+.w-rd-detail { padding: 20px 22px; min-height: 320px; }
+.w-rd-detail > .w-empty { padding: 0; }
+.w-rd-post { display: grid; gap: 12px; }
+.w-rd-post h2 { font: 600 18px/1.35 var(--font-body); color: var(--navy); }
+.w-rd-open { margin-left: auto; font-weight: 500; }
+.w-rd-body { white-space: pre-wrap; color: var(--navy-3); font-size: 14px; max-height: 320px; overflow-y: auto; padding: 12px 14px; background: #fbfbfe; border: 1px solid var(--line); border-radius: 10px; }
+.w-rd-reply { display: grid; gap: 8px; padding-top: 14px; border-top: 1px solid var(--line); }
+.w-rd-reply label { color: var(--navy); font-weight: 600; font-size: 14px; }
+.w-rd-reply textarea { min-height: 150px; padding: 12px 14px; font: 14px/1.55 var(--font-body); resize: vertical; }
+.w-rd-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.w-rd-done { color: var(--green-ink); border-color: #bfe7cd; background: var(--green-bg); }
+.w-rd-back { display: none; font-size: 13px; text-decoration: none; margin-bottom: 10px; }
+@media (max-width: 860px) {
+  .w-rd { grid-template-columns: minmax(0, 1fr); }
+  .w-rd-list { position: static; max-height: none; }
+  .w-rd:not([data-open]) .w-rd-detail, .w-rd[data-open] .w-rd-list { display: none; }
+  .w-rd-back { display: inline-block; }
+  .w-rd-detail { padding: 16px; }
+}

@@ -27,6 +27,8 @@ const PRICES: Record<string, number> = {
   "dataforseo.x.ai-optimization-claude-llm-responses-live": 0.0245,
   "dataforseo.google.keywords.volume": 0.09,
   "tomba.people.email.find.author": 0.0089,
+  "scrapecreators.reddit.search.posts": 0.00188,
+  "anyapi.reddit.search": 0.0012,
 };
 
 export class TregError extends Error {

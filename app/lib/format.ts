@@ -37,7 +37,9 @@ export function timeAgo(date: Date | string | null | undefined): string {
     return h === 1 ? "an hour ago" : `${h} hours ago`;
   }
   const days = Math.round(s / 86400);
-  return days === 1 ? "yesterday" : `${days} days ago`;
+  if (days < 45) return days === 1 ? "yesterday" : `${days} days ago`;
+  if (days < 365) return `${Math.round(days / 30.4)} months ago`;
+  return "over a year ago";
 }
 
 export const formatDate = (date: Date | string) =>

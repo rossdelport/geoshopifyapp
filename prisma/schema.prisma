@@ -34,40 +34,42 @@ model Session {
 }
 
 model Shop {
-  id                String       @id @default(cuid())
-  domain            String       @unique // my-store.myshopify.com
+  id                String         @id @default(cuid())
+  domain            String         @unique // my-store.myshopify.com
   name              String?
   email             String?
   primaryDomain     String? // www.mystore.com.au
-  currency          String       @default("AUD")
-  country           String       @default("AU")
-  plan              String       @default("free") // free | core | pro
-  status            String       @default("installed") // installed | uninstalled
-  onboarding        String       @default("new") // new | profiling | questions | scanning | done
-  installedAt       DateTime     @default(now())
+  currency          String         @default("AUD")
+  country           String         @default("AU")
+  plan              String         @default("free") // free | core | pro
+  status            String         @default("installed") // installed | uninstalled
+  onboarding        String         @default("new") // new | profiling | questions | scanning | done
+  installedAt       DateTime       @default(now())
   uninstalledAt     DateTime?
   baselineDate      DateTime?
   freeScanUsedAt    DateTime?
   lastScanAt        DateTime?
   lastReportAt      DateTime?
-  autopilot         Boolean      @default(false)
-  autopilotOptOut   Boolean      @default(false) // the store switched autopilot off: keep it off across plan changes
+  autopilot         Boolean        @default(false)
+  autopilotOptOut   Boolean        @default(false) // the store switched autopilot off: keep it off across plan changes
   trialEndsAt       DateTime? // end of the store's one free trial, saved when it first starts (never cleared)
-  devStore          Boolean      @default(false) // a Shopify development (test) store: only ever test charges, so it uses the app free
+  devStore          Boolean        @default(false) // a Shopify development (test) store: only ever test charges, so it uses the app free
   crawlers          Json? // last AI crawler check of the store's robots.txt (see lib/robots.ts): which AI bots are blocked
   crawlersCheckedAt DateTime?
   reportEmails      String? // comma separated
   pixelId           String?
   costMonth         String? // "2026-10"
-  costThisMonth     Float        @default(0)
+  costThisMonth     Float          @default(0)
   costAlertedAt     DateTime?
-  source            String       @default("shopify") // shopify: installed from Shopify | web: added on the GEO web app
+  source            String         @default("shopify") // shopify: installed from Shopify | web: added on the GEO web app
   userId            String? // web: the GEO account that added it
-  trackKey          String?      @unique // web: the key in the store's tracking code (custom pixel), so only its own code can send orders
-  user              User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  trackKey          String?        @unique // web: the key in the store's tracking code (custom pixel), so only its own code can send orders
+  user              User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
   siteWriters       SiteWriter[]
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
+  redditThreads     RedditThread[]
+  redditCheckedAt   DateTime? // last weekly look for Reddit threads (lib/reddit.server.ts)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
 
   profile     BrandProfile?
   products    Product[]
@@ -535,5 +537,30 @@ model SiteWriter {
   createdAt DateTime @default(now())
 
   @@unique([shopId, domain])
+  @@index([shopId, createdAt])
+}
+
+/// Reddit finder: a thread where a buyer asks about the store's kind of product, and the reply we drafted for the
+/// owner to post themselves (status: new | replied | hidden).
+model RedditThread {
+  id        String    @id @default(cuid())
+  shopId    String
+  shop      Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  postId    String
+  url       String
+  subreddit String
+  title     String
+  body      String?
+  author    String?
+  score     Int       @default(0)
+  comments  Int       @default(0)
+  postedAt  DateTime?
+  query     String?
+  draft     String?
+  status    String    @default("new")
+  repliedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@unique([shopId, postId])
   @@index([shopId, createdAt])
 }
