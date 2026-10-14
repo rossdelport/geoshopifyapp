@@ -5,12 +5,12 @@
 // Shopify's admin parameters. robots.txt is served on every host (bots must read it, not be redirected).
 
 import { redirect } from "react-router";
-import { SITE, SITE_HOST } from "./site";
+import { HOME_LANGS, SITE, SITE_HOST } from "./site";
 
 /** Query parameters Shopify adds when the admin opens the app: those visits must stay where they are. */
 const SHOPIFY_PARAMS = ["shop", "host", "embedded", "hmac", "id_token"];
 
-const EXACT_PUBLIC = new Set(["/", "/check", "/check/", "/tools", "/tools/", "/stories", "/stories/", "/privacy", "/privacy/", "/sitemap.xml", "/llms.txt"]);
+const EXACT_PUBLIC = new Set(["/", "/check", "/check/", "/tools", "/tools/", "/stories", "/stories/", "/privacy", "/privacy/", "/sitemap.xml", "/llms.txt", ...HOME_LANGS.map((l) => `/${l}`)]);
 
 function isPublicPath(path: string): boolean {
   if (path.endsWith(".data")) return false; // React Router's own data requests come from the page's host

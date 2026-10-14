@@ -87,15 +87,16 @@ describe("sitemap.xml", () => {
     expect(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')).toBe(true);
     expect(xml.trimEnd().endsWith("</urlset>")).toBe(true);
     // home, tools hub, 7 tools, stories hub, 15 stories, privacy
-    expect(xml.match(/<url>/g)).toHaveLength(11 + STORIES.length);
-    expect(xml.match(/<\/url>/g)).toHaveLength(11 + STORIES.length);
+    expect(xml.match(/<url>/g)).toHaveLength(16 + STORIES.length);
+    expect(xml.match(/<\/url>/g)).toHaveLength(16 + STORIES.length);
     expect(xml).not.toMatch(/priority|changefreq/);
     expect(xml).not.toMatch(/&(?!amp;|lt;|gt;|quot;|apos;)/);
   });
 
-  it("lists exactly the home page, the hub, the 7 tools, the stories and the privacy page, with their dates", () => {
+  it("lists exactly the home page (and its 5 languages), the hub, the 7 tools, the stories and the privacy page, with their dates", () => {
     expect(locs).toEqual([
       "https://usegeo.app/",
+      ...["de", "fr", "nl", "es", "it"].map((l) => `https://usegeo.app/${l}`),
       "https://usegeo.app/tools",
       ...TOOLS.map((t) => `https://usegeo.app${t.path}`),
       "https://usegeo.app/stories",
@@ -106,6 +107,7 @@ describe("sitemap.xml", () => {
     for (const l of locs) expect(l.startsWith("https://usegeo.app/")).toBe(true);
     expect(lastmods).toEqual([
       HOME_UPDATED,
+      ...Array(5).fill(HOME_UPDATED),
       HUB.updated,
       ...TOOLS.map((t) => t.updated),
       STORIES_UPDATED,

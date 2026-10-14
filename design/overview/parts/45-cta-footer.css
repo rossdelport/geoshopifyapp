@@ -129,3 +129,7 @@
   .foot-tools a { min-height: 44px; font-size: 14px; }
   .foot-bottom { margin-top: 36px; padding: 20px 0 24px; font-size: 13px; }
 }
+
+/* The company details line on the language pages (an Impressum; design/overview/i18n.mjs adds it). */
+.foot-legal { margin-top: 6px; }
+.foot-legal a { color: inherit; }

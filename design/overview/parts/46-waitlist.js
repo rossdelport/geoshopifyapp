@@ -94,6 +94,7 @@
     body.set('email', email);
     body.set('website', form.elements.website.value);
     body.set('source', picked.source);
+    body.set('lang', window.GEO_LANG || 'en');
     if (picked.plan) {
       body.set('plan', picked.plan);
       var on = document.querySelector('.price-tg[aria-pressed="true"]');
@@ -112,7 +113,10 @@
       if (!res || !res.ok) throw new Error((res && res.error) || 'Something went wrong. Please try again.');
       joined(name, res.isNew === true);
     }).catch(function (x) {
-      fail(x && x.message && x.message.indexOf('Failed to fetch') < 0 ? x.message : 'Something went wrong. Please try again.');
+      var msg = x && x.message && x.message.indexOf('Failed to fetch') < 0 ? x.message : '';
+      // The server answers in English, so the other language pages show their own "try again".
+      if (!msg || (window.GEO_LANG && window.GEO_LANG !== 'en')) msg = 'Something went wrong. Please try again.';
+      fail(msg);
     }).then(function () {
       busy = false;
       btn.disabled = false;

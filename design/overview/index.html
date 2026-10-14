@@ -2471,6 +2471,10 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   .foot-bottom { margin-top: 36px; padding: 20px 0 24px; font-size: 13px; }
 }
 
+/* The company details line on the language pages (an Impressum; design/overview/i18n.mjs adds it). */
+.foot-legal { margin-top: 6px; }
+.foot-legal a { color: inherit; }
+
 /* 46-waitlist.css */
 /* Join the waitlist popup (46-waitlist.html). The dialog fills the screen and is see-through; the dim layer is
    its ::backdrop and the white card sits in the middle (near the top on phones, so the keyboard never covers
@@ -4646,6 +4650,7 @@ html.wl-lock { overflow: hidden; }
     body.set('email', email);
     body.set('website', form.elements.website.value);
     body.set('source', picked.source);
+    body.set('lang', window.GEO_LANG || 'en');
     if (picked.plan) {
       body.set('plan', picked.plan);
       var on = document.querySelector('.price-tg[aria-pressed="true"]');
@@ -4664,7 +4669,10 @@ html.wl-lock { overflow: hidden; }
       if (!res || !res.ok) throw new Error((res && res.error) || 'Something went wrong. Please try again.');
       joined(name, res.isNew === true);
     }).catch(function (x) {
-      fail(x && x.message && x.message.indexOf('Failed to fetch') < 0 ? x.message : 'Something went wrong. Please try again.');
+      var msg = x && x.message && x.message.indexOf('Failed to fetch') < 0 ? x.message : '';
+      // The server answers in English, so the other language pages show their own "try again".
+      if (!msg || (window.GEO_LANG && window.GEO_LANG !== 'en')) msg = 'Something went wrong. Please try again.';
+      fail(msg);
     }).then(function () {
       busy = false;
       btn.disabled = false;

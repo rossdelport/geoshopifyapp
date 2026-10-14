@@ -6,7 +6,7 @@
 import { PLANS, formatUsd } from "../plans";
 import { STORIES } from "../stories";
 import { STORIES_HUB, STORIES_UPDATED, storyPath } from "../stories/pages";
-import { HOME_UPDATED, PRIVACY_UPDATED, SITE, abs } from "./site";
+import { HOME_LANGS, HOME_UPDATED, PRIVACY_UPDATED, SITE, abs } from "./site";
 import { HUB, TOOLS } from "./registry";
 
 /**
@@ -42,6 +42,7 @@ export function siteRobotsTxt(): string {
 export function sitemapPages(): { path: string; updated: string }[] {
   return [
     { path: "/", updated: HOME_UPDATED },
+    ...HOME_LANGS.map((l) => ({ path: `/${l}`, updated: HOME_UPDATED })),
     { path: HUB.path, updated: HUB.updated },
     ...TOOLS.map((t) => ({ path: t.path, updated: t.updated })),
     { path: STORIES_HUB.path, updated: STORIES_UPDATED },

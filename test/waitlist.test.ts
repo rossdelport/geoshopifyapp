@@ -80,6 +80,7 @@ describe.skipIf(!url)("website waitlist (needs TEST_DATABASE_URL)", () => {
       utm_campaign: "waitlist-oct",
       fbclid: "IwAR123",
       referrer: "https://l.facebook.com/l.php?u=https%3A%2F%2Fusegeo.app%2F&h=secret",
+      lang: "de",
     });
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ ok: true, isNew: true });
@@ -94,6 +95,7 @@ describe.skipIf(!url)("website waitlist (needs TEST_DATABASE_URL)", () => {
       utmCampaign: "waitlist-oct",
       fbclid: "IwAR123",
       referrer: "l.facebook.com", // just the site, never the full address
+      lang: "de",
       consentText: wl.WAITLIST_CONSENT_TEXT,
       joins: 1,
     });
@@ -111,9 +113,9 @@ describe.skipIf(!url)("website waitlist (needs TEST_DATABASE_URL)", () => {
     expect(await res.json()).toEqual({ ok: false, error: wl.WAITLIST_ERRORS.email });
     expect(await db.waitlistSignup.count()).toBe(0);
 
-    await post({ name: "<b>Sam</b>", email: "sam@example.com", source: "admin", plan: "free", cycle: "yearly" });
+    await post({ name: "<b>Sam</b>", email: "sam@example.com", source: "admin", plan: "free", cycle: "yearly", lang: "xx" });
     const row = await db.waitlistSignup.findUniqueOrThrow({ where: { email: "sam@example.com" } });
-    expect(row).toMatchObject({ name: "b Sam /b", source: "link", plan: null, cycle: null });
+    expect(row).toMatchObject({ name: "b Sam /b", source: "link", plan: null, cycle: null, lang: "en" });
   });
 
   it("says yes to bots that fill the hidden field, and saves nothing", async () => {
@@ -170,7 +172,9 @@ describe.skipIf(!url)("website waitlist (needs TEST_DATABASE_URL)", () => {
       utmSource: "facebook",
       utmCampaign: "oct",
       referrer: "l.facebook.com",
+      lang: "fr",
     });
+    expect(html).toContain("Page language:</b> French");
     expect(subject).toBe("New waitlist signup: Sam <Lee>");
     expect(html).toContain("Sam &lt;Lee&gt;");
     expect(html).toContain("pricing (Done-for-you, monthly)");

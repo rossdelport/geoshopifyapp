@@ -9,6 +9,7 @@ import { emailConfigured, sendEmail } from "./email.server";
 import { normalizeEmail } from "./check-lead.server";
 import { hashIp } from "./public-form.server";
 import { BAD_EMAIL_ERROR } from "./check-consent";
+import { HOME_LANGS } from "./tools/site";
 
 /** The words under the form, saved with each signup. design/overview/parts/46-waitlist.html shows the same. */
 export const WAITLIST_CONSENT_TEXT = "We’ll only use this to contact you about GEO.";
@@ -45,6 +46,7 @@ export interface JoinInput {
   utmTerm?: unknown;
   fbclid?: unknown;
   referrer?: unknown;
+  lang?: unknown;
   ip: string | null;
 }
 
@@ -81,6 +83,7 @@ export async function joinWaitlist(input: JoinInput): Promise<{ status: number; 
   const source = (SOURCES as readonly string[]).includes(String(input.source)) ? String(input.source) : "link";
   const plan = input.plan === "core" || input.plan === "pro" ? input.plan : null;
   const cycle = plan && (input.cycle === "monthly" || input.cycle === "yearly") ? input.cycle : null;
+  const lang = (HOME_LANGS as readonly string[]).includes(String(input.lang)) ? String(input.lang) : "en";
   const ipHash = hashIp(input.ip);
   const since = new Date(Date.now() - DAY);
 
@@ -109,6 +112,7 @@ export async function joinWaitlist(input: JoinInput): Promise<{ status: number; 
       utmTerm: clean(input.utmTerm, 200),
       fbclid: clean(input.fbclid, 500),
       referrer: refHost(input.referrer),
+      lang,
       consentText: WAITLIST_CONSENT_TEXT,
       ipHash,
     },
@@ -120,6 +124,8 @@ export async function joinWaitlist(input: JoinInput): Promise<{ status: number; 
   }
   return { status: 200, result: { ok: true, isNew: !before } };
 }
+
+const LANG_NAMES: Record<string, string> = { de: "German", fr: "French", nl: "Dutch", es: "Spanish", it: "Italian" };
 
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
@@ -134,6 +140,7 @@ export function waitlistNoticeEmail(r: {
   utmSource: string | null;
   utmCampaign: string | null;
   referrer: string | null;
+  lang?: string | null;
 }): { subject: string; html: string } {
   const lines = [
     `<b>Name:</b> ${esc(r.name)}`,
@@ -142,6 +149,7 @@ export function waitlistNoticeEmail(r: {
   ];
   if (r.utmSource || r.utmCampaign) lines.push(`<b>Ad:</b> ${esc([r.utmSource, r.utmCampaign].filter(Boolean).join(" / "))}`);
   if (r.referrer) lines.push(`<b>Came from:</b> ${esc(r.referrer)}`);
+  if (r.lang && r.lang !== "en") lines.push(`<b>Page language:</b> ${esc(LANG_NAMES[r.lang] ?? r.lang)} (write back in that language)`);
   return { subject: `New waitlist signup: ${r.name}`, html: `<p>${lines.join("<br>")}</p><p>They were told: we’ll reach out shortly.</p>` };
 }
 

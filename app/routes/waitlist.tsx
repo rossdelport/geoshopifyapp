@@ -4,8 +4,8 @@ import { WAITLIST_ERRORS, joinWaitlist, type WaitlistResult } from "../lib/waitl
 import { clientIp, fromAnotherSite, readSmallForm } from "../lib/public-form.server";
 
 // POST /waitlist: the home page's "Join the waitlist" popup. Resource route (no page): urlencoded fields
-// `name`, `email`, `website` (honeypot), `source`, `plan`, `cycle`, the utm_* fields, `fbclid` and
-// `referrer`; JSON reply WaitlistResult. GET /waitlist opens the popup on the home page.
+// `name`, `email`, `website` (honeypot), `source`, `plan`, `cycle`, the utm_* fields, `fbclid`,
+// `referrer` and `lang` (the page's language); JSON reply WaitlistResult. GET /waitlist opens the popup on the home page.
 
 const reply = (body: WaitlistResult, status = 200) => Response.json(body, { status, headers: { "Cache-Control": "no-store" } });
 
@@ -31,6 +31,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       utmTerm: form.get("utm_term"),
       fbclid: form.get("fbclid"),
       referrer: form.get("referrer"),
+      lang: form.get("lang"),
       ip: clientIp(request),
     });
     return reply(out.result, out.status);

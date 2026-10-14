@@ -4,6 +4,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { hreflangTags, languages, translatePage } from './i18n.mjs';
 const dir = path.dirname(fileURLToPath(import.meta.url));
 const parts = path.join(dir, 'parts');
 // Optional: --only=20,21 (file-name prefixes) and --out=_part.html for a partial preview.
@@ -72,6 +73,8 @@ if (!only && outName === 'index.html') {
   const org = { '@type': 'Organization', '@id': 'https://usegeo.app/#org', name: 'GEO', alternateName: 'GEO for Shopify', url: 'https://usegeo.app/', logo: 'https://usegeo.app/apple-touch-icon.png' };
   const website = { '@type': 'WebSite', '@id': 'https://usegeo.app/#website', name: 'GEO', alternateName: 'GEO for Shopify', url: 'https://usegeo.app/', publisher: { '@id': 'https://usegeo.app/#org' } };
   const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': [org, website] }).replaceAll('<', '\\u003c');
+  // The same page in German, French, Dutch, Spanish and Italian (design/overview/i18n.mjs).
+  const langs = languages(dir);
   const site = `<!doctype html>
 <html lang="en">
 <head>
@@ -79,6 +82,7 @@ if (!only && outName === 'index.html') {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="${description}">
 <link rel="canonical" href="https://usegeo.app/">
+${hreflangTags(langs)}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="GEO">
 <meta property="og:title" content="${title}">
@@ -111,6 +115,11 @@ ${body}</body>
     .replace('href="https://usegeo.app/privacy" target="_blank" rel="noopener"', 'href="/privacy"');
   fs.mkdirSync(path.join(root, 'app', 'home'), { recursive: true });
   fs.writeFileSync(path.join(root, 'app', 'home', 'home.html'), site);
+  for (const l of langs) {
+    const page = translatePage(site, l);
+    fs.writeFileSync(path.join(root, 'app', 'home', `home-${l.meta.lang}.html`), page);
+    console.log(`app/home/home-${l.meta.lang}.html: ${(page.length / 1024).toFixed(0)} KB (usegeo.app/${l.meta.path})`);
+  }
 
   const imgOut = path.join(root, 'public', 'home', 'img');
   fs.rmSync(imgOut, { recursive: true, force: true });
