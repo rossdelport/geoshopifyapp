@@ -233,10 +233,10 @@ body { margin: 0; }
 .w-rank { list-style: none; padding: 0; display: grid; gap: 12px; }
 .w-rank li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 5px 12px; align-items: center; font-size: 13.5px; color: var(--ink-3); }
 .w-rank li > :nth-child(2) { font-variant-numeric: tabular-nums; }
-.w-rank .bar { grid-column: 1 / -1; height: 6px; border-radius: 999px; background: var(--hover); overflow: hidden; }
-.w-rank .bar span { display: block; height: 100%; background: var(--line-3); border-radius: inherit; transform-origin: left; animation: w-grow var(--duration-slow) var(--ease-smooth-out) backwards; }
+.w-rank .bar { grid-column: 1 / -1; height: 6px; border-radius: 999px; background: #f3f1fd; overflow: hidden; }
+.w-rank .bar span { display: block; height: 100%; background: #cdc4f7; border-radius: inherit; transform-origin: left; animation: w-grow var(--duration-slow) var(--ease-smooth-out) backwards; }
 .w-rank li.you { color: var(--ink); }
-.w-rank li.you .bar span { background: var(--ink-2); }
+.w-rank li.you .bar span { background: var(--accent); }
 .w-rank li:nth-child(2) .bar span { animation-delay: 40ms; }
 .w-rank li:nth-child(3) .bar span { animation-delay: 80ms; }
 .w-rank li:nth-child(4) .bar span { animation-delay: 120ms; }
