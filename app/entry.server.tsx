@@ -7,28 +7,13 @@ import { isbot } from "isbot";
 import { addDocumentResponseHeaders } from "./shopify.server";
 import { startWorker } from "./lib/worker.server";
 import { env, isProd } from "./lib/env.server";
-import db from "./db.server";
+import { speedProbe } from "./lib/speed-probe.server";
 
 // Background jobs run in the same process as the web server.
 if (env.runWorker) startWorker();
 
-// Once at start-up: open a database connection before the first visitor needs it, and log how long one round trip
-// to the database takes from this server (pages make a few of these, so it's the number that sets their speed).
-if (isProd) {
-  setTimeout(async () => {
-    const times: number[] = [];
-    try {
-      for (let i = 0; i < 3; i++) {
-        const t = Date.now();
-        await db.$queryRaw`SELECT 1`;
-        times.push(Date.now() - t);
-      }
-      console.log(`[db] round trips from here: ${times.join(", ")} ms`);
-    } catch (err) {
-      console.error(`[db] start-up check failed: ${(err as Error).message}`);
-    }
-  }, 3000);
-}
+// Once at start-up: how fast the database answers from here (see lib/speed-probe.server.ts).
+if (isProd) setTimeout(() => void speedProbe(), 3000);
 
 export const streamTimeout = 5000;
 

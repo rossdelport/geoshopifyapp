@@ -34,10 +34,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
-// The menu, store and allowance only change when a form is sent (a writer lookup, a pitch), so moving between pages
-// and the dashboard's refresh while a check runs don't reload them.
-export const shouldRevalidate: ShouldRevalidateFunction = ({ formMethod, defaultShouldRevalidate }) =>
-  formMethod ? defaultShouldRevalidate : false;
+// The menu, store and allowance only change when a form is sent (a writer lookup, a pitch), so moving between pages,
+// the dashboard's refresh while a check runs, search forms and the admin pages' buttons don't reload them.
+export const shouldRevalidate: ShouldRevalidateFunction = ({ formMethod, formAction, defaultShouldRevalidate }) =>
+  formMethod && formMethod.toUpperCase() !== "GET" && !formAction?.startsWith("/dash/admin") ? defaultShouldRevalidate : false;
 
 const SECTIONS = [
   {

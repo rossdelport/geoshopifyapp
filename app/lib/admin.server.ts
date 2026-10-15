@@ -62,8 +62,12 @@ export async function usage(from: string, to: string) {
     db.$queryRaw<{ day: string; provider: string; usd: number; calls: number }[]>`
       SELECT to_char(${localDay}, 'YYYY-MM-DD') AS day, provider, SUM(usd)::float AS usd, COUNT(*)::int AS calls
       FROM "ApiCost" WHERE ${range} GROUP BY 1, 2 ORDER BY 1`,
-    db.$queryRaw<{ shopId: string | null; usd: number }[]>`
-      SELECT "shopId", SUM(usd)::float AS usd FROM "ApiCost" WHERE ${range} GROUP BY 1 ORDER BY 2 DESC LIMIT 15`,
+    // The stores that cost the most, with their names in the same query.
+    db.$queryRaw<{ shopId: string | null; usd: number; name: string | null; primaryDomain: string | null; domain: string | null }[]>`
+      SELECT t."shopId", t.usd, s.name, s."primaryDomain", s.domain
+      FROM (SELECT "shopId", SUM(usd)::float AS usd FROM "ApiCost" WHERE ${range} GROUP BY 1 ORDER BY 2 DESC LIMIT 15) t
+      LEFT JOIN "Shop" s ON s.id = t."shopId"
+      ORDER BY t.usd DESC`,
     db.$queryRaw<{ provider: string; use: string; usd: number; calls: number }[]>`
       SELECT provider, split_part(endpoint, ':', 1) AS use, SUM(usd)::float AS usd, COUNT(*)::int AS calls
       FROM "ApiCost" WHERE ${range} GROUP BY 1, 2 ORDER BY 3 DESC LIMIT 15`,
@@ -76,18 +80,14 @@ export async function usage(from: string, to: string) {
     }
     return { ...row, total: row.treg + row.anthropic + row.other };
   });
-  const shops = await db.shop.findMany({
-    where: { id: { in: byShop.map((s) => s.shopId).filter((x): x is string => Boolean(x)) } },
-    select: { id: true, name: true, primaryDomain: true, domain: true },
-  });
   const sum = (k: "treg" | "anthropic" | "other" | "total") => days.reduce((a, d) => a + d[k], 0);
   return {
     days,
     totals: { treg: sum("treg"), anthropic: sum("anthropic"), other: sum("other"), total: sum("total"), calls: days.reduce((a, d) => a + d.calls, 0) },
-    byShop: byShop.map((s) => {
-      const shop = shops.find((x) => x.id === s.shopId);
-      return { name: shop ? shop.name || shop.primaryDomain || shop.domain : s.shopId ? "Deleted store" : "Website (free checks, waitlist)", usd: s.usd };
-    }),
+    byShop: byShop.map((s) => ({
+      name: s.domain ? s.name || s.primaryDomain || s.domain : s.shopId ? "Deleted store" : "Website (free checks, waitlist)",
+      usd: s.usd,
+    })),
     byUse: byUse.map((u) => ({ provider: providerOf(u.provider), use: u.use, usd: u.usd, calls: u.calls })),
   };
 }
@@ -98,8 +98,11 @@ export const SETUP_STEPS = ["Store added", "First AI check done", "Tracking code
 export async function usersTable() {
   const monthStart = new Date(`${sydneyDay().slice(0, 8)}01T00:00:00Z`);
   const [users, shops, snaps, writers, pitches, replies, spend] = await Promise.all([
-    db.user.findMany({ orderBy: { createdAt: "desc" } }),
-    db.shop.findMany({ orderBy: { createdAt: "desc" } }),
+    db.user.findMany({ orderBy: { createdAt: "desc" }, select: { id: true, email: true, createdAt: true, lastLoginAt: true } }),
+    db.shop.findMany({
+      orderBy: { createdAt: "desc" },
+      select: { id: true, userId: true, email: true, name: true, primaryDomain: true, domain: true, source: true, plan: true, onboarding: true, pixelId: true, createdAt: true },
+    }),
     db.$queryRaw<{ shopId: string; score: number }[]>`
       SELECT DISTINCT ON ("shopId") "shopId", score FROM "VisibilitySnapshot" ORDER BY "shopId", date DESC`,
     db.siteWriter.groupBy({ by: ["shopId"], _count: true }),
@@ -107,16 +110,15 @@ export async function usersTable() {
     db.redditThread.groupBy({ by: ["shopId"], where: { status: "replied" }, _count: true }),
     db.apiCost.groupBy({ by: ["shopId"], where: { createdAt: { gte: monthStart } }, _sum: { usd: true } }),
   ]);
+  const userById = new Map(users.map((u) => [u.id, u]));
+  const counted = (list: { shopId: string | null }[]) => new Set(list.map((x) => x.shopId));
+  const [hasWriter, hasPitch, hasReply] = [counted(writers), counted(pitches), counted(replies)];
+  const scoreBy = new Map(snaps.map((x) => [x.shopId, x.score]));
+  const spendBy = new Map(spend.map((x) => [x.shopId, x._sum.usd ?? 0]));
   const rows = shops.map((s) => {
-    const user = users.find((u) => u.id === s.userId);
-    const steps = [
-      true,
-      s.onboarding === "done",
-      Boolean(s.pixelId),
-      Boolean(writers.find((w) => w.shopId === s.id) || pitches.find((p) => p.shopId === s.id)),
-      Boolean(replies.find((r) => r.shopId === s.id)),
-    ];
-    const snap = snaps.find((x) => x.shopId === s.id);
+    const user = s.userId ? userById.get(s.userId) : undefined;
+    const steps = [true, s.onboarding === "done", Boolean(s.pixelId), hasWriter.has(s.id) || hasPitch.has(s.id), hasReply.has(s.id)];
+    const score = scoreBy.get(s.id);
     return {
       key: s.id,
       email: user?.email ?? s.email ?? "(installed from Shopify)",
@@ -124,15 +126,16 @@ export async function usersTable() {
       host: s.primaryDomain || s.domain,
       source: s.source,
       plan: getPlan(s.plan).name,
-      score: snap ? Math.round(snap.score) : null,
+      score: score !== undefined ? Math.round(score) : null,
       steps,
       setupStage: s.onboarding,
       joined: (user?.createdAt ?? s.createdAt).toISOString(),
       lastLogin: user?.lastLoginAt?.toISOString() ?? null,
-      spend: spend.find((x) => x.shopId === s.id)?._sum.usd ?? 0,
+      spend: spendBy.get(s.id) ?? 0,
     };
   });
-  for (const u of users.filter((u) => !shops.some((s) => s.userId === u.id))) {
+  const withStore = new Set(shops.map((s) => s.userId));
+  for (const u of users.filter((u) => !withStore.has(u.id))) {
     rows.push({
       key: u.id,
       email: u.email,

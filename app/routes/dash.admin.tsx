@@ -10,6 +10,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return null;
 };
 
+// The admin check runs when the area opens; each admin page and button checks again for itself, so this frame
+// never needs reloading.
+export const shouldRevalidate = () => false;
+
 const TABS = [
   { to: "/dash/admin", label: "Overview", end: true },
   { to: "/dash/admin/usage", label: "Usage" },

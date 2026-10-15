@@ -8,7 +8,11 @@ import { shortDate } from "../components/admin";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await requireAdmin(request);
-  const rows = await db.waitlistSignup.findMany({ orderBy: { createdAt: "desc" }, take: 500 });
+  const rows = await db.waitlistSignup.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 500,
+    select: { id: true, name: true, email: true, utmSource: true, utmContent: true, referrer: true, source: true, lang: true, createdAt: true },
+  });
   return {
     rows: rows.map((r) => ({
       id: r.id,
