@@ -312,7 +312,8 @@ body { margin: 0; }
 /* ---------- Reddit threads: the list on the left, the post and reply on the right ---------- */
 .w-rd { display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: 16px; align-items: start; }
 .w-rd-list { position: sticky; top: 72px; max-height: calc(100vh - 92px); display: flex; flex-direction: column; overflow: hidden; }
-.w-rd-list .w-tabs { margin: 10px; align-self: flex-start; }
+.w-rd-list .w-tabs { margin: 10px; align-self: stretch; flex: none; }
+.w-rd-list .w-tabs a { flex: 1 1 0; text-align: center; }
 .w-rd-list ul { list-style: none; margin: 0; padding: 0; overflow-y: auto; border-top: 1px solid var(--line); animation: w-fade var(--duration-quick) ease-out backwards; transition: opacity var(--duration-quick) ease-out; }
 .w-rd-list li + li { border-top: 1px solid var(--line); }
 .w-rd-list li a { display: grid; gap: 4px; padding: 12px 14px; color: var(--ink-3); text-decoration: none; box-shadow: inset 2px 0 0 transparent; transition: background-color var(--duration-quick) ease-out, box-shadow var(--duration-quick) ease-out; }
