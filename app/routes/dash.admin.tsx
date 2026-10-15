@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, useLocation, useNavigation } from "react-router";
 import { requireAdmin } from "../lib/admin.server";
-import { AdminSkeleton, PageHead, Tabs } from "../components/web";
+import { AdminSkeleton, PageHead, Tabs, useSlowLoad } from "../components/web";
 
 // usegeo.app/dash/admin: Ross's admin area (lib/admin.server.ts). Everyone else gets "Not found".
 
@@ -27,14 +27,16 @@ export default function Admin() {
   const nav = useNavigation();
   const here = useLocation().pathname;
   // While another admin tab loads, its tab is chosen straight away and its numbers show as grey shapes.
-  const next = nav.state === "loading" && !nav.formMethod && nav.location.pathname.startsWith("/dash/admin") ? nav.location.pathname : null;
+  const loading = nav.state === "loading" && !nav.formMethod && nav.location.pathname.startsWith("/dash/admin") ? nav.location : null;
+  const next = loading?.pathname ?? null;
+  const slow = useSlowLoad(next && next !== here ? loading!.key : null);
   const path = next ?? here;
   const active = (t: (typeof TABS)[number]) => (t.end ? path === t.to : path.startsWith(t.to));
   return (
     <>
       <PageHead title="Admin" right={<span className="w-chip">Only you can see this</span>} />
       <Tabs label="Admin" items={TABS.map((t) => ({ to: t.to, label: t.label, active: active(t) }))} />
-      {next && next !== here ? <AdminSkeleton /> : <Outlet />}
+      {next && next !== here && slow ? <AdminSkeleton /> : <Outlet />}
     </>
   );
 }

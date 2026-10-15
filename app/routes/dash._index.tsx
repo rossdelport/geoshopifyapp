@@ -73,7 +73,7 @@ export default function DashHome() {
   // Refresh every few seconds while setup or a scan is running.
   useEffect(() => {
     if (!working) return;
-    const t = setInterval(() => revalidator.state === "idle" && revalidator.revalidate(), 4000);
+    const t = setInterval(() => !document.hidden && revalidator.state === "idle" && revalidator.revalidate(), 4000);
     return () => clearInterval(t);
   }, [working, revalidator]);
 

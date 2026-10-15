@@ -7,13 +7,16 @@ import { isbot } from "isbot";
 import { addDocumentResponseHeaders } from "./shopify.server";
 import { startWorker } from "./lib/worker.server";
 import { env, isProd } from "./lib/env.server";
-import { speedProbe } from "./lib/speed-probe.server";
+import { keepWarm, speedProbe } from "./lib/speed-probe.server";
 
 // Background jobs run in the same process as the web server.
 if (env.runWorker) startWorker();
 
-// Once at start-up: how fast the database answers from here (see lib/speed-probe.server.ts).
-if (isProd) setTimeout(() => void speedProbe(), 3000);
+// How fast the database answers from here, once at start-up, and keeping its connections warm (lib/speed-probe.server.ts).
+if (isProd) {
+  setTimeout(() => void speedProbe(), 3000);
+  keepWarm();
+}
 
 export const streamTimeout = 5000;
 

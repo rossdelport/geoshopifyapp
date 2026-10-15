@@ -210,7 +210,7 @@ export default function Reddit() {
   // The first look runs right after setup: refresh until it's done.
   useEffect(() => {
     if (!waiting) return;
-    const t = setInterval(() => revalidator.state === "idle" && revalidator.revalidate(), 8000);
+    const t = setInterval(() => !document.hidden && revalidator.state === "idle" && revalidator.revalidate(), 8000);
     return () => clearInterval(t);
   }, [waiting, revalidator]);
 

@@ -1,12 +1,11 @@
-// Once at start-up (production only): how long the database takes to answer from this server, and why. Logs the
-// pure network round trip (a TCP connect), then a tiny query through each way of connecting: the transaction pooler
-// the app uses (DATABASE_URL) and the session pooler used for migrations (DIRECT_URL). Also opens the app's first
-// database connection before the first visitor needs it.
+// Once at start-up (production only): how long the database takes to answer from this server. Logs the plain
+// network round trip (a TCP connect) and a tiny query through the app's own connection (see appDatabaseUrl in
+// db.server.ts), which also opens the first connection before a visitor needs it. Then, every 4 minutes, a few tiny
+// queries at once keep the connections pages use open: opening a new one to the database costs over half a second.
 
 import net from "node:net";
 import { lookup } from "node:dns/promises";
-import { PrismaClient } from "@prisma/client";
-import db, { encryptedUrl } from "../db.server";
+import db, { appDatabaseUrl } from "../db.server";
 
 const ms = async (work: () => Promise<unknown>) => {
   const t = performance.now();
@@ -14,27 +13,18 @@ const ms = async (work: () => Promise<unknown>) => {
   return Math.round(performance.now() - t);
 };
 
-async function threeQueries(client: PrismaClient) {
-  const out: number[] = [];
-  for (let i = 0; i < 3; i++) out.push(await ms(() => client.$queryRaw`SELECT 1`));
-  return out.join(", ");
-}
-
 export async function speedProbe() {
   try {
-    const url = new URL(process.env.DATABASE_URL ?? "");
+    const url = new URL(appDatabaseUrl() ?? "");
     const port = Number(url.port || 5432);
-    let ip = "";
-    const dns = await ms(async () => {
-      ip = (await lookup(url.hostname)).address;
-    });
+    const { address } = await lookup(url.hostname);
     const tcp: number[] = [];
     for (let i = 0; i < 3; i++) {
       tcp.push(
         await ms(
           () =>
             new Promise<void>((resolve, reject) => {
-              const s = net.connect(port, ip);
+              const s = net.connect(port, address);
               s.once("connect", () => {
                 s.destroy();
                 resolve();
@@ -44,21 +34,16 @@ export async function speedProbe() {
         ),
       );
     }
-    const pooled = await threeQueries(db);
-    let session = "not set";
-    if (process.env.DIRECT_URL) {
-      const direct = new PrismaClient({ datasourceUrl: encryptedUrl(process.env.DIRECT_URL) });
-      try {
-        session = await threeQueries(direct);
-      } finally {
-        await direct.$disconnect();
-      }
-    }
-    console.log(
-      `[speed] database ${url.hostname} (${ip}): dns ${dns} ms; network round trip ${tcp.join(", ")} ms; ` +
-        `query via app pooler (port ${port}) ${pooled} ms; via session pooler ${session} ms`,
-    );
+    const queries: number[] = [];
+    for (let i = 0; i < 3; i++) queries.push(await ms(() => db.$queryRaw`SELECT 1`));
+    console.log(`[speed] database ${url.hostname}:${port}: network round trip ${tcp.join(", ")} ms; one query ${queries.join(", ")} ms`);
   } catch (err) {
     console.error(`[speed] start-up check failed: ${(err as Error).message}`);
   }
+}
+
+export function keepWarm(connections = 4) {
+  setInterval(() => {
+    void Promise.all(Array.from({ length: connections }, () => db.$queryRaw`SELECT 1`)).catch(() => {});
+  }, 240_000).unref();
 }

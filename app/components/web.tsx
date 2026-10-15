@@ -5,8 +5,14 @@ import { Link, useNavigation } from "react-router";
 // useLayoutEffect warns on the server; this runs it only in the browser.
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
-export function Logo() {
-  return (
+export function Logo({ to }: { to?: string }) {
+  // Inside the app the logo goes to the dashboard without reloading; on the sign-in pages it goes to the website.
+  return to ? (
+    <Link className="w-logo" to={to} prefetch="intent">
+      <i aria-hidden="true" />
+      GEO
+    </Link>
+  ) : (
     <a className="w-logo" href="/">
       <i aria-hidden="true" />
       GEO
@@ -81,6 +87,18 @@ export const ICONS = {
   spark: "M10 2.5l1.8 4.7 4.7 1.8-4.7 1.8L10 15.5l-1.8-4.7L3.5 9l4.7-1.8zM15.5 13.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z",
   check: "M5 10.5l3 3 7-7",
 };
+
+/** True once a page has been loading for a moment, so quick loads swap straight to the new page without a skeleton
+ * flashing in between. `key` is the loading navigation's key (null when nothing is loading). */
+export function useSlowLoad(key: string | null, delay = 140) {
+  const [late, setLate] = useState<string | null>(null);
+  useEffect(() => {
+    if (!key) return;
+    const t = setTimeout(() => setLate(key), delay);
+    return () => clearTimeout(t);
+  }, [key, delay]);
+  return key !== null && late === key;
+}
 
 /** The thin purple bar across the top while a page loads (styles: .w-loadbar). */
 export function LoadBar() {

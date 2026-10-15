@@ -1,6 +1,6 @@
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction, ShouldRevalidateFunction } from "react-router";
 import { Form, NavLink, Outlet, useLoaderData, useLocation, useNavigation } from "react-router";
-import { ICONS, Icon, LoadBar, Logo, PageSkeleton } from "../components/web";
+import { ICONS, Icon, LoadBar, Logo, PageSkeleton, useSlowLoad } from "../components/web";
 import { requireWebShop } from "../lib/web-auth.server";
 import { isAdmin } from "../lib/admin.server";
 import { getPlan } from "../lib/plans";
@@ -57,19 +57,20 @@ const flag = (cc: string | null) =>
   cc && /^[A-Z]{2}$/.test(cc) ? String.fromCodePoint(...[...cc].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)) : null;
 
 /** The page being opened while its data loads (a different menu page, not a refresh or a form on this one). */
-function usePendingPage(): string | null {
+function usePendingPage(): { path: string; key: string } | null {
   const nav = useNavigation();
   const here = useLocation().pathname;
-  const next = nav.state === "loading" && !nav.formMethod ? nav.location.pathname : null;
-  if (!next || next === here) return null;
+  const next = nav.state === "loading" && !nav.formMethod ? nav.location : null;
+  if (!next || next.pathname === here) return null;
   // Moving between admin tabs keeps the admin frame; the admin page shows its own skeleton.
-  if (next.startsWith("/dash/admin") && here.startsWith("/dash/admin")) return null;
-  return next;
+  if (next.pathname.startsWith("/dash/admin") && here.startsWith("/dash/admin")) return null;
+  return { path: next.pathname, key: next.key };
 }
 
 export default function Dash() {
   const { admin, email, store, host, country, plan, left } = useLoaderData<typeof loader>();
   const pending = usePendingPage();
+  const slow = useSlowLoad(pending?.key ?? null);
   // The menu moves to the page you clicked straight away, while it loads.
   const navClass = ({ isActive, isPending }: { isActive: boolean; isPending: boolean }) =>
     isPending || (isActive && !pending) ? "active" : undefined;
@@ -78,7 +79,7 @@ export default function Dash() {
       <LoadBar />
       <div className="w-shell">
         <aside className="w-side">
-          <Logo />
+          <Logo to="/dash" />
           <nav className="w-nav" aria-label="Main">
             {SECTIONS.map((s) => (
               <div key={s.label} className="w-nav-group">
@@ -150,7 +151,7 @@ export default function Dash() {
             </div>
           </div>
         </aside>
-        <main className="w-main">{pending ? <PageSkeleton path={pending} /> : <Outlet />}</main>
+        <main className="w-main">{pending && slow ? <PageSkeleton path={pending.path} /> : <Outlet />}</main>
       </div>
     </div>
   );

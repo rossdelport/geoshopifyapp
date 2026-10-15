@@ -119,16 +119,21 @@ export async function requireUser(request: Request) {
   return user;
 }
 
-// One lookup per request: the dashboard frame and the page inside it both ask, at the same time.
-const webShops = new WeakMap<Request, Promise<{ user: User; shop: Shop }>>();
+// The dashboard frame and the page inside it both ask at the same moment (each with its own copy of the request), so
+// lookups still on their way are shared by the browser's sign-in cookie. Each is forgotten as soon as it's done, so
+// nothing is ever served stale.
+const inFlight = new Map<string, Promise<{ user: User; shop: Shop }>>();
 
 /** The signed-in account and its store; no store yet goes to /start. */
 export function requireWebShop(request: Request): Promise<{ user: User; shop: Shop }> {
-  if (request.method !== "GET" && request.method !== "HEAD") return loadWebShop(request); // forms always read fresh
-  let found = webShops.get(request);
+  const cookie = request.headers.get("cookie");
+  if (!cookie || (request.method !== "GET" && request.method !== "HEAD")) return loadWebShop(request); // forms always read fresh
+  let found = inFlight.get(cookie);
   if (!found) {
     found = loadWebShop(request);
-    webShops.set(request, found);
+    inFlight.set(cookie, found);
+    const forget = () => inFlight.delete(cookie);
+    found.then(forget, forget);
   }
   return found;
 }
