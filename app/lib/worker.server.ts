@@ -25,6 +25,7 @@ import { crawlerCheckDue, queueCrawlerCheck } from "./robots.server";
 import { maybeRunSelftest } from "./selftest.server";
 import { purgeOldData } from "./retention.server";
 import { queueStrandedReportEmails } from "./check-lead.server";
+import { queueBlogIfDue } from "./blog.server";
 
 const MAX_RUNNING = 4; // store jobs: onboarding, scans, orders, fixes...
 // Free checks from the public website get their own small share, so a rush of them never holds up
@@ -89,6 +90,8 @@ export async function scheduleDueWork(now = new Date()) {
   }
   // Free check report emails that missed their queue (check-lead.server.ts also registers check.email).
   await queueStrandedReportEmails(now).catch((err) => console.error("[check] report email sweep failed:", err.message));
+  // GEO's own blog: the next post when it is due (lib/blog.server.ts).
+  await queueBlogIfDue(now).catch((err) => console.error("[blog] schedule failed:", err.message));
   const shops = await db.shop.findMany({ where: { status: "installed", onboarding: "done" } });
 
   for (const shop of shops) {

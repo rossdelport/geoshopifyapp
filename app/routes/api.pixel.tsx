@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import db from "../db.server";
 import { env } from "../lib/env.server";
-import { classifyVisit } from "../lib/attribution";
+import { classifySearchVisit, classifyVisit } from "../lib/attribution";
 import { recordPixelOrder } from "../lib/tracking-code.server";
 
 // Receives one event per storefront visit (first page of each session) from our Shopify app's Web Pixel, or
@@ -46,12 +46,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const landingUrl = String(body.url ?? "").slice(0, 1000);
   const referrer = String(body.ref ?? "").slice(0, 1000);
   const visit = classifyVisit({ landingPage: landingUrl, referrerUrl: referrer }, env.utmSource);
+  // Not from AI: was it from a search engine (Google, Bing and co)? Counted beside AI on the dashboard.
+  const search = visit ? null : classifySearchVisit({ landingPage: landingUrl, referrerUrl: referrer });
   const today = new Date(new Date().toISOString().slice(0, 10));
 
   await db.trafficDay.upsert({
     where: { shopId_date: { shopId: shop.id, date: today } },
-    create: { shopId: shop.id, date: today, sessions: 1, aiSessions: visit ? 1 : 0 },
-    update: { sessions: { increment: 1 }, ...(visit ? { aiSessions: { increment: 1 } } : {}) },
+    create: { shopId: shop.id, date: today, sessions: 1, aiSessions: visit ? 1 : 0, searchSessions: search ? 1 : 0 },
+    update: { sessions: { increment: 1 }, ...(visit ? { aiSessions: { increment: 1 } } : {}), ...(search ? { searchSessions: { increment: 1 } } : {}) },
   });
 
   if (visit) {

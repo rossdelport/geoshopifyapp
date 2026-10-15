@@ -30,7 +30,20 @@ function Breadcrumb({ crumbs }: { crumbs: Crumb[] }) {
  * The page: the lilac band (header, breadcrumb, `hero`), then on white the page's own parts (`children`), then
  * the site footer. `wide` lets the band's text use the full width (the hub); story pages keep a reading column.
  */
-export function StoryShell({ crumbs, hero, children, wide = false }: { crumbs: Crumb[]; hero: ReactNode; children?: ReactNode; wide?: boolean }) {
+export function StoryShell({
+  crumbs,
+  hero,
+  children,
+  wide = false,
+  pill = { label: "All stories", href: STORIES_HUB.path },
+}: {
+  crumbs: Crumb[];
+  hero: ReactNode;
+  children?: ReactNode;
+  wide?: boolean;
+  /** The link at the top right (the blog passes its own). */
+  pill?: { label: string; href: string };
+}) {
   return (
     <div className="ck tl st">
       <main className="ck-page">
@@ -44,8 +57,8 @@ export function StoryShell({ crumbs, hero, children, wide = false }: { crumbs: C
               </span>
               <span className="ck-word">GEO</span>
             </a>
-            <a className="ck-pill tl-pill" href={STORIES_HUB.path}>
-              All stories
+            <a className="ck-pill tl-pill" href={pill.href}>
+              {pill.label}
             </a>
           </header>
           <div className={`ck-band-in${wide ? "" : " st-band-col"}`}>

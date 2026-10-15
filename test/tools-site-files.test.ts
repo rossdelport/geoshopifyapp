@@ -4,7 +4,7 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createElement, type ComponentType } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createRoutesStub, type LoaderFunctionArgs, type MetaDescriptor } from "react-router";
@@ -14,12 +14,15 @@ import { HUB, TOOLS } from "../app/lib/tools/registry";
 import { STORIES } from "../app/lib/stories";
 import { STORIES_UPDATED } from "../app/lib/stories/pages";
 import { HOME_UPDATED, PRIVACY_UPDATED } from "../app/lib/tools/site";
-import { siteLlmsTxt, siteRobotsTxt, sitemapPages, sitemapXml } from "../app/lib/tools/site-files";
+import { BLOG_LAUNCHED, siteLlmsTxt, siteRobotsTxt, sitemapPages, sitemapXml } from "../app/lib/tools/site-files";
 import { loader as robotsLoader } from "../app/routes/robots[.]txt";
 import { loader as sitemapLoader } from "../app/routes/sitemap[.]xml";
 import { loader as llmsLoader } from "../app/routes/llms[.]txt";
 import * as checkStart from "../app/routes/check._index";
 import * as privacy from "../app/routes/privacy";
+
+// The sitemap route asks the database for the blog posts; here there are none.
+vi.mock("../app/db.server", () => ({ default: { blogPost: { findMany: async () => [] } } }));
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const args = (url: string, init: RequestInit = {}) => ({ request: new Request(url, init), params: {}, context: {} }) as unknown as LoaderFunctionArgs;
@@ -86,14 +89,14 @@ describe("sitemap.xml", () => {
   it("is a well-formed sitemaps.org file", () => {
     expect(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')).toBe(true);
     expect(xml.trimEnd().endsWith("</urlset>")).toBe(true);
-    // home, tools hub, 7 tools, stories hub, 15 stories, privacy
-    expect(xml.match(/<url>/g)).toHaveLength(16 + STORIES.length);
-    expect(xml.match(/<\/url>/g)).toHaveLength(16 + STORIES.length);
+    // home and 5 languages, tools hub, 7 tools, stories hub, 15 stories, blog, privacy
+    expect(xml.match(/<url>/g)).toHaveLength(17 + STORIES.length);
+    expect(xml.match(/<\/url>/g)).toHaveLength(17 + STORIES.length);
     expect(xml).not.toMatch(/priority|changefreq/);
     expect(xml).not.toMatch(/&(?!amp;|lt;|gt;|quot;|apos;)/);
   });
 
-  it("lists exactly the home page (and its 5 languages), the hub, the 7 tools, the stories and the privacy page, with their dates", () => {
+  it("lists exactly the home page (and its 5 languages), the hub, the 7 tools, the stories, the blog and the privacy page, with their dates", () => {
     expect(locs).toEqual([
       "https://usegeo.app/",
       ...["de", "fr", "nl", "es", "it"].map((l) => `https://usegeo.app/${l}`),
@@ -101,6 +104,7 @@ describe("sitemap.xml", () => {
       ...TOOLS.map((t) => `https://usegeo.app${t.path}`),
       "https://usegeo.app/stories",
       ...STORIES.map((s) => `https://usegeo.app/stories/${s.slug}`),
+      "https://usegeo.app/blog",
       "https://usegeo.app/privacy",
     ]);
     expect(STORIES).toHaveLength(15);
@@ -112,6 +116,7 @@ describe("sitemap.xml", () => {
       ...TOOLS.map((t) => t.updated),
       STORIES_UPDATED,
       ...STORIES.map(() => STORIES_UPDATED),
+      BLOG_LAUNCHED,
       PRIVACY_UPDATED,
     ]);
     for (const d of lastmods) expect(d).toMatch(/^\d{4}-\d{2}-\d{2}$/);

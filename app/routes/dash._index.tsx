@@ -180,6 +180,48 @@ export default function DashHome() {
         </div>
       </section>
 
+      {tracking ? (
+        <section className="w-sec" aria-labelledby="sources-h">
+          <div className="w-sec-head">
+            <h2 id="sources-h">Where your shoppers came from this month</h2>
+            <p>AI assistants next to search engines (SEO) and everyone else. Google AI Overviews count as Google search here, since Google sends both the same way.</p>
+          </div>
+          <div className="w-box w-table-wrap">
+            <table className="w-table">
+              <thead>
+                <tr>
+                  <th>Came from</th>
+                  <th>Visits</th>
+                  <th>Orders</th>
+                  <th>Sales</th>
+                  <th>Share of sales</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(
+                  [
+                    ["AI assistants", "ChatGPT, Gemini, Perplexity and co", money.sources.ai],
+                    ["Search engines", "Google, Bing and co", money.sources.search],
+                    ["Everything else", "Direct, social, email, ads", money.sources.other],
+                  ] as const
+                ).map(([name, note, row]) => (
+                  <tr key={name}>
+                    <td>
+                      <span className="w-q">{name}</span>
+                      <span className="w-note w-block">{note}</span>
+                    </td>
+                    <td className="num">{row.visits}</td>
+                    <td className="num">{row.orders}</td>
+                    <td className="num">{formatMoney(row.revenue, money.currency)}</td>
+                    <td className="num">{money.sources.all.revenue > 0 ? formatPct(row.revenue / money.sources.all.revenue) : "–"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      ) : null}
+
       {money.recentOrders.length ? (
         <section className="w-sec" aria-labelledby="orders-h">
           <div className="w-sec-head">

@@ -6,7 +6,7 @@
 import { randomBytes } from "node:crypto";
 import db from "../db.server";
 import { env } from "./env.server";
-import { classifyOrder, type Visit } from "./attribution";
+import { classifyOrder, classifySearchOrder, type Visit } from "./attribution";
 import { SITE } from "./tools/site";
 
 /** The store's tracking key, made the first time it's asked for. */
@@ -107,10 +107,16 @@ export async function recordPixelOrder(shopId: string, body: any): Promise<"ai" 
       return "ignored"; // the same order sent twice (a reloaded thank-you page)
     }
   }
+  // Not from AI: did the shopper come from a search engine? Counted in the day's totals beside AI.
+  const search = ai ? null : classifySearchOrder({ firstVisit: visitOf(body.first), lastVisit: visitOf(body.last) }, env.utmSource);
   await db.orderDay.upsert({
     where: { shopId_date: { shopId, date } },
-    create: { shopId, date, orders: 1, revenue: total },
-    update: { orders: { increment: 1 }, revenue: { increment: total } },
+    create: { shopId, date, orders: 1, revenue: total, searchOrders: search ? 1 : 0, searchRevenue: search ? total : 0 },
+    update: {
+      orders: { increment: 1 },
+      revenue: { increment: total },
+      ...(search ? { searchOrders: { increment: 1 }, searchRevenue: { increment: total } } : {}),
+    },
   });
   return ai ? "ai" : "other";
 }

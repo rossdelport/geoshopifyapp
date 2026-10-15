@@ -15,6 +15,8 @@ what it names. GEO shows which brands AI recommends for the questions shoppers a
 product, why, and what to do about it, and it shows the clicks, orders and money that come from AI.
 
 - Website: usegeo.app. Support email: ross@usegeo.app. Ross is GEO's founder.
+- GEO's blog is at usegeo.app/blog: plain-English articles on getting recommended by AI, three new ones a week
+  (Monday, Wednesday and Friday). Free, no sign-in.
 - GEO works for Shopify stores only, worldwide, in English.
 - GEO reads only what anyone can see on the store (its public product pages). Nothing in the store's Shopify
   admin changes. GEO can't edit the store for them yet.
@@ -42,6 +44,10 @@ ross@usegeo.app if that's your store.
 ### Dashboard
 - **Money from AI this month:** AI revenue, AI orders and AI clicks. These need the tracking code. Until it's
   added the cards show "Add the tracking code to see this".
+- **Where your shoppers came from this month:** a table with three rows, AI assistants, search engines (Google,
+  Bing and co, which is SEO traffic) and everything else (direct, social, email, ads), each with visits, orders,
+  sales and share of sales. It also needs the tracking code. Google AI Overviews count as Google search here,
+  because Google sends both kinds of visit the same way.
 - **Visibility score (0 to 100):** how often AI recommends you. We ask every question twice on each AI. You get
   full points when the AI names you in its top 3, two-thirds when it names you lower down, and one-third when it
   only links to your website. Under 20 is weak, and most new stores start low. It moves as AI answers change, so
@@ -110,10 +116,14 @@ early access.
 - **Standard:** US$49 a month, or US$441 a year (3 months free). 7-day free trial.
   - 50 buying questions, checked every week, on ChatGPT, Gemini, Perplexity and Google AI Overviews.
   - Sites AI trusts: 4 writer lookups a month (about one a week) and up to 10 pitches a month, drafted for you.
+  - 4 guide pages a month (about one a week) for your approval: each built around a buying question AI doesn't
+    name you for, rotating through how-to-choose guides, comparisons, use-case pages, buying advice and single
+    question deep dives. (Guide pages for web app stores are coming with the guide calendar.)
   - Reddit threads: new threads every week, each with a reply.
   - Money from AI dashboard.
 - **Done-for-you:** US$349 a month, or US$3,141 a year. 7-day free trial.
   - 100 buying questions, checked every day, plus Claude.
+  - 12 guide pages a month (three a week), written and published for you.
   - 20 writer lookups and up to 40 pitches a month, sent and followed up for you by our team (including
     directories and roundups).
   - Everything in Standard, plus a 30-minute call. Hand outreach and the call start after the trial.

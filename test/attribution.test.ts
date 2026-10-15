@@ -72,3 +72,52 @@ describe("classifyOrder", () => {
     expect(classifyOrder({ lastVisit: { utmSource: "chatgpt.com", landingPage: "/" } }, OURS)?.engine).toBe("chatgpt");
   });
 });
+
+// SEO traffic beside AI (Ross, 2026-10-15): visits and orders from search engines.
+describe("search engines", () => {
+  it.each([
+    ["https://www.google.com/", "google"],
+    ["https://www.google.com.au/search?q=beard+oil", "google"],
+    ["https://www.google.co.uk/", "google"],
+    ["https://www.bing.com/search?q=x", "bing"],
+    ["https://duckduckgo.com/?q=x", "duckduckgo"],
+    ["https://au.search.yahoo.com/search?p=x", "yahoo"],
+    ["https://www.ecosia.org/search?q=x", "ecosia"],
+    ["https://search.brave.com/search?q=x", "brave"],
+    ["https://yandex.ru/search/?text=x", "yandex"],
+    ["https://www.startpage.com/do/search", "other_search"],
+  ])("%s -> %s", async (ref, engine) => {
+    const { searchEngineFromReferrer } = await import("../app/lib/attribution");
+    expect(searchEngineFromReferrer(ref)).toBe(engine);
+  });
+
+  it("never counts an AI assistant, a look-alike domain or a normal site as search", async () => {
+    const { searchEngineFromReferrer } = await import("../app/lib/attribution");
+    expect(searchEngineFromReferrer("https://gemini.google.com/app")).toBeNull();
+    expect(searchEngineFromReferrer("https://www.bing.com/chat?q=x")).toBeNull();
+    expect(searchEngineFromReferrer("https://notgoogle.com/")).toBeNull();
+    expect(searchEngineFromReferrer("https://google.com.evil.net/")).toBeNull();
+    expect(searchEngineFromReferrer("https://www.facebook.com/")).toBeNull();
+    expect(searchEngineFromReferrer("")).toBeNull();
+  });
+
+  it("classifies a visit from the referrer or an organic utm tag", async () => {
+    const { classifySearchVisit } = await import("../app/lib/attribution");
+    expect(classifySearchVisit({ landingPage: "/", referrerUrl: "https://www.google.com/" })?.engine).toBe("google");
+    expect(classifySearchVisit({ landingPage: "https://shop.com/?utm_source=bing&utm_medium=organic" })?.engine).toBe("bing");
+    expect(classifySearchVisit({ landingPage: "https://shop.com/?utm_source=newsletter&utm_medium=email" })).toBeNull();
+    expect(classifySearchVisit({ landingPage: "/", referrerUrl: "" })).toBeNull();
+  });
+
+  it("an order is a search order only when it isn't an AI order; the last visit wins", async () => {
+    const { classifySearchOrder } = await import("../app/lib/attribution");
+    const google = { referrerUrl: "https://www.google.com/", landingPage: "/" };
+    const chatgpt = { referrerUrl: "https://chatgpt.com/", landingPage: "/" };
+    const direct = { referrerUrl: "", landingPage: "/" };
+    expect(classifySearchOrder({ firstVisit: google, lastVisit: direct }, OURS)?.reason).toContain("first visit");
+    expect(classifySearchOrder({ firstVisit: direct, lastVisit: google }, OURS)?.reason).toContain("last visit");
+    expect(classifySearchOrder({ firstVisit: google, lastVisit: chatgpt }, OURS)).toBeNull();
+    expect(classifySearchOrder({ firstVisit: chatgpt, lastVisit: google }, OURS)).toBeNull();
+    expect(classifySearchOrder({ firstVisit: direct, lastVisit: direct }, OURS)).toBeNull();
+  });
+});

@@ -28,6 +28,8 @@ import {
   guideContentText,
   guideProblems,
   guideProductHandles,
+  GUIDE_KIND_NOTES,
+  nextGuideKind,
   relatedBlock,
   setRelatedBlock,
   setUpdatedLine,
@@ -492,6 +494,10 @@ async function writeGuide(
     : null;
   const role: "single" | "hub" | "spoke" = !cluster ? "single" : hub ? "spoke" : "hub";
   if (role === "spoke") questions = [...questions].sort((a, b) => Number(b.longTail) - Number(a.longTail));
+  // The kind of guide rotates (how to choose, comparison, use case, buying advice, deep dive) so a store's
+  // guides aren't all the same shape; an overview guide (hub) is always "how to choose".
+  const guidesSoFar = await db.fix.count({ where: { shopId: shop.id, type: "guide_page", refreshOfId: null } });
+  const kind = nextGuideKind(guidesSoFar, role);
   const roleNote =
     role === "hub"
       ? `\nThis is the overview guide for the topic "${cluster}": answer the broad question and how to choose. More specific guides on this topic will link to it.`
@@ -515,6 +521,7 @@ async function writeGuide(
 Write one guide page (400-700 words) that answers these shopper questions:
 ${questions.map((q) => `- ${q.text}`).join("\n")}
 ${roleNote}
+Kind of guide: ${GUIDE_KIND_NOTES[kind]}
 
 Structure:
 - question: the main shopper question, worded the way a shopper asks an AI assistant. It becomes the page title.
@@ -571,7 +578,7 @@ ${allowed.map((a) => `- ${a.url}`).join("\n")}`,
       targetGid: null,
       targetTitle: draft.question,
       before: {},
-      after: { title: draft.question, handle: out.handle.toLowerCase().replace(/[^a-z0-9-]/g, "-").slice(0, 80), bodyHtml },
+      after: { title: draft.question, handle: out.handle.toLowerCase().replace(/[^a-z0-9-]/g, "-").slice(0, 80), bodyHtml, kind },
       reason,
       impact: impact as string,
       questionIds: questions.map((q) => q.id),

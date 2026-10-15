@@ -197,8 +197,8 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
       throw new Error(`unexpected AI call ${opts.label}`);
     }) as any);
     try {
-      // Standard: 2 a month, 1 used, so 1 of the 3 suggested guides is written.
-      expect(await generateFixes(shopId, scan.id)).toBe(1);
+      // Standard: 4 a month, 1 used (the skipped one), so all 3 suggested guides are written.
+      expect(await generateFixes(shopId, scan.id)).toBe(3);
       // The page is built by us in strict Q&A form: the question as its title, our UTM on product links,
       // and the review site Claude named isn't on the store's allowlist, so it's dropped (and no "Sources").
       const written = await db.fix.findFirstOrThrow({ where: { shopId, type: "guide_page", reason: "Shoppers ask this" }, orderBy: { createdAt: "desc" } });
@@ -210,10 +210,11 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
       expect(after.bodyHtml).not.toContain("Sources");
       expect(await generateFixes(shopId, scan.id)).toBe(0);
       expect(ai.mock.calls.at(-1)![0].prompt).toContain("no guide_page");
-      // Done-for-you: 8 a month, 2 used.
+      // Done-for-you: 12 a month, 4 used.
       await db.shop.update({ where: { id: shopId }, data: { plan: "pro" } });
       expect(await generateFixes(shopId, scan.id)).toBe(3);
-      expect(await db.fix.count({ where: { shopId, type: "guide_page", createdAt: { gte: startOfMonth() } } })).toBe(6);
+      // The skipped one, the unpublished one and the six written this month.
+      expect(await db.fix.count({ where: { shopId, type: "guide_page", createdAt: { gte: startOfMonth() } } })).toBe(8);
     } finally {
       ai.mockImplementation(async () => {
         throw new Error("no AI in tests");

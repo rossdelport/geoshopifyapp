@@ -24,10 +24,15 @@ export async function requireAdmin(request: Request) {
   return user;
 }
 
-/** Today in Sydney as YYYY-MM-DD, or a day `offset` days before it. */
+/**
+ * Today in Sydney as YYYY-MM-DD, or the calendar day `offset` days before it. The offset is taken off the Sydney
+ * date, not the clock: taking 13 x 24 hours off the clock lands a day early for a week after the clocks change
+ * (found 16 Oct 2026, just after midnight Sydney, when "14 days" showed 15).
+ */
 export function sydneyDay(offset = 0, now = new Date()): string {
-  const d = new Date(now.getTime() - offset * 86_400_000);
-  return new Intl.DateTimeFormat("en-CA", { timeZone: ADMIN_TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: ADMIN_TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(now);
+  if (!offset) return today;
+  return new Date(Date.parse(`${today}T00:00:00Z`) - offset * 86_400_000).toISOString().slice(0, 10);
 }
 
 const isDay = (s: unknown): s is string => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s) && !Number.isNaN(Date.parse(s));

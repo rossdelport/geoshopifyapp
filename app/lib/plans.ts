@@ -82,7 +82,7 @@ export const PLANS: Record<PlanId, Plan> = {
     manualCheckEveryDays: 7,
     products: 500,
     fixesPerMonth: Infinity,
-    guidePagesPerMonth: 2,
+    guidePagesPerMonth: 4, // about one a week (Ross, 2026-10-15; was 2)
     outreachPerMonth: 10,
     writersPerMonth: 4, // about 1 a week (Ross, 2026-10-15)
     pageReadsPerWeek: 15,
@@ -96,7 +96,7 @@ export const PLANS: Record<PlanId, Plan> = {
       "ChatGPT, Gemini, Perplexity and Google AI Overviews",
       "Unlimited fixes, approved in one click",
       "500 products optimised",
-      "2 guide pages a month, you approve",
+      "4 guide pages a month (how to choose, comparisons, use cases), you approve",
       "Up to 10 outreach pitches a month, drafted",
       "AI sales dashboard and monthly email report",
     ],
@@ -114,7 +114,7 @@ export const PLANS: Record<PlanId, Plan> = {
     manualCheckEveryDays: 3,
     products: 2000,
     fixesPerMonth: Infinity,
-    guidePagesPerMonth: 8,
+    guidePagesPerMonth: 12, // three a week (Ross, 2026-10-15; was 8)
     outreachPerMonth: 40,
     writersPerMonth: 20, // (Ross, 2026-10-15)
     pageReadsPerWeek: 50,
@@ -128,7 +128,7 @@ export const PLANS: Record<PlanId, Plan> = {
       "Everything in Standard, plus Claude",
       "Fixes applied for you. Ones that need your input wait. Switch off or undo any time",
       "2,000 products optimised",
-      "8 guide pages a month, written and published for you",
+      "12 guide pages a month, written and published for you",
       "Up to 40 pitches a month sent and followed up for you, including directories and roundups",
       "Monthly report and a 30-minute call",
       "Hand outreach and your call start after the trial",

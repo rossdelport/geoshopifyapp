@@ -93,13 +93,13 @@ describe("plan limits", () => {
     expect(remainingFixes(PLANS.free, usage())).toBe(0);
   });
 
-  it("caps guide pages per month: Standard 2, Done-for-you 8", () => {
-    expect(remainingGuidePages(PLANS.core, usage())).toBe(2);
-    expect(remainingGuidePages(PLANS.core, usage({ guidePagesThisMonth: 1 }))).toBe(1);
-    expect(remainingGuidePages(PLANS.core, usage({ guidePagesThisMonth: 2 }))).toBe(0);
-    expect(remainingGuidePages(PLANS.core, usage({ guidePagesThisMonth: 5 }))).toBe(0);
-    expect(remainingGuidePages(PLANS.pro, usage({ guidePagesThisMonth: 2 }))).toBe(6);
-    expect(remainingGuidePages(PLANS.pro, usage({ guidePagesThisMonth: 8 }))).toBe(0);
+  it("caps guide pages per month: Standard 4, Done-for-you 12 (Ross, 2026-10-15)", () => {
+    expect(remainingGuidePages(PLANS.core, usage())).toBe(4);
+    expect(remainingGuidePages(PLANS.core, usage({ guidePagesThisMonth: 1 }))).toBe(3);
+    expect(remainingGuidePages(PLANS.core, usage({ guidePagesThisMonth: 4 }))).toBe(0);
+    expect(remainingGuidePages(PLANS.core, usage({ guidePagesThisMonth: 9 }))).toBe(0);
+    expect(remainingGuidePages(PLANS.pro, usage({ guidePagesThisMonth: 2 }))).toBe(10);
+    expect(remainingGuidePages(PLANS.pro, usage({ guidePagesThisMonth: 12 }))).toBe(0);
     expect(remainingGuidePages(PLANS.free, usage())).toBe(0);
   });
 
@@ -167,14 +167,14 @@ describe("plan limits", () => {
     expect(4.3 * PLANS.core.questions * scanSettings(PLANS.core, "manual").engines.length * scanSettings(PLANS.core, "manual").runs).toBeLessThan(900);
   });
 
-  it("asks Done-for-you for a guide page whenever the month's pace of 8 falls behind", () => {
-    const mid = new Date("2026-10-16T12:00:00Z"); // day 16 of 31: 5 of 8 due
-    expect(guidePageDue(PLANS.pro, usage({ guidePagesThisMonth: 4 }), mid)).toBe(true);
-    expect(guidePageDue(PLANS.pro, usage({ guidePagesThisMonth: 5 }), mid)).toBe(false);
+  it("asks Done-for-you for a guide page whenever the month's pace of 12 falls behind", () => {
+    const mid = new Date("2026-10-16T12:00:00Z"); // day 16 of 31: 7 of 12 due
+    expect(guidePageDue(PLANS.pro, usage({ guidePagesThisMonth: 6 }), mid)).toBe(true);
+    expect(guidePageDue(PLANS.pro, usage({ guidePagesThisMonth: 7 }), mid)).toBe(false);
     expect(guidePageDue(PLANS.pro, usage({ guidePagesThisMonth: 0 }), new Date("2026-10-01T09:00:00Z"))).toBe(true);
-    expect(guidePageDue(PLANS.pro, usage({ guidePagesThisMonth: 7 }), new Date("2026-10-31T09:00:00Z"))).toBe(true);
-    expect(guidePageDue(PLANS.pro, usage({ guidePagesThisMonth: 8 }), new Date("2026-10-31T09:00:00Z"))).toBe(false);
-    // Standard approves its 2 by hand, so no pace push.
+    expect(guidePageDue(PLANS.pro, usage({ guidePagesThisMonth: 11 }), new Date("2026-10-31T09:00:00Z"))).toBe(true);
+    expect(guidePageDue(PLANS.pro, usage({ guidePagesThisMonth: 12 }), new Date("2026-10-31T09:00:00Z"))).toBe(false);
+    // Standard approves its 4 by hand, so no pace push.
     expect(guidePageDue(PLANS.core, usage(), mid)).toBe(false);
   });
 });

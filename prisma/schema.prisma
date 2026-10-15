@@ -321,8 +321,9 @@ model TrafficDay {
   shopId     String
   shop       Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
   date       DateTime @db.Date
-  sessions   Int      @default(0)
-  aiSessions Int      @default(0)
+  sessions       Int      @default(0)
+  aiSessions     Int      @default(0)
+  searchSessions Int      @default(0) // visits from Google, Bing and other search engines (SEO traffic)
 
   @@unique([shopId, date])
 }
@@ -351,8 +352,10 @@ model OrderDay {
   shopId  String
   shop    Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
   date    DateTime @db.Date
-  orders  Int      @default(0)
-  revenue Float    @default(0)
+  orders        Int      @default(0)
+  revenue       Float    @default(0)
+  searchOrders  Int      @default(0) // orders whose last (else first) visit came from a search engine
+  searchRevenue Float    @default(0)
 
   @@unique([shopId, date])
 }
@@ -583,4 +586,24 @@ model SupportFlag {
   createdAt DateTime @default(now())
 
   @@index([status, createdAt])
+}
+
+// GEO's own blog at usegeo.app/blog (Ross, 2026-10-15: practise what we preach). Written by Claude from the
+// knowledge pack (docs/facts.md, docs/geo-research.md, the stories, docs/ask-geo-guide.md), fact-checked, and
+// published on its own three times a week (lib/blog.server.ts). Ross can hide a post in Admin.
+model BlogPost {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String
+  kind        String // comparison | how-to | explainer | checklist | myths | data
+  topicKey    String?  @unique // the seed topic it was written from, so each is written once
+  body        Json // intro, sections, takeaways, faqs, sources, related (lib/blog/pages.ts BlogBody)
+  words       Int      @default(0)
+  status      String   @default("published") // published | hidden
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status, publishedAt])
 }

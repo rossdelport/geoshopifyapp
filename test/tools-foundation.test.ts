@@ -857,14 +857,14 @@ describe("the tool page frame and its parts", () => {
 describe("the site footer", () => {
   const footer = renderToStaticMarkup(createElement(SiteFooter));
 
-  it("links the hub, all 7 tools in registry order, and the main pages (with the stories), as plain links", () => {
+  it("links the hub, all 7 tools in registry order, and the main pages (with the stories and the blog), as plain links", () => {
     expect(footer).toContain('<nav class="tl-foot-tools" aria-label="Free tools">');
     expect(footer).toContain('<nav class="tl-foot-site" aria-label="GEO">');
     expect(footer).toContain('<a href="/tools">All free tools</a>');
     const positions = TOOLS.map((t) => footer.indexOf(`<a href="${t.path}">${t.name}</a>`));
     for (const p of positions) expect(p).toBeGreaterThan(-1);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
-    for (const [label, href] of [["Home", "/"], ["How it works", "/#how"], ["Pricing", "/#pricing"], ["Stories", "/stories"], ["Privacy", "/privacy"]]) {
+    for (const [label, href] of [["Home", "/"], ["How it works", "/#how"], ["Pricing", "/#pricing"], ["Stories", "/stories"], ["Blog", "/blog"], ["Privacy", "/privacy"]]) {
       expect(footer).toContain(`<a href="${href}">${label}</a>`);
     }
     expect(footer).toContain("GEO · Helps ChatGPT &amp; co recommend your products");

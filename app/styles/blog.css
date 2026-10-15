@@ -1,0 +1,62 @@
+/* The blog pages (/blog and /blog/<slug>). Loaded after check.css, tools.css, story-card.css and stories.css: the
+   article reuses the stories' reading column (st-*) and adds the list cards, the kind tag, the takeaways box, the
+   FAQ and the sources. Scoped under .bl, prefixed bl-. Light theme only; purple only for the band. */
+.bl-tag {
+  display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 100px;
+  background: rgba(255, 255, 255, 0.85); box-shadow: inset 0 0 0 1px rgba(181, 168, 224, 0.45);
+  font-size: 12.5px; font-weight: 600; letter-spacing: 0.1px; line-height: 1; color: var(--navy); white-space: nowrap;
+}
+.bl-hero { display: flex; flex-direction: column; gap: 14px; padding: 0 2px 4px; text-align: left; }
+.bl-hero .bl-tag { align-self: flex-start; }
+.bl-hero .st-h1 { margin-top: 0; }
+
+/* ---------- the list (hub and "Read next") ---------- */
+.bl-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.bl-card {
+  display: flex; flex-direction: column; gap: 10px; min-height: 100%; padding: 20px 20px 18px; border-radius: 18px;
+  background: #fff; box-shadow: inset 0 0 0 1px var(--line, #eeeeee), 0 10px 24px -18px rgba(56, 64, 160, 0.25);
+  color: var(--navy); text-decoration: none; transition: box-shadow 0.18s ease, transform 0.18s ease;
+}
+.bl-card:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 1px rgba(181, 168, 224, 0.6), 0 16px 30px -18px rgba(56, 64, 160, 0.35); }
+.bl-card .bl-tag { background: var(--lav, #f4f2fe); box-shadow: none; }
+.bl-card-title { font-family: var(--font-head); font-size: 19px; font-weight: 600; letter-spacing: -0.4px; line-height: 1.25; margin: 0; }
+.bl-card-desc { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--text-2, #5f6070); }
+.bl-card-meta { margin-top: auto; font-size: 12.5px; color: var(--text-lilac); }
+.bl-empty { font-size: 16px; color: var(--text-2, #5f6070); }
+
+/* ---------- the article ---------- */
+.bl-article .st-body { margin-top: 8px; }
+.bl-article .st-sec ul { margin: 10px 0 0; padding-left: 22px; }
+.bl-article .st-sec li { margin: 6px 0; line-height: 1.6; }
+.bl-takeaways { margin: 28px 0 0; padding: 20px 22px; border-radius: 16px; background: var(--lav, #f4f2fe); }
+.bl-takeaways h2 { margin: 0 0 10px; font-size: 16px; }
+.bl-takeaways ul { margin: 0; padding-left: 20px; }
+.bl-takeaways li { margin: 6px 0; line-height: 1.6; color: var(--navy); }
+.bl-faq { margin-top: 32px; }
+.bl-faq h2 { margin-bottom: 6px; }
+.bl-faq details { border-top: 1px solid var(--line, #eeeeee); padding: 12px 0; }
+.bl-faq details:last-child { border-bottom: 1px solid var(--line, #eeeeee); }
+.bl-faq summary { cursor: pointer; font-weight: 600; color: var(--navy); line-height: 1.5; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+.bl-faq summary::-webkit-details-marker { display: none; }
+.bl-faq summary::after { content: "+"; color: var(--text-lilac); font-weight: 500; }
+.bl-faq details[open] summary::after { content: "–"; }
+.bl-faq details p { margin: 10px 0 0; line-height: 1.65; color: var(--navy-3); }
+.bl-sources { margin-top: 32px; padding: 18px 20px; border-radius: 16px; background: #fff; box-shadow: inset 0 0 0 1px var(--line, #eeeeee); }
+.bl-sources h2 { margin: 0 0 8px; font-size: 15px; }
+.bl-sources ul { margin: 0; padding-left: 18px; }
+.bl-sources li { margin: 5px 0; font-size: 14px; line-height: 1.5; }
+.bl-sources a { color: var(--navy); text-decoration: underline; text-decoration-color: rgba(11, 12, 43, 0.35); word-break: break-word; }
+.bl-sources a:hover { text-decoration-color: currentColor; }
+.bl-sources-note { margin: 10px 0 0; font-size: 13px; color: var(--text-lilac); }
+.bl-related { margin-top: 36px; }
+.bl-related h2 { margin-bottom: 12px; }
+.bl-tools { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.bl-tools a { display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 100px; background: #fff; box-shadow: inset 0 0 0 1px var(--line-2, #e8e8e8); color: var(--navy); font-size: 14px; font-weight: 500; text-decoration: none; }
+.bl-tools a:hover { box-shadow: inset 0 0 0 1px rgba(181, 168, 224, 0.8); }
+
+@media (min-width: 720px) {
+  .bl-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+}
+@media (min-width: 1040px) {
+  .bl-list.is-hub { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

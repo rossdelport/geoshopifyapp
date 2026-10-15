@@ -207,10 +207,14 @@ describe("one list of seven pages everywhere", () => {
     expect(home).toContain('href="/tools"');
   });
 
-  it("the sitemap lists exactly the public pages (the tools, the stories and the rest), each with its date", () => {
+  it("the sitemap lists exactly the public pages (the tools, the stories, the blog and the rest), each with its date", () => {
     const xml = sitemapXml();
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-    expect(locs).toEqual([abs("/"), ...HOME_LANGS.map((l) => abs(`/${l}`)), abs("/tools"), ...SEVEN.map(abs), abs("/stories"), ...STORIES.map((s) => abs(`/stories/${s.slug}`)), abs("/privacy")]);
+    expect(locs).toEqual([abs("/"), ...HOME_LANGS.map((l) => abs(`/${l}`)), abs("/tools"), ...SEVEN.map(abs), abs("/stories"), ...STORIES.map((s) => abs(`/stories/${s.slug}`)), abs("/blog"), abs("/privacy")]);
+    // The blog posts come from the database: the route passes them in, newest first, and the hub takes the newest date.
+    const withPosts = sitemapXml([{ path: "/blog/second", updated: "2026-10-20" }, { path: "/blog/first", updated: "2026-10-15" }]);
+    expect([...withPosts.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]).slice(-4)).toEqual([abs("/blog"), abs("/blog/second"), abs("/blog/first"), abs("/privacy")]);
+    expect(withPosts).toContain(`<loc>${abs("/blog")}</loc>\n    <lastmod>2026-10-20</lastmod>`);
     expect(locs).not.toContain(abs("/check"));
     const lastmods = [...xml.matchAll(/<lastmod>([^<]+)<\/lastmod>/g)].map((m) => m[1]);
     expect(lastmods).toEqual(sitemapPages().map((p) => p.updated));

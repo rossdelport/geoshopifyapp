@@ -290,6 +290,15 @@ describe.skipIf(!url)("web app (needs TEST_DATABASE_URL)", () => {
     expect(ai.map((o) => [o.orderGid, o.engine, o.revenue])).toEqual([["gid://shopify/Order/777", "perplexity", 50]]);
     const day = await db.orderDay.findFirstOrThrow({ where: { shopId: shop.id } });
     expect([day.orders, day.revenue]).toEqual([2, 100]);
+    // Order 778 came from Google: counted as a search order (SEO beside AI), not an AI order.
+    expect([day.searchOrders, day.searchRevenue]).toEqual([1, 50]);
+
+    // Visits: one from Google counts as search, one direct counts as neither.
+    await send({ k: "geo_pxkey1234567890ab", ref: "https://www.google.com.au/", url: "https://px.com/collections/all", cid: "g" });
+    await send({ k: "geo_pxkey1234567890ab", ref: "", url: "https://px.com/", cid: "d" });
+    const traffic = await db.trafficDay.findFirstOrThrow({ where: { shopId: shop.id } });
+    expect([traffic.sessions, traffic.aiSessions, traffic.searchSessions]).toEqual([3, 1, 1]);
+    expect(await db.aiSession.count({ where: { shopId: shop.id } })).toBe(1);
   });
 });
 

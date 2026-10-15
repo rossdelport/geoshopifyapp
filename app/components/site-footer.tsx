@@ -12,6 +12,7 @@ const SITE_LINKS: [string, string][] = [
   ["How it works", "/#how"],
   ["Pricing", "/#pricing"],
   ["Stories", "/stories"],
+  ["Blog", "/blog"],
   ["Privacy", "/privacy"],
 ];
 

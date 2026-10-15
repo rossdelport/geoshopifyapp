@@ -128,10 +128,11 @@ export async function topCompetitors(shopId: string, limit = 5) {
 /** Just what the web dashboard shows: this month's AI money and the latest orders (4 queries at once). */
 export async function moneyThisMonth(shop: Shop) {
   const monthStart = startOfMonth();
-  const [month, visits, storeMonth, recent] = await Promise.all([
+  const [month, visits, storeMonth, traffic, recent] = await Promise.all([
     db.aiOrder.aggregate({ where: { shopId: shop.id, orderedAt: { gte: monthStart } }, _sum: { revenue: true }, _count: true }),
     db.aiSession.count({ where: { shopId: shop.id, occurredAt: { gte: monthStart }, engine: { not: "ours" } } }),
-    db.orderDay.aggregate({ where: { shopId: shop.id, date: { gte: monthStart } }, _sum: { revenue: true } }),
+    db.orderDay.aggregate({ where: { shopId: shop.id, date: { gte: monthStart } }, _sum: { revenue: true, orders: true, searchOrders: true, searchRevenue: true } }),
+    db.trafficDay.aggregate({ where: { shopId: shop.id, date: { gte: monthStart } }, _sum: { sessions: true, aiSessions: true, searchSessions: true } }),
     db.aiOrder.findMany({
       where: { shopId: shop.id },
       orderBy: { orderedAt: "desc" },
@@ -140,13 +141,31 @@ export async function moneyThisMonth(shop: Shop) {
     }),
   ]);
   const storeRevenue = storeMonth._sum.revenue ?? 0;
+  const aiRevenue = month._sum.revenue ?? 0;
+  // Where this month's shoppers came from: AI assistants, search engines, and everyone else (SEO beside AI, Ross
+  // 2026-10-15). Visits come from the tracking code's daily counts; AI visits from the AI sessions it saved.
+  const allVisits = traffic._sum.sessions ?? 0;
+  const searchVisits = traffic._sum.searchSessions ?? 0;
+  const allOrders = storeMonth._sum.orders ?? 0;
+  const searchOrders = storeMonth._sum.searchOrders ?? 0;
+  const searchRevenue = storeMonth._sum.searchRevenue ?? 0;
   return {
     currency: shop.currency,
     thisMonth: {
-      revenue: month._sum.revenue ?? 0,
+      revenue: aiRevenue,
       orders: month._count,
       visits,
-      share: storeRevenue > 0 ? (month._sum.revenue ?? 0) / storeRevenue : null,
+      share: storeRevenue > 0 ? aiRevenue / storeRevenue : null,
+    },
+    sources: {
+      ai: { visits, orders: month._count, revenue: aiRevenue },
+      search: { visits: searchVisits, orders: searchOrders, revenue: searchRevenue },
+      other: {
+        visits: Math.max(0, allVisits - visits - searchVisits),
+        orders: Math.max(0, allOrders - month._count - searchOrders),
+        revenue: Math.max(0, storeRevenue - aiRevenue - searchRevenue),
+      },
+      all: { visits: allVisits, orders: allOrders, revenue: storeRevenue },
     },
     recentOrders: recent,
     hasPixel: Boolean(shop.pixelId),

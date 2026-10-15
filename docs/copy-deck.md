@@ -438,7 +438,7 @@ net for stores that install without starting a trial).
 | 1 | 50 buying questions, scanned weekly | 100 buying questions, scanned daily |
 | 2 | ChatGPT, Gemini, Perplexity, Google AI Overviews | Also checks Claude |
 | 3 | Unlimited fixes, one-click approve | Fixes applied for you, undo any time |
-| 4 | 500 products, 2 guide pages a month | 2,000 products, 8 guide pages a month |
+| 4 | 500 products, 4 guide pages a month | 2,000 products, 12 guide pages a month |
 | 5 | Up to 10 pitches a month, drafted | Up to 40 pitches a month, sent and followed up |
 | 6 | Monthly email report | Monthly report and a 30-minute call |
 

@@ -19,6 +19,39 @@ export interface GuideProductLink {
   url: string; // the tracked link (our UTM)
 }
 
+/**
+ * The kinds of guide page, rotated so a store's guides aren't the same shape twice in a row (Ross, 2026-10-15:
+ * not just "top 10" lists). Every kind keeps the strict question-and-answer form; the kind sets the angle.
+ */
+export const GUIDE_KINDS = ["how-to-choose", "comparison", "use-case", "buying-advice", "deep-dive"] as const;
+export type GuideKind = (typeof GUIDE_KINDS)[number];
+
+export const GUIDE_KIND_LABELS: Record<GuideKind, string> = {
+  "how-to-choose": "How to choose",
+  comparison: "Comparison",
+  "use-case": "Use case",
+  "buying-advice": "Buying advice",
+  "deep-dive": "One question, in depth",
+};
+
+/** What each kind asks the writer for (goes into the prompt). */
+export const GUIDE_KIND_NOTES: Record<GuideKind, string> = {
+  "how-to-choose": "An overview: answer the broad question and how to choose, so a shopper new to this can decide.",
+  comparison:
+    "A comparison: the two or three options a shopper weighs for this question (types, materials, sizes, price bands, or the store's products against the kind of alternative shoppers consider). Say honestly who each option suits and the trade-offs. Only facts from the product data. Never name or judge another brand.",
+  "use-case":
+    "A use-case page: build it around one situation or person (for example a first-timer, a gift, travel, a climate, a sensitive skin type, a small space) and what works for them and why.",
+  "buying-advice":
+    "Buying advice: build it around the mistakes people make and what to check before buying (fit, sizing, materials, care, how long it lasts, returns), with the store's products only where they genuinely fit.",
+  "deep-dive": "One specific question answered in depth, with the related questions that follow from it, each answered fully.",
+};
+
+/** The kind for a store's next guide: hubs are overviews; the rest rotate by how many guides the store has had. */
+export function nextGuideKind(guidesSoFar: number, role: "single" | "hub" | "spoke"): GuideKind {
+  if (role === "hub") return "how-to-choose";
+  return GUIDE_KINDS[Math.max(0, guidesSoFar) % GUIDE_KINDS.length];
+}
+
 export const MIN_SECTIONS = 4;
 export const MAX_SECTIONS = 6;
 export const MAX_PICKS = 4;

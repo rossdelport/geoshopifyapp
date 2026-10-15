@@ -169,3 +169,22 @@ describe("guide HTML", () => {
     expect(applyClaimsText(g, softened!.slice(1))).toBeNull();
   });
 });
+
+describe("guide kinds rotate (Ross, 2026-10-15)", () => {
+  it("cycles through the five kinds by how many guides the store has had, and hubs are always overviews", async () => {
+    const { GUIDE_KINDS, nextGuideKind } = await import("../app/lib/guide");
+    expect(GUIDE_KINDS).toHaveLength(5);
+    expect([0, 1, 2, 3, 4, 5, 6].map((n) => nextGuideKind(n, "single"))).toEqual([
+      "how-to-choose",
+      "comparison",
+      "use-case",
+      "buying-advice",
+      "deep-dive",
+      "how-to-choose",
+      "comparison",
+    ]);
+    expect(nextGuideKind(3, "hub")).toBe("how-to-choose");
+    expect(nextGuideKind(3, "spoke")).toBe("buying-advice");
+    expect(nextGuideKind(-1, "single")).toBe("how-to-choose");
+  });
+});

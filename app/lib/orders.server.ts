@@ -3,7 +3,7 @@
 
 import db from "../db.server";
 import { env } from "./env.server";
-import { classifyOrder, type OrderSignals } from "./attribution";
+import { classifyOrder, classifySearchOrder, type OrderSignals } from "./attribution";
 import { gql, ShopifyGqlError, type AdminClient } from "./shopify-gql.server";
 import { registerJob } from "./jobs.server";
 import { adminFor } from "./onboard-job.server";
@@ -85,16 +85,21 @@ async function fetchWithFallback<T>(admin: AdminClient, build: (j: boolean) => s
 
 export async function backfillOrders(shopId: string, admin: AdminClient, days = 60) {
   const since = new Date(Date.now() - days * 86_400_000).toISOString().slice(0, 10);
-  const totals = new Map<string, { orders: number; revenue: number }>();
+  const totals = new Map<string, { orders: number; revenue: number; searchOrders: number; searchRevenue: number }>();
   let cursor: string | null = null;
   let aiCount = 0;
   do {
     const data: any = await fetchWithFallback(admin, ordersQuery, { cursor, query: `created_at:>=${since}` });
     for (const o of data.orders.nodes) {
       const key = o.createdAt.slice(0, 10);
-      const t = totals.get(key) ?? { orders: 0, revenue: 0 };
+      const t = totals.get(key) ?? { orders: 0, revenue: 0, searchOrders: 0, searchRevenue: 0 };
+      const amount = Number(o.totalPriceSet?.shopMoney?.amount ?? 0);
       t.orders++;
-      t.revenue += Number(o.totalPriceSet?.shopMoney?.amount ?? 0);
+      t.revenue += amount;
+      if (classifySearchOrder(toSignals(o), env.utmSource)) {
+        t.searchOrders++;
+        t.searchRevenue += amount;
+      }
       totals.set(key, t);
       if (await saveIfAi(shopId, o)) aiCount++;
     }
@@ -104,8 +109,8 @@ export async function backfillOrders(shopId: string, admin: AdminClient, days = 
   for (const [day, t] of totals) {
     await db.orderDay.upsert({
       where: { shopId_date: { shopId, date: dayOf(day) } },
-      create: { shopId, date: dayOf(day), orders: t.orders, revenue: t.revenue },
-      update: { orders: t.orders, revenue: t.revenue },
+      create: { shopId, date: dayOf(day), orders: t.orders, revenue: t.revenue, searchOrders: t.searchOrders, searchRevenue: t.searchRevenue },
+      update: { orders: t.orders, revenue: t.revenue, searchOrders: t.searchOrders, searchRevenue: t.searchRevenue },
     });
   }
   return { days: totals.size, aiOrders: aiCount };
@@ -118,10 +123,15 @@ export async function processOrder(shopId: string, admin: AdminClient, orderGid:
   await saveIfAi(shopId, o);
   const date = dayOf(o.createdAt);
   const amount = Number(o.totalPriceSet?.shopMoney?.amount ?? 0);
+  const search = classifySearchOrder(toSignals(o), env.utmSource);
   await db.orderDay.upsert({
     where: { shopId_date: { shopId, date } },
-    create: { shopId, date, orders: 1, revenue: amount },
-    update: { orders: { increment: 1 }, revenue: { increment: amount } },
+    create: { shopId, date, orders: 1, revenue: amount, searchOrders: search ? 1 : 0, searchRevenue: search ? amount : 0 },
+    update: {
+      orders: { increment: 1 },
+      revenue: { increment: amount },
+      ...(search ? { searchOrders: { increment: 1 }, searchRevenue: { increment: amount } } : {}),
+    },
   });
 }
 

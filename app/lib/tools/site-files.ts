@@ -1,8 +1,9 @@
 // The site files for usegeo.app: robots.txt, sitemap.xml and llms.txt, built from the tool registry, the
-// stories and the plans, so they never drift from the pages. Pure. Served by routes/robots[.]txt.ts,
+// stories, the blog and the plans, so they never drift from the pages. Pure. Served by routes/robots[.]txt.ts,
 // sitemap[.]xml.ts and llms[.]txt.ts. Never add public/robots.txt, public/sitemap.xml or public/llms.txt:
 // static files are served before routes and would hide these.
 
+import { BLOG_HUB } from "../blog/pages";
 import { PLANS, formatUsd } from "../plans";
 import { STORIES } from "../stories";
 import { STORIES_HUB, STORIES_UPDATED, storyPath } from "../stories/pages";
@@ -33,13 +34,17 @@ export function siteRobotsTxt(): string {
   ].join("\n");
 }
 
+/** The day the blog went live; the hub's date until it has a post. */
+export const BLOG_LAUNCHED = "2026-10-15";
+
 /**
  * The pages in the sitemap, with the date each last really changed. Not listed: /check (its canonical
- * is the AI Visibility Checker), report pages, /auth, /app, /tips and /unsubscribe.
+ * is the AI Visibility Checker), report pages, /auth, /app, /tips and /unsubscribe. The blog posts come from the
+ * database, so the route passes them in (`posts`, newest first); the hub takes the newest post's date.
  * A function, not a constant: the llms.txt Checker imports this module in the browser (for siteLlmsTxt), and a
  * list built when the module loads would ship stories.json with that page.
  */
-export function sitemapPages(): { path: string; updated: string }[] {
+export function sitemapPages(posts: { path: string; updated: string }[] = []): { path: string; updated: string }[] {
   return [
     { path: "/", updated: HOME_UPDATED },
     ...HOME_LANGS.map((l) => ({ path: `/${l}`, updated: HOME_UPDATED })),
@@ -47,6 +52,8 @@ export function sitemapPages(): { path: string; updated: string }[] {
     ...TOOLS.map((t) => ({ path: t.path, updated: t.updated })),
     { path: STORIES_HUB.path, updated: STORIES_UPDATED },
     ...STORIES.map((s) => ({ path: storyPath(s.slug), updated: STORIES_UPDATED })),
+    { path: BLOG_HUB.path, updated: posts[0]?.updated ?? BLOG_LAUNCHED },
+    ...posts,
     { path: "/privacy", updated: PRIVACY_UPDATED },
   ];
 }
@@ -55,8 +62,8 @@ const xmlEscape = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 
 /** sitemaps.org format: <loc> and <lastmod> only (Google and Bing ignore priority and changefreq). */
-export function sitemapXml(): string {
-  const urls = sitemapPages().map(
+export function sitemapXml(posts: { path: string; updated: string }[] = []): string {
+  const urls = sitemapPages(posts).map(
     (p) => `  <url>\n    <loc>${xmlEscape(abs(p.path))}</loc>\n    <lastmod>${p.updated}</lastmod>\n  </url>`,
   ).join("\n");
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
@@ -90,6 +97,7 @@ export function siteLlmsTxt(): string {
     `- [Home](${abs("/")}): what GEO does, how it works and pricing`,
     `- [All free tools](${abs(HUB.path)}): the full list of free tools`,
     `- [Stories](${abs(STORIES_HUB.path)}): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are GEO customers)`,
+    `- [Blog](${abs(BLOG_HUB.path)}): plain-English articles for Shopify stores on getting recommended by AI assistants, new ones three times a week`,
     `- [Privacy policy](${abs("/privacy")}): what data GEO collects and why`,
     "",
   ].join("\n");

@@ -144,6 +144,77 @@ export function classifyOrder(order: OrderSignals, ourUtmSource: string): OrderR
   return null;
 }
 
+// ---------- Search engines (SEO traffic), Ross 2026-10-15 ----------
+// A visit that came from a search engine's results page: Google, Bing and co. Counted beside AI on the dashboard
+// so a store can see both. Google AI Overviews can't be told apart from a normal Google result here (the referrer
+// is the same), which the dashboard says.
+
+export type SearchEngine = "google" | "bing" | "duckduckgo" | "yahoo" | "ecosia" | "brave" | "yandex" | "baidu" | "naver" | "other_search";
+
+export const SEARCH_ENGINE_LABELS: Record<SearchEngine, string> = {
+  google: "Google",
+  bing: "Bing",
+  duckduckgo: "DuckDuckGo",
+  yahoo: "Yahoo",
+  ecosia: "Ecosia",
+  brave: "Brave Search",
+  yandex: "Yandex",
+  baidu: "Baidu",
+  naver: "Naver",
+  other_search: "Other search",
+};
+
+// Referrer domain -> search engine. Google's many country domains (google.com.au, google.co.uk) all match "google.".
+const SEARCH_REFERRERS: [RegExp, SearchEngine][] = [
+  [/^(?:[a-z0-9-]+\.)*google\.(?:[a-z]{2,3})(?:\.[a-z]{2})?$/, "google"],
+  [/^(?:[a-z0-9-]+\.)*bing\.com$/, "bing"],
+  [/^(?:[a-z0-9-]+\.)*duckduckgo\.com$/, "duckduckgo"],
+  [/^(?:[a-z0-9-]+\.)*search\.yahoo\.(?:[a-z.]+)$/, "yahoo"],
+  [/^(?:[a-z0-9-]+\.)*ecosia\.org$/, "ecosia"],
+  [/^(?:[a-z0-9-]+\.)*search\.brave\.com$/, "brave"],
+  [/^(?:[a-z0-9-]+\.)*yandex\.(?:[a-z.]+)$/, "yandex"],
+  [/^(?:[a-z0-9-]+\.)*baidu\.com$/, "baidu"],
+  [/^(?:[a-z0-9-]+\.)*search\.naver\.com$/, "naver"],
+  [/^(?:[a-z0-9-]+\.)*(?:qwant\.com|startpage\.com|ask\.com|seznam\.cz|sogou\.com)$/, "other_search"],
+];
+
+/** Which search engine a referrer is from, or null. An AI assistant's address (bing.com/chat, gemini.google.com) is never a search engine. */
+export function searchEngineFromReferrer(referrer: string | null | undefined): SearchEngine | null {
+  if (!referrer || engineFromReferrer(referrer)) return null;
+  let host = "";
+  try {
+    host = new URL(referrer.includes("://") ? referrer : `https://${referrer}`).hostname.replace(/^www\./, "").toLowerCase();
+  } catch {
+    return null;
+  }
+  for (const [re, engine] of SEARCH_REFERRERS) if (re.test(host)) return engine;
+  return null;
+}
+
+/** A visit from a search engine (the referrer, or a link tagged utm_medium=organic by a search engine), or null. Checked after classifyVisit says it's not AI. */
+export function classifySearchVisit(visit: Visit | null | undefined): { engine: SearchEngine; reason: string } | null {
+  if (!visit) return null;
+  const byRef = searchEngineFromReferrer(visit.referrerUrl);
+  if (byRef) return { engine: byRef, reason: `Arrived from ${hostOf(visit.referrerUrl)}` };
+  const utm = utmFromUrl(visit.landingPage);
+  const source = (visit.utmSource || utm.source || "").toLowerCase();
+  if (source && (utm.medium || "").toLowerCase() === "organic") {
+    const engine = (Object.keys(SEARCH_ENGINE_LABELS) as SearchEngine[]).find((e) => source.includes(e)) ?? "other_search";
+    return { engine, reason: `Link was tagged utm_source=${source}` };
+  }
+  return null;
+}
+
+/** An order whose last (else first) visit came from a search engine, when it didn't come from AI. */
+export function classifySearchOrder(order: OrderSignals, ourUtmSource: string): { engine: SearchEngine; reason: string } | null {
+  if (classifyOrder(order, ourUtmSource)) return null;
+  const last = classifySearchVisit(order.lastVisit);
+  if (last) return { engine: last.engine, reason: `${last.reason} (last visit before buying)` };
+  const first = classifySearchVisit(order.firstVisit);
+  if (first) return { engine: first.engine, reason: `${first.reason} (first visit)` };
+  return null;
+}
+
 function hostOf(url: string | null | undefined): string {
   try {
     return new URL(url!.includes("://") ? url! : `https://${url}`).hostname.replace(/^www\./, "");
