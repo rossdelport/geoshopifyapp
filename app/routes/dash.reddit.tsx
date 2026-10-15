@@ -232,7 +232,7 @@ export default function Reddit() {
     <>
       <PageHead
         title="Reddit threads"
-        intro="People on Reddit asking about products like yours. Read the post, check the reply we wrote for you, then copy it and post it yourself in the thread."
+        intro="ChatGPT, Google and the other AI assistants quote Reddit a lot when they recommend products. Helpful replies from you on threads like these get your brand seen there, so AI is more likely to name you. Check the reply we wrote, then copy it and post it yourself."
         right={
           <>
             <span className={`w-chip ${data.counts.todo ? "warn" : "ok"}`}>{data.counts.todo} to reply</span>

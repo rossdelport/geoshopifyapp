@@ -66,6 +66,7 @@ there, and its most-used page.
   listed or claim your free profile, never write reviews yourself. Shops and marketplaces: ask them to stock you.
 
 ### Reddit threads
+The point is visibility, not quick sales: AI assistants (Google AI Overviews, ChatGPT, Perplexity) quote Reddit often, so honest, helpful replies that name the brand make it more likely AI names the store too.
 Reddit posts where people ask about products like yours, found once a week (the first look runs right after
 setup). Left: every thread (All, To reply, Replied). Right: the post and a reply we wrote for you.
 - The reply is written as you, the owner, and always says who you are, for example "(I run Brand, so I'm
