@@ -20,7 +20,7 @@ export function Logo({ to }: { to?: string }) {
   );
 }
 
-/** One white card on the lilac gradient: sign in, check your email, add your store. */
+/** One white card on a quiet grey page: sign in, check your email, add your store. */
 export function Solo({ children }: { children: ReactNode }) {
   return (
     <div className="w">
