@@ -86,6 +86,8 @@ model Shop {
   trafficDays TrafficDay[]
   jobs        Job[]
   costs       ApiCost[]
+
+  @@index([userId, createdAt])
 }
 
 model BrandProfile {
@@ -372,6 +374,7 @@ model Job {
   updatedAt DateTime  @updatedAt
 
   @@index([status, runAfter])
+  @@index([shopId, type, createdAt])
 }
 
 model ApiCost {

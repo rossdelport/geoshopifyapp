@@ -1,32 +1,22 @@
-import { useState } from "react";
 import type { LoaderFunctionArgs } from "react-router";
 import { useLoaderData } from "react-router";
 import { requireWebShop } from "../lib/web-auth.server";
 import { trackKeyFor, trackingCode } from "../lib/tracking-code.server";
-import { PageHead } from "../components/web";
+import { CopyButton, PageHead } from "../components/web";
 
 // usegeo.app/dash/tracking: the store's tracking code and how to paste it into Shopify (Settings -> Customer
 // events -> Add custom pixel). Once it sends its first visit, the dashboard shows AI clicks, orders and revenue.
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { shop } = await requireWebShop(request);
-  const code = trackingCode(await trackKeyFor(shop.id));
+  const code = trackingCode(shop.trackKey ?? (await trackKeyFor(shop.id)));
   const store = (shop.domain || "").replace(/\.myshopify\.com$/, "");
   return { code, working: Boolean(shop.pixelId), adminUrl: `https://admin.shopify.com/store/${store}/settings/customer_events` };
 };
 
 export default function Tracking() {
   const { code, working, adminUrl } = useLoaderData<typeof loader>();
-  const [copied, setCopied] = useState(false);
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
-    } catch {
-      (document.getElementById("geo-code") as HTMLTextAreaElement | null)?.select();
-    }
-  };
+  const selectCode = () => (document.getElementById("geo-code") as HTMLTextAreaElement | null)?.select();
   return (
     <>
       <PageHead
@@ -37,7 +27,7 @@ export default function Tracking() {
 
       <section className="w-panel">
         <h2>Add it to Shopify in 2 minutes</h2>
-        <ol style={{ paddingLeft: 20, display: "grid", gap: 8 }}>
+        <ol className="w-ol">
           <li>
             In Shopify, open{" "}
             <a href={adminUrl} target="_blank" rel="noreferrer">
@@ -62,17 +52,14 @@ export default function Tracking() {
       <section className="w-panel">
         <div className="w-row">
           <h2>Your code</h2>
-          <button className="w-btn w-btn-sm" type="button" onClick={copy}>
-            {copied ? "Copied" : "Copy code"}
-          </button>
+          <CopyButton text={code} label="Copy code" className="w-btn w-btn-sm" onFail={selectCode} />
         </div>
         <textarea
           id="geo-code"
-          className="w-input"
+          className="w-input w-code"
           readOnly
           value={code}
           rows={12}
-          style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: 12, padding: 12, lineHeight: 1.5 }}
           aria-label="Your GEO tracking code"
         />
       </section>

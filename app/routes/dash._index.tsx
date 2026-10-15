@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { useLoaderData, useRevalidator } from "react-router";
+import { Link, useLoaderData, useRevalidator } from "react-router";
 import db from "../db.server";
 import { requireWebShop } from "../lib/web-auth.server";
-import { activeScan, moneySummary, topCompetitors, visibilitySummary } from "../lib/dashboard.server";
+import { activeScan, latestVisibility, moneyThisMonth, topCompetitors } from "../lib/dashboard.server";
 import { questionRows } from "../lib/question-stats.server";
 import { SCORE_EXPLAINER, scoreLabel } from "../lib/score";
 import { ENGINE_LABELS, type Engine } from "../lib/plans";
@@ -15,34 +15,44 @@ import { ICONS, PageHead, Stat } from "../components/web";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { shop } = await requireWebShop(request);
-  const scan = await activeScan(shop.id);
-  const job = await db.job.findFirst({ where: { shopId: shop.id, type: "onboard" }, orderBy: { createdAt: "desc" } });
-  const base = {
-    storeName: shop.name || shop.primaryDomain || shop.domain,
-    onboarding: shop.onboarding,
-    setupFailed: shop.onboarding !== "done" && job?.status === "failed",
-    scan: scan ? { done: scan.done, total: scan.total } : null,
-  };
-  if (shop.onboarding !== "done") return { ...base, view: "setup" as const };
+  const storeName = shop.name || shop.primaryDomain || shop.domain;
 
-  const [money, visibility, competitors, rows, brand] = await Promise.all([
-    moneySummary(shop),
-    visibilitySummary(shop.id),
+  if (shop.onboarding !== "done") {
+    const [scan, job] = await Promise.all([
+      activeScan(shop.id),
+      db.job.findFirst({ where: { shopId: shop.id, type: "onboard" }, orderBy: { createdAt: "desc" }, select: { status: true } }),
+    ]);
+    return {
+      storeName,
+      onboarding: shop.onboarding,
+      setupFailed: job?.status === "failed",
+      scan: scan ? { done: scan.done, total: scan.total } : null,
+      view: "setup" as const,
+    };
+  }
+
+  // Everything at once: one round trip after the sign-in check (two for the question and brand counts).
+  const [scan, money, visibility, competitors, rows, brand] = await Promise.all([
+    activeScan(shop.id),
+    moneyThisMonth(shop),
+    latestVisibility(shop.id),
     topCompetitors(shop.id, 6),
-    questionRows(shop.id),
+    questionRows(shop.id, { activeOnly: true }),
     db.brandProfile.findUnique({ where: { shopId: shop.id }, select: { brandName: true } }),
   ]);
-  const missing = rows.questions.filter((q) => q.active && q.rate === 0).slice(0, 5);
   return {
-    ...base,
+    storeName,
+    onboarding: shop.onboarding,
+    setupFailed: false,
+    scan: scan ? { done: scan.done, total: scan.total } : null,
     view: "dashboard" as const,
     money,
     visibility,
     competitors,
     youShare: visibility.latest?.mentionRate ?? 0,
-    brandName: brand?.brandName ?? base.storeName,
-    missing,
-    tracked: rows.questions.filter((q) => q.active).length,
+    brandName: brand?.brandName ?? storeName,
+    missing: rows.questions.filter((q) => q.rate === 0).slice(0, 5),
+    tracked: rows.questions.length,
     lastScanAt: shop.lastScanAt,
   };
 };
@@ -107,7 +117,9 @@ export default function DashHome() {
   const label = scoreLabel(score, data.youShare > 0);
   const maxShare = Math.max(data.youShare, ...data.competitors.map((c) => c.share), 0.01);
   const notYet = (
-    <a href="/dash/tracking">Add the tracking code to see this</a>
+    <Link to="/dash/tracking" prefetch="intent">
+      Add the tracking code to see this
+    </Link>
   );
   return (
     <>
@@ -230,7 +242,10 @@ export default function DashHome() {
           <div className="w-sec-head">
             <h2 id="miss-h">Questions where AI doesn’t name you</h2>
             <p>
-              Your biggest openings. <a href="/dash/questions">See all buying questions</a>
+              Your biggest openings.{" "}
+              <Link to="/dash/questions" prefetch="intent">
+                See all buying questions
+              </Link>
             </p>
           </div>
           <div className="w-box w-table-wrap">

@@ -45,8 +45,9 @@ export async function trustedSites(shopId: string, limit = 40): Promise<TrustedS
   if (!rows.length) return [];
   const domains = rows.map((r) => r.domain);
 
-  // Each site's most-cited page (with its type, for the kind of next step).
-  const pages = await db.$queryRaw<{ domain: string; url: string; title: string | null; type: string; n: number }[]>`
+  // Each site's most-cited page (with its type, for the kind of next step), and the rival brands named in the
+  // answers that used each site: both at once.
+  const pagesQ = db.$queryRaw<{ domain: string; url: string; title: string | null; type: string; n: number }[]>`
     SELECT DISTINCT ON (c.domain) c.domain, c.url, MAX(c.title) AS title, MAX(c.type) AS type, COUNT(*)::int AS n
     FROM "Citation" c
     JOIN "AiAnswer" a ON a.id = c."answerId"
@@ -55,8 +56,7 @@ export async function trustedSites(shopId: string, limit = 40): Promise<TrustedS
     GROUP BY c.domain, c.url
     ORDER BY c.domain, n DESC, c.url`;
 
-  // The rival brands named in the answers that used each site.
-  const rivals = await db.$queryRaw<{ domain: string; brand: string; n: number }[]>`
+  const rivalsQ = db.$queryRaw<{ domain: string; brand: string; n: number }[]>`
     SELECT c.domain, m.brand, COUNT(DISTINCT m."answerId")::int AS n
     FROM "Citation" c
     JOIN "AiAnswer" a ON a.id = c."answerId"
@@ -65,9 +65,12 @@ export async function trustedSites(shopId: string, limit = 40): Promise<TrustedS
     WHERE s."shopId" = ${shopId} AND c.domain IN (${Prisma.join(domains)})
     GROUP BY c.domain, m.brand
     ORDER BY c.domain, n DESC, m.brand`;
-  const hidden = new Set(
-    (await db.competitor.findMany({ where: { shopId, hidden: true }, select: { name: true } })).map((c) => c.name.toLowerCase()),
-  );
+  const [pages, rivals, hiddenList] = await Promise.all([
+    pagesQ,
+    rivalsQ,
+    db.competitor.findMany({ where: { shopId, hidden: true }, select: { name: true } }),
+  ]);
+  const hidden = new Set(hiddenList.map((c) => c.name.toLowerCase()));
 
   return rows.map((r) => {
     const page = pages.find((p) => p.domain === r.domain);

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { useFetcher, useLoaderData } from "react-router";
 import db from "../db.server";
@@ -7,7 +6,7 @@ import { getPlan, ENGINE_LABELS, type Engine } from "../lib/plans";
 import { outreachUsedThisMonth } from "../lib/outreach.server";
 import { PITCHABLE, findWriter, pitchSite, trustedSites, writersUsedThisMonth } from "../lib/trusted-sites.server";
 import { formatPct } from "../lib/format";
-import { ICONS, PageHead, Stat } from "../components/web";
+import { CopyButton, ICONS, PageHead, Stat } from "../components/web";
 
 // usegeo.app/dash/sites: Sites AI trusts. The websites AI cites most for the store's buying questions, over every
 // scan since it joined, with the writer behind each one and a pitch to send (or, on Done-for-you, that we send).
@@ -53,33 +52,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 type Site = ReturnType<typeof useLoaderData<typeof loader>>["sites"][number];
 
 const NEXT_STEP: Record<string, string> = {
-  forum: "A forum or Reddit thread. Join the conversation as yourself and say who you are. The Reddit finder is coming next.",
+  forum: "A forum or Reddit thread. Join the conversation as yourself and say who you are. Reddit threads lists posts worth a reply.",
   qa: "A question and answer site. Answer as yourself and say who you are.",
   directory: "A directory or review site. Get listed or claim your free profile. Never write reviews yourself.",
   retailer: "A shop or marketplace. Ask them to stock your products, or list them there.",
   other: "A brand or social page. There’s no honest pitch to send here.",
 };
-
-function Copy({ text, label = "Copy" }: { text: string; label?: string }) {
-  const [done, setDone] = useState(false);
-  return (
-    <button
-      type="button"
-      className="w-btn w-btn-ghost w-btn-sm"
-      onClick={async () => {
-        try {
-          await navigator.clipboard.writeText(text);
-          setDone(true);
-          setTimeout(() => setDone(false), 2000);
-        } catch {
-          /* the text is on screen to select by hand */
-        }
-      }}
-    >
-      {done ? "Copied" : label}
-    </button>
-  );
-}
 
 function SiteRow({ site, rank, writersLeft, pitchesLeft, doneForYou, paid }: { site: Site; rank: number; writersLeft: number; pitchesLeft: number; doneForYou: boolean; paid: boolean }) {
   const fetcher = useFetcher<typeof action>();
@@ -94,7 +72,7 @@ function SiteRow({ site, rank, writersLeft, pitchesLeft, doneForYou, paid }: { s
       <div className="w-site-main">
         <div className="w-site-top">
           <span className="w-site-rank">{rank}</span>
-          <div style={{ minWidth: 0 }}>
+          <div>
             <b className="w-site-domain">{site.domain}</b>
             <a className="w-site-page" href={site.page.url} target="_blank" rel="noreferrer">
               {site.page.title || site.page.url}
@@ -125,7 +103,7 @@ function SiteRow({ site, rank, writersLeft, pitchesLeft, doneForYou, paid }: { s
                   {w.position || w.company ? <span className="w-note">{[w.position, w.company].filter(Boolean).join(", ")}</span> : null}
                   {w.email ? (
                     <span className="w-writer-email">
-                      {w.email} <Copy text={w.email} />
+                      {w.email} <CopyButton text={w.email} />
                     </span>
                   ) : (
                     <span className="w-note">No email found. Try their contact page.</span>
@@ -148,7 +126,13 @@ function SiteRow({ site, rank, writersLeft, pitchesLeft, doneForYou, paid }: { s
               )
             ) : (
               <button className="w-btn w-btn-sm" type="button" disabled={busy || writersLeft <= 0} onClick={() => send("writer")}>
-                {busy && intent === "writer" ? "Looking…" : "Find the writer"}
+                {busy && intent === "writer" ? (
+                  <>
+                    <span className="w-spin" aria-hidden="true" /> Looking…
+                  </>
+                ) : (
+                  "Find the writer"
+                )}
               </button>
             )}
 
@@ -160,7 +144,7 @@ function SiteRow({ site, rank, writersLeft, pitchesLeft, doneForYou, paid }: { s
                 </p>
                 <pre>{site.pitch.body}</pre>
                 <div className="w-pitch-btns">
-                  <Copy text={`${site.pitch.subject}\n\n${site.pitch.body}`} label="Copy pitch" />
+                  <CopyButton text={`${site.pitch.subject}\n\n${site.pitch.body}`} label="Copy pitch" />
                   {site.pitch.email && !doneForYou ? (
                     <a
                       className="w-btn w-btn-sm"
@@ -173,7 +157,13 @@ function SiteRow({ site, rank, writersLeft, pitchesLeft, doneForYou, paid }: { s
               </details>
             ) : w ? (
               <button className="w-btn w-btn-ghost w-btn-sm" type="button" disabled={busy || pitchesLeft <= 0} onClick={() => send("pitch")}>
-                {busy && intent === "pitch" ? "Writing…" : "Write a pitch"}
+                {busy && intent === "pitch" ? (
+                  <>
+                    <span className="w-spin" aria-hidden="true" /> Writing…
+                  </>
+                ) : (
+                  "Write a pitch"
+                )}
               </button>
             ) : null}
           </>

@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { Form, Link, useFetcher, useLoaderData, useRevalidator } from "react-router";
+import type { ActionFunctionArgs, LoaderFunctionArgs, ShouldRevalidateFunction } from "react-router";
+import { Form, Link, useFetcher, useLoaderData, useNavigation, useRevalidator } from "react-router";
 import db from "../db.server";
 import { requireWebShop } from "../lib/web-auth.server";
 import { getPlan } from "../lib/plans";
 import { formatNumber, timeAgo } from "../lib/format";
-import { PageHead } from "../components/web";
+import { Icon, ICONS, PageHead, Tabs } from "../components/web";
 
 // usegeo.app/dash/reddit: Reddit threads where people ask about the store's kind of product (found weekly,
 // lib/reddit.server.ts). Left: every thread. Right: the post and a neutral reply written as the owner, which
@@ -24,6 +24,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       where: { shopId: shop.id, status: { not: "hidden" } },
       orderBy: [{ postedAt: { sort: "desc", nulls: "last" } }, { createdAt: "desc" }],
       take: 300,
+      select: { id: true, url: true, subreddit: true, title: true, body: true, author: true, postedAt: true, comments: true, score: true, draft: true, status: true },
     })
   ).sort((a, b) => Number(a.status === "replied") - Number(b.status === "replied"));
   const list = all.filter((t) => show === "all" || (show === "todo" ? t.status === "new" : t.status === "replied"));
@@ -67,19 +68,27 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const { shop } = await requireWebShop(request);
   const form = await request.formData();
   const id = String(form.get("id") ?? "");
-  const thread = await db.redditThread.findFirst({ where: { id, shopId: shop.id } });
-  if (!thread) return { ok: false as const };
   const intent = form.get("intent");
+  const where = { id, shopId: shop.id }; // only this store's threads
+  let changed = 0;
   if (intent === "save") {
-    await db.redditThread.update({ where: { id }, data: { draft: String(form.get("draft") ?? "").slice(0, 3000) } });
+    changed = (await db.redditThread.updateMany({ where, data: { draft: String(form.get("draft") ?? "").slice(0, 3000) } })).count;
   } else if (intent === "replied") {
-    const replied = thread.status !== "replied";
-    await db.redditThread.update({ where: { id }, data: { status: replied ? "replied" : "new", repliedAt: replied ? new Date() : null } });
+    // Flip between replied and not, in one statement.
+    changed = await db.$executeRaw`
+      UPDATE "RedditThread"
+      SET "repliedAt" = CASE WHEN status = 'replied' THEN NULL ELSE now() END,
+          status = CASE WHEN status = 'replied' THEN 'new' ELSE 'replied' END
+      WHERE id = ${id} AND "shopId" = ${shop.id}`;
   } else if (intent === "hide") {
-    await db.redditThread.update({ where: { id }, data: { status: "hidden" } });
+    changed = (await db.redditThread.updateMany({ where, data: { status: "hidden" } })).count;
   }
-  return { ok: true as const };
+  return changed ? { ok: true as const } : { ok: false as const };
 };
+
+// Saving a draft (when the reply is copied) changes nothing on screen, so the page doesn't reload for it.
+export const shouldRevalidate: ShouldRevalidateFunction = ({ formData, defaultShouldRevalidate }) =>
+  formData?.get("intent") === "save" ? false : defaultShouldRevalidate;
 
 type Data = ReturnType<typeof useLoaderData<typeof loader>>;
 
@@ -91,9 +100,13 @@ const TABS: { key: Show; label: string }[] = [
 
 function Thread({ t, self }: { t: NonNullable<Data["open"]>; self: string }) {
   const fetcher = useFetcher<typeof action>();
+  const nav = useNavigation();
   const box = useRef<HTMLTextAreaElement>(null);
   const [copied, setCopied] = useState(false);
-  const replied = t.status === "replied";
+  // "Mark as replied" shows its new state as soon as it's clicked; "Not relevant" fades the thread while it goes.
+  const flipping = nav.formData?.get("intent") === "replied" && nav.formData?.get("id") === t.id;
+  const replied = flipping ? t.status !== "replied" : t.status === "replied";
+  const hiding = fetcher.formData?.get("intent") === "hide";
 
   // Copy the reply, then the link opens the thread in a new tab (the browser does that part).
   const copy = () => {
@@ -104,7 +117,7 @@ function Thread({ t, self }: { t: NonNullable<Data["open"]>; self: string }) {
   };
 
   return (
-    <article className="w-rd-post" aria-labelledby="rd-title">
+    <article className={`w-rd-post${hiding ? " w-dim" : ""}`} aria-labelledby="rd-title" aria-busy={hiding || undefined}>
       <div className="w-rd-meta">
         <span className="w-rd-sub">r/{t.subreddit}</span>
         {t.postedAt ? <span>{timeAgo(t.postedAt)}</span> : null}
@@ -129,13 +142,29 @@ function Thread({ t, self }: { t: NonNullable<Data["open"]>; self: string }) {
         </p>
         <div className="w-rd-btns">
           <a className="w-btn w-btn-sm" href={t.url} target="_blank" rel="noreferrer" onClick={copy}>
-            {copied ? "Copied. Paste it in the thread" : "Copy and open thread"}
+            <span key={copied ? "done" : "copy"} className={copied ? "w-swap" : undefined}>
+              {copied ? (
+                <>
+                  <Icon d={ICONS.check} /> Copied. Paste it in the thread
+                </>
+              ) : (
+                "Copy and open thread"
+              )}
+            </span>
           </a>
           {/* Posts to this thread's own address, so the page stays on it after the list re-sorts. */}
           <Form method="post" action={self} preventScrollReset>
             <input type="hidden" name="id" value={t.id} />
             <button className={`w-btn w-btn-ghost w-btn-sm${replied ? " w-rd-done" : ""}`} type="submit" name="intent" value="replied">
-              {replied ? "✓ Replied" : "Mark as replied"}
+              <span key={replied ? "on" : "off"} className="w-swap">
+                {replied ? (
+                  <>
+                    <Icon d={ICONS.check} /> Replied
+                  </>
+                ) : (
+                  "Mark as replied"
+                )}
+              </span>
             </button>
           </Form>
           <fetcher.Form method="post">
@@ -150,10 +179,33 @@ function Thread({ t, self }: { t: NonNullable<Data["open"]>; self: string }) {
   );
 }
 
+/** While another thread loads: its title and details straight away, grey shapes for the post and reply. */
+function ThreadLoading({ t }: { t: Data["list"][number] }) {
+  return (
+    <article className="w-rd-post" aria-busy="true">
+      <div className="w-rd-meta">
+        <span className="w-rd-sub">r/{t.subreddit}</span>
+        {t.postedAt ? <span>{timeAgo(t.postedAt)}</span> : null}
+      </div>
+      <h2>{t.title}</h2>
+      <span className="w-sk" style={{ height: 88, borderRadius: 10 }} />
+      <span className="w-sk" style={{ width: 90, height: 13 }} />
+      <span className="w-sk" style={{ height: 150, borderRadius: 10 }} />
+    </article>
+  );
+}
+
 export default function Reddit() {
   const data = useLoaderData<typeof loader>();
   const revalidator = useRevalidator();
+  const nav = useNavigation();
   const waiting = !data.checkedAt;
+  // A click on a thread or tab shows straight away; the data follows.
+  const next = nav.state === "loading" && !nav.formMethod && nav.location.pathname === "/dash/reddit" ? new URLSearchParams(nav.location.search) : null;
+  const nextShow = next ? ((SHOW as readonly string[]).includes(next.get("show") ?? "") ? (next.get("show") as Show) : "all") : data.show;
+  const nextT = next?.get("t") ?? null;
+  const loadingThread = nextT && nextT !== data.open?.id ? data.list.find((t) => t.id === nextT) : undefined;
+  const openId = loadingThread?.id ?? data.open?.id;
 
   // The first look runs right after setup: refresh until it's done.
   useEffect(() => {
@@ -191,18 +243,12 @@ export default function Reddit() {
 
       <div className="w-rd" data-open={data.opened ? "1" : undefined}>
         <section className="w-rd-list w-box" aria-label="Threads">
-          <nav className="w-rd-tabs" aria-label="Show">
-            {TABS.map((tab) => (
-              <Link key={tab.key} to={href({ show: tab.key })} className={data.show === tab.key ? "active" : undefined} preventScrollReset>
-                {tab.label} <span>{data.counts[tab.key]}</span>
-              </Link>
-            ))}
-          </nav>
+          <Tabs label="Show" items={TABS.map((tab) => ({ to: href({ show: tab.key }), label: tab.label, count: data.counts[tab.key], active: nextShow === tab.key }))} />
           {data.list.length ? (
             <ul>
               {data.list.map((t) => (
                 <li key={t.id}>
-                  <Link to={href({ t: t.id })} className={data.open?.id === t.id ? "active" : undefined} preventScrollReset>
+                  <Link to={href({ t: t.id })} className={openId === t.id ? "active" : undefined} prefetch="intent" preventScrollReset>
                     <span className="w-rd-row">
                       <span className="w-rd-sub">r/{t.subreddit}</span>
                       {t.postedAt ? <span>{timeAgo(t.postedAt)}</span> : null}
@@ -235,7 +281,13 @@ export default function Reddit() {
               ‹ All threads
             </Link>
           ) : null}
-          {data.open ? <Thread key={data.open.id} t={data.open} self={href({ t: data.open.id })} /> : <p className="w-empty">Pick a thread to see the post and your reply.</p>}
+          {loadingThread ? (
+            <ThreadLoading key={loadingThread.id} t={loadingThread} />
+          ) : data.open ? (
+            <Thread key={data.open.id} t={data.open} self={href({ t: data.open.id })} />
+          ) : (
+            <p className="w-empty">Pick a thread to see the post and your reply.</p>
+          )}
         </section>
       </div>
     </>

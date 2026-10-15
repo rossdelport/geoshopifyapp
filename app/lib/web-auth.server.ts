@@ -4,6 +4,7 @@
 
 import { createHash, createHmac, randomBytes } from "node:crypto";
 import { createCookieSessionStorage, redirect } from "react-router";
+import type { Shop, User } from "@prisma/client";
 import db from "../db.server";
 import { isProd } from "./env.server";
 import { SITE } from "./tools/site";
@@ -118,10 +119,31 @@ export async function requireUser(request: Request) {
   return user;
 }
 
+// One lookup per request: the dashboard frame and the page inside it both ask, at the same time.
+const webShops = new WeakMap<Request, Promise<{ user: User; shop: Shop }>>();
+
 /** The signed-in account and its store; no store yet goes to /start. */
-export async function requireWebShop(request: Request) {
-  const user = await requireUser(request);
-  const shop = await db.shop.findFirst({ where: { userId: user.id }, orderBy: { createdAt: "asc" } });
+export function requireWebShop(request: Request): Promise<{ user: User; shop: Shop }> {
+  if (request.method !== "GET" && request.method !== "HEAD") return loadWebShop(request); // forms always read fresh
+  let found = webShops.get(request);
+  if (!found) {
+    found = loadWebShop(request);
+    webShops.set(request, found);
+  }
+  return found;
+}
+
+async function loadWebShop(request: Request) {
+  const session = await storage.getSession(request.headers.get("cookie"));
+  const id = session.get("userId");
+  // The account and its store in one round trip (both only need the id in the cookie).
+  const [user, shop] = id
+    ? await Promise.all([db.user.findUnique({ where: { id } }), db.shop.findFirst({ where: { userId: id }, orderBy: { createdAt: "asc" } })])
+    : [null, null];
+  if (!user) {
+    const path = new URL(request.url).pathname;
+    throw redirect(`/login?next=${encodeURIComponent(safeNext(path))}`);
+  }
   if (!shop) throw redirect("/start");
   return { user, shop };
 }

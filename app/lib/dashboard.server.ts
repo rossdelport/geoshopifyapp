@@ -104,19 +104,61 @@ export async function activeScan(shopId: string) {
 }
 
 export async function topCompetitors(shopId: string, limit = 5) {
-  const scan = await db.scan.findFirst({ where: { shopId, status: "done" }, orderBy: { startedAt: "desc" } });
+  const [scan, hidden] = await Promise.all([
+    db.scan.findFirst({ where: { shopId, status: "done" }, orderBy: { startedAt: "desc" }, select: { id: true } }),
+    db.competitor.findMany({ where: { shopId, hidden: true }, select: { name: true } }),
+  ]);
   if (!scan) return [];
-  const hidden = await db.competitor.findMany({ where: { shopId, hidden: true }, select: { name: true } });
-  const rows = await db.mention.groupBy({
-    by: ["brand"],
-    where: { isMerchant: false, answer: { scanId: scan.id, status: "parsed" } },
-    _count: true,
-    orderBy: { _count: { brand: "desc" } },
-    take: limit + hidden.length + 5,
-  });
-  const total = await db.aiAnswer.count({ where: { scanId: scan.id, status: "parsed" } });
+  const [rows, total] = await Promise.all([
+    db.mention.groupBy({
+      by: ["brand"],
+      where: { isMerchant: false, answer: { scanId: scan.id, status: "parsed" } },
+      _count: true,
+      orderBy: { _count: { brand: "desc" } },
+      take: limit + hidden.length + 5,
+    }),
+    db.aiAnswer.count({ where: { scanId: scan.id, status: "parsed" } }),
+  ]);
   return rows
     .filter((r) => !hidden.some((h) => h.name.toLowerCase() === r.brand.toLowerCase()))
     .slice(0, limit)
     .map((r) => ({ brand: r.brand, count: r._count, share: total ? r._count / total : 0 }));
+}
+
+/** Just what the web dashboard shows: this month's AI money and the latest orders (4 queries at once). */
+export async function moneyThisMonth(shop: Shop) {
+  const monthStart = startOfMonth();
+  const [month, visits, storeMonth, recent] = await Promise.all([
+    db.aiOrder.aggregate({ where: { shopId: shop.id, orderedAt: { gte: monthStart } }, _sum: { revenue: true }, _count: true }),
+    db.aiSession.count({ where: { shopId: shop.id, occurredAt: { gte: monthStart }, engine: { not: "ours" } } }),
+    db.orderDay.aggregate({ where: { shopId: shop.id, date: { gte: monthStart } }, _sum: { revenue: true } }),
+    db.aiOrder.findMany({
+      where: { shopId: shop.id },
+      orderBy: { orderedAt: "desc" },
+      take: 5,
+      select: { orderName: true, engine: true, revenue: true, orderedAt: true, reason: true },
+    }),
+  ]);
+  const storeRevenue = storeMonth._sum.revenue ?? 0;
+  return {
+    currency: shop.currency,
+    thisMonth: {
+      revenue: month._sum.revenue ?? 0,
+      orders: month._count,
+      visits,
+      share: storeRevenue > 0 ? (month._sum.revenue ?? 0) / storeRevenue : null,
+    },
+    recentOrders: recent,
+    hasPixel: Boolean(shop.pixelId),
+  };
+}
+
+/** The latest visibility score only. */
+export async function latestVisibility(shopId: string) {
+  const latest = await db.visibilitySnapshot.findFirst({
+    where: { shopId },
+    orderBy: { date: "desc" },
+    select: { score: true, mentionRate: true },
+  });
+  return { latest };
 }

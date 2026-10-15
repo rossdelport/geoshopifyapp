@@ -28,8 +28,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 const SERIES = [
   { key: "treg", label: "Treg (data)", color: "#e0913a" },
-  { key: "anthropic", label: "Claude (AI)", color: "#4050b0" },
-  { key: "other", label: "Other (email)", color: "#9a9bb5" },
+  { key: "anthropic", label: "Claude (AI)", color: "#3f3f46" },
+  { key: "other", label: "Other (email)", color: "#c4c4cc" },
 ] as const;
 
 const dayLabel = (d: string, long = false) =>

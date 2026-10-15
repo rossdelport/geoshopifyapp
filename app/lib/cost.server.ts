@@ -10,19 +10,20 @@ export async function recordCost(
   usd: number,
 ) {
   if (!usd) return;
-  await db.apiCost.create({ data: { shopId: shopId ?? null, provider, endpoint, usd } });
-  if (!shopId) return;
   const month = monthKey();
-  const shop = await db.shop.findUnique({ where: { id: shopId }, select: { costMonth: true } });
-  if (!shop) return;
-  if (shop.costMonth !== month) {
-    await db.shop.update({
-      where: { id: shopId },
-      data: { costMonth: month, costThisMonth: usd, costAlertedAt: null },
-    });
-  } else {
-    await db.shop.update({ where: { id: shopId }, data: { costThisMonth: { increment: usd } } });
-  }
+  // The log row and the shop's running total in one round trip. The total update is one statement, so calls that
+  // land at the same time can't overwrite each other; a new month starts the total again.
+  await Promise.all([
+    db.apiCost.create({ data: { shopId: shopId ?? null, provider, endpoint, usd } }),
+    shopId
+      ? db.$executeRaw`
+          UPDATE "Shop"
+          SET "costThisMonth" = CASE WHEN "costMonth" = ${month} THEN "costThisMonth" + ${usd}::float8 ELSE ${usd}::float8 END,
+              "costAlertedAt" = CASE WHEN "costMonth" = ${month} THEN "costAlertedAt" ELSE NULL END,
+              "costMonth" = ${month}
+          WHERE id = ${shopId}`
+      : null,
+  ]);
 }
 
 export async function costThisMonth(shopId: string): Promise<number> {

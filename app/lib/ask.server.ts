@@ -116,7 +116,8 @@ export async function passToTeam(o: { shop: Shop; user: User; reason: string; su
   const lines = [...o.history.slice(-6), { role: "assistant" as const, content: o.reply }]
     .map((m) => `<p><b>${m.role === "user" ? esc(o.user.email) : "Ask GEO"}:</b> ${esc(m.content).replace(/\n/g, "<br>")}</p>`)
     .join("");
-  await sendEmailMessage({
+  // Sent in the background: the person gets their answer without waiting for the email.
+  void sendEmailMessage({
     to: [env.alertEmail],
     replyTo: o.user.email,
     subject: `Ask GEO flag (${o.reason}): ${store}`,

@@ -1,6 +1,6 @@
-import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
-import { Form, NavLink, Outlet, useLoaderData } from "react-router";
-import { ICONS, Icon, Logo } from "../components/web";
+import type { LinksFunction, LoaderFunctionArgs, MetaFunction, ShouldRevalidateFunction } from "react-router";
+import { Form, NavLink, Outlet, useLoaderData, useLocation, useNavigation } from "react-router";
+import { ICONS, Icon, LoadBar, Logo, PageSkeleton } from "../components/web";
 import { requireWebShop } from "../lib/web-auth.server";
 import { isAdmin } from "../lib/admin.server";
 import { getPlan } from "../lib/plans";
@@ -34,6 +34,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
+// The menu, store and allowance only change when a form is sent (a writer lookup, a pitch), so moving between pages
+// and the dashboard's refresh while a check runs don't reload them.
+export const shouldRevalidate: ShouldRevalidateFunction = ({ formMethod, defaultShouldRevalidate }) =>
+  formMethod ? defaultShouldRevalidate : false;
+
 const SECTIONS = [
   {
     label: "General",
@@ -51,10 +56,26 @@ const SECTIONS = [
 const flag = (cc: string | null) =>
   cc && /^[A-Z]{2}$/.test(cc) ? String.fromCodePoint(...[...cc].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)) : null;
 
+/** The page being opened while its data loads (a different menu page, not a refresh or a form on this one). */
+function usePendingPage(): string | null {
+  const nav = useNavigation();
+  const here = useLocation().pathname;
+  const next = nav.state === "loading" && !nav.formMethod ? nav.location.pathname : null;
+  if (!next || next === here) return null;
+  // Moving between admin tabs keeps the admin frame; the admin page shows its own skeleton.
+  if (next.startsWith("/dash/admin") && here.startsWith("/dash/admin")) return null;
+  return next;
+}
+
 export default function Dash() {
   const { admin, email, store, host, country, plan, left } = useLoaderData<typeof loader>();
+  const pending = usePendingPage();
+  // The menu moves to the page you clicked straight away, while it loads.
+  const navClass = ({ isActive, isPending }: { isActive: boolean; isPending: boolean }) =>
+    isPending || (isActive && !pending) ? "active" : undefined;
   return (
     <div className="w">
+      <LoadBar />
       <div className="w-shell">
         <aside className="w-side">
           <Logo />
@@ -63,7 +84,7 @@ export default function Dash() {
               <div key={s.label} className="w-nav-group">
                 <span className="w-nav-label">{s.label}</span>
                 {s.items.map((n) => (
-                  <NavLink key={n.to} to={n.to} end={"end" in n ? n.end : false} className={({ isActive }) => (isActive ? "active" : undefined)}>
+                  <NavLink key={n.to} to={n.to} end={"end" in n ? n.end : false} prefetch="intent" className={navClass}>
                     <Icon d={n.d} />
                     {n.label}
                   </NavLink>
@@ -72,7 +93,7 @@ export default function Dash() {
             ))}
             <div className="w-nav-group">
               <span className="w-nav-label">Support</span>
-              <NavLink to="/dash/ask" className={({ isActive }) => (isActive ? "active" : undefined)}>
+              <NavLink to="/dash/ask" prefetch="intent" className={navClass}>
                 <Icon d={ICONS.spark} />
                 Ask GEO
               </NavLink>
@@ -84,7 +105,7 @@ export default function Dash() {
             {admin ? (
               <div className="w-nav-group">
                 <span className="w-nav-label">Owner</span>
-                <NavLink to="/dash/admin" className={({ isActive }) => (isActive ? "active" : undefined)}>
+                <NavLink to="/dash/admin" prefetch="intent" className={navClass}>
                   <Icon d={ICONS.gauge} />
                   Admin
                 </NavLink>
@@ -129,9 +150,7 @@ export default function Dash() {
             </div>
           </div>
         </aside>
-        <main className="w-main">
-          <Outlet />
-        </main>
+        <main className="w-main">{pending ? <PageSkeleton path={pending} /> : <Outlet />}</main>
       </div>
     </div>
   );

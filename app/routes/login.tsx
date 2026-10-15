@@ -65,7 +65,13 @@ export default function Login() {
           </p>
         ) : null}
         <button className="w-btn" type="submit" disabled={busy}>
-          {busy ? "Sending…" : "Email me a sign-in link"}
+          {busy ? (
+            <>
+              <span className="w-spin" aria-hidden="true" /> Sending…
+            </>
+          ) : (
+            "Email me a sign-in link"
+          )}
         </button>
       </Form>
       <p className="w-note">New to GEO? The same link creates your account.</p>
