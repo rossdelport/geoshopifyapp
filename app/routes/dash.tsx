@@ -34,10 +34,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
-// The menu, store and allowance only change when a form is sent (a writer lookup, a pitch), so moving between pages,
-// the dashboard's refresh while a check runs, search forms and the admin pages' buttons don't reload them.
-export const shouldRevalidate: ShouldRevalidateFunction = ({ formMethod, formAction, defaultShouldRevalidate }) =>
-  formMethod && formMethod.toUpperCase() !== "GET" && !formAction?.startsWith("/dash/admin") ? defaultShouldRevalidate : false;
+// The menu, store and allowance change when a form is sent (a writer lookup, a pitch) and when background work finds
+// outreach targets. So the frame reloads after forms (not search forms or admin buttons), on refreshes of the same
+// page (the dashboard's while a check runs) and when opening Sites AI trusts, where the allowance matters; moving
+// between other pages keeps it as it is.
+export const shouldRevalidate: ShouldRevalidateFunction = ({ formMethod, formAction, currentUrl, nextUrl, defaultShouldRevalidate }) => {
+  if (formMethod) return formMethod.toUpperCase() !== "GET" && !formAction?.startsWith("/dash/admin") ? defaultShouldRevalidate : false;
+  return currentUrl.href === nextUrl.href || nextUrl.pathname === "/dash/sites" ? defaultShouldRevalidate : false;
+};
 
 const SECTIONS = [
   {

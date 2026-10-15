@@ -88,22 +88,30 @@ export const ICONS = {
   check: "M5 10.5l3 3 7-7",
 };
 
-/** True once a page has been loading for a moment, so quick loads swap straight to the new page without a skeleton
- * flashing in between. `key` is the loading navigation's key (null when nothing is loading). */
+/** True once pages have been loading for a moment, so quick loads swap straight to the new page without a skeleton
+ * flashing in between. `key` is the loading navigation's key (null when nothing is loading). Once on, it stays on
+ * through a second click made while the first page is still loading, and goes off when loading ends. */
 export function useSlowLoad(key: string | null, delay = 140) {
-  const [late, setLate] = useState<string | null>(null);
+  const [late, setLate] = useState(false);
+  if (key === null && late) setLate(false); // loading ended: start the next wait from scratch
   useEffect(() => {
-    if (!key) return;
-    const t = setTimeout(() => setLate(key), delay);
+    if (key === null || late) return;
+    const t = setTimeout(() => setLate(true), delay);
     return () => clearTimeout(t);
-  }, [key, delay]);
-  return key !== null && late === key;
+  }, [key, late, delay]);
+  return key !== null && late;
 }
 
-/** The thin purple bar across the top while a page loads (styles: .w-loadbar). */
+/** The thin purple bar across the top while a page loads (styles: .w-loadbar). It only runs to the end and fades
+ * when it was actually seen; a quick load leaves no trace. */
 export function LoadBar() {
-  const busy = useNavigation().state !== "idle";
-  return <div className="w-loadbar" data-state={busy ? "loading" : "done"} aria-hidden="true" />;
+  const nav = useNavigation();
+  const busy = nav.state !== "idle";
+  const seen = useSlowLoad(busy ? nav.location?.key ?? "busy" : null, 120);
+  const [shown, setShown] = useState(false);
+  if (seen && !shown) setShown(true);
+  if (busy && !seen && shown) setShown(false); // a new load: the last one's finish no longer counts
+  return <div className="w-loadbar" data-state={busy ? "loading" : shown ? "done" : "idle"} aria-hidden="true" />;
 }
 
 /** A button that copies text and says "Copied" for a moment. */

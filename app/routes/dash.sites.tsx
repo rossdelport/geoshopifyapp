@@ -52,7 +52,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 type Site = ReturnType<typeof useLoaderData<typeof loader>>["sites"][number];
 
 const NEXT_STEP: Record<string, string> = {
-  forum: "A forum or Reddit thread. Join the conversation as yourself and say who you are. Reddit threads lists posts worth a reply.",
+  forum: "A forum or Reddit thread. Join the conversation as yourself and say who you are. The Reddit threads page lists posts worth a reply.",
   qa: "A question and answer site. Answer as yourself and say who you are.",
   directory: "A directory or review site. Get listed or claim your free profile. Never write reviews yourself.",
   retailer: "A shop or marketplace. Ask them to stock your products, or list them there.",

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { ActionFunctionArgs, LoaderFunctionArgs, ShouldRevalidateFunction } from "react-router";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, Link, useFetcher, useFetchers, useLoaderData, useNavigation, useRevalidator } from "react-router";
 import db from "../db.server";
 import { requireWebShop } from "../lib/web-auth.server";
@@ -85,10 +85,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
   return changed ? { ok: true as const } : { ok: false as const };
 };
-
-// Saving a draft (when the reply is copied) changes nothing on screen, so the page doesn't reload for it.
-export const shouldRevalidate: ShouldRevalidateFunction = ({ formData, defaultShouldRevalidate }) =>
-  formData?.get("intent") === "save" ? false : defaultShouldRevalidate;
 
 type Data = ReturnType<typeof useLoaderData<typeof loader>>;
 

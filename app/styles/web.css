@@ -90,7 +90,7 @@ body { margin: 0; }
 }
 .w-input::placeholder { color: var(--faint); }
 .w-input:hover { border-color: var(--line-3); }
-.w-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-ring); }
+.w-input:focus { outline: 2px solid transparent; outline-offset: 1px; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-ring); }
 .w-err { color: var(--red-ink); background: var(--red-bg); padding: 10px 12px; border-radius: 10px; font-size: 14px; animation: w-rise var(--duration-fast) var(--ease-smooth-out) backwards; }
 .w-note { color: var(--muted); font-size: 13px; }
 .w-pill { display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 500; background: var(--hover); color: var(--ink-3); white-space: nowrap; }
@@ -374,7 +374,7 @@ body { margin: 0; }
 .w-ask-dots i:nth-child(3) { animation-delay: 0.3s; }
 @keyframes w-bob { 0%, 60%, 100% { transform: translateY(0); opacity: 0.45; } 30% { transform: translateY(-3px); opacity: 1; } }
 .w-ask-box { position: sticky; bottom: 12px; display: flex; gap: 8px; align-items: flex-end; padding: 8px; border: 1px solid var(--line-2); border-radius: 16px; background: var(--bg); box-shadow: var(--shadow); transition: border-color var(--duration-quick) ease-out, box-shadow var(--duration-quick) ease-out; }
-.w-ask-box:focus-within { border-color: var(--line-3); box-shadow: var(--shadow), 0 0 0 3px rgba(10, 10, 11, 0.04); }
+.w-ask-box:focus-within { border-color: var(--accent); box-shadow: var(--shadow), 0 0 0 3px var(--accent-ring); }
 .w-ask-box textarea, .w-ask-box textarea:hover, .w-ask-box textarea:focus { border: 0; box-shadow: none; }
 .w-ask-box textarea { min-height: 40px; max-height: 160px; padding: 9px 8px; resize: none; font-size: 15px; field-sizing: content; }
 .w-ask-foot { text-align: center; }
@@ -440,13 +440,14 @@ body { margin: 0; }
    runs to the end and fades. */
 .w-loadbar { position: fixed; z-index: 50; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); transform-origin: left; transform: scaleX(1); opacity: 0; pointer-events: none; transition: transform var(--duration-fast) var(--ease-smooth-out), opacity var(--duration-slow) ease-out var(--duration-fast); }
 .w-loadbar[data-state="loading"] { opacity: 1; transition: none; animation: w-load 8s cubic-bezier(0.08, 0.8, 0.2, 1) 120ms both; }
+.w-loadbar[data-state="idle"] { transition: none; }
 @keyframes w-load { from { transform: scaleX(0); } to { transform: scaleX(0.92); } }
 
 /* Grey shapes in the next page's layout while its data loads, with a soft light sweeping across. */
 .w-skel-page { display: grid; gap: 20px; align-content: start; animation: w-fade var(--duration-quick) ease-out backwards; }
 .w-skel-page[aria-busy] { cursor: progress; }
 .w-sk {
-  display: block; border-radius: 6px; height: 12px; width: 100%;
+  display: block; border-radius: 6px; height: 12px; width: 100%; max-width: 100%;
   background: linear-gradient(90deg, var(--hover) 0%, var(--hover) 35%, #fbfbfc 50%, var(--hover) 65%, var(--hover) 100%) 0 0 / 300% 100%;
   animation: w-shimmer 1.4s linear infinite;
 }
@@ -481,4 +482,8 @@ body { margin: 0; }
   .w-sk { animation: none !important; }
   .w-steps li.now::before { border-top-color: var(--ink-2); }
   .w-loadbar[data-state="loading"] { animation: none; transform: scaleX(0.6); }
+}
+/* Its own rule: browsers that don't know ::details-content would drop a whole list that names it. */
+@media (prefers-reduced-motion: reduce) {
+  .w details::details-content { transition: none !important; }
 }
