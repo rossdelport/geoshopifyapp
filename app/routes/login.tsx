@@ -1,6 +1,6 @@
 import type { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
 import { Form, redirect, useActionData, useLoaderData, useNavigation } from "react-router";
-import { Solo } from "../components/web";
+import { ICONS, Icon, Solo } from "../components/web";
 import { currentUser, safeNext, sendLoginLink } from "../lib/web-auth.server";
 import { fromAnotherSite } from "../lib/public-form.server";
 import styles from "../styles/web.css?url";
@@ -34,7 +34,10 @@ export default function Login() {
 
   if (result?.ok) {
     return (
-      <Solo>
+      <Solo key="sent">
+        <span className="w-sent-icon" aria-hidden="true">
+          <Icon d={ICONS.mail} />
+        </span>
         <h1>Check your email</h1>
         <p>
           We sent a sign-in link to <b>{result.email}</b>. Click it to sign in. It works once, for 30 minutes.

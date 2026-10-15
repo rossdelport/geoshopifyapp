@@ -313,7 +313,7 @@ body { margin: 0; }
 .w-rd { display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: 16px; align-items: start; }
 .w-rd-list { position: sticky; top: 72px; max-height: calc(100vh - 92px); display: flex; flex-direction: column; overflow: hidden; }
 .w-rd-list .w-tabs { margin: 10px; align-self: flex-start; }
-.w-rd-list ul { list-style: none; margin: 0; padding: 0; overflow-y: auto; border-top: 1px solid var(--line); }
+.w-rd-list ul { list-style: none; margin: 0; padding: 0; overflow-y: auto; border-top: 1px solid var(--line); animation: w-fade var(--duration-quick) ease-out backwards; transition: opacity var(--duration-quick) ease-out; }
 .w-rd-list li + li { border-top: 1px solid var(--line); }
 .w-rd-list li a { display: grid; gap: 4px; padding: 12px 14px; color: var(--ink-3); text-decoration: none; box-shadow: inset 2px 0 0 transparent; transition: background-color var(--duration-quick) ease-out, box-shadow var(--duration-quick) ease-out; }
 .w-rd-list li a:hover { background: var(--bg-2); color: var(--ink-3); }
@@ -436,9 +436,11 @@ body { margin: 0; }
 @keyframes w-fade { from { opacity: 0; } }
 
 /* A thin purple bar across the top while a page loads. */
-.w-loadbar { position: fixed; z-index: 50; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); transform-origin: left; transform: scaleX(0); opacity: 0; pointer-events: none; }
-.w-loadbar[data-state="loading"] { opacity: 1; transform: scaleX(0.9); transition: transform 6s cubic-bezier(0.08, 0.8, 0.2, 1), opacity 0ms; }
-.w-loadbar[data-state="done"] { opacity: 0; transform: scaleX(1); transition: transform var(--duration-fast) var(--ease-smooth-out), opacity var(--duration-slow) ease-out var(--duration-fast); }
+/* Loading: it grows from the left, slowing as it goes (after a short wait, so quick loads barely show it). Done: it
+   runs to the end and fades. */
+.w-loadbar { position: fixed; z-index: 50; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); transform-origin: left; transform: scaleX(1); opacity: 0; pointer-events: none; transition: transform var(--duration-fast) var(--ease-smooth-out), opacity var(--duration-slow) ease-out var(--duration-fast); }
+.w-loadbar[data-state="loading"] { opacity: 1; transition: none; animation: w-load 8s cubic-bezier(0.08, 0.8, 0.2, 1) 120ms both; }
+@keyframes w-load { from { transform: scaleX(0); } to { transform: scaleX(0.92); } }
 
 /* Grey shapes in the next page's layout while its data loads, with a soft light sweeping across. */
 .w-skel-page { display: grid; gap: 20px; align-content: start; animation: w-fade var(--duration-quick) ease-out backwards; }
@@ -460,7 +462,16 @@ body { margin: 0; }
 /* Something on its way out (a thread marked not relevant). */
 .w-dim { opacity: 0.45; pointer-events: none; transition: opacity var(--duration-quick) ease-out; }
 
-/* A label that swaps (Copy -> Copied) with a quick blur. */
+/* Copy -> Copied: both labels share one cell (the button keeps its width) and cross-fade with a quick blur. */
+.w-swap-stack { display: inline-grid; }
+.w-swap-stack > * { grid-area: 1 / 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: opacity var(--duration-quick) ease-in-out, filter var(--duration-quick) ease-in-out, transform var(--duration-quick) ease-in-out; }
+.w-swap-stack > .off { opacity: 0; filter: blur(var(--blur-small)); transform: translateY(var(--distance-micro)); }
+.w-swap-stack svg { width: 14px; height: 14px; }
+/* Sent: a soft grey circle with the envelope pops in. */
+.w-sent-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--hover); color: var(--ink-2); animation: w-pop var(--duration-fast) var(--ease-smooth-out) 120ms backwards; }
+.w-sent-icon svg { width: 20px; height: 20px; }
+
+/* A label that swaps (Mark as replied -> Replied) with a quick blur. */
 .w-swap { display: inline-flex; align-items: center; gap: 6px; animation: w-swap var(--duration-quick) ease-in-out; }
 @keyframes w-swap { from { opacity: 0; filter: blur(var(--blur-small)); transform: translateY(var(--distance-micro)); } }
 .w-swap svg { width: 14px; height: 14px; }
@@ -469,5 +480,5 @@ body { margin: 0; }
   .w *, .w *::before, .w *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; transition-delay: 0ms !important; }
   .w-sk { animation: none !important; }
   .w-steps li.now::before { border-top-color: var(--ink-2); }
-  .w-loadbar[data-state="loading"] { transform: scaleX(0.6); }
+  .w-loadbar[data-state="loading"] { animation: none; transform: scaleX(0.6); }
 }

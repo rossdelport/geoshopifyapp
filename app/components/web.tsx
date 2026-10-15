@@ -109,7 +109,6 @@ export function LoadBar() {
 /** A button that copies text and says "Copied" for a moment. */
 export function CopyButton({ text, label = "Copy", className = "w-btn w-btn-ghost w-btn-sm", onFail }: { text: string; label?: string; className?: string; onFail?: () => void }) {
   const [done, setDone] = useState(false);
-  const [used, setUsed] = useState(false);
   useEffect(() => {
     if (!done) return;
     const t = setTimeout(() => setDone(false), 2000);
@@ -122,21 +121,19 @@ export function CopyButton({ text, label = "Copy", className = "w-btn w-btn-ghos
       onClick={async () => {
         try {
           await navigator.clipboard.writeText(text);
-          setUsed(true);
           setDone(true);
         } catch {
           onFail?.(); // no clipboard (an old browser or a frame): the text is on screen to select
         }
       }}
     >
-      <span key={done ? "done" : "copy"} className={used ? "w-swap" : undefined}>
-        {done ? (
-          <>
-            <Icon d={ICONS.check} /> Copied
-          </>
-        ) : (
-          label
-        )}
+      <span className="w-swap-stack">
+        <span className={done ? "off" : undefined} aria-hidden={done}>
+          {label}
+        </span>
+        <span className={done ? undefined : "off"} aria-hidden={!done}>
+          <Icon d={ICONS.check} /> Copied
+        </span>
       </span>
     </button>
   );

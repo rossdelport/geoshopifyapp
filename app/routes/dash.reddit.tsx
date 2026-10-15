@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs, ShouldRevalidateFunction } from "react-router";
-import { Form, Link, useFetcher, useLoaderData, useNavigation, useRevalidator } from "react-router";
+import { Form, Link, useFetcher, useFetchers, useLoaderData, useNavigation, useRevalidator } from "react-router";
 import db from "../db.server";
 import { requireWebShop } from "../lib/web-auth.server";
 import { getPlan } from "../lib/plans";
@@ -206,6 +206,16 @@ export default function Reddit() {
   const nextT = next?.get("t") ?? null;
   const loadingThread = nextT && nextT !== data.open?.id ? data.list.find((t) => t.id === nextT) : undefined;
   const openId = loadingThread?.id ?? data.open?.id;
+  const opened = next ? Boolean(nextT) : data.opened; // phones: list or thread, switched straight away
+  const tabLoading = Boolean(next) && nextShow !== data.show;
+  // A thread being marked replied, or set aside as not relevant, changes in the list straight away too.
+  const flipping = nav.formData?.get("intent") === "replied" ? String(nav.formData.get("id")) : null;
+  const hiding = new Set(
+    useFetchers()
+      .filter((f) => f.formData?.get("intent") === "hide")
+      .map((f) => String(f.formData?.get("id"))),
+  );
+  const repliedNow = (t: { id: string; status: string }) => (t.id === flipping ? t.status !== "replied" : t.status === "replied");
 
   // The first look runs right after setup: refresh until it's done.
   useEffect(() => {
@@ -241,18 +251,18 @@ export default function Reddit() {
         <p className="w-note">On a paid plan, new threads arrive every week.</p>
       ) : null}
 
-      <div className="w-rd" data-open={data.opened ? "1" : undefined}>
+      <div className="w-rd" data-open={opened ? "1" : undefined}>
         <section className="w-rd-list w-box" aria-label="Threads">
           <Tabs label="Show" items={TABS.map((tab) => ({ to: href({ show: tab.key }), label: tab.label, count: data.counts[tab.key], active: nextShow === tab.key }))} />
           {data.list.length ? (
-            <ul>
+            <ul key={data.show} className={tabLoading ? "w-dim" : undefined}>
               {data.list.map((t) => (
-                <li key={t.id}>
+                <li key={t.id} className={hiding.has(t.id) ? "w-dim" : undefined}>
                   <Link to={href({ t: t.id })} className={openId === t.id ? "active" : undefined} prefetch="intent" preventScrollReset>
                     <span className="w-rd-row">
                       <span className="w-rd-sub">r/{t.subreddit}</span>
                       {t.postedAt ? <span>{timeAgo(t.postedAt)}</span> : null}
-                      {t.status === "replied" ? <span className="w-rd-tick">✓ Replied</span> : null}
+                      {repliedNow(t) ? <span className="w-rd-tick">✓ Replied</span> : null}
                     </span>
                     <b>{t.title}</b>
                     {t.snippet ? <span className="w-rd-snip">{t.snippet}</span> : null}
@@ -276,7 +286,7 @@ export default function Reddit() {
         </section>
 
         <section className="w-rd-detail w-box">
-          {data.opened ? (
+          {opened ? (
             <Link className="w-rd-back" to={href({})}>
               ‹ All threads
             </Link>

@@ -38,7 +38,13 @@ export default function LoginLink() {
       <p>Click the button to finish signing in.</p>
       <Form method="post">
         <button className="w-btn" type="submit" disabled={busy} style={{ width: "100%" }}>
-          {busy ? "Signing in…" : "Continue to GEO"}
+          {busy ? (
+            <>
+              <span className="w-spin" aria-hidden="true" /> Signing in…
+            </>
+          ) : (
+            "Continue to GEO"
+          )}
         </button>
       </Form>
     </Solo>
