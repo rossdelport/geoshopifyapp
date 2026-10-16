@@ -84,6 +84,34 @@ setup). Left: every thread (All, To reply, Replied). Right: the post and a reply
   answer the question properly before naming your product; never pretend to be a customer and never ask friends
   to post fake recommendations.
 
+### Guide calendar
+
+A month view of the guide pages GEO writes for your website: one guide per day slot, each answering one buying
+question AI doesn't name you for (the ones it never names you for come first, then bigger searches first). Each
+day shows the question, how many people search it a month, the kind of guide and where it is at. Click a day to
+read the whole page as it will look. Standard gets 4 a month (about one a week), Done-for-you 12 (three a week).
+"Autofill calendar" plans the rest of this month and next; the calendar also fills itself every day.
+
+How a day goes:
+- Planned: the question is chosen; the guide is written two days before its day.
+- Needs your OK (Standard): it is written; read it and press Approve. Done-for-you guides are OK'd when written
+  (switch autopilot off in Settings to OK them yourself).
+- Scheduled: OK'd, waiting for its day.
+- Add to your store: on its day, stores without a Shopify connection get two-minute steps: copy the title, copy
+  the content, paste them into Shopify's "Add page" screen (Online Store, Pages, Add page; use the <> button to
+  paste the content as HTML; Visibility: Visible), then press "I've added it".
+- Live: the page is up, with a link to it.
+- Couldn't write: the draft didn't pass our checks; it is tried again later, or press "Try again".
+- Skip this one: drops the day (a written guide is set aside); the calendar plans another day with another
+  question.
+
+What a guide is: a buying guide in strict question-and-answer form (a short answer, four to six answered
+questions, "Products that fit" linking your own products with tracking, sources only from your own pages). We
+never invent facts, and health-type stores get a claims check before the page is shown.
+
+How pages get onto your site: today by copy and paste as above. Stores that connect the GEO Shopify app get
+each guide published for them on its day (one-click publishing is coming for web app stores).
+
 ### Tracking code
 A small code you paste into Shopify so GEO can count visits and orders that came from AI. It takes 2 minutes:
 1. In Shopify admin, open Settings, then Customer events.
@@ -116,22 +144,23 @@ early access.
 - **Standard:** US$49 a month, or US$441 a year (3 months free). 7-day free trial.
   - 50 buying questions, checked every week, on ChatGPT, Gemini, Perplexity and Google AI Overviews.
   - Sites AI trusts: 4 writer lookups a month (about one a week) and up to 10 pitches a month, drafted for you.
-  - 4 guide pages a month (about one a week) for your approval: each built around a buying question AI doesn't
-    name you for, rotating through how-to-choose guides, comparisons, use-case pages, buying advice and single
-    question deep dives. (Guide pages for web app stores are coming with the guide calendar.)
+  - 4 guide pages a month (about one a week) on the Guide calendar, for your OK: each built around a buying
+    question AI doesn't name you for, rotating through how-to-choose guides, comparisons, use-case pages, buying
+    advice and single question deep dives.
   - Reddit threads: new threads every week, each with a reply.
   - Money from AI dashboard.
 - **Done-for-you:** US$349 a month, or US$3,141 a year. 7-day free trial.
   - 100 buying questions, checked every day, plus Claude.
-  - 12 guide pages a month (three a week), written and published for you.
+  - 12 guide pages a month (three a week) on the Guide calendar, written and OK'd for you (switch autopilot off
+    and you OK them yourself).
   - 20 writer lookups and up to 40 pitches a month, sent and followed up for you by our team (including
     directories and roundups).
   - Everything in Standard, plus a 30-minute call. Hand outreach and the call start after the trial.
 - Allowances reset on the 1st of each month.
 
 Coming soon (not in the app yet, don't promise dates): paying for a plan in the app, product fixes you can copy
-and paste (better descriptions and FAQs), a guide calendar (one guide page per buying question), a score trend
-over time, and the monthly email report. Never say a coming-soon feature is available.
+and paste (better descriptions and FAQs), one-click publishing of guide pages through a Shopify connection, a
+score trend over time, and the monthly email report. Never say a coming-soon feature is available.
 
 ## Privacy and data
 

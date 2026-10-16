@@ -6,6 +6,7 @@ import { isAdmin } from "../lib/admin.server";
 import { getPlan } from "../lib/plans";
 import { outreachUsedThisMonth } from "../lib/outreach.server";
 import { writersUsedThisMonth } from "../lib/trusted-sites.server";
+import { countGuidePagesThisMonth } from "../lib/usage.server";
 import styles from "../styles/web.css?url";
 
 // The GEO web app's frame: the menu on the left (a top bar on phones) and the page on the right. Like RankPill's
@@ -18,9 +19,9 @@ export const meta: MetaFunction = () => [{ title: "GEO" }, { name: "robots", con
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { user, shop } = await requireWebShop(request);
   const plan = getPlan(shop.plan);
-  const [writersUsed, pitchesUsed] = plan.writersPerMonth
-    ? await Promise.all([writersUsedThisMonth(shop.id), outreachUsedThisMonth(shop.id)])
-    : [0, 0];
+  const [writersUsed, pitchesUsed, guidesUsed] = plan.writersPerMonth
+    ? await Promise.all([writersUsedThisMonth(shop.id), outreachUsedThisMonth(shop.id), countGuidePagesThisMonth(shop.id)])
+    : [0, 0, 0];
   return {
     admin: isAdmin(user.email),
     email: user.email,
@@ -29,7 +30,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     country: shop.country,
     plan: plan.name,
     left: plan.writersPerMonth
-      ? { writers: Math.max(0, plan.writersPerMonth - writersUsed), pitches: Math.max(0, plan.outreachPerMonth - pitchesUsed) }
+      ? { writers: Math.max(0, plan.writersPerMonth - writersUsed), pitches: Math.max(0, plan.outreachPerMonth - pitchesUsed), guides: Math.max(0, plan.guidePagesPerMonth - guidesUsed) }
       : null,
   };
 };
@@ -51,6 +52,7 @@ const SECTIONS = [
       { to: "/dash/questions", label: "Buying questions", d: ICONS.question },
       { to: "/dash/sites", label: "Sites AI trusts", d: ICONS.shield },
       { to: "/dash/reddit", label: "Reddit threads", d: ICONS.chat },
+      { to: "/dash/guides", label: "Guide calendar", d: ICONS.calendar },
     ],
   },
   { label: "Setup", items: [{ to: "/dash/tracking", label: "Tracking code", d: ICONS.code }] },
@@ -127,6 +129,9 @@ export default function Dash() {
                 </span>
                 <span>
                   <Icon d={ICONS.send} /> {left.pitches} pitches
+                </span>
+                <span>
+                  <Icon d={ICONS.calendar} /> {left.guides} guide {left.guides === 1 ? "page" : "pages"}
                 </span>
               </div>
             ) : null}

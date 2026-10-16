@@ -67,10 +67,12 @@ model Shop {
   source            String         @default("shopify") // shopify: installed from Shopify | web: added on the GEO web app
   userId            String? // web: the GEO account that added it
   trackKey          String?        @unique // web: the key in the store's tracking code (custom pixel), so only its own code can send orders
+  shopifyConnectedAt DateTime? // web: when this account connected the store's Shopify (set only by a connect flow started from the signed-in session; never from an app install alone)
   user              User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
   siteWriters       SiteWriter[]
   redditThreads     RedditThread[]
   supportFlags      SupportFlag[]
+  guideSlots        GuideSlot[]
   redditCheckedAt   DateTime? // last weekly look for Reddit threads (lib/reddit.server.ts)
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
@@ -143,6 +145,7 @@ model Question {
   createdAt DateTime @default(now())
 
   answers AiAnswer[]
+  slots   GuideSlot[]
 
   @@unique([shopId, text])
 }
@@ -271,6 +274,7 @@ model Fix {
   hubFixId    String? // guide pages: the cluster's hub guide this page links back to (null for the hub itself)
   refreshOfId String? // a refresh of an applied fix (freshness cycle): the fix it updates
   refreshedAt DateTime? // when this applied fix was last refreshed (or a refresh of it was applied)
+  slot        GuideSlot? // the guide calendar day this guide was written for (web app stores)
   createdAt   DateTime  @default(now())
 
   @@index([shopId, status])
@@ -620,4 +624,28 @@ model BlogPost {
   updatedAt   DateTime @updatedAt
 
   @@index([status, publishedAt])
+}
+
+// The guide calendar (web app stores, lib/guide-calendar.server.ts): one row per planned guide page day, with the
+// buying question it answers, the guide written for it two days before (a Fix of type guide_page) and whether it is
+// live. A skipped day is deleted, so the calendar can plan another.
+model GuideSlot {
+  id          String    @id @default(cuid())
+  shopId      String
+  shop        Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  day         String // "2026-10-20": the day it goes live, on the store's own calendar
+  questionId  String?
+  question    Question? @relation(fields: [questionId], references: [id], onDelete: SetNull)
+  cluster     String?
+  status      String    @default("planned") // planned | writing | ready | published | failed
+  fixId       String?   @unique
+  fix         Fix?      @relation(fields: [fixId], references: [id], onDelete: SetNull)
+  approvedAt  DateTime? // the store's OK (Done-for-you: given when written, unless autopilot is off)
+  publishedAt DateTime?
+  error       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([shopId, day])
+  @@index([shopId, status])
 }

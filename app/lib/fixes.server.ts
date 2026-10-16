@@ -115,7 +115,7 @@ export const ClaimsSchema = z.object({
   fixed_text: z.string().nullable().describe("The same text with only the problem phrases softened; null if ok"),
 });
 
-interface LostQuestion {
+export interface LostQuestion {
   index: number;
   id: string;
   text: string;
@@ -172,7 +172,7 @@ async function lostQuestions(scanId: string): Promise<LostQuestion[]> {
 const productLine = (p: Product, i: number) =>
   `${i}. ${p.title}${p.productType ? ` [${p.productType}]` : " [no product type]"}${p.price ? ` (${p.price})` : ""}: ${(p.description ?? "no description").slice(0, 220)}`;
 
-function storeUrl(shop: { primaryDomain: string | null; domain: string }) {
+export function storeUrl(shop: { primaryDomain: string | null; domain: string }) {
   return `https://${shop.primaryDomain ?? shop.domain}`;
 }
 
@@ -473,7 +473,7 @@ export function guideSourceUrls(shop: { primaryDomain: string | null; domain: st
   ];
 }
 
-async function writeGuide(
+export async function writeGuide(
   shop: { id: string; domain: string; primaryDomain: string | null; country: string; profile: { brandName: string; summary: string } | null },
   products: Product[],
   questions: LostQuestion[],
@@ -482,10 +482,11 @@ async function writeGuide(
   plan: ReturnType<typeof getPlan>,
   skipIfHeld = false,
   cluster: string | null = null,
+  monthStart?: Date,
 ): Promise<Fix | null> {
   if (!questions.length) return null;
-  // The month's allowance counts every guide written since the 1st (UTC), whatever happened to it.
-  if ((await countGuidePagesThisMonth(shop.id)) >= plan.guidePagesPerMonth) return null;
+  // The month's allowance counts every guide written since the 1st (UTC, or the store's own month when given), whatever happened to it.
+  if ((await countGuidePagesThisMonth(shop.id, monthStart)) >= plan.guidePagesPerMonth) return null;
   const where = countryName(shop.country);
   // Topic clusters: the first guide on a topic is its hub (an overview); later ones are specific guides
   // that link back to it. Links are added when pages go live (applyFix), never in the draft.

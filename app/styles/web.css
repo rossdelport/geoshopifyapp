@@ -488,3 +488,55 @@ body { margin: 0; }
 @media (prefers-reduced-motion: reduce) {
   .w details::details-content { transition: none !important; }
 }
+
+/* ---------- Guide calendar (/dash/guides) and one guide's page (/dash/guides/<day>) ---------- */
+.w-cal-head { display: flex; align-items: center; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.w-cal-head h2 { min-width: 150px; text-align: center; font: 600 15px/1.3 var(--font-body); color: var(--ink); }
+.w-cal-head .w-icon-btn { font-size: 20px; line-height: 1; text-decoration: none; }
+.w-cal-head .w-note { margin-left: auto; font-size: 12.5px; }
+.w-cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.w-cal-wd { padding: 8px 10px; font-size: 11.5px; font-weight: 500; color: var(--muted); border-bottom: 1px solid var(--line); }
+.w-cal-day { min-height: 112px; padding: 8px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; gap: 6px; align-content: start; min-width: 0; }
+.w-cal-grid > :nth-child(7n) { border-right: 0; }
+.w-cal-grid > :nth-last-child(-n + 7) { border-bottom: 0; }
+.w-cal-day.empty { background: var(--bg-2); }
+.w-cal-day.past .w-cal-num { color: var(--faint); }
+.w-cal-num { justify-self: start; font-size: 12.5px; font-weight: 500; color: var(--ink-3); font-variant-numeric: tabular-nums; line-height: 22px; }
+.w-cal-day.today .w-cal-num { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: #fff; }
+.w-cal-slot {
+  display: grid; gap: 4px; padding: 8px; border: 1px solid var(--line-2); border-radius: 8px; background: var(--bg);
+  color: var(--ink-2); text-decoration: none; font-size: 12.5px; line-height: 1.35;
+  transition: border-color var(--duration-quick) ease-out, box-shadow var(--duration-quick) ease-out, transform var(--duration-quick) ease-out;
+}
+.w-cal-slot:hover { border-color: var(--line-3); box-shadow: var(--shadow-sm); transform: translateY(-1px); color: var(--ink); }
+.w-cal-slot.ok { border-color: #bbf7d0; background: var(--green-bg); }
+.w-cal-slot.warn { border-color: #fde68a; background: var(--amber-bg); }
+.w-cal-slot.no { border-color: #fecaca; background: var(--red-bg); }
+.w-cal-slot .w-pill { justify-self: start; }
+.w-cal-kind { font-size: 11px; color: var(--muted); }
+.w-cal-q { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-weight: 500; }
+.w-cal-list { display: none; list-style: none; margin: 0; padding: 0; }
+.w-cal-list li a { display: grid; grid-template-columns: 82px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--line); color: var(--ink-2); text-decoration: none; font-size: 13.5px; }
+.w-cal-list li:last-child a { border-bottom: 0; }
+.w-cal-list .w-cal-q { -webkit-line-clamp: 2; }
+.w-cal-date { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+
+.w-guide-wrap { display: grid; gap: 20px; grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr); align-items: start; }
+.w-guide { padding: 28px 32px; font-size: 15px; line-height: 1.65; color: var(--ink-3); }
+.w-guide h1 { font-size: 24px; line-height: 1.25; margin-bottom: 14px; }
+.w-guide h2 { font-size: 17px; margin: 22px 0 6px; }
+.w-guide p + p { margin-top: 10px; }
+.w-guide ul { padding-left: 22px; margin: 8px 0; }
+.w-guide li { margin: 4px 0; }
+.w-guide-empty { padding: 40px 32px; display: grid; gap: 8px; color: var(--muted); }
+.w-guide-empty b { color: var(--ink); font-size: 16px; }
+.w-facts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 14px; margin: 0; font-size: 13.5px; }
+.w-facts dt { color: var(--muted); white-space: nowrap; }
+.w-facts dd { margin: 0; color: var(--ink-2); }
+@media (max-width: 860px) {
+  .w-cal-grid { display: none; }
+  .w-cal-list { display: block; }
+  .w-guide-wrap { grid-template-columns: minmax(0, 1fr); }
+  .w-guide { padding: 20px 18px; }
+  .w-guide-empty { padding: 24px 18px; }
+}

@@ -86,6 +86,7 @@ export const ICONS = {
   chat: "M3.5 4.5h13v9h-7l-4 3v-3h-2z",
   spark: "M10 2.5l1.8 4.7 4.7 1.8-4.7 1.8L10 15.5l-1.8-4.7L3.5 9l4.7-1.8zM15.5 13.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z",
   check: "M5 10.5l3 3 7-7",
+  calendar: "M3.5 5.5h13v11h-13zM3.5 9.5h13M7 3v3M13 3v3",
 };
 
 /** True once pages have been loading for a moment, so quick loads swap straight to the new page without a skeleton
@@ -276,13 +277,27 @@ function SkBox({ lines = 4 }: { lines?: number }) {
 /** Which skeleton a page gets, from its address. */
 export function skeletonFor(path: string): string {
   const part = path.split("/")[2] ?? "";
-  return ["questions", "sites", "reddit", "tracking", "ask", "admin"].includes(part) ? part : "home";
+  return ["questions", "sites", "reddit", "guides", "tracking", "ask", "admin"].includes(part) ? part : "home";
 }
 
 export function PageSkeleton({ path }: { path: string }) {
   const kind = skeletonFor(path);
   let body: ReactNode;
   if (kind === "questions") body = <><SkHead intro /><SkTable rows={8} /></>;
+  else if (kind === "guides")
+    body = (
+      <>
+        <SkHead intro chips={2} />
+        <div className="w-box w-sk-col" style={{ padding: 12, gap: 10 }}>
+          <Sk w={200} h={16} />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 8 }}>
+            {Array.from({ length: 35 }, (_, i) => (
+              <Sk key={i} w="100%" h={i % 8 === 3 ? 96 : 72} r={8} />
+            ))}
+          </div>
+        </div>
+      </>
+    );
   else if (kind === "sites") body = <><SkHead intro chips={2} /><SkStats /><div className="w-box w-box-pad w-sk-col" style={{ gap: 22 }}>{Array.from({ length: 4 }, (_, i) => <div key={i} className="w-sk-col"><Sk w={180} h={15} /><Sk w="58%" h={10} /><Sk w={240} h={20} r={999} /></div>)}</div></>;
   else if (kind === "reddit")
     body = (
