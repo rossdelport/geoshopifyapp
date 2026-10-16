@@ -41,8 +41,10 @@ export async function buildMonthlyReport(shopId: string, now = new Date()) {
   const period = reportPeriod(now);
   const month = await monthTotals(shopId, period.start, period.end);
   const vis = await visibilitySummary(shopId);
-  const pending = await db.fix.count({ where: { shopId, status: "pending" } });
-  const appUrl = `https://admin.shopify.com/store/${shop.domain.replace(".myshopify.com", "")}/apps/${process.env.SHOPIFY_API_KEY ?? ""}`;
+  // Web app stores have no Shopify app to open: what waits for them is guide pages needing their OK, on the calendar.
+  const web = shop.source === "web";
+  const pending = web ? await db.guideSlot.count({ where: { shopId, status: "ready", approvedAt: null } }) : await db.fix.count({ where: { shopId, status: "pending" } });
+  const appUrl = web ? "https://usegeo.app/dash/guides" : `https://admin.shopify.com/store/${shop.domain.replace(".myshopify.com", "")}/apps/${process.env.SHOPIFY_API_KEY ?? ""}`;
   const m = (n: number) => formatMoney(n, shop.currency);
   const engines = month.byEngine
     .slice(0, 4)
@@ -63,7 +65,7 @@ export async function buildMonthlyReport(shopId: string, now = new Date()) {
   ${engines ? `<p style="margin:20px 0 6px;font-weight:600">Where it came from</p><ul style="margin:0;padding-left:18px">${engines}</ul>` : ""}
   <p style="margin:20px 0 6px;font-weight:600">How often AI recommends you</p>
   <p style="margin:0">Visibility score: ${vis.latest ? `<b>${vis.latest.score}/100</b>` : "not measured yet"}${vis.sinceStart !== null ? ` (${vis.sinceStart >= 0 ? "+" : ""}${vis.sinceStart} since you joined)` : ""}</p>
-  ${pending ? `<p style="margin:20px 0 0">You have <b>${pending} fix${pending === 1 ? "" : "es"}</b> ready to approve. Each one takes a click.</p>` : ""}
+  ${pending ? (web ? `<p style="margin:20px 0 0">You have <b>${pending} guide page${pending === 1 ? "" : "s"}</b> waiting for your OK on the Guide calendar.</p>` : `<p style="margin:20px 0 0">You have <b>${pending} fix${pending === 1 ? "" : "es"}</b> ready to approve. Each one takes a click.</p>`) : ""}
   <p style="margin:24px 0 0"><a href="${appUrl}" style="background:#202223;color:#fff;padding:10px 16px;border-radius:10px;text-decoration:none">Open the app</a></p>
   <p style="color:#8c9196;font-size:12px;margin-top:24px">AI sales are orders where the shopper arrived from an AI assistant like ChatGPT. Google AI Overviews can't be separated from normal Google traffic, so they aren't counted here.</p>
 </div></body></html>`;

@@ -126,6 +126,8 @@ export default function GuideDay() {
               </p>
             ) : null}
             {d.state === "failed" ? <p className="w-err-text">{d.error ?? "We couldn’t write this one."}</p> : null}
+            {d.state === "scheduled" && d.error ? <p className="w-err-text">{d.error} You can add it yourself with the steps below meanwhile.</p> : null}
+            {d.state === "skipped" ? <p>You skipped this one. Its question won’t be planned again; the calendar planned another day if the month had room.</p> : null}
             {d.notes ? (
               <div className="w-note w-block">
                 <b>Please check before it goes live</b>
@@ -139,11 +141,11 @@ export default function GuideDay() {
               {d.state === "needs-ok" ? act("approve", `Approve for ${dayLabel(d.day)}`) : null}
               {d.state === "scheduled" && d.connected && d.day <= d.today ? act("publish", "Publish now") : null}
               {d.state === "failed" ? act("retry", "Try again") : null}
-              {d.state !== "live" && d.state !== "writing" ? act("skip", "Skip this one", true) : null}
+              {!["live", "writing", "skipped"].includes(d.state) ? act("skip", "Skip this one", true) : null}
             </fetcher.Form>
           </section>
 
-          {d.state === "add" && d.bodyHtml ? (
+          {(d.state === "add" || (d.state === "scheduled" && d.error && d.day <= d.today)) && d.bodyHtml ? (
             <section className="w-box w-box-pad w-sec">
               <div className="w-sec-head">
                 <h2>Add it to your store (about two minutes)</h2>

@@ -94,23 +94,25 @@ read the whole page as it will look. Standard gets 4 a month (about one a week),
 
 How a day goes:
 - Planned: the question is chosen; the guide is written two days before its day.
-- Needs your OK (Standard): it is written; read it and press Approve. Done-for-you guides are OK'd when written
-  (switch autopilot off in Settings to OK them yourself).
+- Needs your OK (Standard): it is written; read it and press Approve. Done-for-you guides are OK'd when written,
+  unless our claims check softened something or the guide needs a fact from you: those wait for your OK. Email
+  ross@usegeo.app if you'd rather OK every guide yourself.
 - Scheduled: OK'd, waiting for its day.
 - Add to your store: on its day, stores without a Shopify connection get two-minute steps: copy the title, copy
   the content, paste them into Shopify's "Add page" screen (Online Store, Pages, Add page; use the <> button to
   paste the content as HTML; Visibility: Visible), then press "I've added it".
 - Live: the page is up, with a link to it.
 - Couldn't write: the draft didn't pass our checks; it is tried again later, or press "Try again".
-- Skip this one: drops the day (a written guide is set aside); the calendar plans another day with another
-  question.
+- Skip this one: drops the day and its question. A guide that was already written is set aside and still counts
+  toward the month's allowance. A day skipped before it was written gets a replacement day with another question
+  when the month has room.
 
 What a guide is: a buying guide in strict question-and-answer form (a short answer, four to six answered
 questions, "Products that fit" linking your own products with tracking, sources only from your own pages). We
 never invent facts, and health-type stores get a claims check before the page is shown.
 
-How pages get onto your site: today by copy and paste as above. Stores that connect the GEO Shopify app get
-each guide published for them on its day (one-click publishing is coming for web app stores).
+How pages get onto your site: today by copy and paste as above. One-click publishing through a Shopify
+connection is coming; don't promise a date.
 
 ### Tracking code
 A small code you paste into Shopify so GEO can count visits and orders that came from AI. It takes 2 minutes:
@@ -151,8 +153,8 @@ early access.
   - Money from AI dashboard.
 - **Done-for-you:** US$349 a month, or US$3,141 a year. 7-day free trial.
   - 100 buying questions, checked every day, plus Claude.
-  - 12 guide pages a month (three a week) on the Guide calendar, written and OK'd for you (switch autopilot off
-    and you OK them yourself).
+  - 12 guide pages a month (three a week) on the Guide calendar, written and OK'd for you (email ross@usegeo.app
+    if you'd rather OK each one yourself).
   - 20 writer lookups and up to 40 pitches a month, sent and followed up for you by our team (including
     directories and roundups).
   - Everything in Standard, plus a 30-minute call. Hand outreach and the call start after the trial.

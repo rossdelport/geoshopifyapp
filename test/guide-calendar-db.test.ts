@@ -182,7 +182,7 @@ describe.skipIf(!url)("guide calendar (needs TEST_DATABASE_URL)", () => {
     const slot = await db.guideSlot.findUniqueOrThrow({ where: { id: oct12.id }, include: { fix: true } });
     expect(slot.status).toBe("ready");
     expect(slot.approvedAt).toBeNull(); // Standard: the store OKs it
-    expect(slot.fix).toMatchObject({ type: "guide_page", status: "pending", cluster: "beard oil", hubFixId: null, questionIds: [q["best beard oil for dry skin australia"], q["beard oil vs beard balm"], q["beard oil gift ideas"]] });
+    expect(slot.fix).toMatchObject({ type: "guide_page", status: "pending", cluster: "beard oil", hubFixId: null, questionIds: [q["best beard oil for dry skin australia"]] }); // the other questions on this topic have their own days
     const after = slot.fix!.after as { title: string; handle: string; bodyHtml: string; kind: string };
     expect(after.title).toBe("What is the best beard oil for dry skin in Australia?");
     expect(after.handle).toBe("best-beard-oil-for-dry-skin");
@@ -219,7 +219,7 @@ describe.skipIf(!url)("guide calendar (needs TEST_DATABASE_URL)", () => {
     await expect(cal.approveSlot("other-shop", oct12.id)).rejects.toThrow(/isn’t on your calendar/);
   });
 
-  it("Done-for-you guides are OK'd when written, a draft that doesn't pass is tried later, and a skipped day frees its question", async () => {
+  it("Done-for-you guides are OK'd when written under autopilot's rules, a draft that doesn't pass is tried later, and skipping", async () => {
     await db.shop.update({ where: { id: shopId }, data: { plan: "pro" } });
     const brush = await db.guideSlot.create({ data: { shopId, day: "2026-10-13", questionId: q["how to use a beard brush"], cluster: "beard brush" } });
     await db.guideSlot.deleteMany({ where: { shopId, day: "2026-11-04" } }); // the brush question was planned there
@@ -230,6 +230,19 @@ describe.skipIf(!url)("guide calendar (needs TEST_DATABASE_URL)", () => {
     expect(written.status).toBe("ready");
     expect(written.approvedAt).not.toBeNull(); // written and published for you
     expect((written.fix!.after as { bodyHtml: string }).bodyHtml).toContain("Boar Bristle Beard Brush");
+    expect(ai.labels.slice(-3)).toEqual(["fix-guide", "claims-check", "claims-check"]); // the writer's check, then autopilot's
+
+    // Autopilot's rules still apply: a guide that needs a fact from the store waits for the store's OK.
+    const vegan = await db.question.create({ data: { shopId, text: "vegan beard balm australia", volume: 60, cluster: "beard balm" } });
+    const held = await db.guideSlot.create({ data: { shopId, day: "2026-10-24", questionId: vegan.id, cluster: "beard balm" } });
+    ai.draft = { ...GUIDE, question: "Is there a vegan beard balm in Australia", handle: "vegan-beard-balm", picks: [{ product_index: 0, why: "Shea butter, no beeswax." }], missing_info: ["Is the balm certified vegan?"] };
+    await jobs.enqueue("guide.write", { slotId: held.id }, { shopId, dedupeKey: `guide-write:${held.id}` });
+    await runJob("guide.write", held.id);
+    const heldSlot = await db.guideSlot.findUniqueOrThrow({ where: { id: held.id }, include: { fix: true } });
+    expect(heldSlot.status).toBe("ready");
+    expect(heldSlot.approvedAt).toBeNull();
+    expect(heldSlot.fix!.missingInfo).toContain("certified vegan");
+    expect((await cal.slotView(shop, held.id, NOW))!.state).toBe("needs-ok");
 
     // A draft with too few sections is set aside; the day waits for another try (no job failure, so no retry storm).
     await db.guideSlot.deleteMany({ where: { shopId, day: "2026-11-11" } }); // the gift question was planned there
@@ -249,21 +262,31 @@ describe.skipIf(!url)("guide calendar (needs TEST_DATABASE_URL)", () => {
     expect(failed.status).toBe("failed");
     expect(failed.error).toContain("Something went wrong");
 
-    // A day can't be skipped while its guide is being written; afterwards, skipping sets the guide aside and deletes
-    // the day, and the question is free for another day.
+    // A day can't be skipped while its guide is being written; afterwards, skipping sets the guide aside and keeps the
+    // day as skipped, off the calendar, so its question is never planned again.
     await db.guideSlot.update({ where: { id: brush.id }, data: { status: "writing" } });
-    await expect(cal.skipSlot(shopId, brush.id)).rejects.toThrow(/being written right now/);
+    await expect(cal.skipSlot(shopId, brush.id, NOW)).rejects.toThrow(/being written right now/);
     await db.guideSlot.update({ where: { id: brush.id }, data: { status: "ready" } });
-    await cal.skipSlot(shopId, brush.id);
-    expect(await db.guideSlot.findUnique({ where: { id: brush.id } })).toBeNull();
+    await cal.skipSlot(shopId, brush.id, NOW);
+    expect((await db.guideSlot.findUniqueOrThrow({ where: { id: brush.id } })).status).toBe("skipped");
     expect((await db.fix.findUniqueOrThrow({ where: { id: written.fixId! } })).status).toBe("rejected");
-    const before = await db.guideSlot.count({ where: { shopId } });
-    const made = await cal.autofillCalendar(shopId, NOW);
-    expect(made).toBeGreaterThan(0);
-    const slots = await db.guideSlot.findMany({ where: { shopId } });
-    expect(slots).toHaveLength(before + made);
-    expect(new Set(slots.map((s) => s.questionId)).size).toBe(slots.length);
-    expect(slots.some((s) => s.questionId === q["how to use a beard brush"] && s.day >= "2026-10-12")).toBe(true);
+    expect((await cal.monthView(shop, "2026-10", NOW)).slots.map((s) => s.id)).not.toContain(brush.id);
+    expect((await cal.slotView(shop, brush.id, NOW))!.state).toBe("skipped");
+    // A written guide that was skipped used its allowance: no replacement day, and the question isn't planned again.
+    expect(await cal.autofillCalendar(shopId, NOW)).toBe(0);
+    expect(await db.guideSlot.count({ where: { shopId, questionId: q["how to use a beard brush"] } })).toBe(1);
+
+    // A day skipped before it was written gets a replacement day with another question.
+    const travel = await db.question.create({ data: { shopId, text: "beard oil for travel", volume: 80, cluster: "beard oil" } });
+    const cheap = await db.question.create({ data: { shopId, text: "best beard oil under 30 dollars", volume: 70, cluster: "beard oil" } });
+    const unwritten = await db.guideSlot.create({ data: { shopId, day: "2026-10-21", questionId: travel.id, cluster: "beard oil" } });
+    await cal.skipSlot(shopId, unwritten.id, NOW);
+    expect((await db.guideSlot.findUniqueOrThrow({ where: { id: unwritten.id } })).status).toBe("skipped");
+    const replacement = await db.guideSlot.findFirst({ where: { shopId, questionId: cheap.id } });
+    expect(replacement?.day).toBe("2026-10-17"); // the next free day on the 12-a-month list (the 14th is taken)
+    expect(await db.guideSlot.count({ where: { shopId, questionId: travel.id } })).toBe(1);
+    const all = await db.guideSlot.findMany({ where: { shopId } });
+    expect(new Set(all.map((s) => s.questionId)).size).toBe(all.length); // never one question twice
   });
 
   it("publishes through the Shopify connection on the day, from 8am on the store's clock", async () => {
@@ -299,5 +322,20 @@ describe.skipIf(!url)("guide calendar (needs TEST_DATABASE_URL)", () => {
     expect(shopify.pages[0].body).toContain("Part of our guide"); // links back to the live overview guide on this topic
     expect(shopify.pages[0].body).toContain("https://stubblebros.com.au/pages/best-beard-oil-for-dry-skin");
     await expect(cal.publishSlot(slot.id, "other-shop")).rejects.toThrow();
+  });
+
+  it("writes a day again when a worker died in the middle of writing it", async () => {
+    const gift = await db.guideSlot.findFirstOrThrow({ where: { shopId, day: "2026-10-14" } }); // failed earlier
+    await db.guideSlot.update({ where: { id: gift.id }, data: { status: "writing", updatedAt: new Date(Date.now() - 31 * 60_000) } });
+    ai.draft = { ...GUIDE, question: "What are good beard oil gift ideas", handle: "beard-oil-gift-ideas" };
+    await cal.queueGuideWork(shop, plans.getPlan("pro"), new Date("2026-10-14T00:00:00Z"), { force: true });
+    await runJob("guide.write", gift.id);
+    expect((await db.guideSlot.findUniqueOrThrow({ where: { id: gift.id } })).status).toBe("ready");
+    // A write that is simply under way is left alone.
+    const fresh = await db.guideSlot.findFirstOrThrow({ where: { shopId, day: "2026-10-17" } });
+    await db.guideSlot.update({ where: { id: fresh.id }, data: { status: "writing" } });
+    await db.job.deleteMany({ where: { dedupeKey: `guide-write:${fresh.id}` } });
+    await cal.queueGuideWork(shop, plans.getPlan("pro"), new Date("2026-10-14T00:00:00Z"), { force: true });
+    expect(await db.job.findUnique({ where: { dedupeKey: `guide-write:${fresh.id}` } })).toBeNull();
   });
 });

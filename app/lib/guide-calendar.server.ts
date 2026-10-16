@@ -10,7 +10,7 @@ import type { BrandProfile, Fix, GuideSlot, Question, Shop } from "@prisma/clien
 import db from "../db.server";
 import { enqueue, registerJob } from "./jobs.server";
 import { getPlan, type Plan } from "./plans";
-import { applyFix, rejectFix, storeUrl, writeGuide, type LostQuestion } from "./fixes.server";
+import { applyFix, clearForAutopilot, rejectFix, storeUrl, writeGuide, type LostQuestion } from "./fixes.server";
 import { adminFor } from "./onboard-job.server";
 import { questionRows } from "./question-stats.server";
 import { countGuidePagesThisMonth } from "./usage.server";
@@ -34,6 +34,8 @@ import {
 } from "./guide-calendar";
 
 const RETRY_MS = 6 * 3_600_000;
+// A day left in "writing" this long was abandoned (the worker died mid-write): it is written again.
+const STALE_WRITE_MS = 20 * 60_000;
 
 /** What the fix engine stores for a guide page (Fix.after). */
 export interface GuideAfter {
@@ -63,8 +65,9 @@ export async function shopifyConnected(shop: Pick<Shop, "domain" | "shopifyConne
 
 /**
  * Plan the rest of this month and next month: a day for each guide the plan allows that isn't planned yet, from the
- * day after tomorrow (a guide is written two days ahead), each with the buying question it will answer. Safe to run
- * any time; it only adds what is missing. Returns how many days it added.
+ * day after tomorrow (a guide is written two days ahead), each with the buying question it will answer. A day skipped
+ * before it was written earns one replacement day. Safe to run any time; it only adds what is missing. Returns how
+ * many days it added.
  */
 export async function autofillCalendar(shopId: string, now = new Date()): Promise<number> {
   const shop = await db.shop.findUniqueOrThrow({ where: { id: shopId } });
@@ -73,7 +76,7 @@ export async function autofillCalendar(shopId: string, now = new Date()): Promis
   const today = localDay(now, shop.country);
   const earliest = addDays(today, WRITE_DAYS_AHEAD);
   const [slots, guideFixes, rows, writtenThisMonth] = await Promise.all([
-    db.guideSlot.findMany({ where: { shopId }, select: { day: true, questionId: true, cluster: true }, orderBy: { day: "asc" } }),
+    db.guideSlot.findMany({ where: { shopId }, select: { day: true, questionId: true, cluster: true, status: true, fixId: true }, orderBy: { day: "asc" } }),
     db.fix.findMany({ where: { shopId, type: "guide_page", refreshOfId: null, status: { not: "rejected" } }, select: { questionIds: true } }),
     questionRows(shopId, { activeOnly: true }),
     countGuidePagesThisMonth(shopId, localMonthStart(now, shop.country)),
@@ -85,14 +88,22 @@ export async function autofillCalendar(shopId: string, now = new Date()): Promis
   let lastCluster = slots.filter((s) => s.day < earliest).at(-1)?.cluster ?? null;
   let made = 0;
   for (const month of [monthOf(today), shiftMonth(monthOf(today), 1)]) {
-    // The month's allowance: days already on the calendar, or guides already written this month (a skipped guide
-    // still used its allowance), whichever is more.
-    const have = Math.max(slots.filter((s) => s.day.startsWith(month)).length, month === monthOf(today) ? writtenThisMonth : 0);
+    const inMonth = slots.filter((s) => s.day.startsWith(month));
+    const active = inMonth.filter((s) => s.status !== "skipped");
+    // The month's allowance: the guides already written this month (a skipped guide that was written still used its
+    // allowance) plus the days still to be written.
+    const have = (month === monthOf(today) ? writtenThisMonth : 0) + active.filter((s) => !s.fixId).length;
     const room = plan.guidePagesPerMonth - have;
     if (room <= 0) continue;
-    const days = slotDaysForMonth(month, plan.guidePagesPerMonth)
-      .filter((d) => d >= earliest && !taken.has(d))
-      .slice(0, room);
+    // The plan's own days first; a day skipped before it was written earns one replacement from the denser list.
+    const primary = slotDaysForMonth(month, plan.guidePagesPerMonth).filter((d) => d >= earliest && !taken.has(d));
+    const replacements = inMonth.filter((s) => s.status === "skipped" && !s.fixId).length;
+    const makeup = replacements
+      ? slotDaysForMonth(month, 12)
+          .filter((d) => d >= earliest && !taken.has(d) && !primary.includes(d))
+          .slice(0, replacements)
+      : [];
+    const days = [...primary, ...makeup].sort().slice(0, room);
     const picks = pickQuestions(rows.questions, used, days.length, lastCluster);
     for (let i = 0; i < picks.length; i++) {
       try {
@@ -115,7 +126,8 @@ const lookedAt = new Map<string, number>(); // per process: the worker runs ever
 /**
  * Hourly per store, from the worker: plan the calendar, queue the guides whose writing day has come (two days before
  * their day) and, for a store with a Shopify connection, publish the OK'd guides whose day has come (from 8am on the
- * store's clock). A day that couldn't be written is tried again after 6 hours, until its day has passed.
+ * store's clock). A day that couldn't be written is tried again after 6 hours, until its day has passed; a day left
+ * in "writing" by a worker that died is written again.
  */
 export async function queueGuideWork(shop: ShopLite, plan: Plan, now = new Date(), opts: { force?: boolean } = {}): Promise<void> {
   if (!calendarOn(shop, plan)) return;
@@ -125,18 +137,31 @@ export async function queueGuideWork(shop: ShopLite, plan: Plan, now = new Date(
   await autofillCalendar(shop.id, now);
   const today = localDay(now, shop.country);
   const slots = await db.guideSlot.findMany({
-    where: { shopId: shop.id, status: { in: ["planned", "failed", "ready"] }, day: { lte: addDays(today, WRITE_DAYS_AHEAD) } },
+    where: { shopId: shop.id, status: { in: ["planned", "failed", "ready", "writing"] }, day: { lte: addDays(today, WRITE_DAYS_AHEAD) } },
   });
   const dueLive = slots.filter((s) => s.status === "ready" && s.approvedAt && s.day <= today);
   const connected = dueLive.length && localHour(now, shop.country) >= PUBLISH_FROM_HOUR ? await shopifyConnected(shop) : false;
   for (const s of slots) {
     const retry = s.status === "failed" && now.getTime() - s.updatedAt.getTime() >= RETRY_MS && s.day >= today;
-    if (s.status === "planned" || retry) {
+    const abandoned = s.status === "writing" && now.getTime() - s.updatedAt.getTime() >= STALE_WRITE_MS;
+    if (s.status === "planned" || retry || abandoned) {
       await enqueue("guide.write", { slotId: s.id }, { shopId: shop.id, dedupeKey: `guide-write:${s.id}`, ifFailedWaitMs: RETRY_MS });
     } else if (connected && dueLive.includes(s)) {
       await enqueue("guide.publish", { slotId: s.id }, { shopId: shop.id, dedupeKey: `guide-publish:${s.id}`, ifFailedWaitMs: RETRY_MS });
     }
   }
+}
+
+/** Questions that already have a day on the calendar (other than `exceptSlotId`) or a guide that wasn't set aside. */
+async function usedQuestionIds(shopId: string, exceptSlotId?: string): Promise<Set<string>> {
+  const [slots, fixes] = await Promise.all([
+    db.guideSlot.findMany({ where: { shopId, ...(exceptSlotId ? { id: { not: exceptSlotId } } : {}) }, select: { questionId: true } }),
+    db.fix.findMany({ where: { shopId, type: "guide_page", refreshOfId: null, status: { not: "rejected" } }, select: { questionIds: true } }),
+  ]);
+  const used = new Set<string>();
+  for (const s of slots) if (s.questionId) used.add(s.questionId);
+  for (const f of fixes) for (const id of (f.questionIds as unknown[]) ?? []) if (typeof id === "string") used.add(id);
+  return used;
 }
 
 // ---------- Writing ----------
@@ -150,14 +175,18 @@ async function writeSlot(slot: SlotForWriting, plan: Plan): Promise<{ ok: true; 
   const { shop, question } = slot;
   if (!question) return { ok: false, reason: "This day’s buying question was removed. Skip the day and the calendar will plan another." };
   if (!shop.profile) return { ok: false, reason: "We don’t have your store’s profile yet." };
-  const [products, rows] = await Promise.all([
+  const [products, rows, used] = await Promise.all([
     db.product.findMany({ where: { shopId: shop.id, NOT: { status: "DELETED" } }, orderBy: { syncedAt: "desc" }, take: 200 }),
     questionRows(shop.id, { activeOnly: true }),
+    usedQuestionIds(shop.id, slot.id),
   ]);
   if (!products.length) return { ok: false, reason: "We couldn’t find any products in your store’s catalog to feature." };
   const main = rows.questions.find((q) => q.id === question.id);
-  // The guide answers its question and, when the topic has them, up to two more questions on it that AI loses.
-  const more = rows.questions.filter((q) => q.id !== question.id && q.cluster && q.cluster === question.cluster && (q.rate ?? 0) < 0.5).slice(0, 2);
+  // The guide answers its question and, when the topic has them, up to two more questions on it that AI loses and
+  // that no other day or guide covers (so two guides on one topic never answer the same things).
+  const more = rows.questions
+    .filter((q) => q.id !== question.id && !used.has(q.id) && q.cluster && q.cluster === question.cluster && (q.rate ?? 0) < 0.5)
+    .slice(0, 2);
   const first = main ?? { id: question.id, text: question.text, volume: question.volume, cluster: question.cluster, longTail: question.longTail, rate: null, winners: [] as string[] };
   const lost: LostQuestion[] = [first, ...more].map((q, index) => ({
     index,
@@ -179,7 +208,17 @@ async function writeSlot(slot: SlotForWriting, plan: Plan): Promise<{ ok: true; 
   const impact = (question.volume ?? 0) >= 500 || (main?.rate ?? 0) === 0 ? "high" : "medium";
   const fix = await writeGuide(shop, rankProductsForQuestion(products, question.text), lost, reason, impact, plan, false, question.cluster, localMonthStart(new Date(), shop.country));
   if (!fix) return { ok: false, reason: NOT_PASSED };
-  const auto = plan.doneForYou && !shop.autopilotOptOut; // written and published for you
+  // Done-for-you: written and published for you, under autopilot's own rules: never a guide that needs a fact from
+  // the store, and always the claims check first; anything softened waits for the store's OK.
+  let auto = plan.doneForYou && !shop.autopilotOptOut && !fix.missingInfo;
+  if (auto) {
+    try {
+      auto = await clearForAutopilot(fix);
+    } catch (err) {
+      auto = false; // the check couldn't run: the store OKs this one itself
+      console.warn(`[guides] ${shop.domain}: claims check didn’t run, leaving the guide for the store’s OK: ${(err as Error).message}`);
+    }
+  }
   const kept = await db.guideSlot.updateMany({ where: { id: slot.id, status: "writing" }, data: { status: "ready", fixId: fix.id, error: null, approvedAt: auto ? new Date() : null } });
   if (!kept.count) {
     // The day was skipped while the guide was being written: set the guide aside, nothing to show.
@@ -193,7 +232,9 @@ registerJob("guide.write", async (job) => {
   const { slotId } = job.payload as { slotId?: string };
   if (!slotId) return;
   const slot = await db.guideSlot.findUnique({ where: { id: slotId }, include: { shop: { include: { profile: true } }, question: true } });
-  if (!slot || !["planned", "failed"].includes(slot.status)) return;
+  if (!slot) return;
+  const abandoned = slot.status === "writing" && Date.now() - slot.updatedAt.getTime() >= STALE_WRITE_MS;
+  if (!["planned", "failed"].includes(slot.status) && !abandoned) return;
   const plan = getPlan(slot.shop.plan);
   if (!calendarOn(slot.shop, plan)) return;
   await db.guideSlot.update({ where: { id: slot.id }, data: { status: "writing", error: null } });
@@ -232,7 +273,14 @@ export async function publishSlot(slotId: string, shopId?: string): Promise<Guid
 
 registerJob("guide.publish", async (job) => {
   const { slotId } = job.payload as { slotId?: string };
-  if (slotId) await publishSlot(slotId);
+  if (!slotId) return;
+  try {
+    await publishSlot(slotId);
+  } catch (err) {
+    // The day says why, and offers the copy and paste steps meanwhile; the job retries later.
+    await db.guideSlot.updateMany({ where: { id: slotId, status: "ready" }, data: { error: `Shopify didn’t accept the page: ${(err as Error).message}`.slice(0, 300) } });
+    throw err;
+  }
 });
 
 // ---------- What the store can do on a day ----------
@@ -250,13 +298,20 @@ export async function approveSlot(shopId: string, slotId: string): Promise<Guide
   return db.guideSlot.update({ where: { id: slot.id }, data: { approvedAt: slot.approvedAt ?? new Date() } });
 }
 
-/** Drop the day. A written guide is set aside (it still used this month's allowance); the calendar plans another day. */
-export async function skipSlot(shopId: string, slotId: string): Promise<void> {
+/**
+ * Drop the day and its question. A written guide is set aside (it still used this month's allowance); a day skipped
+ * before it was written gets a replacement day with another question when the month has room.
+ */
+export async function skipSlot(shopId: string, slotId: string, now = new Date()): Promise<void> {
   const slot = await ownSlot(shopId, slotId);
   if (slot.status === "published") throw new Error("This guide is already live. Remove the page in Shopify if you don’t want it.");
-  if (slot.status === "writing") throw new Error("This guide is being written right now. Give it a minute, then skip it.");
+  if (slot.status === "skipped") return;
+  if (slot.status === "writing" && Date.now() - slot.updatedAt.getTime() < STALE_WRITE_MS) {
+    throw new Error("This guide is being written right now. Give it a minute, then skip it.");
+  }
   if (slot.fix && slot.fix.status === "pending") await rejectFix(slot.fix);
-  await db.guideSlot.delete({ where: { id: slot.id } });
+  await db.guideSlot.update({ where: { id: slot.id }, data: { status: "skipped", error: null } });
+  await autofillCalendar(shopId, now);
 }
 
 /** Try a day that couldn't be written again, now. */
@@ -296,7 +351,7 @@ export async function monthView(shop: ShopLite, month: string, now = new Date())
   const today = localDay(now, shop.country);
   const [slots, connected] = await Promise.all([
     db.guideSlot.findMany({
-      where: { shopId: shop.id, day: { gte: `${month}-01`, lte: `${month}-31` } },
+      where: { shopId: shop.id, day: { gte: `${month}-01`, lte: `${month}-31` }, status: { not: "skipped" } },
       include: { question: { select: { text: true, volume: true } }, fix: { select: { after: true } } },
       orderBy: { day: "asc" },
     }),

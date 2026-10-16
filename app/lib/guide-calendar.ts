@@ -167,12 +167,12 @@ export function dayLabel(day: string, style: "short" | "long" = "short"): string
 
 // ---------- What a day on the calendar says ----------
 
-export type SlotState = "planned" | "writing" | "needs-ok" | "scheduled" | "add" | "live" | "failed";
+export type SlotState = "planned" | "writing" | "needs-ok" | "scheduled" | "add" | "live" | "failed" | "skipped";
 
 /**
  * What a day is at: planned (not written yet), writing, needs the store's OK, scheduled (OK'd, waiting for its day
  * or for the Shopify connection to publish it), add (its day has come and the store has no Shopify connection, so it
- * adds the page itself), live, or couldn't be written.
+ * adds the page itself), live, couldn't be written, or skipped by the store.
  */
 export function slotState(slot: { status: string; approvedAt: Date | string | null }, day: string, today: string, connected: boolean): SlotState {
   switch (slot.status) {
@@ -180,6 +180,8 @@ export function slotState(slot: { status: string; approvedAt: Date | string | nu
       return "live";
     case "failed":
       return "failed";
+    case "skipped":
+      return "skipped";
     case "writing":
       return "writing";
     case "ready":
@@ -198,6 +200,7 @@ export const STATE_LABEL: Record<SlotState, string> = {
   add: "Add to your store",
   live: "Live",
   failed: "Couldn’t write",
+  skipped: "Skipped",
 };
 
 export const STATE_TONE: Record<SlotState, "" | "ok" | "warn" | "no"> = {
@@ -208,6 +211,7 @@ export const STATE_TONE: Record<SlotState, "" | "ok" | "warn" | "no"> = {
   add: "warn",
   live: "ok",
   failed: "no",
+  skipped: "",
 };
 
 // ---------- Which question, which products ----------

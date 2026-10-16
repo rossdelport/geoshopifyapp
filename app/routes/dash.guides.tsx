@@ -23,6 +23,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     plan: { name: plan.name, perMonth: plan.guidePagesPerMonth, doneForYou: plan.doneForYou },
     today,
     month,
+    offset: monthsApart(month, monthOf(today)), // the arrows stop a year either side of today
     weeks: calendarWeeks(month),
     slots: view?.slots ?? [],
     connected: view?.connected ?? false,
@@ -39,7 +40,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 const kindLabel = (kind: string | null) => (kind && kind in GUIDE_KIND_LABELS ? GUIDE_KIND_LABELS[kind as GuideKind] : "Guide page");
 
 export default function Guides() {
-  const { plan, today, month, weeks, slots, connected } = useLoaderData<typeof loader>();
+  const { plan, today, month, offset, weeks, slots, connected } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const filling = fetcher.state !== "idle";
   const byDay = new Map(slots.map((s) => [s.day, s]));
@@ -90,36 +91,45 @@ export default function Guides() {
 
       <section className="w-box w-cal" aria-label={`Guide calendar, ${monthLabel(month)}`}>
         <header className="w-cal-head">
-          <Link to={`?m=${shiftMonth(month, -1)}`} className="w-icon-btn" aria-label="Previous month" preventScrollReset>
-            ‹
-          </Link>
+          {offset > -12 ? (
+            <Link to={`?m=${shiftMonth(month, -1)}`} className="w-icon-btn" aria-label="Previous month" preventScrollReset>
+              ‹
+            </Link>
+          ) : (
+            <span className="w-icon-btn" aria-hidden="true" />
+          )}
           <h2>{monthLabel(month)}</h2>
-          <Link to={`?m=${shiftMonth(month, 1)}`} className="w-icon-btn" aria-label="Next month" preventScrollReset>
-            ›
-          </Link>
+          {offset < 12 ? (
+            <Link to={`?m=${shiftMonth(month, 1)}`} className="w-icon-btn" aria-label="Next month" preventScrollReset>
+              ›
+            </Link>
+          ) : (
+            <span className="w-icon-btn" aria-hidden="true" />
+          )}
           <span className="w-note">
             {planned} of {plan.perMonth} planned{thisMonth ? " this month" : ""}
           </span>
         </header>
 
-        <div className="w-cal-grid" role="grid">
+        <div className="w-cal-grid">
           {WEEKDAYS.map((d) => (
-            <div key={d} className="w-cal-wd" role="columnheader">
+            <div key={d} className="w-cal-wd">
               {d}
             </div>
           ))}
           {weeks.flat().map((day, i) => {
-            if (!day) return <div key={`e${i}`} className="w-cal-day empty" role="gridcell" aria-hidden="true" />;
+            if (!day) return <div key={`e${i}`} className="w-cal-day empty" aria-hidden="true" />;
             const slot = byDay.get(day);
             const tone = slot ? STATE_TONE[slot.state] : "";
             return (
-              <div key={day} className={`w-cal-day${day === today ? " today" : day < today ? " past" : ""}`} role="gridcell">
-                <span className="w-cal-num" aria-label={dayLabel(day, "long")}>
-                  {Number(day.slice(8))}
-                </span>
+              <div key={day} className={`w-cal-day${day === today ? " today" : day < today ? " past" : ""}`}>
+                <span className="w-cal-num">{Number(day.slice(8))}</span>
                 {slot ? (
-                  <Link to={`/dash/guides/${slot.id}`} className={`w-cal-slot${tone ? ` ${tone}` : ""}`} prefetch="intent">
-                    <span className="w-cal-kind">{kindLabel(slot.kind)}</span>
+                  <Link to={`/dash/guides/${slot.id}`} className={`w-cal-slot${tone ? ` ${tone}` : ""}`} prefetch="intent" aria-label={`${dayLabel(day, "long")}: ${slot.title ?? slot.question?.text ?? "guide page"}, ${STATE_LABEL[slot.state]}`}>
+                    <span className="w-cal-kind">
+                      {kindLabel(slot.kind)}
+                      {slot.question?.volume ? ` · ${formatNumber(slot.question.volume)} searches` : ""}
+                    </span>
                     <span className="w-cal-q">{slot.title ?? slot.question?.text ?? "Guide page"}</span>
                     <span className={`w-pill${tone ? ` ${tone}` : ""}`}>{STATE_LABEL[slot.state]}</span>
                   </Link>
@@ -159,7 +169,7 @@ export default function Guides() {
           ) : (
             <p>
               On its day, a guide shows two-minute steps: copy the title, copy the content, paste them into Shopify’s “Add page” screen and click “I’ve added it”. One-click
-              publishing comes with the Shopify connection.
+              publishing is coming.
             </p>
           )}
           <p className="w-note">Every guide links to your own products with tracking, so sales from it show up on your dashboard.</p>

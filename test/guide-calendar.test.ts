@@ -107,6 +107,7 @@ describe("what a day says", () => {
     expect(slotState({ status: "ready", approvedAt: new Date() }, "2026-10-20", today, true)).toBe("scheduled"); // Shopify publishes it
     expect(slotState({ status: "published", approvedAt: new Date() }, "2026-10-20", today, false)).toBe("live");
     expect(slotState({ status: "failed", approvedAt: null }, "2026-10-20", today, false)).toBe("failed");
+    expect(slotState({ status: "skipped", approvedAt: null }, "2026-10-20", today, false)).toBe("skipped");
   });
 });
 
