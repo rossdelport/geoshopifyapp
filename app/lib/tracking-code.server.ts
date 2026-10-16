@@ -42,7 +42,7 @@ analytics.subscribe("page_viewed", async function (event) {
     if (await browser.sessionStorage.getItem("geo_visit")) return;
     await browser.sessionStorage.setItem("geo_visit", "1");
     var doc = event.context.document;
-    var visit = JSON.stringify({ ref: doc.referrer || "", url: doc.location.href });
+    var visit = JSON.stringify({ ref: doc.referrer || "", url: doc.location.href, t: Date.now() });
     if (!(await browser.localStorage.getItem("geo_first"))) await browser.localStorage.setItem("geo_first", visit);
     await browser.localStorage.setItem("geo_last", visit);
     geoSend({ ref: doc.referrer || "", url: doc.location.href, cid: event.clientId });
@@ -63,14 +63,25 @@ analytics.subscribe("checkout_completed", async function (event) {
       first: await geoRead("geo_first"),
       last: await geoRead("geo_last"),
     });
+    await browser.localStorage.removeItem("geo_first");
+    await browser.localStorage.removeItem("geo_last");
   } catch (e) {}
 });
 `;
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- the body comes from shoppers' browsers, any shape */
-const visitOf = (v: any): Visit | null =>
-  v && typeof v === "object" ? { referrerUrl: String(v.ref ?? "").slice(0, 1000), landingPage: String(v.url ?? "").slice(0, 1000) } : null;
+/** A visit older than this no longer explains an order (Shopify's own attribution window is 30 days). */
+const VISIT_WINDOW_MS = 30 * 86_400_000;
+
+const visitOf = (v: any, now = Date.now()): Visit | null => {
+  if (!v || typeof v !== "object") return null;
+  if (typeof v.t === "number" && now - v.t > VISIT_WINDOW_MS) return null;
+  return { referrerUrl: String(v.ref ?? "").slice(0, 1000), landingPage: String(v.url ?? "").slice(0, 1000) };
+};
+
+/** A Shopify order id (plain or gid) or a checkout token; anything else is noise or a forgery. */
+const ORDER_ID = /^(?:gid:\/\/shopify\/Order\/)?\d{1,20}$|^[a-f0-9]{32}$/i;
 
 /** One order from a store's tracking code: counted in the day's sales, and saved as an AI order when it came from AI. */
 export async function recordPixelOrder(shopId: string, body: any): Promise<"ai" | "other" | "ignored"> {
@@ -79,9 +90,16 @@ export async function recordPixelOrder(shopId: string, body: any): Promise<"ai" 
   if (!orderId || !Number.isFinite(total) || total < 0 || total > 1_000_000) return "ignored";
   const currency = /^[A-Z]{3}$/.test(String(body.currency)) ? String(body.currency) : null;
   const shop = await db.shop.findUniqueOrThrow({ where: { id: shopId }, select: { currency: true } });
+  if (!ORDER_ID.test(orderId)) return "ignored";
   const orderGid = orderId.startsWith("gid://") ? orderId : `gid://shopify/Order/${orderId}`;
   const now = new Date();
   const date = new Date(now.toISOString().slice(0, 10));
+  // Each order counts once, whether or not it came from AI (a reloaded thank-you page sends it again).
+  try {
+    await db.pixelOrder.create({ data: { shopId, orderGid } });
+  } catch {
+    return "ignored";
+  }
 
   const ai = classifyOrder({ firstVisit: visitOf(body.first), lastVisit: visitOf(body.last) }, env.utmSource);
   if (ai) {
@@ -104,7 +122,7 @@ export async function recordPixelOrder(shopId: string, body: any): Promise<"ai" 
         },
       });
     } catch {
-      return "ignored"; // the same order sent twice (a reloaded thank-you page)
+      return "ignored"; // already saved
     }
   }
   // Not from AI: did the shopper come from a search engine? Counted in the day's totals beside AI.

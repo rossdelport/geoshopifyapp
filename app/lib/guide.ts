@@ -64,6 +64,8 @@ const BACK_REFERENCE =
 /** No em dashes or spaced en dashes in anything we publish (house style). "30-50 ml" ranges keep a hyphen. */
 export function tidyDashes(s: string): string {
   return s
+    .replace(/&mdash;|&#8212;|&#x2014;/gi, "\u2014")
+    .replace(/&ndash;|&#8211;|&#x2013;/gi, "\u2013")
     .replace(/(\d)\s*[\u2013\u2014]\s*(\d)/g, "$1 to $2")
     .replace(/\s+[\u2013\u2014]\s+|\s*\u2014\s*/g, ", ")
     .replace(/,\s*,/g, ",");

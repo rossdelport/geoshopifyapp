@@ -12,7 +12,8 @@ import { emailConfigured, sendEmailMessage } from "./email.server";
 import { normalizeEmail } from "./check-lead.server";
 
 const LINK_MINUTES = 30;
-const MAX_LINKS_PER_HOUR = 5; // per email address
+const MAX_LINKS_PER_HOUR = 5;
+const MAX_LINKS_PER_HOUR_ALL = 300; // per email address
 const SESSION_DAYS = 30;
 
 function sessionSecret(): string {
@@ -53,6 +54,10 @@ export async function sendLoginLink(rawEmail: unknown, next?: unknown): Promise<
   if (!email) return { ok: false, error: LOGIN_ERRORS.email };
   const hourAgo = new Date(Date.now() - 3_600_000);
   if ((await db.loginLink.count({ where: { email, createdAt: { gte: hourAgo } } })) >= MAX_LINKS_PER_HOUR) {
+    return { ok: false, error: LOGIN_ERRORS.tooMany };
+  }
+  // Across everyone: a script feeding the form a list of addresses can't turn GEO into a spam sender.
+  if ((await db.loginLink.count({ where: { createdAt: { gte: hourAgo } } })) >= MAX_LINKS_PER_HOUR_ALL) {
     return { ok: false, error: LOGIN_ERRORS.tooMany };
   }
   if (!emailConfigured()) return { ok: false, error: LOGIN_ERRORS.noEmail };

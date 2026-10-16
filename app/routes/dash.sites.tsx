@@ -209,7 +209,7 @@ export default function Sites() {
             value={sites.filter((s) => s.namedShare > 0).length}
             caption="Of those, sites whose answers also named you"
           />
-          <Stat label="Writers found" icon={ICONS.user} value={writersUsed} caption={`Of ${plan.writers} this month: name, role, email and LinkedIn`} />
+          <Stat label="Writer lookups" icon={ICONS.user} value={writersUsed} caption={`Of ${plan.writers} this month: name, role, email and LinkedIn when we find them`} />
           <Stat
             label="Pitches"
             icon={ICONS.send}

@@ -166,13 +166,14 @@ export const SEARCH_ENGINE_LABELS: Record<SearchEngine, string> = {
 
 // Referrer domain -> search engine. Google's many country domains (google.com.au, google.co.uk) all match "google.".
 const SEARCH_REFERRERS: [RegExp, SearchEngine][] = [
-  [/^(?:[a-z0-9-]+\.)*google\.(?:[a-z]{2,3})(?:\.[a-z]{2})?$/, "google"],
-  [/^(?:[a-z0-9-]+\.)*bing\.com$/, "bing"],
+  // Only the search sites themselves: docs.google.com, mail.google.com, maps and the rest are not searches.
+  [/^(?:www\.|images\.)?google\.(?:[a-z]{2,3})(?:\.[a-z]{2})?$/, "google"],
+  [/^(?:www\.|cn\.)?bing\.com$/, "bing"],
   [/^(?:[a-z0-9-]+\.)*duckduckgo\.com$/, "duckduckgo"],
   [/^(?:[a-z0-9-]+\.)*search\.yahoo\.(?:[a-z.]+)$/, "yahoo"],
   [/^(?:[a-z0-9-]+\.)*ecosia\.org$/, "ecosia"],
   [/^(?:[a-z0-9-]+\.)*search\.brave\.com$/, "brave"],
-  [/^(?:[a-z0-9-]+\.)*yandex\.(?:[a-z.]+)$/, "yandex"],
+  [/^(?:www\.)?yandex\.(?:[a-z.]+)$/, "yandex"],
   [/^(?:[a-z0-9-]+\.)*baidu\.com$/, "baidu"],
   [/^(?:[a-z0-9-]+\.)*search\.naver\.com$/, "naver"],
   [/^(?:[a-z0-9-]+\.)*(?:qwant\.com|startpage\.com|ask\.com|seznam\.cz|sogou\.com)$/, "other_search"],

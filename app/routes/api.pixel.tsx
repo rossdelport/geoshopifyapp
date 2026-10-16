@@ -3,6 +3,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import db from "../db.server";
 import { env } from "../lib/env.server";
 import { classifySearchVisit, classifyVisit } from "../lib/attribution";
+import { clientIp } from "../lib/public-form.server";
 import { recordPixelOrder } from "../lib/tracking-code.server";
 
 // Receives one event per storefront visit (first page of each session) from our Shopify app's Web Pixel, or
@@ -15,11 +16,37 @@ const CORS = {
   "Access-Control-Allow-Headers": "content-type",
 };
 
+// At most this many events a minute from one address: a loop of forged orders or visits can't inflate a store's
+// numbers. In memory, per server; enough against a script, and a restart simply starts over.
+const PER_IP_PER_MINUTE = 120;
+const hits = new Map<string, { n: number; until: number }>();
+export function overLimit(ip: string | null, now = Date.now()): boolean {
+  if (!ip) return false;
+  const h = hits.get(ip);
+  if (!h || h.until < now) {
+    if (hits.size > 10_000) for (const [k, v] of hits) if (v.until < now) hits.delete(k);
+    hits.set(ip, { n: 1, until: now + 60_000 });
+    return false;
+  }
+  h.n++;
+  return h.n > PER_IP_PER_MINUTE;
+}
+
+/** The utm_source on a landing address, if it has one (a broken address has none). */
+function utmSourceOf(landingUrl: string): string | null {
+  try {
+    return new URL(landingUrl, "https://x.invalid").searchParams.get("utm_source");
+  } catch {
+    return null;
+  }
+}
+
 export const loader = async ({ request }: LoaderFunctionArgs) =>
   new Response(null, { status: request.method === "OPTIONS" ? 204 : 405, headers: CORS });
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
+  if (overLimit(clientIp(request))) return new Response(null, { status: 429, headers: CORS });
   let body: { shop?: string; k?: string; type?: string; ref?: string; url?: string; cid?: string } = {};
   try {
     body = JSON.parse((await request.text()).slice(0, 12000));
@@ -74,7 +101,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           engine: visit.engine,
           referrer: referrer.slice(0, 300) || null,
           landingUrl: cleanLanding,
-          utmSource: new URL(landingUrl, "https://x.invalid").searchParams.get("utm_source"),
+          utmSource: utmSourceOf(landingUrl),
           clientKey,
         },
       })

@@ -35,7 +35,7 @@ export function sydneyDay(offset = 0, now = new Date()): string {
   return new Date(Date.parse(`${today}T00:00:00Z`) - offset * 86_400_000).toISOString().slice(0, 10);
 }
 
-const isDay = (s: unknown): s is string => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s) && !Number.isNaN(Date.parse(s));
+const isDay = (s: unknown): s is string => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s) && new Date(s).toISOString().slice(0, 10) === s;
 
 /** The days asked for (?from=&to=), defaulting to the last 14 days; at most a year, from never after to. */
 export function dayRange(url: URL, now = new Date()): { from: string; to: string } {
@@ -101,7 +101,7 @@ export const SETUP_STEPS = ["Store added", "First AI check done", "Tracking code
 
 /** Every account and store: plan, AI score, how far through setup, and spend this month. */
 export async function usersTable() {
-  const monthStart = new Date(`${sydneyDay().slice(0, 8)}01T00:00:00Z`);
+  const monthFrom = `${sydneyDay().slice(0, 8)}01`; // the Sydney month, like the Overview and Usage tabs
   const [users, shops, snaps, writers, pitches, replies, spend] = await Promise.all([
     db.user.findMany({ orderBy: { createdAt: "desc" }, select: { id: true, email: true, createdAt: true, lastLoginAt: true } }),
     db.shop.findMany({
@@ -113,13 +113,14 @@ export async function usersTable() {
     db.siteWriter.groupBy({ by: ["shopId"], _count: true }),
     db.outreachTarget.groupBy({ by: ["shopId"], where: { pitch: { not: null } }, _count: true }),
     db.redditThread.groupBy({ by: ["shopId"], where: { status: "replied" }, _count: true }),
-    db.apiCost.groupBy({ by: ["shopId"], where: { createdAt: { gte: monthStart } }, _sum: { usd: true } }),
+    db.$queryRaw<{ shopId: string | null; usd: number }[]>`
+      SELECT "shopId", SUM(usd)::float AS usd FROM "ApiCost" WHERE ${localDay} >= ${monthFrom}::date GROUP BY 1`,
   ]);
   const userById = new Map(users.map((u) => [u.id, u]));
   const counted = (list: { shopId: string | null }[]) => new Set(list.map((x) => x.shopId));
   const [hasWriter, hasPitch, hasReply] = [counted(writers), counted(pitches), counted(replies)];
   const scoreBy = new Map(snaps.map((x) => [x.shopId, x.score]));
-  const spendBy = new Map(spend.map((x) => [x.shopId, x._sum.usd ?? 0]));
+  const spendBy = new Map(spend.map((x) => [x.shopId, x.usd ?? 0]));
   const rows = shops.map((s) => {
     const user = s.userId ? userById.get(s.userId) : undefined;
     const steps = [true, s.onboarding === "done", Boolean(s.pixelId), hasWriter.has(s.id) || hasPitch.has(s.id), hasReply.has(s.id)];

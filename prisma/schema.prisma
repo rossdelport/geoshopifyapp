@@ -49,6 +49,9 @@ model Shop {
   baselineDate      DateTime?
   freeScanUsedAt    DateTime?
   lastScanAt        DateTime?
+  /** The last weekly, daily or first scan: the schedule runs from this, so a manual "check AI now" never postpones it. */
+  lastScheduledScanAt DateTime?
+  pixelOrders       PixelOrder[]
   lastReportAt      DateTime?
   autopilot         Boolean        @default(false)
   autopilotOptOut   Boolean        @default(false) // the store switched autopilot off: keep it off across plan changes
@@ -591,6 +594,17 @@ model SupportFlag {
 // GEO's own blog at usegeo.app/blog (Ross, 2026-10-15: practise what we preach). Written by Claude from the
 // knowledge pack (docs/facts.md, docs/geo-research.md, the stories, docs/ask-geo-guide.md), fact-checked, and
 // published on its own three times a week (lib/blog.server.ts). Ross can hide a post in Admin.
+/** Every order a store's tracking code reports, once: a reloaded thank-you page or a replayed request can't count twice. */
+model PixelOrder {
+  id        String   @id @default(cuid())
+  shopId    String
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  orderGid  String
+  createdAt DateTime @default(now())
+
+  @@unique([shopId, orderGid])
+}
+
 model BlogPost {
   id          String   @id @default(cuid())
   slug        String   @unique

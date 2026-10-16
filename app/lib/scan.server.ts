@@ -1,7 +1,7 @@
 // Scans: ask every tracked question on every AI engine (2 runs each), read the answers,
 // score the shop. Resumable: if the server restarts, the job picks up where it stopped.
 
-import type { AiAnswer, Question } from "@prisma/client";
+import type { AiAnswer, Prisma, Question } from "@prisma/client";
 import db from "../db.server";
 import { askEngine } from "./treg.server";
 import { parseAnswer, type MerchantContext } from "./parse.server";
@@ -150,6 +150,9 @@ export async function runScan(scanId: string, jobId?: string) {
       take: CONCURRENCY * 4,
     });
     if (!batch.length) break;
+    // Stopped in the meantime (the store uninstalled, or the scan was marked failed)? Spend no more on it.
+    const live = await db.scan.findUnique({ where: { id: scanId }, select: { status: true, shop: { select: { status: true } } } });
+    if (!live || live.status === "failed" || live.shop.status !== "installed") return;
     await db.aiAnswer.updateMany({
       where: { id: { in: batch.map((a) => a.id) } },
       data: { lockedAt: new Date() },
@@ -162,6 +165,7 @@ export async function runScan(scanId: string, jobId?: string) {
 
 export async function finishScan(scanId: string) {
   const scan = await db.scan.findUniqueOrThrow({ where: { id: scanId }, include: { shop: true } });
+  if (scan.status === "failed" && scan.shop.status !== "installed") return; // the uninstall already closed it
   const answers = await db.aiAnswer.findMany({
     where: { scanId, status: "parsed" },
     include: { citations: { where: { isOwn: true }, select: { id: true } }, mentions: true },
@@ -175,31 +179,42 @@ export async function finishScan(scanId: string) {
     _sum: { usd: true },
   });
 
-  await db.$transaction([
-    db.visibilitySnapshot.upsert({
-      where: { scanId },
-      create: { shopId: scan.shopId, scanId, score, byEngine, mentionRate },
-      update: { score, byEngine, mentionRate },
-    }),
+  const plan = getPlan(scan.shop.plan);
+  const ok = answers.length > 0;
+  const now = new Date();
+  // No answers at all (the data provider was down): no snapshot, so the score never drops to 0 over an outage,
+  // the scan's date is left alone, and a free scan is given back so the store can try again.
+  const writes: Prisma.PrismaPromise<unknown>[] = [
     db.scan.update({
       where: { id: scanId },
       data: {
-        status: answers.length ? "done" : "failed",
+        status: ok ? "done" : "failed",
         score,
-        finishedAt: new Date(),
+        finishedAt: now,
         costUsd: costs._sum.usd ?? 0,
-        error: answers.length ? null : "No AI answers could be read. We'll try again on the next scan.",
+        error: ok ? null : plan.scanEveryDays ? "No AI answers could be read. We'll try again on the next scan." : "No AI answers could be read. Please try again in a few minutes.",
       },
     }),
     db.shop.update({
       where: { id: scan.shopId },
       data: {
-        lastScanAt: new Date(),
-        baselineDate: scan.shop.baselineDate ?? new Date(),
         onboarding: "done",
+        ...(ok ? { lastScanAt: now, baselineDate: scan.shop.baselineDate ?? now } : {}),
+        ...(ok && scan.kind !== "manual" ? { lastScheduledScanAt: now } : {}),
+        ...(!ok && scan.kind === "free" ? { freeScanUsedAt: null } : {}),
       },
     }),
-  ]);
+  ];
+  if (ok) {
+    writes.unshift(
+      db.visibilitySnapshot.upsert({
+        where: { scanId },
+        create: { shopId: scan.shopId, scanId, score, byEngine, mentionRate },
+        update: { score, byEngine, mentionRate },
+      }),
+    );
+  }
+  await db.$transaction(writes);
 
   // Competitors = brands the AI names instead of the merchant, most frequent first.
   const counts = new Map<string, { name: string; n: number }>();
@@ -216,7 +231,9 @@ export async function finishScan(scanId: string) {
     await db.competitor.create({ data: { shopId: scan.shopId, name: c.name } }).catch(() => {});
   }
 
-  const plan = getPlan(scan.shop.plan);
+  // The fix and outreach rounds belong to the Shopify app's screens. A web store has neither (its pitches come from
+  // the Sites page), so the jobs would only spend money and use up its monthly pitches on rows it can't see.
+  if (scan.shop.source === "web") return;
   if (plan.fixesPerMonth > 0) await enqueue("fixes.generate", { scanId }, { shopId: scan.shopId, dedupeKey: `fixes:${scan.shopId}` });
   if (plan.outreachPerMonth > 0) await enqueue("outreach.find", {}, { shopId: scan.shopId, dedupeKey: `outreach:${scan.shopId}` });
 }

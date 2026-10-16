@@ -89,12 +89,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         await revertFix(fix.id, admin);
         return { ok: true, message: "Undone. Your store is back how it was." };
       case "reject":
-        if (!fix) break;
+        // Only something still waiting can be skipped: a fix autopilot put live meanwhile keeps its Undo.
+        if (!fix || fix.status !== "pending") break;
         await rejectFix(fix);
         return { ok: true, message: "Skipped" };
       case "restore":
-        if (!fix) break;
-        await db.fix.update({ where: { id: fix.id }, data: { status: "pending" } });
+        if (!fix || (fix.status !== "rejected" && fix.status !== "reverted")) break;
+        await db.fix.update({ where: { id: fix.id }, data: { status: "pending", revertedAt: null, appliedAt: null, resultGid: null, resultUrl: null, error: null } });
         return { ok: true, message: "Moved back to waiting" };
       case "edit": {
         if (!fix || fix.status !== "pending") break;

@@ -73,8 +73,13 @@ export async function buildMonthlyReport(shopId: string, now = new Date()) {
 registerJob("report.monthly", async (job) => {
   const shop = await db.shop.findUniqueOrThrow({ where: { id: job.shopId! } });
   const to = (shop.reportEmails ?? shop.email ?? "").split(",").map((s) => s.trim()).filter(Boolean);
-  if (!to.length) return;
+  if (!to.length) {
+    // Nobody to send to: still "done" for this month, or the scheduler would queue it again every minute.
+    await db.shop.update({ where: { id: shop.id }, data: { lastReportAt: new Date() } });
+    return;
+  }
   const { html, subject } = await buildMonthlyReport(shop.id);
-  await sendEmail(to, subject, html, shop.id);
+  // One send per store per month, even when Resend is slow and the job runs twice.
+  await sendEmail(to, subject, html, shop.id, `report:${shop.id}:${new Date().toISOString().slice(0, 7)}`);
   await db.shop.update({ where: { id: shop.id }, data: { lastReportAt: new Date() } });
 });

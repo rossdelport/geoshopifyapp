@@ -50,7 +50,9 @@ async function runJob(job: Awaited<ReturnType<typeof claimJobs>>[number]) {
     await finishJob(job);
   } catch (err) {
     console.error(`[worker] job ${job.type} ${job.id} failed (attempt ${job.attempts}):`, (err as Error).message);
-    await finishJob(job, err);
+    // Recording the failure can fail too (database blip, the store deleted mid-job): never let that escape, an
+    // unhandled rejection would stop the whole server. requeueStuckJobs picks the job up later.
+    await finishJob(job, err).catch((e) => console.error(`[worker] could not record job ${job.id} failure:`, (e as Error).message));
   } finally {
     clearInterval(beat);
   }
@@ -62,13 +64,17 @@ async function tick() {
     if (running < MAX_RUNNING) {
       for (const job of await claimJobs(MAX_RUNNING - running, { notTypes: [CHECK_JOB] })) {
         running++;
-        runJob(job).finally(() => running--);
+        runJob(job)
+          .catch((err) => console.error(`[worker] job ${job.id} could not be finished:`, (err as Error).message))
+          .finally(() => running--);
       }
     }
     if (runningChecks < MAX_CHECKS) {
       for (const job of await claimJobs(MAX_CHECKS - runningChecks, { types: [CHECK_JOB] })) {
         runningChecks++;
-        runJob(job).finally(() => runningChecks--);
+        runJob(job)
+          .catch((err) => console.error(`[worker] job ${job.id} could not be finished:`, (err as Error).message))
+          .finally(() => runningChecks--);
       }
     }
   } catch (err) {
@@ -77,6 +83,8 @@ async function tick() {
 }
 
 const DAY = 86_400_000;
+// A scheduled job that has given up (4 tries) is tried afresh after this long, not every minute.
+const RETRY_FAILED_MS = 6 * 3_600_000;
 
 let lastPurge = 0;
 
@@ -105,11 +113,12 @@ export async function scheduleDueWork(now = new Date()) {
     if (REFRESH_AFTER_DAYS[plan.id]) await queueRefresh(shop.id, now);
 
     // Reddit finder: the first look for every store, then weekly on paid plans.
-    if (redditDue(shop, now)) await enqueue("reddit.find", {}, { shopId: shop.id, dedupeKey: `reddit:${shop.id}` });
+    if (redditDue(shop, now)) await enqueue("reddit.find", {}, { shopId: shop.id, dedupeKey: `reddit:${shop.id}`, ifFailedWaitMs: RETRY_FAILED_MS });
 
-    // Recurring scans.
+    // Recurring scans, timed from the last scheduled one (a manual "check AI now" doesn't push the weekly scan back).
     if (plan.scanEveryDays) {
-      const due = !shop.lastScanAt || now.getTime() - shop.lastScanAt.getTime() >= plan.scanEveryDays * DAY - 3_600_000;
+      const last = shop.lastScheduledScanAt ?? shop.lastScanAt;
+      const due = !last || now.getTime() - last.getTime() >= plan.scanEveryDays * DAY - 3_600_000;
       if (due) {
         const usage = await getUsageFor(shop.id);
         const check = canRunScan(plan, usage, true);
@@ -123,7 +132,7 @@ export async function scheduleDueWork(now = new Date()) {
             });
             kind = lastDeep && now.getTime() - lastDeep.startedAt.getTime() < 7 * DAY ? "daily" : "weekly";
           }
-          await enqueue("scan.start", { kind }, { shopId: shop.id, dedupeKey: `scan-start:${shop.id}` });
+          await enqueue("scan.start", { kind }, { shopId: shop.id, dedupeKey: `scan-start:${shop.id}`, ifFailedWaitMs: RETRY_FAILED_MS });
         } else if (!shop.costAlertedAt) {
           console.warn(`[cost] ${shop.domain} paused: ${check.reason} ($${usage.costThisMonth.toFixed(2)})`);
           await db.shop.update({ where: { id: shop.id }, data: { costAlertedAt: now } });
@@ -140,7 +149,7 @@ export async function scheduleDueWork(now = new Date()) {
       (!shop.lastReportAt || shop.lastReportAt < monthStart) &&
       env.resendKey
     ) {
-      await enqueue("report.monthly", {}, { shopId: shop.id, dedupeKey: `report:${shop.id}` });
+      await enqueue("report.monthly", {}, { shopId: shop.id, dedupeKey: `report:${shop.id}`, ifFailedWaitMs: RETRY_FAILED_MS });
     }
   }
 }

@@ -24,6 +24,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export const action = async ({ request }: ActionFunctionArgs) => {
   const user = await requireUser(request);
   if (fromAnotherSite(request)) return { error: "Please use the form on the GEO website." };
+  // One store per account (a second tab, or a replayed form, would set up another store nobody can see).
+  if (await db.shop.findFirst({ where: { userId: user.id }, select: { id: true } })) throw redirect("/dash");
   const host = storeHost((await request.formData()).get("store"));
   if (!host) return { error: STORE_ERRORS.address };
   const found = await findShopifyStore(host);

@@ -650,10 +650,46 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
   it("schedules a weekly scan when one is due", async () => {
     const { scheduleDueWork } = await import("../app/lib/worker.server");
     await db.job.deleteMany({ where: { shopId } });
-    await db.shop.update({ where: { id: shopId }, data: { lastScanAt: new Date(Date.now() - 8 * 86_400_000) } });
+    const weekAgo = new Date(Date.now() - 8 * 86_400_000);
+    await db.shop.update({ where: { id: shopId }, data: { lastScanAt: weekAgo, lastScheduledScanAt: weekAgo } });
     await scheduleDueWork();
     const job = await db.job.findFirst({ where: { shopId, type: "scan.start" } });
     expect(job?.payload).toEqual({ kind: "weekly" });
+  });
+
+  it("a manual check AI now doesn't push the weekly scan back", async () => {
+    const { scheduleDueWork } = await import("../app/lib/worker.server");
+    await db.job.deleteMany({ where: { shopId } });
+    await db.shop.update({ where: { id: shopId }, data: { lastScanAt: new Date(), lastScheduledScanAt: new Date(Date.now() - 8 * 86_400_000) } });
+    await scheduleDueWork();
+    expect(await db.job.findFirst({ where: { shopId, type: "scan.start" } })).not.toBeNull();
+  });
+
+  it("a scheduled job that gave up is not started again every minute", async () => {
+    const jobs = await import("../app/lib/jobs.server");
+    await db.job.deleteMany({ where: { dedupeKey: "k:failed" } });
+    await db.job.create({ data: { type: "scan.start", shopId, status: "failed", attempts: 4, dedupeKey: "k:failed", error: "boom" } });
+    expect(await jobs.enqueue("scan.start", {}, { shopId, dedupeKey: "k:failed", ifFailedWaitMs: 3_600_000 })).toBeNull();
+    expect((await db.job.findUniqueOrThrow({ where: { dedupeKey: "k:failed" } })).status).toBe("failed");
+    // A person pressing "try again" (no wait) still restarts it.
+    expect((await jobs.enqueue("scan.start", {}, { shopId, dedupeKey: "k:failed" }))?.status).toBe("queued");
+    await db.job.deleteMany({ where: { dedupeKey: "k:failed" } });
+  });
+
+  it("a scan that read no answers writes no score and gives a free scan back", async () => {
+    const { finishScan } = await import("../app/lib/scan.server");
+    const before = await db.shop.findUniqueOrThrow({ where: { id: shopId } });
+    await db.shop.update({ where: { id: shopId }, data: { freeScanUsedAt: new Date() } });
+    const scan = await db.scan.create({ data: { shopId, kind: "free", status: "running", engines: ["chatgpt"], runs: 1, total: 0 } });
+    await finishScan(scan.id);
+    const done = await db.scan.findUniqueOrThrow({ where: { id: scan.id } });
+    expect(done.status).toBe("failed");
+    expect(done.error).toContain("No AI answers could be read");
+    expect(await db.visibilitySnapshot.findUnique({ where: { scanId: scan.id } })).toBeNull();
+    const after = await db.shop.findUniqueOrThrow({ where: { id: shopId } });
+    expect(after.freeScanUsedAt).toBeNull();
+    expect(after.lastScanAt?.getTime()).toBe(before.lastScanAt?.getTime());
+    await db.scan.delete({ where: { id: scan.id } });
   });
 
   it("stops a job that dies on every attempt, and claims free checks separately", async () => {

@@ -82,7 +82,7 @@ export function crawlerCheckDue(checkedAt: Date | null | undefined, now = new Da
 }
 
 export function queueCrawlerCheck(shopId: string) {
-  return enqueue("crawlers.check", {}, { shopId, dedupeKey: `crawlers:${shopId}` });
+  return enqueue("crawlers.check", {}, { shopId, dedupeKey: `crawlers:${shopId}`, ifFailedWaitMs: 6 * 3_600_000 });
 }
 
 registerJob("crawlers.check", async (job) => {

@@ -39,6 +39,11 @@ export default function Ask() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ messages: next.filter((m) => !m.error).map(({ role, content }) => ({ role, content })) }),
       });
+      // Signed out meanwhile (the 30-day cookie ran out): the request landed on the sign-in page.
+      if (res.redirected || new URL(res.url).pathname.startsWith("/login")) {
+        window.location.assign("/login?next=/dash/ask");
+        return;
+      }
       if (res.ok) d = (await res.json()) as Answer;
     } catch {
       // keep the friendly error

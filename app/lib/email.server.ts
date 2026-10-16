@@ -98,6 +98,6 @@ function errorName(raw: string): string | null {
   }
 }
 
-export async function sendEmail(to: string[], subject: string, html: string, shopId?: string) {
-  await sendEmailMessage({ to, subject, html, shopId });
+export async function sendEmail(to: string[], subject: string, html: string, shopId?: string, idempotencyKey?: string) {
+  await sendEmailMessage({ to, subject, html, shopId, ...(idempotencyKey ? { idempotencyKey } : {}) });
 }

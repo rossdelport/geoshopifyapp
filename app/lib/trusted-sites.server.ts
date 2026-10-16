@@ -8,10 +8,11 @@
 import { Prisma } from "@prisma/client";
 import db from "../db.server";
 import { getPlan } from "./plans";
-import { startOfMonth } from "./limits";
 import { findAuthor } from "./treg.server";
 import { outreachKind, type OutreachKind } from "./sources";
+import { cleanUrl } from "./answers";
 import { draftPitch, outreachUsedThisMonth } from "./outreach.server";
+import { startOfMonth } from "./limits";
 import { enqueue, registerJob } from "./jobs.server";
 import { emailConfigured, sendEmail } from "./email.server";
 import { env } from "./env.server";
@@ -116,15 +117,19 @@ export async function findWriter(shopId: string, domain: string): Promise<{ ok: 
   const site = (await trustedSites(shopId, 200)).find((s) => s.domain === domain);
   if (!site) return { ok: false, error: SITE_ERRORS.notCited };
 
-  const a = await findAuthor(site.page.url, shopId);
-  const found = Boolean(a.email || a.name || a.linkedin);
-  try {
-    await db.siteWriter.create({
-      data: { shopId, domain, pageUrl: site.page.url, pageTitle: site.page.title, found, ...a },
-    });
-  } catch {
-    // Two clicks at once: the other one saved it.
+  // Take the month's slot first, under a lock on the store, so three quick clicks can't each pay for a lookup
+  // past the allowance; then do the paid lookup and fill the row in.
+  const reserved = await db.$transaction(async (tx) => {
+    await tx.$executeRaw`SELECT id FROM "Shop" WHERE id = ${shopId} FOR UPDATE`;
+    if ((await tx.siteWriter.count({ where: { shopId, createdAt: { gte: startOfMonth() } } })) >= plan.writersPerMonth) return null;
+    return tx.siteWriter.create({ data: { shopId, domain, pageUrl: site.page.url, pageTitle: site.page.title, found: false } }).catch(() => null);
+  });
+  if (!reserved) {
+    // Over the allowance, or two clicks at once (the other one has the row).
+    return (await db.siteWriter.findUnique({ where: { shopId_domain: { shopId, domain } } })) ? { ok: true } : { ok: false, error: SITE_ERRORS.writersUsed };
   }
+  const a = await findAuthor(site.page.url, shopId);
+  await db.siteWriter.update({ where: { id: reserved.id }, data: { found: Boolean(a.email || a.name || a.linkedin), ...a } });
   return { ok: true };
 }
 
@@ -140,7 +145,9 @@ export async function pitchSite(shopId: string, domain: string): Promise<{ ok: t
   if (!site) return { ok: false, error: SITE_ERRORS.notCited };
   if (!PITCHABLE.includes(site.kind)) return { ok: false, error: SITE_ERRORS.noPitch };
 
-  const existing = await db.outreachTarget.findUnique({ where: { shopId_url: { shopId, url: site.page.url } } });
+  // The same address the outreach finder saves (no tracking tags), so one article is one target and one pitch.
+  const url = cleanUrl(site.page.url);
+  const existing = await db.outreachTarget.findUnique({ where: { shopId_url: { shopId, url } } });
   if (existing?.pitch) return { ok: true, targetId: existing.id };
   if (!existing && (await outreachUsedThisMonth(shopId)) >= plan.outreachPerMonth) return { ok: false, error: SITE_ERRORS.pitchesUsed };
 
@@ -150,7 +157,7 @@ export async function pitchSite(shopId: string, domain: string): Promise<{ ok: t
     (await db.outreachTarget.create({
       data: {
         shopId,
-        url: site.page.url,
+        url,
         domain,
         title: site.page.title,
         namedBrands: site.rivals,

@@ -32,15 +32,37 @@ export interface FoundStore {
   currency: string | null;
 }
 
-/** Shopify's /meta.json for a typed address, or null when it isn't a Shopify store. */
+const META = { timeoutMs: 10_000, maxRedirects: 4, maxBytes: 200_000 } as const;
+
+/**
+ * Shopify's /meta.json for a typed address, or null when it isn't a Shopify store. The typed address can be
+ * anyone's site, so unless it is the store's own myshopify.com address, Shopify's copy of that store's meta.json
+ * must name the typed address as the store's domain (`claimMatches`): nobody can claim another brand's store by
+ * serving a meta.json with its name in it.
+ */
 export async function findShopifyStore(host: string): Promise<FoundStore | null> {
   try {
-    const res = await safeFetch(`https://${host}/meta.json`, "application/json", { timeoutMs: 10_000, maxRedirects: 4, maxBytes: 200_000 });
+    const res = await safeFetch(`https://${host}/meta.json`, "application/json", META);
     if (res.status !== 200) return null;
-    return parseMeta(JSON.parse(res.text), new URL(res.url).hostname);
+    const finalHost = new URL(res.url).hostname.toLowerCase();
+    const found = parseMeta(JSON.parse(res.text), finalHost);
+    if (!found || finalHost === found.myshopifyDomain) return found;
+    const own = await safeFetch(`https://${found.myshopifyDomain}/meta.json`, "application/json", META);
+    if (own.status !== 200 || !claimMatches(JSON.parse(own.text), found.myshopifyDomain, finalHost)) return null;
+    return found;
   } catch {
     return null;
   }
+}
+
+/** Does Shopify's own meta.json for `myshopifyDomain` say the store lives at `host`? (www. is the same site.) */
+export function claimMatches(json: unknown, myshopifyDomain: string, host: string): boolean {
+  if (!json || typeof json !== "object") return false;
+  const j = json as { myshopify_domain?: unknown; domain?: unknown };
+  const d = typeof j.myshopify_domain === "string" ? j.myshopify_domain.trim().toLowerCase() : "";
+  const domain = typeof j.domain === "string" ? j.domain.trim().toLowerCase() : "";
+  const bare = (h: string) => h.replace(/^www\./, "");
+  return d === myshopifyDomain && Boolean(domain) && bare(domain) === bare(host);
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- public JSON of any shape */
@@ -160,17 +182,24 @@ export async function addWebStore(
     // its orders) is never handed to whoever typed it.
     return { ok: false, error: STORE_ERRORS.taken };
   }
-  const shop = await db.shop.create({
-    data: {
-      domain: found.myshopifyDomain,
-      primaryDomain: found.host,
-      name: found.name,
-      source: "web",
-      userId,
-      status: "installed",
-      ...(found.country ? { country: found.country } : {}),
-      ...(found.currency ? { currency: found.currency } : {}),
-    },
-  });
-  return { ok: true, shopId: shop.id, isNew: true };
+  try {
+    const shop = await db.shop.create({
+      data: {
+        domain: found.myshopifyDomain,
+        primaryDomain: found.host,
+        name: found.name,
+        source: "web",
+        userId,
+        status: "installed",
+        ...(found.country ? { country: found.country } : {}),
+        ...(found.currency ? { currency: found.currency } : {}),
+      },
+    });
+    return { ok: true, shopId: shop.id, isNew: true };
+  } catch {
+    // Two adds of the same new store at once: the other one made it.
+    const raced = await db.shop.findUnique({ where: { domain: found.myshopifyDomain } });
+    if (raced?.userId === userId) return { ok: true, shopId: raced.id, isNew: false };
+    return { ok: false, error: STORE_ERRORS.taken };
+  }
 }

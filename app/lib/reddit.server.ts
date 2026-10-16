@@ -143,13 +143,24 @@ Drop: questions about something they already bought or picked (sizing, stock, re
 
 // ---------- The reply ----------
 
-const DISCLOSED = /\b(i run|i own|i'm the (founder|owner|co-?founder)|i am the (founder|owner|co-?founder)|i work (at|for)|i make|we make|founder of|owner of)\b/i;
+const DISCLOSED =
+  /\b(i run|i own|i started|i founded|i co-?founded|i sell|we sell|i'm the (founder|owner|co-?founder|maker)|i am the (founder|owner|co-?founder|maker)|i work (at|for)|i make|we make|founder of|owner of|my (brand|store|shop|company)|our (brand|store|shop|company)|disclosure)\b/i;
 
-/** Make sure the reply says who's writing it, near the start. */
+/**
+ * Make sure the reply says who's writing it, near the start: one of the owner phrases AND the brand's name in the
+ * first 220 characters ("I own two pairs of their trackies" is not a disclosure).
+ */
 export function ensureDisclosure(reply: string, brand: string): string {
   const r = tidyDashes(reply).trim();
-  return DISCLOSED.test(r.slice(0, 220)) ? r : `(I run ${brand}, so I'm biased.) ${r}`;
+  const head = r.slice(0, 220).replace(/[\u2018\u2019]/g, "'");
+  const ok = DISCLOSED.test(head) && head.toLowerCase().includes(brand.toLowerCase());
+  return ok ? r : `(I run ${brand}, so I'm biased.) ${r}`;
 }
+
+/** Wording that talks like a customer of the store. Such a draft is never shown; the plain honest one is used instead. */
+const POSES =
+  /\b(i|i've|i have|we|we've|we have)\s+(bought|purchased|ordered|paid for|got (mine|one|two|a pair|a few)|been (using|wearing|rocking)|received (mine|my order))\b|\bmy order\b|\b(happy|satisfied|long-?time|repeat) customer\b|\bas a customer\b/i;
+export const posesAsCustomer = (reply: string) => POSES.test(reply.replace(/[\u2018\u2019]/g, "'"));
 
 /** Without AI: a short, honest reply that names the best matching product once. */
 export function fallbackReply(o: { brand: string; summary: string | null; product: { title: string; price: string | null; description: string | null } | null }): string {
@@ -220,9 +231,12 @@ export async function findThreads(shopId: string, now = new Date()): Promise<num
   // Search (a year back the first time, a month after that), skipping threads we already have.
   const known = new Set((await db.redditThread.findMany({ where: { shopId }, select: { postId: true } })).map((t) => t.postId));
   const found = new Map<string, { post: RedditPost; phrases: string[] }>();
+  let searched = 0;
   for (const phrase of phrases) {
     try {
-      for (const post of await searchReddit(phrase, shop.redditCheckedAt ? "month" : "year", shopId)) {
+      const posts = await searchReddit(phrase, shop.redditCheckedAt ? "month" : "year", shopId);
+      searched++;
+      for (const post of posts) {
         if (known.has(post.postId)) continue;
         const f = found.get(post.postId);
         if (f) f.phrases.push(phrase);
@@ -232,6 +246,9 @@ export async function findThreads(shopId: string, now = new Date()): Promise<num
       console.error(`[reddit] ${shop.domain} search "${phrase}" failed: ${(err as Error).message}`);
     }
   }
+  // Every search failed (Reddit data down, key missing): not a look. The job tries again later instead of
+  // recording a check, which on the free plan would have used up the store's only look.
+  if (phrases.length && !searched) throw new Error("Every Reddit search failed; trying again later");
 
   // Keep the ones where a reply from the owner fits.
   const products = await db.product.findMany({ where: { shopId, status: "ACTIVE" }, take: 40 });
@@ -260,6 +277,10 @@ export async function findThreads(shopId: string, now = new Date()): Promise<num
     if (aiConfigured()) {
       try {
         draft = await replyByAi(post, { brand, about, country: countryName(shop.country ?? "US"), products: productList }, shopId);
+        if (draft && posesAsCustomer(draft)) {
+          console.warn(`[reddit] ${shop.domain}: AI reply talked like a customer, using the plain one`);
+          draft = null;
+        }
       } catch (err) {
         console.error(`[reddit] reply by AI failed, using the plain one: ${(err as Error).message}`);
       }

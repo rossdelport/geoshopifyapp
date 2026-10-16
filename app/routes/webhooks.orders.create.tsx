@@ -8,7 +8,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const { shop, payload } = await authenticate.webhook(request);
   const orderGid = (payload as { admin_graphql_api_id?: string }).admin_graphql_api_id;
   const row = await db.shop.findUnique({ where: { domain: shop }, select: { id: true, status: true } });
-  if (row && orderGid && row.status === "installed") {
+  // Shopify sends a webhook again whenever it isn't answered within 5 seconds: an order already queued or
+  // counted is never counted twice.
+  const seen = orderGid ? await db.job.findUnique({ where: { dedupeKey: `order:${orderGid}` }, select: { id: true } }) : null;
+  if (row && orderGid && row.status === "installed" && !seen) {
     await enqueue(
       "orders.one",
       { orderGid },

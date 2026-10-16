@@ -275,7 +275,9 @@ export default function Reddit() {
               {waiting
                 ? "We’re looking through Reddit for people asking about products like yours. This takes a few minutes."
                 : data.show === "all"
-                  ? "No threads found yet. We look again every week."
+                  ? data.weekly
+                    ? "No threads found yet. We look again every week."
+                    : "Your free look found no threads. Paid plans get new threads every week."
                   : "Nothing here yet."}
             </p>
           )}

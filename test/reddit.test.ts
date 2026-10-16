@@ -109,6 +109,16 @@ describe("Reddit finder: the pure parts", () => {
     );
     const own = "I'm the founder of sunday, so take this with a grain of salt. Go a size up.";
     expect(rd.ensureDisclosure(own, "sunday")).toBe(own);
+    expect(rd.ensureDisclosure("I\u2019m the owner of Sunday. Go a size up.", "sunday")).toBe("I\u2019m the owner of Sunday. Go a size up.");
+    expect(rd.ensureDisclosure("Full disclosure: I started sunday. Go a size up.", "sunday")).toBe("Full disclosure: I started sunday. Go a size up.");
+    // Owner-sounding words without the brand are not a disclosure.
+    expect(rd.ensureDisclosure("I own two pairs of their trackies and love them. Go a size up.", "sunday")).toMatch(/^\(I run sunday, so I'm biased\.\) I own two pairs/);
+    expect(rd.ensureDisclosure("I make a point of checking fabric weight.", "sunday")).toMatch(/^\(I run sunday, so I'm biased\.\) I make/);
+    // A reply that talks like a customer is never used, however it starts.
+    expect(rd.posesAsCustomer("I've been using sunday's trackies for a year and they're the best thing I've bought")).toBe(true);
+    expect(rd.posesAsCustomer("(I run sunday, so I'm biased.) I bought mine last winter and they held up.")).toBe(true);
+    expect(rd.posesAsCustomer("Speaking as a happy customer, go a size up.")).toBe(true);
+    expect(rd.posesAsCustomer("(I run sunday, so I'm biased.) For fleece this heavy, go a size up. Happy to answer questions.")).toBe(false);
     const plain = rd.fallbackReply({ brand: "sunday", summary: "Streetwear.", product: { title: "Flare Trackies", price: "120.00 AUD", description: "Heavyweight fleece. Made in Melbourne." } });
     expect(plain).toBe(
       "(I run sunday, so I'm biased.) For what you're after, our Flare Trackies (120.00 AUD) might be worth a look. Heavyweight fleece. Either way, I'd compare a few options and check the sizing or details before you buy. Happy to answer any questions.",

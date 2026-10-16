@@ -13,7 +13,7 @@ const ORDER_FIELDS = (withJourney: boolean) => `
   id name createdAt sourceName
   totalPriceSet { shopMoney { amount currencyCode } }
   channelInformation { channelDefinition { handle channelName subChannelName } app { title } }
-  ${withJourney ? `customerJourneySummary { firstVisit { ${VISIT} } lastVisit { ${VISIT} } }` : ""}
+  ${withJourney ? `customerJourneySummary { ready firstVisit { ${VISIT} } lastVisit { ${VISIT} } }` : ""}
   lineItems(first: 10) { nodes { title quantity } }`;
 
 const ordersQuery = (withJourney: boolean) => `#graphql
@@ -120,6 +120,9 @@ export async function processOrder(shopId: string, admin: AdminClient, orderGid:
   const data: any = await fetchWithFallback(admin, orderQuery, { id: orderGid });
   const o = data.order;
   if (!o) return;
+  // Shopify builds the order's visits a little after the order; until then an AI order would look like a plain
+  // one and never be looked at again. Fail the job so it comes back with backoff (up to about 15 minutes later).
+  if (o.customerJourneySummary && o.customerJourneySummary.ready === false) throw new Error("Shopify hasn't finished the order's customer journey yet");
   await saveIfAi(shopId, o);
   const date = dayOf(o.createdAt);
   const amount = Number(o.totalPriceSet?.shopMoney?.amount ?? 0);

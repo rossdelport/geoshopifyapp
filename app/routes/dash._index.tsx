@@ -1,12 +1,14 @@
 import { useEffect } from "react";
-import type { LoaderFunctionArgs } from "react-router";
-import { Link, useLoaderData, useRevalidator } from "react-router";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { Form, Link, useLoaderData, useNavigation, useRevalidator } from "react-router";
 import db from "../db.server";
 import { requireWebShop } from "../lib/web-auth.server";
 import { activeScan, latestVisibility, moneyThisMonth, topCompetitors } from "../lib/dashboard.server";
+import { enqueue } from "../lib/jobs.server";
 import { questionRows } from "../lib/question-stats.server";
+import { scanHasWorker } from "../lib/scan.server";
 import { SCORE_EXPLAINER, scoreLabel } from "../lib/score";
-import { ENGINE_LABELS, type Engine } from "../lib/plans";
+import { ENGINE_LABELS, type Engine, getPlan } from "../lib/plans";
 import { formatMoney, formatPct, timeAgo } from "../lib/format";
 import { ICONS, PageHead, Stat } from "../components/web";
 
@@ -22,11 +24,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       activeScan(shop.id),
       db.job.findFirst({ where: { shopId: shop.id, type: "onboard" }, orderBy: { createdAt: "desc" }, select: { status: true } }),
     ]);
+    // The first scan's job gave up (or vanished in a restart) with the scan still open: nothing would ever finish it.
+    const stuck = shop.onboarding === "scanning" && job?.status === "done" && (!scan || !(await scanHasWorker(scan.id)));
+    const plan = getPlan(shop.plan);
     return {
       storeName,
       onboarding: shop.onboarding,
-      setupFailed: job?.status === "failed",
+      setupFailed: job?.status === "failed" || stuck,
       scan: scan ? { done: scan.done, total: scan.total } : null,
+      scanLabel: `Asking ${listNames(plan.engines.map(engineName))} (${plan.runsPerScan === 1 ? "once each" : "twice each"})`,
       view: "setup" as const,
     };
   }
@@ -57,17 +63,34 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
+/** "Try again" on a setup that stopped: the stuck scan's job, or the whole setup, goes back in the queue. */
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const { shop } = await requireWebShop(request);
+  if (String((await request.formData()).get("intent")) !== "retry" || shop.onboarding === "done") return null;
+  const scan = await activeScan(shop.id);
+  const [type, payload, dedupeKey] = scan ? (["scan.run", { scanId: scan.id }, `scan-run:${scan.id}`] as const) : (["onboard", {}, `onboard:${shop.id}`] as const);
+  const again = await db.job.updateMany({
+    where: { dedupeKey, status: { in: ["failed", "done"] } },
+    data: { status: "queued", attempts: 0, error: null, lockedAt: null, runAfter: new Date() },
+  });
+  if (!again.count) await enqueue(type, payload, { shopId: shop.id, dedupeKey });
+  return null;
+};
+
 const STEPS: { key: string; label: string }[] = [
   { key: "profiling", label: "Reading your products" },
   { key: "questions", label: "Writing the buying questions shoppers ask AI" },
-  { key: "scanning", label: "Asking ChatGPT, Gemini, Perplexity and Google (twice each)" },
+  { key: "scanning", label: "Asking the AI assistants" }, // replaced by the plan's own list (scanLabel)
 ];
 
 const engineName = (e: string) => ENGINE_LABELS[e as Engine] ?? (e === "ours" ? "Pages we built" : "Other AI");
+/** "ChatGPT, Gemini and Perplexity". */
+const listNames = (names: string[]) => (names.length > 1 ? `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}` : names[0] ?? "");
 
 export default function DashHome() {
   const data = useLoaderData<typeof loader>();
   const revalidator = useRevalidator();
+  const nav = useNavigation();
   const working = data.view === "setup" || Boolean(data.scan);
 
   // Refresh every few seconds while setup or a scan is running.
@@ -87,7 +110,7 @@ export default function DashHome() {
           <ol className="w-steps">
             {STEPS.map((s, i) => (
               <li key={s.key} className={i < at ? "done" : i === at && !data.setupFailed ? "now" : undefined}>
-                {s.label}
+                {s.key === "scanning" ? data.scanLabel : s.label}
               </li>
             ))}
           </ol>
@@ -102,9 +125,14 @@ export default function DashHome() {
             </>
           ) : null}
           {data.setupFailed ? (
-            <p className="w-err" role="alert">
-              Setup stopped partway. We’ve been told and will get it going again. Please email ross@usegeo.app if it doesn’t move within a day.
-            </p>
+            <div className="w-err" role="alert" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
+              <span>Setup stopped partway. Try again, and if it keeps stopping, email ross@usegeo.app.</span>
+              <Form method="post">
+                <button className="w-btn w-btn-sm" type="submit" name="intent" value="retry" disabled={nav.state !== "idle"}>
+                  Try again
+                </button>
+              </Form>
+            </div>
           ) : null}
         </section>
       </>
@@ -240,7 +268,7 @@ export default function DashHome() {
               <tbody>
                 {money.recentOrders.map((o) => (
                   <tr key={o.orderName + String(o.orderedAt)}>
-                    <td className="w-q">{o.orderName}</td>
+                    <td className="w-q">{o.orderName ?? "Order"}</td>
                     <td>{engineName(o.engine)}</td>
                     <td className="num">{formatMoney(o.revenue, money.currency)}</td>
                     <td className="num">{timeAgo(o.orderedAt)}</td>

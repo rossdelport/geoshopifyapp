@@ -79,6 +79,9 @@ describe("search engines", () => {
     ["https://www.google.com/", "google"],
     ["https://www.google.com.au/search?q=beard+oil", "google"],
     ["https://www.google.co.uk/", "google"],
+    ["https://google.com/", "google"],
+    ["https://images.google.com/", "google"],
+    ["https://cn.bing.com/search?q=x", "bing"],
     ["https://www.bing.com/search?q=x", "bing"],
     ["https://duckduckgo.com/?q=x", "duckduckgo"],
     ["https://au.search.yahoo.com/search?p=x", "yahoo"],
@@ -96,6 +99,10 @@ describe("search engines", () => {
     expect(searchEngineFromReferrer("https://gemini.google.com/app")).toBeNull();
     expect(searchEngineFromReferrer("https://www.bing.com/chat?q=x")).toBeNull();
     expect(searchEngineFromReferrer("https://notgoogle.com/")).toBeNull();
+    // Google's other products are not searches.
+    expect(searchEngineFromReferrer("https://docs.google.com/document/d/x")).toBeNull();
+    expect(searchEngineFromReferrer("https://mail.google.com/mail/u/0/")).toBeNull();
+    expect(searchEngineFromReferrer("https://mail.yandex.ru/")).toBeNull();
     expect(searchEngineFromReferrer("https://google.com.evil.net/")).toBeNull();
     expect(searchEngineFromReferrer("https://www.facebook.com/")).toBeNull();
     expect(searchEngineFromReferrer("")).toBeNull();

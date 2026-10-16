@@ -16,6 +16,8 @@ interface EnqueueOptions {
   runAfter?: Date;
   /** Only one active (queued/running) job per key. Finished jobs with the key are reused. */
   dedupeKey?: string;
+  /** With a dedupeKey: when the last job with that key failed for good less than this long ago, don't start it again yet. */
+  ifFailedWaitMs?: number;
 }
 
 export async function enqueue(
@@ -37,6 +39,7 @@ export async function enqueue(
 
   const existing = await db.job.findUnique({ where: { dedupeKey: opts.dedupeKey } });
   if (existing && (existing.status === "queued" || existing.status === "running")) return null;
+  if (existing?.status === "failed" && opts.ifFailedWaitMs && Date.now() - existing.updatedAt.getTime() < opts.ifFailedWaitMs) return null;
   if (existing) return db.job.update({ where: { id: existing.id }, data });
   try {
     return await db.job.create({ data: { ...data, dedupeKey: opts.dedupeKey } });

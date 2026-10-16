@@ -189,6 +189,9 @@ describe("the pure page helpers", () => {
     expect(pages.slugify("ChatGPT vs Google AI Overviews: where shoppers' questions get answered?")).toBe("chatgpt-vs-google-ai-overviews-where-shoppers-questions-get-answered");
     expect(pages.slugify("!!!")).toBe("post");
     expect(pages.slugify("x".repeat(100)).length).toBeLessThanOrEqual(70);
+    const long = pages.slugify("Reddit replies, buying guides or outreach: which gets AI to name your store first of all?");
+    expect(long.length).toBeLessThanOrEqual(70);
+    expect(long).toBe("reddit-replies-buying-guides-or-outreach-which-gets-ai-to-name-your"); // cut between words
     expect(pages.readMinutes(1100)).toBe(5);
     expect(pages.readMinutes(50)).toBe(1);
     expect(pages.isoDay(new Date("2026-10-15T22:00:00Z"))).toBe("2026-10-15");

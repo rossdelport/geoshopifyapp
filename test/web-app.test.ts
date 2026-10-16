@@ -207,6 +207,8 @@ describe.skipIf(!url)("web app (needs TEST_DATABASE_URL)", () => {
       status: 200,
       text: JSON.stringify({ myshopify_domain: "beard-co.myshopify.com", name: "Beard Co", country: "AU", currency: "AUD" }),
     };
+    // Shopify's own copy of the store's meta.json confirms that beard.com really is that store.
+    fetched.pages["https://beard-co.myshopify.com/meta.json"] = { status: 200, text: JSON.stringify({ myshopify_domain: "beard-co.myshopify.com", domain: "beard.com" }) };
     const added = await caught(start.action(args(post("/start", { store: "https://beard.com/" }, cookie))));
     expect(added.headers.get("Location")).toBe("/dash");
     const shop = await db.shop.findUniqueOrThrow({ where: { domain: "beard-co.myshopify.com" } });
@@ -227,8 +229,27 @@ describe.skipIf(!url)("web app (needs TEST_DATABASE_URL)", () => {
     // Installed from Shopify (with its orders) or added by someone else: never handed over.
     await db.shop.create({ data: { domain: "taken.myshopify.com", name: "Taken" } });
     fetched.pages["https://taken.com/meta.json"] = { status: 200, text: JSON.stringify({ myshopify_domain: "taken.myshopify.com" }) };
+    fetched.pages["https://taken.myshopify.com/meta.json"] = { status: 200, text: JSON.stringify({ myshopify_domain: "taken.myshopify.com", domain: "www.taken.com" }) };
     expect(await start.action(args(post("/start", { store: "taken.com" }, cookie)))).toEqual({ error: pc.STORE_ERRORS.taken });
     expect((await db.shop.findUniqueOrThrow({ where: { domain: "taken.myshopify.com" } })).userId).toBeNull();
+  });
+
+  it("never hands over a store whose name is served from someone else's site (a fake meta.json)", async () => {
+    const cookie = await signIn();
+    fetched.pages["https://evil.com/meta.json"] = { status: 200, text: JSON.stringify({ myshopify_domain: "victim.myshopify.com", name: "Victim" }) };
+    fetched.pages["https://victim.myshopify.com/meta.json"] = { status: 200, text: JSON.stringify({ myshopify_domain: "victim.myshopify.com", domain: "victim.com" }) };
+    expect(await start.action(args(post("/start", { store: "evil.com" }, cookie)))).toEqual({ error: pc.STORE_ERRORS.notShopify });
+    expect(await db.shop.findUnique({ where: { domain: "victim.myshopify.com" } })).toBeNull();
+    // Shopify's copy that can't be read, or doesn't name the store, proves nothing either.
+    fetched.pages["https://victim.myshopify.com/meta.json"] = { status: 404, text: "" };
+    expect(await start.action(args(post("/start", { store: "evil.com" }, cookie)))).toEqual({ error: pc.STORE_ERRORS.notShopify });
+    // The store's own myshopify.com address needs no second look.
+    fetched.pages["https://own.myshopify.com/meta.json"] = { status: 200, text: JSON.stringify({ myshopify_domain: "own.myshopify.com", name: "Own" }) };
+    expect(await pc.findShopifyStore("own.myshopify.com")).toMatchObject({ myshopifyDomain: "own.myshopify.com", host: "own.myshopify.com" });
+    expect(pc.claimMatches({ myshopify_domain: "a.myshopify.com", domain: "www.a.com" }, "a.myshopify.com", "a.com")).toBe(true);
+    expect(pc.claimMatches({ myshopify_domain: "a.myshopify.com", domain: "a.com" }, "a.myshopify.com", "b.com")).toBe(false);
+    expect(pc.claimMatches({ myshopify_domain: "a.myshopify.com" }, "a.myshopify.com", "a.com")).toBe(false);
+    expect(pc.claimMatches("nope", "a.myshopify.com", "a.com")).toBe(false);
   });
 
   it("reads the store's public catalog into the product cache and marks products gone from it", async () => {
@@ -286,10 +307,15 @@ describe.skipIf(!url)("web app (needs TEST_DATABASE_URL)", () => {
     await send(order); // reloaded thank-you page
     await send({ ...order, order: "778", first: { ref: "https://google.com/", url: "https://px.com/" } }); // not from AI
     await send({ ...order, k: "geo_wrongkey123456789", order: "779" });
+    await send({ ...order, order: "778", first: { ref: "https://google.com/", url: "https://px.com/" } }); // the same plain order again: not counted twice
+    await send({ ...order, order: "fake-1" }); // not a Shopify order id: ignored
+    // A first visit from ChatGPT 40 days ago no longer explains an order (30-day window): a plain order.
+    await send({ ...order, order: "780", first: { ref: "https://chatgpt.com/", url: "https://px.com/", t: Date.now() - 40 * 86_400_000 }, last: { ref: "", url: "https://px.com/" } });
     const ai = await db.aiOrder.findMany({ where: { shopId: shop.id } });
     expect(ai.map((o) => [o.orderGid, o.engine, o.revenue])).toEqual([["gid://shopify/Order/777", "perplexity", 50]]);
     const day = await db.orderDay.findFirstOrThrow({ where: { shopId: shop.id } });
-    expect([day.orders, day.revenue]).toEqual([2, 100]);
+    expect([day.orders, day.revenue]).toEqual([3, 150]);
+    expect(await db.pixelOrder.count({ where: { shopId: shop.id } })).toBe(3);
     // Order 778 came from Google: counted as a search order (SEO beside AI), not an AI order.
     expect([day.searchOrders, day.searchRevenue]).toEqual([1, 50]);
 

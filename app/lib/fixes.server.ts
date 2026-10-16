@@ -396,7 +396,10 @@ Task: ${want[idea.type]}${extra}`,
     case "product_faq": {
       if (!out.faq?.length) return null;
       const checked = await check(out.faq.map((f) => `Q: ${f.q}\nA: ${f.a}`).join("\n\n"));
-      after = { faq: parseFaq(checked) ?? out.faq };
+      const softened = parseFaq(checked);
+      after = { faq: softened ?? out.faq };
+      // The softened wording couldn't be read back: the original stays, so say so instead of claiming it was softened.
+      if (!softened && note) note = `Please check the wording before this goes live: ${note}`;
       break;
     }
     case "product_seo":
@@ -738,6 +741,7 @@ export async function applyFix(fixId: string, admin: AdminClient) {
         data: {
           status: "applied",
           appliedAt: now,
+          revertedAt: null, // live again, if it had been undone and moved back to waiting
           error: null,
           resultGid: page.id,
           resultUrl: `${storeUrl(fix.shop)}/pages/${page.handle}`,
@@ -801,7 +805,7 @@ export async function applyFix(fixId: string, admin: AdminClient) {
     if (original) await db.fix.update({ where: { id: original.id }, data: { refreshedAt: now } });
     return db.fix.update({
       where: { id: fix.id },
-      data: { status: "applied", appliedAt: now, error: null, before: before as object, resultUrl: live.onlineStoreUrl ?? null },
+      data: { status: "applied", appliedAt: now, revertedAt: null, error: null, before: before as object, resultUrl: live.onlineStoreUrl ?? null },
     });
   } catch (err) {
     // An update written before the store changed the page (or undid it): retire it, a fresh one comes next cycle.
@@ -859,7 +863,7 @@ async function applyGuideRefresh(fix: Fix & { shop: { primaryDomain: string | nu
   const before: RefreshBefore = { title: live.title, bodyHtml: live.body ?? "", refreshedAt: original.refreshedAt?.toISOString() ?? null };
   return db.fix.update({
     where: { id: fix.id },
-    data: { status: "applied", appliedAt: now, error: null, before: before as object, resultGid: original.resultGid, resultUrl: original.resultUrl },
+    data: { status: "applied", appliedAt: now, revertedAt: null, error: null, before: before as object, resultGid: original.resultGid, resultUrl: original.resultUrl },
   });
 }
 
@@ -899,7 +903,8 @@ export async function revertFix(fixId: string, admin: AdminClient) {
 
   switch (fix.type) {
     case "guide_page": {
-      if (fix.resultGid) assertNoUserErrors((await gql(admin, PAGE_DELETE, { id: fix.resultGid })).pageDelete);
+      // A page the store already deleted itself needs no deleting (Shopify would refuse with NOT_FOUND).
+      if (fix.resultGid && (await readPage(admin, fix.resultGid))) assertNoUserErrors((await gql(admin, PAGE_DELETE, { id: fix.resultGid })).pageDelete);
       // The page is gone, with any refreshes of it; then the guides that linked to it drop the link.
       const now = new Date();
       await db.fix.updateMany({ where: { refreshOfId: fix.id, status: "applied" }, data: { status: "reverted", revertedAt: now } });
@@ -1253,8 +1258,9 @@ Update it: correct any answer the product data now contradicts, and answer only 
   let note: string | null = null;
   if (HEALTH_WORDS.test(`${shop.profile?.category} ${product.productType} ${product.title}`)) {
     const checked = await claimsCheck(shop.id, shop.country, faq.map((f) => `Q: ${f.q}\nA: ${f.a}`).join("\n\n"));
-    note = checked.note;
-    faq = parseFaq(checked.text) ?? faq;
+    const softened = parseFaq(checked.text);
+    note = checked.note && !softened ? `Please check the wording before this goes live: ${checked.note}` : checked.note;
+    faq = softened ?? faq;
   }
   if (sameFaqText(faq, current)) {
     await markRefreshed(fix.id, now);
@@ -1324,7 +1330,7 @@ export async function queueRefresh(shopId: string, now = new Date()) {
   const last = await db.job.findUnique({ where: { dedupeKey: key }, select: { status: true, updatedAt: true } });
   if (last && (last.status === "queued" || last.status === "running")) return null;
   if (last && now.getTime() - last.updatedAt.getTime() < REFRESH_EVERY_MS) return null;
-  return enqueue("fixes.refresh", {}, { shopId, dedupeKey: key });
+  return enqueue("fixes.refresh", {}, { shopId, dedupeKey: key, ifFailedWaitMs: 6 * 3_600_000 });
 }
 
 registerJob("fixes.refresh", async (job) => {

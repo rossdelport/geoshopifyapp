@@ -75,15 +75,14 @@ export function toPostCard(p: { slug: string; title: string; description: string
   };
 }
 
-/** A URL slug from a title: lowercase words joined by hyphens, at most 70 characters, never empty. */
+/** A URL slug from a title: lowercase words joined by hyphens, at most 70 characters (cut between words), never empty. */
 export function slugify(title: string): string {
-  const s = title
+  let s = title
     .toLowerCase()
     .replace(/['’]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 70)
-    .replace(/-+$/, "");
+    .replace(/^-+|-+$/g, "");
+  if (s.length > 70) s = s.slice(0, 70).replace(/-[^-]*$/, "");
   return s || "post";
 }
 
