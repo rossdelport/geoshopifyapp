@@ -201,3 +201,50 @@ For GEO's own growth (being the answer when someone asks "how do I get ChatGPT t
 For merchants (this is the same playbook GEO sells): guide pages per buying question (the guide calendar),
 comparison guides against the rivals AI names, an llms.txt for the store, and fresh content on a schedule.
 It backs the guide calendar as the next build, with comparison pages as one guide type.
+
+## 5. Post: "Write for people who are choosing, not learning" (shared 18 Oct 2026)
+
+A founder got about half his signups from ChatGPT after publishing pages around buying questions. The playbook:
+
+1. List the questions people ask right before they spend: "[competitor] alternative", "[tool] vs [tool]",
+   "best [category] for [use case]", "[category] for [buyer]", "[tool] pricing", "is [tool] worth it".
+2. Run them through ChatGPT in a clean session and save every cited source: query, URL, page type, brands named,
+   and whether yours appears. After 30 to 50 queries the same sites and formats repeat.
+3. Sort by buying intent. "What is CRM software?" is learning; "best CRM for a 10-person agency" is choosing.
+   Write for the chooser first.
+4. Build the missing buying pages on your own site: alternatives, comparisons, use cases, pricing, integrations,
+   pages per type of buyer. One page answers one buying decision very well.
+5. No fake comparisons where you win every row. Show prices, screenshots, real limits, who each option suits and
+   where the competitor genuinely wins. The page should help even if the reader never buys from you.
+6. Add something other pages lack: original data, a calculator, real screenshots, a decision table, a benchmark,
+   customer examples, a demo. Another 1,500-word AI article gives AI no reason to cite you.
+7. Put prices, differences, features, limits and answers in plain page text, with clear headings, crawlable
+   pages, internal links and structured data that matches what visitors see.
+8. Let ChatGPT in: check robots.txt and CDN rules and don't block OAI-SearchBot (OpenAI asks sites to allow it).
+9. Watch other sites too. If ChatGPT keeps citing a third-party "best tools" page, comparison, Reddit thread or
+   guide for a valuable question, find out why you're missing and whether you honestly belong there.
+10. Follow the money: ChatGPT links carry utm_source=chatgpt.com, so record landing page, signup, qualified user
+    and paying customer. "Cited 400 times" means nothing if nobody buys.
+11. When a page brings customers, grow around the same intent ("X alternative" to "free X alternative" to
+    "X vs Y" to "best [category] for [use case]"), not random traffic articles.
+12. Rerun the important questions every month: which brands and URLs appeared or disappeared, which new sources
+    are cited. Then update the buying pages.
+
+There is no secret GEO markup.
+
+### What this means for GEO
+
+This is GEO's own product, run on GEO itself. Steps 2, 9, 10 and 12 are what scans, Sites AI trusts and the
+money dashboard already do for stores.
+
+| Idea | What it would do | Effort | Impact |
+|---|---|---|---|
+| Run GEO on usegeo.app | Add GEO as a store-like account with 30 to 50 buying questions ("best app to get my Shopify store recommended by ChatGPT", "Kedra alternative", "AgentIQ vs Kedra", "is an AI visibility app worth it"), scanned monthly. Shows which sites ChatGPT cites and whether GEO is named | Small | High |
+| Buying pages on usegeo.app | Honest comparison and alternative pages (GEO vs Kedra, AgentIQ, Mento, FirstIndex, an SEO agency), "for skincare stores" style buyer pages and a clear pricing page. Each says where the other option wins. Must pass `docs/ads/ad-rules.md` (accurate on the day, re-checked) | Medium | High |
+| Something only GEO has | Aggregated data from our scans ("which sites ChatGPT cites for beauty products in Australia") and the free check as a built-in tool on each page | Medium | High |
+| Follow signups to money | The waitlist already saves utm source and referrer. Add the same for sign-ups and paid customers, and an admin table: source and landing page to signup to paying | Small | High |
+| Let ChatGPT in | Check usegeo.app's robots.txt and Railway/CDN rules allow OAI-SearchBot, GPTBot, PerplexityBot and ClaudeBot | Small | Medium |
+| Pitch the cited pages | Use Sites AI trusts on GEO's own questions and pitch the roundups and threads ChatGPT already cites | Small | Medium to high |
+
+For stores, the same thinking backs the guide calendar: choose buying questions over learning questions,
+comparison guides with honest limits, and something original on every page.
