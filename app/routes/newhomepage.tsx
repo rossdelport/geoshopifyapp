@@ -9,6 +9,11 @@ import font from "../fonts/inter-geo.woff2?url";
 // trimmed to Latin and served from /assets with a long cache. noindex until it replaces "/".
 import raw from "../home/new-home.html?raw";
 
+// Small copies of the PNG story logos, sized for the cards (2x their 28px box); the full-size files stay in
+// public/home/img for the /stories pages. Imported as URLs so they get the same long cache as the font.
+const smallLogos = import.meta.glob<string>("../home/logos/*.webp", { eager: true, query: "?url", import: "default" });
+const cardLogo = (logo: string) => smallLogos[`../home/logos/${logo.replace(/^logos\//, "").replace(/\.png$/, ".webp")}`] ?? logoSrc(logo);
+
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const arrow = '<svg aria-hidden="true"><use href="#i-arrow"/></svg>';
 
@@ -18,7 +23,7 @@ const storyGroup = (copy: boolean) =>
   `<ul class="st-group" role="list"${copy ? ' aria-hidden="true"' : ""}>` +
   STORIES.map((s) => {
     const wide = s.logoShape === "wide";
-    const logo = `<span class="st-logo${wide ? " is-wide" : ""}"><img src="${logoSrc(s.logo)}" alt="" width="${wide ? 76 : 28}" height="${wide ? 20 : 28}" loading="lazy" decoding="async"></span>`;
+    const logo = `<span class="st-logo${wide ? " is-wide" : ""}"><img src="${cardLogo(s.logo)}" alt="" width="${wide ? 76 : 28}" height="${wide ? 20 : 28}" loading="lazy" decoding="async"></span>`;
     return `<li><a class="st-card" href="${storyPath(s.slug)}"${copy ? ' tabindex="-1"' : ""}><span class="st-h">${esc(s.cardHeadline)}</span><span class="st-f">${logo}${esc(s.brand)}${arrow}</span></a></li>`;
   }).join("") +
   "</ul>";

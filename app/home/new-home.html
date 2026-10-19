@@ -22,7 +22,9 @@
 /* One font file: Inter with its "Display" cut for big text (font-optical-sizing), weights 400 to 700, Latin only.
    The fallback is Arial sized to match, so nothing jumps when Inter arrives. */
 @font-face{font-family:Inter;src:url(__FONT_URL__) format("woff2");font-weight:400 700;font-style:normal;font-display:swap}
-@font-face{font-family:"Inter Fallback";src:local("Arial");ascent-override:90.44%;descent-override:22.52%;line-gap-override:0%;size-adjust:107.12%}
+@font-face{font-family:"Inter Fallback";src:local("Arial");ascent-override:93.51%;descent-override:23.28%;line-gap-override:0%;size-adjust:103.6%}
+@font-face{font-family:"Inter Display Fallback";src:local("Arial");font-weight:400 500;ascent-override:98.85%;descent-override:24.61%;line-gap-override:0%;size-adjust:98%}
+@font-face{font-family:"Inter Display Fallback";src:local("Arial Bold"),local("Arial-BoldMT");font-weight:600 700;ascent-override:104.17%;descent-override:25.94%;line-gap-override:0%;size-adjust:93%}
 
 :root{
   --ink:#0e0e13;--ink-2:#53565f;--head:#25272e;--text:#666972;--soft:#6e717a;
@@ -57,7 +59,7 @@ ul,ol{padding:0;list-style:none}
 .num{font-variant-numeric:tabular-nums}
 
 /* Type: big lines in grey with the key words in near-black and bolder, like the reference video */
-.h1,.h2{color:var(--ink-2);font-weight:450;text-wrap:balance}
+.h1,.h2{font-family:Inter,"Inter Display Fallback",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink-2);font-weight:450;text-wrap:balance}
 .h1 b,.h2 b{color:var(--ink);font-weight:600}
 .h1{font-size:clamp(2.6rem,1.15rem + 4.4vw,4.25rem);line-height:1.06;letter-spacing:-.04em}
 .h1 b{display:block}
@@ -126,8 +128,9 @@ ul,ol{padding:0;list-style:none}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:22px;padding:4px 12px 4px 4px;border-radius:999px;background:#fff;border:1px solid var(--line);box-shadow:0 1px 2px rgba(18,18,40,.05);font-size:13px;font-weight:500;color:#4c4f58}
 .eyebrow b{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:var(--accent-50);color:var(--accent-ink);font-weight:600}
 .eyebrow b::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(108,92,242,.2)}
-.hero-row{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px 48px;margin-top:26px}
+.hero-row{display:grid;gap:24px;margin-top:26px}
 .hero-row .lead{max-width:35em}
+@media (min-width:1120px){.hero-row{grid-template-columns:minmax(0,42rem) auto;justify-content:space-between;align-items:end;gap:48px}}
 .hero-cta{display:flex;flex-wrap:wrap;gap:10px}
 .hero-card{margin-top:clamp(36px,5vw,56px)}
 .art-hero{height:clamp(440px,38vw,500px)}
@@ -215,7 +218,7 @@ ul,ol{padding:0;list-style:none}
 .e-fu{animation:e-fu 8s ease-in-out infinite}
 .e-tile{position:absolute;z-index:2;left:50%;top:38px;width:94px;height:94px;margin-left:-47px;border-radius:26px;background:linear-gradient(180deg,#a99df9,#6e5ef2);box-shadow:0 0 0 6px rgba(255,255,255,.3),0 16px 28px -10px rgba(60,40,180,.6),inset 0 2px 3px rgba(255,255,255,.55),inset 0 -6px 12px rgba(60,40,180,.3);animation:e-tile 8s cubic-bezier(.3,0,.2,1) infinite}
 .e-tile svg{width:56px;height:56px;color:#fff}
-.e-tile path{stroke-dasharray:24;animation:e-check 8s ease-out infinite}
+.e-tile svg{animation:e-check 8s ease-out infinite}
 .e-c1{top:18px;left:50%;margin-left:-62px;animation:e-c1 8s ease-out infinite}
 .e-c2{top:44%;left:6%;animation:e-c2 8s ease-out infinite}
 .e-c3{top:44%;right:6%;animation:e-c3 8s ease-out infinite}
@@ -223,7 +226,7 @@ ul,ol{padding:0;list-style:none}
 @keyframes e-fd{0%,11%{transform:scaleY(1)}19%,90%{transform:scaleY(0)}96%,100%{transform:scaleY(1)}}
 @keyframes e-fu{0%,17%{transform:scaleY(0)}25%,88%{transform:scaleY(1)}92%,100%{transform:scaleY(0)}}
 @keyframes e-tile{0%,21%{transform:translateY(84px) scale(.8);opacity:0}24%{transform:translateY(84px) scale(.8);opacity:1}36%,83%{transform:none;opacity:1}89%,100%{transform:translateY(84px) scale(.8);opacity:0}}
-@keyframes e-check{0%,34%{stroke-dashoffset:24}44%,100%{stroke-dashoffset:0}}
+@keyframes e-check{0%,34%{opacity:0;transform:scale(.5)}44%,100%{opacity:1;transform:none}}
 @keyframes e-c1{0%,44%{opacity:0;transform:scale(.6)}50%,90%{opacity:1;transform:none}97%,100%{opacity:0}}
 @keyframes e-c2{0%,50%{opacity:0;transform:scale(.6)}56%,90%{opacity:1;transform:none}97%,100%{opacity:0}}
 @keyframes e-c3{0%,56%{opacity:0;transform:scale(.6)}62%,90%{opacity:1;transform:none}97%,100%{opacity:0}}
@@ -252,7 +255,8 @@ ul,ol{padding:0;list-style:none}
 .g-st .g-w{background:var(--warn-bg);color:var(--warn);opacity:0;animation:g-w 8s infinite}
 .g-st .g-r{background:var(--good-bg);color:var(--good);animation:g-r 8s infinite}
 .g-title{position:relative;margin-top:7px;font-size:13px;line-height:1.3;font-weight:650;letter-spacing:-.015em;color:#1d1f25}
-.g-title span{display:block;clip-path:inset(0 0 0 0);animation:g-type 8s steps(28,end) infinite}
+.g-title span{display:block}
+.g-title::after{content:"";position:absolute;inset:0;background:#fff;transform-origin:100% 50%;transform:scaleX(0);animation:g-type 8s steps(28,end) infinite}
 .g-lines{display:grid;gap:5px;margin-top:9px}
 .g-lines i{display:block;height:5px;border-radius:3px;background:#ebeaf3;transform-origin:0 50%;animation:g-line 8s ease-out infinite}
 .g-lines i:nth-child(1){width:100%}.g-lines i:nth-child(2){width:88%;animation-name:g-line2}.g-lines i:nth-child(3){width:64%;animation-name:g-line3}
@@ -278,7 +282,7 @@ ul,ol{padding:0;list-style:none}
 .g-geo span{background:var(--accent)}
 .g-you{left:50%;bottom:20px;color:#d63c8c;animation:g-you 8s cubic-bezier(.5,0,.3,1) infinite}
 .g-you span{background:#d63c8c}
-@keyframes g-type{0%,10%{clip-path:inset(0 100% 0 0)}30%,100%{clip-path:inset(0 0 0 0)}}
+@keyframes g-type{0%,10%{transform:none}30%,100%{transform:scaleX(0)}}
 @keyframes g-line{0%,30%{transform:scaleX(0)}40%,100%{transform:none}}
 @keyframes g-line2{0%,36%{transform:scaleX(0)}46%,100%{transform:none}}
 @keyframes g-line3{0%,42%{transform:scaleX(0)}52%,100%{transform:none}}
@@ -297,11 +301,12 @@ ul,ol{padding:0;list-style:none}
 .b-lines::after{top:0;bottom:0;left:50%;width:1px}
 .b-frame{position:absolute;left:50%;top:50%;width:196px;height:196px;margin:-98px 0 0 -98px;border-radius:44px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.08)}
 .b-tile{position:absolute;left:50%;top:50%;width:156px;height:156px;margin:-78px 0 0 -78px;border-radius:38px;overflow:hidden}
-.b-tile svg{width:86px;height:86px;filter:drop-shadow(0 6px 8px rgba(91,71,224,.35));animation:b-glow 4.5s ease-in-out infinite}
+.b-tile svg{position:relative;width:86px;height:86px;filter:drop-shadow(0 6px 8px rgba(91,71,224,.35))}
+.b-tile::before{content:"";position:absolute;inset:0;margin:auto;width:120px;height:120px;border-radius:50%;background:radial-gradient(closest-side,rgba(108,92,242,.4),rgba(108,92,242,0));opacity:0;animation:b-glow 4.5s ease-in-out infinite}
 .b-shine{position:absolute;inset:-20%;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.85) 50%,transparent 60%);transform:translateX(-100%);animation:b-shine 4.5s ease-in-out infinite}
 .b-ring{position:absolute;left:50%;top:50%;width:156px;height:156px;margin:-78px 0 0 -78px;border-radius:38px;border:2px solid rgba(255,255,255,.7);opacity:0;animation:b-ring 4.5s ease-out infinite}
 @keyframes b-shine{0%,55%{transform:translateX(-100%)}80%,100%{transform:translateX(100%)}}
-@keyframes b-glow{0%,50%,100%{filter:drop-shadow(0 6px 8px rgba(91,71,224,.35))}65%{filter:drop-shadow(0 6px 14px rgba(108,92,242,.75))}}
+@keyframes b-glow{0%,50%,100%{opacity:0}65%{opacity:1}}
 @keyframes b-ring{0%,55%{transform:scale(1);opacity:0}60%{opacity:.8}90%,100%{transform:scale(1.45);opacity:0}}
 @media (max-width:639px){.b-frame{width:176px;height:176px;margin:-88px 0 0 -88px}.b-tile,.b-ring{width:138px;height:138px;margin:-69px 0 0 -69px;border-radius:34px}.b-tile svg{width:76px;height:76px}}
 
@@ -327,14 +332,14 @@ ul,ol{padding:0;list-style:none}
 .s1-bar{top:46px;display:flex;align-items:center;gap:8px;height:48px;padding:0 6px 0 12px;border-radius:13px}
 .s1-bar>svg{width:16px;height:16px;flex:none;color:var(--soft)}
 .s1-url{flex:1;min-width:0;font-size:14px;font-weight:500;color:var(--head);white-space:nowrap;overflow:hidden}
-.s1-url span{display:inline-block;vertical-align:top;max-width:120px;overflow:hidden;white-space:nowrap;padding-right:1px;border-right:1.5px solid var(--accent);animation:s1-type 7s steps(13,end) infinite,caret 1s steps(1) infinite}
+.s1-url span{position:relative;display:inline-block;vertical-align:top;white-space:nowrap;padding-right:2px}
+.s1-url span::after{content:"";position:absolute;top:0;bottom:0;left:0;width:100%;background:#fff;border-left:1.5px solid var(--accent);transform:translateX(100%);animation:s1-type 7s steps(13,end) infinite}
 .s1-go{display:grid;place-items:center;width:36px;height:36px;flex:none;border-radius:10px;color:#fff;background:linear-gradient(180deg,var(--accent-hi),var(--accent));animation:s1-go 7s infinite}
 .s1-go svg{width:16px;height:16px}
 .s1-c1{top:122px;left:calc(50% - 128px);animation:s1-c1 7s ease-out infinite}
 .s1-c2{top:156px;left:calc(50% - 74px);animation:s1-c2 7s ease-out infinite}
 .s1-c1 b,.s1-c2 b{background:var(--good-bg);color:var(--good)}
-@keyframes s1-type{0%,8%{max-width:0}36%,100%{max-width:98px}}
-@keyframes caret{50%{border-right-color:transparent}}
+@keyframes s1-type{0%,8%{transform:none}36%,100%{transform:translateX(100%)}}
 @keyframes s1-go{0%,40%{transform:none}43%{transform:scale(.88)}46%,100%{transform:none}}
 @keyframes s1-c1{0%,48%{opacity:0;transform:translateY(8px)}55%,92%{opacity:1;transform:none}100%{opacity:0}}
 @keyframes s1-c2{0%,56%{opacity:0;transform:translateY(8px)}63%,92%{opacity:1;transform:none}100%{opacity:0}}
@@ -414,9 +419,9 @@ ul,ol{padding:0;list-style:none}
 .r-reply p{font-size:11.5px;line-height:1.45;color:var(--head)}
 .r-reply p em{font-style:normal;color:var(--accent-ink);font-weight:600}
 .r-dots{position:absolute;top:118px;left:max(16px,calc(50% - 135px));z-index:2;display:flex;gap:4px;padding:10px 12px;border-radius:12px;background:#fff;animation:r-dots 8s infinite}
-.r-dots i{width:6px;height:6px;border-radius:50%;background:#b9b3ee;animation:dot 1s ease-in-out infinite}
+.r-dots i{width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:.45;animation:dot 1s ease-in-out infinite}
 .r-dots i:nth-child(2){animation-delay:.15s}.r-dots i:nth-child(3){animation-delay:.3s}
-@keyframes dot{50%{transform:translateY(-3px);background:var(--accent)}}
+@keyframes dot{50%{transform:translateY(-3px);opacity:1}}
 @keyframes r-dots{0%,8%{opacity:0}10%,28%{opacity:1}30%,100%{opacity:0}}
 @keyframes r-reply{0%,28%{opacity:0;transform:translate(-50%,10px)}36%,92%{opacity:1;transform:translateX(-50%)}100%{opacity:0;transform:translateX(-50%)}}
 .r-copy{bottom:18px;left:50%;transform:translateX(-50%);animation:r-copy 8s ease-out infinite}
@@ -436,7 +441,7 @@ ul,ol{padding:0;list-style:none}
 .x-k{font-size:9.5px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:#9a9da6}
 .x-old{margin-top:4px;font-size:12.5px;color:#a3a5ad;text-decoration:line-through;text-decoration-color:#d0d1d8}
 .x-new{position:relative;margin-top:8px;padding-top:8px;border-top:1px dashed #e6e5ee;font-size:12.5px;line-height:1.4;font-weight:600;color:#1d1f25}
-.x-new mark{background:linear-gradient(transparent 55%,var(--accent-100) 55%);color:inherit;background-size:100% 100%;background-repeat:no-repeat;animation:x-mark 7s ease-out infinite}
+.x-new mark{background:linear-gradient(transparent 55%,var(--accent-100) 55%);color:inherit;background-size:100% 100%;background-repeat:no-repeat;animation:x-mark 7s ease-out 1 both}
 @keyframes x-mark{0%,20%{background-size:0 100%}45%,100%{background-size:100% 100%}}
 .x-why{top:162px;left:50%;transform:translateX(-50%)}
 
@@ -580,7 +585,7 @@ html.wl-lock{overflow:hidden}
 @media (max-width:600px){.wl{margin-top:max(16px,7vh)}.wl-card{padding:28px 20px 22px}}
 
 /* Pictures rest while off screen, and stand still for people who prefer less motion or press pause */
-.is-off,.is-off *{animation-play-state:paused!important}
+.is-off,.is-off *,.is-off *::before,.is-off *::after{animation-play-state:paused!important}
 .still-btn{position:absolute;right:12px;top:12px;z-index:8;display:grid;place-items:center;width:32px;height:32px;border-radius:10px;color:var(--accent-ink);background:rgba(255,255,255,.75);border:1px solid #fff;box-shadow:0 4px 10px -4px rgba(40,25,130,.3)}
 .still-btn:hover{background:#fff}
 .still-btn svg{width:14px;height:14px}
@@ -1003,7 +1008,7 @@ html.still .g-you{transform:translate(56px,8px)}
       <a class="btn btn-sec btn-sm" href="/stories">See all stories <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </div>
   </div>
-  <div class="st-view" data-stories>
+  <div class="st-view" data-anim data-stories>
     <div class="st-track">
 <!-- STORY_CARDS -->
     </div>
