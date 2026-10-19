@@ -23,6 +23,7 @@ const storyGroup = (copy: boolean) =>
   }).join("") +
   "</ul>";
 
-const page = raw.replaceAll("__FONT_URL__", font).replace("<!-- STORY_CARDS -->", storyGroup(false) + storyGroup(true));
+// Functions as replacements, so a "$" in a headline is never read as a replace pattern.
+const page = raw.replaceAll("__FONT_URL__", () => font).replace("<!-- STORY_CARDS -->", () => storyGroup(false) + storyGroup(true));
 
 export const loader = async ({ request }: LoaderFunctionArgs) => serveHome(request, page);
