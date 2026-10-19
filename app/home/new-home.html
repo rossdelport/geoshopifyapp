@@ -1,0 +1,1459 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GEO · Get your products recommended by AI</title>
+<meta name="description" content="Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO helps your Shopify products get recommended in those AI answers, then shows the sales you can trace back to AI.">
+<!-- A preview of the new home page (usegeo.app/newhomepage). Kept out of search until it replaces "/". -->
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GEO">
+<meta property="og:title" content="GEO · Get your products recommended by AI">
+<meta property="og:description" content="Shoppers ask ChatGPT what to buy. GEO helps make sure it picks you, and shows the sales you can trace back to AI.">
+<meta property="og:image" content="https://usegeo.app/og/home.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preload" href="__FONT_URL__" as="font" type="font/woff2" crossorigin>
+<style>
+/* One font file: Inter with its "Display" cut for big text (font-optical-sizing), weights 400 to 700, Latin only.
+   The fallback is Arial sized to match, so nothing jumps when Inter arrives. */
+@font-face{font-family:Inter;src:url(__FONT_URL__) format("woff2");font-weight:400 700;font-style:normal;font-display:swap}
+@font-face{font-family:"Inter Fallback";src:local("Arial");ascent-override:90.44%;descent-override:22.52%;line-gap-override:0%;size-adjust:107.12%}
+
+:root{
+  --ink:#0e0e13;--ink-2:#53565f;--head:#25272e;--text:#696c75;--soft:#8c8f98;
+  --line:#ececf0;--bg-2:#f6f6f9;
+  /* GEO purple (#5b47e0), a step lighter for this page */
+  --accent:#6c5cf2;--accent-hi:#8476f7;--accent-lo:#5a49e6;--accent-ink:#5442df;
+  --accent-50:#f2f0fe;--accent-100:#e4e0fd;--accent-ring:rgba(108,92,242,.35);
+  /* the picture panels: purple at the top fading lighter, with a soft white glow at the bottom */
+  --t1:#a093f6;--t2:#b8aef8;--t3:#d5cffc;
+  --good:#15803d;--good-bg:#e7f7ed;--warn:#a16207;--warn-bg:#fdf2d8;
+  --shadow:0 1px 2px rgba(18,18,40,.05),0 14px 36px -18px rgba(18,18,40,.2);
+  --font:Inter,"Inter Fallback",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --gut:16px;
+}
+@media (min-width:640px){:root{--gut:24px}}
+@media (min-width:1024px){:root{--gut:40px}}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:#fff;color:var(--text);font-family:var(--font);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:clip}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+h1,h2,h3,p,ul,ol,dl,dd,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+::selection{background:var(--accent-100);color:var(--ink)}
+.sprite{position:absolute;width:0;height:0;overflow:hidden}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.wrap{max-width:1200px;margin:0 auto;padding:0 var(--gut)}
+.num{font-variant-numeric:tabular-nums}
+
+/* Type: big lines in grey with the key words in near-black and bolder, like the reference video */
+.h1,.h2{color:var(--ink-2);font-weight:450;text-wrap:balance}
+.h1 b,.h2 b{color:var(--ink);font-weight:600}
+.h1{font-size:clamp(2.6rem,1.15rem + 4.4vw,4.25rem);line-height:1.03;letter-spacing:-.045em}
+.h1 b{display:block}
+.h2{font-size:clamp(2rem,1.3rem + 2.1vw,2.9rem);line-height:1.08;letter-spacing:-.04em}
+.lead{font-size:clamp(1.06rem,1rem + .25vw,1.2rem);line-height:1.55;letter-spacing:-.01em}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 20px;border-radius:11px;font-size:15px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:transform .15s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease}
+.btn:active{transform:scale(.97)}
+.btn svg{width:17px;height:17px}
+.btn-pri{color:#fff;background:linear-gradient(180deg,var(--accent-hi),var(--accent));border:1px solid var(--accent-lo);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 1px 2px rgba(60,40,190,.25),0 8px 20px -8px rgba(108,92,242,.7)}
+.btn-pri:hover{background:linear-gradient(180deg,#7869f5,var(--accent-lo));box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 1px 2px rgba(60,40,190,.25),0 10px 24px -8px rgba(108,92,242,.8)}
+.btn-sec{color:var(--head);background:#fff;border:1px solid #e2e2e8;box-shadow:0 1px 2px rgba(18,18,40,.06)}
+.btn-sec:hover{border-color:#cfcfd8}
+.btn-sm{height:38px;padding:0 15px;font-size:14px;border-radius:9px}
+
+/* Nav */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.84);-webkit-backdrop-filter:saturate(1.6) blur(14px);backdrop-filter:saturate(1.6) blur(14px);border-bottom:1px solid transparent;transition:border-color .25s}
+.nav.is-scrolled{border-bottom-color:var(--line)}
+.nav-in{display:flex;align-items:center;gap:24px;height:64px}
+.logo{display:inline-flex;align-items:center;gap:9px;font-size:21px;font-weight:650;letter-spacing:-.03em;color:var(--ink)}
+.mark{position:relative;flex:none;width:25px;height:23px}
+.mark i{position:absolute;width:16px;height:16px;border-radius:50%}
+.mark i:first-child{left:0;top:0;background:#cdc6fc}
+.mark i:last-child{right:0;bottom:0;background:var(--accent)}
+.nav-in>nav{margin-left:auto}
+.nav-links{display:flex;gap:2px}
+.nav-links a{display:block;padding:8px 12px;border-radius:8px;font-size:14.5px;font-weight:500;color:#4c4f58;transition:background .2s,color .2s}
+.nav-links a:hover{background:var(--bg-2);color:var(--ink)}
+.nav .btn{margin-left:6px}
+@media (max-width:820px){.nav-links{display:none}.nav .btn{margin-left:auto}}
+
+/* Sections */
+.sec{padding:clamp(64px,8vw,112px) 0}
+.sec-soft{background:linear-gradient(180deg,#fff 0,var(--bg-2) 100%)}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px 40px;margin-bottom:clamp(28px,4vw,48px)}
+.sec-head .h2{max-width:15em}
+.sec-sub{margin-top:14px;max-width:36em}
+@media (max-width:760px){.sec-head{flex-direction:column;align-items:flex-start}}
+
+/* Cards and their picture panels */
+.card{position:relative;background:#fff;border-radius:22px;padding:5px;border:1px solid rgba(18,18,40,.06);box-shadow:var(--shadow)}
+.art{position:relative;height:280px;border-radius:17px;overflow:hidden;isolation:isolate;
+  background:radial-gradient(62% 48% at 50% 112%,rgba(255,255,255,.95),rgba(255,255,255,0) 72%),radial-gradient(34% 30% at 0 100%,rgba(236,247,255,.75),transparent 72%),radial-gradient(34% 30% at 100% 100%,rgba(236,247,255,.75),transparent 72%),linear-gradient(180deg,var(--t1),var(--t2) 64%,var(--t3))}
+.art::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 0 0 1px rgba(255,255,255,.16);pointer-events:none;z-index:9}
+.card-tx{padding:20px 20px 22px}
+.card-tx h3{font-size:19px;line-height:1.3;font-weight:600;letter-spacing:-.022em;color:var(--head)}
+.card-tx p{margin-top:6px;font-size:15px;line-height:1.55}
+@media (min-width:1024px){.card-tx{padding:22px 24px 26px}}
+@media (max-width:639px){.art{height:250px}}
+
+/* Small parts used inside the pictures */
+.chip{position:absolute;z-index:4;display:inline-flex;align-items:center;gap:6px;padding:4px 11px 4px 4px;border-radius:999px;background:rgba(255,255,255,.94);box-shadow:0 0 0 4px rgba(255,255,255,.32),0 6px 14px -4px rgba(45,30,140,.28);font-size:12px;line-height:1.4;font-weight:500;letter-spacing:-.01em;color:#2a2c33;white-space:nowrap}
+.chip b{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:999px;background:var(--accent-50);color:var(--accent-ink);font-weight:650;font-variant-numeric:tabular-nums}
+.chip b svg{flex:none;width:12px;height:12px}
+.chip.is-bump b{animation:bump .5s ease}
+@keyframes bump{40%{transform:scale(1.18)}}
+.tile{display:grid;place-items:center;border-radius:26%;background:linear-gradient(180deg,#fff,#f3f1fd);box-shadow:0 0 0 6px rgba(255,255,255,.3),0 14px 28px -10px rgba(50,30,150,.45),inset 0 -4px 8px rgba(120,100,230,.13),inset 0 2px 2px #fff}
+.ex{position:absolute;top:12px;left:12px;z-index:8;padding:3px 8px;border-radius:99px;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.38)}
+.soon{display:inline-block;vertical-align:3px;margin-left:6px;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600;letter-spacing:0;color:var(--accent-ink);background:var(--accent-50)}
+
+/* ---------- Hero ---------- */
+.hero{padding:clamp(36px,6vw,80px) 0 clamp(56px,7vw,96px)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:22px;padding:4px 12px 4px 4px;border-radius:999px;background:#fff;border:1px solid var(--line);box-shadow:0 1px 2px rgba(18,18,40,.05);font-size:13px;font-weight:500;color:#4c4f58}
+.eyebrow b{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:var(--accent-50);color:var(--accent-ink);font-weight:600}
+.eyebrow b::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(108,92,242,.2)}
+.hero-row{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px 48px;margin-top:26px}
+.hero-row .lead{max-width:35em}
+.hero-cta{display:flex;flex-wrap:wrap;gap:10px}
+.hero-card{margin-top:clamp(36px,5vw,56px)}
+.art-hero{height:clamp(440px,38vw,500px)}
+@media (max-width:560px){.hero-cta{width:100%}.hero-cta .btn{flex:1 1 0;padding:0 12px}}
+
+.chat{position:absolute;left:50%;top:50%;z-index:2;width:min(540px,calc(100% - 32px));transform:translate(-50%,-50%);background:rgba(255,255,255,.97);border-radius:20px;box-shadow:0 0 0 6px rgba(255,255,255,.3),0 30px 60px -24px rgba(45,30,140,.55)}
+.chat-top{padding:10px;border-bottom:1px solid #f0f0f4}
+.seg{position:relative;display:grid;grid-template-columns:repeat(3,1fr);max-width:360px;margin:0 auto;padding:3px;border-radius:11px;background:#f2f2f6}
+.seg-pill{position:absolute;top:3px;bottom:3px;left:3px;width:calc((100% - 6px)/3);border-radius:8px;background:#fff;box-shadow:0 1px 2px rgba(18,18,40,.1),0 3px 8px -3px rgba(18,18,40,.14);transform:translateX(calc(var(--e,0)*100%));transition:transform .55s cubic-bezier(.65,0,.35,1)}
+.seg-i{position:relative;display:flex;align-items:center;justify-content:center;gap:6px;height:30px;font-size:12.5px;font-weight:600;color:#83868f;transition:color .3s}
+.seg-i svg{width:14px;height:14px;flex:none}
+.seg-i.is-on{color:var(--head)}
+.chat-body{padding:16px 16px 18px}
+.bub-q{width:fit-content;max-width:88%;margin-left:auto;padding:9px 14px;border-radius:16px 16px 4px 16px;background:#f0eefc;color:var(--head);font-size:14px;font-weight:500;line-height:1.45}
+.ans{display:flex;gap:10px;margin-top:14px}
+.ans-av{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#fff;border:1px solid var(--line);color:#111}
+.ans-av svg{width:16px;height:16px}
+.ans-tx{flex:1;min-width:0}
+.ans-lead{margin:3px 0 10px;font-size:14px;color:var(--head)}
+.picks{display:grid;gap:6px}
+.pick{display:flex;align-items:center;gap:10px;padding:7px 10px 7px 7px;border-radius:12px;border:1px solid #efeff3;background:#fff;font-size:13px;line-height:1.35;transition:opacity .3s ease,transform .3s ease}
+.pick:nth-child(2){transition-delay:.06s}.pick:nth-child(3){transition-delay:.12s}
+.picks.is-out .pick{opacity:0;transform:translateY(6px)}
+.pk-n{flex:none;width:16px;text-align:center;font-weight:650;color:var(--soft);font-variant-numeric:tabular-nums}
+.pk-th{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:var(--c)}
+.pk-th svg{width:28px;height:28px}
+.pk-t{flex:1;min-width:0;display:grid}
+.pk-t b,.pk-t span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.pk-t b{font-weight:600;color:var(--head)}
+.pk-t span{font-size:12px;color:var(--soft)}
+.pk-you{flex:none;display:none;padding:2px 8px;border-radius:99px;background:var(--accent);color:#fff;font-size:11px;font-weight:600}
+.pick.is-you{border-color:#dcd6fd;background:linear-gradient(90deg,#f5f3ff,#fff 70%);box-shadow:0 0 0 3px rgba(108,92,242,.1)}
+.pick.is-you .pk-you{display:block}
+.hc1{top:16%;left:calc(50% - 334px)}
+.hc2{bottom:11%;right:calc(50% - 336px)}
+.hc3{bottom:22%;left:calc(50% - 364px)}
+.hc1 .tile{width:24px;height:24px;border-radius:8px;background:linear-gradient(180deg,#9b8ef8,var(--accent));box-shadow:inset 0 1px 1px rgba(255,255,255,.5);color:#fff}
+.hc1 .tile svg{width:14px;height:14px}
+@media (max-width:760px){
+  .art-hero{height:470px}
+  .chat{top:52px;transform:translateX(-50%)}
+  .hc1{display:none}
+  .hc2{top:auto;bottom:16px;right:12px}
+  .hc3{bottom:16px;left:12px}
+}
+@media (max-width:380px){.chat-body{padding:14px 12px 16px}.pk-th{width:30px;height:30px}.hc2,.hc3{font-size:11px}}
+
+.works{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 26px;margin-top:26px;font-size:14px;font-weight:500;color:#71747d}
+.works-l{flex-basis:100%;text-align:center;font-size:13px;font-weight:500;color:var(--soft)}
+.works span:not(.works-l){display:inline-flex;align-items:center;gap:8px;color:#4c4f58}
+.works svg{width:19px;height:19px;color:#111}
+@media (min-width:900px){.works-l{flex-basis:auto}}
+
+/* ---------- What you get (bento) ---------- */
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.bento>.card{grid-column:span 4}
+.bento>.c-wide{grid-column:span 7}
+.bento>.c-mid{grid-column:span 5}
+@media (max-width:1023px){.bento{grid-template-columns:repeat(2,1fr)}.bento>.card,.bento>.c-mid{grid-column:span 1}.bento>.c-wide{grid-column:span 2}}
+@media (max-width:639px){.bento{grid-template-columns:1fr}.bento>.card,.bento>.c-wide,.bento>.c-mid{grid-column:auto}}
+
+/* A. Products going round on a wheel, with an order counter */
+.w-chip{top:20px;left:50%;transform:translateX(-50%)}
+.w-wheel{--R:430px;position:absolute;left:50%;top:calc(50% + 22px + var(--R));width:0;height:0;transform:rotate(calc(var(--i,0)*-45deg));transition:transform 1.15s cubic-bezier(.7,0,.2,1)}
+.w-card{position:absolute;left:-82px;top:-102px;width:164px;height:204px;padding:7px;border-radius:16px;background:#fff;box-shadow:0 0 0 5px rgba(255,255,255,.3),0 16px 30px -12px rgba(40,25,130,.45);transform:rotate(calc(var(--n)*45deg)) translateY(calc(var(--R)*-1))}
+.w-img{display:grid;place-items:center;height:100px;border-radius:11px;background:var(--c)}
+.w-img svg{width:80px;height:80px}
+.w-name{margin:9px 4px 0;font-size:13px;line-height:1.3;font-weight:600;letter-spacing:-.01em;color:#1d1f25}
+.w-sub{margin:1px 4px 0;font-size:10.5px;color:#8a8d96}
+.w-price{margin:6px 4px 0;font-size:13px;font-weight:650;color:#1d1f25}
+.w-dots{display:flex;gap:3px;margin:6px 4px 0}
+.w-dots i{width:5px;height:5px;border-radius:50%;background:#d6d7dd}
+.w-dots i:first-child{background:#2a2c33}
+@media (max-width:639px){.w-wheel{--R:300px;top:calc(50% + 14px + var(--R))}.w-card{left:-70px;top:-88px;width:140px;height:176px;padding:6px}.w-img{height:84px}.w-img svg{width:66px;height:66px}.w-name{font-size:12px}}
+
+/* B. An envelope opens, a tick rises out, then three chips */
+.e-stage{position:absolute;left:50%;bottom:-46px;width:300px;height:230px;margin-left:-150px;animation:e-stage 8s ease-in-out infinite}
+.e-stage svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.e-front{z-index:3}
+.e-fu{transform-box:fill-box;transform-origin:50% 100%}
+.e-fd{transform-box:fill-box;transform-origin:50% 0;transform:scaleY(0);animation:e-fd 8s ease-in-out infinite}
+.e-fu{animation:e-fu 8s ease-in-out infinite}
+.e-tile{position:absolute;z-index:2;left:50%;top:38px;width:94px;height:94px;margin-left:-47px;border-radius:26px;background:linear-gradient(180deg,#a99df9,#6e5ef2);box-shadow:0 0 0 6px rgba(255,255,255,.3),0 16px 28px -10px rgba(60,40,180,.6),inset 0 2px 3px rgba(255,255,255,.55),inset 0 -6px 12px rgba(60,40,180,.3);animation:e-tile 8s cubic-bezier(.3,0,.2,1) infinite}
+.e-tile svg{width:56px;height:56px;color:#fff}
+.e-tile path{stroke-dasharray:24;animation:e-check 8s ease-out infinite}
+.e-c1{top:18px;left:50%;margin-left:-62px;animation:e-c1 8s ease-out infinite}
+.e-c2{top:44%;left:6%;animation:e-c2 8s ease-out infinite}
+.e-c3{top:44%;right:6%;animation:e-c3 8s ease-out infinite}
+@keyframes e-stage{0%{transform:translateY(70px);opacity:0}9%,90%{transform:none;opacity:1}97%,100%{transform:translateY(0);opacity:0}}
+@keyframes e-fd{0%,11%{transform:scaleY(1)}19%,100%{transform:scaleY(0)}}
+@keyframes e-fu{0%,17%{transform:scaleY(0)}25%,100%{transform:scaleY(1)}}
+@keyframes e-tile{0%,21%{transform:translateY(84px) scale(.8);opacity:0}24%{transform:translateY(84px) scale(.8);opacity:1}36%,100%{transform:none;opacity:1}}
+@keyframes e-check{0%,34%{stroke-dashoffset:24}44%,100%{stroke-dashoffset:0}}
+@keyframes e-c1{0%,44%{opacity:0;transform:scale(.6)}50%,90%{opacity:1;transform:none}97%,100%{opacity:0}}
+@keyframes e-c2{0%,50%{opacity:0;transform:scale(.6)}56%,90%{opacity:1;transform:none}97%,100%{opacity:0}}
+@keyframes e-c3{0%,56%{opacity:0;transform:scale(.6)}62%,90%{opacity:1;transform:none}97%,100%{opacity:0}}
+@media (max-width:420px){.e-stage{width:260px;height:200px;margin-left:-130px;bottom:-40px}.e-tile{top:30px;width:82px;height:82px;margin-left:-41px;border-radius:23px}.e-tile svg{width:48px;height:48px}.e-c2{left:4%;top:40%}.e-c3{right:4%;top:58%}}
+
+/* C. The AIs going round GEO */
+.h-ring{position:absolute;left:50%;top:50%;width:0;height:0;--r:96px;animation:h-turn 12s cubic-bezier(.65,0,.35,1) infinite}
+.h-spoke{position:absolute;left:-1px;top:0;width:2px;height:var(--r);transform-origin:50% 0;transform:rotate(calc(var(--n)*90deg + 180deg));background:linear-gradient(rgba(255,255,255,.95),rgba(255,255,255,.45))}
+.h-pos{position:absolute;left:-25px;top:-25px;width:50px;height:50px;transform:rotate(calc(var(--n)*90deg)) translateY(calc(var(--r)*-1)) rotate(calc(var(--n)*-90deg))}
+.h-sat{width:50px;height:50px;border-radius:15px;animation:h-back 12s cubic-bezier(.65,0,.35,1) infinite}
+.h-sat svg{width:24px;height:24px;color:#111}
+.h-core{position:absolute;left:50%;top:50%;z-index:2;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:27px}
+.h-core .mark{width:46px;height:42px}
+.h-core .mark i{width:30px;height:30px}
+@keyframes h-turn{0%,18%{transform:rotate(0)}25%,43%{transform:rotate(90deg)}50%,68%{transform:rotate(180deg)}75%,93%{transform:rotate(270deg)}100%{transform:rotate(360deg)}}
+@keyframes h-back{0%,18%{transform:rotate(0)}25%,43%{transform:rotate(-90deg)}50%,68%{transform:rotate(-180deg)}75%,93%{transform:rotate(-270deg)}100%{transform:rotate(-360deg)}}
+@media (max-width:639px){.h-ring{--r:84px}}
+
+/* D. A guide being written: GEO's cursor writes, the store owner's cursor approves */
+.g-doc{position:absolute;z-index:3;left:50%;top:18px;width:236px;margin-left:-118px;padding:12px;border-radius:14px;background:#fff;box-shadow:0 0 0 5px rgba(255,255,255,.3),0 16px 30px -14px rgba(40,25,130,.5)}
+.g-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:9.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#9a9da6}
+.g-st{position:relative;display:grid;font-size:10px;letter-spacing:0;text-transform:none}
+.g-st span{grid-area:1/1;padding:1px 7px;border-radius:99px;text-align:center}
+.g-st .g-w{background:var(--warn-bg);color:var(--warn);opacity:0;animation:g-w 8s infinite}
+.g-st .g-r{background:var(--good-bg);color:var(--good);animation:g-r 8s infinite}
+.g-title{position:relative;margin-top:7px;font-size:13px;line-height:1.3;font-weight:650;letter-spacing:-.015em;color:#1d1f25}
+.g-title span{display:block;clip-path:inset(0 0 0 0);animation:g-type 8s steps(28,end) infinite}
+.g-lines{display:grid;gap:5px;margin-top:9px}
+.g-lines i{display:block;height:5px;border-radius:3px;background:#ebeaf3;transform-origin:0 50%;animation:g-line 8s ease-out infinite}
+.g-lines i:nth-child(1){width:100%}.g-lines i:nth-child(2){width:88%;animation-name:g-line2}.g-lines i:nth-child(3){width:64%;animation-name:g-line3}
+.g-belt{position:absolute;left:0;right:0;top:142px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
+.g-track{display:flex;gap:12px;width:max-content;padding:10px 0;animation:belt 18s linear infinite}
+.g-day{display:grid;place-items:center;align-content:center;gap:3px;width:56px;height:58px;border-radius:15px;font-size:10px;font-weight:600;color:#8b8e97}
+.g-day b{font-size:18px;line-height:1;font-weight:650;color:#2a2c33;letter-spacing:-.02em}
+.g-day i{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.g-day i.is-done{background:#22a35a}
+.g-day i.is-wait{background:#d9d9e2}
+@keyframes belt{to{transform:translateX(-50%)}}
+@media (max-width:639px){.g-doc{top:14px}.g-belt{top:116px}.g-track{padding:6px 0}.g-day{height:52px;width:52px}.g-bar{bottom:14px}}
+.g-bar{position:absolute;left:50%;bottom:20px;z-index:3;display:flex;gap:6px;transform:translateX(-50%);padding:5px;border-radius:13px;background:rgba(255,255,255,.95);box-shadow:0 0 0 4px rgba(255,255,255,.3),0 10px 22px -10px rgba(40,25,130,.5)}
+.g-btn{position:relative;display:grid;place-items:center;height:30px;padding:0 13px;border-radius:9px;font-size:12px;font-weight:600;color:#4c4f58;background:#f2f2f6}
+.g-ok{color:#fff;background:linear-gradient(180deg,var(--accent-hi),var(--accent));animation:g-press 8s infinite}
+.g-ok span{grid-area:1/1;transition:none}
+.g-ok .g-ok2{opacity:1;animation:g-ok2 8s infinite}
+.g-ok .g-ok1{opacity:0;animation:g-ok1 8s infinite}
+.g-cur{position:absolute;z-index:6;display:flex;align-items:flex-start;pointer-events:none}
+.g-cur svg{width:16px;height:16px;flex:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))}
+.g-cur span{margin:12px 0 0 -3px;padding:2px 8px;border-radius:7px;font-size:11px;font-weight:600;color:#fff;box-shadow:0 4px 10px -3px rgba(0,0,0,.25)}
+.g-geo{left:50%;top:40px;color:var(--accent);animation:g-geo 8s cubic-bezier(.5,0,.3,1) infinite}
+.g-geo span{background:var(--accent)}
+.g-you{left:50%;bottom:20px;color:#d63c8c;animation:g-you 8s cubic-bezier(.5,0,.3,1) infinite}
+.g-you span{background:#d63c8c}
+@keyframes g-type{0%,10%{clip-path:inset(0 100% 0 0)}30%,100%{clip-path:inset(0 0 0 0)}}
+@keyframes g-line{0%,30%{transform:scaleX(0)}40%,100%{transform:none}}
+@keyframes g-line2{0%,36%{transform:scaleX(0)}46%,100%{transform:none}}
+@keyframes g-line3{0%,42%{transform:scaleX(0)}52%,100%{transform:none}}
+@keyframes g-w{0%,6%{opacity:0}8%,70%{opacity:1}72%,100%{opacity:0}}
+@keyframes g-r{0%,70%{opacity:0}72%,100%{opacity:1}}
+@keyframes g-geo{0%{transform:translate(70px,150px);opacity:0}6%{opacity:1}12%{transform:translate(-86px,10px)}30%{transform:translate(64px,10px)}40%,52%{transform:translate(40px,44px)}64%,92%{transform:translate(118px,92px);opacity:1}100%{transform:translate(118px,92px);opacity:0}}
+@keyframes g-you{0%,50%{transform:translate(150px,30px);opacity:0}54%{opacity:1}66%,74%{transform:translate(22px,-6px)}69%{transform:translate(22px,-6px) scale(.86)}92%{transform:translate(22px,-6px);opacity:1}100%{transform:translate(60px,20px);opacity:0}}
+@keyframes g-press{0%,67%{transform:none}69%{transform:scale(.92)}71%,100%{transform:none}}
+@keyframes g-ok1{0%,69%{opacity:1}70%,100%{opacity:0}}
+@keyframes g-ok2{0%,69%{opacity:0}70%,100%{opacity:1}}
+
+/* E. A glossy lightning tile */
+.b-lines{position:absolute;inset:0}
+.b-lines::before,.b-lines::after{content:"";position:absolute;background:rgba(255,255,255,.4)}
+.b-lines::before{left:0;right:0;top:50%;height:1px}
+.b-lines::after{top:0;bottom:0;left:50%;width:1px}
+.b-frame{position:absolute;left:50%;top:50%;width:196px;height:196px;margin:-98px 0 0 -98px;border-radius:44px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.08)}
+.b-tile{position:absolute;left:50%;top:50%;width:156px;height:156px;margin:-78px 0 0 -78px;border-radius:38px;overflow:hidden}
+.b-tile svg{width:86px;height:86px;filter:drop-shadow(0 6px 8px rgba(91,71,224,.35));animation:b-glow 4.5s ease-in-out infinite}
+.b-shine{position:absolute;inset:-20%;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.85) 50%,transparent 60%);transform:translateX(-100%);animation:b-shine 4.5s ease-in-out infinite}
+.b-ring{position:absolute;left:50%;top:50%;width:156px;height:156px;margin:-78px 0 0 -78px;border-radius:38px;border:2px solid rgba(255,255,255,.7);opacity:0;animation:b-ring 4.5s ease-out infinite}
+@keyframes b-shine{0%,55%{transform:translateX(-100%)}80%,100%{transform:translateX(100%)}}
+@keyframes b-glow{0%,50%,100%{filter:drop-shadow(0 6px 8px rgba(91,71,224,.35))}65%{filter:drop-shadow(0 6px 14px rgba(108,92,242,.75))}}
+@keyframes b-ring{0%,55%{transform:scale(1);opacity:0}60%{opacity:.8}90%,100%{transform:scale(1.45);opacity:0}}
+@media (max-width:639px){.b-frame{width:176px;height:176px;margin:-88px 0 0 -88px}.b-tile,.b-ring{width:138px;height:138px;margin:-69px 0 0 -69px;border-radius:34px}.b-tile svg{width:76px;height:76px}}
+
+/* ---------- Why now (numbers) ---------- */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.stat{display:flex;flex-direction:column;padding:28px 26px 24px;border-radius:22px;background:#fff;border:1px solid rgba(18,18,40,.06);box-shadow:var(--shadow)}
+.stat-n{font-size:clamp(3.4rem,2.4rem + 3vw,5rem);line-height:1;font-weight:500;letter-spacing:-.055em;color:var(--ink);font-variant-numeric:tabular-nums}
+.stat-n small{font-size:.36em;font-weight:500;letter-spacing:-.02em;color:var(--ink-2);margin-right:.25em}
+.stat-n em{font-style:normal;color:var(--accent)}
+.stat-l{margin-top:14px;font-size:16px;line-height:1.45;color:var(--head);font-weight:500;letter-spacing:-.01em}
+.stat-s{margin-top:auto;padding-top:18px;font-size:12.5px;line-height:1.5;color:var(--soft)}
+.stat-s a{text-decoration:underline;text-decoration-color:#cfd0d8;text-underline-offset:3px}
+.stat-s a:hover{color:var(--accent-ink);text-decoration-color:currentColor}
+.stat-s::before{content:"";display:block;height:1px;margin-bottom:14px;background:var(--line)}
+@media (max-width:860px){.stats{grid-template-columns:1fr}}
+
+/* ---------- How it works ---------- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.steps .art{height:220px}
+.step-n{display:inline-grid;place-items:center;width:26px;height:26px;margin-bottom:12px;border-radius:8px;font-size:13px;font-weight:650;color:var(--accent-ink);background:var(--accent-50)}
+@media (max-width:900px){.steps{grid-template-columns:1fr}.steps .art{height:210px}}
+.s-box{position:absolute;z-index:2;left:50%;width:min(270px,calc(100% - 32px));transform:translateX(-50%);border-radius:14px;background:#fff;box-shadow:0 0 0 5px rgba(255,255,255,.3),0 16px 30px -14px rgba(40,25,130,.5)}
+.s1-bar{top:46px;display:flex;align-items:center;gap:8px;height:48px;padding:0 6px 0 12px;border-radius:13px}
+.s1-bar>svg{width:16px;height:16px;flex:none;color:var(--soft)}
+.s1-url{flex:1;min-width:0;font-size:14px;font-weight:500;color:var(--head);white-space:nowrap;overflow:hidden}
+.s1-url span{display:inline-block;vertical-align:top;clip-path:inset(0 0 0 0);animation:s1-type 7s steps(13,end) infinite}
+.s1-url::after{content:"";display:inline-block;vertical-align:-2px;width:1.5px;height:16px;margin-left:1px;background:var(--accent);animation:caret 1s steps(1) infinite}
+.s1-go{display:grid;place-items:center;width:36px;height:36px;flex:none;border-radius:10px;color:#fff;background:linear-gradient(180deg,var(--accent-hi),var(--accent));animation:s1-go 7s infinite}
+.s1-go svg{width:16px;height:16px}
+.s1-c1{top:122px;left:calc(50% - 128px);animation:s1-c1 7s ease-out infinite}
+.s1-c2{top:156px;left:calc(50% - 74px);animation:s1-c2 7s ease-out infinite}
+.s1-c1 b,.s1-c2 b{background:var(--good-bg);color:var(--good)}
+@keyframes s1-type{0%,8%{clip-path:inset(0 100% 0 0)}36%,100%{clip-path:inset(0 0 0 0)}}
+@keyframes caret{50%{opacity:0}}
+@keyframes s1-go{0%,40%{transform:none}43%{transform:scale(.88)}46%,100%{transform:none}}
+@keyframes s1-c1{0%,48%{opacity:0;transform:translateY(8px)}55%,92%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes s1-c2{0%,56%{opacity:0;transform:translateY(8px)}63%,92%{opacity:1;transform:none}100%{opacity:0}}
+.s2-q{top:22px;left:50%;transform:translateX(-50%)}
+.s2-box{top:62px;padding:6px}
+.s2-row{display:flex;align-items:center;gap:8px;padding:6px 6px;font-size:12.5px;font-weight:500;color:var(--head);animation:s2-row 7s ease-out infinite}
+.s2-row+.s2-row{border-top:1px solid #f1f1f5}
+.s2-row:nth-child(2){animation-name:s2-row2}.s2-row:nth-child(3){animation-name:s2-row3}
+.s2-row svg{width:16px;height:16px;flex:none;color:#111}
+.s2-row em{margin-left:auto;padding:2px 8px;border-radius:99px;font-size:11px;font-style:normal;font-weight:600;background:var(--good-bg);color:var(--good)}
+.s2-row em.is-no{background:var(--warn-bg);color:var(--warn)}
+@keyframes s2-row{0%,6%{opacity:0;transform:translateX(-8px)}14%,92%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes s2-row2{0%,18%{opacity:0;transform:translateX(-8px)}26%,92%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes s2-row3{0%,30%{opacity:0;transform:translateX(-8px)}38%,92%{opacity:1;transform:none}100%{opacity:0}}
+.s3-box{top:28px;padding:12px 12px 6px}
+.s3-h{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9a9da6;margin-bottom:4px}
+.s3-row{display:flex;align-items:center;gap:9px;padding:7px 0;font-size:12.5px;font-weight:500;color:var(--head)}
+.s3-row+.s3-row{border-top:1px solid #f1f1f5}
+.s3-row span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.s3-ck{position:relative;flex:none;display:grid;place-items:center;width:18px;height:18px;border-radius:6px;border:1.5px solid #d6d6de}
+.s3-ck::after{content:"";position:absolute;inset:-1.5px;border-radius:6px;background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat;animation:s3-ck 7s infinite}
+.s3-row:nth-child(3) .s3-ck::after{animation-name:s3-ck2}
+.s3-row:nth-child(4) .s3-ck::after{animation-name:s3-ck3}
+@keyframes s3-ck{0%,14%{transform:scale(0)}20%,94%{transform:none}100%{transform:scale(0)}}
+@keyframes s3-ck2{0%,32%{transform:scale(0)}38%,94%{transform:none}100%{transform:scale(0)}}
+@keyframes s3-ck3{0%,50%{transform:scale(0)}56%,94%{transform:none}100%{transform:scale(0)}}
+
+/* ---------- Money ---------- */
+.money{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px 56px;align-items:center}
+.money .lead{margin-top:16px}
+.ticks{display:grid;gap:10px;margin-top:24px}
+.ticks li{display:flex;gap:10px;align-items:flex-start;font-size:15.5px;color:var(--head);font-weight:500}
+.ticks svg{flex:none;width:20px;height:20px;padding:3px;margin-top:2px;border-radius:50%;color:var(--accent-ink);background:var(--accent-50)}
+@media (max-width:960px){.money{grid-template-columns:1fr}}
+.dash{padding:20px;border-radius:22px;background:#fff;border:1px solid rgba(18,18,40,.07);box-shadow:0 1px 2px rgba(18,18,40,.05),0 30px 60px -30px rgba(40,25,130,.35)}
+.dash-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dash-top h3{font-size:16px;font-weight:650;letter-spacing:-.02em;color:var(--ink)}
+.dash-per{padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600;color:var(--head);background:var(--bg-2);border:1px solid var(--line)}
+.dash-tag{margin-left:auto;padding:3px 8px;border-radius:7px;font-size:10px;font-weight:650;letter-spacing:.07em;text-transform:uppercase;color:var(--accent-ink);background:var(--accent-50)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.kpi{padding:14px;border-radius:14px;background:var(--bg-2);border:1px solid #f0f0f4}
+.kpi dt{font-size:12.5px;font-weight:500;color:var(--text)}
+.kpi dd{margin-top:6px;font-size:clamp(1.35rem,1rem + 1.4vw,1.9rem);line-height:1.1;font-weight:600;letter-spacing:-.04em;color:var(--ink);font-variant-numeric:tabular-nums}
+.kpi-s{display:block;margin-top:6px;font-size:12px;color:var(--soft)}
+.dash-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.panel{padding:14px;border-radius:14px;border:1px solid #f0f0f4}
+.panel h4{margin:0 0 10px;font-size:12.5px;font-weight:600;color:var(--head)}
+.ord{display:grid;gap:2px}
+.ord li{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12.5px;color:var(--head)}
+.ord li+li{border-top:1px solid #f3f3f6}
+.ord svg{width:15px;height:15px;flex:none;color:#111}
+.ord span{flex:1;font-weight:500}
+.ord b{font-weight:600;font-variant-numeric:tabular-nums}
+.ord em{width:62px;text-align:right;font-style:normal;color:var(--soft)}
+.ord li{transition:opacity .5s ease,transform .5s ease}
+.ord li:nth-child(2){transition-delay:.08s}.ord li:nth-child(3){transition-delay:.16s}.ord li:nth-child(4){transition-delay:.24s}
+.is-pre .ord li{opacity:0;transform:translateY(6px)}
+.mix{display:flex;height:10px;border-radius:5px;overflow:hidden;gap:2px}
+.mix i{display:block;width:var(--w)}
+.mix-k{display:grid;gap:7px;margin-top:12px;font-size:12.5px;color:var(--head)}
+.mix-k li{display:flex;align-items:center;gap:8px}
+.mix-k li::before{content:"";width:8px;height:8px;border-radius:3px;background:var(--c)}
+.mix-k b{margin-left:auto;font-weight:600;font-variant-numeric:tabular-nums}
+@media (max-width:560px){.dash{padding:14px}.dash-cols{grid-template-columns:1fr}.kpis{gap:6px}.kpi{padding:10px}}
+
+/* ---------- More ways we help ---------- */
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:1023px){.trio{grid-template-columns:repeat(2,1fr)}.trio>.card:last-child{grid-column:span 2}}
+@media (max-width:639px){.trio{grid-template-columns:1fr}.trio>.card:last-child{grid-column:auto}}
+.r-post{top:20px;padding:12px}
+.r-meta{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:600;color:#8b8e97}
+.r-meta i{width:16px;height:16px;border-radius:50%;background:#ff5a1f;flex:none}
+.r-q{margin-top:6px;font-size:12.5px;line-height:1.35;font-weight:600;color:#1d1f25}
+.r-reply{top:112px;padding:10px 12px;border-radius:12px 12px 12px 4px;box-shadow:0 0 0 2px var(--accent-100),0 0 0 6px rgba(255,255,255,.3),0 16px 30px -14px rgba(40,25,130,.5);animation:r-reply 8s ease-out infinite}
+.r-reply p{font-size:11.5px;line-height:1.45;color:var(--head)}
+.r-reply p em{font-style:normal;color:var(--accent-ink);font-weight:600}
+.r-dots{position:absolute;top:118px;left:calc(50% - 135px);z-index:2;display:flex;gap:4px;padding:10px 12px;border-radius:12px;background:#fff;animation:r-dots 8s infinite}
+.r-dots i{width:6px;height:6px;border-radius:50%;background:#b9b3ee;animation:dot 1s ease-in-out infinite}
+.r-dots i:nth-child(2){animation-delay:.15s}.r-dots i:nth-child(3){animation-delay:.3s}
+@keyframes dot{50%{transform:translateY(-3px);background:var(--accent)}}
+@keyframes r-dots{0%,8%{opacity:0}10%,28%{opacity:1}30%,100%{opacity:0}}
+@keyframes r-reply{0%,28%{opacity:0;transform:translate(-50%,10px)}36%,92%{opacity:1;transform:translateX(-50%)}100%{opacity:0;transform:translateX(-50%)}}
+.r-copy{bottom:18px;left:50%;transform:translateX(-50%);animation:r-copy 8s ease-out infinite}
+@keyframes r-copy{0%,46%{opacity:0;transform:translate(-50%,8px)}54%,92%{opacity:1;transform:translateX(-50%)}100%{opacity:0;transform:translateX(-50%)}}
+.r-copy b{background:var(--good-bg);color:var(--good)}
+.a-q{top:26px;right:calc(50% - 132px);left:auto;transform:none;width:auto;max-width:210px;padding:8px 12px;border-radius:14px 14px 4px 14px;font-size:12px;font-weight:500;color:var(--head);background:#f6f5ff}
+.a-a{top:84px;left:calc(50% - 132px);transform:none;width:224px;padding:10px 12px;border-radius:14px 14px 14px 4px;font-size:11.5px;line-height:1.45;color:var(--head);animation:a-a 8s ease-out infinite}
+.a-a b{font-weight:600}
+.a-av{position:absolute;top:-10px;left:-10px;width:24px;height:24px;border-radius:8px}
+.a-av .mark{width:14px;height:13px}.a-av .mark i{width:9px;height:9px}
+@keyframes a-a{0%,14%{opacity:0;transform:translateY(8px)}22%,92%{opacity:1;transform:none}100%{opacity:0}}
+.a-in{bottom:18px;display:flex;align-items:center;gap:8px;height:38px;padding:0 5px 0 12px;font-size:12px;color:var(--soft)}
+.a-in span{flex:1}
+.a-in i{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;color:#fff;background:linear-gradient(180deg,var(--accent-hi),var(--accent))}
+.a-in svg{width:14px;height:14px;transform:rotate(-90deg)}
+.x-box{top:44px;padding:12px}
+.x-k{font-size:9.5px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:#9a9da6}
+.x-old{margin-top:4px;font-size:12.5px;color:#a3a5ad;text-decoration:line-through;text-decoration-color:#d0d1d8}
+.x-new{position:relative;margin-top:8px;padding-top:8px;border-top:1px dashed #e6e5ee;font-size:12.5px;line-height:1.4;font-weight:600;color:#1d1f25}
+.x-new mark{background:linear-gradient(transparent 55%,var(--accent-100) 55%);color:inherit;background-size:0 100%;background-repeat:no-repeat;animation:x-mark 7s ease-out infinite}
+@keyframes x-mark{0%,20%{background-size:0 100%}45%,100%{background-size:100% 100%}}
+.x-why{top:162px;left:50%;transform:translateX(-50%)}
+
+/* ---------- Stories ---------- */
+.st-view{overflow:hidden;padding:6px 0 18px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+.st-track{display:flex;width:max-content;animation:belt 90s linear infinite}
+.st-view:hover .st-track,.st-view.is-paused .st-track{animation-play-state:paused}
+.st-view.is-manual{overflow-x:auto;-webkit-mask-image:none;mask-image:none;scroll-snap-type:x mandatory}
+.st-view.is-manual .st-track{animation:none}
+.st-view.is-manual .st-group[aria-hidden]{display:none}
+.st-group{display:flex;gap:14px;padding-right:14px}
+.st-card{display:flex;flex-direction:column;justify-content:space-between;gap:18px;width:276px;height:172px;padding:20px;border-radius:20px;background:#fff;border:1px solid rgba(18,18,40,.07);box-shadow:0 1px 2px rgba(18,18,40,.04),0 10px 26px -18px rgba(18,18,40,.25);scroll-snap-align:start;transition:border-color .2s,transform .2s}
+.st-card:hover{border-color:#d9d4fc;transform:translateY(-2px)}
+.st-h{font-size:17px;line-height:1.3;font-weight:600;letter-spacing:-.025em;color:var(--head)}
+.st-f{display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px solid var(--line);font-size:13.5px;font-weight:600;color:var(--head)}
+.st-logo{display:grid;place-items:center;width:28px;height:28px;flex:none;overflow:hidden;border-radius:8px;background:#fff;border:1px solid var(--line)}
+.st-logo img{width:100%;height:100%;object-fit:contain}
+.st-logo.is-wide{width:auto;height:22px;border:0;border-radius:0}
+.st-logo.is-wide img{width:auto;height:100%}
+.st-f svg{width:16px;height:16px;margin-left:auto;color:var(--soft)}
+.st-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:6px}
+.st-note{font-size:13px;color:var(--soft)}
+.st-tg{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:8px;border:1px solid var(--line);font-size:13px;font-weight:500;color:var(--head);background:#fff}
+
+/* ---------- Promise ---------- */
+.promise{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.pr{padding:24px 22px;border-radius:20px;background:#fff;border:1px solid rgba(18,18,40,.06);box-shadow:var(--shadow)}
+.pr .tile{width:46px;height:46px;border-radius:14px;margin-bottom:18px;box-shadow:0 0 0 4px var(--accent-50),0 8px 18px -8px rgba(50,30,150,.4),inset 0 -3px 6px rgba(120,100,230,.13),inset 0 2px 2px #fff;color:var(--accent-ink)}
+.pr .tile svg{width:22px;height:22px}
+.pr h3{font-size:17px;font-weight:600;letter-spacing:-.02em;color:var(--head)}
+.pr p{margin-top:6px;font-size:14.5px;line-height:1.55}
+@media (max-width:1023px){.promise{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.promise{grid-template-columns:1fr;gap:12px}.pr{display:grid;grid-template-columns:46px 1fr;gap:4px 16px;padding:20px 18px}.pr .tile{grid-row:span 2;margin:0}.pr p{margin:0}}
+
+/* ---------- Pricing ---------- */
+.price-head{text-align:center}
+.price-head .h2{margin:0 auto}
+.tg{display:inline-flex;gap:2px;margin-top:24px;padding:4px;border-radius:12px;background:var(--bg-2);border:1px solid var(--line)}
+.tg button{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 16px;border-radius:9px;font-size:14px;font-weight:600;color:var(--text);transition:background .2s,color .2s,box-shadow .2s}
+.tg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(18,18,40,.1),0 3px 8px -3px rgba(18,18,40,.12)}
+.tg em{font-style:normal;padding:2px 7px;border-radius:99px;font-size:11px;color:var(--accent-ink);background:var(--accent-50)}
+.plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;max-width:900px;margin:32px auto 0}
+.plan{position:relative;display:flex;flex-direction:column;padding:28px;border-radius:24px;background:#fff;border:1px solid rgba(18,18,40,.08);box-shadow:var(--shadow)}
+.plan.is-main{border-color:transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(180deg,#a99df9,#e4e0fd) border-box;border:1.5px solid transparent;box-shadow:0 1px 2px rgba(18,18,40,.05),0 30px 60px -30px rgba(91,71,224,.45)}
+.plan-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.plan h3{font-size:19px;font-weight:650;letter-spacing:-.02em;color:var(--ink)}
+.badge{padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600;color:var(--accent-ink);background:var(--accent-50)}
+.price{display:flex;align-items:baseline;gap:8px;margin-top:18px;color:var(--ink)}
+.price b{font-size:clamp(2.6rem,2rem + 1.6vw,3.25rem);line-height:1;font-weight:600;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+.price>span{font-size:15px;color:var(--text)}
+.price-alt{margin-top:8px;font-size:14px;color:var(--soft)}
+.plan-desc{margin-top:14px;font-size:15px;color:var(--head);font-weight:500}
+.plan .btn{width:100%;margin-top:22px}
+.feats{display:grid;gap:11px;margin-top:24px;padding-top:22px;border-top:1px solid var(--line)}
+.feats li{display:flex;gap:10px;font-size:14.5px;line-height:1.45;color:var(--head)}
+.feats svg{flex:none;width:18px;height:18px;padding:3px;margin-top:1px;border-radius:50%;color:var(--accent-ink);background:var(--accent-50)}
+.p-y{display:none}
+.is-y .p-y{display:inline}
+.is-y .p-m{display:none}
+.price-foot{margin-top:24px;text-align:center;font-size:14px;line-height:1.7;color:var(--soft)}
+@media (max-width:760px){.plans{grid-template-columns:1fr}.plan{padding:22px}}
+
+/* ---------- FAQ ---------- */
+.faq{display:grid;gap:10px;max-width:820px;margin:0 auto}
+.faq-head{text-align:center;margin-bottom:clamp(28px,4vw,44px)}
+.qa{border-radius:16px;background:#fff;border:1px solid rgba(18,18,40,.08);box-shadow:0 1px 2px rgba(18,18,40,.04);transition:border-color .2s}
+.qa[open]{border-color:#dcd6fd}
+.qa summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px;cursor:pointer;list-style:none;font-size:16px;font-weight:600;letter-spacing:-.015em;color:var(--head)}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary i{position:relative;flex:none;width:24px;height:24px;border-radius:50%;background:var(--bg-2);transition:transform .3s ease,background .2s}
+.qa summary i::before,.qa summary i::after{content:"";position:absolute;left:7px;top:11.25px;width:10px;height:1.5px;border-radius:1px;background:var(--head)}
+.qa summary i::after{transform:rotate(90deg);transition:transform .3s ease}
+.qa[open] summary i{background:var(--accent-50)}
+.qa[open] summary i::after{transform:none}
+.qa-a{padding:0 20px 20px;font-size:15px;line-height:1.65;color:var(--text)}
+.qa-a a{color:var(--accent-ink);text-decoration:underline;text-underline-offset:3px}
+.qa-a code{font-size:.92em;padding:1px 5px;border-radius:5px;background:var(--bg-2)}
+
+/* ---------- Last call and footer ---------- */
+.cta{display:grid;grid-template-columns:1fr 1fr;align-items:stretch;padding:5px;border-radius:26px;background:#fff;border:1px solid rgba(18,18,40,.06);box-shadow:var(--shadow)}
+.cta-tx{padding:clamp(28px,4vw,52px);display:flex;flex-direction:column;justify-content:center}
+.cta-tx .lead{margin-top:16px}
+.cta-tx .btn{align-self:flex-start;margin-top:26px}
+.cta .art{height:auto;min-height:300px;border-radius:21px}
+.cta-core{position:absolute;left:50%;top:50%;width:112px;height:112px;margin:-56px 0 0 -56px;border-radius:32px}
+.cta-core .mark{width:54px;height:50px}.cta-core .mark i{width:35px;height:35px}
+.cta-orb{position:absolute;left:50%;top:50%;width:250px;height:250px;margin:-125px 0 0 -125px;border-radius:50%;border:1px dashed rgba(255,255,255,.6);animation:spin 40s linear infinite}
+.cta-orb .tile{position:absolute;width:42px;height:42px;border-radius:13px}
+.cta-orb .tile svg{width:21px;height:21px;color:#111;animation:spin 40s linear infinite reverse}
+.cta-orb .tile:nth-child(1){left:50%;top:-21px;margin-left:-21px}
+.cta-orb .tile:nth-child(2){right:-21px;top:50%;margin-top:-21px}
+.cta-orb .tile:nth-child(3){left:50%;bottom:-21px;margin-left:-21px}
+.cta-orb .tile:nth-child(4){left:-21px;top:50%;margin-top:-21px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cta-chip{right:18px;bottom:18px}
+@media (max-width:860px){.cta{grid-template-columns:1fr}.cta .art{min-height:300px}}
+@media (max-width:420px){.cta-orb{width:210px;height:210px;margin:-105px 0 0 -105px}.cta-core{width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:27px}}
+.foot{padding:56px 0 40px;margin-top:clamp(64px,8vw,112px);border-top:1px solid var(--line);background:var(--bg-2)}
+.foot-top{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:24px}
+.foot-tag{margin-top:10px;font-size:14px;color:var(--soft)}
+.foot-links{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:14.5px;font-weight:500;color:#4c4f58}
+.foot-links a:hover{color:var(--ink)}
+.foot-tools{margin-top:32px;padding-top:24px;border-top:1px solid var(--line)}
+.foot-tools h3{font-size:13px;font-weight:600;color:var(--head)}
+.foot-tools ul{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:10px;font-size:14px;color:var(--text)}
+.foot-tools a:hover{color:var(--ink)}
+.foot-copy{margin-top:28px;font-size:13px;color:var(--soft)}
+
+/* ---------- Waitlist popup ---------- */
+.wl{width:min(440px,calc(100% - 32px));max-width:none;max-height:calc(100% - 32px);padding:0;border:0;border-radius:24px;background:transparent;overflow:visible;color:var(--text)}
+.wl::backdrop{background:rgba(14,14,30,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.wl[open]{animation:wl-in .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes wl-in{from{opacity:0;transform:translateY(10px) scale(.98)}}
+.wl-card{position:relative;padding:32px 28px 26px;border-radius:24px;background:#fff;box-shadow:0 30px 80px -20px rgba(20,10,80,.45)}
+.wl-x{position:absolute;top:14px;right:14px;display:grid;place-items:center;width:34px;height:34px;border-radius:10px;color:var(--soft)}
+.wl-x:hover{background:var(--bg-2);color:var(--ink)}
+.wl-x svg{width:18px;height:18px}
+.wl-mark{display:grid;place-items:center;width:48px;height:48px;margin-bottom:16px;border-radius:15px;color:var(--accent);background:var(--accent-50)}
+.wl-mark svg{width:24px;height:24px}
+.wl-h{font-size:26px;line-height:1.15;font-weight:600;letter-spacing:-.035em;color:var(--ink);outline:none}
+.wl-sub{margin-top:6px;font-size:15px}
+.wl-field{display:block;margin-top:16px}
+.wl-label{display:block;margin-bottom:6px;font-size:14px;font-weight:600;color:var(--head)}
+.wl-input{width:100%;height:48px;padding:0 14px;border-radius:12px;border:1px solid #dedee6;background:#fff;font:inherit;font-size:16px;color:var(--ink);transition:border-color .2s,box-shadow .2s}
+.wl-input::placeholder{color:#a5a7b0}
+.wl-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-ring)}
+.wl-input[aria-invalid="true"]{border-color:#dc2626}
+.wl-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.wl-err{margin-top:12px;font-size:14px;color:#b91c1c}
+.wl-btn{width:100%;margin-top:20px;height:48px}
+.wl-btn:disabled{opacity:.7;cursor:default}
+.wl-small{margin-top:12px;font-size:12.5px;text-align:center;color:var(--soft)}
+.wl-done{text-align:center}
+.wl-tick{display:grid;place-items:center;width:56px;height:56px;margin:4px auto 16px;border-radius:50%;color:#fff;background:linear-gradient(180deg,var(--accent-hi),var(--accent));box-shadow:0 0 0 6px var(--accent-50)}
+.wl-tick svg{width:26px;height:26px}
+.wl-p{margin-top:8px;font-size:15.5px}
+.wl-confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none}
+html.wl-lock{overflow:hidden}
+@media (max-width:600px){.wl{margin-top:max(16px,7vh)}.wl-card{padding:28px 20px 22px}}
+
+/* Pictures rest while off screen, and stand still for people who prefer less motion */
+.is-off,.is-off *{animation-play-state:paused!important}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
+<defs>
+<linearGradient id="g-gem" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f7cff"/><stop offset=".55" stop-color="#8b6cf6"/><stop offset="1" stop-color="#e46a9b"/></linearGradient>
+<linearGradient id="g-bolt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c3bafc"/><stop offset=".5" stop-color="#8576f7"/><stop offset="1" stop-color="#5b47e0"/></linearGradient>
+<linearGradient id="g-amber" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d0843a"/><stop offset="1" stop-color="#8c4716"/></linearGradient>
+<linearGradient id="g-tin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#525a6b"/><stop offset="1" stop-color="#262a33"/></linearGradient>
+<linearGradient id="g-wash" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#86c6ae"/><stop offset="1" stop-color="#3d8a6f"/></linearGradient>
+<linearGradient id="g-gift" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b0a6fa"/><stop offset="1" stop-color="#6c5cf2"/></linearGradient>
+</defs>
+<symbol id="i-chatgpt" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M9.205 8.658v-2.26c0-.19.072-.333.238-.428l4.543-2.616c.619-.357 1.356-.523 2.117-.523 2.854 0 4.662 2.212 4.662 4.566 0 .167 0 .357-.024.547l-4.71-2.759a.797.797 0 00-.856 0l-5.97 3.473zm10.609 8.8V12.06c0-.333-.143-.57-.429-.737l-5.97-3.473 1.95-1.118a.433.433 0 01.476 0l4.543 2.617c1.309.76 2.189 2.378 2.189 3.948 0 1.808-1.07 3.473-2.76 4.163zM7.802 12.703l-1.95-1.142c-.167-.095-.239-.238-.239-.428V5.899c0-2.545 1.95-4.472 4.591-4.472 1 0 1.927.333 2.712.928L8.23 5.067c-.285.166-.428.404-.428.737v6.898zM12 15.128l-2.795-1.57v-3.33L12 8.658l2.795 1.57v3.33L12 15.128zm1.796 7.23c-1 0-1.927-.332-2.712-.927l4.686-2.712c.285-.166.428-.404.428-.737v-6.898l1.974 1.142c.167.095.238.238.238.428v5.233c0 2.545-1.974 4.472-4.614 4.472zm-5.637-5.303l-4.544-2.617c-1.308-.761-2.188-2.378-2.188-3.948A4.482 4.482 0 014.21 6.327v5.423c0 .333.143.571.428.738l5.947 3.449-1.95 1.118a.432.432 0 01-.476 0zm-.262 3.9c-2.688 0-4.662-2.021-4.662-4.519 0-.19.024-.38.047-.57l4.686 2.71c.286.167.571.167.856 0l5.97-3.448v2.26c0 .19-.07.333-.237.428l-4.543 2.616c-.619.357-1.356.523-2.117.523zm5.899 2.83a5.947 5.947 0 005.827-4.756C22.287 18.339 24 15.84 24 13.296c0-1.665-.713-3.282-1.998-4.448.119-.5.19-.999.19-1.498 0-3.401-2.759-5.947-5.946-5.947-.642 0-1.26.095-1.88.31A5.962 5.962 0 0010.205 0a5.947 5.947 0 00-5.827 4.757C1.713 5.447 0 7.945 0 10.49c0 1.666.713 3.283 1.998 4.448-.119.5-.19 1-.19 1.499 0 3.401 2.759 5.946 5.946 5.946.642 0 1.26-.095 1.88-.309a5.96 5.96 0 004.162 1.713z"/></symbol>
+<symbol id="i-gemini" viewBox="0 0 24 24"><path fill="url(#g-gem)" d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z"/></symbol>
+<symbol id="i-perplexity" viewBox="0 0 24 24"><path fill="#20808d" d="M19.785 0v7.272H22.5V17.62h-2.935V24l-7.037-6.194v6.145h-1.091v-6.152L4.392 24v-6.465H1.5V7.188h2.884V0l7.053 6.494V.19h1.09v6.49L19.786 0zm-7.257 9.044v7.319l5.946 5.234V14.44l-5.946-5.397zm-1.099-.08l-5.946 5.398v7.235l5.946-5.234V8.965zm8.136 7.58h1.844V8.349H13.46l6.105 5.54v2.655zm-8.982-8.28H2.59v8.195h1.8v-2.576l6.192-5.62zM5.475 2.476v4.71h5.115l-5.115-4.71zm13.219 0l-5.115 4.71h5.115v-4.71z"/></symbol>
+<symbol id="i-claude" viewBox="0 0 24 24"><path fill="#d97757" d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-2.266-.122-.571-.121L0 11.784l.055-.352.48-.321.686.06 1.52.103 2.278.158 1.652.097 2.449.255h.389l.055-.157-.134-.098-.103-.097-2.358-1.596-2.552-1.688-1.336-.972-.724-.491-.364-.462-.158-1.008.656-.722.881.06.225.061.893.686 1.908 1.476 2.491 1.833.365.304.145-.103.019-.073-.164-.274-1.355-2.446-1.446-2.49-.644-1.032-.17-.619a2.97 2.97 0 01-.104-.729L6.283.134 6.696 0l.996.134.42.364.62 1.414 1.002 2.229 1.555 3.03.456.898.243.832.091.255h.158V9.01l.128-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.584.28.48.685-.067.444-.286 1.851-.559 2.903-.364 1.942h.212l.243-.242.985-1.306 1.652-2.064.73-.82.85-.904.547-.431h1.033l.76 1.129-.34 1.166-1.064 1.347-.881 1.142-1.264 1.7-.79 1.36.073.11.188-.02 2.856-.606 1.543-.28 1.841-.315.833.388.091.395-.328.807-1.969.486-2.309.462-3.439.813-.042.03.049.061 1.549.146.662.036h1.622l3.02.225.79.522.474.638-.079.485-1.215.62-1.64-.389-3.829-.91-1.312-.329h-.182v.11l1.093 1.068 2.006 1.81 2.509 2.33.127.578-.322.455-.34-.049-2.205-1.657-.851-.747-1.926-1.62h-.128v.17l.444.649 2.345 3.521.122 1.08-.17.353-.608.213-.668-.122-1.374-1.925-1.415-2.167-1.143-1.943-.14.08-.674 7.254-.316.37-.729.28-.607-.461-.322-.747.322-1.476.389-1.924.315-1.53.286-1.9.17-.632-.012-.042-.14.018-1.434 1.967-2.18 2.945-1.726 1.845-.414.164-.717-.37.067-.662.401-.589 2.388-3.036 1.44-1.882.93-1.086-.006-.158h-.055L4.132 18.56l-1.13.146-.487-.456.061-.746.231-.243 1.908-1.312-.006.006z"/></symbol>
+<symbol id="i-google" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.98-3.09z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75z"/></symbol>
+<symbol id="p-oil" viewBox="0 0 100 100"><rect x="43" y="8" width="14" height="17" rx="6" fill="#2b2b33"/><rect x="39" y="23" width="22" height="11" rx="2.5" fill="#1b1c22"/><rect x="29" y="32" width="42" height="56" rx="11" fill="url(#g-amber)"/><rect x="34" y="48" width="32" height="25" rx="3.5" fill="#f7efe3"/><rect x="40" y="55" width="20" height="3.2" rx="1.6" fill="#c19a6b"/><rect x="43" y="61.5" width="14" height="2.6" rx="1.3" fill="#dcc6a6"/><rect x="32.5" y="36" width="4.5" height="44" rx="2.25" fill="#fff" opacity=".28"/></symbol>
+<symbol id="p-balm" viewBox="0 0 100 100"><path d="M17 49v15c0 7.7 14.8 13 33 13s33-5.3 33-13V49z" fill="url(#g-tin)"/><ellipse cx="50" cy="49" rx="33" ry="12.5" fill="#ece5d6"/><ellipse cx="50" cy="49" rx="23" ry="8" fill="#c8b994"/><ellipse cx="50" cy="48" rx="13" ry="3.4" fill="#fff" opacity=".45"/><path d="M21 58c3 4 9 6.5 13 7.4" stroke="#fff" stroke-opacity=".25" stroke-width="3" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="p-wash" viewBox="0 0 100 100"><path d="M36 10h19a3.5 3.5 0 010 7H36z" fill="#2b2b33"/><rect x="46.5" y="12" width="7" height="13" fill="#2b2b33"/><rect x="41" y="23" width="18" height="10" rx="2.5" fill="#1d2027"/><rect x="30" y="31" width="40" height="59" rx="12" fill="url(#g-wash)"/><rect x="35" y="47" width="30" height="28" rx="4" fill="#fff" opacity=".92"/><rect x="40.5" y="55" width="19" height="3.2" rx="1.6" fill="#5c9a83"/><rect x="43.5" y="61.5" width="13" height="2.6" rx="1.3" fill="#a8cbbd"/><rect x="33.5" y="35" width="4.5" height="46" rx="2.25" fill="#fff" opacity=".25"/></symbol>
+<symbol id="p-gift" viewBox="0 0 100 100"><rect x="20" y="42" width="60" height="44" rx="6" fill="url(#g-gift)"/><rect x="15" y="31" width="70" height="15" rx="4.5" fill="#9d90f8"/><rect x="46" y="31" width="8" height="55" fill="#fff" opacity=".88"/><path d="M50 31c-5-11-19-12-17-3 1 5 11 4 17 3zm0 0c5-11 19-12 17-3-1 5-11 4-17 3z" fill="#fff"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-cursor" viewBox="0 0 24 24"><path d="M4 3l7.5 18 2.6-7.4L21.5 11z" fill="currentColor" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 64 64"><path d="M37.5 4.5 13 36.2c-1.1 1.5-.1 3.6 1.8 3.6H29l-4.7 18.6c-.4 1.7 1.7 2.8 2.8 1.4L51 28.1c1.1-1.5.1-3.6-1.8-3.6H35.6l4.6-18.4c.4-1.7-1.7-2.8-2.7-1.6z" fill="url(#g-bolt)"/></symbol>
+</svg>
+<header class="nav" id="top">
+  <div class="wrap nav-in">
+    <a class="logo" href="#top" aria-label="GEO, back to top"><span class="mark" aria-hidden="true"><i></i><i></i></span>GEO</a>
+    <nav aria-label="Main">
+      <ul class="nav-links">
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#stories">Stories</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </nav>
+    <a class="btn btn-pri btn-sm" href="#waitlist" data-waitlist="nav" aria-haspopup="dialog">Join the waitlist</a>
+  </div>
+</header>
+
+<main>
+<section class="hero" aria-labelledby="hero-h">
+  <div class="wrap">
+    <p class="eyebrow"><b>Early access</b>For Shopify stores</p>
+    <h1 class="h1" id="hero-h">Shoppers ask ChatGPT what to buy. <b>Make sure it picks you.</b></h1>
+    <div class="hero-row">
+      <p class="lead">GEO helps ChatGPT, Gemini and Perplexity recommend your products, and shows you the sales you can trace back to AI. No ads. No cost per click.</p>
+      <div class="hero-cta">
+        <a class="btn btn-pri" href="#waitlist" data-waitlist="hero" aria-haspopup="dialog">Join the waitlist</a>
+        <a class="btn btn-sec" href="#how">See how it works</a>
+      </div>
+    </div>
+
+    <div class="card hero-card">
+      <div class="art art-hero" data-anim role="img" aria-label="Example: a shopper asks ChatGPT, Gemini and Perplexity for the best beard oil for dry skin, and each AI names the sample store Coolabah Grooming Co. in its top picks.">
+        <span class="ex">Example</span>
+        <div class="chat" data-chat aria-hidden="true">
+          <div class="chat-top">
+            <div class="seg">
+              <span class="seg-pill"></span>
+              <span class="seg-i is-on"><svg><use href="#i-chatgpt"/></svg>ChatGPT</span>
+              <span class="seg-i"><svg><use href="#i-gemini"/></svg>Gemini</span>
+              <span class="seg-i"><svg><use href="#i-perplexity"/></svg>Perplexity</span>
+            </div>
+          </div>
+          <div class="chat-body">
+            <p class="bub-q">What’s the best beard oil for dry skin?</p>
+            <div class="ans">
+              <span class="ans-av"><svg><use href="#i-chatgpt"/></svg></span>
+              <div class="ans-tx">
+                <p class="ans-lead">Here are three good picks:</p>
+                <ol class="picks">
+                  <li class="pick is-you"><span class="pk-n">1</span><span class="pk-th" style="--c:#f7d6c2"><svg><use href="#p-oil"/></svg></span><span class="pk-t"><b>Coolabah Grooming Co.</b><span>Sandalwood oil made for dry beards</span></span><span class="pk-you">You</span></li>
+                  <li class="pick"><span class="pk-n">2</span><span class="pk-th" style="--c:#e3e0f7"><svg><use href="#p-balm"/></svg></span><span class="pk-t"><b>Ridgeback Beard Co.</b><span>Light and unscented</span></span><span class="pk-you">You</span></li>
+                  <li class="pick"><span class="pk-n">3</span><span class="pk-th" style="--c:#d7ece3"><svg><use href="#p-wash"/></svg></span><span class="pk-t"><b>Saltbush Beard Co.</b><span>A big bottle at a fair price</span></span><span class="pk-you">You</span></li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="chip hc1" aria-hidden="true"><span class="tile"><svg><use href="#i-check"/></svg></span>Recommended</p>
+        <p class="chip hc2" aria-hidden="true"><b data-h-order>+$34</b>order from <span data-h-eng>ChatGPT</span></p>
+        <p class="chip hc3" aria-hidden="true"><b data-h-rank>#1</b>on <span data-h-eng>ChatGPT</span></p>
+      </div>
+    </div>
+
+    <p class="works">
+      <span class="works-l">We check the AI your shoppers ask, every week</span>
+      <span><svg aria-hidden="true"><use href="#i-chatgpt"/></svg>ChatGPT</span>
+      <span><svg aria-hidden="true"><use href="#i-gemini"/></svg>Gemini</span>
+      <span><svg aria-hidden="true"><use href="#i-perplexity"/></svg>Perplexity</span>
+      <span><svg aria-hidden="true"><use href="#i-google"/></svg>Google AI Overviews</span>
+    </p>
+  </div>
+</section>
+
+<section class="sec sec-soft" id="what" aria-labelledby="what-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="h2" id="what-h">Not another SEO tool. <b>A sales channel you can measure.</b></h2>
+      <a class="btn btn-pri btn-sm" href="#waitlist" data-waitlist="link" aria-haspopup="dialog">Join the waitlist</a>
+    </div>
+    <div class="bento">
+      <article class="card c-wide">
+        <div class="art" data-anim data-wheel-art role="img" aria-label="Example: product cards for beard oil, beard balm, beard wash and a gift set turn on a wheel while a counter of orders from AI goes up.">
+          <span class="ex">Example</span>
+          <p class="chip w-chip" aria-hidden="true"><b data-count>12</b>AI orders today</p>
+          <div class="w-wheel" data-wheel aria-hidden="true">
+            <div class="w-card" style="--n:0"><div class="w-img" style="--c:#f7d6c2"><svg><use href="#p-oil"/></svg></div><p class="w-name">Sandalwood Beard Oil</p><p class="w-sub">For dry beards. 30ml</p><p class="w-price">$34</p><p class="w-dots"><i></i><i></i><i></i></p></div>
+            <div class="w-card" style="--n:1"><div class="w-img" style="--c:#e3e0f7"><svg><use href="#p-balm"/></svg></div><p class="w-name">Cedar Beard Balm</p><p class="w-sub">Soft hold. 60g</p><p class="w-price">$29</p><p class="w-dots"><i></i><i></i><i></i></p></div>
+            <div class="w-card" style="--n:2"><div class="w-img" style="--c:#d7ece3"><svg><use href="#p-wash"/></svg></div><p class="w-name">Daily Beard Wash</p><p class="w-sub">Soap-free. 200ml</p><p class="w-price">$26</p><p class="w-dots"><i></i><i></i><i></i></p></div>
+            <div class="w-card" style="--n:3"><div class="w-img" style="--c:#ebe7fe"><svg><use href="#p-gift"/></svg></div><p class="w-name">The Essentials Gift Set</p><p class="w-sub">Oil, balm and wash</p><p class="w-price">$79</p><p class="w-dots"><i></i><i></i><i></i></p></div>
+            <div class="w-card" style="--n:4"><div class="w-img" style="--c:#f7d6c2"><svg><use href="#p-oil"/></svg></div><p class="w-name">Sensitive Skin Beard Oil</p><p class="w-sub">Unscented. 30ml</p><p class="w-price">$36</p><p class="w-dots"><i></i><i></i><i></i></p></div>
+            <div class="w-card" style="--n:5"><div class="w-img" style="--c:#e3e0f7"><svg><use href="#p-balm"/></svg></div><p class="w-name">Cedar Beard Balm</p><p class="w-sub">Soft hold. 60g</p><p class="w-price">$29</p><p class="w-dots"><i></i><i></i><i></i></p></div>
+            <div class="w-card" style="--n:6"><div class="w-img" style="--c:#d7ece3"><svg><use href="#p-wash"/></svg></div><p class="w-name">Daily Beard Wash</p><p class="w-sub">Soap-free. 200ml</p><p class="w-price">$26</p><p class="w-dots"><i></i><i></i><i></i></p></div>
+            <div class="w-card" style="--n:7"><div class="w-img" style="--c:#ebe7fe"><svg><use href="#p-gift"/></svg></div><p class="w-name">The Essentials Gift Set</p><p class="w-sub">Oil, balm and wash</p><p class="w-price">$79</p><p class="w-dots"><i></i><i></i><i></i></p></div>
+          </div>
+        </div>
+        <div class="card-tx">
+          <h3>See the sales AI sends you</h3>
+          <p>Visits, orders and revenue from ChatGPT and co, counted in one place.</p>
+        </div>
+      </article>
+
+      <article class="card c-mid">
+        <div class="art" data-anim role="img" aria-label="Example: an envelope opens and a tick rises out, with the notes cited by AI, writer found and pitch ready.">
+          <span class="ex">Example</span>
+          <div class="e-stage" aria-hidden="true">
+            <svg class="e-back" viewBox="0 0 300 230">
+              <defs>
+                <linearGradient id="e-g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eceafc"/><stop offset="1" stop-color="#f9f8ff"/></linearGradient>
+                <linearGradient id="e-g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbfaff"/><stop offset="1" stop-color="#e4e1f9"/></linearGradient>
+              </defs>
+              <path class="e-fu" d="M10 92 150 6l140 86z" fill="#e4e1fa" stroke="#fff" stroke-opacity=".8" stroke-width="1.5" stroke-linejoin="round"/>
+              <rect x="10" y="84" width="280" height="190" rx="24" fill="url(#e-g1)"/>
+            </svg>
+            <span class="e-tile"><svg viewBox="0 0 48 48"><path d="M14 25l7 7 14-15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <svg class="e-front" viewBox="0 0 300 230">
+              <path d="M10 104 150 184 290 104v146a24 24 0 01-24 24H34a24 24 0 01-24-24z" fill="url(#e-g2)" stroke="#fff" stroke-opacity=".9" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M18 266 150 196l132 70" fill="none" stroke="#8f84e6" stroke-opacity=".18" stroke-width="1.5"/>
+              <path class="e-fd" d="M14 92h272L150 176z" fill="#f4f2fe" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <p class="chip e-c1" aria-hidden="true"><b>14×</b>cited by AI</p>
+          <p class="chip e-c2" aria-hidden="true"><b><svg><use href="#i-check"/></svg></b>Writer found</p>
+          <p class="chip e-c3" aria-hidden="true"><b><svg><use href="#i-check"/></svg></b>Pitch ready</p>
+        </div>
+        <div class="card-tx">
+          <h3>Get on the sites AI trusts</h3>
+          <p>We find the blogs and lists AI quotes, then draft an honest pitch to each writer.</p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="art" data-anim role="img" aria-label="The logos of ChatGPT, Gemini, Perplexity and Google going round the GEO logo.">
+          <div class="h-ring" aria-hidden="true">
+            <i class="h-spoke" style="--n:0"></i><i class="h-spoke" style="--n:1"></i><i class="h-spoke" style="--n:2"></i><i class="h-spoke" style="--n:3"></i>
+            <span class="h-pos" style="--n:0"><span class="tile h-sat"><svg><use href="#i-chatgpt"/></svg></span></span>
+            <span class="h-pos" style="--n:1"><span class="tile h-sat"><svg><use href="#i-gemini"/></svg></span></span>
+            <span class="h-pos" style="--n:2"><span class="tile h-sat"><svg><use href="#i-perplexity"/></svg></span></span>
+            <span class="h-pos" style="--n:3"><span class="tile h-sat"><svg><use href="#i-google"/></svg></span></span>
+          </div>
+          <span class="tile h-core" aria-hidden="true"><span class="mark"><i></i><i></i></span></span>
+        </div>
+        <div class="card-tx">
+          <h3>Every AI your shoppers ask</h3>
+          <p>ChatGPT, Gemini, Perplexity and Google, checked every week.</p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="art" data-anim role="img" aria-label="Example: GEO writes a buying guide called Best beard oil for dry skin, and the store owner approves it.">
+          <div class="g-doc" aria-hidden="true">
+            <p class="g-top">Buying guide <span class="g-st"><span class="g-w">Writing</span><span class="g-r">Ready</span></span></p>
+            <p class="g-title"><span>Best beard oil for dry skin</span></p>
+            <p class="g-lines"><i></i><i></i><i></i></p>
+          </div>
+          <div class="g-belt" aria-hidden="true">
+            <div class="g-track">
+              <span class="tile g-day">Mon<b>4</b><i class="is-done"></i></span>
+              <span class="tile g-day">Wed<b>12</b><i class="is-done"></i></span>
+              <span class="tile g-day">Fri<b>19</b><i></i></span>
+              <span class="tile g-day">Mon<b>27</b><i class="is-wait"></i></span>
+              <span class="tile g-day">Thu<b>4</b><i class="is-wait"></i></span>
+              <span class="tile g-day">Tue<b>12</b><i class="is-wait"></i></span>
+              <span class="tile g-day">Mon<b>4</b><i class="is-done"></i></span>
+              <span class="tile g-day">Wed<b>12</b><i class="is-done"></i></span>
+              <span class="tile g-day">Fri<b>19</b><i></i></span>
+              <span class="tile g-day">Mon<b>27</b><i class="is-wait"></i></span>
+              <span class="tile g-day">Thu<b>4</b><i class="is-wait"></i></span>
+              <span class="tile g-day">Tue<b>12</b><i class="is-wait"></i></span>
+            </div>
+          </div>
+          <div class="g-bar" aria-hidden="true"><span class="g-btn">Skip</span><span class="g-btn g-ok"><span class="g-ok1">Approve</span><span class="g-ok2">Approved</span></span></div>
+          <span class="g-cur g-geo" aria-hidden="true"><svg><use href="#i-cursor"/></svg><span>GEO</span></span>
+          <span class="g-cur g-you" aria-hidden="true"><svg><use href="#i-cursor"/></svg><span>You</span></span>
+        </div>
+        <div class="card-tx">
+          <h3>A buying guide every week</h3>
+          <p>Guides that answer real buyer questions. You check each one before it goes live.</p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="art" data-anim role="img" aria-label="A glossy tile with a lightning bolt.">
+          <i class="b-lines" aria-hidden="true"></i>
+          <i class="b-frame" aria-hidden="true"></i>
+          <i class="b-ring" aria-hidden="true"></i>
+          <span class="tile b-tile" aria-hidden="true"><svg viewBox="0 0 64 64"><use href="#i-bolt"/></svg><i class="b-shine"></i></span>
+        </div>
+        <div class="card-tx">
+          <h3>Ready in minutes</h3>
+          <p>Type your store’s address and we do the rest. Nothing to install.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="why" aria-labelledby="why-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="h2" id="why-h">Shoppers already ask AI. <b>And it’s growing fast.</b></h2>
+    </div>
+    <ul class="stats">
+      <li class="stat">
+        <p class="stat-n">~50M</p>
+        <p class="stat-l">buying questions a day on ChatGPT</p>
+        <p class="stat-s">Our 2025 estimate: <a href="https://techcrunch.com/2025/07/21/chatgpt-users-send-2-5-billion-prompts-a-day/" target="_blank" rel="noopener">2.5B messages</a> × <a href="https://www.emarketer.com/content/chatgpt-minimal-influence-on-ecommerce-sales-for-now" target="_blank" rel="noopener">2.1%</a> about buying (OpenAI)</p>
+      </li>
+      <li class="stat">
+        <p class="stat-n"><small>nearly</small><em>60×</em></p>
+        <p class="stat-l">more orders from AI, Q4 2025 vs all of 2024</p>
+        <p class="stat-s"><a href="https://www.prnewswire.com/news-releases/triple-whale-acquires-anteater-to-expand-ai-powered-commerce-intelligence-302664733.html" target="_blank" rel="noopener">Triple Whale stores, Jan 2026</a></p>
+      </li>
+      <li class="stat">
+        <p class="stat-n">60%</p>
+        <p class="stat-l">higher conversion from AI visitors</p>
+        <p class="stat-s"><a href="https://www.digitalcommerce360.com/2026/08/19/adobe-ai-referral-traffic-data-july-2026/" target="_blank" rel="noopener">Adobe, US retail, July 2026</a></p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec sec-soft" id="how" aria-labelledby="how-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="h2" id="how-h">Three steps. <b>We do the heavy lifting.</b></h2>
+      <a class="btn btn-sec btn-sm" href="#faq">Questions? Read the FAQ</a>
+    </div>
+    <ol class="steps">
+      <li class="card">
+        <div class="art" data-anim role="img" aria-label="A store address being typed into GEO, then products read and questions written.">
+          <div class="s-box s1-bar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="s1-url"><span>yourstore.com</span></span><span class="s1-go"><svg><use href="#i-arrow"/></svg></span></div>
+          <p class="chip s1-c1" aria-hidden="true"><b><svg><use href="#i-check"/></svg></b>Products read</p>
+          <p class="chip s1-c2" aria-hidden="true"><b><svg><use href="#i-check"/></svg></b>Buyer questions written</p>
+        </div>
+        <div class="card-tx">
+          <span class="step-n">1</span>
+          <h3>Add your store</h3>
+          <p>Type your store’s address. We read your products and write the questions shoppers ask AI.</p>
+        </div>
+      </li>
+      <li class="card">
+        <div class="art" data-anim role="img" aria-label="Example: for the question best beard oil for dry skin, ChatGPT does not name the store, Gemini ranks it first and Perplexity third.">
+          <span class="ex">Example</span>
+          <p class="chip s2-q" aria-hidden="true">“best beard oil for dry skin”</p>
+          <div class="s-box s2-box" aria-hidden="true">
+            <p class="s2-row"><svg><use href="#i-chatgpt"/></svg>ChatGPT<em class="is-no">Not named</em></p>
+            <p class="s2-row"><svg><use href="#i-gemini"/></svg>Gemini<em>You’re #1</em></p>
+            <p class="s2-row"><svg><use href="#i-perplexity"/></svg>Perplexity<em>You’re #3</em></p>
+          </div>
+        </div>
+        <div class="card-tx">
+          <span class="step-n">2</span>
+          <h3>See who AI picks</h3>
+          <p>We ask ChatGPT and co each question twice, and show who they pick instead of you.</p>
+        </div>
+      </li>
+      <li class="card">
+        <div class="art" data-anim role="img" aria-label="Example: a weekly plan with three tasks being ticked off: publish a guide, pitch a review site and reply on Reddit.">
+          <div class="s-box s3-box" aria-hidden="true">
+            <p class="s3-h">This week</p>
+            <p class="s3-row"><i class="s3-ck"></i><span>Publish: Best beard oil for dry skin</span></p>
+            <p class="s3-row"><i class="s3-ck"></i><span>Pitch examplereviews.com</span></p>
+            <p class="s3-row"><i class="s3-ck"></i><span>Reply on r/beards</span></p>
+          </div>
+        </div>
+        <div class="card-tx">
+          <span class="step-n">3</span>
+          <h3>Act on a clear plan</h3>
+          <p>Guides to publish, sites to pitch and threads to join. We check AI again every week.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="sec" id="money" aria-labelledby="money-h">
+  <div class="wrap money">
+    <div>
+      <h2 class="h2" id="money-h">Know exactly <b>what AI is worth to you.</b></h2>
+      <p class="lead">Paste one small tracking code into Shopify and see the visits, orders and sales that came from AI. We only count what we can trace, so the numbers stay honest.</p>
+      <ul class="ticks">
+        <li><svg><use href="#i-check"/></svg>See which AI sent each order</li>
+        <li><svg><use href="#i-check"/></svg>AI side by side with Google and everything else</li>
+        <li><svg><use href="#i-check"/></svg>No customer names or emails stored</li>
+      </ul>
+    </div>
+    <div class="dash" data-anim data-dash role="img" aria-label="Sample dashboard for this month: 4,820 dollars in sales from AI, 6% of the store’s sales, from 61 orders and 1,940 clicks. AI assistants sent 9% of visits, search engines 47%. The latest orders came from ChatGPT, Perplexity and Gemini.">
+      <div class="dash-top" aria-hidden="true">
+        <h3>Money from AI</h3><span class="dash-per">This month</span><span class="dash-tag">Sample data</span>
+      </div>
+      <dl class="kpis" aria-hidden="true">
+        <div class="kpi"><dt>AI sales</dt><dd data-to="4820" data-pre="$">$4,820</dd><span class="kpi-s">6% of your sales</span></div>
+        <div class="kpi"><dt>AI orders</dt><dd data-to="61">61</dd><span class="kpi-s">this month</span></div>
+        <div class="kpi"><dt>AI clicks</dt><dd data-to="1940">1,940</dd><span class="kpi-s">this month</span></div>
+      </dl>
+      <div class="dash-cols" aria-hidden="true">
+        <div class="panel">
+          <h4>Latest orders from AI</h4>
+          <ul class="ord">
+            <li><svg><use href="#i-chatgpt"/></svg><span>ChatGPT</span><b>$34</b><em>2h ago</em></li>
+            <li><svg><use href="#i-perplexity"/></svg><span>Perplexity</span><b>$79</b><em>5h ago</em></li>
+            <li><svg><use href="#i-gemini"/></svg><span>Gemini</span><b>$62</b><em>Yesterday</em></li>
+            <li><svg><use href="#i-chatgpt"/></svg><span>ChatGPT</span><b>$29</b><em>Yesterday</em></li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h4>Where shoppers came from</h4>
+          <div class="mix"><i style="--w:9%;background:var(--accent)"></i><i style="--w:47%;background:#b9b1f8"></i><i style="--w:44%;background:#e3e2ea"></i></div>
+          <ul class="mix-k">
+            <li style="--c:var(--accent)">AI assistants<b>9%</b></li>
+            <li style="--c:#b9b1f8">Search engines<b>47%</b></li>
+            <li style="--c:#e3e2ea">Everything else<b>44%</b></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec-soft" id="more" aria-labelledby="more-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="h2" id="more-h">More ways <b>we help you get picked.</b></h2>
+    </div>
+    <div class="trio">
+      <article class="card">
+        <div class="art" data-anim role="img" aria-label="Example: a Reddit question about beard oil for dry skin, and a drafted reply that starts by saying the writer runs the store.">
+          <div class="s-box r-post" aria-hidden="true">
+            <p class="r-meta"><i></i>r/beards · 3h</p>
+            <p class="r-q">Any beard oil that actually helps with dry skin?</p>
+          </div>
+          <span class="r-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <div class="s-box r-reply" aria-hidden="true"><p><em>I run Coolabah, so I’m biased.</em> For dry skin, look for jojoba or argan oil and skip strong scents…</p></div>
+          <p class="chip r-copy" aria-hidden="true"><b><svg><use href="#i-check"/></svg></b>Copied. Open the thread</p>
+        </div>
+        <div class="card-tx">
+          <h3>Join the right Reddit threads</h3>
+          <p>We find threads where buyers ask about products like yours, and draft a reply that says who you are.</p>
+        </div>
+      </article>
+      <article class="card">
+        <div class="art" data-anim role="img" aria-label="A store owner asks GEO how to add the tracking code and gets a short answer.">
+          <p class="s-box a-q" aria-hidden="true">How do I add the tracking code?</p>
+          <div class="s-box a-a" aria-hidden="true"><span class="tile a-av"><span class="mark"><i></i><i></i></span></span>In Shopify, open <b>Settings</b>, then <b>Customer events</b>. Paste the code and save. It takes about 2 minutes.</div>
+          <div class="s-box a-in" aria-hidden="true"><span>Ask GEO anything</span><i><svg><use href="#i-arrow"/></svg></i></div>
+        </div>
+        <div class="card-tx">
+          <h3>Ask GEO anything</h3>
+          <p>Stuck on a step? Ask in plain English and get a clear answer straight away.</p>
+        </div>
+      </article>
+      <article class="card">
+        <div class="art" data-anim role="img" aria-label="Example: a product title rewritten so AI can tell who it is for.">
+          <span class="ex">Example</span>
+          <div class="s-box x-box" aria-hidden="true">
+            <p class="x-k">Product title</p>
+            <p class="x-old">Beard Oil 30ml</p>
+            <p class="x-new"><mark>Sandalwood Beard Oil for Dry Skin, 30ml</mark></p>
+          </div>
+          <p class="chip x-why" aria-hidden="true"><b><svg><use href="#i-check"/></svg></b>Only facts from your page</p>
+        </div>
+        <div class="card-tx">
+          <h3>Product page fixes <span class="soon">Coming soon</span></h3>
+          <p>Clearer titles, descriptions and FAQs that AI can quote, ready for your OK.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="stories" aria-labelledby="stories-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2 class="h2" id="stories-h">Stores already <b>getting sales from AI.</b></h2>
+        <p class="sec-sub">As reported by Modern Retail, Digital Commerce 360 and others. These brands aren’t GEO customers.</p>
+      </div>
+      <a class="btn btn-sec btn-sm" href="/stories">See all stories <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </div>
+  </div>
+  <div class="st-view" data-stories>
+    <div class="st-track">
+<!-- STORY_CARDS -->
+    </div>
+  </div>
+  <div class="wrap st-bar">
+    <p class="st-note">Pick a story to read it.</p>
+    <button class="st-tg" type="button" data-st-toggle hidden>Pause</button>
+  </div>
+</section>
+
+<section class="sec sec-soft" aria-labelledby="safe-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="h2" id="safe-h">Safe for your brand. <b>No shortcuts.</b></h2>
+    </div>
+    <ul class="promise">
+      <li class="pr"><span class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.4-3 8.3-7 9.5-4-1.2-7-5.1-7-9.5V6z"/><path d="M9 12l2 2 4-4"/></svg></span><h3>You stay in charge</h3><p>GEO only reads your public pages. You choose what goes live.</p></li>
+      <li class="pr"><span class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span><h3>Only real facts</h3><p>We never invent ingredients, awards, reviews or numbers.</p></li>
+      <li class="pr"><span class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"/><path d="M9 12h6"/></svg></span><h3>No fake posts</h3><p>Every reply and pitch says who you are. No pretend customers.</p></li>
+      <li class="pr"><span class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><h3>Honest numbers</h3><p>We only count sales we can trace back to AI.</p></li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec" id="pricing" aria-labelledby="pricing-h">
+  <div class="wrap">
+    <div class="price-head">
+      <h2 class="h2" id="pricing-h">Simple pricing. <b>Try it free for 7 days.</b></h2>
+      <div class="tg" role="group" aria-label="Billing">
+        <button class="price-tg" type="button" data-period="m" aria-pressed="true">Monthly</button>
+        <button class="price-tg" type="button" data-period="y" aria-pressed="false">Yearly <em>3 months free</em></button>
+      </div>
+    </div>
+    <div class="plans">
+      <article class="plan is-main">
+        <div class="plan-top"><h3>Standard</h3><span class="badge">For most stores</span></div>
+        <p class="price"><b><span class="p-m">US$49</span><span class="p-y">US$441</span></b><span><span class="p-m">a month</span><span class="p-y">a year</span></span></p>
+        <p class="price-alt"><span class="p-m">Or US$441 a year.</span><span class="p-y">About US$37 a month. 3 months free.</span></p>
+        <p class="plan-desc">You approve, AI does the work.</p>
+        <a class="btn btn-pri" href="#waitlist" data-waitlist="pricing" data-plan="core" aria-haspopup="dialog">Join the waitlist</a>
+        <ul class="feats">
+          <li><svg><use href="#i-check"/></svg>50 buying questions, checked every week</li>
+          <li><svg><use href="#i-check"/></svg>ChatGPT, Gemini, Perplexity and Google AI Overviews</li>
+          <li><svg><use href="#i-check"/></svg>4 buying guides a month, for your OK</li>
+          <li><svg><use href="#i-check"/></svg>Sites AI trusts, with up to 10 pitches a month</li>
+          <li><svg><use href="#i-check"/></svg>New Reddit threads every week, replies drafted</li>
+          <li><svg><use href="#i-check"/></svg>See the sales AI sends you</li>
+        </ul>
+      </article>
+      <article class="plan">
+        <div class="plan-top"><h3>Done-for-you</h3></div>
+        <p class="price"><b><span class="p-m">US$349</span><span class="p-y">US$3,141</span></b><span><span class="p-m">a month</span><span class="p-y">a year</span></span></p>
+        <p class="price-alt"><span class="p-m">Or US$3,141 a year.</span><span class="p-y">About US$262 a month. 3 months free.</span></p>
+        <p class="plan-desc">AI and our team do it for you.</p>
+        <a class="btn btn-sec" href="#waitlist" data-waitlist="pricing" data-plan="pro" aria-haspopup="dialog">Join the waitlist</a>
+        <ul class="feats">
+          <li><svg><use href="#i-check"/></svg>Everything in Standard, plus:</li>
+          <li><svg><use href="#i-check"/></svg>100 buying questions, checked every day</li>
+          <li><svg><use href="#i-check"/></svg>Also checks Claude</li>
+          <li><svg><use href="#i-check"/></svg>12 buying guides a month, written for you</li>
+          <li><svg><use href="#i-check"/></svg>Up to 40 pitches a month, sent and followed up by our team</li>
+          <li><svg><use href="#i-check"/></svg>A 30-minute call with our team</li>
+        </ul>
+      </article>
+    </div>
+    <p class="price-foot">Join the waitlist today. We’ll reach out shortly.<br>Prices in US dollars. Cancel any time.</p>
+  </div>
+</section>
+
+<section class="sec sec-soft" id="faq" aria-labelledby="faq-h">
+  <div class="wrap">
+    <div class="faq-head"><h2 class="h2" id="faq-h">Questions store owners ask</h2></div>
+    <div class="faq">
+      <details class="qa" open><summary>What does GEO actually do?<i aria-hidden="true"></i></summary><div class="qa-a">It shows you whether ChatGPT, Gemini and Perplexity recommend your products, and who they pick instead. Then it gives you a clear plan to get picked, and counts the sales it can trace back to AI.</div></details>
+      <details class="qa"><summary>How do you know a sale came from AI?<i aria-hidden="true"></i></summary><div class="qa-a">You paste a small tracking code into Shopify once, which takes about 2 minutes. ChatGPT usually adds <code>utm_source=chatgpt.com</code> to its links, and we spot visits from other AI assistants too. Google AI Overviews can’t be separated from normal Google, so we count them as search.</div></details>
+      <details class="qa"><summary>Can I pay to appear in AI answers?<i aria-hidden="true"></i></summary><div class="qa-a">Not on ChatGPT. OpenAI says ads can’t shape its answers. Google sells ads in AI Overviews in many countries. GEO helps you earn the unpaid ones. Sources: <a href="https://help.openai.com/en/articles/20001047-ads-in-chatgpt" target="_blank" rel="noopener">OpenAI</a> and <a href="https://support.google.com/google-ads/answer/16297775?hl=en" target="_blank" rel="noopener">Google Ads Help</a>.</div></details>
+      <details class="qa"><summary>Will GEO change my store without asking?<i aria-hidden="true"></i></summary><div class="qa-a">No. GEO only reads what anyone can see on your store. Nothing in your Shopify admin changes, and you decide what to publish.</div></details>
+      <details class="qa"><summary>Do I need to install an app?<i aria-hidden="true"></i></summary><div class="qa-a">No. You sign in with your email and type your store’s address. To count sales from AI, you paste one small tracking code into Shopify.</div></details>
+      <details class="qa"><summary>How long does setup take?<i aria-hidden="true"></i></summary><div class="qa-a">About five minutes of your time. Your first check then runs by itself and takes a few minutes. You can close the page while it works.</div></details>
+      <details class="qa"><summary>If GEO costs money, what’s free?<i aria-hidden="true"></i></summary><div class="qa-a">Joining the waitlist, our <a href="/tools">free tools</a> and the first check of your store. After that, Standard is US$49 a month with a 7-day free trial.</div></details>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="cta-h">
+  <div class="wrap">
+    <div class="cta">
+      <div class="cta-tx">
+        <h2 class="h2" id="cta-h">Is AI recommending <b>your products?</b></h2>
+        <p class="lead">Join the waitlist and be first to get GEO for your store. It’s free to join.</p>
+        <a class="btn btn-pri" href="#waitlist" data-waitlist="footer" aria-haspopup="dialog">Join the waitlist <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+      <div class="art" data-anim aria-hidden="true">
+        <div class="cta-orb">
+          <span class="tile"><svg><use href="#i-chatgpt"/></svg></span>
+          <span class="tile"><svg><use href="#i-gemini"/></svg></span>
+          <span class="tile"><svg><use href="#i-perplexity"/></svg></span>
+          <span class="tile"><svg><use href="#i-google"/></svg></span>
+        </div>
+        <span class="tile cta-core"><span class="mark"><i></i><i></i></span></span>
+        <p class="chip cta-chip"><b><svg><use href="#i-check"/></svg></b>Recommended</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <a class="logo" href="#top" aria-label="GEO, back to top"><span class="mark" aria-hidden="true"><i></i><i></i></span>GEO</a>
+        <p class="foot-tag">Shoppers ask. AI recommends. You get the sale.</p>
+      </div>
+      <nav aria-label="Footer">
+        <ul class="foot-links">
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="/stories">Stories</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+        </ul>
+      </nav>
+    </div>
+    <nav class="foot-tools" aria-labelledby="foot-tools-h">
+      <h3 id="foot-tools-h">Free tools</h3>
+      <ul>
+        <li><a href="/tools">All free tools</a></li>
+        <li><a href="/tools/ai-visibility-checker">AI Visibility Checker</a></li>
+        <li><a href="/tools/ai-overview-checker">AI Overview Checker</a></li>
+        <li><a href="/tools/ai-crawler-checker">AI Crawler Checker</a></li>
+        <li><a href="/tools/product-schema-checker">Product Schema Checker</a></li>
+        <li><a href="/tools/llms-txt-checker">llms.txt Checker</a></li>
+        <li><a href="/tools/faq-schema-generator">FAQ Schema Generator</a></li>
+        <li><a href="/tools/ai-bot-checker">AI Bot Checker</a></li>
+      </ul>
+    </nav>
+    <p class="foot-copy">© 2026 GEO · Made for Shopify stores worldwide</p>
+  </div>
+</footer>
+
+<!-- Join the waitlist popup: every [data-waitlist] button and #waitlist link opens it. The words under the form are
+     saved with each signup (WAITLIST_CONSENT_TEXT in app/lib/waitlist.server.ts): change both together. -->
+<dialog class="wl" id="waitlist-dialog" aria-labelledby="wl-title">
+  <div class="wl-card">
+    <button class="wl-x" type="button" data-wl-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    <form class="wl-form" method="post" action="/waitlist" novalidate>
+      <span class="wl-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5c.6 5 4.5 8.9 9.5 9.5-5 .6-8.9 4.5-9.5 9.5-.6-5-4.5-8.9-9.5-9.5 5-.6 8.9-4.5 9.5-9.5Z"/></svg></span>
+      <h2 class="wl-h" id="wl-title">Join the waitlist</h2>
+      <p class="wl-sub">Be first to get GEO for your store.</p>
+      <label class="wl-field"><span class="wl-label">Name</span><input class="wl-input" type="text" name="name" autocomplete="name" maxlength="80" required placeholder="Your name"></label>
+      <label class="wl-field"><span class="wl-label">Email</span><input class="wl-input" type="email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" maxlength="254" required placeholder="you@yourstore.com"></label>
+      <div class="wl-hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+      <p class="wl-err" role="alert" hidden></p>
+      <button class="btn btn-pri wl-btn" type="submit">Join the waitlist</button>
+      <p class="wl-small">We’ll only use this to contact you about GEO.</p>
+    </form>
+    <div class="wl-done" hidden>
+      <span class="wl-tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+      <h2 class="wl-h" tabindex="-1">You’re on the waitlist!</h2>
+      <p class="wl-p">We’ll reach out shortly.</p>
+      <button class="btn btn-pri wl-btn" type="button" data-wl-close>Done</button>
+    </div>
+  </div>
+  <canvas class="wl-confetti" aria-hidden="true"></canvas>
+</dialog>
+
+<script>window.GEO_LIVE=true</script>
+<script>
+(function () {
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  // The nav gets a line under it once the page moves.
+  var nav = $('.nav');
+  var onScroll = function () { nav.classList.toggle('is-scrolled', scrollY > 8); };
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Pictures only move while on screen. Each one can also run a timer that ticks only while it is visible.
+  var seen = new Map();
+  var io = 'IntersectionObserver' in window && new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      var el = e.target;
+      el.classList.toggle('is-off', !e.isIntersecting);
+      if (!e.isIntersecting) return;
+      // The first time a picture comes into view it plays from the start, so nobody lands on a half-done frame.
+      if (!el.hasAttribute('data-seen')) {
+        el.setAttribute('data-seen', '');
+        if (el.getAnimations) el.getAnimations({ subtree: true }).forEach(function (a) { a.currentTime = 0; });
+      }
+      if (seen.has(el)) { seen.get(el)(); seen.delete(el); }
+    });
+  }, { rootMargin: '0px' });
+  $$('[data-anim]').forEach(function (el) { if (io) { el.classList.add('is-off'); io.observe(el); } });
+  function every(el, ms, fn) {
+    if (reduce || !el) return;
+    setInterval(function () { if (!el.classList.contains('is-off') && !document.hidden) fn(); }, ms);
+  }
+  function onFirstView(el, fn) { if (io) seen.set(el, fn); else fn(); }
+  function bump(chip) { chip.classList.remove('is-bump'); void chip.offsetWidth; chip.classList.add('is-bump'); }
+
+  // A. The product wheel turns and the AI orders counter goes up.
+  var wheel = $('[data-wheel]');
+  var count = $('[data-count]');
+  var turns = 0;
+  every($('[data-wheel-art]'), 2600, function () {
+    turns += 1;
+    wheel.style.setProperty('--i', turns);
+    count.textContent = String(Number(count.textContent) + 1 + (turns % 3 === 0 ? 1 : 0));
+    bump(count.parentNode);
+  });
+
+  // Hero: the same question on ChatGPT, Gemini and Perplexity, with the sample store's place in each answer.
+  var chat = $('[data-chat]');
+  var ENGINES = [
+    { id: 'chatgpt', name: 'ChatGPT', order: '+$34', picks: [[1, 'Coolabah Grooming Co.', 'Sandalwood oil made for dry beards', 'oil', '#f7d6c2'], [0, 'Ridgeback Beard Co.', 'Light and unscented', 'balm', '#e3e0f7'], [0, 'Saltbush Beard Co.', 'A big bottle at a fair price', 'wash', '#d7ece3']] },
+    { id: 'gemini', name: 'Gemini', order: '+$68', picks: [[0, 'Ridgeback Beard Co.', 'A good all-rounder', 'balm', '#e3e0f7'], [1, 'Coolabah Grooming Co.', 'Made for dry skin, ships worldwide', 'oil', '#f7d6c2'], [0, 'Banksia Beard Co.', 'Natural oils, light scent', 'gift', '#ebe7fe']] },
+    { id: 'perplexity', name: 'Perplexity', order: '+$29', picks: [[1, 'Coolabah Grooming Co.', 'Soothes itch and dry skin', 'oil', '#f7d6c2'], [0, 'Wattlebird Grooming', 'Gentle and soap-free', 'wash', '#d7ece3'], [0, 'Saltbush Beard Co.', 'Good value for big beards', 'balm', '#e3e0f7']] }
+  ];
+  var at = 0;
+  every(chat, 4200, function () {
+    at = (at + 1) % ENGINES.length;
+    var e = ENGINES[at];
+    var list = $('.picks', chat);
+    $('.seg', chat).style.setProperty('--e', at);
+    $$('.seg-i', chat).forEach(function (s, i) { s.classList.toggle('is-on', i === at); });
+    list.classList.add('is-out');
+    setTimeout(function () {
+      $('.ans-av use', chat).setAttribute('href', '#i-' + e.id);
+      $$('.pick', list).forEach(function (li, i) {
+        var p = e.picks[i];
+        li.classList.toggle('is-you', p[0] === 1);
+        $('.pk-th', li).style.setProperty('--c', p[4]);
+        $('.pk-th use', li).setAttribute('href', '#p-' + p[3]);
+        $('.pk-t b', li).textContent = p[1];
+        $('.pk-t span', li).textContent = p[2];
+        if (p[0] === 1) $('[data-h-rank]').textContent = '#' + (i + 1);
+      });
+      $('[data-h-order]').textContent = e.order;
+      $$('[data-h-eng]').forEach(function (s) { s.textContent = e.name; });
+      bump($('.hc2')); bump($('.hc3'));
+      list.classList.remove('is-out');
+    }, 330);
+  });
+
+  // The sample dashboard counts up the first time it is seen.
+  var dash = $('[data-dash]');
+  if (io && !reduce) dash.classList.add('is-pre');
+  onFirstView(dash, function () {
+    dash.classList.remove('is-pre');
+    if (reduce) return;
+    $$('[data-to]', dash).forEach(function (el) {
+      var to = Number(el.getAttribute('data-to')), pre = el.getAttribute('data-pre') || '', t0 = performance.now();
+      (function step(t) {
+        var k = Math.min(1, (t - t0) / 1100), v = Math.round(to * (1 - Math.pow(1 - k, 3)));
+        el.textContent = pre + v.toLocaleString('en-US');
+        if (k < 1) requestAnimationFrame(step);
+      })(t0);
+    });
+  });
+
+  // Stories: a slow moving row. Pause button, and a keyboard user gets a plain scrolling row instead.
+  var view = $('[data-stories]');
+  var tg = $('[data-st-toggle]');
+  if (view && tg) {
+    if (reduce) view.classList.add('is-manual');
+    else {
+      tg.hidden = false;
+      tg.addEventListener('click', function () {
+        var paused = view.classList.toggle('is-paused');
+        tg.textContent = paused ? 'Play' : 'Pause';
+      });
+    }
+    view.addEventListener('focusin', function (e) {
+      if (!view.classList.contains('is-manual')) { view.classList.add('is-manual'); tg.hidden = true; }
+      if (e.target.scrollIntoView) e.target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    });
+  }
+
+  // Pricing: monthly or yearly.
+  var pricing = $('#pricing');
+  $$('.price-tg').forEach(function (b) {
+    b.addEventListener('click', function () {
+      $$('.price-tg').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      pricing.classList.toggle('is-y', b.getAttribute('data-period') === 'y');
+    });
+  });
+})();
+
+// Join the waitlist popup. Opens from any [data-waitlist] button, any #waitlist link and an address ending in
+// #waitlist. Sends name and email, which button it was, the plan picked on a pricing card and where the visit
+// came from (utm_*, fbclid, the referring site) to /waitlist, then shows "You're on the waitlist" with confetti.
+(function () {
+  var dlg = document.getElementById('waitlist-dialog');
+  if (!dlg) return;
+  var form = dlg.querySelector('.wl-form');
+  var done = dlg.querySelector('.wl-done');
+  var err = dlg.querySelector('.wl-err');
+  var btn = form.querySelector('.wl-btn');
+  var nameIn = form.elements.name;
+  var emailIn = form.elements.email;
+  var canvas = dlg.querySelector('.wl-confetti');
+  var modal = typeof dlg.showModal === 'function';
+  var picked = { source: 'link', plan: '' };
+  var busy = false;
+
+  var KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid'];
+  var from = {};
+  try { from = JSON.parse(sessionStorage.getItem('geo-wl-from') || '{}') || {}; } catch (e) { from = {}; }
+  var q = new URLSearchParams(location.search);
+  if (KEYS.some(function (k) { return q.get(k); })) {
+    from = {};
+    KEYS.forEach(function (k) { if (q.get(k)) from[k] = q.get(k).slice(0, 500); });
+  }
+  if (!from.referrer && document.referrer && document.referrer.indexOf(location.origin) !== 0) from.referrer = document.referrer.slice(0, 500);
+  try { sessionStorage.setItem('geo-wl-from', JSON.stringify(from)); } catch (e) { /* private mode */ }
+
+  function showForm() {
+    form.hidden = false;
+    done.hidden = true;
+    err.hidden = true;
+    [nameIn, emailIn].forEach(function (i) { i.removeAttribute('aria-invalid'); });
+  }
+  function open(source, plan) {
+    if (dlg.open) return;
+    picked = { source: source || 'link', plan: plan || '' };
+    if (!busy) showForm();
+    document.documentElement.classList.add('wl-lock');
+    if (modal) dlg.showModal(); else dlg.setAttribute('open', '');
+    setTimeout(function () { (form.hidden ? done.querySelector('.wl-btn') : nameIn).focus(); }, 30);
+  }
+  function close() { if (modal) dlg.close(); else { dlg.removeAttribute('open'); onClose(); } }
+  function onClose() {
+    document.documentElement.classList.remove('wl-lock');
+    stopConfetti();
+    if (!form.hidden || busy) return;
+    form.reset();
+    showForm();
+  }
+  dlg.addEventListener('close', onClose);
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) close(); });
+  Array.prototype.forEach.call(dlg.querySelectorAll('[data-wl-close]'), function (b) { b.addEventListener('click', close); });
+
+  document.addEventListener('click', function (e) {
+    var el = e.target && e.target.closest ? e.target.closest('[data-waitlist], a[href="#waitlist"]') : null;
+    if (!el || dlg.contains(el)) return;
+    e.preventDefault();
+    open(el.getAttribute('data-waitlist'), el.getAttribute('data-plan'));
+  });
+  function fromHash() {
+    if (location.hash !== '#waitlist' && location.hash !== '#check') return;
+    if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+    open('link');
+  }
+  addEventListener('hashchange', fromHash);
+  fromHash();
+
+  function fail(msg, field) {
+    err.textContent = msg;
+    err.hidden = false;
+    if (field) { field.setAttribute('aria-invalid', 'true'); field.focus(); }
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (busy) return;
+    err.hidden = true;
+    [nameIn, emailIn].forEach(function (i) { i.removeAttribute('aria-invalid'); });
+    var name = nameIn.value.trim();
+    var email = emailIn.value.trim();
+    if (!name) return fail('Please enter your name.', nameIn);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return fail('Please enter a valid email address.', emailIn);
+
+    var body = new URLSearchParams();
+    body.set('name', name);
+    body.set('email', email);
+    body.set('website', form.elements.website.value);
+    body.set('source', picked.source);
+    body.set('lang', 'en');
+    if (picked.plan) {
+      body.set('plan', picked.plan);
+      var on = document.querySelector('.price-tg[aria-pressed="true"]');
+      body.set('cycle', on && on.getAttribute('data-period') === 'y' ? 'yearly' : 'monthly');
+    }
+    Object.keys(from).forEach(function (k) { body.set(k, from[k]); });
+
+    busy = true;
+    btn.disabled = true;
+    btn.textContent = 'Joining…';
+    var send = window.GEO_LIVE === true
+      ? fetch('/waitlist', { method: 'POST', body: body, headers: { Accept: 'application/json' }, credentials: 'same-origin' })
+        .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+      : new Promise(function (resolve) { setTimeout(function () { resolve({ ok: true }); }, 500); });
+    send.then(function (res) {
+      if (!res || !res.ok) throw new Error((res && res.error) || 'Something went wrong. Please try again.');
+      joined(name, res.isNew === true);
+    }).catch(function (x) {
+      var msg = x && x.message && x.message.indexOf('Failed to fetch') < 0 ? x.message : '';
+      fail(msg || 'Something went wrong. Please try again.');
+    }).then(function () {
+      busy = false;
+      btn.disabled = false;
+      btn.textContent = 'Join the waitlist';
+    });
+  });
+
+  function joined(name, isNew) {
+    done.querySelector('.wl-p').textContent = 'Thanks, ' + name.split(' ')[0] + '. We’ll reach out shortly.';
+    form.hidden = true;
+    done.hidden = false;
+    done.querySelector('.wl-h').focus();
+    if (!dlg.open) open(picked.source, picked.plan);
+    confetti();
+    if (isNew && typeof window.fbq === 'function') window.fbq('track', 'Lead', { content_name: 'waitlist' });
+  }
+
+  var raf = 0;
+  function stopConfetti() {
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0;
+    var c = canvas.getContext && canvas.getContext('2d');
+    if (c) c.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  function confetti() {
+    if (!canvas.getContext || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+    stopConfetti();
+    var ctx = canvas.getContext('2d');
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    var W = canvas.clientWidth || innerWidth;
+    var H = canvas.clientHeight || innerHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var colors = ['#6c5cf2', '#8476f7', '#c9c2fb', '#a093f6', '#e4e0fd', '#22c55e', '#f0b150', '#0e0e13'];
+    var bits = [];
+    var n = W < 600 ? 120 : 200;
+    for (var i = 0; i < n; i++) {
+      bits.push({
+        x: Math.random() * W, y: -10 - Math.random() * H * 0.45,
+        w: 6 + Math.random() * 6, h: 9 + Math.random() * 8,
+        vx: -1.2 + Math.random() * 2.4, vy: 3 + Math.random() * 3.5,
+        r: Math.random() * Math.PI * 2, vr: -0.18 + Math.random() * 0.36,
+        sway: Math.random() * Math.PI * 2, color: colors[i % colors.length], round: i % 5 === 0
+      });
+    }
+    var start = performance.now();
+    function frame(t) {
+      var age = t - start;
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalAlpha = age > 3400 ? Math.max(0, 1 - (age - 3400) / 700) : 1;
+      var falling = false;
+      bits.forEach(function (b) {
+        b.sway += 0.05;
+        b.x += b.vx + Math.sin(b.sway) * 0.9;
+        b.y += b.vy;
+        b.vy = Math.min(b.vy + 0.035, 6.5);
+        b.r += b.vr;
+        if (b.y < H + 20) falling = true;
+        ctx.save();
+        ctx.translate(b.x, b.y);
+        ctx.rotate(b.r);
+        ctx.fillStyle = b.color;
+        if (b.round) { ctx.beginPath(); ctx.arc(0, 0, b.w / 2, 0, Math.PI * 2); ctx.fill(); }
+        else ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h * Math.abs(Math.cos(b.r * 0.7)) + 2);
+        ctx.restore();
+      });
+      if (falling && age < 4100) raf = requestAnimationFrame(frame);
+      else stopConfetti();
+    }
+    raf = requestAnimationFrame(frame);
+  }
+})();
+</script>
+</body>
+</html>
