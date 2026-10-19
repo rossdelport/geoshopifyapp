@@ -25,7 +25,7 @@
 @font-face{font-family:"Inter Fallback";src:local("Arial");ascent-override:90.44%;descent-override:22.52%;line-gap-override:0%;size-adjust:107.12%}
 
 :root{
-  --ink:#0e0e13;--ink-2:#53565f;--head:#25272e;--text:#696c75;--soft:#8c8f98;
+  --ink:#0e0e13;--ink-2:#53565f;--head:#25272e;--text:#666972;--soft:#6e717a;
   --line:#ececf0;--bg-2:#f6f6f9;
   /* GEO purple (#5b47e0), a step lighter for this page */
   --accent:#6c5cf2;--accent-hi:#8476f7;--accent-lo:#5a49e6;--accent-ink:#5442df;
@@ -50,6 +50,7 @@ h1,h2,h3,p,ul,ol,dl,dd,figure{margin:0}
 ul,ol{padding:0;list-style:none}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
 ::selection{background:var(--accent-100);color:var(--ink)}
+[hidden]{display:none!important}
 .sprite{position:absolute;width:0;height:0;overflow:hidden}
 .sr{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .wrap{max-width:1200px;margin:0 auto;padding:0 var(--gut)}
@@ -69,8 +70,8 @@ ul,ol{padding:0;list-style:none}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 20px;border-radius:11px;font-size:15px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:transform .15s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease}
 .btn:active{transform:scale(.97)}
 .btn svg{width:17px;height:17px}
-.btn-pri{color:#fff;background:linear-gradient(180deg,var(--accent-hi),var(--accent));border:1px solid var(--accent-lo);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 1px 2px rgba(60,40,190,.25),0 8px 20px -8px rgba(108,92,242,.7)}
-.btn-pri:hover{background:linear-gradient(180deg,#7869f5,var(--accent-lo));box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 1px 2px rgba(60,40,190,.25),0 10px 24px -8px rgba(108,92,242,.8)}
+.btn-pri{color:#fff;background:linear-gradient(180deg,#7262f4,#5f4feb);border:1px solid var(--accent-lo);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 1px 2px rgba(60,40,190,.25),0 8px 20px -8px rgba(108,92,242,.7)}
+.btn-pri:hover{background:linear-gradient(180deg,#6a5af1,#5544e3);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 1px 2px rgba(60,40,190,.25),0 10px 24px -8px rgba(108,92,242,.8)}
 .btn-sec{color:var(--head);background:#fff;border:1px solid #e2e2e8;box-shadow:0 1px 2px rgba(18,18,40,.06)}
 .btn-sec:hover{border-color:#cfcfd8}
 .btn-sm{height:38px;padding:0 15px;font-size:14px;border-radius:9px}
@@ -435,7 +436,7 @@ ul,ol{padding:0;list-style:none}
 .x-k{font-size:9.5px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:#9a9da6}
 .x-old{margin-top:4px;font-size:12.5px;color:#a3a5ad;text-decoration:line-through;text-decoration-color:#d0d1d8}
 .x-new{position:relative;margin-top:8px;padding-top:8px;border-top:1px dashed #e6e5ee;font-size:12.5px;line-height:1.4;font-weight:600;color:#1d1f25}
-.x-new mark{background:linear-gradient(transparent 55%,var(--accent-100) 55%);color:inherit;background-size:0 100%;background-repeat:no-repeat;animation:x-mark 7s ease-out infinite}
+.x-new mark{background:linear-gradient(transparent 55%,var(--accent-100) 55%);color:inherit;background-size:100% 100%;background-repeat:no-repeat;animation:x-mark 7s ease-out infinite}
 @keyframes x-mark{0%,20%{background-size:0 100%}45%,100%{background-size:100% 100%}}
 .x-why{top:162px;left:50%;transform:translateX(-50%)}
 
@@ -443,11 +444,11 @@ ul,ol{padding:0;list-style:none}
 .st-view{overflow:hidden;padding:6px 0 18px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
 .st-track{display:flex;width:max-content;animation:belt 90s linear infinite}
 .st-view:hover .st-track,.st-view.is-paused .st-track{animation-play-state:paused}
-.st-view.is-manual{overflow-x:auto;-webkit-mask-image:none;mask-image:none;scroll-snap-type:x mandatory}
-.st-view.is-manual .st-track{animation:none}
+.st-view.is-manual{scroll-padding-inline:var(--gut);overflow-x:auto;-webkit-mask-image:none;mask-image:none;scroll-snap-type:x mandatory}
+.st-view.is-manual .st-track{animation:none;padding:4px max(var(--gut),calc((100% - 1200px)/2 + var(--gut)))}
 .st-view.is-manual .st-group[aria-hidden]{display:none}
 .st-group{display:flex;gap:14px;padding-right:14px}
-.st-card{display:flex;flex-direction:column;justify-content:space-between;gap:18px;width:276px;height:172px;padding:20px;border-radius:20px;background:#fff;border:1px solid rgba(18,18,40,.07);box-shadow:0 1px 2px rgba(18,18,40,.04),0 10px 26px -18px rgba(18,18,40,.25);scroll-snap-align:start;transition:border-color .2s,transform .2s}
+.st-card{display:flex;flex-direction:column;justify-content:space-between;gap:18px;width:276px;min-height:172px;padding:20px;border-radius:20px;background:#fff;border:1px solid rgba(18,18,40,.07);box-shadow:0 1px 2px rgba(18,18,40,.04),0 10px 26px -18px rgba(18,18,40,.25);scroll-snap-align:start;transition:border-color .2s,transform .2s}
 .st-card:hover{border-color:#d9d4fc;transform:translateY(-2px)}
 .st-h{font-size:17px;line-height:1.3;font-weight:600;letter-spacing:-.025em;color:var(--head)}
 .st-f{display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px solid var(--line);font-size:13.5px;font-weight:600;color:var(--head)}
@@ -568,7 +569,7 @@ ul,ol{padding:0;list-style:none}
 .wl-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .wl-err{margin-top:12px;font-size:14px;color:#b91c1c}
 .wl-btn{width:100%;margin-top:20px;height:48px}
-.wl-btn:disabled{opacity:.7;cursor:default}
+.wl-btn[aria-disabled="true"]{opacity:.7;cursor:default}
 .wl-small{margin-top:12px;font-size:12.5px;text-align:center;color:var(--soft)}
 .wl-done{text-align:center}
 .wl-tick{display:grid;place-items:center;width:56px;height:56px;margin:4px auto 16px;border-radius:50%;color:#fff;background:linear-gradient(180deg,var(--accent-hi),var(--accent));box-shadow:0 0 0 6px var(--accent-50)}
@@ -578,11 +579,22 @@ ul,ol{padding:0;list-style:none}
 html.wl-lock{overflow:hidden}
 @media (max-width:600px){.wl{margin-top:max(16px,7vh)}.wl-card{padding:28px 20px 22px}}
 
-/* Pictures rest while off screen, and stand still for people who prefer less motion */
+/* Pictures rest while off screen, and stand still for people who prefer less motion or press pause */
 .is-off,.is-off *{animation-play-state:paused!important}
+.still-btn{position:absolute;right:12px;top:12px;z-index:8;display:grid;place-items:center;width:32px;height:32px;border-radius:10px;color:var(--accent-ink);background:rgba(255,255,255,.75);border:1px solid #fff;box-shadow:0 4px 10px -4px rgba(40,25,130,.3)}
+.still-btn:hover{background:#fff}
+.still-btn svg{width:14px;height:14px}
+.still-btn .i-play,html.still .still-btn .i-pause{display:none}
+html.still .still-btn .i-play{display:block}
+html.still *,html.still *::before,html.still *::after{animation:none!important;transition:none!important}
+html.still .g-geo{display:none}
+html.still .g-you{transform:translate(56px,8px)}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
+  .g-geo{display:none}
+  .g-you{transform:translate(56px,8px)}
+  .still-btn{display:none}
 }
 </style>
 </head>
@@ -641,6 +653,7 @@ html.wl-lock{overflow:hidden}
     <div class="card hero-card">
       <div class="art art-hero" data-anim role="img" aria-label="Example: a shopper asks ChatGPT, Gemini and Perplexity for the best beard oil for dry skin, and each AI names the sample store Coolabah Grooming Co. in its top picks.">
         <span class="ex">Example</span>
+        <button class="still-btn" type="button" aria-pressed="false" data-still aria-label="Pause the moving pictures"><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg></button>
         <div class="chat" data-chat aria-hidden="true">
           <div class="chat-top">
             <div class="seg">
@@ -890,9 +903,9 @@ html.wl-lock{overflow:hidden}
       <h2 class="h2" id="money-h">See what AI <b>is worth to your store.</b></h2>
       <p class="lead">Paste one small tracking code into Shopify and see the visits, orders and sales that came from AI. We only count what we can trace, so the numbers stay honest.</p>
       <ul class="ticks">
-        <li><svg><use href="#i-check"/></svg>See which AI sent each order</li>
-        <li><svg><use href="#i-check"/></svg>AI side by side with Google and everything else</li>
-        <li><svg><use href="#i-check"/></svg>No customer names or emails stored</li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg>See which AI sent each order</li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg>AI side by side with Google and everything else</li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg>No customer names or emails stored</li>
       </ul>
     </div>
     <div class="dash" data-anim data-dash role="img" aria-label="Sample dashboard for this month: 4,820 dollars in sales from AI, 6% of the store’s sales, from 61 orders and 1,940 clicks. AI assistants sent 9% of visits, search engines 47%. The latest orders came from ChatGPT, Perplexity and Gemini.">
@@ -1032,12 +1045,12 @@ html.wl-lock{overflow:hidden}
         <p class="plan-desc">AI drafts it all. You check it and post it.</p>
         <a class="btn btn-pri" href="#waitlist" data-waitlist="pricing" data-plan="core" aria-haspopup="dialog">Join the waitlist</a>
         <ul class="feats">
-          <li><svg><use href="#i-check"/></svg>50 buying questions, checked every week</li>
-          <li><svg><use href="#i-check"/></svg>ChatGPT, Gemini, Perplexity and Google AI Overviews</li>
-          <li><svg><use href="#i-check"/></svg>4 buying guides a month, for your OK</li>
-          <li><svg><use href="#i-check"/></svg>Sites AI trusts, with up to 10 pitches a month</li>
-          <li><svg><use href="#i-check"/></svg>New Reddit threads every week, replies drafted</li>
-          <li><svg><use href="#i-check"/></svg>See the sales AI sends you</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>50 buying questions, checked every week</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>ChatGPT, Gemini, Perplexity and Google AI Overviews</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>4 buying guides a month, for your OK</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>Sites AI trusts, with up to 10 pitches a month</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>New Reddit threads every week, replies drafted</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>See the sales AI sends you</li>
         </ul>
       </article>
       <article class="plan">
@@ -1047,13 +1060,13 @@ html.wl-lock{overflow:hidden}
         <p class="plan-desc">AI writes your guides. Our team sends your pitches.</p>
         <a class="btn btn-sec" href="#waitlist" data-waitlist="pricing" data-plan="pro" aria-haspopup="dialog">Join the waitlist</a>
         <ul class="feats">
-          <li><svg><use href="#i-check"/></svg>Everything in Standard, plus:</li>
-          <li><svg><use href="#i-check"/></svg>100 buying questions, checked every day</li>
-          <li><svg><use href="#i-check"/></svg>Plus Claude, in a full check every week</li>
-          <li><svg><use href="#i-check"/></svg>12 buying guides a month, written for you</li>
-          <li><svg><use href="#i-check"/></svg>Up to 40 pitches a month, sent and followed up by our team</li>
-          <li><svg><use href="#i-check"/></svg>A 30-minute call with our team</li>
-          <li><svg><use href="#i-check"/></svg>Outreach and your call start after the free trial</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>Everything in Standard, plus:</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>100 buying questions, checked every day</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>Plus Claude, in a full check every week</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>12 buying guides a month, written for you</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>Up to 40 pitches a month, sent and followed up by our team</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>A 30-minute call with our team</li>
+          <li><svg aria-hidden="true"><use href="#i-check"/></svg>Outreach and your call start after the free trial</li>
         </ul>
       </article>
     </div>
@@ -1146,7 +1159,7 @@ html.wl-lock{overflow:hidden}
       <label class="wl-field"><span class="wl-label">Name</span><input class="wl-input" type="text" name="name" autocomplete="name" maxlength="80" required placeholder="Your name"></label>
       <label class="wl-field"><span class="wl-label">Email</span><input class="wl-input" type="email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" maxlength="254" required placeholder="you@yourstore.com"></label>
       <div class="wl-hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
-      <p class="wl-err" role="alert" hidden></p>
+      <p class="wl-err" id="wl-err" role="alert" hidden></p>
       <button class="btn btn-pri wl-btn" type="submit">Join the waitlist</button>
       <p class="wl-small">We’ll only use this to contact you about GEO.</p>
     </form>
@@ -1163,7 +1176,10 @@ html.wl-lock{overflow:hidden}
 <script>window.GEO_LIVE=true</script>
 <script>
 (function () {
-  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var mq = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : null;
+  var reduce = !!(mq && mq.matches);
+  var root = document.documentElement;
+  var still = function () { return (mq && mq.matches) || root.classList.contains('still'); };
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
@@ -1191,7 +1207,7 @@ html.wl-lock{overflow:hidden}
   $$('[data-anim]').forEach(function (el) { if (io) { el.classList.add('is-off'); io.observe(el); } });
   function every(el, ms, fn) {
     if (reduce || !el) return;
-    setInterval(function () { if (!el.classList.contains('is-off') && !document.hidden) fn(); }, ms);
+    setInterval(function () { if (!el.classList.contains('is-off') && !document.hidden && !still()) fn(); }, ms);
   }
   function onFirstView(el, fn) { if (io) seen.set(el, fn); else fn(); }
   function bump(chip) { chip.classList.remove('is-bump'); void chip.offsetWidth; chip.classList.add('is-bump'); }
@@ -1270,9 +1286,24 @@ html.wl-lock{overflow:hidden}
     }
     view.addEventListener('focusin', function (e) {
       if (!view.classList.contains('is-manual')) { view.classList.add('is-manual'); tg.hidden = true; }
-      if (e.target.scrollIntoView) e.target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      if (e.target.scrollIntoView) e.target.scrollIntoView({ block: 'nearest', inline: 'start' });
     });
   }
+
+  // One button stops every moving picture on the page (remembered on this device).
+  var stillBtn = $('[data-still]');
+  function setStill(on) {
+    root.classList.toggle('still', on);
+    stillBtn.setAttribute('aria-pressed', String(on));
+    stillBtn.setAttribute('aria-label', on ? 'Play the moving pictures' : 'Pause the moving pictures');
+    if (on && view) { view.classList.add('is-manual'); if (tg) tg.hidden = true; }
+  }
+  try { if (localStorage.getItem('geo-still') === '1') setStill(true); } catch (e) { /* storage blocked: fine */ }
+  stillBtn.addEventListener('click', function () {
+    var on = !root.classList.contains('still');
+    setStill(on);
+    try { localStorage.setItem('geo-still', on ? '1' : '0'); } catch (e) { /* storage blocked: fine */ }
+  });
 
   // Pricing: monthly or yearly.
   var pricing = $('#pricing');
@@ -1316,7 +1347,10 @@ html.wl-lock{overflow:hidden}
     form.hidden = false;
     done.hidden = true;
     err.hidden = true;
-    [nameIn, emailIn].forEach(function (i) { i.removeAttribute('aria-invalid'); });
+    clearInvalid();
+  }
+  function clearInvalid() {
+    [nameIn, emailIn].forEach(function (i) { i.removeAttribute('aria-invalid'); i.removeAttribute('aria-describedby'); });
   }
   function open(source, plan) {
     if (dlg.open) return;
@@ -1353,16 +1387,18 @@ html.wl-lock{overflow:hidden}
   fromHash();
 
   function fail(msg, field) {
-    err.textContent = msg;
+    // Empty first, then fill, so the same message is read out again on a second try.
+    err.textContent = '';
     err.hidden = false;
-    if (field) { field.setAttribute('aria-invalid', 'true'); field.focus(); }
+    setTimeout(function () { err.textContent = msg; }, 50);
+    if (field) { field.setAttribute('aria-invalid', 'true'); field.setAttribute('aria-describedby', 'wl-err'); field.focus(); }
   }
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     if (busy) return;
     err.hidden = true;
-    [nameIn, emailIn].forEach(function (i) { i.removeAttribute('aria-invalid'); });
+    clearInvalid();
     var name = nameIn.value.trim();
     var email = emailIn.value.trim();
     if (!name) return fail('Please enter your name.', nameIn);
@@ -1382,7 +1418,7 @@ html.wl-lock{overflow:hidden}
     Object.keys(from).forEach(function (k) { body.set(k, from[k]); });
 
     busy = true;
-    btn.disabled = true;
+    btn.setAttribute('aria-disabled', 'true');
     btn.textContent = 'Joining…';
     var send = window.GEO_LIVE === true
       ? fetch('/waitlist', { method: 'POST', body: body, headers: { Accept: 'application/json' }, credentials: 'same-origin' })
@@ -1396,7 +1432,7 @@ html.wl-lock{overflow:hidden}
       fail(msg || 'Something went wrong. Please try again.');
     }).then(function () {
       busy = false;
-      btn.disabled = false;
+      btn.removeAttribute('aria-disabled');
       btn.textContent = 'Join the waitlist';
     });
   });
