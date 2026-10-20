@@ -52,7 +52,7 @@ h1,h2,h3,p,ul,ol,dl,dd,figure{margin:0}
 ul,ol{padding:0;list-style:none}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
 ::selection{background:var(--accent-100);color:var(--ink)}
-[hidden]{display:none!important}
+[hidden]:not([hidden="until-found"]){display:none!important}
 .sprite{position:absolute;width:0;height:0;overflow:hidden}
 .sr{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .wrap{max-width:1200px;margin:0 auto;padding:0 var(--gut)}
@@ -504,21 +504,92 @@ ul,ol{padding:0;list-style:none}
 .price-foot{margin-top:24px;text-align:center;font-size:14px;line-height:1.7;color:var(--soft)}
 @media (max-width:760px){.plans{grid-template-columns:1fr}.plan{padding:22px}}
 
-/* ---------- FAQ ---------- */
-.faq{display:grid;gap:10px;max-width:820px;margin:0 auto}
-.faq-head{text-align:center;margin-bottom:clamp(28px,4vw,44px)}
-.qa{border-radius:16px;background:#fff;border:1px solid rgba(18,18,40,.08);box-shadow:0 1px 2px rgba(18,18,40,.04);transition:border-color .2s}
-.qa[open]{border-color:#dcd6fd}
-.qa summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px;cursor:pointer;list-style:none;font-size:16px;font-weight:600;letter-spacing:-.015em;color:var(--head)}
-.qa summary::-webkit-details-marker{display:none}
-.qa summary i{position:relative;flex:none;width:24px;height:24px;border-radius:50%;background:var(--bg-2);transition:transform .3s ease,background .2s}
-.qa summary i::before,.qa summary i::after{content:"";position:absolute;left:7px;top:11.25px;width:10px;height:1.5px;border-radius:1px;background:var(--head)}
-.qa summary i::after{transform:rotate(90deg);transition:transform .3s ease}
-.qa[open] summary i{background:var(--accent-50)}
-.qa[open] summary i::after{transform:none}
-.qa-a{padding:0 20px 20px;font-size:15px;line-height:1.65;color:var(--text)}
-.qa-a a{color:var(--accent-ink);text-decoration:underline;text-underline-offset:3px}
-.qa-a code{font-size:.92em;padding:1px 5px;border-radius:5px;background:var(--bg-2)}
+/* ---------- FAQ: a chat with the GEO assistant ----------
+   The first answer shows; the other questions wait as chips under the chat. Choosing one adds it to the
+   conversation, shows the assistant typing, then the answer. Without JavaScript every pair shows as one
+   conversation (the .is-live rules never apply). Waiting pairs are hidden="until-found", so find in page
+   still reaches them. */
+.fq-head{text-align:center;margin-bottom:clamp(28px,4vw,44px)}
+.fq-head .h2{margin:0 auto}
+.fq-stage{max-width:960px;margin:0 auto}
+.art.fq-art{height:auto;padding:clamp(28px,5vw,60px) clamp(20px,6vw,72px)}
+.fq-chat{position:relative;z-index:2;max-width:760px;margin:0 auto;overflow:hidden;border-radius:20px;background:#fff;box-shadow:0 0 0 6px rgba(255,255,255,.3),0 30px 60px -24px rgba(45,30,140,.55)}
+.fq-bar{position:relative;z-index:3;display:flex;align-items:center;gap:12px;height:69px;padding:0 18px;border-bottom:1px solid #efeff4;background:#fff}
+.fq-bar .tile{flex:none;width:40px;height:40px;border-radius:12px;box-shadow:0 0 0 3px var(--accent-50),0 6px 14px -6px rgba(50,30,150,.4),inset 0 -3px 6px rgba(120,100,230,.13),inset 0 2px 2px #fff}
+.fq-bar .mark{width:21px;height:19px}.fq-bar .mark i{width:13px;height:13px}
+.fq-name{font-size:15px;line-height:1.25;font-weight:650;letter-spacing:-.015em;color:var(--ink)}
+.fq-by{display:flex;align-items:center;gap:6px;margin-top:2px;font-size:12.5px;line-height:1.3;color:var(--soft)}
+.fq-by svg{flex:none;width:13px;height:13px}
+.fq-log{position:relative;padding:22px 22px 24px;background:linear-gradient(180deg,#fcfcff,#f6f5fe)}
+.fq-log:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:6px}
+.fq-chat.is-live .fq-log{height:300px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#d6d2f3 transparent}
+.fq-chat.is-live .fq-log-in{min-height:100%;display:flex;flex-direction:column;justify-content:flex-end}
+.fq-chat.is-live::before{content:"";position:absolute;z-index:2;left:0;right:12px;top:69px;height:22px;background:linear-gradient(#fcfcff,rgba(252,252,255,0));pointer-events:none}
+/* spacing by margin, not gap: waiting (until-found) pairs still take part in the layout at zero height */
+.fq-thread{display:flex;flex-direction:column}
+.fq-thread>:not([hidden])~:not([hidden]){margin-top:22px}
+.fq-pair{display:flex;flex-direction:column;gap:12px}
+.fq-qw{align-self:flex-end;max-width:min(82%,520px)}
+.fq-q{margin:0;padding:10px 15px;border-radius:18px 18px 5px 18px;background:#efedfd;box-shadow:inset 0 0 0 1px rgba(108,92,242,.1);color:var(--head);font-size:15px;line-height:1.5;font-weight:500;letter-spacing:-.01em;text-wrap:pretty}
+.fq-a{display:flex;align-items:flex-start;gap:10px;max-width:min(94%,640px)}
+.fq-av{flex:none;width:30px;height:30px;border-radius:10px;box-shadow:0 0 0 1px #ececf3,0 6px 12px -8px rgba(50,30,150,.45),inset 0 -2px 4px rgba(120,100,230,.12),inset 0 2px 2px #fff}
+.fq-av .mark{width:16px;height:15px}.fq-av .mark i{width:10px;height:10px}
+.fq-bub{min-width:0;padding:12px 16px 14px;border-radius:5px 18px 18px 18px;background:#fff;border:1px solid #ececf3;box-shadow:0 10px 22px -18px rgba(40,25,130,.4)}
+.fq-bub p{font-size:15px;line-height:1.65;color:#3d4049;text-wrap:pretty}
+.fq-bub p+p{margin-top:10px}
+.fq-bub a{color:var(--accent-ink);text-decoration:underline;text-underline-offset:3px}
+.fq-bub .fq-src{padding-top:10px;border-top:1px solid #efeff4;font-size:13px;line-height:1.55;color:var(--text)}
+.fq-chat.is-live .fq-pair.is-new .fq-msg{animation:fq-in .34s cubic-bezier(.2,.7,.3,1) both}
+@keyframes fq-in{from{opacity:0;transform:translateY(8px)}}
+.fq-typing{animation:fq-in .25s ease both}
+.fq-typing .fq-bub{display:inline-flex;align-items:center;gap:5px;padding:15px 16px}
+.fq-typing .fq-bub span{width:7px;height:7px;border-radius:50%;background:var(--accent);opacity:.35;animation:fq-dot 1s ease-in-out infinite}
+.fq-typing .fq-bub span:nth-child(2){animation-delay:.15s}.fq-typing .fq-bub span:nth-child(3){animation-delay:.3s}
+@keyframes fq-dot{30%{opacity:1;transform:translateY(-4px)}}
+.fq-sugg{padding:14px 18px 18px;background:#fff;border-top:1px solid #efeff4}
+.fq-sugg-head{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:32px}
+.fq-sugg-title{font-size:11.5px;font-weight:650;letter-spacing:.07em;text-transform:uppercase;color:var(--soft)}
+.fq-reset{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;margin-right:-8px;border-radius:8px;font-size:13px;font-weight:600;color:var(--head);transition:background .2s}
+.fq-reset:hover{background:var(--bg-2)}
+.fq-reset svg{width:14px;height:14px}
+.fq-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.fq-list li{display:flex;max-width:100%}
+.fq-chip{display:inline-flex;align-items:center;gap:10px;max-width:100%;min-height:42px;padding:6px 6px 6px 15px;border-radius:18px 18px 5px 18px;background:#fff;border:1px solid #e4e2f2;box-shadow:0 2px 6px -4px rgba(40,25,130,.2);text-align:left;font-size:14.5px;line-height:1.35;font-weight:500;letter-spacing:-.01em;color:var(--head);transition:border-color .2s,box-shadow .2s,transform .2s}
+.fq-chip-ic{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent-50);color:var(--accent-ink);transition:background .2s,color .2s}
+.fq-chip-ic svg{width:14px;height:14px}
+.fq-chip:hover{border-color:#cfc8fb;box-shadow:0 8px 18px -10px rgba(91,71,224,.45);transform:translateY(-1px)}
+.fq-chip:hover .fq-chip-ic{background:linear-gradient(180deg,#7262f4,#5f4feb);color:#fff}
+.fq-chip:disabled{cursor:default;color:var(--soft);background:var(--bg-2);border-color:var(--line);box-shadow:none;transform:none}
+.fq-chip:disabled .fq-chip-ic{background:#fff;color:var(--good);box-shadow:inset 0 0 0 1px var(--line)}
+/* around the window, on wide screens: a glossy question tile and a note on who writes the answers */
+.fq-tile{position:absolute;z-index:3;top:22px;right:26px;width:62px;height:62px;border-radius:18px;color:var(--accent);animation:fq-bob 6s ease-in-out infinite}
+.fq-tile svg{width:30px;height:30px}
+@keyframes fq-bob{50%{transform:translateY(-8px) rotate(-4deg)}}
+.fq-note{left:26px;bottom:18px}
+@media (max-width:1023px){.fq-tile,.fq-note{display:none}}
+@media (max-width:760px){
+  .art.fq-art{padding:12px}
+  .fq-bar{height:61px;padding:0 14px;gap:10px}
+  .fq-chat.is-live::before{top:61px;right:8px}
+  .fq-bar .tile{width:34px;height:34px;border-radius:11px}
+  .fq-log{padding:16px 12px 18px}
+  .fq-chat.is-live .fq-log{height:clamp(280px,42vh,340px)}
+  .fq-thread>:not([hidden])~:not([hidden]){margin-top:18px}
+  .fq-pair{gap:10px}
+  .fq-qw{max-width:88%}
+  .fq-q{padding:9px 13px;font-size:14.5px}
+  .fq-a{gap:8px;max-width:100%}
+  .fq-av{width:26px;height:26px;border-radius:9px}
+  .fq-bub{padding:10px 13px 12px}
+  .fq-bub p{font-size:14.5px;line-height:1.6}
+  .fq-sugg{padding:12px 12px 14px}
+  .fq-reset{margin-right:-4px;padding:0 6px}
+  /* one sideways row under the chat, so the chat and the questions fit on one screen */
+  .fq-list{flex-wrap:nowrap;align-items:stretch;gap:7px;margin:10px -12px 0;padding:2px 12px 6px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scroll-padding-inline:12px;scrollbar-width:none}
+  .fq-list::-webkit-scrollbar{display:none}
+  .fq-list li{flex:none;max-width:min(78vw,280px);scroll-snap-align:start}
+  .fq-chip{font-size:14px;padding:6px 6px 6px 13px;gap:8px}
+}
 
 /* ---------- Last call and footer ---------- */
 .cta{display:grid;grid-template-columns:1fr 1fr;align-items:stretch;padding:4px;border-radius:20px;background:#fff;border:1px solid rgba(18,18,40,.06);box-shadow:var(--shadow)}
@@ -1081,15 +1152,81 @@ html.still .g-you{transform:translate(56px,8px)}
 
 <section class="sec sec-soft" id="faq" aria-labelledby="faq-h">
   <div class="wrap">
-    <div class="faq-head"><h2 class="h2" id="faq-h">Questions <b>store owners ask</b></h2></div>
-    <div class="faq">
-      <details class="qa" open><summary>What does GEO actually do?<i aria-hidden="true"></i></summary><div class="qa-a">It shows you whether ChatGPT, Gemini and Perplexity recommend your products, and who they pick instead. Then it shows you what to do about it: sites to pitch, Reddit threads to reply to and buying guides to add. It also counts the sales it can trace back to AI.</div></details>
-      <details class="qa"><summary>How do you know a sale came from AI?<i aria-hidden="true"></i></summary><div class="qa-a">You paste a small tracking code into Shopify once, which takes about 2 minutes. It spots shoppers who arrive from ChatGPT, Gemini, Perplexity and other AI assistants. Some AI apps hide where a shopper came from, so the real number is usually a bit higher. Google AI Overviews can’t be separated from normal Google, so we count them as search.</div></details>
-      <details class="qa"><summary>Can I pay to appear in AI answers?<i aria-hidden="true"></i></summary><div class="qa-a">Not inside ChatGPT’s answers. ChatGPT shows labelled ads below some answers, but OpenAI says ads can’t change what the answer says. Google sells ads in AI Overviews in many countries. GEO helps you earn the unpaid mentions. Sources: <a href="https://help.openai.com/en/articles/20001047-ads-in-chatgpt" target="_blank" rel="noopener">OpenAI</a> and <a href="https://support.google.com/google-ads/answer/16297775?hl=en" target="_blank" rel="noopener">Google Ads Help</a>.</div></details>
-      <details class="qa"><summary>Will GEO change my store without asking?<i aria-hidden="true"></i></summary><div class="qa-a">No. GEO only reads what anyone can see on your store. Nothing in your Shopify admin changes, and you decide what to publish.</div></details>
-      <details class="qa"><summary>Do I need to install an app?<i aria-hidden="true"></i></summary><div class="qa-a">No. You sign in with your email and type your store’s address. To count sales from AI, you paste one small tracking code into Shopify.</div></details>
-      <details class="qa"><summary>How long does setup take?<i aria-hidden="true"></i></summary><div class="qa-a">About 5 minutes of your time. Your first check then runs by itself and takes a few minutes. You can close the page while it works.</div></details>
-      <details class="qa"><summary>What’s free?<i aria-hidden="true"></i></summary><div class="qa-a">Joining the waitlist, our <a href="/tools">free tools</a> and a first check of your store (10 buying questions on ChatGPT, Gemini and Perplexity). Paid plans open soon: Standard will be US$49 a month, with a 7-day free trial.</div></details>
+    <div class="fq-head"><h2 class="h2" id="faq-h">Questions <b>store owners ask</b></h2></div>
+    <div class="card fq-stage">
+      <div class="art fq-art" data-anim>
+        <span class="tile fq-tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M10 9.5a2.2 2.2 0 1 1 3 2c-.6.3-1 .8-1 1.5"/><path d="M12 16h.01"/></svg></span>
+        <p class="chip fq-note" aria-hidden="true"><b>?</b>More questions? Ask GEO inside the app</p>
+        <div class="fq-chat" data-faq>
+          <div class="fq-bar">
+            <span class="tile" aria-hidden="true"><span class="mark"><i></i><i></i></span></span>
+            <div>
+              <p class="fq-name">GEO assistant</p>
+              <p class="fq-by"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.4 3.6a1 1 0 0 1 3 3L7.4 18.6a2 2 0 0 1-.9.5l-2.9.8a.5.5 0 0 1-.6-.6l.8-2.9a2 2 0 0 1 .5-.9z"/></svg>Answers written by the GEO team</p>
+            </div>
+          </div>
+          <!-- Every question and answer is real text in the page. Without JavaScript they all show as one
+               conversation. With it, the first pair shows and the rest wait as hidden="until-found" (find in
+               page still opens them), listed as chips below the chat; new messages land in the role="log"
+               thread, which announces them. -->
+          <div class="fq-log" role="region" aria-label="Questions and answers">
+            <div class="fq-log-in">
+            <div class="fq-thread" role="log" aria-label="Conversation">
+              <div class="fq-pair" id="fq-p1">
+                <div class="fq-msg fq-qw"><h3 class="fq-q">What does GEO actually do?</h3></div>
+                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
+                  <p>It shows you whether ChatGPT, Gemini and Perplexity recommend your products, and who they pick instead. Then it shows you what to do about it: sites to pitch, Reddit threads to reply to and buying guides to add. It also counts the sales it can trace back to AI.</p>
+                </div></div>
+              </div>
+              <div class="fq-pair" id="fq-p2">
+                <div class="fq-msg fq-qw"><h3 class="fq-q">How do you know a sale came from AI?</h3></div>
+                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
+                  <p>You paste a small tracking code into Shopify once, which takes about 2 minutes. It spots shoppers who arrive from ChatGPT, Gemini, Perplexity and other AI assistants. Some AI apps hide where a shopper came from, so the real number is usually a bit higher. Google AI Overviews can’t be separated from normal Google, so we count them as search.</p>
+                </div></div>
+              </div>
+              <div class="fq-pair" id="fq-p3">
+                <div class="fq-msg fq-qw"><h3 class="fq-q">Can I pay to appear in AI answers?</h3></div>
+                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
+                  <p>Not inside ChatGPT’s answers. ChatGPT shows labelled ads below some answers, but OpenAI says ads can’t change what the answer says. Google sells ads in AI Overviews in many countries. GEO helps you earn the unpaid mentions.</p>
+                  <p class="fq-src">Sources: <a href="https://help.openai.com/en/articles/20001047-ads-in-chatgpt" target="_blank" rel="noopener">OpenAI</a> and <a href="https://support.google.com/google-ads/answer/16297775?hl=en" target="_blank" rel="noopener">Google Ads Help</a>.</p>
+                </div></div>
+              </div>
+              <div class="fq-pair" id="fq-p4">
+                <div class="fq-msg fq-qw"><h3 class="fq-q">Will GEO change my store without asking?</h3></div>
+                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
+                  <p>No. GEO only reads what anyone can see on your store. Nothing in your Shopify admin changes, and you decide what to publish.</p>
+                </div></div>
+              </div>
+              <div class="fq-pair" id="fq-p5">
+                <div class="fq-msg fq-qw"><h3 class="fq-q">Do I need to install an app?</h3></div>
+                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
+                  <p>No. You sign in with your email and type your store’s address. To count sales from AI, you paste one small tracking code into Shopify.</p>
+                </div></div>
+              </div>
+              <div class="fq-pair" id="fq-p6">
+                <div class="fq-msg fq-qw"><h3 class="fq-q">How long does setup take?</h3></div>
+                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
+                  <p>About 5 minutes of your time. Your first check then runs by itself and takes a few minutes. You can close the page while it works.</p>
+                </div></div>
+              </div>
+              <div class="fq-pair" id="fq-p7">
+                <div class="fq-msg fq-qw"><h3 class="fq-q">What’s free?</h3></div>
+                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
+                  <p>Joining the waitlist, our <a href="/tools">free tools</a> and a first check of your store (10 buying questions on ChatGPT, Gemini and Perplexity). Paid plans open soon: Standard will be US$49 a month, with a 7-day free trial.</p>
+                </div></div>
+              </div>
+            </div>
+            </div>
+          </div>
+          <div class="fq-sugg" hidden>
+            <div class="fq-sugg-head">
+              <p class="fq-sugg-title" id="fq-sugg-title">Choose a question</p>
+              <button type="button" class="fq-reset" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Start over</button>
+            </div>
+            <ul class="fq-list" aria-labelledby="fq-sugg-title"></ul>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1323,6 +1460,190 @@ html.still .g-you{transform:translate(56px,8px)}
       $$('.price-tg').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
       pricing.classList.toggle('is-y', b.getAttribute('data-period') === 'y');
     });
+  });
+})();
+
+// FAQ chat: the first answer shows; the other questions wait as chips under the chat. Choosing one adds it to
+// the conversation, shows the assistant typing for a moment, then the answer. The chip stays where it was,
+// marked as answered, so nothing moves under the pointer. Every pair is real text in the HTML: this only
+// hides, moves and shows it. Waiting pairs use hidden="until-found", so find in page still reaches them.
+(function () {
+  var chat = document.querySelector('[data-faq]');
+  if (!chat) return;
+  var log = chat.querySelector('.fq-log');
+  var thread = chat.querySelector('.fq-thread');
+  var sugg = chat.querySelector('.fq-sugg');
+  var list = chat.querySelector('.fq-list');
+  var reset = chat.querySelector('.fq-reset');
+  var title = chat.querySelector('.fq-sugg-title');
+  var titleText = title.textContent;
+  var pairs = Array.prototype.slice.call(thread.querySelectorAll('.fq-pair'));
+  if (pairs.length < 2) return;
+  var motion = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : null;
+  // Reduced motion, or the page's pause button: answers appear at once.
+  function reduced() { return !!(motion && motion.matches) || document.documentElement.classList.contains('still'); }
+
+  var SEND = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>';
+  var DONE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+  var asked = 0;
+  var pending = null;
+  var chips = [];
+
+  // The "typing" row; screen readers skip it (the answer itself is announced).
+  var typing = document.createElement('div');
+  typing.className = 'fq-msg fq-a fq-typing';
+  typing.setAttribute('aria-hidden', 'true');
+  typing.innerHTML = '<span class="tile fq-av"><span class="mark"><i></i><i></i></span></span><div class="fq-bub"><span></span><span></span><span></span></div>';
+
+  function scrollLog(top) {
+    var y = Math.max(0, Math.min(top, log.scrollHeight - log.clientHeight));
+    if (log.scrollTo) log.scrollTo({ top: y, behavior: reduced() ? 'auto' : 'smooth' }); else log.scrollTop = y;
+  }
+
+  // If the conversation isn't fully on screen (a phone, with the questions below it), bring it into view
+  // first, so the answer appears where the person is looking. The sticky nav is measured.
+  function revealChat() {
+    var nav = document.querySelector('.nav');
+    var top = (nav ? Math.max(0, nav.getBoundingClientRect().bottom) : 64) + 12;
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var lr = log.getBoundingClientRect();
+    if (lr.top >= top - 1 && lr.bottom <= vh + 1) return;
+    var cr = chat.getBoundingClientRect();
+    var dy = cr.height <= vh - top - 12 ? cr.bottom - (vh - 12) : lr.top - top;
+    if (Math.abs(dy) < 2) return;
+    try { scrollBy({ top: dy, behavior: reduced() ? 'auto' : 'smooth' }); } catch (e) { scrollBy(0, dy); }
+  }
+
+  function makeChip(pair) {
+    var li = document.createElement('li');
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'fq-chip';
+    btn.setAttribute('aria-controls', pair.id);
+    var tx = document.createElement('span');
+    tx.textContent = pair.querySelector('.fq-q').textContent.replace(/\s+/g, ' ').trim();
+    var ic = document.createElement('span');
+    ic.className = 'fq-chip-ic';
+    ic.innerHTML = SEND;
+    btn.appendChild(tx);
+    btn.appendChild(ic);
+    li.appendChild(btn);
+    var chip = { pair: pair, li: li, btn: btn, ic: ic, done: false };
+    btn.addEventListener('click', function () { ask(chip, false); });
+    return chip;
+  }
+
+  function markDone(chip, done) {
+    chip.done = done;
+    chip.btn.disabled = done;
+    chip.ic.innerHTML = done ? DONE : SEND;
+    var note = chip.btn.querySelector('.sr');
+    if (done && !note) {
+      note = document.createElement('span');
+      note.className = 'sr';
+      note.textContent = ' (answered above)';
+      chip.btn.insertBefore(note, chip.ic);
+    } else if (!done && note) chip.btn.removeChild(note);
+  }
+
+  function syncState() {
+    var left = chips.filter(function (c) { return !c.done; }).length;
+    reset.hidden = asked === 0;
+    title.textContent = left ? titleText : 'That’s every question';
+  }
+
+  // Where keyboard focus goes after a question: the next one still open, else an earlier one, else "Start over".
+  function nextTarget(chip) {
+    var at = chips.indexOf(chip);
+    for (var i = at + 1; i < chips.length; i++) if (!chips[i].done) return chips[i].btn;
+    for (var j = at - 1; j >= 0; j--) if (!chips[j].done) return chips[j].btn;
+    return reset.hidden ? log : reset;
+  }
+
+  // In the sideways row on phones, a chip focused from the keyboard is scrolled into view (a tap leaves the row still).
+  function showInRow(el) {
+    if (!el || el.parentNode.parentNode !== list || list.scrollWidth <= list.clientWidth + 1) return;
+    var keyboard = false;
+    try { keyboard = el.matches(':focus-visible'); } catch (e) { keyboard = false; }
+    if (!keyboard) return;
+    var li = el.parentNode;
+    var left = li.offsetLeft - list.offsetLeft;
+    if (left < list.scrollLeft || left + li.offsetWidth > list.scrollLeft + list.clientWidth) {
+      try { list.scrollTo({ left: Math.max(0, left - 12), behavior: reduced() ? 'auto' : 'smooth' }); } catch (e) { list.scrollLeft = Math.max(0, left - 12); }
+    }
+  }
+
+  // Show the waiting answer now (after the typing delay, or at once when another question is chosen).
+  function finish() {
+    if (!pending) return;
+    var p = pending;
+    pending = null;
+    clearTimeout(p.timer);
+    if (typing.parentNode) typing.parentNode.removeChild(typing);
+    p.pair.appendChild(p.answer);
+    scrollLog(p.pair.offsetTop - 16);
+  }
+
+  // found: opened by find in page, so show it at once and leave focus and scrolling to the browser.
+  function ask(chip, found) {
+    finish();
+    if (chip.done && !found) return;
+    var pair = chip.pair;
+    var wasFocused = document.activeElement === chip.btn;
+    markDone(chip, true);
+    asked += 1;
+    var answer = found ? null : pair.querySelector('.fq-a');
+    if (answer) pair.removeChild(answer);
+    pair.hidden = false;
+    pair.classList.toggle('is-new', !found);
+    thread.appendChild(pair);
+    syncState();
+    if (found) return;
+    if (wasFocused || document.activeElement === document.body) {
+      var target = nextTarget(chip);
+      try { target.focus({ preventScroll: true }); } catch (e) { target.focus(); }
+      showInRow(target);
+    }
+    revealChat();
+    var wait = reduced() ? 0 : 600 + Math.min(300, Math.round(answer.textContent.length * 0.6));
+    pending = { pair: pair, answer: answer, timer: 0 };
+    if (!wait) { finish(); return; }
+    thread.appendChild(typing);
+    scrollLog(log.scrollHeight);
+    pending.timer = setTimeout(finish, wait);
+  }
+
+  function hideWaiting(pair) { pair.setAttribute('hidden', 'until-found'); }
+
+  // Start: the first pair open, the rest waiting (still in the page) and listed as chips.
+  chat.classList.add('is-live');
+  log.tabIndex = 0; // the conversation now scrolls on its own, so keyboard users can focus and scroll it
+  pairs.forEach(function (pair, i) {
+    if (i === 0) return;
+    hideWaiting(pair);
+    var chip = makeChip(pair);
+    chips.push(chip);
+    list.appendChild(chip.li);
+    pair.addEventListener('beforematch', function () { ask(chip, true); });
+  });
+  sugg.hidden = false;
+  syncState();
+  log.scrollTop = log.scrollHeight;
+
+  // "Start over": back to the first question only, every chip open again.
+  reset.addEventListener('click', function () {
+    finish();
+    asked = 0;
+    pairs.forEach(function (pair, i) {
+      pair.classList.remove('is-new');
+      thread.appendChild(pair);
+      if (i > 0) hideWaiting(pair);
+    });
+    chips.forEach(function (c) { markDone(c, false); });
+    syncState();
+    list.scrollLeft = 0;
+    log.scrollTop = log.scrollHeight;
+    try { chips[0].btn.focus({ preventScroll: true }); } catch (e) { chips[0].btn.focus(); }
   });
 })();
 
