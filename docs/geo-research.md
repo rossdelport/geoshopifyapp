@@ -248,3 +248,9 @@ money dashboard already do for stores.
 
 For stores, the same thinking backs the guide calendar: choose buying questions over learning questions,
 comparison guides with honest limits, and something original on every page.
+
+## 6. Interview: Josh Pigford on Firstindex (shared 23 Oct 2026)
+
+A one-person, done-for-you SEO and AI visibility service at US$1,000 a month, run with Claude, that reached about
+US$570k a year within a month. The summary, what it means for GEO and the full transcript are in
+`docs/firstindex-interview.md`. Ross's project overview from the same day is in `docs/project-summary.md`.
