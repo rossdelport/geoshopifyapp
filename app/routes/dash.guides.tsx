@@ -53,7 +53,7 @@ export default function Guides() {
       <>
         <PageHead title="Guide calendar" intro="Guide pages are buying guides on your own website, one per question shoppers ask AI, so AI assistants have a page of yours to quote." />
         <section className="w-box">
-          <p className="w-empty">Guide pages come with the Standard plan (4 a month, about one a week) and Done-for-you (12 a month, three a week).</p>
+          <p className="w-empty">Guide pages come with the Done for you plan: 12 a month, three a week.</p>
         </section>
       </>
     );
@@ -64,7 +64,7 @@ export default function Guides() {
       <PageHead
         title="Guide calendar"
         intro={`One guide page per buying question AI doesn’t name you for, written two days before its day so you can read it first. ${
-          plan.doneForYou ? "On Done-for-you they are written and OK’d for you." : "You OK each one, then it goes live on its day."
+          plan.doneForYou ? "On Done for you they are written and OK’d for you." : "You OK each one, then it goes live on its day."
         }`}
         right={
           <>

@@ -30,7 +30,7 @@ const DAY = 86_400_000;
 describe("plans", () => {
   it("keeps the internal ids and shows the new names", () => {
     expect(PLANS.core.name).toBe("Standard");
-    expect(PLANS.pro.name).toBe("Done-for-you");
+    expect(PLANS.pro.name).toBe("Done for you");
     expect(PLANS.free.name).toBe("Free scan");
     expect(getPlan("core")).toBe(PLANS.core);
     expect(getPlan("pro")).toBe(PLANS.pro);

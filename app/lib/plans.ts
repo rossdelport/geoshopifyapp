@@ -113,7 +113,7 @@ export const PLANS: Record<PlanId, Plan> = {
   },
   pro: {
     id: "pro",
-    name: "Done-for-you",
+    name: "Done for you",
     priceUsd: 349,
     priceUsdYearly: 3141,
     trialDays: 7,

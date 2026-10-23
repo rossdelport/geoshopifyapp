@@ -145,7 +145,7 @@ export function waitlistNoticeEmail(r: {
   const lines = [
     `<b>Name:</b> ${esc(r.name)}`,
     `<b>Email:</b> ${esc(r.email)}`,
-    `<b>Joined from:</b> ${esc(r.source)}${r.plan ? ` (${esc(r.plan === "pro" ? "Done-for-you" : "Standard")}${r.cycle ? `, ${esc(r.cycle)}` : ""})` : ""}`,
+    `<b>Joined from:</b> ${esc(r.source)}${r.plan ? ` (${esc(r.plan === "pro" ? "Done for you" : "Standard")}${r.cycle ? `, ${esc(r.cycle)}` : ""})` : ""}`,
   ];
   if (r.utmSource || r.utmCampaign) lines.push(`<b>Ad:</b> ${esc([r.utmSource, r.utmCampaign].filter(Boolean).join(" / "))}`);
   if (r.referrer) lines.push(`<b>Came from:</b> ${esc(r.referrer)}`);
