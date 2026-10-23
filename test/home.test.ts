@@ -27,7 +27,8 @@ describe("home page", () => {
     // No free trial and no install from the website any more: every sign-up button joins the waitlist.
     expect(html).not.toMatch(/free trial/i);
     expect(html).not.toContain("/auth/login");
-    expect(html).toContain('data-waitlist="pricing" data-plan="core" aria-haspopup="dialog">Join the waitlist</button>');
+    expect(html).not.toContain('data-plan="core"');
+    expect(html).toContain('<span class="price-num">A$1,000</span>');
     expect(html).toContain('data-waitlist="pricing" data-plan="pro" aria-haspopup="dialog">Join the waitlist</button>');
   });
 
@@ -196,7 +197,7 @@ describe("home page", () => {
       "Check again every week",
     ]);
     // who does what, in one line up top
-    expect(how).toContain('We do the work. You click approve, or on <span class="nw">Done-for-you</span> we do that too.');
+    expect(how).toContain('We do the work, and you can see and undo every change.');
     // the two kinds of work, and every small screen labelled "Example" with a sentence for screen readers
     expect(how).toContain("On your store</span>");
     expect(how).toContain("Across the web</span>");

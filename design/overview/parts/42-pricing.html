@@ -2,57 +2,35 @@
   <div class="price-band">
     <div class="wrap">
       <div class="price-head">
-        <h2 class="h2 price-h2" id="price-title">Simple pricing</h2>
-        <!-- Monthly / yearly switch. 42-pricing.js shows it and swaps each [data-m][data-y] text. Without
-             JavaScript it stays hidden: the cards show monthly prices, with the yearly price as a small line. -->
-        <div class="price-toggle" role="group" aria-label="Billing period" hidden>
-          <button type="button" class="price-tg" data-period="m" aria-pressed="true">Monthly</button>
-          <button type="button" class="price-tg" data-period="y" aria-pressed="false">Yearly <span class="price-save">3 months free</span></button>
-        </div>
-        <p class="price-status" aria-live="polite"></p>
+        <h2 class="h2 price-h2" id="price-title">One price. We do the work.</h2>
       </div>
 
-      <div class="price-grid">
-        <!-- Standard (plan id "core"): our pick, the indigo card with the edge light -->
-        <article class="price-card price-card-dark" aria-labelledby="price-n-std">
+      <div class="price-grid price-grid-one">
+        <!-- One plan (Ross, 2026-10-23): done for you, A$1,000 a month, 5 Australian brands. Plan id "pro". -->
+        <article class="price-card price-card-dark" aria-labelledby="price-n-dfy">
           <span class="price-glow" aria-hidden="true"></span>
-          <span class="price-badge">For most stores</span>
-          <h3 class="price-name" id="price-n-std">Standard</h3>
-          <p class="price-amt"><span class="price-num" data-m="US$49" data-y="US$441">US$49</span><span class="price-per" data-m="a month" data-y="a year">a month</span></p>
-          <p class="price-alt" data-m="Or US$441 a year." data-y="About US$37 a month. 3 months free.">Or US$441 a year.</p>
-          <p class="price-desc">You approve, AI does the work.</p>
-          <button class="btn price-btn price-btn-white" type="button" data-waitlist="pricing" data-plan="core" aria-haspopup="dialog">Join the waitlist</button>
+          <span class="price-badge">5 spots only</span>
+          <h3 class="price-name" id="price-n-dfy">Done for you</h3>
+          <p class="price-amt"><span class="price-num">A$1,000</span><span class="price-per">a month</span></p>
+          <p class="price-alt">Not happy after the first month? Full refund, and you keep all the work.</p>
+          <p class="price-desc">Our team and AI do the work. You see the sales.</p>
+          <button class="btn price-btn price-btn-white" type="button" data-waitlist="pricing" data-plan="pro" aria-haspopup="dialog">Join the waitlist</button>
           <ul class="price-list">
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>50 buying questions, scanned weekly</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>ChatGPT, Gemini, Perplexity, Google AI Overviews</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Unlimited fixes, one-click approve</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>500 products, 4 guide pages a month</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Up to 10 pitches a month, drafted</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Monthly email report</li>
-          </ul>
-        </article>
-
-        <!-- Done-for-you (plan id "pro") -->
-        <article class="price-card" aria-labelledby="price-n-dfy">
-          <h3 class="price-name" id="price-n-dfy">Done-for-you</h3>
-          <p class="price-amt"><span class="price-num" data-m="US$349" data-y="US$3,141">US$349</span><span class="price-per" data-m="a month" data-y="a year">a month</span></p>
-          <p class="price-alt" data-m="Or US$3,141 a year." data-y="About US$262 a month. 3 months free.">Or US$3,141 a year.</p>
-          <p class="price-desc">AI and our team do it for you.</p>
-          <button class="btn btn-light price-btn price-btn-line" type="button" data-waitlist="pricing" data-plan="pro" aria-haspopup="dialog">Join the waitlist</button>
-          <ul class="price-list">
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>100 buying questions, scanned daily</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Also checks Claude</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Fixes applied for you, undo any time</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>2,000 products, 12 guide pages a month</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Up to 40 pitches a month, sent and followed up</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Monthly report and a 30-minute call</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>100 buying questions, checked every day</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>ChatGPT, Gemini, Perplexity and Google AI Overviews, plus Claude</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Fixes made for you, undo any time</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>12 buying guides a month, written for you</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Up to 40 pitches a month, sent and followed up by our team</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Reddit replies written for you</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>See the sales AI sends you</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>A monthly report and a 30-minute call</li>
           </ul>
         </article>
       </div>
 
       <div class="price-foot">
-        <p>Join the waitlist today. We’ll reach out shortly.</p>
-        <p>Billed in US dollars through Shopify. Cancel any time.</p>
+        <p>We’re taking on 5 Australian ecommerce brands. Join the waitlist and we’ll be in touch.</p>
+        <p>Price in Australian dollars. No lock-in contract. Cancel any time.</p>
       </div>
     </div>
   </div>

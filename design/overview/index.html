@@ -2055,6 +2055,7 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px;
   align-items: stretch;
 }
+.price-grid-one { grid-template-columns: minmax(0, 1fr); max-width: 520px; }
 .price-card {
   position: relative;
   display: flex; flex-direction: column;
@@ -2783,7 +2784,7 @@ html.wl-lock { overflow: hidden; }
       <span class="eng-coin eng-coin-meta"><span class="eng-face"><svg viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd" focusable="false"><path d="M6.897 4c1.915 0 3.516.932 5.43 3.376l.282-.373c.19-.246.383-.484.58-.71l.313-.35C14.588 4.788 15.792 4 17.225 4c1.273 0 2.469.557 3.491 1.516l.218.213c1.73 1.765 2.917 4.71 3.053 8.026l.011.392.002.25c0 1.501-.28 2.759-.818 3.7l-.14.23-.108.153c-.301.42-.664.758-1.086 1.009l-.265.142-.087.04a3.493 3.493 0 01-.302.118 4.117 4.117 0 01-1.33.208c-.524 0-.996-.067-1.438-.215-.614-.204-1.163-.56-1.726-1.116l-.227-.235c-.753-.812-1.534-1.976-2.493-3.586l-1.43-2.41-.544-.895-1.766 3.13-.343.592C7.597 19.156 6.227 20 4.356 20c-1.21 0-2.205-.42-2.936-1.182l-.168-.184c-.484-.573-.837-1.311-1.043-2.189l-.067-.32a8.69 8.69 0 01-.136-1.288L0 14.468c.002-.745.06-1.49.174-2.23l.1-.573c.298-1.53.828-2.958 1.536-4.157l.209-.34c1.177-1.83 2.789-3.053 4.615-3.16L6.897 4zm-.033 2.615l-.201.01c-.83.083-1.606.673-2.252 1.577l-.138.199-.01.018c-.67 1.017-1.185 2.378-1.456 3.845l-.004.022a12.591 12.591 0 00-.207 2.254l.002.188c.004.18.017.36.04.54l.043.291c.092.503.257.908.486 1.208l.117.137c.303.323.698.492 1.17.492 1.1 0 1.796-.676 3.696-3.641l2.175-3.4.454-.701-.139-.198C9.11 7.3 8.084 6.616 6.864 6.616zm10.196-.552l-.176.007c-.635.048-1.223.359-1.82.933l-.196.198c-.439.462-.887 1.064-1.367 1.807l.266.398c.18.274.362.56.55.858l.293.475 1.396 2.335.695 1.114c.583.926 1.03 1.6 1.408 2.082l.213.262c.282.326.529.54.777.673l.102.05c.227.1.457.138.718.138.176.002.35-.023.518-.073.338-.104.61-.32.813-.637l.095-.163.077-.162c.194-.459.29-1.06.29-1.785l-.006-.449c-.08-2.871-.938-5.372-2.2-6.798l-.176-.189c-.67-.683-1.444-1.074-2.27-1.074z"></path></svg></span></span>
     </div>
     <p class="eng-title" id="eng-title">The AI your shoppers ask</p>
-    <p class="eng-names">We check ChatGPT, Gemini, Perplexity and Google AI Overviews every week, plus Claude on <span class="eng-nw">Done-for-you</span>. Sales from Copilot and Meta AI count too.</p>
+    <p class="eng-names">We check ChatGPT, Gemini, Perplexity and Google AI Overviews every week, plus Claude. Sales from Copilot and Meta AI count too.</p>
   </div>
 </section>
 
@@ -2819,7 +2820,7 @@ html.wl-lock { overflow: hidden; }
   <div class="wrap how-grid">
     <div class="how-side">
       <h2 class="h2 how-h2" id="how-title" data-rise>How GEO works to get you recommended</h2>
-      <p class="how-lead" data-rise>We do the work. You click approve, or on <span class="nw">Done-for-you</span> we do that too.</p>
+      <p class="how-lead" data-rise>We do the work, and you can see and undo every change.</p>
       <ul class="how-chips" aria-label="Your safeguards">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>One-click undo</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Only your store’s facts</li>
@@ -3210,7 +3211,7 @@ html.wl-lock { overflow: hidden; }
           <p class="worth-sum tnum" aria-live="polite" aria-atomic="true"><span id="worth-sum">2 orders × $80 = $160 a month</span><span class="worth-sr" id="worth-sum-yr"></span></p>
         </div>
 
-        <p class="worth-core">GEO Standard is US$49 a month. You decide what’s realistic for your store.</p>
+        <p class="worth-core">GEO is A$1,000 a month, done for you. You decide what’s realistic for your store.</p>
       </div>
     </div>
   </div>
@@ -3221,57 +3222,35 @@ html.wl-lock { overflow: hidden; }
   <div class="price-band">
     <div class="wrap">
       <div class="price-head">
-        <h2 class="h2 price-h2" id="price-title">Simple pricing</h2>
-        <!-- Monthly / yearly switch. 42-pricing.js shows it and swaps each [data-m][data-y] text. Without
-             JavaScript it stays hidden: the cards show monthly prices, with the yearly price as a small line. -->
-        <div class="price-toggle" role="group" aria-label="Billing period" hidden>
-          <button type="button" class="price-tg" data-period="m" aria-pressed="true">Monthly</button>
-          <button type="button" class="price-tg" data-period="y" aria-pressed="false">Yearly <span class="price-save">3 months free</span></button>
-        </div>
-        <p class="price-status" aria-live="polite"></p>
+        <h2 class="h2 price-h2" id="price-title">One price. We do the work.</h2>
       </div>
 
-      <div class="price-grid">
-        <!-- Standard (plan id "core"): our pick, the indigo card with the edge light -->
-        <article class="price-card price-card-dark" aria-labelledby="price-n-std">
+      <div class="price-grid price-grid-one">
+        <!-- One plan (Ross, 2026-10-23): done for you, A$1,000 a month, 5 Australian brands. Plan id "pro". -->
+        <article class="price-card price-card-dark" aria-labelledby="price-n-dfy">
           <span class="price-glow" aria-hidden="true"></span>
-          <span class="price-badge">For most stores</span>
-          <h3 class="price-name" id="price-n-std">Standard</h3>
-          <p class="price-amt"><span class="price-num" data-m="US$49" data-y="US$441">US$49</span><span class="price-per" data-m="a month" data-y="a year">a month</span></p>
-          <p class="price-alt" data-m="Or US$441 a year." data-y="About US$37 a month. 3 months free.">Or US$441 a year.</p>
-          <p class="price-desc">You approve, AI does the work.</p>
-          <button class="btn price-btn price-btn-white" type="button" data-waitlist="pricing" data-plan="core" aria-haspopup="dialog">Join the waitlist</button>
+          <span class="price-badge">5 spots only</span>
+          <h3 class="price-name" id="price-n-dfy">Done for you</h3>
+          <p class="price-amt"><span class="price-num">A$1,000</span><span class="price-per">a month</span></p>
+          <p class="price-alt">Not happy after the first month? Full refund, and you keep all the work.</p>
+          <p class="price-desc">Our team and AI do the work. You see the sales.</p>
+          <button class="btn price-btn price-btn-white" type="button" data-waitlist="pricing" data-plan="pro" aria-haspopup="dialog">Join the waitlist</button>
           <ul class="price-list">
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>50 buying questions, scanned weekly</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>ChatGPT, Gemini, Perplexity, Google AI Overviews</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Unlimited fixes, one-click approve</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>500 products, 4 guide pages a month</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Up to 10 pitches a month, drafted</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Monthly email report</li>
-          </ul>
-        </article>
-
-        <!-- Done-for-you (plan id "pro") -->
-        <article class="price-card" aria-labelledby="price-n-dfy">
-          <h3 class="price-name" id="price-n-dfy">Done-for-you</h3>
-          <p class="price-amt"><span class="price-num" data-m="US$349" data-y="US$3,141">US$349</span><span class="price-per" data-m="a month" data-y="a year">a month</span></p>
-          <p class="price-alt" data-m="Or US$3,141 a year." data-y="About US$262 a month. 3 months free.">Or US$3,141 a year.</p>
-          <p class="price-desc">AI and our team do it for you.</p>
-          <button class="btn btn-light price-btn price-btn-line" type="button" data-waitlist="pricing" data-plan="pro" aria-haspopup="dialog">Join the waitlist</button>
-          <ul class="price-list">
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>100 buying questions, scanned daily</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Also checks Claude</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Fixes applied for you, undo any time</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>2,000 products, 12 guide pages a month</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Up to 40 pitches a month, sent and followed up</li>
-            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Monthly report and a 30-minute call</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>100 buying questions, checked every day</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>ChatGPT, Gemini, Perplexity and Google AI Overviews, plus Claude</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Fixes made for you, undo any time</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>12 buying guides a month, written for you</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Up to 40 pitches a month, sent and followed up by our team</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Reddit replies written for you</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>See the sales AI sends you</li>
+            <li><span class="check-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>A monthly report and a 30-minute call</li>
           </ul>
         </article>
       </div>
 
       <div class="price-foot">
-        <p>Join the waitlist today. We’ll reach out shortly.</p>
-        <p>Billed in US dollars through Shopify. Cancel any time.</p>
+        <p>We’re taking on 5 Australian ecommerce brands. Join the waitlist and we’ll be in touch.</p>
+        <p>Price in Australian dollars. No lock-in contract. Cancel any time.</p>
       </div>
     </div>
   </div>
@@ -3325,13 +3304,13 @@ html.wl-lock { overflow: hidden; }
               <div class="faq-pair" id="faq-p4">
                 <div class="faq-msg faq-msg-q"><h3 class="faq-q">Will GEO change my store without asking?</h3></div>
                 <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
-                  <p>Not on Standard: you approve every change. Done-for-you makes them for you, except risky ones like product claims. Undo takes one click.</p>
+                  <p>We make the changes for you, except risky ones like product claims, which wait for your OK. You can switch that off, and undo takes one click.</p>
                 </div></div>
               </div>
               <div class="faq-pair" id="faq-p5">
                 <div class="faq-msg faq-msg-q"><h3 class="faq-q">If GEO costs money, what’s free?</h3></div>
                 <div class="faq-msg faq-msg-a"><span class="faq-av" aria-hidden="true"><i></i><i></i></span><div class="faq-bub">
-                  <p>Joining the waitlist, our free tools and the first scan of your store. After that, Standard is US$49 a month.</p>
+                  <p>Joining the waitlist, our free tools and the first scan of your store. After that, GEO is A$1,000 a month, done for you.</p>
                 </div></div>
               </div>
               <div class="faq-pair" id="faq-p6">

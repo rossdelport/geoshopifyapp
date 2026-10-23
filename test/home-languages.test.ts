@@ -1,5 +1,5 @@
 // The home page in German, French, Dutch, Spanish and Italian (usegeo.app/de, /fr, /nl, /es, /it), built by
-// design/overview/i18n.mjs. Each page: its own language, address and title; euro prices; the company details line;
+// design/overview/i18n.mjs. Each page: its own language, address and title; the price in Australian dollars; the company details line;
 // no explainer video; the waitlist form tells the server the language; the Meta pixel once; no English left in the
 // big headings; no em dash. The English page points search engines at all five.
 
@@ -17,13 +17,7 @@ const ROUTES = { de, fr, nl, es, it: it_ };
 const get = async (route: { loader: (a: LoaderFunctionArgs) => Promise<Response> }, url: string) =>
   route.loader({ request: new Request(url), params: {}, context: {} } as unknown as LoaderFunctionArgs);
 
-const PRICES: Record<string, [string, string]> = {
-  de: ["45 €", "325 €"],
-  fr: ["45 €", "325 €"],
-  nl: ["€ 45", "€ 325"],
-  es: ["45 €", "325 €"],
-  it: ["45 €", "325 €"],
-};
+const PRICES: Record<string, string> = { de: "1.000 A$", fr: "1 000 A$", nl: "A$ 1.000", es: "1.000 A$", it: "1.000 A$" };
 const LEGAL: Record<string, string> = { de: "Impressum", fr: "Mentions légales", nl: "Bedrijfsgegevens", es: "Aviso legal", it: "Note legali" };
 
 describe("home page in other languages", () => {
@@ -32,7 +26,7 @@ describe("home page in other languages", () => {
   });
 
   for (const lang of HOME_LANGS) {
-    it(`/${lang} is the whole page in its language, with euro prices, company details and no video`, async () => {
+    it(`/${lang} is the whole page in its language, with its price, company details and no video`, async () => {
       const res = await get(ROUTES[lang], `https://geo.test/${lang}`);
       expect(res.status).toBe(200);
       expect(res.headers.get("content-type")).toContain("text/html");
@@ -45,12 +39,9 @@ describe("home page in other languages", () => {
       for (const enText of ["The free sales channel", "Join the waitlist</button>", "Simple pricing", "Questions store owners ask"]) {
         expect(html, `"${enText}" is still in English`).not.toContain(enText);
       }
-      // prices in euros, and the US dollar billing note
-      const [std, dfy] = PRICES[lang];
-      expect(html).toContain(`>${std}<`);
-      expect(html).toContain(`>${dfy}<`);
-      expect(html).not.toContain(">US$49<");
-      expect(html).toMatch(/49[^<]{1,12}349/);
+      // the one price, in Australian dollars written the local way
+      expect(html).toContain(`>${PRICES[lang]}<`);
+      expect(html).not.toContain(">A$1,000<");
       // the company details line, with the real address and email
       expect(html).toContain(`<p class="foot-legal">${LEGAL[lang]}: GEO, 237 Adelaide Terrace, East Perth WA 6000,`);
       expect(html).toContain('<a href="mailto:ross@usegeo.app">ross@usegeo.app</a>');
