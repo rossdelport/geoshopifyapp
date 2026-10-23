@@ -88,7 +88,7 @@ describe("Ask GEO and admin: the pure parts", () => {
   it("answers from the repo's guide, in a neutral tone, and knows when to pass it on", () => {
     expect(ask.SYSTEM).toContain("KNOWLEDGE");
     expect(ask.SYSTEM).toContain("Copy and open thread"); // from docs/ask-geo-guide.md
-    expect(ask.SYSTEM).toContain("US$49 a month");
+    expect(ask.SYSTEM).toContain("A$1,000 a month");
     expect(ask.SYSTEM).toMatch(/Neutral, calm and plain/);
     expect(ask.SYSTEM).toMatch(/Never promise a feature that isn't in the app yet/);
     expect(ask.SYSTEM).not.toContain("—");
