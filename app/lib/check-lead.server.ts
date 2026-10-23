@@ -17,7 +17,7 @@ import { suppressionHash } from "./retention.server";
 import { buildActionPlan, type ActionPlan } from "./check-plan";
 import { buildCheckPdf, noDashes, reportFileName } from "./check-pdf.server";
 import { PUBLIC_KEY, hashIp } from "./public-form.server";
-import { OFFER, OFFER_PRICE } from "./plans";
+import { OFFER } from "./plans";
 import {
   isCheckCountry,
   type CheckAnswer,
@@ -381,7 +381,7 @@ export function reportEmailContent(i: ReportEmailInput): { subject: string; html
   const named = `AI named ${brand} in ${report.namedCount} of ${report.answerCount} answers.`;
   const rival = top ? `It recommended ${emailSafe(top.name, 80)} most often, in ${top.count} ${top.count === 1 ? "answer" : "answers"}.` : "";
   const steps = plan.steps.filter((s) => s.kind !== "geo").slice(0, 3).map((s) => emailSafe(s.title, 120));
-  const price = `${OFFER.name} is ${OFFER_PRICE}. Join the waitlist and we’ll reach out shortly.`;
+  const price = `${OFFER.line} Join the waitlist and we’ll reach out shortly.`;
   const cta = "Join the GEO waitlist";
   const why = "You’re getting this because you asked for this report on the GEO website.";
   const tipsLine =

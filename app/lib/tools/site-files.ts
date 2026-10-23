@@ -4,7 +4,7 @@
 // static files are served before routes and would hide these.
 
 import { BLOG_HUB } from "../blog/pages";
-import { OFFER, OFFER_PRICE } from "../plans";
+import { OFFER } from "../plans";
 import { STORIES } from "../stories";
 import { STORIES_HUB, STORIES_UPDATED, storyPath } from "../stories/pages";
 import { HOME_LANGS, HOME_UPDATED, PRIVACY_UPDATED, SITE, abs } from "./site";
@@ -69,9 +69,9 @@ export function sitemapXml(posts: { path: string; updated: string }[] = []): str
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
 }
 
-/** The plans in one sentence, from PLANS (prices are never typed in). */
+/** The offer in one sentence, from OFFER in plans.ts (the price is never typed in here). */
 function plansLine(): string {
-  return `GEO has one plan: ${OFFER.name} at ${OFFER_PRICE} (Australian dollars), for Australian ecommerce brands, with no lock-in contract. New stores join through a waitlist on the home page. The free tools below need no sign-up.`;
+  return `${OFFER.line} New stores join through a waitlist on the home page. The free tools below need no sign-up.`;
 }
 
 /**

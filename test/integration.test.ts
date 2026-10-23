@@ -724,7 +724,7 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
     await db.aiSession.create({ data: { shopId, engine: "chatgpt", clientKey: "report-oct", landingUrl: "/", occurredAt: new Date(Date.UTC(2026, 9, 1, 9)) } });
 
     const { html, subject } = await buildMonthlyReport(shopId, new Date(Date.UTC(2026, 9, 2, 9)));
-    expect(html).toContain("Money from AI in September");
+    expect(html).toContain("Sales from AI in September");
     expect(html).not.toContain("this month");
     expect(subject).toMatch(/^\S*100(\.00)? from AI in September · /);
     expect(html).toContain(">2</div>"); // September's 2 orders, not August's or October's
