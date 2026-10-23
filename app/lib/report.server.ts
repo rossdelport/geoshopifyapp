@@ -54,7 +54,7 @@ export async function buildMonthlyReport(shopId: string, now = new Date()) {
   const html = `<!doctype html><html><body style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:#f6f6f7;padding:24px;color:#202223">
 <div style="max-width:560px;margin:auto;background:#fff;border-radius:16px;padding:28px">
   <p style="margin:0;color:#6d7175;font-size:13px">Your AI search report · ${shop.name ?? shop.domain}</p>
-  <h1 style="font-size:22px;margin:8px 0 20px">Money from AI in ${period.label}</h1>
+  <h1 style="font-size:22px;margin:8px 0 20px">Sales from AI in ${period.label}</h1>
   <table style="width:100%;border-collapse:collapse;text-align:center"><tr>
     <td style="padding:12px;background:#f1f8f5;border-radius:12px"><div style="font-size:24px;font-weight:700">${m(month.revenue)}</div><div style="color:#6d7175;font-size:12px">sales from AI</div></td>
     <td style="width:8px"></td>

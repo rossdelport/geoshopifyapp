@@ -34,7 +34,7 @@ product, why, and what to do about it, and it shows the clicks, orders and money
    - asking ChatGPT, Gemini, Perplexity and Google each question, twice each (answers vary from run to run, so
      we always use more than one).
 4. Your dashboard appears with your results.
-5. Add the tracking code (Tracking code tab) so the dashboard can show money from AI.
+5. Add the tracking code (Tracking code tab) so the dashboard can show sales from AI.
 
 One email account has one store. A store already on GEO under another email can't be added again; email
 ross@usegeo.app if that's your store.
@@ -42,7 +42,7 @@ ross@usegeo.app if that's your store.
 ## The tabs in the app
 
 ### Dashboard
-- **Money from AI this month:** AI revenue, AI orders and AI clicks. These need the tracking code. Until it's
+- **Sales from AI this month:** AI revenue, AI orders and AI clicks. These need the tracking code. Until it's
   added the cards show "Add the tracking code to see this".
 - **Where your shoppers came from this month:** a table with three rows, AI assistants, search engines (Google,
   Bing and co, which is SEO traffic) and everything else (direct, social, email, ads), each with visits, orders,
