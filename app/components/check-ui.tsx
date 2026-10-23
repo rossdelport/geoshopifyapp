@@ -15,7 +15,7 @@ import {
   type CheckProduct,
   type CheckView,
 } from "../lib/check-types";
-import { ENGINE_LABELS, PLANS } from "../lib/plans";
+import { ENGINE_LABELS, OFFER, PLANS } from "../lib/plans";
 import { aiReadyNote } from "../lib/ai-ready";
 import type { SourceType } from "../lib/sources";
 import { sameBrand } from "../lib/match";
@@ -971,14 +971,12 @@ export function CheckReport({ view }: { view: CheckView }) {
 
       <section className="ck-cta">
         <div className="ck-cta-tx">
-          <h2 className="ck-cta-h">Help AI recommend you, every week</h2>
+          <h2 className="ck-cta-h">Let GEO do this for you</h2>
           <p>
-            GEO {PLANS.core.name} checks up to {PLANS.core.questions} buying questions every week, writes fixes that help AI
-            recommend your products (you approve each one), and counts the orders it can trace back to AI.
+            GEO checks up to {PLANS.pro.questions} buying questions every day, writes buying guides and Reddit replies for
+            you, pitches the sites AI quotes most, and counts the orders it can trace back to AI.
           </p>
-          <p className="ck-cta-price">
-            {PLANS.core.name} is US${PLANS.core.priceUsd} a month. Join the waitlist and we’ll reach out shortly.
-          </p>
+          <p className="ck-cta-price">{OFFER.line} Join the waitlist and we’ll reach out shortly.</p>
           <div className="ck-cta-row">
             <a className="ck-btn ck-btn-dark" href={view.joinUrl}>
               Join the waitlist
@@ -994,9 +992,8 @@ export function CheckReport({ view }: { view: CheckView }) {
       </section>
 
       <p className="ck-honest">
-        Answers change from run to run, so we ask twice. This quick check uses 3 questions. The app tracks up to{" "}
-        {PLANS.core.questions} every week on {PLANS.core.name}, or {PLANS.pro.questions} every day on {PLANS.pro.name} (asked
-        twice on the weekly full scan).
+        Answers change from run to run, so we ask twice. This quick check uses 3 questions. GEO tracks up to{" "}
+        {PLANS.pro.questions} every day (asked twice on the weekly full scan).
       </p>
     </>
   );
