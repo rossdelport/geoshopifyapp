@@ -20,6 +20,7 @@ import { llmsReport } from "../app/lib/tools/llms";
 import { TOOL_BOTS, VERDICT_COPY, checkBots, verdict } from "../app/lib/tools/crawler";
 import { SiteFooter } from "../app/components/site-footer";
 import { STORIES } from "../app/lib/stories";
+import { COMPARE_PAGES } from "../app/lib/compare/pages";
 import * as layout from "../app/routes/tools";
 import * as hub from "../app/routes/tools._index";
 import * as privacy from "../app/routes/privacy";
@@ -210,10 +211,11 @@ describe("one list of seven pages everywhere", () => {
   it("the sitemap lists exactly the public pages (the tools, the stories, the blog and the rest), each with its date", () => {
     const xml = sitemapXml();
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-    expect(locs).toEqual([abs("/"), ...HOME_LANGS.map((l) => abs(`/${l}`)), abs("/tools"), ...SEVEN.map(abs), abs("/stories"), ...STORIES.map((s) => abs(`/stories/${s.slug}`)), abs("/blog"), abs("/privacy")]);
+    expect(locs).toEqual([abs("/"), ...HOME_LANGS.map((l) => abs(`/${l}`)), abs("/tools"), ...SEVEN.map(abs), abs("/stories"), ...STORIES.map((s) => abs(`/stories/${s.slug}`)), abs("/blog"), abs("/compare"), ...COMPARE_PAGES.map((p) => abs(`/compare/${p.slug}`)), abs("/privacy")]);
     // The blog posts come from the database: the route passes them in, newest first, and the hub takes the newest date.
     const withPosts = sitemapXml([{ path: "/blog/second", updated: "2026-10-20" }, { path: "/blog/first", updated: "2026-10-15" }]);
-    expect([...withPosts.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]).slice(-4)).toEqual([abs("/blog"), abs("/blog/second"), abs("/blog/first"), abs("/privacy")]);
+    const postLocs = [...withPosts.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+    expect(postLocs.slice(postLocs.indexOf(abs("/blog")), postLocs.indexOf(abs("/blog")) + 4)).toEqual([abs("/blog"), abs("/blog/second"), abs("/blog/first"), abs("/compare")]);
     expect(withPosts).toContain(`<loc>${abs("/blog")}</loc>\n    <lastmod>2026-10-20</lastmod>`);
     expect(locs).not.toContain(abs("/check"));
     const lastmods = [...xml.matchAll(/<lastmod>([^<]+)<\/lastmod>/g)].map((m) => m[1]);

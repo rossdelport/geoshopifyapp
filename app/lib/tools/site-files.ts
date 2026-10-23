@@ -4,6 +4,7 @@
 // static files are served before routes and would hide these.
 
 import { BLOG_HUB } from "../blog/pages";
+import { COMPARE_HUB, COMPARE_PAGES, comparePath } from "../compare/pages";
 import { PLANS, formatUsd } from "../plans";
 import { STORIES } from "../stories";
 import { STORIES_HUB, STORIES_UPDATED, storyPath } from "../stories/pages";
@@ -54,6 +55,8 @@ export function sitemapPages(posts: { path: string; updated: string }[] = []): {
     ...STORIES.map((s) => ({ path: storyPath(s.slug), updated: STORIES_UPDATED })),
     { path: BLOG_HUB.path, updated: posts[0]?.updated ?? BLOG_LAUNCHED },
     ...posts,
+    { path: COMPARE_HUB.path, updated: COMPARE_HUB.updated },
+    ...COMPARE_PAGES.map((p) => ({ path: comparePath(p.slug), updated: p.checked })),
     { path: "/privacy", updated: PRIVACY_UPDATED },
   ];
 }
@@ -98,6 +101,7 @@ export function siteLlmsTxt(): string {
     `- [All free tools](${abs(HUB.path)}): the full list of free tools`,
     `- [Stories](${abs(STORIES_HUB.path)}): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are GEO customers)`,
     `- [Blog](${abs(BLOG_HUB.path)}): plain-English articles for Shopify stores on getting recommended by AI assistants, new ones three times a week`,
+    `- [Compare](${abs(COMPARE_HUB.path)}): honest comparisons of GEO with agencies, tracking tools and prices in Australia`,
     `- [Privacy policy](${abs("/privacy")}): what data GEO collects and why`,
     "",
   ].join("\n");

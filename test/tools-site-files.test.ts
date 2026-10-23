@@ -13,6 +13,7 @@ import { PLANS } from "../app/lib/plans";
 import { HUB, TOOLS } from "../app/lib/tools/registry";
 import { STORIES } from "../app/lib/stories";
 import { STORIES_UPDATED } from "../app/lib/stories/pages";
+import { COMPARE_HUB, COMPARE_PAGES } from "../app/lib/compare/pages";
 import { HOME_UPDATED, PRIVACY_UPDATED } from "../app/lib/tools/site";
 import { BLOG_LAUNCHED, siteLlmsTxt, siteRobotsTxt, sitemapPages, sitemapXml } from "../app/lib/tools/site-files";
 import { loader as robotsLoader } from "../app/routes/robots[.]txt";
@@ -89,9 +90,9 @@ describe("sitemap.xml", () => {
   it("is a well-formed sitemaps.org file", () => {
     expect(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')).toBe(true);
     expect(xml.trimEnd().endsWith("</urlset>")).toBe(true);
-    // home and 5 languages, tools hub, 7 tools, stories hub, 15 stories, blog, privacy
-    expect(xml.match(/<url>/g)).toHaveLength(17 + STORIES.length);
-    expect(xml.match(/<\/url>/g)).toHaveLength(17 + STORIES.length);
+    // home and 5 languages, tools hub, 7 tools, stories hub, 15 stories, blog, compare hub and pages, privacy
+    expect(xml.match(/<url>/g)).toHaveLength(18 + STORIES.length + COMPARE_PAGES.length);
+    expect(xml.match(/<\/url>/g)).toHaveLength(18 + STORIES.length + COMPARE_PAGES.length);
     expect(xml).not.toMatch(/priority|changefreq/);
     expect(xml).not.toMatch(/&(?!amp;|lt;|gt;|quot;|apos;)/);
   });
@@ -105,6 +106,8 @@ describe("sitemap.xml", () => {
       "https://usegeo.app/stories",
       ...STORIES.map((s) => `https://usegeo.app/stories/${s.slug}`),
       "https://usegeo.app/blog",
+      "https://usegeo.app/compare",
+      ...COMPARE_PAGES.map((p) => `https://usegeo.app/compare/${p.slug}`),
       "https://usegeo.app/privacy",
     ]);
     expect(STORIES).toHaveLength(15);
@@ -117,6 +120,8 @@ describe("sitemap.xml", () => {
       STORIES_UPDATED,
       ...STORIES.map(() => STORIES_UPDATED),
       BLOG_LAUNCHED,
+      COMPARE_HUB.updated,
+      ...COMPARE_PAGES.map((p) => p.checked),
       PRIVACY_UPDATED,
     ]);
     for (const d of lastmods) expect(d).toMatch(/^\d{4}-\d{2}-\d{2}$/);
