@@ -4,7 +4,7 @@
 // static files are served before routes and would hide these.
 
 import { BLOG_HUB } from "../blog/pages";
-import { PLANS, formatUsd } from "../plans";
+import { OFFER, OFFER_PRICE } from "../plans";
 import { STORIES } from "../stories";
 import { STORIES_HUB, STORIES_UPDATED, storyPath } from "../stories/pages";
 import { HOME_LANGS, HOME_UPDATED, PRIVACY_UPDATED, SITE, abs } from "./site";
@@ -71,8 +71,7 @@ export function sitemapXml(posts: { path: string; updated: string }[] = []): str
 
 /** The plans in one sentence, from PLANS (prices are never typed in). */
 function plansLine(): string {
-  const { core, pro } = PLANS;
-  return `GEO has two plans: ${core.name} at ${formatUsd(core.priceUsd)} a month and ${pro.name} at ${formatUsd(pro.priceUsd)} a month. New stores join through a waitlist on the home page. The free tools below need no sign-up.`;
+  return `GEO has one plan: ${OFFER.name} at ${OFFER_PRICE} (Australian dollars), for Australian ecommerce brands, with no lock-in contract. New stores join through a waitlist on the home page. The free tools below need no sign-up.`;
 }
 
 /**

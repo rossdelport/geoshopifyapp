@@ -9,7 +9,6 @@ import { createElement, type ComponentType } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createRoutesStub, type LoaderFunctionArgs, type MetaDescriptor } from "react-router";
 import { isAllowed, parseRobots } from "../app/lib/robots";
-import { PLANS } from "../app/lib/plans";
 import { HUB, TOOLS } from "../app/lib/tools/registry";
 import { STORIES } from "../app/lib/stories";
 import { STORIES_UPDATED } from "../app/lib/stories/pages";
@@ -169,7 +168,7 @@ describe("llms.txt for usegeo.app", () => {
 
   it("takes the prices from the plans, never typed in, and says new stores join through the waitlist", () => {
     expect(txt).toContain(
-      `GEO has two plans: ${PLANS.core.name} at US$${PLANS.core.priceUsd} a month and ${PLANS.pro.name} at US$${PLANS.pro.priceUsd} a month. New stores join through a waitlist on the home page.`,
+      "GEO has one plan: Done for you at A$1,000 a month (Australian dollars), for Australian ecommerce brands, with no lock-in contract. New stores join through a waitlist on the home page.",
     );
     expect(txt).not.toMatch(/free trial/i);
   });

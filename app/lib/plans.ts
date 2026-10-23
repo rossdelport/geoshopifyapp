@@ -103,7 +103,7 @@ export const PLANS: Record<PlanId, Plan> = {
   },
   pro: {
     id: "pro",
-    name: "Done-for-you",
+    name: "Done for you",
     priceUsd: 349,
     priceUsdYearly: 3141,
     trialDays: 7,
@@ -137,6 +137,11 @@ export const PLANS: Record<PlanId, Plan> = {
 };
 
 export const PAID_PLAN_IDS: PaidPlanId[] = ["core", "pro"];
+
+// What the website and web app sell (Ross, 2026-10-23): one plan, Done for you ("pro"), A$1,000 a month,
+// 5 Australian brands. Standard stays above only for the paused Shopify app and stored data.
+export const OFFER = PLANS.pro;
+export const OFFER_PRICE = "A$1,000 a month";
 
 // Shopify Billing plan names (the billing config keys). Shopify shows these to the store, and stored
 // subscriptions carry them, so never rename one: add a new name and map the old one below instead.
