@@ -12,7 +12,7 @@ import { ENGINE_LABELS, type Engine, getPlan } from "../lib/plans";
 import { formatMoney, formatPct, timeAgo } from "../lib/format";
 import { ICONS, PageHead, Stat } from "../components/web";
 
-// usegeo.app/dash: the web app's home. While setting up: the steps and the scan's progress. Then, money from AI
+// usegeo.app/dash: the web app's home. While setting up: the steps and the scan's progress. Then, sales from AI
 // first (Ross's #1 rule), the visibility score, who AI names instead, and the questions where the store is missing.
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -163,7 +163,7 @@ export default function DashHome() {
 
       <section className="w-sec" aria-labelledby="money-h">
         <div className="w-sec-head">
-          <h2 id="money-h">Money from AI this month</h2>
+          <h2 id="money-h">Sales from AI this month</h2>
           <p>Orders and clicks from people who came from ChatGPT and the other AI assistants.</p>
         </div>
         <div className="w-stats">

@@ -5,7 +5,7 @@
 
 import { domainStem } from "./check-read";
 import { sameBrand } from "./match";
-import { ENGINE_LABELS, PLANS } from "./plans";
+import { ENGINE_LABELS, OFFER, PLANS } from "./plans";
 import {
   CHECK_ENGINES,
   type CheckAnswer,
@@ -213,15 +213,15 @@ function rivalsStep(report: CheckReport): PlanStep | null {
 }
 
 function geoStep(joinUrl: string): PlanStep {
-  const plan = PLANS.core;
+  const plan = PLANS.pro;
   return {
     kind: "geo",
-    title: "Let GEO do this every week",
-    body: `GEO checks up to ${plan.questions} buying questions every week on ChatGPT, Gemini, Perplexity and Google AI Overviews, writes these fixes for you to approve in one click, and drafts your pitches.`,
+    title: "Let GEO do this for you",
+    body: `GEO checks up to ${plan.questions} buying questions every day on ChatGPT, Gemini, Perplexity and Google AI Overviews, writes buying guides and Reddit replies for you, and our team pitches the sites AI quotes most.`,
     items: [
       {
         label: "Join the GEO waitlist",
-        detail: `${plan.name} is US$${plan.priceUsd} a month. We’ll reach out shortly.`,
+        detail: `${OFFER.line} We’ll reach out shortly.`,
         urls: [joinUrl],
       },
     ],

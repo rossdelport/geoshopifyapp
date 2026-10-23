@@ -10,7 +10,7 @@ Everything here may be said to customers. Internal plans, costs, suppliers and o
 ## About GEO
 
 GEO helps Shopify stores get recommended by AI assistants: ChatGPT, Gemini, Perplexity, Google AI Overviews
-(and Claude on Done-for-you). Shoppers now ask AI things like "best beard oil for dry skin in Australia" and buy
+(and Claude on the paid plan). Shoppers now ask AI things like "best beard oil for dry skin in Australia" and buy
 what it names. GEO shows which brands AI recommends for the questions shoppers ask about the store's kind of
 product, why, and what to do about it, and it shows the clicks, orders and money that come from AI.
 
@@ -34,7 +34,7 @@ product, why, and what to do about it, and it shows the clicks, orders and money
    - asking ChatGPT, Gemini, Perplexity and Google each question, twice each (answers vary from run to run, so
      we always use more than one).
 4. Your dashboard appears with your results.
-5. Add the tracking code (Tracking code tab) so the dashboard can show money from AI.
+5. Add the tracking code (Tracking code tab) so the dashboard can show sales from AI.
 
 One email account has one store. A store already on GEO under another email can't be added again; email
 ross@usegeo.app if that's your store.
@@ -42,7 +42,7 @@ ross@usegeo.app if that's your store.
 ## The tabs in the app
 
 ### Dashboard
-- **Money from AI this month:** AI revenue, AI orders and AI clicks. These need the tracking code. Until it's
+- **Sales from AI this month:** AI revenue, AI orders and AI clicks. These need the tracking code. Until it's
   added the cards show "Add the tracking code to see this".
 - **Where your shoppers came from this month:** a table with three rows, AI assistants, search engines (Google,
   Bing and co, which is SEO traffic) and everything else (direct, social, email, ads), each with visits, orders,
@@ -67,7 +67,7 @@ there, and its most-used page.
 - **Find the writer** looks up the person who wrote that page: name, role, company, email and LinkedIn. A
   lookup counts against your monthly allowance even when nobody is found.
 - **Write a pitch** drafts a short, honest email from you to that writer about your product, for that page. Copy
-  it or open it in your email app. On Done-for-you our team sends it and follows up.
+  it or open it in your email app. On the paid plan our team sends it and follows up.
 - Forums and Reddit: join the conversation as yourself (see Reddit threads). Directories and review sites: get
   listed or claim your free profile, never write reviews yourself. Shops and marketplaces: ask them to stock you.
 
@@ -89,12 +89,12 @@ setup). Left: every thread (All, To reply, Replied). Right: the post and a reply
 A month view of the guide pages GEO writes for your website: one guide per day slot, each answering one buying
 question AI doesn't name you for (the ones it never names you for come first, then bigger searches first). Each
 day shows the question, how many people search it a month, the kind of guide and where it is at. Click a day to
-read the whole page as it will look. Standard gets 4 a month (about one a week), Done-for-you 12 (three a week).
+read the whole page as it will look. The paid plan gets 12 a month (three a week).
 "Autofill calendar" plans the rest of this month and next; the calendar also fills itself every day.
 
 How a day goes:
 - Planned: the question is chosen; the guide is written two days before its day.
-- Needs your OK (Standard): it is written; read it and press Approve. Done-for-you guides are OK'd when written,
+- Needs your OK: on the paid plan guides are OK'd for you when written,
   unless our claims check softened something or the guide needs a fact from you: those wait for your OK. Email
   ross@usegeo.app if you'd rather OK every guide yourself.
 - Scheduled: OK'd, waiting for its day.
@@ -143,21 +143,17 @@ early access.
 
 - **Free:** one check of 10 buying questions on ChatGPT, Gemini and Perplexity, your visibility score and top
   competitors, and one look for Reddit threads.
-- **Standard:** US$49 a month, or US$441 a year (3 months free). 7-day free trial.
-  - 50 buying questions, checked every week, on ChatGPT, Gemini, Perplexity and Google AI Overviews.
-  - Sites AI trusts: 4 writer lookups a month (about one a week) and up to 10 pitches a month, drafted for you.
-  - 4 guide pages a month (about one a week) on the Guide calendar, for your OK: each built around a buying
-    question AI doesn't name you for, rotating through how-to-choose guides, comparisons, use-case pages, buying
+- **Done for you:** A$1,000 a month (Australian dollars). No lock-in contract, cancel any time. Only 5 spots. Not
+  happy after the first month? Full refund, and you keep all the work (ask ross@usegeo.app). No free trial.
+  - 100 buying questions, checked every day on ChatGPT, Gemini, Perplexity and Google AI Overviews, plus Claude in a
+    full check every week.
+  - 12 guide pages a month (three a week) on the Guide calendar, written and OK'd for you (email ross@usegeo.app if
+    you'd rather OK each one yourself), rotating through how-to-choose guides, comparisons, use-case pages, buying
     advice and single question deep dives.
-  - Reddit threads: new threads every week, each with a reply.
-  - Money from AI dashboard.
-- **Done-for-you:** US$349 a month, or US$3,141 a year. 7-day free trial.
-  - 100 buying questions, checked every day, plus Claude.
-  - 12 guide pages a month (three a week) on the Guide calendar, written and OK'd for you (email ross@usegeo.app
-    if you'd rather OK each one yourself).
-  - 20 writer lookups and up to 40 pitches a month, sent and followed up for you by our team (including
-    directories and roundups).
-  - Everything in Standard, plus a 30-minute call. Hand outreach and the call start after the trial.
+  - Sites AI trusts: 20 writer lookups and up to 40 pitches a month, sent and followed up for you by our team
+    (including directories and roundups).
+  - Reddit threads: new threads every week, each with a reply written for you to post.
+  - Sales from AI dashboard and a 30-minute call with our team.
 - Allowances reset on the 1st of each month.
 
 Coming soon (not in the app yet, don't promise dates): paying for a plan in the app, product fixes you can copy

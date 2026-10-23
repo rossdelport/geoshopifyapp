@@ -39,6 +39,16 @@ export interface Plan {
   features: string[];
 }
 
+/**
+ * What the website sells (Ross, 2026-10-23): one done-for-you plan for Australian brands, with the Done-for-you
+ * ("pro") limits. Billing below still holds the old Standard and Done-for-you plans until it is rebuilt.
+ */
+export const OFFER = {
+  name: "Done for you",
+  price: "A$1,000 a month",
+  line: "GEO is A$1,000 a month, done for you, with no lock-in contract.",
+} as const;
+
 export const PLANS: Record<PlanId, Plan> = {
   free: {
     id: "free",

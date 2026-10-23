@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import PDFDocument from "pdfkit";
 import { sameBrand } from "./match";
-import { ENGINE_LABELS, PLANS } from "./plans";
+import { ENGINE_LABELS, OFFER, PLANS } from "./plans";
 import { SCORE_EXPLAINER } from "./score";
 import { SOURCE_TYPE_LABELS } from "./sources";
 import { countryDateStyle } from "./countries";
@@ -572,7 +572,7 @@ function drawQuestions(pdf: Pdf, input: PdfReportInput) {
     pdf.y += 8;
   });
   pdf.y += pdf.write(
-    `This quick check used ${input.questions.length} questions. GEO tracks up to ${PLANS.core.questions} every week on ${PLANS.core.name}.`,
+    `This quick check used ${input.questions.length} questions. GEO tracks up to ${PLANS.pro.questions} every day.`,
     M,
     pdf.y,
     { size: 8.5, color: C.muted },
@@ -581,10 +581,10 @@ function drawQuestions(pdf: Pdf, input: PdfReportInput) {
 }
 
 function drawCta(pdf: Pdf, input: PdfReportInput) {
-  const plan = PLANS.core;
-  const heading = "Track this every week and fix it in one click";
-  const body = `GEO checks up to ${plan.questions} buying questions every week, writes fixes you approve in one click, and counts the orders it can trace back to AI.`;
-  const price = `${plan.name} is US$${plan.priceUsd} a month. Join the waitlist and we’ll reach out shortly.`;
+  const plan = PLANS.pro;
+  const heading = "Let GEO track this and do the work for you";
+  const body = `GEO checks up to ${plan.questions} buying questions every day, writes buying guides and Reddit replies for you, pitches the sites AI quotes most, and counts the orders it can trace back to AI.`;
+  const price = `${OFFER.line} Join the waitlist and we’ll reach out shortly.`;
   const iw = CW - 48;
   const online = input.checkUrl ? `See this report online: ${shortUrl(input.checkUrl, 90)}` : "";
   const h = 24 + pdf.height(heading, "bold", 15, iw, 1) + 6 + pdf.height(body, "body", 10, iw) + 16 + 30 + 10 + pdf.height(price, "body", 8.5, iw) + (online ? 16 : 0) + 22;

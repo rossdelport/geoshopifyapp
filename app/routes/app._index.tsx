@@ -158,7 +158,7 @@ export default function Dashboard() {
                 <s-paragraph>The brands AI picks over you, and the websites it trusts.</s-paragraph>
               </s-box>
               <s-box padding="base" background="subdued" borderRadius="base">
-                <s-heading>Money from AI</s-heading>
+                <s-heading>Sales from AI</s-heading>
                 <s-paragraph>Sales from shoppers who came from AI in the last 60 days.</s-paragraph>
               </s-box>
             </s-grid>
@@ -273,12 +273,12 @@ export default function Dashboard() {
         </s-banner>
       )}
 
-      {/* 1. Money from AI: always first. */}
+      {/* 1. Sales from AI: always first. */}
       <s-section padding="none">
         <div className="geo-hero">
           <div className="geo-row">
             <div className="geo-grow">
-              <div className="geo-hero__label">Money from AI · this month</div>
+              <div className="geo-hero__label">Sales from AI · this month</div>
               <div className="geo-hero__value">{m(money.thisMonth.revenue)}</div>
               <div className="geo-hero__sub">
                 {m(money.sinceJoining.revenue)} since you joined ({money.sinceJoining.days} days)
