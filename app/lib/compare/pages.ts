@@ -52,7 +52,7 @@ export const COMPARE_HUB = {
     "Honest comparisons for Shopify brands choosing how to get recommended by ChatGPT and other AI assistants: agencies, tools, apps and prices.",
   h1: "Choosing how to get recommended by AI",
   intro:
-    "Plain comparisons for store owners deciding between an agency, a tool they run themselves, or GEO. Each page says where the other option is the better pick, and every outside price shows the day we checked it.",
+    "Simple comparisons for store owners choosing between an agency, a tool they run themselves, or GEO. Each page says when the other option is the better pick. Every price from another company shows the day we checked it.",
   ogImage: "/og/home.png",
   ogAlt: "A small clay shop with a star in a speech bubble above it",
   updated: "2026-10-23",
@@ -82,7 +82,7 @@ export const COMPARE_PAGES: ComparePage[] = [
     short: "What each one does in a month, where each wins, and what to ask before you sign.",
     h1: "GEO or an SEO agency: which does an Australian Shopify brand need?",
     intro: [
-      "If your problem is Google rankings, hire an SEO agency. If ChatGPT and other AI assistants name your rivals when shoppers ask what to buy, and not you, you need GEO: work aimed at getting your products recommended by AI.",
+      "If your problem is Google rankings, hire an SEO agency. Do ChatGPT and other AI apps name your rivals, and not you, when shoppers ask what to buy? Then you need GEO: work that gets AI to suggest your products.",
       "Plenty of brands need both. The two share a lot of groundwork, but they aim at different places and they report different things.",
     ],
     checked: "2026-10-23",
@@ -138,7 +138,7 @@ export const COMPARE_PAGES: ComparePage[] = [
       {
         heading: "Where GEO fits",
         paragraphs: [
-          "GEO is a done-for-you service for Shopify brands: A$1,000 a month, no lock-in, and a full refund if you're not happy after the first month. Our team and AI check 100 buying questions every day, fix your product pages, write 12 buying guides a month, send up to 40 pitches and show you the sales AI sends you.",
+          "GEO is a done-for-you service for Shopify brands. It's A$1,000 a month, with no lock-in and a full refund if you're not happy after the first month. Our team and AI check 100 buying questions every day and fix your product pages. We write 12 buying guides a month, send up to 40 emails to websites, and show you the sales AI sends you.",
           "We are not an SEO agency. We don't do site speed, ads or full technical SEO. If you need those, keep your SEO agency and use us alongside it.",
         ],
       },
@@ -146,7 +146,7 @@ export const COMPARE_PAGES: ComparePage[] = [
     faqs: [
       {
         q: "Is GEO just SEO with a new name?",
-        a: "No, but they share groundwork. SEO aims at Google's ranked results. GEO aims at the few brands an AI assistant names in its answer, which depends a lot on the outside sites it quotes, such as roundups, retailers and Reddit.",
+        a: "No, but they share groundwork. SEO aims at Google's ranked results. GEO aims to be one of the few brands an AI app names in its answer. That depends a lot on the other sites it quotes, like review lists, shops and Reddit.",
       },
       {
         q: "Can my SEO agency do GEO?",
@@ -199,8 +199,8 @@ export const COMPARE_PAGES: ComparePage[] = [
       {
         heading: "Where they split",
         paragraphs: [
-          "Google shows ten links. An AI answer names a handful of brands and quotes a handful of sites, often roundups, retailers and Reddit threads. So for GEO, being mentioned on those outside sites counts as much as your own pages.",
-          "AI is also big now. Google says AI Overviews reach over 2.5 billion people a month, and Shopify's president said in February 2026 that orders from AI search were 15 times higher than in January 2025.",
+          "Google shows ten links. An AI answer names a few brands and quotes a few sites, often review lists, shops and Reddit threads. So for GEO, being mentioned on those outside sites counts as much as your own pages.",
+          "AI is also big now. Google says AI Overviews reach over 2.5 billion people a month. And in February 2026, Shopify's president said orders from AI search were 15 times higher than in January 2025.",
         ],
       },
       {
@@ -209,7 +209,7 @@ export const COMPARE_PAGES: ComparePage[] = [
           "ChatGPT adds utm_source=chatgpt.com to the links it shows, so those visits and orders can be counted.",
           "Perplexity, Gemini, Copilot and Claude show up as the site the visitor came from.",
           "Google AI Overviews and AI Mode can't be separated from normal Google traffic. Anyone who says otherwise is guessing.",
-          "GEO shows visits, orders and sales from AI assistants and from search engines side by side, from a small tracking code you paste into Shopify.",
+          "GEO shows visits, orders and sales from AI and from search engines side by side. It uses a small code you paste into Shopify.",
         ],
       },
       {
@@ -217,7 +217,7 @@ export const COMPARE_PAGES: ComparePage[] = [
         bullets: [
           "Your site has technical problems or barely shows on Google: start with SEO.",
           "Your site is fine, but AI names rivals for your buying questions: start with GEO.",
-          "You sell something people research before buying (skincare, supplements, gear): do GEO alongside your SEO, since those shoppers ask AI first.",
+          "You sell something people look into before buying (skincare, supplements, gear). Do GEO along with your SEO, because those shoppers ask AI first.",
         ],
       },
     ],
@@ -280,7 +280,7 @@ export const COMPARE_PAGES: ComparePage[] = [
       {
         heading: "A quick sum before you spend",
         paragraphs: [
-          "Work out how many extra orders cover the cost. If your average order is A$100 and you keep A$40 of it after costs, you need 25 extra orders a month from AI to cover A$1,000.",
+          "Work out how many extra orders cover the cost. Say your average order is A$100 and you keep A$40 of it after costs. Then you need 25 extra orders a month from AI to cover A$1,000.",
           "Shopify's president said in February 2026 that orders from AI search were 15 times higher than a year earlier. Whether that reaches your store depends on whether AI names you, which is what to check first.",
         ],
       },
@@ -292,7 +292,7 @@ export const COMPARE_PAGES: ComparePage[] = [
       },
       { q: "Is there a contract?", a: "No lock-in. You pay monthly and can cancel any time." },
       { q: "What if it doesn't work?", a: "If you're not happy after the first month, you get a full refund and keep all the work we did." },
-      { q: "Can I try it for free first?", a: "Yes. Our free AI Visibility Checker shows whether ChatGPT and other assistants name your products, with no sign-up." },
+      { q: "Can I try it for free first?", a: "Yes. Our free AI Visibility Checker shows if ChatGPT and other AI apps name your products. No sign-up needed." },
     ],
     sources: [OPTIMISING, DEBUTIFY, FIRSTINDEX, PROFOUND, SHOPIFY_15X],
     related: ["geo-vs-seo-agency", "geo-vs-seo-vs-aeo"],
