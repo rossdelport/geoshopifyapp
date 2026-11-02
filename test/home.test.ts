@@ -98,7 +98,7 @@ describe("home page", () => {
     const sec = html.slice(start, html.indexOf("</section>", start));
     expect(sec).toContain("Try us for a month. <b>Full refund if you’re not happy.</b>");
     expect([...sec.matchAll(/<h3>([^<]+)<\/h3>/g)].map((m) => m[1])).toEqual(["See where you stand", "We do the work", "Not happy? Full refund."]);
-    expect(sec).toContain("you keep all the work. No lock-in contract");
+    expect(sec).toContain("You keep all the work. No lock-in contract");
     expect(html).not.toContain("More ways");
     // the same promise as the price card
     expect(html).toContain("Not happy after the first month? Full refund, and you keep all the work.");
@@ -177,7 +177,7 @@ describe("home page", () => {
     expect(start).toBeGreaterThan(-1);
     const sec = html.slice(start, html.indexOf("</section>", start));
     expect(sec).toContain('href="/stories">See all stories');
-    expect(sec).toContain("These brands aren’t GEO customers.");
+    expect(sec).toContain("These brands don’t use GEO.");
     // The track holds the cards twice: the second copy is hidden from screen readers and skipped by the keyboard.
     const groups = [...sec.matchAll(/<ul class="st-group" role="list"( aria-hidden="true")?>([\s\S]*?)<\/ul>/g)];
     expect(groups.map((g) => Boolean(g[1]))).toEqual([false, true]);
