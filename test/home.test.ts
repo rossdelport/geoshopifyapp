@@ -55,6 +55,44 @@ describe("home page", () => {
     }
   });
 
+  it("opens with words on the left and, on the right, AI answers that take turns (Ross, 2 Nov 2026)", async () => {
+    const html = await home();
+    const start = html.indexOf('<section class="hero"');
+    const hero = html.slice(start, html.indexOf("</section>", start));
+    expect(hero).toContain('<div class="hero-tx">');
+    expect(hero).toContain('href="#waitlist" data-waitlist="hero"');
+    // the picture: labelled as an example for screen readers, no "Example" pill on screen (Ross), and the page's
+    // one pause button for the moving pictures
+    expect(hero.match(/role="img" aria-label="Example: [^"]+"/g)).toHaveLength(1);
+    expect(hero).not.toContain('<span class="ex">');
+    expect(hero).toContain("data-anim");
+    expect(hero).toContain('<button class="still-btn" type="button" aria-pressed="false" data-still');
+    expect(html.match(/<button class="still-btn"/g)).toHaveLength(1);
+    // the first answer is written in the page (no JavaScript, reduced motion); the script brings the others in this order
+    expect(hero).toContain('<p class="bub-q">What’s the best beard oil for dry skin?</p>');
+    expect(hero.match(/<li class="pick/g)).toHaveLength(3);
+    const script = html.slice(html.indexOf("var HERO_ANSWERS = ["), html.indexOf("];", html.indexOf("var HERO_ANSWERS = [")));
+    expect([...script.matchAll(/name: '([^']+)'/g)].map((m) => m[1])).toEqual(["ChatGPT", "Gemini", "Perplexity", "Google AI Overviews", "Claude"]);
+    expect(script.match(/q: '/g)).toHaveLength(5);
+    expect(html).toContain("var HOLD = 3000");
+    // GEO can't tell sales from Google AI Overviews apart from normal Google, so that answer shows a place, not an order
+    expect(script).toContain("chip: ['#1', 'in Google AI Overviews']");
+    expect(script).not.toMatch(/order from Google/);
+  });
+
+  it("shows the first month and the full refund where 'More ways we help' used to be", async () => {
+    const html = await home();
+    const start = html.indexOf('<section class="sec sec-soft" id="first-month"');
+    expect(start).toBeGreaterThan(-1);
+    const sec = html.slice(start, html.indexOf("</section>", start));
+    expect(sec).toContain("Try us for a month. <b>Full refund if you’re not happy.</b>");
+    expect([...sec.matchAll(/<h3>([^<]+)<\/h3>/g)].map((m) => m[1])).toEqual(["See where you stand", "We do the work", "Not happy? Full refund."]);
+    expect(sec).toContain("you keep all the work. No lock-in contract");
+    expect(html).not.toContain("More ways");
+    // the same promise as the price card
+    expect(html).toContain("Not happy after the first month? Full refund, and you keep all the work.");
+  });
+
   it("has one canonical address, the five other languages, share tags and the same organisation as the tool pages", async () => {
     const html = await home();
     const head = html.slice(0, html.indexOf("</head>"));
