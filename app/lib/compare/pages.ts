@@ -55,7 +55,7 @@ export const COMPARE_HUB = {
     "Plain comparisons for store owners deciding between an agency, a tool they run themselves, or GEO. Each page says where the other option is the better pick, and every outside price shows the day we checked it.",
   ogImage: "/og/home.png",
   ogAlt: "A small clay shop with a star in a speech bubble above it",
-  updated: "2026-10-23",
+  updated: "2026-11-02",
 } as const;
 
 export const comparePath = (slug: string) => `${COMPARE_HUB.path}/${slug}`;
@@ -296,6 +296,219 @@ export const COMPARE_PAGES: ComparePage[] = [
     ],
     sources: [OPTIMISING, DEBUTIFY, FIRSTINDEX, PROFOUND, SHOPIFY_15X],
     related: ["geo-vs-seo-agency", "geo-vs-seo-vs-aeo"],
+  },
+  {
+    slug: "shopify-seo-agency-australia",
+    title: "Shopify SEO agency in Australia: what to look for | GEO",
+    description:
+      "Hiring a Shopify SEO agency in Australia? What a good one does, what to ask before you sign, and when you also need help with AI search.",
+    short: "What a good one does, questions to ask, and where AI search fits in.",
+    h1: "Choosing a Shopify SEO agency in Australia: what to look for",
+    intro: [
+      "A good Shopify SEO agency gets your product and collection pages found on Google, fixes the technical problems Shopify stores often have, and reports sales, not just rankings.",
+      "More shoppers now ask ChatGPT and Google's AI answers what to buy before they search. So also ask any agency how they will get your products named there. That part is what GEO does.",
+    ],
+    checked: "2026-11-02",
+    sections: [
+      {
+        heading: "What a good Shopify SEO agency does",
+        bullets: [
+          "Writes clear product and collection pages: who it's for, what's in it, sizes, shipping in Australia.",
+          "Fixes technical problems: slow themes, too many apps, broken links, pages Google can't reach.",
+          "Plans buying guides for the questions your shoppers search, and links them to the right products.",
+          "Earns mentions on real sites in your niche, never bought links or link swaps.",
+          "Reports orders and sales from Google in Shopify, not just rankings.",
+        ],
+      },
+      {
+        heading: "Shopify SEO agency or GEO: who does what",
+        table: {
+          head: ["", "Shopify SEO agency", "GEO"],
+          rows: [
+            ["Aims for", "Google's search results", "Being named when shoppers ask ChatGPT, Gemini, Perplexity or Google AI Overviews what to buy"],
+            ["Technical SEO and site speed", "Yes", "No"],
+            ["Product page fixes", "Yes, for Google", "Yes, for AI assistants"],
+            ["Buying guides", "Often", "12 a month"],
+            ["Pitches to the sites AI quotes", "Rarely", "Up to 40 a month"],
+            ["Shows sales from AI", "Rarely", "Yes, from a tracking code you paste into Shopify"],
+            ["Price", "Quoted per store", "A$1,000 a month, no lock-in"],
+          ],
+        },
+      },
+      {
+        heading: "Questions to ask before you sign",
+        bullets: [
+          "Have you worked on Shopify stores like mine? Can I see results with real numbers?",
+          "How will you show me sales from Google, not only rankings and traffic?",
+          "Which sites does ChatGPT quote for my top buying questions, and are we on them?",
+          "Do you buy links or swap them? (If yes, walk away. Google treats both as spam.)",
+          "Is there a lock-in contract, and what happens if nothing changes in three months?",
+        ],
+      },
+      {
+        heading: "When to pick an SEO agency, GEO, or both",
+        bullets: [
+          "Your theme is slow, pages are missing from Google, or rankings are falling: start with an SEO agency.",
+          "Google is fine but ChatGPT names other brands for your buying questions: start with GEO.",
+          "Shoppers research before they buy (skincare, supplements, gear): use both. They share the groundwork, so they don't clash.",
+        ],
+      },
+      {
+        heading: "Where GEO fits",
+        paragraphs: [
+          "GEO is a done-for-you service for Shopify brands: A$1,000 a month, no lock-in, and a full refund if you're not happy after the first month. We check 100 buying questions every day, fix your product pages, write 12 buying guides a month, send up to 40 pitches to the sites AI quotes and show you the sales AI sends you.",
+          "We are not a full SEO agency. We don't do site speed, ads or technical SEO, so keep your SEO agency if you have one.",
+        ],
+      },
+    ],
+    faqs: [
+      { q: "Is Shopify bad for SEO?", a: "No. Shopify handles the basics well. Most problems come from slow themes, too many apps, thin product pages and missing buying guides, which a good agency can fix." },
+      { q: "Do I need a Shopify specialist?", a: "It helps. Shopify sets some things for you, like its page addresses, so an agency that knows Shopify spends less time learning and more time fixing." },
+      { q: "Does SEO help with ChatGPT too?", a: "Partly. Google's AI answers are built on Google's results, so good SEO helps there. ChatGPT and others lean on the outside sites they quote, such as roundups, retailers and Reddit, which most SEO work doesn't target." },
+      { q: "Can I try GEO first?", a: "Yes. Our free AI Visibility Checker shows whether ChatGPT and other assistants name your products, with no sign-up." },
+    ],
+    sources: [GOOGLE_IO, SHOPIFY_15X],
+    related: ["geo-vs-seo-agency", "ecommerce-seo-agency-australia", "geo-cost-australia"],
+  },
+  {
+    slug: "ecommerce-seo-agency-australia",
+    title: "Ecommerce SEO agency in Australia: how to choose | GEO",
+    description:
+      "How to choose an ecommerce SEO agency in Australia: what to expect each month, red flags, what it costs, and when AI search should be part of it.",
+    short: "What to expect each month, red flags, and where AI search fits.",
+    h1: "How to choose an ecommerce SEO agency in Australia",
+    intro: [
+      "The right ecommerce SEO agency is judged on one thing: more sales from search. Rankings and traffic only matter if they turn into orders.",
+      "Search is also splitting in two. Shoppers still use Google, but more of them ask ChatGPT and Google's AI answers what to buy. Pick help that covers the search your shoppers actually use.",
+    ],
+    checked: "2026-11-02",
+    sections: [
+      {
+        heading: "What you should get each month",
+        bullets: [
+          "A short list of what changed on your site, and why.",
+          "Product and category pages improved for real buying searches.",
+          "New buying guides that answer the questions shoppers ask before they buy.",
+          "Mentions earned on real sites in your niche.",
+          "A report of orders and sales from search, from your store's own numbers.",
+        ],
+      },
+      {
+        heading: "Red flags",
+        bullets: [
+          "They promise a number one spot on Google or in ChatGPT. Nobody can promise that.",
+          "They buy links or join link swap networks. Google treats both as spam, and it can hurt your whole site.",
+          "They post fake reviews or pose as happy customers on Reddit. That breaks the rules and can get your brand banned.",
+          "Reports show rankings and traffic but never sales.",
+          "A long lock-in contract before you've seen any work.",
+        ],
+      },
+      {
+        heading: "What it costs",
+        paragraphs: [
+          "Australian agencies charge about A$2,000 to A$20,000 or more a month for GEO work (getting named by AI), according to Optimising's price guide. SEO prices vary too much to quote fairly, so ask for a fixed monthly price and what it includes.",
+          "GEO is A$1,000 a month, done for you, with no lock-in. It covers AI search, not full technical SEO.",
+        ],
+      },
+      {
+        heading: "Ecommerce SEO agency or GEO",
+        table: {
+          head: ["You need", "Best fit"],
+          rows: [
+            ["A faster site, technical fixes, better Google rankings", "An ecommerce SEO agency"],
+            ["To be named when shoppers ask AI what to buy", "GEO"],
+            ["To see sales from AI assistants in Shopify", "GEO"],
+            ["Ads, email and a new website too", "A full-service agency"],
+            ["Google and AI both", "An SEO agency and GEO side by side"],
+          ],
+        },
+      },
+      {
+        heading: "Agencies in Perth, Melbourne, Sydney and beyond",
+        paragraphs: [
+          "Being in the same city matters less than it used to. Most ecommerce SEO work happens online, with a monthly call. Pick on results, honesty and how clearly they report sales.",
+          "GEO is run from Perth and works with Shopify brands across Australia.",
+        ],
+      },
+    ],
+    faqs: [
+      { q: "How long does ecommerce SEO take to work?", a: "Google usually takes months, not weeks. Product page fixes for AI assistants can show sooner, but AI answers change from run to run, so look at the average over a few weeks." },
+      { q: "Should my agency be on Shopify?", a: "If your store is on Shopify, yes. An agency that knows it well spends less time learning and more time fixing." },
+      { q: "Is GEO an ecommerce SEO agency?", a: "Not a full one. GEO focuses on AI search: getting your products named by ChatGPT, Gemini, Perplexity and Google's AI answers, and showing the sales that brings." },
+      { q: "What if it doesn't work?", a: "With GEO, if you're not happy after the first month, you get a full refund and keep all the work we did." },
+    ],
+    sources: [OPTIMISING, GOOGLE_IO],
+    related: ["shopify-seo-agency-australia", "geo-cost-australia", "ai-seo-agency"],
+  },
+  {
+    slug: "ai-seo-agency",
+    title: "AI SEO agency: what you get for A$1,000 a month | GEO",
+    description:
+      "What an AI SEO agency actually does for a Shopify store, how it differs from normal SEO, and exactly what GEO does each month for A$1,000.",
+    short: "What AI SEO means for a store, and what GEO does each month.",
+    h1: "AI SEO agency: what you get for A$1,000 a month",
+    intro: [
+      "AI SEO (also called GEO) means getting your brand named when shoppers ask ChatGPT, Gemini, Perplexity or Google's AI answers what to buy. An AI SEO agency does that work for you and shows you the sales it brings.",
+      "Some agencies also use the words for doing normal SEO with AI tools. Ask which one you're buying.",
+    ],
+    checked: "2026-11-02",
+    sections: [
+      {
+        heading: "What GEO does every month",
+        table: {
+          head: ["Work", "What it means for your store"],
+          rows: [
+            ["100 buying questions checked every day", "We see which brands AI names for your shoppers' questions, and where you stand"],
+            ["Sites AI trusts", "We find the roundups, retailers and threads AI quotes for your products"],
+            ["Up to 40 pitches", "Honest emails to those sites, asking them to look at your products"],
+            ["12 buying guides", "Pages that answer the questions shoppers ask before they buy"],
+            ["Product page fixes", "Clearer details AI can read: who it's for, what's in it, sizes, shipping"],
+            ["Honest Reddit replies", "Drafts that say who you are, for you to post. Never fake customers"],
+            ["Sales from AI", "Visits, orders and sales from AI assistants, from a tracking code you paste into Shopify"],
+            ["A monthly call", "What changed, what worked, and what's next"],
+          ],
+        },
+      },
+      {
+        heading: "How AI SEO differs from normal SEO",
+        paragraphs: [
+          "Google shows ten links. An AI answer names a handful of brands and quotes a handful of sites. So being mentioned on the sites AI trusts counts as much as your own pages.",
+          "Answers also change from one run to the next. We ask each question more than once and report the average, never one lucky answer.",
+        ],
+      },
+      {
+        heading: "What we won't do",
+        bullets: [
+          "Promise a top spot in ChatGPT. Nobody can.",
+          "Buy links, swap links or post fake reviews.",
+          "Pose as happy customers on Reddit or anywhere else.",
+          "Lock you into a contract.",
+        ],
+      },
+      {
+        heading: "When another option is better",
+        bullets: [
+          "You need site speed, ads or full technical SEO: hire an SEO agency, and add GEO later if AI search matters in your category.",
+          "You have a marketer with spare hours: a tracking tool plus their time can work.",
+          "You sell software, not products: a specialist built for software will fit better.",
+        ],
+      },
+      {
+        heading: "The price",
+        paragraphs: [
+          "A$1,000 a month, done for you, for Shopify brands. No lock-in, and a full refund if you're not happy after the first month. You keep all the work.",
+          "Australian agencies charge about A$2,000 to A$20,000 or more a month for similar work, according to Optimising's price guide.",
+        ],
+      },
+    ],
+    faqs: [
+      { q: "Is AI SEO the same as GEO?", a: "Mostly. GEO (generative engine optimisation) and AI SEO both mean getting named in AI answers. Some agencies use AI SEO for normal SEO done with AI tools, so ask." },
+      { q: "How do I know it's working?", a: "You'll see which buying questions name you, which sites AI quotes, and the visits, orders and sales from AI assistants in your monthly report." },
+      { q: "Which AI assistants do you cover?", a: "ChatGPT, Gemini, Perplexity and Google AI Overviews." },
+      { q: "Can I see where I stand first?", a: "Yes. Our free AI Visibility Checker shows whether AI names your products, with no sign-up." },
+    ],
+    sources: [OPTIMISING, GOOGLE_IO, SHOPIFY_15X],
+    related: ["geo-cost-australia", "geo-vs-seo-vs-aeo", "ecommerce-seo-agency-australia"],
   },
 ];
 

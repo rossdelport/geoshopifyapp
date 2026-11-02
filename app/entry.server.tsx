@@ -8,6 +8,7 @@ import { addDocumentResponseHeaders } from "./shopify.server";
 import { startWorker } from "./lib/worker.server";
 import { env, isProd } from "./lib/env.server";
 import { keepWarm, speedProbe } from "./lib/speed-probe.server";
+import { pingRecentPages } from "./lib/indexnow.server";
 
 // Background jobs run in the same process as the web server.
 if (env.runWorker) startWorker();
@@ -16,6 +17,8 @@ if (env.runWorker) startWorker();
 if (isProd) {
   setTimeout(() => void speedProbe(), 3000);
   keepWarm();
+  // Tell Bing and co about pages this deploy added or changed (lib/indexnow.server.ts).
+  setTimeout(() => void pingRecentPages(), 60_000);
 }
 
 export const streamTimeout = 5000;

@@ -24,7 +24,8 @@ import { STORIES, storyBySlug } from "./stories";
 import { storyPath } from "./stories/pages";
 import { TOOLS, isToolSlug } from "./tools/registry";
 import { SITE_HOST, abs } from "./tools/site";
-import { type BlogBody, bodyText, postPath, readMinutes, slugify, wordCount } from "./blog/pages";
+import { BLOG_HUB, type BlogBody, bodyText, postPath, readMinutes, slugify, wordCount } from "./blog/pages";
+import { pingIndexNow } from "./indexnow.server";
 import { BLOG_KINDS, BLOG_KIND_LABELS, BLOG_KIND_NOTES, BLOG_TOPICS, type BlogKind, type BlogTopic, nextTopic } from "./blog/topics";
 
 // ---------- when a post is due ----------
@@ -458,5 +459,6 @@ registerJob("blog.write", async (job) => {
     select: { id: true, slug: true, title: true, description: true, kind: true, words: true },
   });
   console.log(`[blog] published ${abs(postPath(slug))} (${post.words} words, ${post.changes.length} fact-check change(s))`);
+  await pingIndexNow([postPath(slug), BLOG_HUB.path]);
   await notifyPublished(saved, post.changes).catch((err) => console.error("[blog] email failed:", (err as Error).message));
 });
