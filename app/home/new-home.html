@@ -5,15 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>GEO · Get your products recommended by AI</title>
 <meta name="description" content="Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO helps your Shopify products get recommended in those AI answers, then shows the sales you can trace back to AI.">
-<!-- A preview of the new home page (usegeo.app/newhomepage). Kept out of search until it replaces "/". -->
-<meta name="robots" content="noindex">
+<!-- The home page, usegeo.app (served by app/routes/_index/route.tsx). One address for search engines (www and the
+     Railway address also serve it, and /newhomepage sends people here), the same page in five other languages, link
+     previews, and who GEO is as JSON-LD (the same nodes as ORG_NODE and WEBSITE_NODE in app/lib/tools/seo.ts). -->
+<link rel="canonical" href="https://usegeo.app/">
+<link rel="alternate" hreflang="en" href="https://usegeo.app/">
+<link rel="alternate" hreflang="de" href="https://usegeo.app/de">
+<link rel="alternate" hreflang="es" href="https://usegeo.app/es">
+<link rel="alternate" hreflang="fr" href="https://usegeo.app/fr">
+<link rel="alternate" hreflang="it" href="https://usegeo.app/it">
+<link rel="alternate" hreflang="nl" href="https://usegeo.app/nl">
+<link rel="alternate" hreflang="x-default" href="https://usegeo.app/">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="GEO">
 <meta property="og:title" content="GEO · Get your products recommended by AI">
 <meta property="og:description" content="Shoppers ask ChatGPT what to buy. GEO helps it pick you, and shows the sales you can trace back to AI.">
+<meta property="og:url" content="https://usegeo.app/">
 <meta property="og:image" content="https://usegeo.app/og/home.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A small clay shop with a star in a speech bubble above it">
 <meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://usegeo.app/#org","name":"GEO","alternateName":"GEO for Shopify","url":"https://usegeo.app/","logo":"https://usegeo.app/apple-touch-icon.png"},{"@type":"WebSite","@id":"https://usegeo.app/#website","name":"GEO","alternateName":"GEO for Shopify","url":"https://usegeo.app/","publisher":{"@id":"https://usegeo.app/#org"}}]}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -672,7 +686,44 @@ html.still .g-you{transform:translate(56px,8px)}
   .g-you{transform:translate(56px,8px)}
   .still-btn{display:none}
 }
+/* ---------- Cookie notice for the Meta pixel in the head: a small card in the bottom left corner; full width on phones ---------- */
+.ck{position:fixed;z-index:60;left:16px;bottom:16px;max-width:440px;display:flex;align-items:center;gap:16px;padding:12px 12px 12px 18px;border-radius:16px;background:#fff;box-shadow:0 0 0 1px rgba(18,18,40,.08),0 18px 40px -16px rgba(18,18,40,.35)}
+.ck-tx{font-size:14px;line-height:1.45;color:var(--ink)}
+.ck-tx a{color:var(--text);text-decoration:underline;text-underline-offset:2px}
+.ck-btns{display:flex;gap:8px;flex:none}
+@media (max-width:600px){.ck{left:12px;right:12px;bottom:12px;max-width:none;flex-direction:column;align-items:stretch;gap:10px;padding:14px}.ck-btns>*{flex:1}}
 </style>
+<!-- Meta Pixel Code (GEO's own, for Ross's ads; a copy of design/overview/pixel-head.js, which the pages in other
+     languages use too. It asks first in Europe and the UK, see the cookie notice below.) -->
+<script>
+// Meta Pixel for GEO's own ads, added to the live home page's <head> only
+// (assemble.mjs; the design preview never loads it). Meta's base code, with one change: visitors in Europe and
+// the UK (guessed from the browser's time zone) are asked first, so it waits for "OK" on the cookie notice
+// (parts/47-cookies.*). Everyone else gets it at once unless they said "No thanks" before. The choice is kept in
+// this browser as "geo-cookies" (yes or no). There is no <noscript> image: without JavaScript nobody can say no.
+// The waitlist popup (parts/46-waitlist.js) sends "Lead" when someone joins; no name or email goes to Meta.
+(function () {
+  var choice = null, zone = '';
+  try { choice = localStorage.getItem('geo-cookies'); } catch (e) { /* storage blocked: ask again */ }
+  try { zone = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { /* no time zone: not asked first */ }
+  window.GEO_ASK_FIRST = /^(Europe\/|Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe))/.test(zone);
+  window.geoPixel = function () {
+    if (window.fbq) return;
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    window.fbq('init', '28710910728563304');
+    window.fbq('track', 'PageView');
+  };
+  if (choice === 'yes' || (choice !== 'no' && !window.GEO_ASK_FIRST)) window.geoPixel();
+})();
+</script>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 <svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
@@ -1275,6 +1326,16 @@ html.still .g-you{transform:translate(56px,8px)}
   </div>
 </footer>
 
+<!-- Cookie notice for the Meta pixel in the head. Hidden until the script below shows it, and gone once the
+     visitor picks. -->
+<div class="ck" id="ck" role="region" aria-label="Cookies" hidden>
+  <p class="ck-tx"><span class="ck-q">We use cookies to see which of our ads work.</span> <a href="/privacy#cookies">Privacy</a></p>
+  <div class="ck-btns">
+    <button class="btn btn-sec btn-sm ck-no" type="button">No thanks</button>
+    <button class="btn btn-pri btn-sm ck-ok" type="button">OK</button>
+  </div>
+</div>
+
 <!-- Join the waitlist popup: every [data-waitlist] button and #waitlist link opens it. The words under the form are
      saved with each signup (WAITLIST_CONSENT_TEXT in app/lib/waitlist.server.ts): change both together. -->
 <dialog class="wl" id="waitlist-dialog" aria-labelledby="wl-title">
@@ -1302,6 +1363,28 @@ html.still .g-you{transform:translate(56px,8px)}
 </dialog>
 
 <script>window.GEO_LIVE=true</script>
+<script>
+// Cookie notice (47-cookies.html) for the Meta pixel in the live page's head (pixel-head.js), which defines
+// window.geoPixel. Shows until the visitor picks: "OK" starts the pixel (in Europe and the UK it waits for this),
+// "No thanks" stops it. The choice is kept in this browser as "geo-cookies".
+(function () {
+  var box = document.getElementById('ck');
+  if (!box || typeof window.geoPixel !== 'function') return; // the design preview has no pixel and no notice
+  var KEY = 'geo-cookies', choice = null;
+  try { choice = localStorage.getItem(KEY); } catch (e) { /* storage blocked: ask */ }
+  if (choice === 'yes' || choice === 'no') return;
+  if (window.GEO_ASK_FIRST) box.querySelector('.ck-q').textContent = 'Can we use cookies to see which of our ads work?';
+  function pick(value) {
+    try { localStorage.setItem(KEY, value); } catch (e) { /* not saved: asks again next visit */ }
+    if (value === 'yes') window.geoPixel();
+    else if (typeof window.fbq === 'function') window.fbq('consent', 'revoke');
+    box.hidden = true;
+  }
+  box.querySelector('.ck-ok').addEventListener('click', function () { pick('yes'); });
+  box.querySelector('.ck-no').addEventListener('click', function () { pick('no'); });
+  box.hidden = false;
+})();
+</script>
 <script>
 (function () {
   var mq = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : null;

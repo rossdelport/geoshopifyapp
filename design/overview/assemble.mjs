@@ -59,7 +59,8 @@ ${js ? `<script>\n${js}\n</script>` : ''}
 fs.writeFileSync(path.join(dir, outName), out);
 console.log(`${outName}: ${(out.length / 1024).toFixed(0)} KB from ${files.length} part files`);
 
-// Full build only: also write the live home page served at "/" by app/routes/_index/route.tsx.
+// Full build only: also write app/home/home.html, the English page the language copies (/de, /fr, /nl, /es, /it) are
+// made from. Since 2 Nov 2026 "/" itself serves the new design (app/home/new-home.html), not this file.
 // Same page as a proper HTML document; images come from /home/img/, and window.GEO_LIVE lets the waitlist popup
 // post to /waitlist (the design preview shows the "on the waitlist" screen without saving).
 if (!only && outName === 'index.html') {
