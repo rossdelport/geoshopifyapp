@@ -880,17 +880,16 @@ describe("the site footer", () => {
 });
 
 describe("the home page links every tool", () => {
-  const page = readFileSync(join(ROOT, "app/home/home.html"), "utf8");
+  // "/" serves app/home/new-home.html (since 2 Nov 2026)
+  const page = readFileSync(join(ROOT, "app/home/new-home.html"), "utf8");
 
-  it("has the free tools block in the footer and a Free tools link in the nav, in step with the registry", () => {
-    const start = page.indexOf('<nav class="foot-tools" aria-label="Free tools">');
+  it("has the free tools block in the footer, in step with the registry", () => {
+    const start = page.indexOf('<nav class="foot-tools"');
     expect(start).toBeGreaterThan(-1);
     const block = page.slice(start, page.indexOf("</nav>", start));
     expect(block).toContain('<a href="/tools">All free tools</a>');
     for (const t of TOOLS) expect(block).toContain(`<a href="${t.path}">${t.name}</a>`);
     expect(block.match(/<a href=/g)).toHaveLength(TOOLS.length + 1);
-    const nav = page.slice(page.indexOf('<ul class="nav-links">'), page.indexOf("</ul>", page.indexOf('<ul class="nav-links">')));
-    expect(nav).toContain('<li><a href="/tools">Free tools</a></li>');
   });
 
   it("has one canonical, share tags and the same organisation as the tool pages", () => {

@@ -110,7 +110,7 @@ describe("each tool page's head", () => {
   });
 
   it("gives every public page its own title and description", () => {
-    const home = read("app/home/home.html");
+    const home = read("app/home/new-home.html");
     const heads = [
       { path: "/", title: home.match(/<title>([^<]*)<\/title>/)?.[1], description: home.match(/<meta name="description" content="([^"]*)"/)?.[1] },
       { path: "/tools", title: titleOf(metaOf(hub)), description: descriptionOf(metaOf(hub)) },
@@ -202,7 +202,7 @@ describe("one list of seven pages everywhere", () => {
     const llmsLinks = [...siteLlmsTxt().matchAll(/\]\((https:\/\/usegeo\.app\/tools\/[a-z0-9-]+)\)/g)].map((m) => m[1]);
     expect(llmsLinks).toEqual(SEVEN.map(abs));
 
-    const home = read("app/home/home.html");
+    const home = read("app/home/new-home.html");
     const homeTools = [...new Set([...home.matchAll(/href="(\/tools\/[a-z0-9-]+)"/g)].map((m) => m[1]))];
     expect(homeTools.sort()).toEqual([...SEVEN].sort());
     expect(home).toContain('href="/tools"');

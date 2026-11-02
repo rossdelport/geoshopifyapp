@@ -8,7 +8,7 @@ import { COMPARE_HUB, COMPARE_PAGES, comparePath } from "../compare/pages";
 import { OFFER } from "../plans";
 import { STORIES } from "../stories";
 import { STORIES_HUB, STORIES_UPDATED, storyPath } from "../stories/pages";
-import { HOME_LANGS, HOME_UPDATED, PRIVACY_UPDATED, SITE, abs } from "./site";
+import { HOME_LANGS, HOME_LANGS_UPDATED, HOME_UPDATED, PRIVACY_UPDATED, SITE, abs } from "./site";
 import { HUB, TOOLS } from "./registry";
 
 /**
@@ -48,7 +48,7 @@ export const BLOG_LAUNCHED = "2026-10-15";
 export function sitemapPages(posts: { path: string; updated: string }[] = []): { path: string; updated: string }[] {
   return [
     { path: "/", updated: HOME_UPDATED },
-    ...HOME_LANGS.map((l) => ({ path: `/${l}`, updated: HOME_UPDATED })),
+    ...HOME_LANGS.map((l) => ({ path: `/${l}`, updated: HOME_LANGS_UPDATED })),
     { path: HUB.path, updated: HUB.updated },
     ...TOOLS.map((t) => ({ path: t.path, updated: t.updated })),
     { path: STORIES_HUB.path, updated: STORIES_UPDATED },

@@ -1,7 +1,7 @@
 // The home page in German, French, Dutch, Spanish and Italian (usegeo.app/de, /fr, /nl, /es, /it), built by
 // design/overview/i18n.mjs. Each page: its own language, address and title; the price in Australian dollars; the company details line;
 // no explainer video; the waitlist form tells the server the language; the Meta pixel once; no English left in the
-// big headings; no em dash. The English page points search engines at all five.
+// big headings; no em dash. The English page ("/", the new design since 2 Nov 2026) points search engines at all five.
 
 import type { LoaderFunctionArgs } from "react-router";
 import { describe, expect, it } from "vitest";
@@ -55,12 +55,11 @@ describe("home page in other languages", () => {
     });
   }
 
-  it("the English page lists every language for search engines and keeps its video", async () => {
+  it("the English page lists every language for search engines", async () => {
     const html = await (await get(en, "https://geo.test/")).text();
     expect(html).toContain('<html lang="en">');
     expect(html).toContain('<link rel="alternate" hreflang="x-default" href="https://usegeo.app/">');
     for (const lang of HOME_LANGS) expect(html).toContain(`<link rel="alternate" hreflang="${lang}" href="https://usegeo.app/${lang}">`);
-    expect(html).toContain('<video class="vid"');
     expect(html).not.toContain('window.GEO_LANG="');
   });
 

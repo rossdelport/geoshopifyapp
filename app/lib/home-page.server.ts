@@ -1,5 +1,5 @@
-// Sends one of the finished home pages (English at "/", the language copies at /de, /fr, /nl, /es, /it).
-// The pages are built from design/overview by `node design/overview/assemble.mjs`.
+// Sends one of the finished home pages: English at "/" (app/home/new-home.html, edited by hand) and the language
+// copies at /de, /fr, /nl, /es, /it (the older design, built from design/overview by `node design/overview/assemble.mjs`).
 
 import { redirect } from "react-router";
 import { publicHostRedirect } from "./tools/host.server";

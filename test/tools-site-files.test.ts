@@ -14,7 +14,7 @@ import { HUB, TOOLS } from "../app/lib/tools/registry";
 import { STORIES } from "../app/lib/stories";
 import { STORIES_UPDATED } from "../app/lib/stories/pages";
 import { COMPARE_HUB, COMPARE_PAGES } from "../app/lib/compare/pages";
-import { HOME_UPDATED, PRIVACY_UPDATED } from "../app/lib/tools/site";
+import { HOME_LANGS_UPDATED, HOME_UPDATED, PRIVACY_UPDATED } from "../app/lib/tools/site";
 import { BLOG_LAUNCHED, siteLlmsTxt, siteRobotsTxt, sitemapPages, sitemapXml } from "../app/lib/tools/site-files";
 import { loader as robotsLoader } from "../app/routes/robots[.]txt";
 import { loader as sitemapLoader } from "../app/routes/sitemap[.]xml";
@@ -114,7 +114,7 @@ describe("sitemap.xml", () => {
     for (const l of locs) expect(l.startsWith("https://usegeo.app/")).toBe(true);
     expect(lastmods).toEqual([
       HOME_UPDATED,
-      ...Array(5).fill(HOME_UPDATED),
+      ...Array(5).fill(HOME_LANGS_UPDATED),
       HUB.updated,
       ...TOOLS.map((t) => t.updated),
       STORIES_UPDATED,
