@@ -96,7 +96,6 @@
 .tl-result-h:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 4px; border-radius: 6px; }
 .tl-verdict { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
 .tl-sample { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 13.5px; line-height: 1.5; color: var(--text); }
-.tl-sample .ck-chip { flex: none; }
 .tl-chip-info { background: #eef0f6; color: #2d3566; }
 .tl-error {
   padding: 10px 14px; border-radius: 12px; background: var(--red-bg); color: #9b2f2f;

@@ -151,14 +151,10 @@ export function ToolHero({ h1, intro, timing, children }: { h1: string; intro: R
 
 // ---------- result pieces ----------
 
-/** The grey "Example" chip and its words, on every sample shown when the page loads. */
+/** The line over every sample shown when the page loads, saying it is made up (or what it is). No "Example" pill
+ *  (Ross, 2 Nov 2026): the words themselves say so. */
 export function SampleLabel({ children }: { children?: ReactNode }) {
-  return (
-    <p className="tl-sample">
-      <span className="ck-chip is-grey">Example</span>
-      <span>{children}</span>
-    </p>
-  );
+  return <p className="tl-sample">{children}</p>;
 }
 
 export type ChipTone = "good" | "warn" | "bad" | "info" | "neutral";

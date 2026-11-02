@@ -482,7 +482,7 @@ describe("the page (server render, no JavaScript)", () => {
   });
 
   it("shows the labelled example rows plus 4 empty rows, and no JavaScript-only buttons", () => {
-    expect(out).toMatch(/<span class="ck-chip is-grey">Example<\/span><span>Example questions for a made-up beard oil. Replace them with your own.<\/span>/);
+    expect(out).toMatch(/<p class="tl-sample">Example questions for a made-up beard oil. Replace them with your own.<\/p>/);
     expect(out.match(/name="question"/g)).toHaveLength(7);
     expect(out.match(/name="answer"/g)).toHaveLength(7);
     for (const r of SAMPLE_ROWS) {

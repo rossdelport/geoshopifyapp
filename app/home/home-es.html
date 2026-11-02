@@ -645,11 +645,6 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 
 /* card 3: three result rows; the order row ends slightly larger */
 .hw-c3 { --row-h: 44px; --row-gap: 8px; --rows-top: 38px; --row3-pop: 1.09; --row3-rest: 1.045; }
-.hw-ex {
-  position: absolute; top: 10px; right: 10px; z-index: 2; height: 18px; padding: 0 6px; border-radius: 5px;
-  display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; line-height: 1;
-  color: var(--text-2); background: rgba(255, 255, 255, 0.85); box-shadow: inset 0 0 0 1px var(--lav-line);
-}
 .hw-rows { position: absolute; left: 0; right: 0; top: var(--rows-top); margin: 0 auto; width: min(calc(100% - 28px), 300px); display: flex; flex-direction: column; gap: var(--row-gap); }
 .hw-row {
   display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 8px;
@@ -1407,18 +1402,13 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 .how-p { font-size: 15.5px; line-height: 1.55; color: var(--text); max-width: 40ch; text-wrap: pretty; }
 .how .nw { white-space: nowrap; }
 
-/* ---- the small screens: a white card, its Example tag sitting on the top edge like the band labels ---- */
+/* ---- the small screens: a white card ---- */
 .how-vis {
   container: hvis / inline-size;
   position: relative; display: flex; flex-direction: column; min-width: 0;
   padding: 14px; border-radius: 16px; background: var(--white);
   box-shadow: 0 0 0 1px #e4e4e8, 0 1px 2px rgba(17, 17, 26, 0.04), 0 14px 28px -20px rgba(11, 12, 43, 0.28);
   font-family: var(--font-body); font-size: 12.5px; line-height: 1.4; color: #303030; text-align: left;
-}
-.hv-tag {
-  position: absolute; top: 0; right: 14px; transform: translateY(-50%);
-  font-size: 9.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; line-height: 1;
-  color: var(--text-2); background: var(--white); border-radius: 5px; padding: 3px 6px; box-shadow: inset 0 0 0 1px #e2e2e6;
 }
 .hv-panel { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 8px; min-height: 100px; }
 .how-vis svg { width: 14px; height: 14px; flex: none; }
@@ -2717,7 +2707,6 @@ html.wl-lock { overflow: hidden; }
         </li>
         <li class="hw-card hw-c3">
           <div class="hw-art" aria-hidden="true">
-            <span class="hw-ex">Ejemplo</span>
             <div class="hw-rows">
               <div class="hw-row hw-row1">
                 <span class="hw-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
@@ -2885,7 +2874,6 @@ html.wl-lock { overflow: hidden; }
             <p class="how-p">Hacemos a la IA preguntas de compra sobre tus productos y vemos a quién elige.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Ejemplo: para «aceite de barba por menos de 40 €», cada IA usa sitios distintos, como examplereviews.com, examplebeardblog.com y reddit.com.">
-            <span class="hv-tag">Ejemplo</span>
             <div class="hv-panel hv-find">
               <span class="hv-q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>aceite de barba por menos de 40 €</span>
               <span class="hv-src">
@@ -2906,7 +2894,6 @@ html.wl-lock { overflow: hidden; }
             <p class="how-p">Comprobamos que la IA no esté bloqueada en tu tienda.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Ejemplo: ChatGPT y Google pueden leer tus páginas, Perplexity está bloqueado, así que GEO te muestra cómo arreglarlo.">
-            <span class="hv-tag">Ejemplo</span>
             <div class="hv-panel hv-read">
               <span class="hv-row"><span class="hv-eng"><i class="dot" style="background:var(--e-chatgpt)"></i>ChatGPT</span><span class="hv-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></span>
               <span class="hv-row"><span class="hv-eng"><i class="dot" style="background:var(--e-google)"></i>Google</span><span class="hv-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></span>
@@ -2923,7 +2910,6 @@ html.wl-lock { overflow: hidden; }
             <p class="how-p">Títulos, descripciones y preguntas frecuentes claros que la IA puede citar.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Ejemplo: una ficha de producto que empieza por para quién es y su tamaño, con tipo de producto y preguntas frecuentes.">
-            <span class="hv-tag">Ejemplo</span>
             <div class="hv-panel hv-prod">
               <span class="hv-pd">
                 <span class="hv-pimg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></span>
@@ -2949,7 +2935,6 @@ html.wl-lock { overflow: hidden; }
             <p class="how-p">Guías como «Mejor aceite de barba para piel seca», siempre actualizadas.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Ejemplo: una guía de compra marcada «Actualizado en octubre de 2026», enlazada a dos guías más concretas.">
-            <span class="hv-tag">Ejemplo</span>
             <div class="hv-panel hv-guide">
               <span class="hv-gmain">
                 <span class="hv-gtitle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span class="hv-bar hv-bar-t"></span></span>
@@ -2973,7 +2958,6 @@ html.wl-lock { overflow: hidden; }
             <p class="how-p">Encontramos los sitios que usa la IA y que no te mencionan, y escribimos propuestas.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Ejemplo: páginas que cita la IA y que no te mencionan, cada una con un siguiente paso honesto: una propuesta, una solicitud de reseña, un hilo en el que participas tú, una ficha.">
-            <span class="hv-tag">Ejemplo</span>
             <div class="hv-panel hv-out">
               <span class="hv-orow"><span class="hv-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18h-5"/><path d="M18 14h-8"/><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2"/><rect width="8" height="4" x="10" y="6" rx="1"/></svg></span><span class="hv-kind">Ranking</span><span class="hv-next">Propuesta redactada</span></span>
               <span class="hv-orow"><span class="hv-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg></span><span class="hv-kind">YouTube</span><span class="hv-next">Solicitud de reseña</span></span>
@@ -2991,7 +2975,6 @@ html.wl-lock { overflow: hidden; }
             <p class="how-p">Volvemos a revisar, te mostramos tus ventas por IA y arreglamos lo que falte.</p>
           </div>
           <div class="how-vis" role="img" aria-label="Ejemplo: la revisión de esta semana está hecha, hay 3 mejoras nuevas listas y la próxima revisión es el lunes.">
-            <span class="hv-tag">Ejemplo</span>
             <div class="hv-panel hv-read hv-loop">
               <span class="hv-row"><span class="hv-eng"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>IA consultada de nuevo</span><span class="hv-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></span>
               <span class="hv-row"><span class="hv-eng"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Nuevas mejoras listas</span><span class="hv-val">3</span></span>

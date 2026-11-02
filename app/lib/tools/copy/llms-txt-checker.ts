@@ -47,8 +47,8 @@ export const FORM = {
 } as const;
 
 /**
- * Above the on-load example. The spec's words are "Example: the llms.txt on this site, usegeo.app"; the grey
- * "Example" chip in front of it (SampleLabel) says "Example", so the text starts after it.
+ * Above the on-load example (SampleLabel). The spec's words were "Example: the llms.txt on this site, usegeo.app";
+ * there is no "Example" pill any more (Ross, 2 Nov 2026), and this file is real, so the words say what it is.
  */
 export const SAMPLE_LABEL = "The llms.txt on this site, usegeo.app. Edit it to test your own.";
 

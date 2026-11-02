@@ -1,6 +1,6 @@
 // The AI Overview Checker's result: the verdict first, then the visitor's site, the start of the
 // overview, every cited site in order, what it means, the normal results and "People also ask".
-// The same component shows the on-load example (with its "Example" label) and a visitor's own search.
+// The same component shows the on-load example (with its "Example result" line) and a visitor's own search.
 // Provider text is rendered as plain text by React (never as HTML). Styles: app/styles/tool-aio.css.
 
 import type { ReactNode } from "react";

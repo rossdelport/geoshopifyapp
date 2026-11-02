@@ -793,7 +793,8 @@ describe("the tool page frame and its parts", () => {
     expect(out.indexOf('class="tl-result"')).toBeLessThan(out.indexOf("tl-cta-card"));
     expect(out.indexOf("tl-cta-card")).toBeLessThan(out.indexOf("What this tool checks"));
     expect(out).toContain('<p class="ck-sr" aria-live="polite">Your result is ready</p>');
-    expect(out).toContain('<span class="ck-chip is-grey">Example</span>');
+    expect(out).toContain('<p class="tl-sample">');
+    expect(out).not.toContain('>Example</span>'); // no "Example" pill (Ross, 2 Nov 2026)
     expect(out).toContain('tabindex="-1" data-tl-focus=""');
     expect(out).toContain('<h2 class="ck-h2" id="what-is-gptbot">What is GPTBot?</h2>');
     expect(text(out)).toContain("Maintained by GEO. Updated 11 October 2026.");

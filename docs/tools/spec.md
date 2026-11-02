@@ -443,7 +443,7 @@ Reuse the `ck-*` frame classes from `check.css`; new classes `tl-*` live in `too
 Other exports:
 - `ToolHero({ h1, intro, timing?, children })`: `h1.ck-h1`, `p.ck-lead` = intro, then the form (`children`),
   then the trust line `Free · No sign-up · {timing}` (tools pass `tool.h1` and `tool.timing`; the hub passes no timing).
-- `SampleLabel({ children })`: the grey "Example" chip shown on every on-load sample.
+- `SampleLabel({ children })`: the line over every on-load sample that says it is made up (or what it is). No "Example" pill (Ross, 2 Nov 2026), so the words must say it.
 - `WhatItChecks({ items })`: H2 "What this tool checks" + a short list.
 - `Explainer({ id, question, children })`: an H2 question section.
 - `HowItWorks({ items, updated })`: H2 "How this tool works" + list + "Maintained by GEO. Updated {date}."

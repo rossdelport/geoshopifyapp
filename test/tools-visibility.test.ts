@@ -120,7 +120,7 @@ describe("the sample card", () => {
 
   it("is labelled as a sample for a made-up store", () => {
     expect(copy.SAMPLE_LABEL).toContain("made-up");
-    expect(out).toContain(`<span class="ck-chip is-grey">Example</span><span>${copy.SAMPLE_LABEL}</span>`);
+    expect(out).toContain(`<p class="tl-sample">${copy.SAMPLE_LABEL}</p>`);
   });
 
   it("shows the product line, the ring and the heading with buildReport's numbers", () => {

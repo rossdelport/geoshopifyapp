@@ -872,7 +872,7 @@ describe("the page (server render, no JavaScript)", () => {
   });
 
   it("shows this site's own llms.txt as the labelled example, with all checks passing", () => {
-    expect(out).toMatch(/<span class="ck-chip is-grey">Example<\/span><span>The llms.txt on this site, usegeo.app. Edit it to test your own.<\/span>/);
+    expect(out).toMatch(/<p class="tl-sample">The llms.txt on this site, usegeo.app. Edit it to test your own.<\/p>/);
     expect(plain).toContain("> GEO is a Shopify app that helps stores");
     expect(out).toContain('name="text"');
     expect(out).toContain('value="paste"');

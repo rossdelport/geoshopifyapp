@@ -811,7 +811,7 @@ describe("the page (server render, no JavaScript)", () => {
   });
 
   it("shows the labelled made-up sample in the paste box, with its result", () => {
-    expect(out).toMatch(/<span class="ck-chip is-grey">Example<\/span><span>A made-up robots.txt that blocks two bots. Edit it to test your own rules.<\/span>/);
+    expect(out).toMatch(/<p class="tl-sample">A made-up robots.txt that blocks two bots. Edit it to test your own rules.<\/p>/);
     expect(out).toContain("# Example robots.txt (made up)");
     expect(out).toContain('name="text"');
     expect(out).toContain('value="paste"');
@@ -1041,11 +1041,11 @@ describe("bounded work", () => {
 describe("the sample is labelled where its result is", () => {
   it("labels the paste box and the sample's result card, and drops both labels for a pasted file", () => {
     const out = renderPage();
-    expect(out.match(/<span class="ck-chip is-grey">Example<\/span>/g)).toHaveLength(2);
+    expect(out.match(/class="tl-sample"/g)).toHaveLength(2);
     expect(text(out)).toContain(copy.SAMPLE_RESULT_LABEL);
     expect(out.indexOf(copy.SAMPLE_RESULT_LABEL)).toBeLessThan(out.indexOf("1 bot that affects AI answers is blocked"));
     const pasted = renderPage({ ok: true, intent: "paste", text: "User-agent: GPTBot\nDisallow: /" });
-    expect(pasted).not.toContain(">Example</span>");
+    expect(pasted).not.toContain('class="tl-sample"');
   });
 });
 
