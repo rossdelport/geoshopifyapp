@@ -38,12 +38,12 @@ const SHOPIFY_METAFIELDS: FaqSource = {
 };
 
 export const INTRO =
-  "The FAQ Schema Generator is a free tool that turns your questions and answers into FAQPage structured data (JSON-LD), plus a ready-to-paste Shopify section that shows the same FAQ on your page. It runs in your browser.";
+  "The FAQ Schema Generator is a free tool. It turns your questions and answers into FAQPage code (JSON-LD). It also gives you a Shopify section, ready to paste, that shows the same FAQ on your page. It runs in your browser.";
 
 /** Right under the intro, always visible. source: https://developers.google.com/search/updates (8 May and 15 Jun 2026 entries; facts 3.1) */
 export const NOTE = {
   lead: "Good to know:",
-  text: "Google stopped showing FAQ rich results on 7 May 2026. FAQ markup is still valid, and clear questions and answers on your page still help shoppers and AI tools. Only mark up questions that are visible on the page, word for word.",
+  text: "Google stopped showing FAQ rich results on 7 May 2026. FAQ code still works, and clear questions and answers on your page still help shoppers and AI tools. Only mark up questions that are visible on the page, word for word.",
   source: GOOGLE_UPDATES,
 } as const;
 
@@ -151,7 +151,7 @@ export const OUTPUTS = {
     after:
       "Your questions are already filled in. Change them later in Customize: the FAQ on the page and the markup change together.",
     // Google's old FAQ rules (archived 1 Mar 2026): mark up a repeated FAQ only once on the site.
-    tip: "Store-wide questions, like shipping and returns, belong on one page, such as your FAQ or shipping page. A product template shows the same section on every product, so for questions about one product, use the product metafield version.",
+    tip: "Questions for the whole store, like shipping and returns, belong on one page, like your FAQ or shipping page. A product template shows the same section on every product. So for questions about one product, use the product metafield version.",
     filename: "sections/geo-faq.liquid",
     copyLabel: "Section file",
   },
@@ -163,8 +163,8 @@ export const OUTPUTS = {
     // source: SHOPIFY_METAFIELDS (Shopify Help Center, read 11 Oct 2026)
     steps: [
       "Create the field once. In Shopify admin, open any product. In the Metafields section, click Add definition. Name it FAQ, check that Namespace and key says custom.faq, click Select type and choose JSON (under Advanced), then save.",
-      "Fill it in for each product. Open the product, click its FAQ field, paste that product's questions and answers in the format below, and save.",
-      "Add the section once. In Edit code, add a new section called geo-product-faq, replace its contents with the code below and save. Then click Customize, open your product template, choose Add section, and pick Product FAQ. Products with an empty FAQ field show nothing.",
+      "Fill it in for each product. Open the product and click its FAQ field. Paste that product's questions and answers in the format below, then save.",
+      "Add the section once. In Edit code, add a new section called geo-product-faq. Replace what's in it with the code below, then save. Then click Customize, open your product template, choose Add section, and pick Product FAQ. Products with an empty FAQ field show nothing.",
     ],
     stepsSource: SHOPIFY_METAFIELDS,
     valueLabel: "Value for this product's FAQ field (JSON)",
@@ -192,18 +192,18 @@ export interface HowItem {
 
 export const HOW_IT_WORKS: HowItem[] = [
   {
-    text: "Everything runs in your browser. Your questions aren't sent to us, unless JavaScript is off in your browser: then the form is sent to our server once to build the code, and nothing is kept.",
+    text: "Everything runs in your browser. Your questions aren't sent to us. The one exception is when JavaScript is off in your browser: then the form goes to our server once to build the code, and we keep nothing.",
   },
   {
     // sources: schema.org FAQPage; Google FAQ doc archived 1 Mar 2026 (facts 3.3)
-    text: "The output follows schema.org's FAQPage type and the properties Google last documented: a FAQPage with a mainEntity list, each Question with a name and an acceptedAnswer, and each Answer with text.",
+    text: "The code follows schema.org's FAQPage type and the fields Google last listed. That's a FAQPage with a mainEntity list, each Question with a name and an acceptedAnswer, and each Answer with text.",
     source: SCHEMA_ORG_FAQ,
   },
   { text: "We escape quotes, line breaks and the characters that could break a script tag." },
   { text: "The Shopify section shows the FAQ and adds the markup from the same text, so they always match." },
   {
     // source: https://developers.google.com/search/updates (facts 3.1)
-    text: "Google no longer shows FAQ rich results (since 7 May 2026), so we don't promise any change in how your page looks in Google.",
+    text: "Google stopped showing FAQ extras in its results on 7 May 2026. So we don't promise any change in how your page looks in Google.",
     source: GOOGLE_UPDATES,
   },
 ];
@@ -212,29 +212,29 @@ export const FAQS: ToolFaqItem[] = [
   {
     q: "Does FAQ schema still work in 2026?",
     // source: https://developers.google.com/search/updates (facts 3.1)
-    a: "The markup is still valid, but Google no longer shows FAQ rich results. Google limited them to well-known government and health sites in 2023, stopped showing them on 7 May 2026, and removed the documentation in June 2026. Clear questions and answers on the page still help shoppers, and AI tools can read them.",
+    a: "The markup is still valid, but Google no longer shows FAQ rich results. In 2023 Google only showed them for well-known government and health sites. It stopped showing them on 7 May 2026 and took down its help page in June 2026. Clear questions and answers on the page still help shoppers, and AI tools can read them.",
     sources: [GOOGLE_UPDATES],
   },
   {
     q: "Is FAQ schema bad for SEO now?",
     // source: facts 3.2 (Google AI features doc, structured data guidelines)
-    a: "We found no statement from Google that FAQ markup harms a page. Google's general rule still applies: structured data must match what's visible on the page. Markup for questions people can't see, or the same FAQ copied onto every page, is what to avoid.",
+    a: "We found no statement from Google that FAQ markup harms a page. Google's main rule still applies: the code must match what people can see on the page. Avoid code for questions people can't see, and avoid copying the same FAQ onto every page.",
     sources: [GOOGLE_AI_FEATURES],
   },
   {
     q: "Do AI assistants read FAQs?",
     // sources: Microsoft Advertising blog (8 Oct 2025); Google AI optimization guide (10 Jul 2026)
-    a: "Microsoft's Bing team says question-and-answer pairs can often be lifted word for word into AI answers, and warns that answers hidden in tabs or expandable menus may not be read. So keep answers short, factual and visible. Google says its AI features need no special markup.",
+    a: "Microsoft's Bing team says AI answers often copy questions and answers word for word. It also warns that answers hidden in tabs or drop-down menus may not be read. So keep answers short, factual and visible. Google says its AI features need no special markup.",
     sources: [MICROSOFT_AI_ANSWERS, GOOGLE_AI_GUIDE],
   },
   {
     q: "How do I add FAQ schema to Shopify?",
-    a: "The simplest way is the Shopify section above: add it as a new section file in Online Store, Themes, Edit code, then add the FAQ section to a product or page template in the theme editor. It shows the questions and adds the markup from the same text. For a different FAQ on each product, use the product metafield version.",
+    a: "The easiest way is the Shopify section above. Add it as a new section file in Online Store, Themes, Edit code. Then add the FAQ section to a product or page template in the theme editor. It shows the questions and adds the markup from the same text. For a different FAQ on each product, use the product metafield version.",
   },
   {
     q: "Should I put FAQ schema in theme.liquid?",
     // source: Google FAQ doc archived 1 Mar 2026 (facts 3.3)
-    a: "No. theme.liquid loads on every page, so the same FAQ markup would appear on pages that don't show those questions. Google's old FAQ rules said to mark up a repeated FAQ only once on your site, and each page's markup should match what that page shows.",
+    a: "No. theme.liquid loads on every page. So the same FAQ code would show up on pages that don't show those questions. Google's old FAQ rules said to add code for a repeated FAQ only once on your site. Each page's code should match what that page shows.",
     sources: [GOOGLE_FAQ_ARCHIVED],
   },
   {

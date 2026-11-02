@@ -168,7 +168,7 @@ describe("the sample card", () => {
   it("says what the ring and the score mean, with buildReport's score, as the real report does", () => {
     expect(EXPECTED.score).not.toBe(Math.round((EXPECTED.namedCount / EXPECTED.answerCount) * 100)); // 41 vs 44: they differ
     expect(plain).toContain(
-      `What this means: the ring is the share of answers that named Kōwhai & Co. The score (${EXPECTED.score} out of 100) also counts where it was named`,
+      `What this means: the ring is the share of answers that named Kōwhai & Co. The score (${EXPECTED.score} out of 100) also looks at where it was named`,
     );
     // The points it describes are the scoring code's own (1 in the top 3, 2/3 lower down, 1/3 for a link only).
     const score = read("app/lib/score.ts");

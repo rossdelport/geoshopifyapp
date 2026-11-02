@@ -26,7 +26,7 @@ export interface ToolCtaProps {
   note?: string;
 }
 
-export const CTA_NOTE = "GEO is a Shopify app that helps your products get recommended by AI, then counts the orders AI sends you.";
+export const CTA_NOTE = "GEO helps AI pick your products, then counts the orders AI sends you.";
 
 const isTool = (p: ShellPage): p is ToolEntry => "slug" in p;
 

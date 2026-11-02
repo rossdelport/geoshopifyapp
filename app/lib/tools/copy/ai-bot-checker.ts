@@ -25,7 +25,7 @@ const EPOCH_DETECTORS: FaqSource = { url: "https://epoch.ai/data-insights/ai-det
 const STANFORD_DETECTORS: FaqSource = { url: "https://arxiv.org/abs/2304.02819", label: "Liang et al. (Stanford), 2023" };
 
 export const INTRO =
-  "The AI Bot Checker is a free tool that checks whether your product description reads like generic, bot-style copy: filler phrases, hype words and missing facts. It doesn't guess who wrote it, because no tool can prove that. It shows you what to fix.";
+  "The AI Bot Checker is a free tool. It checks if your product description reads like bland, bot-style writing: filler phrases, hype words and missing facts. It doesn't guess who wrote it, because no tool can prove that. It shows you what to fix.";
 
 /** Directly under the form, always visible. <!-- source: facts §5.1, ready line §7 --> */
 export const HONESTY = {
@@ -104,7 +104,7 @@ export const RESULT = {
   textHeading: "Your text, with vague phrases marked",
   textNone: "No vague phrases from our lists in your text.",
   phrasesHeading: "Phrases to rewrite",
-  phrasesIntro: "From our own list of phrases common in generic product copy, plus hype words with no fact in the same sentence.",
+  phrasesIntro: "From our own list of phrases that bland product copy often uses, plus hype words with no fact in the same sentence.",
   times: (n: number) => `${n} times`,
   kind: { filler: "Filler phrase", hype: "Hype word, no fact nearby" },
   kindMany: { filler: "Filler phrases", hype: "Hype words, no fact nearby" },
@@ -196,7 +196,7 @@ export const HYPE_COPY: Record<HypeGroup, { why: string; how: string }> = {
   // Microsoft: "Saying something is 'next-gen' or 'cutting-edge' without context" is an unanchored claim.
   new: {
     why: "Says it's new or better without saying how.",
-    how: "Name what's actually different, like an ingredient, a feature or a number.",
+    how: "Name what's really different, like an ingredient, a feature or a number.",
   },
   // Microsoft: "Terms like innovative or eco mean little without specifics."
   eco: {
@@ -247,18 +247,18 @@ export interface HowItem {
 
 export const HOW_IT_WORKS: HowItem[] = [
   {
-    text: "The check runs in your browser. Pasted text isn't sent to us, unless JavaScript is off: then it's sent to our server once to build the result, and not kept. If you paste a product link, our server reads that page once.",
+    text: "The check runs in your browser. Pasted text isn't sent to us. The one exception is when JavaScript is off: then it goes to our server once to build the result, and we don't keep it. If you paste a product link, our server reads that page once.",
   },
   {
-    text: "We look for three things: filler phrases common in generic product copy, hype words with no fact in the same sentence, and which of 7 key facts are missing.",
+    text: "We look for three things: filler phrases, hype words with no fact in the same sentence, and which of 7 key facts are missing.",
   },
   // <!-- source: Microsoft Advertising blog, 8 Oct 2025 (facts §5.3) -->
   {
-    text: "The hype words innovative, eco, next-gen and cutting-edge, and the advice on decorative symbols and dashes, come from Microsoft Bing's guidance on writing for AI answers (October 2025). The rest of the lists are our own judgement.",
+    text: "The hype words innovative, eco, next-gen and cutting-edge come from Microsoft Bing's advice on writing for AI answers (October 2025). So does the advice on fancy symbols and dashes. The rest of the lists are our own judgement.",
     source: MICROSOFT_AI_ANSWERS,
   },
   {
-    text: "Verdict: 'Specific and clear' means at least 4 of the 7 facts and no more than 1 vague phrase per 100 words. 'Sounds generic' means 1 fact or fewer, or 4 or more vague phrases per 100 words. A text under 100 words counts as 100 words, so one vague phrase doesn't outweigh the facts in a short description. With no vague phrases at all, the headline says what's missing instead: 'Clear, but missing key facts' for 2 or 3 facts, 'Missing most key facts' for 1 or none.",
+    text: "Verdict: 'Specific and clear' means at least 4 of the 7 facts and no more than 1 vague phrase per 100 words. 'Sounds generic' means 1 fact or fewer, or 4 or more vague phrases per 100 words. A text under 100 words counts as 100 words. That way one vague phrase doesn't outweigh the facts in a short description. If there are no vague phrases, the headline says what's missing instead. It says 'Clear, but missing key facts' for 2 or 3 facts, and 'Missing most key facts' for 1 or none.",
   },
   {
     text: "It's a pattern check in English. It can miss things and can flag a fair use of a word. It never says whether a person or an AI wrote the text.",
@@ -269,19 +269,19 @@ export const FAQS: ToolFaqItem[] = [
   {
     q: "Can this tell if AI wrote my product description?",
     // <!-- source: https://openai.com/index/new-ai-classifier-for-indicating-ai-written-text/ (facts §5.1) -->
-    a: "No, and no tool can prove it. OpenAI withdrew its own AI-text classifier in July 2023 because of its low accuracy, and said it was very unreliable on texts under 1,000 characters, which most product descriptions are. This checker looks at what matters to shoppers instead: vague phrases and missing facts.",
+    a: "No, and no tool can prove it. OpenAI pulled its own AI-text checker in July 2023 because it was often wrong. It said the checker was very unreliable on texts under 1,000 characters, and most product descriptions are that short. This checker looks at what matters to shoppers instead: vague phrases and missing facts.",
     sources: [OPENAI_CLASSIFIER],
   },
   {
     q: "Is it bad to use AI to write product descriptions?",
     // <!-- source: https://developers.google.com/search/docs/fundamentals/using-gen-ai-content (updated 1 Oct 2026) -->
-    a: "Not by itself. Google says AI-written content is fine when it's accurate and useful, and that using AI to mass-produce pages without adding value can break its spam policies. Check every fact, add details only you know, and never let a tool invent ingredients, sizes or claims.",
+    a: "Not by itself. Google says AI-written content is fine when it's true and useful. But using AI to churn out lots of pages that add nothing can break its spam rules. Check every fact. Add details only you know. Never let a tool make up ingredients, sizes or claims.",
     sources: [GOOGLE_GEN_AI],
   },
   {
     q: "Why do vague words hurt with AI shopping assistants?",
     // <!-- source: Microsoft Advertising blog, 8 Oct 2025 -->
-    a: "AI assistants answer buying questions with facts they can repeat, like “for dry skin”, “30 ml” or “made with jojoba”. Microsoft's Bing team advises avoiding words like “innovative” or “eco” without specifics and anchoring claims in measurable facts: “42 dB dishwasher” instead of “quiet dishwasher”.",
+    a: "AI assistants answer buying questions with facts they can repeat, like “for dry skin”, “30 ml” or “made with jojoba”. Microsoft's Bing team says to skip words like “innovative” or “eco” unless you give details. Back each claim with a fact you can measure: “42 dB dishwasher”, not “quiet dishwasher”.",
     sources: [MICROSOFT_AI_ANSWERS],
   },
   {
@@ -292,7 +292,7 @@ export const FAQS: ToolFaqItem[] = [
   {
     q: "Are AI detectors accurate?",
     // <!-- source: https://epoch.ai/data-insights/ai-detectors-false-negatives ; https://arxiv.org/abs/2304.02819 (facts §5.1) -->
-    a: "They've improved on long texts but still make mistakes. In Epoch AI's July 2026 test on 500-word passages, leading detectors rarely flagged human writing but missed 10% to 18% of AI text written to imitate a real author. A 2023 Stanford study found detectors flagged essays by non-native English writers as AI-written 61% of the time on average. Short product copy is harder still.",
+    a: "They've improved on long texts but still make mistakes. Epoch AI tested top AI detectors on 500-word texts in July 2026. They rarely flagged human writing. But they missed 10% to 18% of AI text written to sound like a real author. A 2023 Stanford study found that detectors marked essays by writers whose first language isn't English as AI-written 61% of the time, on average. Short product copy is harder still.",
     sources: [EPOCH_DETECTORS, STANFORD_DETECTORS],
   },
 ];

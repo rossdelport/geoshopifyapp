@@ -25,7 +25,7 @@ const PRIVACY: FaqSource = { url: "/privacy", label: "GEO privacy policy" };
 // "buying questions" (Ross, 13 Oct 2026; was "shopper questions"), not the spec draft's "real shopper questions": the check writes the 3 questions for the
 // product (understandProduct in check.server.ts); they don't come from real searches.
 export const INTRO =
-  "The AI Visibility Checker is a free tool that asks ChatGPT, Gemini and Perplexity buying questions about your product and shows whether they recommend it, which brands they name instead, and which websites they trust. It usually takes a few minutes.";
+  "The AI Visibility Checker is a free tool. It asks ChatGPT, Gemini and Perplexity buying questions about your product. It shows if they suggest it, which brands they name instead, and which websites they trust. It usually takes a few minutes.";
 
 // ---------- the sample report (on load) ----------
 
@@ -53,7 +53,7 @@ export const SAMPLE = {
    */
   meaningLead: "What this means:",
   meaning: (brand: string, score: number) =>
-    `the ring is the share of answers that named ${brand}. The score (${score} out of 100) also counts where it was named: full points in an answer's top 3, two-thirds lower down, and one-third when an answer only links to its website, averaged across the assistants.`,
+    `the ring is the share of answers that named ${brand}. The score (${score} out of 100) also looks at where it was named. A spot in an answer's top 3 gets full points. Lower down gets two-thirds. Only a link to its website gets one-third. Then we average the AIs.`,
   byAssistant: "By assistant",
   engineNamed: (named: number, total: number) => `Named in ${named} of ${total}`,
   engineNotNamed: (total: number) => `Not named in ${total === 1 ? "its 1 answer" : `any of ${total} answers`}`,
@@ -98,34 +98,34 @@ export const WHAT_IT_CHECKS = [
 // order and cited sites; visibilityScore scores them; scoreAiReady checks who it's for, key facts near the top,
 // an FAQ and product data; /check/:id sends noindex and reports are in no sitemap or list.
 export const HOW_IT_WORKS = [
-  "We read your product page, and Shopify's product data when the store runs on Shopify, work out where the store is, and write 3 questions a shopper there might ask.",
+  "We read your product page, plus Shopify's product data if the store uses Shopify. We work out where the store is. Then we write 3 questions a shopper there might ask.",
   "We ask ChatGPT, Gemini and Perplexity each question twice, because AI answers change from one run to the next. Two runs give a fairer picture than one.",
-  "We record which brands each answer names, in what order, and which websites it cites, then score how often your brand is named.",
+  "We note which brands each answer names, in what order, and which websites it uses. Then we score how often your brand is named.",
   "We also score how easy your page is for AI to quote: who it's for, key facts near the top, an FAQ and product data.",
-  "Limits: 3 questions are a small sample, answers change over time, and assistants can answer differently for different people. Reports aren't listed publicly and search engines are told not to index them.",
+  "Limits: 3 questions is a small test. Answers change over time. AI can also answer each person a bit differently. Reports aren't listed anywhere public, and we ask search engines not to show them.",
 ];
 
 export const FAQS: ToolFaqItem[] = [
   {
     q: "What is AI visibility?",
-    a: "AI visibility is how often AI assistants like ChatGPT, Gemini and Perplexity name your brand or product when shoppers ask them what to buy. It's like ranking on Google, except there's no list of ten links: the assistant names a few brands and the sites it trusts.",
+    a: "AI visibility is how often AI apps like ChatGPT, Gemini and Perplexity name your brand when shoppers ask what to buy. It's like ranking on Google, but there's no list of ten links. The AI names a few brands and the sites it trusts.",
   },
   {
     q: "How is this different from other AI visibility checkers?",
     // source: docs/tools/research/competitors.md section 9 (a database lookup of past prompts; readiness scores
     // built from a site's own signals). No competitor is named on the page.
-    a: "Many free checkers give a readiness score from your site's code, or look your brand up in a database of old AI answers. This one asks the assistants live, with questions written for one product, and shows the actual answers, the brands named and the sites cited.",
+    a: "Many free checkers give a score based on your site's code. Others look up your brand in a list of old AI answers. This one asks the AIs live, with questions written for your product. It shows the real answers, the brands named and the sites they used.",
   },
   {
     q: "Why does ChatGPT recommend my competitors instead?",
     // source: docs/tools/research/geo-2026.md 2.11 (Chen et al. 2025, earned media bias); docs/geo-research.md
-    a: "AI assistants tend to name brands that trusted sites already mention, like review roundups, retailers and forums, and products whose pages state clear facts. Your report lists the sites each assistant cited, which are the places to get your product mentioned, and what to fix on your page.",
+    a: "AI tends to name brands that trusted sites already mention, like review lists, shops and forums. It also likes product pages with clear facts. Your report lists the sites each AI used. Those are the places to get your product mentioned. It also shows what to fix on your page.",
     sources: [CHEN_2025, BING_2025],
   },
   {
     q: "Do the results change each time?",
     // source: CHECK_RUNS = 2 (check-types.ts); the report shows both runs of every question.
-    a: "Yes. AI answers vary between runs, so we ask every question twice and report both. Answers also change as assistants update and new pages appear, so check again after you make changes.",
+    a: "Yes. AI answers change from one try to the next, so we ask every question twice and show both. Answers also change as AI apps update and new pages appear. So check again after you make changes.",
   },
   {
     q: "Is it really free?",
@@ -136,7 +136,7 @@ export const FAQS: ToolFaqItem[] = [
   {
     q: "What does GEO do with my product link?",
     // source: check.$id.tsx sends noindex; RETENTION.publicCheckDays (30) is shown on /privacy.
-    a: "We use it to run your check and show your report. Reports aren't listed publicly, search engines are told not to index them, and they're deleted after a set time. Our privacy policy has the details.",
+    a: "We use it to run your check and show your report. Reports aren't listed anywhere public. We ask search engines not to show them, and we delete them after a set time. Our privacy policy has the details.",
     sources: [PRIVACY],
   },
 ];

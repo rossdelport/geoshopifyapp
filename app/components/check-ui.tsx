@@ -861,8 +861,8 @@ export function CheckReport({ view }: { view: CheckView }) {
             </ul>
             <p className="ck-small ck-score-note">
               <b>What this means:</b> the ring is the share of answers that named you. Your AI visibility score (
-              {report.score} out of 100) also counts where you were named: full points when AI names you in its top 3,
-              two-thirds lower down, one-third when it only links to your website, averaged across each AI assistant.
+              {report.score} out of 100) also looks at where you were named. A spot in the top 3 gets full points. Lower
+              down gets two-thirds. Only a link to your website gets one-third. Then we average the AIs.
             </p>
           </>
         ) : (

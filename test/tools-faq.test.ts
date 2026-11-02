@@ -393,7 +393,7 @@ describe("the copy module", () => {
   });
 
   it("starts with the exact definition and puts the honest note on the dated facts", () => {
-    expect(copy.INTRO.startsWith("The FAQ Schema Generator is a free tool that")).toBe(true);
+    expect(copy.INTRO.startsWith("The FAQ Schema Generator is a free tool. It turns")).toBe(true);
     expect(copy.NOTE.text).toContain("7 May 2026");
     expect(copy.NOTE.source.url).toBe("https://developers.google.com/search/updates");
     // starter questions never come with an invented answer

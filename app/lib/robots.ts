@@ -34,7 +34,7 @@ export const AI_BOTS: AiBot[] = [
   { token: "Google-Extended", name: "Google-Extended", owner: "Google", level: "medium", what: "Lets Gemini use your pages for training and for grounding its answers. It doesn't affect Google Search or AI Overviews." },
   { token: "Bingbot", name: "Bingbot", owner: "Microsoft", level: "medium", what: "Bing's crawler. Microsoft Copilot answers come from Bing." },
   { token: "ChatGPT-User", name: "ChatGPT-User", owner: "OpenAI", level: "info", what: "Fetches a page when someone asks ChatGPT about it. OpenAI says robots.txt may not apply to it." },
-  { token: "Perplexity-User", name: "Perplexity-User", owner: "Perplexity", level: "info", what: "Fetches a page when someone asks Perplexity about it. Perplexity says it generally ignores robots.txt." },
+  { token: "Perplexity-User", name: "Perplexity-User", owner: "Perplexity", level: "info", what: "Fetches a page when someone asks Perplexity about it. Perplexity says it usually ignores robots.txt." },
   { token: "GPTBot", name: "GPTBot", owner: "OpenAI", level: "info", what: "Collects pages to train OpenAI's models. Blocking it only stops AI training, not ChatGPT answers." },
   { token: "ClaudeBot", name: "ClaudeBot", owner: "Anthropic", level: "info", what: "Collects pages to train Anthropic's models. Blocking it only stops AI training, not Claude's answers." },
 ];

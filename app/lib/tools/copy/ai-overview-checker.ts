@@ -7,7 +7,7 @@ import type { ToolFaqItem } from "../../../components/tool-ui";
 import type { SourceType } from "../../sources";
 
 export const INTRO =
-  "The AI Overview Checker is a free tool that searches Google for you and shows whether Google answered with an AI Overview, which websites it cited, and whether your site is one of them. Results come from Google in the United States.";
+  "The AI Overview Checker is a free tool. It searches Google for you and shows if Google gave an AI Overview, which websites it linked to, and if your site is one of them. Results come from Google in the United States.";
 
 // ---------- the form ----------
 
@@ -128,10 +128,10 @@ export const WHAT_IT_CHECKS = [
 ];
 
 export const HOW_IT_WORKS = [
-  "We send your search to Google in the United States through a search data provider and read the results page as it loads for a signed-out visitor. If that doesn't answer, we ask a second provider for the AI Overview.",
-  "We show the overview as Google displays it before you press “Show more”, every site it links to, and the normal results on the first page (up to 10). Prices and star ratings from Google's shopping cards are left out of the overview text.",
-  "If you add your website, we compare it with every cited link and every normal result. Subdomains count, so shop.yourstore.com counts as yourstore.com.",
-  "We sort cited pages into types (review site, retailer, forum or video, brand site, marketplace) from the web address. It's a quick guess, not a judgement.",
+  "We send your search to Google in the United States through a search data company. Then we read the results page as a signed-out visitor sees it. If that doesn't answer, we ask a second provider for the AI Overview.",
+  "We show the overview as Google shows it before you press “Show more”. We also show every site it links to and the normal results on page one (up to 10). Prices and star ratings from Google's shopping cards are left out of the overview text.",
+  "If you add your website, we look for it in every link and every normal result. Subdomains count, so shop.yourstore.com counts as yourstore.com.",
+  "We sort the linked pages into types by their web address: review site, shop, forum or video, brand site, or marketplace. It's a quick guess, not a judgement.",
   "We keep each result for 24 hours, so the same search within a day shows the same answer.",
   // AI Mode vs AI Overviews: https://developers.google.com/search/docs/appearance/ai-features
   "Limits: one search at one moment, from the US, in English. This tool doesn't check AI Mode, which Google says can show different answers and links.",
@@ -141,19 +141,19 @@ export const HOW_IT_WORKS = [
 export const FAQS: ToolFaqItem[] = [
   {
     q: "What is a Google AI Overview?",
-    a: "An AI Overview is a short answer written by Google's AI that appears above the normal results for some searches, with links to the pages it used. Google says it shows one when its systems decide generative AI can be especially helpful, so many searches don't get one.",
+    a: "An AI Overview is a short answer written by Google's AI. It shows above the normal results for some searches, with links to the pages it used. Google says it shows one only when it thinks AI will really help. So many searches don't get one.",
     // source: https://support.google.com/websearch/answer/14901683 (facts §6.1, §6.3)
     sources: [{ url: "https://support.google.com/websearch/answer/14901683", label: "Google Search Help" }],
   },
   {
     q: "Why didn't my search show an AI Overview?",
-    a: "Google only shows an AI Overview when it decides one will help, and the answer can change from one search to the next. Try the search the way a shopper would ask it, as a full question. In Ahrefs' study of 146 million desktop searches (September 2025 data), 57.9% of question searches showed an AI Overview, compared with 20.5% of all searches.",
+    a: "Google only shows an AI Overview when it thinks one will help. The answer can change from one search to the next. Try the search the way a shopper would ask it, as a full question. Ahrefs looked at 146 million desktop searches (September 2025). 57.9% of question searches showed an AI Overview, against 20.5% of all searches.",
     // source: https://ahrefs.com/blog/ai-overview-triggers/ (facts §6.2); published 10 Nov 2025
     sources: [{ url: "https://ahrefs.com/blog/ai-overview-triggers/", label: "Ahrefs, 10 November 2025" }],
   },
   {
     q: "How do I get my store cited in AI Overviews?",
-    a: "AI Overviews draw on Google's normal search index, so your page has to be indexed and allowed to show a snippet. Then make sure Googlebot can read your product pages, put clear facts near the top of each page, and work on getting your products onto the review and roundup pages AI Overviews already cite. The cited sites in your result are your list of pages to approach.",
+    a: "AI Overviews use Google's normal search results. So your page has to be in Google and allowed to show a short preview (a snippet). Then make sure Googlebot can read your product pages. Put clear facts near the top of each page. And try to get your products onto the review pages AI Overviews already link to. The cited sites in your result are your list of pages to approach.",
     // source: https://developers.google.com/search/docs/appearance/ai-features ; https://developers.google.com/search/docs/fundamentals/ai-optimization-guide
     sources: [
       { url: "https://developers.google.com/search/docs/appearance/ai-features", label: "Google: AI features and your website" },
@@ -171,13 +171,13 @@ export const FAQS: ToolFaqItem[] = [
   },
   {
     q: "Why is my result different from what I see on Google?",
-    a: "AI Overviews change between searches and can differ by country and device, and Google personalises AI Mode for signed-in users. We search from the United States, signed out, so your own Google may show something different. Treat each result as one snapshot.",
+    a: "AI Overviews change from search to search. They can differ by country and device. Google also changes AI Mode for each signed-in user. We search from the United States, signed out, so your own Google may show something different. Treat each result as one snapshot.",
     // source: https://support.google.com/websearch/answer/16011537 (AI Mode personalisation, facts §6.4). AI Overview personalisation is UNVERIFIED, so it is not claimed.
     sources: [{ url: "https://support.google.com/websearch/answer/16011537", label: "Google Search Help: AI Mode" }],
   },
   {
     q: "Is AI Mode the same as AI Overviews?",
-    a: "No. AI Mode is a separate, chat-style way to search Google. Google says AI Mode and AI Overviews may use different models and techniques, so the answers and links can differ. This tool checks AI Overviews only.",
+    a: "No. AI Mode is a separate, chat-style way to search Google. Google says AI Mode and AI Overviews can work in different ways, so the answers and links can differ. This tool checks AI Overviews only.",
     // source: https://developers.google.com/search/docs/appearance/ai-features
     sources: [{ url: "https://developers.google.com/search/docs/appearance/ai-features", label: "Google: AI features and your website" }],
   },

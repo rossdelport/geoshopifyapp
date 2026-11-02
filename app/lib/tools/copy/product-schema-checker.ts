@@ -29,7 +29,7 @@ const DAWN_PRODUCT: FaqSource = {
 };
 
 export const INTRO =
-  "The Product Schema Checker is a free tool that reads the product structured data (JSON-LD) on a product page and shows which facts Google and AI shopping tools can read, what's missing, and where to fix it in Shopify.";
+  "The Product Schema Checker is a free tool. It reads the product data code (JSON-LD) on a product page. It shows which facts Google and AI shopping tools can read, what's missing, and where to fix it in Shopify.";
 
 // ---------- the forms ----------
 
@@ -182,8 +182,8 @@ const FIX_IMAGE = "Products > the product > Media. Add at least one image.";
 const FIX_STOCK = "Comes from your inventory settings. If it's wrong, check the variant's inventory and 'Continue selling when out of stock'.";
 // facts-2026.md 2.3: Organization-level shipping and returns markup, Search Console and Merchant Center settings
 const FIX_SHIPPING =
-  "Add them once for the whole store: in Google Merchant Center or Search Console's shipping and returns settings, or with store-wide markup on your home page. Google reads those too.";
-const FIX_OPTIONS = "Use clear variant option names (Colour, Size) and fill in the product's category and metafields in Shopify admin.";
+  "Add them once for the whole store. Use Google Merchant Center, the shipping and returns settings in Search Console, or store-wide code on your home page. Google reads those too.";
+const FIX_OPTIONS = "Use clear variant option names (Colour, Size). Then fill in the product's category and metafields in Shopify admin.";
 // Fields Shopify's structured_data filter outputs (facts-2026.md 2.4): a theme without them needs the filter.
 const FIX_THEME = "Your theme writes this part. Shopify's own structured_data filter adds it, so ask your theme developer to switch to that filter.";
 // Not in Shopify's default product data (facts-2026.md 2.4, Horizon observed 11 Oct 2026).
@@ -332,7 +332,7 @@ export const STOCK = { in: "in stock", out: "out of stock" } as const;
 export const FIX = {
   title: "Fix it in Shopify",
   admin:
-    "Most of these are fixed in Shopify admin, not in code: your theme turns your product's fields into product data. Fill in the fields above, then check again.",
+    "You fix most of these in Shopify admin, not in code. Your theme turns your product's fields into product data. Fill in the fields above, then check again.",
   // Exact, from Shopify's docs (structured_data filter; Dawn main-product.liquid, facts-2026.md 2.4)
   codeLead:
     "Ask your developer, or in Online Store > Themes > Edit code, open your product section (often `sections/main-product.liquid`) and add this line:",
@@ -347,7 +347,7 @@ export const FIX = {
 
 export const WHAT_IT_CHECKS = [
   "Google's required product facts: name, image, price and currency",
-  "Recommended facts like brand, barcode, SKU, stock status, shipping and returns",
+  "Suggested facts like brand, barcode, SKU, stock status, shipping and returns",
   "Variants grouped as a ProductGroup",
   "Problems like two product blocks that disagree, or a price that doesn't match your store",
 ];
@@ -361,17 +361,17 @@ export const HOW_IT_WORKS: HowItem[] = [
   // merchant listing guide: "we recommend putting Product structured data in the initial HTML for best results",
   // JavaScript-generated markup "can make Shopping crawls less frequent and less reliable"
   {
-    text: "We download the product page the way a crawler first sees it, before any JavaScript runs, and read every JSON-LD block (up to 20). Google recommends putting product data in the page's HTML, because data added later by JavaScript can make shopping crawls less reliable.",
+    text: "We download the product page the way a search bot first sees it, before any JavaScript runs. Then we read every JSON-LD block (up to 20). Google says to put product data in the page's HTML. Data added later by JavaScript can make it harder for Google to read your products.",
     source: GOOGLE_MERCHANT,
   },
   { text: "On Shopify stores we also read the product's public data file (/products/{handle}.js) to compare price and stock." },
   {
-    text: "We check the facts against Google's merchant listing and product variant guides (required and recommended). The extra facts group is our own advice.",
+    text: "We check the facts against Google's guides for product listings and variants (the facts it needs and the ones it suggests). The extra facts group is our own advice.",
     source: GOOGLE_VARIANTS,
   },
   { text: "We read JSON-LD only, not microdata or RDFa." },
   {
-    text: "Shipping and returns can be set for the whole store or in Google Merchant Center, so when they're not on the page we say 'not on this page', not 'missing'.",
+    text: "Shipping and returns can be set for the whole store or in Google Merchant Center. So when they're not on the page, we say 'not on this page', not 'missing'.",
   },
   { text: "We don't run Google's Rich Results Test, and passing here doesn't guarantee a rich result." },
 ];
@@ -380,37 +380,37 @@ export const FAQS: ToolFaqItem[] = [
   {
     q: "What is product schema?",
     // <!-- source: https://developers.google.com/search/docs/appearance/structured-data/merchant-listing ; OpenAI shopping help -->
-    a: "Product schema is a small block of code on a product page that states the product's facts, like its name, price, currency, stock status and brand, in a format machines can read without guessing. Most stores add it as JSON-LD. Google uses it for product results in Search, and AI shopping tools can read the same facts.",
+    a: "Product schema is a small block of code on a product page. It lists the product's facts, like its name, price, currency, stock status and brand, so computers can read them without guessing. Most stores add it as JSON-LD. Google uses it for product results in Search, and AI shopping tools can read the same facts.",
     sources: [GOOGLE_MERCHANT, OPENAI_SHOPPING],
   },
   {
     q: "Does Shopify add product schema automatically?",
     // <!-- source: https://shopify.dev/docs/api/liquid/filters/structured_data ; Horizon demo observed 11 Oct 2026 (facts §2.4) -->
-    a: "Shopify's own themes, like Dawn and Horizon, do. They use Shopify's structured_data filter, which outputs a Product for products without variants and a ProductGroup for products with variants, with the brand, description, price, currency, stock status and, when you've filled in the barcode field, the GTIN. Other themes vary, so check yours. Shipping, returns and ratings usually need extra setup.",
+    a: "Shopify's own themes, like Dawn and Horizon, do. They use Shopify's structured_data filter. It writes a Product for products without variants and a ProductGroup for products with variants. It includes the brand, description, price, currency and stock status. If you filled in the barcode field, it adds the GTIN too. Other themes vary, so check yours. Shipping, returns and ratings usually need extra setup.",
     sources: [SHOPIFY_FILTER, DAWN_PRODUCT],
   },
   {
     q: "Which product schema fields does Google require?",
     // <!-- source: merchant listing doc, updated 8 Sep 2026 -->
-    a: "For product results on pages where shoppers can buy, Google requires the product name, an image, and an offer with a price and currency. It recommends many more, including brand, GTIN, SKU, stock status, shipping details and a return policy.",
+    a: "For product results on pages where shoppers can buy, Google needs the product name, an image, and an offer with a price and currency. It also suggests many more, like brand, GTIN, SKU, stock status, shipping details and a return policy.",
     sources: [GOOGLE_MERCHANT],
   },
   {
     q: "Does product schema help me get recommended by ChatGPT?",
     // <!-- source: https://developers.google.com/search/docs/fundamentals/ai-optimization-guide ; https://help.openai.com/en/articles/11128490-shopping-in-chatgpt -->
-    a: "It helps AI tools read your facts correctly, but it won't get you recommended on its own. Google says its AI features need no special schema, and OpenAI says ChatGPT already gets Shopify product data through Shopify Catalog with no extra work from merchants. Clear facts on the page and mentions on sites AI trusts matter more.",
+    a: "It helps AI tools read your facts correctly, but it won't get you recommended on its own. Google says its AI features need no special schema. OpenAI says ChatGPT already gets Shopify product data through Shopify Catalog, with no extra work for store owners. Clear facts on the page and mentions on sites AI trusts matter more.",
     sources: [GOOGLE_AI_GUIDE, OPENAI_SHOPPING],
   },
   {
     q: "Should I add review stars to my product schema?",
     // <!-- source: https://developers.google.com/search/updates (24 Jul 2026); merchant listing doc -->
-    a: "Only if real customer reviews show on the page. Google's review guidelines don't allow fake or undisclosed incentivised reviews. If a reviews app adds ratings, check it puts them in the page's HTML: Google says data added later by JavaScript can make shopping crawls less reliable.",
+    a: "Only if real customer reviews show on the page. Google's review rules don't allow fake reviews, or reviews someone was paid for in secret. If a reviews app adds ratings, check it puts them in the page's HTML. Google says data added later by JavaScript can make it harder to read your products.",
     sources: [GOOGLE_UPDATES, GOOGLE_MERCHANT],
   },
   {
     q: "Why does my page have two product blocks?",
     // <!-- our advice (competitors §5) -->
-    a: "Usually your theme adds one and an app, often a reviews or SEO app, adds another. If they disagree, for example on price or stock, machines can't tell which is right. Keep one complete block: turn off the app's product data if your theme already has it, or the other way round.",
+    a: "Usually your theme adds one and an app, often a reviews or SEO app, adds another. If they disagree, for example on price or stock, machines can't tell which is right. Keep one full block. Turn off the app's product data if your theme already has it, or the other way round.",
   },
 ];
 
