@@ -80,6 +80,17 @@ describe("home page", () => {
     expect(script).not.toMatch(/order from Google/);
   });
 
+  it("has no 'Example' pills on its pictures, nor do the language pages (Ross, 2 Nov 2026)", async () => {
+    const html = await home();
+    expect(html).not.toMatch(/>\s*Example\s*</);
+    // the pictures still tell screen readers they are examples
+    expect(html.match(/aria-label="Example: /g)?.length).toBeGreaterThanOrEqual(5);
+    for (const f of ["home.html", ...HOME_LANGS.map((l) => `home-${l}.html`)]) {
+      const page = readFileSync(join(ROOT, "app/home", f), "utf8");
+      expect(page, f).not.toMatch(/class="(?:hw-ex|hv-tag)"/);
+    }
+  });
+
   it("shows the first month and the full refund where 'More ways we help' used to be", async () => {
     const html = await home();
     const start = html.indexOf('<section class="sec sec-soft" id="first-month"');

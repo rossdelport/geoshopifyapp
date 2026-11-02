@@ -45,7 +45,7 @@ export const FORM = {
   back: "Paste product data",
 } as const;
 
-/** Next to the grey "Example" chip above the on-load sample (it is made up, and the page says so). */
+/** Above the on-load sample (it is made up, and these words say so; no "Example" pill since 2 Nov 2026). */
 export const SAMPLE_LABEL = "The kind of product data a standard Shopify theme adds (made-up product). Paste your own, or check a link above.";
 
 /** The longest text people can paste (docs/tools/spec.md T3). */

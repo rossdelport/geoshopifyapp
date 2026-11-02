@@ -51,8 +51,8 @@ export const FORM = {
 } as const;
 
 /**
- * Above the on-load sample (it is made up, and the page says so). The spec's words are "Example: a made-up
- * robots.txt..."; the grey "Example" chip in front of it (SampleLabel) says "Example", so the text starts after it.
+ * Above the on-load sample (it is made up, and the page says so), in SampleLabel. No "Example" pill (Ross,
+ * 2 Nov 2026): the words themselves say it's made up.
  */
 export const SAMPLE_LABEL = "A made-up robots.txt that blocks two bots. Edit it to test your own rules.";
 /** On the sample's result card too, so the verdict is never mistaken for a real site's. */

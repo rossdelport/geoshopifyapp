@@ -46,7 +46,7 @@ export const FORM = {
   urlSubmit: "Check link",
 } as const;
 
-/** Next to the grey "Example" chip while the made-up sample is in the box. */
+/** Above the box while the made-up sample is in it (these words say so; no "Example" pill since 2 Nov 2026). */
 export const SAMPLE_LABEL = "Example description (made up). Paste your own above to check it.";
 
 /** The longest text we check (docs/tools/spec.md T6). */

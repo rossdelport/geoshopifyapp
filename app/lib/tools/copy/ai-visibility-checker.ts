@@ -30,9 +30,9 @@ export const INTRO =
 // ---------- the sample report (on load) ----------
 
 /**
- * Above the on-load sample (a made-up store, docs/tools/spec.md 0.8 and T7). The grey "Example" chip in front
- * of it (SampleLabel) says "Example". When R5 is done this becomes "Real example: a check run on {date} for a
- * product from {store}."
+ * Above the on-load sample (a made-up store, docs/tools/spec.md 0.8 and T7), in SampleLabel. No "Example" pill
+ * (Ross, 2 Nov 2026), so the words say it's made up. When R5 is done this becomes "Real example: a check run on
+ * {date} for a product from {store}."
  */
 export const SAMPLE_LABEL = "Sample report for a made-up store. Your report uses live answers about your product.";
 

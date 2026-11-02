@@ -252,11 +252,6 @@ a.hero-pill:hover { box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--lilac-deep
 
 /* card 3: three result rows; the order row ends slightly larger */
 .hw-c3 { --row-h: 44px; --row-gap: 8px; --rows-top: 38px; --row3-pop: 1.09; --row3-rest: 1.045; }
-.hw-ex {
-  position: absolute; top: 10px; right: 10px; z-index: 2; height: 18px; padding: 0 6px; border-radius: 5px;
-  display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; line-height: 1;
-  color: var(--text-2); background: rgba(255, 255, 255, 0.85); box-shadow: inset 0 0 0 1px var(--lav-line);
-}
 .hw-rows { position: absolute; left: 0; right: 0; top: var(--rows-top); margin: 0 auto; width: min(calc(100% - 28px), 300px); display: flex; flex-direction: column; gap: var(--row-gap); }
 .hw-row {
   display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 8px;

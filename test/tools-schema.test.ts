@@ -863,7 +863,7 @@ describe("the page (server render, no JavaScript)", () => {
   });
 
   it("shows the labelled made-up sample in the paste box, with its result and field cards", () => {
-    expect(out).toContain(`<span class="ck-chip is-grey">Example</span><span>${copy.SAMPLE_LABEL.replace(/'/g, "&#x27;")}</span>`);
+    expect(out).toContain(`<p class="tl-sample">${copy.SAMPLE_LABEL.replace(/'/g, "&#x27;")}</p>`);
     expect(out).toContain('name="text"');
     expect(out).toContain('value="paste"');
     expect(plain).toContain("Example Grooming Co");

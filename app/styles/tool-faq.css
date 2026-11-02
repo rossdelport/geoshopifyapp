@@ -93,7 +93,6 @@
   /* keep the first question in view on a 360 x 740 screen */
   .tl-faq-honest { padding: 10px 14px; font-size: 13.5px; line-height: 1.55; }
   .tl-faq-form .tl-sample { display: block; line-height: 1.6; }
-  .tl-faq-form .tl-sample .ck-chip { display: inline-flex; vertical-align: 1px; margin-right: 8px; height: 22px; }
   .tl-faq-row { padding: 2px 10px 10px; }
   .tl-faq-tool { padding: 0 10px; }
   /* three equal tabs; long labels wrap inside their tab instead of scrolling */

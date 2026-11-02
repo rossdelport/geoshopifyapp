@@ -791,7 +791,7 @@ describe("the page (server render, no JavaScript)", () => {
     expect(out).toContain(`>${esc(SAMPLE_TEXT)}</textarea>`);
     const result = resultArea(out);
     const shown = text(result);
-    expect(result).toContain(`<span class="ck-chip is-grey">Example</span><span>${esc(copy.SAMPLE_LABEL)}</span>`);
+    expect(result).toContain(`<p class="tl-sample">${esc(copy.SAMPLE_LABEL)}</p>`);
     expect(shown).toContain("Example description (made up)");
     expect(shown).toContain("Sounds generic");
     expect(shown).toContain("Needs work");
