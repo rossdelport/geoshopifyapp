@@ -55,6 +55,34 @@ describe("home page", () => {
     }
   });
 
+  it("opens with words on the left and one still picture on the right (Ross, 2 Nov 2026)", async () => {
+    const html = await home();
+    const start = html.indexOf('<section class="hero"');
+    const hero = html.slice(start, html.indexOf("</section>", start));
+    expect(hero).toContain('<div class="hero-tx">');
+    expect(hero).toContain('href="#waitlist" data-waitlist="hero"');
+    // the picture: one labelled example that stands still (no moving parts, no tabs, no pause button)
+    expect(hero.match(/role="img" aria-label="Example: [^"]+"/g)).toHaveLength(1);
+    expect(hero).not.toContain("data-anim");
+    expect(hero).not.toContain("data-still");
+    expect(html).not.toContain("data-chat");
+    // the one pause button for the moving pictures further down is still on the page
+    expect(html.match(/<button class="still-btn"/g)).toHaveLength(1);
+  });
+
+  it("shows the first month and the full refund where 'More ways we help' used to be", async () => {
+    const html = await home();
+    const start = html.indexOf('<section class="sec sec-soft" id="first-month"');
+    expect(start).toBeGreaterThan(-1);
+    const sec = html.slice(start, html.indexOf("</section>", start));
+    expect(sec).toContain("Try us for a month. <b>Full refund if you’re not happy.</b>");
+    expect([...sec.matchAll(/<h3>([^<]+)<\/h3>/g)].map((m) => m[1])).toEqual(["See where you stand", "We do the work", "Not happy? Full refund."]);
+    expect(sec).toContain("you keep all the work. No lock-in contract");
+    expect(html).not.toContain("More ways");
+    // the same promise as the price card
+    expect(html).toContain("Not happy after the first month? Full refund, and you keep all the work.");
+  });
+
   it("has one canonical address, the five other languages, share tags and the same organisation as the tool pages", async () => {
     const html = await home();
     const head = html.slice(0, html.indexOf("</head>"));

@@ -145,21 +145,21 @@ ul,ol{padding:0;list-style:none}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:22px;padding:4px 12px 4px 4px;border-radius:999px;background:#fff;border:1px solid var(--line);box-shadow:0 1px 2px rgba(18,18,40,.05);font-size:13px;font-weight:500;color:#4c4f58}
 .eyebrow b{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:var(--accent-50);color:var(--accent-ink);font-weight:600}
 .eyebrow b::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(108,92,242,.2)}
-.hero-row{display:grid;gap:24px;margin-top:26px}
-.hero-row .lead{max-width:35em}
-@media (min-width:1120px){.hero-row{grid-template-columns:minmax(0,42rem) auto;justify-content:space-between;align-items:end;gap:48px}}
-.hero-cta{display:flex;flex-wrap:wrap;gap:10px}
-.hero-card{margin-top:clamp(36px,5vw,56px)}
-.art-hero{height:clamp(440px,38vw,500px)}
+/* Words on the left, one still picture on the right (Ross, 2 Nov 2026: the moving hero was confusing). Stacked on phones. */
+.hero-in{display:grid;gap:clamp(36px,6vw,48px);align-items:center}
+@media (min-width:1080px){.hero-in{grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:56px}}
+@media (min-width:1080px){.hero .h1{font-size:clamp(3.1rem,1.2rem + 2.9vw,3.9rem)}}
+.hero .lead{margin-top:22px;max-width:34em}
+.hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+/* the chat sits in the page flow here (not pinned in the middle), so the panel grows with it on small screens */
+.art-hero{height:auto;min-height:clamp(400px,36vw,460px);display:grid;place-items:center;padding:52px 20px 62px}
+.art-hero .chat{position:relative;left:auto;top:auto;transform:none}
 @media (max-width:560px){.hero-cta{width:100%}.hero-cta .btn{flex:1 1 0;padding:0 12px}}
 
-.chat{position:absolute;left:50%;top:50%;z-index:2;width:min(540px,calc(100% - 32px));transform:translate(-50%,-50%);background:rgba(255,255,255,.97);border-radius:20px;box-shadow:0 0 0 6px rgba(255,255,255,.3),0 30px 60px -24px rgba(45,30,140,.55)}
+.chat{position:absolute;left:50%;top:50%;z-index:2;width:min(440px,calc(100% - 40px));transform:translate(-50%,-50%);background:rgba(255,255,255,.97);border-radius:20px;box-shadow:0 0 0 6px rgba(255,255,255,.3),0 30px 60px -24px rgba(45,30,140,.55)}
 .chat-top{padding:10px;border-bottom:1px solid #f0f0f4}
-.seg{position:relative;display:grid;grid-template-columns:repeat(3,1fr);max-width:360px;margin:0 auto;padding:3px;border-radius:11px;background:#f2f2f6}
-.seg-pill{position:absolute;top:3px;bottom:3px;left:3px;width:calc((100% - 6px)/3);border-radius:8px;background:#fff;box-shadow:0 1px 2px rgba(18,18,40,.1),0 3px 8px -3px rgba(18,18,40,.14);transform:translateX(calc(var(--e,0)*100%));transition:transform .55s cubic-bezier(.65,0,.35,1)}
-.seg-i{position:relative;display:flex;align-items:center;justify-content:center;gap:6px;height:30px;font-size:12.5px;font-weight:600;color:#83868f;transition:color .3s}
-.seg-i svg{width:14px;height:14px;flex:none}
-.seg-i.is-on{color:var(--head)}
+.chat-app{display:flex;align-items:center;gap:8px;padding:2px 6px;font-size:13.5px;font-weight:600;color:var(--head)}
+.chat-app svg{width:16px;height:16px;flex:none;color:#111}
 .chat-body{padding:16px 16px 18px}
 .bub-q{width:fit-content;max-width:88%;margin-left:auto;padding:9px 14px;border-radius:16px 16px 4px 16px;background:#f0eefc;color:var(--head);font-size:14px;font-weight:500;line-height:1.45}
 .ans{display:flex;gap:10px;margin-top:14px}
@@ -168,9 +168,7 @@ ul,ol{padding:0;list-style:none}
 .ans-tx{flex:1;min-width:0}
 .ans-lead{margin:3px 0 10px;font-size:14px;color:var(--head)}
 .picks{display:grid;gap:6px}
-.pick{display:flex;align-items:center;gap:10px;padding:7px 10px 7px 7px;border-radius:12px;border:1px solid #efeff3;background:#fff;font-size:13px;line-height:1.35;transition:opacity .3s ease,transform .3s ease}
-.pick:nth-child(2){transition-delay:.06s}.pick:nth-child(3){transition-delay:.12s}
-.picks.is-out .pick{opacity:0;transform:translateY(6px)}
+.pick{display:flex;align-items:center;gap:10px;padding:7px 10px 7px 7px;border-radius:12px;border:1px solid #efeff3;background:#fff;font-size:13px;line-height:1.35}
 .pk-n{flex:none;width:16px;text-align:center;font-weight:650;color:var(--soft);font-variant-numeric:tabular-nums}
 .pk-th{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:var(--c)}
 .pk-th svg{width:28px;height:28px}
@@ -181,21 +179,9 @@ ul,ol{padding:0;list-style:none}
 .pk-you{flex:none;display:none;padding:2px 8px;border-radius:99px;background:var(--accent);color:#fff;font-size:11px;font-weight:600}
 .pick.is-you{border-color:#dcd6fd;background:linear-gradient(90deg,#f5f3ff,#fff 70%);box-shadow:0 0 0 3px rgba(108,92,242,.1)}
 .pick.is-you .pk-you{display:block}
-.hc1{top:16%;left:calc(50% - 334px)}
-.hc2{bottom:5%;right:max(12px,calc(50% - 336px))}
-.hc3{bottom:9%;left:max(12px,calc(50% - 346px))}
-.hc1 .tile{width:24px;height:24px;border-radius:8px;background:linear-gradient(180deg,#9b8ef8,var(--accent));box-shadow:inset 0 1px 1px rgba(255,255,255,.5);color:#fff}
-.hc1 .tile svg{width:14px;height:14px}
-@media (max-width:760px){
-  .art-hero{height:470px}
-  .chat{top:52px;transform:translateX(-50%)}
-  .hc1{display:none}
-  .hc2{top:auto;bottom:16px;right:12px}
-  .hc3{bottom:16px;left:12px}
-}
-@media (max-width:480px){.ans-av{display:none}.pick{position:relative}.pk-you{position:absolute;top:-8px;right:8px}}
-@media (max-width:400px){.hc3{display:none}.hc2{left:50%;right:auto;transform:translateX(-50%)}}
-@media (max-width:380px){.chat-body{padding:14px 12px 16px}.pk-th{width:30px;height:30px}.seg{grid-template-columns:repeat(3,minmax(0,1fr))}.seg-i svg{display:none}}
+.hc2{bottom:16px;right:16px}
+@media (max-width:480px){.ans-av{display:none}.pick{position:relative}.pk-you{position:absolute;top:-8px;right:8px}.art-hero{padding:48px 14px 60px}.hc2{right:12px;bottom:14px}}
+@media (max-width:380px){.chat-body{padding:14px 12px 16px}.pk-th{width:30px;height:30px}}
 
 .works{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 26px;margin-top:26px;font-size:14px;font-weight:500;color:#71747d}
 .works-l{flex-basis:100%;text-align:center;font-size:13px;font-weight:500;color:var(--soft)}
@@ -428,43 +414,18 @@ ul,ol{padding:0;list-style:none}
 @media (max-width:400px){.kpis{grid-template-columns:1fr 1fr}.kpi:first-child{grid-column:1/-1}}
 @media (max-width:560px){.dash{padding:14px}.dash-cols{grid-template-columns:1fr}.kpis{gap:6px}.kpi{padding:10px}}
 
-/* ---------- More ways we help ---------- */
-.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-@media (max-width:1023px){.trio{grid-template-columns:repeat(2,1fr)}.trio>.card:last-child{grid-column:span 2}}
-@media (max-width:639px){.trio{grid-template-columns:1fr}.trio>.card:last-child{grid-column:auto}}
-.r-post{top:20px;padding:12px}
-.r-meta{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:600;color:#8b8e97}
-.r-meta i{width:16px;height:16px;border-radius:50%;background:#ff5a1f;flex:none}
-.r-q{margin-top:6px;font-size:12.5px;line-height:1.35;font-weight:600;color:#1d1f25}
-.r-reply{top:112px;padding:10px 12px;border-radius:12px 12px 12px 4px;box-shadow:0 0 0 2px var(--accent-100),0 0 0 6px rgba(255,255,255,.3),0 16px 30px -14px rgba(40,25,130,.5);animation:r-reply 8s ease-out infinite}
-.r-reply p{font-size:11.5px;line-height:1.45;color:var(--head)}
-.r-reply p em{font-style:normal;color:var(--accent-ink);font-weight:600}
-.r-dots{position:absolute;top:118px;left:max(16px,calc(50% - 135px));z-index:2;display:flex;gap:4px;padding:10px 12px;border-radius:12px;background:#fff;animation:r-dots 8s infinite}
-.r-dots i{width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:.45;animation:dot 1s ease-in-out infinite}
-.r-dots i:nth-child(2){animation-delay:.15s}.r-dots i:nth-child(3){animation-delay:.3s}
-@keyframes dot{50%{transform:translateY(-3px);opacity:1}}
-@keyframes r-dots{0%,8%{opacity:0}10%,28%{opacity:1}30%,100%{opacity:0}}
-@keyframes r-reply{0%,28%{opacity:0;transform:translate(-50%,10px)}36%,92%{opacity:1;transform:translateX(-50%)}100%{opacity:0;transform:translateX(-50%)}}
-.r-copy{bottom:18px;left:50%;transform:translateX(-50%);animation:r-copy 8s ease-out infinite}
-@keyframes r-copy{0%,46%{opacity:0;transform:translate(-50%,8px)}54%,92%{opacity:1;transform:translateX(-50%)}100%{opacity:0;transform:translateX(-50%)}}
-.r-copy b{background:var(--good-bg);color:var(--good)}
-.a-q{top:26px;right:max(16px,calc(50% - 132px));left:auto;transform:none;width:auto;max-width:210px;padding:8px 12px;border-radius:14px 14px 4px 14px;font-size:12px;font-weight:500;color:var(--head);background:#f6f5ff}
-.a-a{top:84px;left:max(22px,calc(50% - 132px));transform:none;width:min(224px,calc(100% - 38px));padding:10px 12px;border-radius:14px 14px 14px 4px;font-size:11.5px;line-height:1.45;color:var(--head);animation:a-a 8s ease-out infinite}
-.a-a b{font-weight:600}
-.a-av{position:absolute;top:-10px;left:-10px;width:24px;height:24px;border-radius:8px}
-.a-av .mark{width:14px;height:13px}.a-av .mark i{width:9px;height:9px}
-@keyframes a-a{0%,14%{opacity:0;transform:translateY(8px)}22%,92%{opacity:1;transform:none}100%{opacity:0}}
-.a-in{bottom:18px;display:flex;align-items:center;gap:8px;height:38px;padding:0 5px 0 12px;font-size:12px;color:var(--soft)}
-.a-in span{flex:1}
-.a-in i{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;color:#fff;background:linear-gradient(180deg,var(--accent-hi),var(--accent))}
-.a-in svg{width:14px;height:14px;transform:rotate(-90deg)}
-.x-box{top:44px;padding:12px}
-.x-k{font-size:9.5px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:#9a9da6}
-.x-old{margin-top:4px;font-size:12.5px;color:#a3a5ad;text-decoration:line-through;text-decoration-color:#d0d1d8}
-.x-new{position:relative;margin-top:8px;padding-top:8px;border-top:1px dashed #e6e5ee;font-size:12.5px;line-height:1.4;font-weight:600;color:#1d1f25}
-.x-new mark{background:linear-gradient(transparent 55%,var(--accent-100) 55%);color:inherit;background-size:100% 100%;background-repeat:no-repeat;animation:x-mark 7s ease-out 1 both}
-@keyframes x-mark{0%,20%{background-size:0 100%}45%,100%{background-size:100% 100%}}
-.x-why{top:162px;left:50%;transform:translateX(-50%)}
+/* ---------- Your first month, and the refund (Ross, 2 Nov 2026: show what buyers want to know) ---------- */
+.month{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.mo{display:flex;flex-direction:column;padding:26px 24px 28px;border-radius:20px;background:#fff;border:1px solid rgba(18,18,40,.06);box-shadow:var(--shadow)}
+.mo-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.mo .tile{width:46px;height:46px;border-radius:14px;color:var(--accent-ink);box-shadow:0 0 0 4px var(--accent-50),0 8px 18px -8px rgba(50,30,150,.4),inset 0 -4px 8px rgba(120,100,230,.13),inset 0 2px 2px #fff}
+.mo .tile svg{width:22px;height:22px}
+.mo-when{padding:3px 10px;border-radius:99px;font-size:12.5px;font-weight:600;color:var(--head);background:var(--bg-2);border:1px solid var(--line)}
+.mo h3{margin-top:20px;font-size:20px;line-height:1.25;font-weight:600;letter-spacing:-.022em;color:var(--head)}
+.mo p{margin-top:8px;font-size:15px;line-height:1.55;text-wrap:pretty}
+.mo.is-key{background:linear-gradient(180deg,var(--accent-50),#fff 80%);border-color:var(--accent-100);box-shadow:0 0 0 4px rgba(108,92,242,.07),var(--shadow)}
+.mo.is-key .mo-when{color:var(--accent-ink);background:#fff;border-color:var(--accent-100)}
+@media (max-width:899px){.month{grid-template-columns:1fr;gap:12px}}
 
 /* ---------- Stories ---------- */
 .st-view{overflow:hidden;padding:6px 0 18px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
@@ -767,47 +728,40 @@ html.still .g-you{transform:translate(56px,8px)}
 <main>
 <section class="hero" aria-labelledby="hero-h">
   <div class="wrap">
-    <p class="eyebrow"><b>Early access</b>For Shopify stores</p>
-    <h1 class="h1" id="hero-h">Shoppers ask ChatGPT what to buy. <b>Help it pick you.</b></h1>
-    <div class="hero-row">
-      <p class="lead">GEO helps ChatGPT, Gemini and Perplexity recommend your products, and shows you the sales you can trace back to AI. No ads. No cost per click.</p>
-      <div class="hero-cta">
-        <a class="btn btn-pri" href="#waitlist" data-waitlist="hero" aria-haspopup="dialog">Join the waitlist</a>
-        <a class="btn btn-sec" href="#how">See how it works</a>
+    <div class="hero-in">
+      <div class="hero-tx">
+        <p class="eyebrow"><b>Early access</b>For Shopify stores</p>
+        <h1 class="h1" id="hero-h">Shoppers ask ChatGPT what to buy. <b>Help it pick you.</b></h1>
+        <p class="lead">GEO helps ChatGPT, Gemini and Perplexity recommend your products, and shows you the sales you can trace back to AI. No ads. No cost per click.</p>
+        <div class="hero-cta">
+          <a class="btn btn-pri" href="#waitlist" data-waitlist="hero" aria-haspopup="dialog">Join the waitlist</a>
+          <a class="btn btn-sec" href="#how">See how it works</a>
+        </div>
       </div>
-    </div>
 
-    <div class="card hero-card">
-      <div class="art art-hero" data-anim role="img" aria-label="Example: a shopper asks ChatGPT, Gemini and Perplexity for the best beard oil for dry skin, and each AI names the sample store Coolabah Grooming Co. in its top picks.">
-        <span class="ex">Example</span>
-        <button class="still-btn" type="button" aria-pressed="false" data-still aria-label="Pause the moving pictures"><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg></button>
-        <div class="chat" data-chat aria-hidden="true">
-          <div class="chat-top">
-            <div class="seg">
-              <span class="seg-pill"></span>
-              <span class="seg-i is-on"><svg><use href="#i-chatgpt"/></svg>ChatGPT</span>
-              <span class="seg-i"><svg><use href="#i-gemini"/></svg>Gemini</span>
-              <span class="seg-i"><svg><use href="#i-perplexity"/></svg>Perplexity</span>
-            </div>
-          </div>
-          <div class="chat-body">
-            <p class="bub-q">What’s the best beard oil for dry skin?</p>
-            <div class="ans">
-              <span class="ans-av"><svg><use href="#i-chatgpt"/></svg></span>
-              <div class="ans-tx">
-                <p class="ans-lead">Here are three good picks:</p>
-                <ol class="picks">
-                  <li class="pick is-you"><span class="pk-n">1</span><span class="pk-th" style="--c:#f7d6c2"><svg><use href="#p-oil"/></svg></span><span class="pk-t"><b>Coolabah Grooming Co.</b><span>Sandalwood oil for dry beards</span></span><span class="pk-you">You</span></li>
-                  <li class="pick"><span class="pk-n">2</span><span class="pk-th" style="--c:#e3e0f7"><svg><use href="#p-balm"/></svg></span><span class="pk-t"><b>Ridgeback Beard Co.</b><span>Light and unscented</span></span><span class="pk-you">You</span></li>
-                  <li class="pick"><span class="pk-n">3</span><span class="pk-th" style="--c:#d7ece3"><svg><use href="#p-wash"/></svg></span><span class="pk-t"><b>Saltbush Beard Co.</b><span>A big bottle at a fair price</span></span><span class="pk-you">You</span></li>
-                </ol>
+      <!-- One still picture: a shopper's question, ChatGPT naming the sample store first, and the order it brings. -->
+      <div class="card hero-pic">
+        <div class="art art-hero" role="img" aria-label="Example: a shopper asks ChatGPT for the best beard oil for dry skin, ChatGPT names the sample store Coolabah Grooming Co. first, and the store gets a $34 order from ChatGPT.">
+          <span class="ex">Example</span>
+          <div class="chat" aria-hidden="true">
+            <div class="chat-top"><p class="chat-app"><svg><use href="#i-chatgpt"/></svg>ChatGPT</p></div>
+            <div class="chat-body">
+              <p class="bub-q">What’s the best beard oil for dry skin?</p>
+              <div class="ans">
+                <span class="ans-av"><svg><use href="#i-chatgpt"/></svg></span>
+                <div class="ans-tx">
+                  <p class="ans-lead">Here are three good picks:</p>
+                  <ol class="picks">
+                    <li class="pick is-you"><span class="pk-n">1</span><span class="pk-th" style="--c:#f7d6c2"><svg><use href="#p-oil"/></svg></span><span class="pk-t"><b>Coolabah Grooming Co.</b><span>Sandalwood oil for dry beards</span></span><span class="pk-you">You</span></li>
+                    <li class="pick"><span class="pk-n">2</span><span class="pk-th" style="--c:#e3e0f7"><svg><use href="#p-balm"/></svg></span><span class="pk-t"><b>Ridgeback Beard Co.</b><span>Light and unscented</span></span></li>
+                    <li class="pick"><span class="pk-n">3</span><span class="pk-th" style="--c:#d7ece3"><svg><use href="#p-wash"/></svg></span><span class="pk-t"><b>Saltbush Beard Co.</b><span>A big bottle at a fair price</span></span></li>
+                  </ol>
+                </div>
               </div>
             </div>
           </div>
+          <p class="chip hc2" aria-hidden="true"><b>+$34</b>order from ChatGPT</p>
         </div>
-        <p class="chip hc1" aria-hidden="true"><span class="tile"><svg><use href="#i-check"/></svg></span>Recommended</p>
-        <p class="chip hc2" aria-hidden="true"><b data-h-order>+$34</b>order from <span data-h-eng>ChatGPT</span></p>
-        <p class="chip hc3" aria-hidden="true"><b data-h-rank>#1</b>on <span data-h-eng>ChatGPT</span></p>
       </div>
     </div>
 
@@ -832,6 +786,7 @@ html.still .g-you{transform:translate(56px,8px)}
       <article class="card c-wide">
         <div class="art" data-anim data-wheel-art role="img" aria-label="Example: product cards for beard oil, beard balm, beard wash and a gift set turn on a wheel while a counter of orders from AI goes up.">
           <span class="ex">Example</span>
+          <button class="still-btn" type="button" aria-pressed="false" data-still aria-label="Pause the moving pictures"><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg></button>
           <p class="chip w-chip" aria-hidden="true"><b data-count>12</b>AI orders today</p>
           <div class="w-wheel" data-wheel aria-hidden="true">
             <div class="w-card" style="--n:0"><div class="w-img" style="--c:#f7d6c2"><svg><use href="#p-oil"/></svg></div><p class="w-name">Sandalwood Beard Oil</p><p class="w-sub">For dry beards. 30ml</p><p class="w-price">$34</p><p class="w-dots"><i></i><i></i><i></i></p></div>
@@ -1072,55 +1027,29 @@ html.still .g-you{transform:translate(56px,8px)}
   </div>
 </section>
 
-<section class="sec sec-soft" id="more" aria-labelledby="more-h">
+<section class="sec sec-soft" id="first-month" aria-labelledby="month-h">
   <div class="wrap">
     <div class="sec-head">
-      <h2 class="h2" id="more-h">More ways <b>we help you get picked.</b></h2>
+      <h2 class="h2" id="month-h">Try us for a month. <b>Full refund if you’re not happy.</b></h2>
+      <a class="btn btn-pri btn-sm" href="#waitlist" data-waitlist="link" aria-haspopup="dialog">Join the waitlist</a>
     </div>
-    <div class="trio">
-      <article class="card">
-        <div class="art" data-anim role="img" aria-label="Example: a Reddit question about beard oil for dry skin, and a drafted reply that starts by saying the writer runs the store.">
-          <span class="ex">Example</span>
-          <div class="s-box r-post" aria-hidden="true">
-            <p class="r-meta"><i></i>r/beards · 3h</p>
-            <p class="r-q">Any beard oil that actually helps with dry skin?</p>
-          </div>
-          <span class="r-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-          <div class="s-box r-reply" aria-hidden="true"><p><em>I run Coolabah, so I’m biased.</em> For dry skin, look for jojoba or argan oil and skip strong scents…</p></div>
-          <p class="chip r-copy" aria-hidden="true"><b><svg><use href="#i-check"/></svg></b>Copied. Open the thread</p>
-        </div>
-        <div class="card-tx">
-          <h3>Join the right Reddit threads</h3>
-          <p>We find threads where buyers ask about products like yours, and draft a reply that says who you are.</p>
-        </div>
-      </article>
-      <article class="card">
-        <div class="art" data-anim role="img" aria-label="A store owner asks GEO how to add the tracking code and gets a short answer.">
-          <p class="s-box a-q" aria-hidden="true">How do I add the tracking code?</p>
-          <div class="s-box a-a" aria-hidden="true"><span class="tile a-av"><span class="mark"><i></i><i></i></span></span>In Shopify, open <b>Settings</b>, then <b>Customer events</b>. Add a custom pixel, paste the code, then Save and Connect.</div>
-          <div class="s-box a-in" aria-hidden="true"><span>Ask GEO anything</span><i><svg><use href="#i-arrow"/></svg></i></div>
-        </div>
-        <div class="card-tx">
-          <h3>Ask GEO anything</h3>
-          <p>Stuck on a step? Ask in plain English and get a clear answer straight away.</p>
-        </div>
-      </article>
-      <article class="card">
-        <div class="art" data-anim role="img" aria-label="Example: a product title rewritten so AI can tell who it is for.">
-          <span class="ex">Example</span>
-          <div class="s-box x-box" aria-hidden="true">
-            <p class="x-k">Product title</p>
-            <p class="x-old">Beard Oil 30ml</p>
-            <p class="x-new"><mark>Sandalwood Beard Oil for Dry Skin, 30ml</mark></p>
-          </div>
-          <p class="chip x-why" aria-hidden="true"><b><svg><use href="#i-check"/></svg></b>Only facts from your page</p>
-        </div>
-        <div class="card-tx">
-          <h3>Product page fixes</h3>
-          <p>Clearer titles, descriptions and FAQs that AI can quote, ready for your OK.</p>
-        </div>
-      </article>
-    </div>
+    <ol class="month">
+      <li class="mo">
+        <div class="mo-top"><span class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></span><span class="mo-when">Week 1</span></div>
+        <h3>See where you stand</h3>
+        <p>We ask ChatGPT, Gemini and Perplexity the questions your buyers ask, and show you who they recommend instead of you.</p>
+      </li>
+      <li class="mo">
+        <div class="mo-top"><span class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.4 3.6a1 1 0 0 1 3 3L7.4 18.6a2 2 0 0 1-.9.5l-2.9.8a.5.5 0 0 1-.6-.6l.8-2.9a2 2 0 0 1 .5-.9z"/></svg></span><span class="mo-when">Weeks 2 to 4</span></div>
+        <h3>We do the work</h3>
+        <p>Buying guides, product page fixes, Reddit replies and pitches to the sites AI trusts, all done for you.</p>
+      </li>
+      <li class="mo is-key">
+        <div class="mo-top"><span class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></span><span class="mo-when">After month 1</span></div>
+        <h3>Not happy? Full refund.</h3>
+        <p>Tell us and we refund your first month in full, and you keep all the work. No lock-in contract, so you can stop any time.</p>
+      </li>
+    </ol>
   </div>
 </section>
 
@@ -1434,39 +1363,6 @@ html.still .g-you{transform:translate(56px,8px)}
     if (turns > 20) return;
     count.textContent = String(Number(count.textContent) + 1 + (turns % 3 === 0 ? 1 : 0));
     bump(count.parentNode);
-  });
-
-  // Hero: the same question on ChatGPT, Gemini and Perplexity, with the sample store's place in each answer.
-  var chat = $('[data-chat]');
-  var ENGINES = [
-    { id: 'chatgpt', name: 'ChatGPT', order: '+$34', picks: [[1, 'Coolabah Grooming Co.', 'Sandalwood oil for dry beards', 'oil', '#f7d6c2'], [0, 'Ridgeback Beard Co.', 'Light and unscented', 'balm', '#e3e0f7'], [0, 'Saltbush Beard Co.', 'A big bottle at a fair price', 'wash', '#d7ece3']] },
-    { id: 'gemini', name: 'Gemini', order: '+$68', picks: [[0, 'Ridgeback Beard Co.', 'A good all-rounder', 'balm', '#e3e0f7'], [1, 'Coolabah Grooming Co.', 'For dry skin, ships worldwide', 'oil', '#f7d6c2'], [0, 'Banksia Beard Co.', 'Natural oils, light scent', 'gift', '#ebe7fe']] },
-    { id: 'perplexity', name: 'Perplexity', order: '+$29', picks: [[1, 'Coolabah Grooming Co.', 'Softens dry, rough beards', 'oil', '#f7d6c2'], [0, 'Wattlebird Grooming', 'Gentle and soap-free', 'wash', '#d7ece3'], [0, 'Saltbush Beard Co.', 'Good value for big beards', 'balm', '#e3e0f7']] }
-  ];
-  var at = 0;
-  every(chat, 4200, function () {
-    at = (at + 1) % ENGINES.length;
-    var e = ENGINES[at];
-    var list = $('.picks', chat);
-    $('.seg', chat).style.setProperty('--e', at);
-    $$('.seg-i', chat).forEach(function (s, i) { s.classList.toggle('is-on', i === at); });
-    list.classList.add('is-out');
-    setTimeout(function () {
-      $('.ans-av use', chat).setAttribute('href', '#i-' + e.id);
-      $$('.pick', list).forEach(function (li, i) {
-        var p = e.picks[i];
-        li.classList.toggle('is-you', p[0] === 1);
-        $('.pk-th', li).style.setProperty('--c', p[4]);
-        $('.pk-th use', li).setAttribute('href', '#p-' + p[3]);
-        $('.pk-t b', li).textContent = p[1];
-        $('.pk-t span', li).textContent = p[2];
-        if (p[0] === 1) $('[data-h-rank]').textContent = '#' + (i + 1);
-      });
-      $('[data-h-order]').textContent = e.order;
-      $$('[data-h-eng]').forEach(function (s) { s.textContent = e.name; });
-      bump($('.hc2')); bump($('.hc3'));
-      list.classList.remove('is-out');
-    }, 330);
   });
 
   // The sample dashboard counts up the first time it is seen.
