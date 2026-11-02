@@ -320,7 +320,7 @@ export interface ReportOptions {
 }
 
 const FALLBACK_NOTE =
-  "We read some answers with simple text matching, so a few names in the brand list may be product types rather than brands.";
+  "We read some answers by simple word matching. So a few names in the brand list may be kinds of product, not brands.";
 
 const list = (items: string[]) =>
   items.length <= 1 ? items.join("") : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
@@ -446,7 +446,7 @@ function buildTips(
   if (r.answerCount && !r.namedCount) {
     tips.push({
       title: `AI doesn’t mention ${brand} yet`,
-      body: `None of the ${r.answerCount} answers named ${brand}. AI assistants mostly recommend brands that review sites, retailers and forums already talk about, and whose product pages spell out clear facts.`,
+      body: `None of the ${r.answerCount} answers named ${brand}. AI mostly picks brands that review sites, shops and forums already talk about. It also likes product pages with clear facts.`,
     });
   } else {
     const missing = CHECK_ENGINES.filter((e) => r.byEngine[e].total > 0 && r.byEngine[e].named === 0).map((e) => ENGINE_LABELS[e]);
@@ -484,7 +484,7 @@ function buildTips(
     covered.add("schema");
     tips.push({
       title: "Add product data AI can read",
-      body: "We didn’t find structured product data (name, brand, price) on the page we read. Shopping assistants read this behind-the-scenes data.",
+      body: "We didn’t find structured product data (name, brand, price) on the page we read. AI shopping tools read this hidden data.",
     });
   }
 
@@ -518,14 +518,14 @@ function buildTips(
   if (rivals.length) {
     tips.push({
       title: `See why AI picks ${list(rivals)}`,
-      body: `${rivals.length > 1 ? "These brands came" : "This brand came"} up most. Compare their product pages with yours: AI often repeats the details they give, like who it’s for, sizes and materials.`,
+      body: `${rivals.length > 1 ? "These brands came" : "This brand came"} up most. Compare their product pages with yours. AI often repeats the details they give, like who it’s for, sizes and materials.`,
     });
   }
 
   const extras = [
     {
       title: "Keep an eye on it every week",
-      body: "AI answers change often. Tracking the same questions every week shows whether you’re gaining or slipping, and what to fix next.",
+      body: "AI answers change often. Checking the same questions every week shows if you’re going up or down, and what to fix next.",
     },
     {
       title: "Check more of the questions shoppers ask",

@@ -16,7 +16,7 @@ export const meta: MetaFunction = () => [
   {
     name: "description",
     content:
-      "Paste a product link and see whether ChatGPT, Gemini and Perplexity recommend it, who they pick instead, and which sites they trust. Free, no sign-up.",
+      "Paste a product link. See if ChatGPT, Gemini and Perplexity pick it, who they pick instead, and which sites they trust. Free, no sign-up.",
   },
   // The AI Visibility Checker page is the one page search engines should show for this (spec decision R1);
   // this page keeps working for the home page form, and leaves the sitemap.
