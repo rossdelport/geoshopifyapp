@@ -162,6 +162,14 @@ ul,ol{padding:0;list-style:none}
 .chat-app svg{width:16px;height:16px;flex:none;color:#111}
 .chat-body{padding:16px 16px 18px}
 .bub-q{width:fit-content;max-width:88%;margin-left:auto;padding:9px 14px;border-radius:16px 16px 4px 16px;background:#f0eefc;color:var(--head);font-size:14px;font-weight:500;line-height:1.45}
+/* The hero's answers take turns: the question types itself out, then three picks pop in. Room for the longest
+   question (two lines) is kept, so nothing below moves while it types. */
+.bub-row{display:flex;align-items:flex-end;min-height:59px}
+.bub-q.is-typing::after{content:"";display:inline-block;width:2px;height:1em;margin-left:2px;vertical-align:-2px;background:currentColor;animation:caret .9s steps(1) infinite}
+@keyframes caret{50%{opacity:0}}
+.ans-lead,.pick{transition:opacity .3s ease,transform .3s ease}
+.pick:nth-child(1){transition-delay:.08s}.pick:nth-child(2){transition-delay:.18s}.pick:nth-child(3){transition-delay:.28s}
+.ans.is-out .ans-lead,.ans.is-out .pick{opacity:0;transform:translateY(6px);transition-delay:0s}
 .ans{display:flex;gap:10px;margin-top:14px}
 .ans-av{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#fff;border:1px solid var(--line);color:#111}
 .ans-av svg{width:16px;height:16px}
@@ -739,28 +747,30 @@ html.still .g-you{transform:translate(56px,8px)}
         </div>
       </div>
 
-      <!-- One still picture: a shopper's question, ChatGPT naming the sample store first, and the order it brings. -->
+      <!-- The picture: a shopper's question to ChatGPT, then Gemini, Perplexity, Google AI Overviews and Claude in turn
+           (Ross, 2 Nov 2026), each answer naming a made-up store. The first answer is written here, so it shows as is
+           without JavaScript or with reduced motion; the script swaps in the others (HERO_ANSWERS). -->
       <div class="card hero-pic">
-        <div class="art art-hero" role="img" aria-label="Example: a shopper asks ChatGPT for the best beard oil for dry skin, ChatGPT names the sample store Coolabah Grooming Co. first, and the store gets a $34 order from ChatGPT.">
-          <span class="ex">Example</span>
-          <div class="chat" aria-hidden="true">
-            <div class="chat-top"><p class="chat-app"><svg><use href="#i-chatgpt"/></svg>ChatGPT</p></div>
+        <div class="art art-hero" data-anim role="img" aria-label="Example: shoppers ask ChatGPT, Gemini, Perplexity, Google AI Overviews and Claude what to buy, such as the best beard oil for dry skin, and each answer names a made-up store among its top three picks.">
+          <button class="still-btn" type="button" aria-pressed="false" data-still aria-label="Pause the moving pictures"><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.9l10.4-6.5a1 1 0 0 0 0-1.8L9.5 4.6A1 1 0 0 0 8 5.5z"/></svg></button>
+          <div class="chat" data-chat aria-hidden="true">
+            <div class="chat-top"><p class="chat-app"><svg><use href="#i-chatgpt"/></svg><span>ChatGPT</span></p></div>
             <div class="chat-body">
-              <p class="bub-q">What’s the best beard oil for dry skin?</p>
+              <div class="bub-row"><p class="bub-q">What’s the best beard oil for dry skin?</p></div>
               <div class="ans">
                 <span class="ans-av"><svg><use href="#i-chatgpt"/></svg></span>
                 <div class="ans-tx">
                   <p class="ans-lead">Here are three good picks:</p>
                   <ol class="picks">
-                    <li class="pick is-you"><span class="pk-n">1</span><span class="pk-th" style="--c:#f7d6c2"><svg><use href="#p-oil"/></svg></span><span class="pk-t"><b>Coolabah Grooming Co.</b><span>Sandalwood oil for dry beards</span></span><span class="pk-you">You</span></li>
-                    <li class="pick"><span class="pk-n">2</span><span class="pk-th" style="--c:#e3e0f7"><svg><use href="#p-balm"/></svg></span><span class="pk-t"><b>Ridgeback Beard Co.</b><span>Light and unscented</span></span></li>
-                    <li class="pick"><span class="pk-n">3</span><span class="pk-th" style="--c:#d7ece3"><svg><use href="#p-wash"/></svg></span><span class="pk-t"><b>Saltbush Beard Co.</b><span>A big bottle at a fair price</span></span></li>
+                    <li class="pick is-you"><span class="pk-n">1</span><span class="pk-th" style="--c:#f7d6c2"><svg><use href="#p-oil"/></svg></span><span class="pk-t"><b>Coolabah Grooming Co.</b><span>Sandalwood, for dry beards</span></span><span class="pk-you">You</span></li>
+                    <li class="pick"><span class="pk-n">2</span><span class="pk-th" style="--c:#e3e0f7"><svg><use href="#p-balm"/></svg></span><span class="pk-t"><b>Ridgeback Beard Co.</b><span>Light and unscented</span></span><span class="pk-you">You</span></li>
+                    <li class="pick"><span class="pk-n">3</span><span class="pk-th" style="--c:#d7ece3"><svg><use href="#p-wash"/></svg></span><span class="pk-t"><b>Saltbush Beard Co.</b><span>Big bottle, fair price</span></span><span class="pk-you">You</span></li>
                   </ol>
                 </div>
               </div>
             </div>
           </div>
-          <p class="chip hc2" aria-hidden="true"><b>+$34</b>order from ChatGPT</p>
+          <p class="chip hc2" aria-hidden="true"><b>+$34</b><span>order from ChatGPT</span></p>
         </div>
       </div>
     </div>
@@ -786,7 +796,6 @@ html.still .g-you{transform:translate(56px,8px)}
       <article class="card c-wide">
         <div class="art" data-anim data-wheel-art role="img" aria-label="Example: product cards for beard oil, beard balm, beard wash and a gift set turn on a wheel while a counter of orders from AI goes up.">
           <span class="ex">Example</span>
-          <button class="still-btn" type="button" aria-pressed="false" data-still aria-label="Pause the moving pictures"><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg></button>
           <p class="chip w-chip" aria-hidden="true"><b data-count>12</b>AI orders today</p>
           <div class="w-wheel" data-wheel aria-hidden="true">
             <div class="w-card" style="--n:0"><div class="w-img" style="--c:#f7d6c2"><svg><use href="#p-oil"/></svg></div><p class="w-name">Sandalwood Beard Oil</p><p class="w-sub">For dry beards. 30ml</p><p class="w-price">$34</p><p class="w-dots"><i></i><i></i><i></i></p></div>
@@ -1364,6 +1373,83 @@ html.still .g-you{transform:translate(56px,8px)}
     count.textContent = String(Number(count.textContent) + 1 + (turns % 3 === 0 ? 1 : 0));
     bump(count.parentNode);
   });
+
+  // Hero: one shopper question after another, each on the next AI assistant. The question types itself out, the
+  // three picks pop in, and the answer stays for 3 seconds (Ross). Made-up stores; "You" marks the reader's store.
+  // Waits while the picture is off screen, the tab is hidden or the pause button is on; reduced motion keeps the
+  // first answer as written in the page.
+  var HERO_ANSWERS = [
+    { icon: 'chatgpt', name: 'ChatGPT', q: 'What’s the best beard oil for dry skin?', chip: ['+$34', 'order from ChatGPT'], picks: [
+      [1, 'Coolabah Grooming Co.', 'Sandalwood, for dry beards', 'oil', '#f7d6c2'],
+      [0, 'Ridgeback Beard Co.', 'Light and unscented', 'balm', '#e3e0f7'],
+      [0, 'Saltbush Beard Co.', 'Big bottle, fair price', 'wash', '#d7ece3']] },
+    { icon: 'gemini', name: 'Gemini', q: 'Which vitamin C serum suits sensitive skin?', chip: ['+$58', 'order from Gemini'], picks: [
+      [1, 'Wattle & Bloom', 'Gentle vitamin C, 30ml', 'oil', '#fbe3c4'],
+      [0, 'Kelp Skin Co.', 'Fragrance-free and light', 'wash', '#d7ece3'],
+      [0, 'Dune Botanics', 'Good value, big bottle', 'oil', '#e3e0f7']] },
+    { icon: 'perplexity', name: 'Perplexity', q: 'What’s a good Christmas gift for a coffee lover?', chip: ['+$72', 'order from Perplexity'], picks: [
+      [1, 'Ember Roasters', 'Gift box with three blends', 'gift', '#ebe7fe'],
+      [0, 'Bluegum Coffee Co.', 'Beans and a hand grinder', 'balm', '#f7d6c2'],
+      [0, 'Larrikin Brew', 'Cold brew starter kit', 'wash', '#d7ece3']] },
+    // GEO checks where a store comes up in Google AI Overviews, but can't tell those sales from normal Google, so
+    // this one shows the place, not an order.
+    { icon: 'google', name: 'Google AI Overviews', q: 'Which natural deodorant lasts all day?', chip: ['#1', 'in Google AI Overviews'], picks: [
+      [1, 'Coastline Naturals', 'No aluminium, light scent', 'balm', '#d7ece3'],
+      [0, 'Mallee & Co.', 'Refillable stick', 'wash', '#e3e0f7'],
+      [0, 'Little Fern', 'Unscented and gentle', 'balm', '#fbe3c4']] },
+    { icon: 'claude', name: 'Claude', q: 'Which candle makes a nice housewarming gift?', chip: ['+$45', 'order from Claude'], picks: [
+      [1, 'Saltwater Candle Co.', 'Soy candle, 50-hour burn', 'balm', '#fbe3c4'],
+      [0, 'Fern & Flint', 'Hand-poured and gift boxed', 'gift', '#ebe7fe'],
+      [0, 'Little Lane Home', 'A set of three minis', 'balm', '#e3e0f7']] }
+  ];
+  (function () {
+    var chat = $('[data-chat]');
+    if (!chat || reduce) return;
+    var host = chat.closest('[data-anim]');
+    var bub = $('.bub-q', chat), ans = $('.ans', chat), chip = $('.hc2');
+    var HOLD = 3000, TYPE = 32, at = 0;
+    var later = function (fn, ms) { setTimeout(fn, ms); };
+    // Runs fn once the picture is on screen, the tab is showing and nothing is paused.
+    function whenFree(fn) {
+      if (host.classList.contains('is-off') || document.hidden || still()) return later(function () { whenFree(fn); }, 400);
+      fn();
+    }
+    function show(e) {
+      $('.chat-app use', chat).setAttribute('href', '#i-' + e.icon);
+      $('.chat-app span', chat).textContent = e.name;
+      ans.classList.add('is-out');
+      bub.textContent = '';
+      bub.classList.add('is-typing');
+      var n = 0;
+      (function type() {
+        n += 1;
+        bub.textContent = e.q.slice(0, n);
+        if (n < e.q.length) return later(type, TYPE);
+        later(function () {
+          bub.classList.remove('is-typing');
+          $('.ans-av use', chat).setAttribute('href', '#i-' + e.icon);
+          $$('.pick', chat).forEach(function (li, i) {
+            var p = e.picks[i];
+            li.classList.toggle('is-you', p[0] === 1);
+            $('.pk-th', li).style.setProperty('--c', p[4]);
+            $('.pk-th use', li).setAttribute('href', '#p-' + p[3]);
+            $('.pk-t b', li).textContent = p[1];
+            $('.pk-t span', li).textContent = p[2];
+          });
+          $('b', chip).textContent = e.chip[0];
+          $('span', chip).textContent = e.chip[1];
+          bump(chip);
+          ans.classList.remove('is-out');
+          later(function () { whenFree(next); }, 600 + HOLD);
+        }, 350);
+      })();
+    }
+    function next() {
+      at = (at + 1) % HERO_ANSWERS.length;
+      show(HERO_ANSWERS[at]);
+    }
+    later(function () { whenFree(next); }, HOLD);
+  })();
 
   // The sample dashboard counts up the first time it is seen.
   var dash = $('[data-dash]');
