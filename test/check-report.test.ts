@@ -377,7 +377,7 @@ describe("buildReport with what we know about the check", () => {
   it("with text matching, only lists brands seen in 2 or more answers and says so", () => {
     const r = buildReport(answers, product, [], { textFallback: true });
     expect(r.competitors.map((c) => c.name)).toEqual(["Milkman", "The Groomed Man Co"]);
-    expect(r.summary).toContain("simple text matching");
+    expect(r.summary).toContain("simple word matching");
     expect(buildReport(answers, product).competitors.map((c) => c.name)).toEqual(["Milkman", "The Groomed Man Co", "Jojoba Oil", "Cedar Blend"]);
     expect(buildReport(answers, product).summary).not.toContain("text matching");
   });

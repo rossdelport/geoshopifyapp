@@ -243,15 +243,15 @@ describe("/privacy after the free tools", () => {
     expect(html).toContain('<a href="/tools">usegeo.app/tools</a>');
     expect(text).toContain("don't send what you type to us");
     expect(text).toContain("We don't keep the files.");
-    expect(text).toContain("The AI Overview Checker sends your search phrase to our data provider, Treg");
+    expect(text).toContain("The AI Overview Checker sends your search to our data provider, Treg.");
     expect(text).toContain("Crawl4AI, or AnyAPI as a backup");
-    expect(text).toContain("held in memory and cleared within a day");
+    expect(text).toContain("We hold it in memory and clear it within a day.");
     expect(text).toContain("We record what each search cost us, without your IP address or your search.");
     expect(text).toContain("Last updated 13 October 2026");
     // the Meta pixel on the home page (Ross's ads, 13 Oct 2026)
     expect(text).toContain("Our home page uses Meta's pixel");
     expect(text).toContain("It never sends your name or email address.");
-    expect(text).toContain("In Europe and the UK the pixel only starts after you click OK on the cookie notice.");
+    expect(text).toContain("In Europe and the UK, the pixel only starts after you click OK on the cookie notice.");
     expect(DASHES.test(text)).toBe(false);
   });
 

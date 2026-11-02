@@ -43,7 +43,7 @@ A self-serve Shopify app that gets ecommerce brands **recommended by AI shopping
 ## 2. Who it's for
 
 - Shopify DTC brands **worldwide** (English-language stores; Ross decided 2026-10-11, was AU/NZ first), any size. Never say "for AU/NZ" in user-facing copy. Sweet spot: brands with real catalogs (beauty, grooming, skincare, supplements, apparel, home).
-- Merchant is non-technical. Copy must be plain English, short, no jargon (no "GEO", "AEO", "LLM" in UI; say "AI search", "ChatGPT & co").
+- Merchant is non-technical. Copy must be plain English, short, no jargon (no "GEO", "AEO", "LLM" in UI; say "AI search", "ChatGPT & co"). **Website copy reads at about a grade 5 level** (Ross, 2026-11-02): short sentences, everyday words ("buy" not "convert", "visits" not "referrals", "emails to websites" not "pitches"); facts, numbers, quotes and sources stay exact. The home page, free tools, stories, compare pages, /check, /privacy and the blog writer prompt were rewritten to this on 2026-11-02.
 - **Never use em dashes (—) in any copy** (site, app UI, emails, reports). Use a full stop, comma, colon or "and" instead. Ross's rule.
 
 ## 3. Pricing & plan limits (enforce in code)

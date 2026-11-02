@@ -298,7 +298,7 @@ const PERK_ICONS: ReactNode[] = [
 const PERKS: [string, string][] = [
   ["Are you recommended?", "A score out of 100, and how often each AI names your brand."],
   ["Who wins instead", "The brands AI picks for your buyers, and the websites it quotes."],
-  ["What to fix first", "Plain-English steps to help AI recommend you, based only on its answers and your page. Emailed to you free."],
+  ["What to fix first", "Simple steps to help AI pick you, based only on its answers and your page. Emailed to you free."],
 ];
 
 /** What the report shows, and why we ask twice. Under the band on /check. */
