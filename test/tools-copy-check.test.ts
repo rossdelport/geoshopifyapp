@@ -304,7 +304,7 @@ describe("the verdict", () => {
     expect(verdictFor(4, 2, 200)).toBe("specific");
     const r = checkCopy("Beard oil for dry skin. 30 ml glass bottle. Premium quality.");
     expect(r.verdict).toEqual({ id: "mixed", label: "Some specifics, some filler", chip: "Could be clearer", line: "1 vague phrase, 3 of 7 key facts found." });
-    expect(copy.HOW_IT_WORKS.map((h) => h.text).join(" ")).toContain("A text under 100 words counts as 100 words, so one vague phrase doesn't outweigh the facts in a short description.");
+    expect(copy.HOW_IT_WORKS.map((h) => h.text).join(" ")).toContain("A text under 100 words counts as 100 words. That way one vague phrase doesn't outweigh the facts in a short description.");
   });
 
   it("calls a generic text 'Needs work', not 'Needs facts' (it may have facts and too much filler)", () => {
@@ -326,7 +326,7 @@ describe("the verdict", () => {
     expect(copy.verdictWords("specific", 0)).toEqual({ label: "Specific and clear", chip: "Clear" });
     expect(copy.verdictWords("generic", 3)).toEqual({ label: "Sounds generic", chip: "Needs work" });
     expect(copy.HOW_IT_WORKS.map((h) => h.text).join(" ")).toContain(
-      "With no vague phrases at all, the headline says what's missing instead: 'Clear, but missing key facts' for 2 or 3 facts, 'Missing most key facts' for 1 or none.",
+      "If there are no vague phrases, the headline says what's missing instead. It says 'Clear, but missing key facts' for 2 or 3 facts, and 'Missing most key facts' for 1 or none.",
     );
   });
 

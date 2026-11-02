@@ -371,7 +371,7 @@ describe("cited pages and normal results, page by page", () => {
     expect(out).toContain("Normal results on the first page");
     expect(out).not.toContain("top 10)");
     expect(copy.ORGANIC_HEADING(10)).toBe("Normal results (top 10)");
-    expect(copy.HOW_IT_WORKS.join(" ")).toContain("the normal results on the first page (up to 10)");
+    expect(copy.HOW_IT_WORKS.join(" ")).toContain("the normal results on page one (up to 10)");
   });
 });
 
@@ -424,8 +424,8 @@ describe("copy module", () => {
     expect(all).not.toMatch(/rich result/i);
   });
 
-  it("uses the spec's exact intro, button and example searches", () => {
-    expect(copy.INTRO.startsWith("The AI Overview Checker is a free tool that")).toBe(true);
+  it("uses the spec's intro (in simpler words since 2 Nov 2026), button and example searches", () => {
+    expect(copy.INTRO.startsWith("The AI Overview Checker is a free tool. It searches Google")).toBe(true);
     expect(copy.CTA).toEqual({ text: "See how GEO gets you into AI answers", href: "/?ref=tool-ai-overview-checker#how" });
     expect(copy.EXAMPLES[0]).toBe(AIO_SAMPLE.query);
     expect(copy.WHAT_IT_CHECKS.length).toBeGreaterThanOrEqual(3);

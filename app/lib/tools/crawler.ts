@@ -68,7 +68,7 @@ export const TOOL_BOTS: ToolBot[] = [
     what: "Bing's crawler. Microsoft Copilot answers come from Bing, and ChatGPT search also uses Microsoft as a search provider.",
     docs: "https://www.bing.com/webmasters/help/which-crawlers-does-bing-use-8c184ec0",
   },
-  { token: "Claude-SearchBot", owner: "Anthropic", group: "recommend", level: "medium", what: "Reads pages for Claude's search results. Anthropic says blocking it may reduce your visibility in Claude.", docs: ANTHROPIC_DOCS },
+  { token: "Claude-SearchBot", owner: "Anthropic", group: "recommend", level: "medium", what: "Reads pages for Claude's search results. Anthropic says blocking it may make you show up less in Claude.", docs: ANTHROPIC_DOCS },
   {
     token: "Google-Extended",
     owner: "Google",
@@ -107,7 +107,7 @@ export const TOOL_BOTS: ToolBot[] = [
     what: "Fetches a page when someone asks Claude about it. Anthropic says it follows robots.txt, so a block stops Claude reading your page for that person.",
     docs: ANTHROPIC_DOCS,
   },
-  { token: "Perplexity-User", owner: "Perplexity", group: "fetch", level: "info", what: "Fetches a page when someone asks Perplexity about it. Perplexity says it generally ignores robots.txt.", docs: PERPLEXITY_DOCS, mayIgnore: true },
+  { token: "Perplexity-User", owner: "Perplexity", group: "fetch", level: "info", what: "Fetches a page when someone asks Perplexity about it. Perplexity says it usually ignores robots.txt.", docs: PERPLEXITY_DOCS, mayIgnore: true },
   { token: "meta-externalfetcher", owner: "Meta", group: "fetch", level: "info", what: "Fetches a page when someone asks Meta AI to. Meta says it may bypass robots.txt.", docs: META_DOCS, mayIgnore: true },
   { token: "Amzn-User", owner: "Amazon", group: "fetch", level: "info", what: "Fetches a page live when someone asks Alexa a question. Amazon says it may not follow every robots.txt rule.", docs: AMAZON_DOCS, mayIgnore: true },
   { token: "MistralAI-User", owner: "Mistral", group: "fetch", level: "info", what: "Fetches a page when someone asks Mistral's assistant to.", docs: MISTRAL_DOCS },

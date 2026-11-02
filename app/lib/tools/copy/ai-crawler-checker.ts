@@ -34,7 +34,7 @@ const SHOPIFY_ROBOTS_DEV: FaqSource = { url: "https://shopify.dev/docs/storefron
 const SHOPIFY_DEMO_ROBOTS: FaqSource = { url: "https://theme-horizon-demo.myshopify.com/robots.txt", label: "Shopify's demo store robots.txt" };
 
 export const INTRO =
-  "The AI Crawler Checker is a free tool that reads your site's robots.txt and shows which AI bots, like OpenAI's OAI-SearchBot and GPTBot, may read your pages, which blocks actually hide you from AI answers, and how to fix them on Shopify.";
+  "The AI Crawler Checker is a free tool. It reads your site's robots.txt file and shows which AI bots, like OpenAI's OAI-SearchBot and GPTBot, may read your pages. It shows which blocks really hide you from AI answers, and how to fix them on Shopify.";
 
 // ---------- the forms ----------
 
@@ -104,7 +104,7 @@ export const FIX = {
   linesLabel: "Lines to delete",
   trainingNote: "Lines that block training bots aren't listed. Blocking those is your choice.",
   noLiquid:
-    "No robots.txt.liquid file? Then your store uses Shopify's standard file, and the block comes from somewhere else: an app, a developer, or a service in front of your store such as Cloudflare. Ask them to remove it.",
+    "No robots.txt.liquid file? Then your store uses Shopify's standard file. The block comes from somewhere else: an app, a developer, or a service in front of your store like Cloudflare. Ask them to remove it.",
   // Verified 11 Oct 2026 against the Shopify Help Center (SHOPIFY_ROBOTS_HELP).
   restore: "Want Shopify's standard rules back? Delete robots.txt.liquid (copy it somewhere first).",
   restoreSource: SHOPIFY_ROBOTS_HELP,
@@ -122,7 +122,7 @@ export const LIMITS = {
   title: "What robots.txt can't show",
   // Sources: Google Search Console Help 16908024 (Search generative AI setting); Google's user-triggered
   // fetchers "generally ignore robots.txt rules" (facts-2026.md 1.2, Google-Agent).
-  text: "A firewall or bot protection, such as Cloudflare's setting that blocks AI bots, can turn bots away before they read robots.txt. Google also has a switch in Search Console (Settings, then Search generative AI) that can keep a site out of AI Overviews. And some assistants fetch a page when a person asks and say robots.txt may not apply to those visits, including Google-Agent.",
+  text: "A firewall or bot blocker, like Cloudflare's setting that blocks AI bots, can turn bots away before they read robots.txt. Google also has a switch in Search Console (Settings, then Search generative AI). It can keep a site out of AI Overviews. And some AI apps open a page when a person asks. They say robots.txt may not apply to those visits. Google-Agent is one.",
   sources: [GOOGLE_AI_SWITCH, GOOGLE_USER_FETCHERS],
 } as const;
 
@@ -130,7 +130,7 @@ export const LIMITS = {
 
 /** One line for each thing the tool looks at. The bot count comes from the list itself (25 today). */
 export const WHAT_IT_CHECKS = [
-  "Your live robots.txt, read the way the robots.txt standard (RFC 9309) says bots read it",
+  "Your live robots.txt, read the way the robots.txt rules (RFC 9309) say bots read it",
   `${TOOL_BOTS.length} bots from OpenAI, Google, Anthropic, Perplexity, Microsoft, Apple, Meta, Amazon, DuckDuckGo, Mistral and Common Crawl`,
   "Your home page, a product page and a collection page",
   "The exact line that blocks each bot, and how to remove it on Shopify",
@@ -149,7 +149,7 @@ export const EXPLAINERS: ExplainerCopy[] = [
     question: "What is GPTBot?",
     // source: https://developers.openai.com/api/docs/bots (facts-2026.md 1.2)
     paragraphs: [
-      "GPTBot is OpenAI's crawler that collects pages to train its AI models. Blocking it in robots.txt tells OpenAI not to use your pages for training. It doesn't change whether ChatGPT search can show your pages: that's OAI-SearchBot. OpenAI publishes GPTBot's addresses at openai.com/gptbot.json, so a firewall can tell the real bot from fakes.",
+      "GPTBot is OpenAI's crawler that collects pages to train its AI models. Blocking it in robots.txt tells OpenAI not to use your pages for training. It doesn't change whether ChatGPT search can show your pages: that's OAI-SearchBot. OpenAI lists GPTBot's addresses at openai.com/gptbot.json. That lets a firewall tell the real bot from fakes.",
     ],
     sources: [OPENAI_BOTS],
   },
@@ -158,7 +158,7 @@ export const EXPLAINERS: ExplainerCopy[] = [
     question: "What is OAI-SearchBot?",
     // sources: OpenAI bots page; https://help.openai.com/en/articles/9237897-chatgpt-search
     paragraphs: [
-      "OAI-SearchBot is OpenAI's search crawler. It decides whether your pages can appear in ChatGPT search answers. OpenAI says robots.txt changes take about 24 hours to apply, and asks sites to allow its published addresses (openai.com/searchbot.json) at their firewall or CDN. For a store that wants ChatGPT to recommend it, this is the OpenAI bot that matters most.",
+      "OAI-SearchBot is OpenAI's search crawler. It decides whether your pages can appear in ChatGPT search answers. OpenAI says robots.txt changes take about 24 hours to work. It also asks sites to let its listed addresses (openai.com/searchbot.json) through their firewall or CDN. For a store that wants ChatGPT to recommend it, this is the OpenAI bot that matters most.",
     ],
     sources: [OPENAI_BOTS, OPENAI_SEARCH_HELP],
   },
@@ -181,16 +181,16 @@ export interface HowItem {
 export const howItWorks = (checked: string): HowItem[] => [
   // Google reads the first 500 KiB: Google's robots.txt rules, "File format" (read 11 Oct 2026).
   {
-    text: "We find your home page first (yourstore.com often sends visitors to www.yourstore.com), then fetch /robots.txt from that address, following up to 4 redirects, and read up to 512 KB of it. Google reads the first 500 KB.",
+    text: "First we find your home page (yourstore.com often sends visitors to www.yourstore.com). Then we get /robots.txt from that address. We follow up to 4 redirects and read up to 512 KB of it. Google reads the first 500 KB.",
     source: GOOGLE_ROBOTS_SPEC,
   },
   {
-    text: "We read it the way the robots.txt standard (RFC 9309) describes: a group that names a bot replaces the general `*` group for that bot, and the longest matching rule wins. Allow wins a tie.",
+    text: "We read it the way the robots.txt rules (RFC 9309) say to. Rules that name a bot replace the general `*` rules for that bot. The longest matching rule wins, and Allow wins a tie.",
     source: RFC_9309,
   },
   { text: "Apple says Applebot follows your Googlebot rules when your file doesn't name Applebot, so we do the same.", source: APPLE_BOT },
-  { text: "We test your home page, one product page and one collection page we find on your home page, plus the page you entered." },
-  { text: "We don't visit your site pretending to be each bot, so firewall or CDN blocks don't show here." },
+  { text: "We test your home page, the page you typed in, and one product page and one collection page from your home page." },
+  { text: "We don't visit your site as each bot, so firewall or CDN blocks don't show here." },
   { text: "If your site answers 401, 403 or 429, we say it turned us away, and never call that all clear. If there's no robots.txt (404), every bot is allowed." },
   { text: `The bot list comes from each company's own crawler pages, checked ${checked}. We review it every 3 months.` },
 ];
@@ -199,20 +199,20 @@ export const FAQS: ToolFaqItem[] = [
   {
     q: "Does blocking GPTBot hide my store from ChatGPT?",
     // source: https://developers.openai.com/api/docs/bots
-    a: "No. GPTBot only collects pages to train OpenAI's models. Whether your pages can appear in ChatGPT search is decided by a different bot, OAI-SearchBot. OpenAI says sites that block OAI-SearchBot won't be shown in ChatGPT search answers, though they can still appear as plain navigational links.",
+    a: "No. GPTBot only collects pages to train OpenAI's models. Whether your pages can appear in ChatGPT search is decided by a different bot, OAI-SearchBot. OpenAI says sites that block OAI-SearchBot won't show in ChatGPT search answers. They can still show up as plain links.",
     sources: [OPENAI_BOTS],
   },
   {
     q: "Should I block AI training bots?",
     // source: facts-2026.md 1.2 (OpenAI bots, Anthropic article, Google common crawlers)
-    a: "It's your choice. Blocking training bots like GPTBot or ClaudeBot stops those companies using your pages to train future models, and their docs say it doesn't remove you from their live answers. Google-Extended is different: it also controls whether the Gemini app can use your pages to ground its answers. If you want AI assistants to know your products, leaving them open is the simpler choice.",
+    a: "It's your choice. Blocking training bots like GPTBot or ClaudeBot stops those companies using your pages to train new AI. Their help pages say it doesn't take you out of their live answers. Google-Extended is different. It also decides if the Gemini app can use your pages for its answers. If you want AI to know your products, leaving them open is the simple choice.",
     sources: [OPENAI_BOTS, ANTHROPIC_BOTS, GOOGLE_CRAWLERS],
   },
   {
     q: "What does Shopify's robots.txt block by default?",
     // source: observed https://theme-horizon-demo.myshopify.com/robots.txt on 11 Oct 2026 (facts-2026.md 1.3);
     // the Shopify Help Center lists the same default rules.
-    a: "Shopify's standard robots.txt blocks no AI bot. It keeps all bots out of pages like the cart, checkout and customer accounts, and lets them read products, collections, pages and blogs. Blocks usually come from edits to the robots.txt.liquid file, an app, or a service in front of the store.",
+    a: "Shopify's standard robots.txt blocks no AI bot. It keeps all bots out of pages like the cart, checkout and customer accounts. It lets them read products, collections, pages and blogs. Blocks usually come from changes to the robots.txt.liquid file, an app, or a service in front of the store.",
     sources: [SHOPIFY_ROBOTS_HELP, SHOPIFY_DEMO_ROBOTS],
   },
   {
@@ -224,13 +224,13 @@ export const FAQS: ToolFaqItem[] = [
   {
     q: "My robots.txt allows every bot. Can AI still be blocked?",
     // sources: https://support.google.com/webmasters/answer/16908024 ; OpenAI help 9237897 ; Perplexity bots page
-    a: "Yes. A firewall or bot protection, such as Cloudflare's setting that blocks AI bots, can turn bots away before they read robots.txt, and that doesn't show here. Google also has a separate switch in Search Console, called Search generative AI, that can keep a site out of AI Overviews. OpenAI and Perplexity ask sites to allow their published IP addresses at the firewall.",
+    a: "Yes. A firewall or bot blocker, like Cloudflare's setting that blocks AI bots, can turn bots away before they read robots.txt. That doesn't show here. Google also has a switch in Search Console, called Search generative AI. It can keep a site out of AI Overviews. OpenAI and Perplexity ask sites to allow their published IP addresses at the firewall.",
     sources: [GOOGLE_AI_SWITCH, OPENAI_SEARCH_HELP, PERPLEXITY_BOTS],
   },
   {
     q: "Do AI bots follow robots.txt?",
     // source: facts-2026.md 1.2
-    a: "The crawlers that build search indexes say they do, including OAI-SearchBot, PerplexityBot, Claude-SearchBot, Googlebot and Applebot. Some fetchers that open a page because a person asked say robots.txt may not apply to them, such as ChatGPT-User and Perplexity-User. Anthropic says its Claude-User fetcher does follow robots.txt.",
+    a: "The crawlers that build search indexes say they do, including OAI-SearchBot, PerplexityBot, Claude-SearchBot, Googlebot and Applebot. Some bots open a page because a person asked, like ChatGPT-User and Perplexity-User. They say robots.txt may not apply to them. Anthropic says its Claude-User fetcher does follow robots.txt.",
     sources: [OPENAI_BOTS, PERPLEXITY_BOTS, ANTHROPIC_BOTS],
   },
 ];

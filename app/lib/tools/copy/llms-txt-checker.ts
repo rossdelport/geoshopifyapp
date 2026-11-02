@@ -30,7 +30,7 @@ const OPENAI_BOTS: FaqSource = { url: "https://developers.openai.com/api/docs/bo
 const PERPLEXITY_BOTS: FaqSource = { url: "https://docs.perplexity.ai/guides/bots", label: "Perplexity's crawler page" };
 
 export const INTRO =
-  "The llms.txt Checker is a free tool that fetches your site's /llms.txt, checks it line by line against the llmstxt.org format, and builds a starter file you can copy. It also tells you when a store is using Shopify's automatic file.";
+  "The llms.txt Checker is a free tool. It gets your site's /llms.txt and checks it line by line against the llmstxt.org format. Then it builds a starter file you can copy. It also tells you when a store is using Shopify's automatic file.";
 
 // ---------- the forms ----------
 
@@ -186,8 +186,8 @@ export const WHAT_IT_CHECKS = [
 ];
 
 export const HOW_IT_WORKS = [
-  "We find your home page first (yourstore.com often sends visitors to www.yourstore.com), then fetch /llms.txt, /llms-full.txt and /agents.md from that address, following up to 4 redirects, up to 512 KB each, and read the home page for the starter file.",
-  "We check /llms.txt against version 2 of the llmstxt.org proposal (August 2026): a title line first, then an optional > summary, optional notes, then ## sections that list links as - [name](url): notes. Checks marked 'our tip' are our own advice.",
+  "First we find your home page (yourstore.com often sends visitors to www.yourstore.com). Then we get /llms.txt, /llms-full.txt and /agents.md from that address. We follow up to 4 redirects and read up to 512 KB of each. We also read the home page to build the starter file.",
+  "We check /llms.txt against version 2 of the llmstxt.org idea (August 2026). That means a title line first, then an optional > summary and notes. After that come ## sections that list links as - [name](url): notes. Checks marked 'our tip' are our own advice.",
   "/llms-full.txt isn't part of the llmstxt.org format, so we only say whether it's there.",
   "We spot Shopify's automatic file by its first line (# Agent Instructions) and its links for shopping agents.",
   "The starter file uses only what's on your home page. Check it before you publish.",
@@ -199,7 +199,7 @@ export const HOW_IT_WORKS_SOURCE = LLMSTXT;
 export const FAQS: ToolFaqItem[] = [
   {
     q: "What is llms.txt?",
-    a: "llms.txt is a plain text file at yourdomain.com/llms.txt that gives AI tools a short summary of a site and a list of its most useful links, written in Markdown. It's a proposal from llmstxt.org, not an official web standard, and the proposal itself says it's used most for software documentation that coding agents read.",
+    a: "llms.txt is a plain text file at yourdomain.com/llms.txt. It gives AI tools a short summary of a site and a list of its most useful links, written in Markdown. It's an idea from llmstxt.org, not an official web rule. The idea's own page says it's used most for software guides that coding tools read.",
     // source: https://llmstxt.org/ (v2, Aug 2026)
     sources: [LLMSTXT],
   },
@@ -211,20 +211,20 @@ export const FAQS: ToolFaqItem[] = [
   },
   {
     q: "Does my Shopify store have an llms.txt?",
-    a: "Most likely. Since 28 May 2026, Shopify serves /llms.txt, /llms-full.txt and /agents.md for every store. By default all three show the same automatic file, which tells AI shopping agents how to browse and buy from the store but doesn't list your products or guides. Stores with a custom (headless) storefront may not have it.",
+    a: "Most likely. Since 28 May 2026, Shopify serves /llms.txt, /llms-full.txt and /agents.md for every store. At first all three show the same automatic file. It tells AI shopping tools how to browse and buy from the store, but it doesn't list your products or guides. Stores with a custom (headless) storefront may not have it.",
     // source: https://shopify.dev/changelog/customize-llmstxt-llms-fulltxt-and-agentsmd ; headless note is an
     // inference from one observed store (facts-2026.md 4.3)
     sources: [SHOPIFY_CHANGELOG],
   },
   {
     q: "How do I change llms.txt on Shopify?",
-    a: "In Shopify admin, go to Online Store, then Themes, then Edit code on your live theme. In the Templates folder, add a new template file named llms.txt.liquid and paste your file. It only changes /llms.txt. Shopify recommends keeping its automatic file for most stores, and only a few store values, like the store name and sitemap address, work inside this template.",
+    a: "In Shopify admin, go to Online Store, then Themes, then Edit code on your live theme. In the Templates folder, add a new template file named llms.txt.liquid and paste your file. It only changes /llms.txt. Shopify says most stores should keep its automatic file. Only a few store details, like the store name and sitemap address, work inside this template.",
     // source: https://shopify.dev/docs/storefronts/themes/architecture/templates/llms-txt-liquid
     sources: [SHOPIFY_TEMPLATE],
   },
   {
     q: "What's the difference between llms.txt and llms-full.txt?",
-    a: "llms.txt is the short file from the llmstxt.org proposal: a title, a summary and lists of links. llms-full.txt isn't part of that proposal; it's a common habit of putting a site's full text in one file. On Shopify, both show the automatic file unless you add your own template.",
+    a: "llms.txt is the short file from the llmstxt.org idea: a title, a summary and lists of links. llms-full.txt isn't part of that idea. It's a common habit of putting a site's full text in one file. On Shopify, both show the automatic file unless you add your own template.",
     // source: llmstxt.org (llms-full.txt is not in the format); Shopify changelog 28 May 2026
     sources: [LLMSTXT, SHOPIFY_CHANGELOG],
   },
