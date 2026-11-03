@@ -377,6 +377,9 @@ ul,ol{padding:0;list-style:none}
 .money{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px 56px;align-items:center}
 .money .lead{margin-top:16px}
 .money .h2 b{display:inline}
+/* "Why now": a small purple graph going up, right after "fast." (Ross, 3 Nov 2026); kept on the same line as the word */
+.up{white-space:nowrap}
+.up-graph{display:inline-block;width:.95em;height:.95em;margin-left:.22em;vertical-align:-.1em;fill:none;stroke:var(--accent);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 .ticks{display:grid;gap:10px;margin-top:24px}
 .ticks li{display:flex;gap:10px;align-items:flex-start;font-size:15.5px;color:var(--head);font-weight:500}
 .ticks svg{flex:none;width:20px;height:20px;padding:3px;margin-top:2px;border-radius:50%;color:var(--accent-ink);background:var(--accent-50)}
@@ -926,7 +929,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
 <section class="sec" id="why" aria-labelledby="why-h">
   <div class="wrap">
     <div class="sec-head">
-      <h2 class="h2" id="why-h">Shoppers already ask AI. <b>And it’s growing fast.</b></h2>
+      <h2 class="h2" id="why-h">Shoppers already ask AI. <b>And it’s growing <span class="up">fast.<svg class="up-graph" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 17.5l6.5-6.5 4.5 4.5 8-8"/><path d="M15 7.5h6.5V14"/></svg></span></b></h2>
     </div>
     <ul class="stats">
       <li class="stat">
