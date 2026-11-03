@@ -649,3 +649,12 @@ model GuideSlot {
   @@unique([shopId, day])
   @@index([shopId, status])
 }
+
+/// Ross's Google Calendar for the book-a-call page (usegeo.app/book): one row, id "booking", saved when Ross connects
+/// it in Admin > System. The refresh token lets the server read his free times and add booked calls.
+model CalendarLink {
+  id           String   @id
+  email        String
+  refreshToken String
+  updatedAt    DateTime @updatedAt
+}

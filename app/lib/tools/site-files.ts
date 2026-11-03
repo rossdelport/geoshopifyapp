@@ -74,7 +74,7 @@ export function sitemapXml(posts: { path: string; updated: string }[] = []): str
 
 /** The offer in one sentence, from OFFER in plans.ts (the price is never typed in here). */
 function plansLine(): string {
-  return `${OFFER.line} New stores join through a waitlist on the home page. The free tools below need no sign-up.`;
+  return `${OFFER.line} New stores start by booking a call with the founder at ${abs("/book")}. The free tools below need no sign-up.`;
 }
 
 /**

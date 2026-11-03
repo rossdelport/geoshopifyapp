@@ -35,9 +35,9 @@ describe("home page", () => {
     // the route filled in the font and the story cards
     expect(html).not.toContain("__FONT_URL__");
     expect(html).not.toContain("<!-- STORY_CARDS -->");
-    // the one offer, and every sign-up button joins the waitlist (no free trial, no install from the website)
+    // the one offer, and every button books a call with Ross (no free trial, no install from the website)
     expect(html).toContain('<p class="price"><b>A$1,000</b><span>a month</span></p>');
-    expect(html).toContain('href="#waitlist" data-waitlist="pricing" data-plan="pro" aria-haspopup="dialog">Join the waitlist</a>');
+    expect(html).toContain('<a class="btn btn-pri" href="/book">Get started</a>');
     expect(html).not.toMatch(/free trial/i);
     expect(html).not.toContain("/auth/login");
     // Ross's rule: no em dashes, and no spaced en dash standing in for one
@@ -60,7 +60,7 @@ describe("home page", () => {
     const start = html.indexOf('<section class="hero"');
     const hero = html.slice(start, html.indexOf("</section>", start));
     expect(hero).toContain('<div class="hero-tx">');
-    expect(hero).toContain('href="#waitlist" data-waitlist="hero"');
+    expect(hero).toContain('<a class="btn btn-pri" href="/book">Get started</a>');
     // the picture: labelled as an example for screen readers, no "Example" pill on screen (Ross), and the page's
     // one pause button for the moving pictures
     expect(hero.match(/role="img" aria-label="Example: [^"]+"/g)).toHaveLength(1);
@@ -86,7 +86,7 @@ describe("home page", () => {
     expect(html).not.toContain("See how it works");
     const start = html.indexOf('<div class="hero-cta">');
     const cta = html.slice(start, html.indexOf("</div>", start));
-    expect(cta).toContain('data-waitlist="hero"');
+    expect(cta).toContain('href="/book">Get started</a>');
     expect(cta).toMatch(/<img src="[^"]*ross[^"]*\.webp" alt="" width="46" height="46"/);
     expect(cta).toContain("Not sure if GEO suits your store?");
     expect(cta).toContain('Text Ross, the founder: <a href="sms:+61400369865">0400 369 865</a>');
@@ -137,9 +137,17 @@ describe("home page", () => {
     expect((JSON.parse(json!) as { "@graph": unknown[] })["@graph"]).toEqual([ORG_NODE, WEBSITE_NODE]);
   });
 
-  it("has Join the waitlist buttons in the nav, hero, pricing and footer, and one popup for them all", async () => {
+  it("has six Get started buttons, all to /book, and keeps the waitlist popup for #waitlist links (Ross, 3 Nov 2026)", async () => {
     const html = await home();
-    for (const source of ["nav", "hero", "pricing", "footer"]) expect(html, source).toContain(`href="#waitlist" data-waitlist="${source}"`);
+    // nav, hero, two section heads, pricing and the last section: every one says Get started and books a call
+    const buttons = [...html.matchAll(/<a class="btn btn-pri[^"]*" href="([^"]*)"[^>]*>([^<]*)/g)].map((m) => [m[1], m[2].trim()]);
+    expect(buttons).toHaveLength(6);
+    for (const b of buttons) expect(b).toEqual(["/book", "Get started"]);
+    expect(html).not.toContain("data-waitlist=");
+    expect(html).toContain("Book a free call with Ross, the founder.");
+    // an ad's utm tags go along to /book
+    expect(html).toContain("document.querySelectorAll('a[href=\"/book\"]')");
+    // the popup stays for other pages' #waitlist links (the free check, the compare pages, /waitlist)
     expect(html.match(/<dialog[\s>]/g)).toHaveLength(1);
     const start = html.indexOf('<dialog class="wl" id="waitlist-dialog"');
     expect(start).toBeGreaterThan(-1);

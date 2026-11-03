@@ -173,7 +173,7 @@ describe("llms.txt for usegeo.app", () => {
   });
 
   it("takes the price from the offer in plans.ts, never typed in, and says new stores join through the waitlist", () => {
-    expect(txt).toContain(`${OFFER.line} New stores join through a waitlist on the home page.`);
+    expect(txt).toContain(`${OFFER.line} New stores start by booking a call with the founder at https://usegeo.app/book.`);
     expect(txt).not.toMatch(/free trial/i);
   });
 
@@ -247,9 +247,13 @@ describe("/privacy after the free tools", () => {
     expect(text).toContain("Crawl4AI, or AnyAPI as a backup");
     expect(text).toContain("We hold it in memory and clear it within a day.");
     expect(text).toContain("We record what each search cost us, without your IP address or your search.");
-    expect(text).toContain("Last updated 13 October 2026");
-    // the Meta pixel on the home page (Ross's ads, 13 Oct 2026)
-    expect(text).toContain("Our home page uses Meta's pixel");
+    expect(text).toContain("Last updated 3 November 2026");
+    // the Meta pixel on the home page (Ross's ads, 13 Oct 2026) and the book-a-call page (3 Nov 2026)
+    expect(text).toContain("Our home page and our page for booking a call use Meta's pixel");
+    expect(text).toContain("If you join the waitlist or book a call, it tells Meta that someone did.");
+    // booking a call puts the person's details in Ross's Google Calendar (usegeo.app/book)
+    expect(text).toContain("we add it to Ross's Google Calendar with your name, your email address and your store's website.");
+    expect(text).toContain("Google: Google Calendar and Google Meet, for calls booked on our website.");
     expect(text).toContain("It never sends your name or email address.");
     expect(text).toContain("In Europe and the UK, the pixel only starts after you click OK on the cookie notice.");
     expect(DASHES.test(text)).toBe(false);

@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Book a call with Ross · GEO</title>
+<meta name="description" content="Pick a time for a free call with Ross, the founder of GEO. We’ll chat about your store and see if GEO is a good fit.">
+<!-- usegeo.app/book (served by app/routes/book.tsx): every "Get started" button on the home page opens it (Ross,
+     3 Nov 2026). Its one job is booking a call with Ross. The free times come from his Google Calendar
+     (app/lib/booking.server.ts) and a booked call goes straight into it. Kept out of search results. -->
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://usegeo.app/book">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GEO">
+<meta property="og:title" content="Book a call with Ross · GEO">
+<meta property="og:description" content="Pick a time for a free call. We’ll chat about your store and see if GEO is a good fit.">
+<meta property="og:url" content="https://usegeo.app/book">
+<meta property="og:image" content="https://usegeo.app/og/home.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preload" href="__FONT_URL__" as="font" type="font/woff2" crossorigin>
+<style>
+/* The same font, colours and buttons as the home page (app/home/new-home.html) */
+@font-face{font-family:Inter;src:url(__FONT_URL__) format("woff2");font-weight:400 700;font-style:normal;font-display:swap}
+@font-face{font-family:"Inter Fallback";src:local("Arial");ascent-override:93.51%;descent-override:23.28%;line-gap-override:0%;size-adjust:103.6%}
+@font-face{font-family:"Inter Display Fallback";src:local("Arial");font-weight:400 500;ascent-override:98.85%;descent-override:24.61%;line-gap-override:0%;size-adjust:98%}
+@font-face{font-family:"Inter Display Fallback";src:local("Arial Bold"),local("Arial-BoldMT");font-weight:600 700;ascent-override:104.17%;descent-override:25.94%;line-gap-override:0%;size-adjust:93%}
+
+:root{
+  --ink:#0e0e13;--ink-2:#53565f;--head:#25272e;--text:#666972;--soft:#6e717a;
+  --line:#ececf0;--bg-2:#f6f6f9;
+  --accent:#6c5cf2;--accent-hi:#8476f7;--accent-lo:#5a49e6;--accent-ink:#5442df;
+  --accent-50:#f2f0fe;--accent-100:#e4e0fd;--accent-ring:rgba(108,92,242,.35);
+  --t1:#aba3f4;--t2:#bbb4f6;--t3:#dcd9fc;
+  --font:Inter,"Inter Fallback",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --gut:16px;
+}
+@media (min-width:640px){:root{--gut:24px}}
+@media (min-width:1024px){:root{--gut:40px}}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:#fff;color:var(--text);font-family:var(--font);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:clip}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+h1,h2,p,ul{margin:0}
+ul{padding:0;list-style:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+::selection{background:var(--accent-100);color:var(--ink)}
+[hidden]{display:none!important}
+.wrap{max-width:1200px;margin:0 auto;padding:0 var(--gut)}
+
+.h1{font-family:Inter,"Inter Display Fallback",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink-2);font-weight:450;font-size:clamp(2.4rem,1.5rem + 2.6vw,3.4rem);line-height:1.06;letter-spacing:-.04em;text-wrap:balance}
+.h1 b{display:block;color:var(--ink);font-weight:600}
+.lead{font-size:clamp(1.06rem,1rem + .25vw,1.2rem);line-height:1.55;letter-spacing:-.01em;text-wrap:pretty}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 20px;border-radius:11px;font-size:15px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:transform .15s ease,box-shadow .2s ease,background .2s ease}
+.btn:active{transform:scale(.97)}
+.btn-pri{color:#fff;background:linear-gradient(180deg,#7262f4,#5f4feb);border:1px solid var(--accent-lo);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 1px 2px rgba(60,40,190,.25),0 8px 20px -8px rgba(108,92,242,.7)}
+.btn-pri:hover{background:linear-gradient(180deg,#6a5af1,#5544e3)}
+.btn-pri[aria-disabled="true"]{opacity:.7;cursor:default}
+.btn-sec{color:var(--head);background:#fff;border:1px solid #e2e2e8;box-shadow:0 1px 2px rgba(18,18,40,.06)}
+.btn-sm{height:38px;padding:0 15px;font-size:14px;border-radius:9px}
+
+.top{display:flex;align-items:center;height:64px}
+.logo{display:inline-flex;align-items:center;gap:9px;font-size:21px;font-weight:650;letter-spacing:-.03em;color:var(--ink)}
+.mark{position:relative;flex:none;width:25px;height:23px}
+.mark i{position:absolute;width:16px;height:16px;border-radius:50%}
+.mark i:first-child{left:0;top:0;background:#cdc6fc}
+.mark i:last-child{right:0;bottom:0;background:var(--accent)}
+
+/* Words on the left, the calendar on the right; stacked on phones */
+.book{display:grid;gap:32px;padding-top:clamp(12px,4vw,48px);padding-bottom:clamp(56px,8vw,96px)}
+@media (min-width:1000px){.book{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:64px;align-items:start}.book-tx{position:sticky;top:40px;padding-top:28px}}
+.who{display:flex;align-items:center;gap:12px;margin-bottom:22px;font-size:14px;line-height:1.35}
+.who img{flex:none;width:52px;height:52px;border-radius:14px;object-fit:cover;background:#eceae6;box-shadow:0 0 0 1px rgba(18,18,40,.08),0 8px 18px -8px rgba(40,25,130,.45)}
+.who b{display:block;font-size:15px;font-weight:600;color:var(--ink)}
+.book .lead{margin-top:18px;max-width:30em}
+.ticks{display:grid;gap:12px;margin-top:26px}
+.ticks li{display:flex;align-items:center;gap:10px;font-size:15.5px;font-weight:500;color:var(--head)}
+.ticks svg{flex:none;width:22px;height:22px;padding:4px;border-radius:50%;background:var(--accent-50);color:var(--accent-ink)}
+
+/* The calendar: a white card on the purple panel the home page's pictures use */
+.stage{border-radius:22px;padding:clamp(8px,3vw,32px);background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,0) 16%),radial-gradient(62% 48% at 50% 112%,rgba(255,255,255,.95),rgba(255,255,255,0) 72%),linear-gradient(180deg,var(--t1),var(--t2) 64%,var(--t3))}
+.cal{display:flex;flex-direction:column;justify-content:center;min-height:440px;padding:clamp(18px,3vw,28px);border-radius:18px;background:#fff;box-shadow:0 0 0 6px rgba(255,255,255,.3),0 30px 60px -24px rgba(45,30,140,.55)}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:var(--bg-2);font-size:13px;font-weight:500;color:var(--head)}
+.pill svg{width:15px;height:15px;color:var(--accent-ink)}
+.cal-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px;margin-bottom:12px;font-size:15px;font-weight:600;color:var(--ink)}
+.cal-h span{font-size:13px;font-weight:500;color:var(--soft)}
+.days{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:26px}
+.day{display:flex;flex-direction:column;align-items:center;padding:8px 2px;border-radius:12px;border:1px solid #e6e6ec;background:#fff;font-size:12px;line-height:1.35;color:var(--text);transition:border-color .15s,background .15s,color .15s}
+.day b{font-size:19px;font-weight:600;line-height:1.25;color:var(--ink)}
+.day:hover{border-color:var(--accent)}
+.day[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#e9e6ff}
+.day[aria-pressed="true"] b{color:#fff}
+.times{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (min-width:480px){.times{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.time{height:44px;border-radius:11px;border:1px solid #e6e6ec;background:#fff;font-size:14.5px;font-weight:600;color:var(--accent-ink);transition:border-color .15s,background .15s}
+.time:hover{border-color:var(--accent);background:var(--accent-50)}
+.none{padding:28px 4px;text-align:center}
+
+.back{display:inline-flex;align-items:center;gap:6px;margin-bottom:16px;font-size:14px;font-weight:500;color:var(--soft)}
+.back:hover{color:var(--ink)}
+.back svg{width:16px;height:16px}
+.when{padding:14px 16px;border-radius:14px;background:var(--accent-50);font-size:14px;color:var(--accent-ink)}
+.when b{display:block;font-size:17px;font-weight:600;color:var(--ink)}
+.f{display:block;margin-top:16px}
+.f-l{display:block;margin-bottom:6px;font-size:14px;font-weight:600;color:var(--head)}
+.f-i{width:100%;height:48px;padding:0 14px;border-radius:12px;border:1px solid #dedee6;background:#fff;font:inherit;font-size:16px;color:var(--ink);transition:border-color .2s,box-shadow .2s}
+.f-i::placeholder{color:#a5a7b0}
+.f-i:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-ring)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.go{width:100%;height:48px;margin-top:20px}
+.small{margin-top:12px;font-size:12.5px;text-align:center;color:var(--soft)}
+.err{margin-bottom:16px;padding:10px 14px;border-radius:12px;background:#fdecec;font-size:14px;color:#b91c1c}
+
+.done,.off{padding:36px 4px;text-align:center}
+.done h2,.off h2{font-size:26px;line-height:1.15;font-weight:600;letter-spacing:-.035em;color:var(--ink);outline:none}
+.done p,.off p{max-width:26em;margin:8px auto 0;font-size:15.5px}
+.done b{color:var(--head)}
+.badge{display:grid;place-items:center;width:56px;height:56px;margin:0 auto 16px;border-radius:50%;color:#fff;background:linear-gradient(180deg,var(--accent-hi),var(--accent));box-shadow:0 0 0 6px var(--accent-50)}
+.badge svg{width:26px;height:26px}
+.off .btn{margin-top:22px}
+.sms{margin-top:22px;text-align:center;font-size:14px}
+.sms a{color:var(--accent-ink);white-space:nowrap;text-decoration:underline;text-decoration-color:var(--accent-100);text-underline-offset:3px}
+
+.foot{border-top:1px solid var(--line);padding:22px 0;font-size:13.5px;color:var(--soft)}
+.foot .wrap{display:flex;gap:20px}
+.foot a:hover{color:var(--ink)}
+
+/* Cookie notice for the Meta pixel in the head (the same as the home page's) */
+.ck{position:fixed;z-index:60;left:16px;bottom:16px;max-width:440px;display:flex;align-items:center;gap:16px;padding:12px 12px 12px 18px;border-radius:16px;background:#fff;box-shadow:0 0 0 1px rgba(18,18,40,.08),0 18px 40px -16px rgba(18,18,40,.35)}
+.ck-tx{font-size:14px;line-height:1.45;color:var(--ink)}
+.ck-tx a{color:var(--text);text-decoration:underline;text-underline-offset:2px}
+.ck-btns{display:flex;gap:8px;flex:none}
+@media (max-width:600px){.ck{left:12px;right:12px;bottom:12px;max-width:none;flex-direction:column;align-items:stretch;gap:10px;padding:14px}.ck-btns>*{flex:1}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+</style>
+<!-- META_PIXEL -->
+</head>
+<body>
+<header class="wrap top">
+  <a class="logo" href="/" aria-label="GEO home page"><span class="mark" aria-hidden="true"><i></i><i></i></span>GEO</a>
+</header>
+
+<main class="wrap book">
+  <div class="book-tx">
+    <p class="who"><img src="__ROSS_PHOTO__" alt="" width="52" height="52" decoding="async"><span><b>Ross</b>Founder of GEO</span></p>
+    <h1 class="h1">Book a call <b>with Ross.</b></h1>
+    <p class="lead">Pick a time that suits you. We’ll chat about your store and see if GEO is a good fit.</p>
+    <ul class="ticks">
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>The call is free</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>A$1,000 a month, and we do the work</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Full refund if you’re not happy after month 1</li>
+    </ul>
+  </div>
+
+  <div class="stage">
+    <div class="cal">
+      <!-- Shown when booking online isn't open (Ross's calendar not connected yet) or without JavaScript -->
+      <div class="off" data-off>
+        <span class="badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></span>
+        <h2>Text Ross to pick a time</h2>
+        <p>Send a text and we’ll find a time that suits you.</p>
+        <a class="btn btn-pri" href="sms:+61400369865">Text Ross: 0400 369 865</a>
+      </div>
+
+      <!-- The calendar, filled in by the script below from the free times in #slots -->
+      <div data-on hidden>
+        <p class="err" role="alert" hidden></p>
+        <div class="pick">
+          <p class="pills">
+            <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>30 minutes</span>
+            <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg>Video call on Google Meet</span>
+          </p>
+          <div class="has-times">
+            <h2 class="cal-h" id="days-h">Pick a day</h2>
+            <div class="days" role="group" aria-labelledby="days-h"></div>
+            <h2 class="cal-h" id="times-h">Pick a time <span data-tz></span></h2>
+            <div class="times" role="group" aria-labelledby="times-h"></div>
+          </div>
+          <div class="none" hidden>
+            <p>Sorry, there are no free times in the next two weeks.</p>
+          </div>
+        </div>
+
+        <form class="bk-form" method="post" action="/book" hidden>
+          <button class="back" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Pick another time</button>
+          <p class="when"><b data-day></b><span data-time></span></p>
+          <label class="f"><span class="f-l">Your name</span><input class="f-i" name="name" autocomplete="name" required maxlength="80"></label>
+          <label class="f"><span class="f-l">Email</span><input class="f-i" type="email" name="email" autocomplete="email" required maxlength="254" placeholder="you@yourstore.com"></label>
+          <label class="f"><span class="f-l">Your store’s website</span><input class="f-i" name="store" autocomplete="url" inputmode="url" required maxlength="200" placeholder="yourstore.com.au"></label>
+          <label class="hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
+          <button class="btn btn-pri go" type="submit">Book my call</button>
+          <p class="small">We’ll only use this to talk with you about GEO.</p>
+        </form>
+
+        <div class="done" hidden>
+          <span class="badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <h2 tabindex="-1">You’re booked!</h2>
+          <p>Your call with Ross is on <b data-when></b>.</p>
+          <p>We sent an invite to <b data-email></b>. It has the Google Meet link.</p>
+        </div>
+      </div>
+    </div>
+    <p class="sms" hidden>Can’t find a time? Text Ross: <a href="sms:+61400369865">0400 369 865</a></p>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap"><span>© 2026 GEO</span><a href="/">Home</a><a href="/privacy">Privacy</a></div>
+</footer>
+
+<!-- Cookie notice for the Meta pixel in the head (the same as the home page's) -->
+<div class="ck" id="ck" role="region" aria-label="Cookies" hidden>
+  <p class="ck-tx"><span class="ck-q">We use cookies to see which of our ads work.</span> <a href="/privacy#cookies">Privacy</a></p>
+  <div class="ck-btns">
+    <button class="btn btn-sec btn-sm ck-no" type="button">No thanks</button>
+    <button class="btn btn-pri btn-sm ck-ok" type="button">OK</button>
+  </div>
+</div>
+
+<!-- The free times, in UTC: a list, or null when booking online isn't open -->
+<script type="application/json" id="slots">__SLOTS__</script>
+<!-- COOKIE_SCRIPT -->
+<script>
+// The calendar. Ross's free times are shown in the visitor's own time zone: pick a day, a time, then name, email
+// and store. It posts to /book, which adds the call to Ross's Google Calendar, and Google emails the invite.
+// A booked call tells Meta "Lead" (no name or email), like joining the waitlist does.
+(function () {
+  var slots = null;
+  try { slots = JSON.parse(document.getElementById('slots').textContent); } catch (e) { slots = null; }
+  var on = document.querySelector('[data-on]');
+  if (!Array.isArray(slots) || !on) return;
+  document.querySelector('[data-off]').hidden = true;
+  on.hidden = false;
+
+  var err = on.querySelector('.err'), pick = on.querySelector('.pick'), form = on.querySelector('.bk-form'), done = on.querySelector('.done');
+  var daysEl = on.querySelector('.days'), timesEl = on.querySelector('.times'), btn = form.querySelector('.go');
+  var sms = document.querySelector('.sms');
+  var tz = '';
+  try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { /* unknown: "your time" */ }
+  var place = /\//.test(tz) ? tz.split('/').pop().replace(/_/g, ' ') + ' time' : 'your time';
+  on.querySelector('[data-tz]').textContent = place;
+  function fmt(o) { return new Intl.DateTimeFormat('en-AU', o); }
+  var dayKey = fmt({ year: 'numeric', month: '2-digit', day: '2-digit' });
+  var wd = fmt({ weekday: 'short' }), dn = fmt({ day: 'numeric' }), mo = fmt({ month: 'short' });
+  var longDay = fmt({ weekday: 'long', day: 'numeric', month: 'long' }), clock = fmt({ hour: 'numeric', minute: '2-digit' });
+  var byDay = {}, order = [], current = null, chosen = null, busy = false;
+
+  function showErr(msg) {
+    err.textContent = '';
+    err.hidden = !msg;
+    if (msg) setTimeout(function () { err.textContent = msg; }, 30);
+  }
+  function button(cls, html) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = cls;
+    b.innerHTML = html;
+    return b;
+  }
+  function drawDays() {
+    byDay = {};
+    order = [];
+    slots.forEach(function (s) {
+      var k = dayKey.format(new Date(s));
+      if (!byDay[k]) { byDay[k] = []; order.push(k); }
+      byDay[k].push(s);
+    });
+    on.querySelector('.has-times').hidden = !order.length;
+    on.querySelector('.none').hidden = !!order.length;
+    sms.hidden = false;
+    if (!byDay[current]) current = order[0];
+    daysEl.innerHTML = '';
+    order.forEach(function (k) {
+      var d = new Date(byDay[k][0]);
+      var b = button('day', '<span>' + wd.format(d) + '</span><b>' + dn.format(d) + '</b><span>' + mo.format(d) + '</span>');
+      b.setAttribute('aria-label', longDay.format(d));
+      b.setAttribute('aria-pressed', String(k === current));
+      b.addEventListener('click', function () {
+        current = k;
+        Array.prototype.forEach.call(daysEl.children, function (c) { c.setAttribute('aria-pressed', String(c === b)); });
+        drawTimes();
+      });
+      daysEl.appendChild(b);
+    });
+    drawTimes();
+  }
+  function drawTimes() {
+    timesEl.innerHTML = '';
+    (byDay[current] || []).forEach(function (s) {
+      var b = button('time', clock.format(new Date(s)));
+      b.addEventListener('click', function () { choose(s); });
+      timesEl.appendChild(b);
+    });
+  }
+  function choose(s) {
+    chosen = s;
+    showErr('');
+    form.querySelector('[data-day]').textContent = longDay.format(new Date(s));
+    form.querySelector('[data-time]').textContent = clock.format(new Date(s)) + ', ' + place;
+    pick.hidden = true;
+    form.hidden = false;
+    form.elements.name.focus();
+  }
+  function back() {
+    form.hidden = true;
+    pick.hidden = false;
+    var first = timesEl.querySelector('.time') || daysEl.querySelector('.day');
+    if (first) first.focus();
+  }
+  form.querySelector('.back').addEventListener('click', function () { showErr(''); back(); });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (busy || !chosen) return;
+    busy = true;
+    btn.setAttribute('aria-disabled', 'true');
+    btn.textContent = 'Booking your call…';
+    var body = new URLSearchParams();
+    ['name', 'email', 'store', 'website'].forEach(function (k) { body.set(k, form.elements[k].value); });
+    body.set('start', chosen);
+    var q = new URLSearchParams(location.search);
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) { if (q.get(k)) body.set(k, q.get(k).slice(0, 200)); });
+    fetch('/book', { method: 'POST', body: body, headers: { Accept: 'application/json' }, credentials: 'same-origin' })
+      .then(function (r) { return r.json(); })
+      .then(function (out) {
+        if (out && out.ok) {
+          done.querySelector('[data-when]').textContent = longDay.format(new Date(chosen)) + ' at ' + clock.format(new Date(chosen)) + ' (' + place + ')';
+          done.querySelector('[data-email]').textContent = out.email;
+          form.hidden = true;
+          sms.hidden = true;
+          done.hidden = false;
+          done.querySelector('h2').focus();
+          if (typeof window.fbq === 'function') window.fbq('track', 'Lead', { content_name: 'book a call' });
+          return;
+        }
+        if (out && Array.isArray(out.slots)) { slots = out.slots; drawDays(); back(); }
+        showErr((out && out.error) || 'Something went wrong. Please try again, or text Ross on 0400 369 865.');
+      })
+      .catch(function () { showErr('Something went wrong. Please try again, or text Ross on 0400 369 865.'); })
+      .then(function () {
+        busy = false;
+        btn.removeAttribute('aria-disabled');
+        btn.textContent = 'Book my call';
+      });
+  });
+
+  drawDays();
+})();
+</script>
+</body>
+</html>
