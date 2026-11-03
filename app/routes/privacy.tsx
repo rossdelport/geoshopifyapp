@@ -39,6 +39,7 @@ const privacyData = () => ({
   reportEmailDays: RETENTION.reportEmailDays,
   unsubscribedDays: RETENTION.unsubscribedDays,
   waitlistMonths: RETENTION.waitlistMonths,
+  giveawayMonths: RETENTION.giveawayMonths,
 });
 
 const page = { maxWidth: 720, margin: "0 auto", padding: "48px 20px 80px", fontFamily: "Inter, system-ui, sans-serif", color: "#30313d", lineHeight: 1.7 };
@@ -55,7 +56,7 @@ export default function Privacy() {
 }
 
 function PrivacyText() {
-  const { contact, owner, inactiveYears, visitIdDays, uninstalledDays, publicCheckDays, checkIpHours, reportEmailDays, unsubscribedDays, waitlistMonths } =
+  const { contact, owner, inactiveYears, visitIdDays, uninstalledDays, publicCheckDays, checkIpHours, reportEmailDays, unsubscribedDays, waitlistMonths, giveawayMonths } =
     useLoaderData<typeof loader>();
   return (
     <main style={page}>
@@ -181,13 +182,26 @@ function PrivacyText() {
       </p>
       <p>We use this only to talk with you about GEO, and we delete it if you ask.</p>
 
+      <h2 style={h2}>Giveaway</h2>
+      <p>
+        If you enter our giveaway, we keep your store&apos;s website, your name, email address and phone number, the
+        words shown with the form and when you entered. If you came from an ad or another website, we keep the ad&apos;s
+        tracking tags in the page address and the name of that website. To stop abuse, we keep a scrambled (hashed) copy
+        of your IP address for a day.
+      </p>
+      <p>
+        We use this to run the draw and to contact you about GEO. We delete it {giveawayMonths} months after you
+        entered, or sooner if you ask.
+      </p>
+
       <h2 style={h2} id="cookies">
-        Ads and cookies on our home page and booking page
+        Ads and cookies on our home page, giveaway page and booking page
       </h2>
       <p>
-        Our home page and our page for booking a call use Meta&apos;s pixel (Meta runs Facebook and Instagram). It lets us
+        Our home page, giveaway page and booking page use Meta&apos;s pixel (Meta runs Facebook and Instagram). It lets us
         see which of our ads work and show our ads to people who visited. It tells Meta that a browser looked at the page.
-        If you join the waitlist or book a call, it tells Meta that someone did. It never sends your name or email address. Meta may set cookies, and it gets your
+        If you join the waitlist, enter the giveaway or book a call, it tells Meta that someone did. It never sends your
+        name, email address or phone number. Meta may set cookies, and it gets your
         browser&apos;s details and IP address, as Meta&apos;s own privacy policy says.
       </p>
       <p>
@@ -211,6 +225,9 @@ function PrivacyText() {
       </p>
       <p>
         <b>Booking a call:</b> only to talk with you about GEO.
+      </p>
+      <p>
+        <b>Giveaway:</b> to run the draw and to contact you about GEO.
       </p>
 
       <h2 style={h2}>Shoppers&apos; choices</h2>
@@ -239,7 +256,7 @@ function PrivacyText() {
       <h2 style={h2}>Services we use</h2>
       <ul>
         <li>Railway (Singapore): runs the app.</li>
-        <li>Meta (Facebook and Instagram): our own ads, and the pixel on our home page and booking page described above.</li>
+        <li>Meta (Facebook and Instagram): our own ads, and the pixel on our home page, giveaway page and booking page described above.</li>
         <li>Google: Google Calendar and Google Meet, for calls booked on our website.</li>
         <li>Supabase (Tokyo): stores the data.</li>
         <li>Treg: gets public AI answers to buying questions. It gets the questions only, never customer data.</li>
@@ -264,8 +281,8 @@ function PrivacyText() {
       </p>
       <p>
         If you asked for a free check report by email, you can ask us for the email address we hold about you, or ask us
-        to delete it. Do it the same way, or reply to any of our emails. If you joined the waitlist or booked a call, you can
-        ask us for your details or ask us to delete them the same way.
+        to delete it. Do it the same way, or reply to any of our emails. If you joined the waitlist, entered the
+        giveaway or booked a call, you can ask us for your details or ask us to delete them the same way.
       </p>
     </main>
   );
