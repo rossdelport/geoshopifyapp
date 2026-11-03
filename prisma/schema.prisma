@@ -681,3 +681,21 @@ model GiveawayEntry {
 
   @@index([ipHash, createdAt])
 }
+
+// Store reports for Ross's teardown videos (Admin > Reports, usegeo.app/report/<slug>). Only admins make them.
+// The job that fills one is lib/store-report.server.ts; `data` is StoreReportData (lib/store-report.ts).
+model StoreReport {
+  id         String    @id @default(cuid())
+  host       String // the address typed, cleaned, e.g. bondiwash.com
+  slug       String?   @unique // set once we know the store's name
+  status     String    @default("queued") // queued | reading | asking | writing | done | failed
+  total      Int       @default(0)
+  done       Int       @default(0)
+  data       Json? // StoreReportData (app/lib/store-report.ts) when done
+  error      String? // plain English, safe to show Ross
+  createdBy  String? // the admin's email
+  createdAt  DateTime  @default(now())
+  finishedAt DateTime?
+
+  @@index([createdAt])
+}

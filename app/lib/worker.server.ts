@@ -19,6 +19,7 @@ import "./billing.server";
 import "./check.server";
 import "./waitlist.server";
 import "./giveaway.server";
+import "./store-report.server";
 import "./install.server";
 import "./trusted-sites.server";
 import { redditDue } from "./reddit.server";

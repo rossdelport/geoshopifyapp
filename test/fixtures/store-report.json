@@ -1,0 +1,260 @@
+{
+  "_fixture": "A made-up store for tests and the phone screenshot. Sample Dish Co, its rivals and the .example sites are not real.",
+  "store": {
+    "host": "sampledishco.example",
+    "name": "Sample Dish Co",
+    "brand": "Sample Dish Co",
+    "sells": "Plant based dish soap and refills for home kitchens.",
+    "category": "natural dish soap",
+    "country": "AU",
+    "countryName": "Australia",
+    "products": 34,
+    "productsCapped": false,
+    "names": [
+      "Sample Dish Co",
+      "Sample Dish"
+    ]
+  },
+  "checkedAt": "2026-11-03T02:30:00.000Z",
+  "questions": [
+    "What's the best natural dish soap in Australia?",
+    "Which eco friendly dish soap is gentle on hands?",
+    "What dish soap refill brands do people recommend in Australia?",
+    "Is plant based dish soap as good as normal dish soap?"
+  ],
+  "answers": 24,
+  "named": 2,
+  "rivals": [
+    {
+      "name": "Fern & Suds",
+      "count": 11
+    },
+    {
+      "name": "Little Kettle",
+      "count": 9
+    },
+    {
+      "name": "Clearwater Home",
+      "count": 8
+    },
+    {
+      "name": "Bright Basin",
+      "count": 6
+    },
+    {
+      "name": "Pebble Lane",
+      "count": 5
+    },
+    {
+      "name": "Greenleaf Kitchen",
+      "count": 4
+    },
+    {
+      "name": "Tidy Gum Co",
+      "count": 3
+    },
+    {
+      "name": "Saltbush Clean",
+      "count": 3
+    }
+  ],
+  "rivalCount": 17,
+  "sites": [
+    {
+      "domain": "greenhomereview.example",
+      "count": 9,
+      "url": "https://greenhomereview.example/best-natural-dish-soap",
+      "title": "The best natural dish soaps we tested this year",
+      "type": "editorial"
+    },
+    {
+      "domain": "reddit.com",
+      "count": 7,
+      "url": "https://www.reddit.com/r/example/comments/abc123/which_dish_soap/",
+      "title": "Which dish soap do you actually like?",
+      "type": "ugc"
+    },
+    {
+      "domain": "kitchenpicks.example",
+      "count": 6,
+      "url": "https://kitchenpicks.example/eco-dish-soap",
+      "title": "Eco dish soap brands we tried at home",
+      "type": "editorial"
+    },
+    {
+      "domain": "cleanertest.example",
+      "count": 4,
+      "url": "https://cleanertest.example/dish-soap",
+      "title": "Dish soap test: what cleans best",
+      "type": "editorial"
+    },
+    {
+      "domain": "shopsmall.example",
+      "count": 1,
+      "url": "https://shopsmall.example/cleaning",
+      "title": null,
+      "type": "retailer"
+    }
+  ],
+  "siteCount": 23,
+  "searchWords": [
+    {
+      "keyword": "dish soap",
+      "volume": 6600,
+      "difficulty": 52,
+      "place": "Collection page"
+    },
+    {
+      "keyword": "natural dish soap",
+      "volume": 1900,
+      "difficulty": 24,
+      "place": "Product page"
+    },
+    {
+      "keyword": "best dish soap",
+      "volume": 1300,
+      "difficulty": 38,
+      "place": "New guide"
+    },
+    {
+      "keyword": "eco dish soap",
+      "volume": 880,
+      "difficulty": 18,
+      "place": "Product page"
+    },
+    {
+      "keyword": "dish soap refill",
+      "volume": 590,
+      "difficulty": 12,
+      "place": "Product page"
+    },
+    {
+      "keyword": "plant based dish soap",
+      "volume": 390,
+      "difficulty": 9,
+      "place": "Product page"
+    },
+    {
+      "keyword": "dish soap vs dishwashing liquid",
+      "volume": 170,
+      "difficulty": 15,
+      "place": "Comparison guide"
+    },
+    {
+      "keyword": "dish soap for sensitive skin",
+      "volume": 140,
+      "difficulty": 21,
+      "place": "New guide"
+    }
+  ],
+  "searches": 11970,
+  "picks": {
+    "question": "What's the best natural dish soap in Australia?",
+    "engine": "chatgpt",
+    "brands": [
+      "Fern & Suds",
+      "Little Kettle",
+      "Clearwater Home",
+      "Sample Dish Co",
+      "Bright Basin"
+    ],
+    "named": true,
+    "position": 4
+  },
+  "moves": [
+    {
+      "place": "Product page",
+      "text": "Put \"natural dish soap\" in your main product's title and first line. About 1,900 Google searches a month, and it's easy to rank for."
+    },
+    {
+      "place": "New guide",
+      "text": "Write a guide on the best dish soap in Australia. About 1,300 people search \"best dish soap\" each month."
+    },
+    {
+      "place": "Sites AI trusts",
+      "text": "Ask greenhomereview.example to test your soap for their list. AI used that site in 9 of 24 answers."
+    },
+    {
+      "place": "Product page",
+      "text": "Aim your refill page at \"dish soap refill\". About 590 searches a month, difficulty 12 of 100."
+    },
+    {
+      "place": "Comparison guide",
+      "text": "Write an honest guide on how your natural dish soap compares with Fern & Suds. AI named Fern & Suds in 11 answers."
+    },
+    {
+      "place": "FAQ",
+      "text": "Answer \"Which eco friendly dish soap is gentle on hands?\" in plain words on your product page."
+    },
+    {
+      "place": "Reddit",
+      "text": "Reply honestly where shoppers ask about natural dish soap, and always say you're from Sample Dish Co."
+    },
+    {
+      "place": "Sites AI trusts",
+      "text": "Get your natural dish soap onto kitchenpicks.example. AI used it in 6 of 24 answers."
+    },
+    {
+      "place": "Collection page",
+      "text": "Aim your shop page at \"dish soap\". About 6,600 Google searches a month."
+    },
+    {
+      "place": "New guide",
+      "text": "Write a guide for \"dish soap for sensitive skin\". About 140 searches a month, difficulty 21 of 100."
+    },
+    {
+      "place": "Comparison guide",
+      "text": "Write an honest guide on how your natural dish soap compares with Little Kettle. AI named Little Kettle in 9 answers."
+    },
+    {
+      "place": "Product page",
+      "text": "Aim your plant based page at \"plant based dish soap\". About 390 Google searches a month, difficulty 9 of 100."
+    }
+  ],
+  "months": [
+    {
+      "month": 1,
+      "title": "We start the work",
+      "items": [
+        "Make your product pages clearer for AI: 34 products.",
+        "Write your first buying guides, starting with \"best dish soap\".",
+        "Email the sites AI trusts, starting with greenhomereview.example and kitchenpicks.example."
+      ]
+    },
+    {
+      "month": 2,
+      "title": "Google and AI find you",
+      "items": [
+        "Up to 12 new buying guides a month, each aimed at a real search word.",
+        "Honest Reddit replies where shoppers ask about natural dish soap, always saying who's writing.",
+        "Up to 40 emails a month to sites AI uses. AI used 23 different sites for these questions."
+      ]
+    },
+    {
+      "month": 3,
+      "title": "Clicks and sales grow",
+      "items": [
+        "We ask ChatGPT, Gemini and Perplexity your buying questions every day, and do more of what works.",
+        "You see every visit, order and sale that came from AI."
+      ]
+    }
+  ],
+  "script": [
+    "Episode ___ of helping Aussie brands get picked by AI. Today it's Sample Dish Co.",
+    "They sell plant based dish soap and refills for home kitchens. I asked ChatGPT, Gemini and Perplexity 4 questions their buyers ask, twice each.",
+    "Sample Dish Co came up 2 times out of 24. AI picked Fern & Suds and Little Kettle the most.",
+    "\"natural dish soap\" gets 1,900 Google searches a month, and it's easy to rank for.",
+    "Here's what I'd do. First, put \"natural dish soap\" in your main product's title and first line. Then, write a guide on the best dish soap in Australia. Then, ask greenhomereview.example to test your soap for their list.",
+    "And there are 9 more moves on the list.",
+    "Month 2 and 3 keep it going: more guides, emails to the sites AI trusts, and checking AI every day.",
+    "If you're a Shopify brand and want this done for your store, comment your store and I'll send you your report."
+  ],
+  "tags": [
+    "Rarely picked",
+    "Easy search word",
+    "Big search demand"
+  ],
+  "notes": [
+    "FIXTURE NOTE: only Ross sees this, never the page."
+  ]
+}

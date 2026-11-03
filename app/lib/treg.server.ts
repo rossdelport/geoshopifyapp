@@ -8,6 +8,7 @@ import { recordCost } from "./cost.server";
 import type { Engine } from "./plans";
 import { normalizeAnswer, type EngineAnswer } from "./answers";
 import { envLimit, gate } from "./gate";
+import { serpstatSe, type KeywordStat } from "./store-report";
 
 // At most this many Treg calls open at once in this process (free checks and stores' scans together).
 // The rest wait their turn; their timeout only starts once they're sent.
@@ -26,6 +27,9 @@ const PRICES: Record<string, number> = {
   "anyapi.google.serp.ai_overview": 0.0018,
   "dataforseo.x.ai-optimization-claude-llm-responses-live": 0.0245,
   "dataforseo.google.keywords.volume": 0.09,
+  // Serpstat bills about US$0.0005 per keyword it returns: these are rough per-call figures for store reports.
+  "serpstat.google.keywords.volume": 0.005,
+  "serpstat.google.keywords.ideas": 0.015,
   "tomba.people.email.find.author": 0.0089,
   "scrapecreators.reddit.search.posts": 0.00188,
   "anyapi.reddit.search": 0.0012,
@@ -231,6 +235,66 @@ export async function keywordVolumes(
     if (row?.keyword) out[String(row.keyword).toLowerCase()] = Number(row.search_volume) || 0;
   }
   return out;
+}
+
+// ---------- Search numbers with difficulty (Serpstat, for store reports) ----------
+
+/**
+ * Serpstat's answer as search words. "Data not found" (code 32017) means no numbers, so an empty list; any other
+ * error throws, so the caller can try its backup. Words Serpstat has no data for are simply missing.
+ */
+export function parseSerpstat(raw: any): KeywordStat[] {
+  if (raw?.error) {
+    if (Number(raw.error.code) === 32017) return [];
+    throw new Error(`Serpstat: ${String(raw.error.message ?? raw.error.code ?? "error").slice(0, 200)}`);
+  }
+  const rows: any[] = Array.isArray(raw?.result?.data) ? raw.result.data : [];
+  const out: KeywordStat[] = [];
+  for (const row of rows) {
+    const keyword = typeof row?.keyword === "string" ? row.keyword.replace(/\s+/g, " ").trim().toLowerCase() : "";
+    if (!keyword) continue;
+    // Number(null) is 0, so a missing difficulty must stay missing, never "0, easy".
+    const d = row.difficulty === null || row.difficulty === undefined || row.difficulty === "" ? NaN : Number(row.difficulty);
+    out.push({
+      keyword,
+      volume: Math.max(0, Math.round(Number(row.region_queries_count) || 0)),
+      difficulty: Number.isFinite(d) ? Math.min(100, Math.max(0, Math.round(d))) : null,
+      geo: Array.isArray(row.geo_names)
+        ? row.geo_names.filter((g: unknown): g is string => typeof g === "string" && Boolean(g.trim())).map((g: string) => g.trim().toLowerCase())
+        : [],
+    });
+  }
+  return out;
+}
+
+const SERPSTAT_WAIT_MS = 30_000;
+
+/** Google searches a month and how hard each word is to rank for (0 to 100), up to 100 words in one call. */
+export async function keywordStats(keywords: string[], country: string): Promise<KeywordStat[]> {
+  const clean = [...new Set(keywords.map((k) => k.replace(/\s+/g, " ").trim().toLowerCase()).filter(Boolean))]
+    .filter((k) => k.length <= 80 && k.split(" ").length <= 10)
+    .slice(0, 100);
+  if (!clean.length) return [];
+  const raw = await tregCall("serpstat.google.keywords.volume", {
+    body: { method: "SerpstatKeywordProcedure.getKeywordsInfo", id: "1", params: { keywords: clean, se: serpstatSe(country) } },
+    timeoutMs: SERPSTAT_WAIT_MS,
+  });
+  return parseSerpstat(raw);
+}
+
+/** Search words that contain the seed, most searched first, with the same numbers. `size` sets the price. */
+export async function keywordIdeas(seed: string, country: string, size = 30): Promise<KeywordStat[]> {
+  const keyword = seed.replace(/\s+/g, " ").trim().toLowerCase();
+  if (!keyword || keyword.length > 80) return [];
+  const raw = await tregCall("serpstat.google.keywords.ideas", {
+    body: {
+      method: "SerpstatKeywordProcedure.getKeywords",
+      id: "1",
+      params: { keyword, se: serpstatSe(country), size: Math.max(1, Math.min(100, Math.round(size))), sort: { region_queries_count: "desc" } },
+    },
+    timeoutMs: SERPSTAT_WAIT_MS,
+  });
+  return parseSerpstat(raw);
 }
 
 // ---------- Author email ----------
