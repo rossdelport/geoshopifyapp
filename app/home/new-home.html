@@ -109,7 +109,8 @@ ul,ol{padding:0;list-style:none}
 @media (max-width:820px){.nav-links{display:none}.nav .btn{margin-left:auto}}
 
 /* Sections */
-.sec{padding:clamp(56px,6.5vw,88px) 0}
+/* 25% more space above and below every section than before (Ross, 3 Nov 2026) */
+.sec{padding:clamp(70px,8.125vw,110px) 0}
 .sec-soft{background:linear-gradient(180deg,#fff 0,var(--bg-2) 20%,var(--bg-2) 80%,#fff 100%)}
 .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px 40px;margin-bottom:clamp(28px,4vw,48px)}
 .sec-head .h2{max-width:none}
@@ -138,7 +139,7 @@ ul,ol{padding:0;list-style:none}
 .tile{display:grid;place-items:center;border-radius:26%;background:linear-gradient(180deg,#fff,#f3f1fd);box-shadow:0 0 0 6px rgba(255,255,255,.3),0 14px 28px -10px rgba(50,30,150,.45),inset 0 -4px 8px rgba(120,100,230,.13),inset 0 2px 2px #fff}
 
 /* ---------- Hero ---------- */
-.hero{padding:clamp(36px,6vw,80px) 0 clamp(56px,7vw,96px)}
+.hero{padding:clamp(45px,7.5vw,100px) 0 clamp(70px,8.75vw,120px)}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:22px;padding:4px 12px 4px 4px;border-radius:999px;background:#fff;border:1px solid var(--line);box-shadow:0 1px 2px rgba(18,18,40,.05);font-size:13px;font-weight:500;color:#4c4f58}
 .eyebrow b{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:var(--accent-50);color:var(--accent-ink);font-weight:600}
 .eyebrow b::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(108,92,242,.2)}
@@ -587,7 +588,7 @@ ul,ol{padding:0;list-style:none}
 .cta-chip{right:18px;bottom:18px}
 @media (max-width:860px){.cta{grid-template-columns:1fr}.cta .art{min-height:300px}}
 @media (max-width:420px){.cta .art{min-height:340px}.cta-orb,.cta-core{top:45%}.cta-orb{width:210px;height:210px;margin:-105px 0 0 -105px}.cta-core{width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:27px}}
-.foot{padding:56px 0 40px;border-top:1px solid var(--line);background:var(--bg-2)}
+.foot{padding:70px 0 50px;border-top:1px solid var(--line);background:var(--bg-2)}
 .foot-top{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:24px}
 .foot-tag{margin-top:10px;font-size:14px;color:var(--soft)}
 .foot-links{display:flex;flex-wrap:wrap;gap:0 22px;font-size:14.5px;font-weight:500;color:#4c4f58}
@@ -812,13 +813,13 @@ html.still .g-geo{display:none}
                 <linearGradient id="e-g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbfaff"/><stop offset="1" stop-color="#e4e1f9"/></linearGradient>
               </defs>
               <path class="e-fu" d="M10 92 150 6l140 86z" fill="#e4e1fa" stroke="#fff" stroke-opacity=".8" stroke-width="1.5" stroke-linejoin="round"/>
-              <rect x="10" y="84" width="280" height="190" rx="24" fill="url(#e-g1)"/>
+              <path d="M10 92H290V250a24 24 0 01-24 24H34a24 24 0 01-24-24z" fill="url(#e-g1)"/>
             </svg>
             <span class="e-tile"><svg viewBox="0 0 48 48"><path d="M14 25l7 7 14-15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             <svg class="e-front" viewBox="0 0 300 230">
-              <path d="M10 104 150 184 290 104v146a24 24 0 01-24 24H34a24 24 0 01-24-24z" fill="url(#e-g2)" stroke="#fff" stroke-opacity=".9" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M10 92 150 180 290 92V250a24 24 0 01-24 24H34a24 24 0 01-24-24z" fill="url(#e-g2)" stroke="#fff" stroke-opacity=".9" stroke-width="1.5" stroke-linejoin="round"/>
               <path d="M18 266 150 196l132 70" fill="none" stroke="#8f84e6" stroke-opacity=".18" stroke-width="1.5"/>
-              <path class="e-fd" d="M14 92h272L150 176z" fill="#f4f2fe" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
+              <path class="e-fd" d="M10 92h280L150 184z" fill="#f4f2fe" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
             </svg>
           </div>
           <p class="chip e-c1" aria-hidden="true"><b>14×</b>cited by AI</p>
@@ -826,7 +827,7 @@ html.still .g-geo{display:none}
           <p class="chip e-c3" aria-hidden="true"><b><svg><use href="#i-check"/></svg></b>Pitch ready</p>
         </div>
         <div class="card-tx">
-          <h3>Get on the sites AI trusts</h3>
+          <h3>Be the site AI trusts</h3>
         </div>
       </article>
 
