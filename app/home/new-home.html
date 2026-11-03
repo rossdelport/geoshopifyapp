@@ -109,7 +109,8 @@ ul,ol{padding:0;list-style:none}
 @media (max-width:820px){.nav-links{display:none}.nav .btn{margin-left:auto}}
 
 /* Sections */
-.sec{padding:clamp(56px,6.5vw,88px) 0}
+/* 25% more space above and below every section than before (Ross, 3 Nov 2026) */
+.sec{padding:clamp(70px,8.125vw,110px) 0}
 .sec-soft{background:linear-gradient(180deg,#fff 0,var(--bg-2) 20%,var(--bg-2) 80%,#fff 100%)}
 .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px 40px;margin-bottom:clamp(28px,4vw,48px)}
 .sec-head .h2{max-width:none}
@@ -138,7 +139,7 @@ ul,ol{padding:0;list-style:none}
 .tile{display:grid;place-items:center;border-radius:26%;background:linear-gradient(180deg,#fff,#f3f1fd);box-shadow:0 0 0 6px rgba(255,255,255,.3),0 14px 28px -10px rgba(50,30,150,.45),inset 0 -4px 8px rgba(120,100,230,.13),inset 0 2px 2px #fff}
 
 /* ---------- Hero ---------- */
-.hero{padding:clamp(36px,6vw,80px) 0 clamp(56px,7vw,96px)}
+.hero{padding:clamp(45px,7.5vw,100px) 0 clamp(70px,8.75vw,120px)}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:22px;padding:4px 12px 4px 4px;border-radius:999px;background:#fff;border:1px solid var(--line);box-shadow:0 1px 2px rgba(18,18,40,.05);font-size:13px;font-weight:500;color:#4c4f58}
 .eyebrow b{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:var(--accent-50);color:var(--accent-ink);font-weight:600}
 .eyebrow b::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(108,92,242,.2)}
@@ -147,7 +148,13 @@ ul,ol{padding:0;list-style:none}
 @media (min-width:1080px){.hero-in{grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:56px}}
 @media (min-width:1080px){.hero .h1{font-size:clamp(3.1rem,1.2rem + 2.9vw,3.9rem)}}
 .hero .lead{margin-top:22px;max-width:34em}
-.hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.hero-cta{display:flex;flex-wrap:wrap;align-items:center;gap:16px 22px;margin-top:28px}
+/* Ross's photo and number beside the main button (Ross, 3 Nov 2026); under it on phones */
+.founder{display:flex;align-items:center;gap:12px;font-size:14px;line-height:1.45;color:var(--text)}
+.founder img{flex:none;width:56px;height:56px;border-radius:16px;object-fit:cover;background:#eceae6;box-shadow:0 0 0 3px #fff,0 8px 18px -8px rgba(40,25,130,.45)}
+.founder b{font-weight:600;color:var(--head)}
+.founder a{color:var(--accent-ink);white-space:nowrap;text-decoration:underline;text-decoration-color:var(--accent-100);text-underline-offset:3px}
+.founder a:hover{text-decoration-color:currentColor}
 /* the chat sits in the page flow here (not pinned in the middle), so the panel grows with it on small screens */
 .art-hero{height:auto;min-height:clamp(400px,36vw,460px);display:grid;place-items:center;padding:52px 20px 62px}
 .art-hero .chat{position:relative;left:auto;top:auto;transform:none}
@@ -278,18 +285,14 @@ ul,ol{padding:0;list-style:none}
 @keyframes belt{to{transform:translateX(-50%)}}
 @media (max-width:639px){.g-doc{top:14px}.g-belt{top:116px}.g-track{padding:6px 12px 6px 0}.g-day{height:52px;width:52px}.g-bar{bottom:14px}}
 .g-bar{position:absolute;left:50%;bottom:20px;z-index:3;display:flex;gap:6px;transform:translateX(-50%);padding:5px;border-radius:13px;background:rgba(255,255,255,.95);box-shadow:0 0 0 4px rgba(255,255,255,.3),0 10px 22px -10px rgba(40,25,130,.5)}
-.g-btn{position:relative;display:grid;place-items:center;height:30px;padding:0 13px;border-radius:9px;font-size:12px;font-weight:600;color:#4c4f58;background:#f2f2f6}
-.g-ok{color:#fff;background:linear-gradient(180deg,var(--accent-hi),var(--accent));animation:g-press 8s infinite}
-.g-ok span{grid-area:1/1;transition:none}
-.g-ok .g-ok2{opacity:1;animation:g-ok2 8s infinite}
-.g-ok .g-ok1{opacity:0;animation:g-ok1 8s infinite}
+.g-btn{position:relative;display:flex;align-items:center;gap:6px;height:30px;padding:0 13px;border-radius:9px;font-size:12px;font-weight:600;color:#4c4f58;background:#f2f2f6}
+.g-ok{color:#fff;background:linear-gradient(180deg,var(--accent-hi),var(--accent))}
+.g-ok svg{width:14px;height:14px}
 .g-cur{position:absolute;z-index:6;display:flex;align-items:flex-start;pointer-events:none}
 .g-cur svg{width:16px;height:16px;flex:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))}
 .g-cur span{margin:12px 0 0 -3px;padding:2px 8px;border-radius:7px;font-size:11px;font-weight:600;color:#fff;box-shadow:0 4px 10px -3px rgba(0,0,0,.25)}
 .g-geo{left:50%;top:40px;color:var(--accent);animation:g-geo 8s cubic-bezier(.5,0,.3,1) infinite}
 .g-geo span{background:var(--accent)}
-.g-you{left:50%;bottom:20px;color:#d63c8c;animation:g-you 8s cubic-bezier(.5,0,.3,1) infinite}
-.g-you span{background:#d63c8c}
 @keyframes g-type{0%,10%{transform:none}30%,100%{transform:scaleX(0)}}
 @keyframes g-line{0%,30%{transform:scaleX(0)}40%,100%{transform:none}}
 @keyframes g-line2{0%,36%{transform:scaleX(0)}46%,100%{transform:none}}
@@ -297,10 +300,6 @@ ul,ol{padding:0;list-style:none}
 @keyframes g-w{0%,6%{opacity:0}8%,70%{opacity:1}72%,100%{opacity:0}}
 @keyframes g-r{0%,70%{opacity:0}72%,100%{opacity:1}}
 @keyframes g-geo{0%{transform:translate(70px,150px);opacity:0}6%{opacity:1}12%{transform:translate(-86px,10px)}30%{transform:translate(64px,10px)}40%,52%{transform:translate(40px,44px);opacity:1}60%,100%{transform:translate(80px,70px);opacity:0}}
-@keyframes g-you{0%,50%{transform:translate(150px,30px);opacity:0}54%{opacity:1}66%,74%{transform:translate(48px,-2px)}69%{transform:translate(48px,-2px) scale(.86)}92%{transform:translate(48px,-2px);opacity:1}100%{transform:translate(80px,20px);opacity:0}}
-@keyframes g-press{0%,67%{transform:none}69%{transform:scale(.92)}71%,100%{transform:none}}
-@keyframes g-ok1{0%,69%{opacity:1}70%,100%{opacity:0}}
-@keyframes g-ok2{0%,69%{opacity:0}70%,100%{opacity:1}}
 
 /* E. A glossy lightning tile */
 .b-lines{position:absolute;inset:0}
@@ -371,8 +370,8 @@ ul,ol{padding:0;list-style:none}
 .s3-row{display:flex;align-items:center;gap:9px;padding:7px 0;font-size:12.5px;font-weight:500;color:var(--head)}
 .s3-row+.s3-row{border-top:1px solid #f1f1f5}
 .s3-row span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.s3-ck{position:relative;flex:none;display:grid;place-items:center;width:18px;height:18px;border-radius:6px;border:1.5px solid #d6d6de}
-.s3-ck::after{content:"";position:absolute;inset:-1.5px;border-radius:6px;background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat;animation:s3-ck 7s infinite}
+.s3-ck{position:relative;flex:none;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;border:1.5px solid #d6d6de}
+.s3-ck::after{content:"";position:absolute;inset:-1.5px;border-radius:50%;background:var(--good) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat;animation:s3-ck 7s infinite}
 .s3-row:nth-child(3) .s3-ck::after{animation-name:s3-ck2}
 .s3-row:nth-child(4) .s3-ck::after{animation-name:s3-ck3}
 @keyframes s3-ck{0%,14%{transform:scale(0)}20%,94%{transform:none}100%{transform:scale(0)}}
@@ -454,14 +453,16 @@ ul,ol{padding:0;list-style:none}
 .st-tg{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 12px;border-radius:8px;border:1px solid var(--line);font-size:13px;font-weight:500;color:var(--head);background:#fff}
 
 /* ---------- Promise ---------- */
-.promise{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.pr{padding:24px 22px;border-radius:20px;background:#fff;border:1px solid rgba(18,18,40,.06);box-shadow:var(--shadow)}
-.pr .tile{width:46px;height:46px;border-radius:14px;margin-bottom:18px;box-shadow:0 0 0 4px var(--accent-50),0 8px 18px -8px rgba(50,30,150,.4),inset 0 -3px 6px rgba(120,100,230,.13),inset 0 2px 2px #fff;color:var(--accent-ink)}
-.pr .tile svg{width:22px;height:22px}
-.pr h3{font-size:17px;font-weight:600;letter-spacing:-.02em;color:var(--head)}
-.pr p{margin-top:6px;font-size:14.5px;line-height:1.55}
-@media (max-width:1023px){.promise{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:520px){.promise{grid-template-columns:1fr;gap:12px}.pr{display:grid;grid-template-columns:46px 1fr;gap:4px 16px;padding:20px 18px}.pr .tile{grid-row:span 2;margin:0}.pr p{margin:0}}
+/* Everything the plan includes: a list on a dotted background, each item marked with a small purple square */
+.all-sec{background:radial-gradient(rgba(18,18,40,.11) 1px,transparent 1.4px) 0 0/18px 18px,linear-gradient(180deg,#fff 0,var(--bg-2) 20%,var(--bg-2) 80%,#fff 100%)}
+.all-lead{max-width:440px;font-size:16px;line-height:1.6;color:var(--text)}
+.all{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(32px,4vw,44px) clamp(24px,4vw,48px)}
+.all li::before{content:"";display:block;width:12px;height:12px;margin-bottom:14px;border-radius:2px;background:var(--accent)}
+.all h3{font-size:clamp(1.15rem,1.05rem + .4vw,1.4rem);line-height:1.25;font-weight:600;letter-spacing:-.025em;color:var(--ink)}
+.all p{margin-top:8px;max-width:340px;font-size:15px;line-height:1.55;color:var(--text)}
+.all-more{margin-top:clamp(36px,5vw,52px);font-size:15px;line-height:1.55;color:var(--head)}
+@media (max-width:900px){.all{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.all{grid-template-columns:1fr;gap:28px}}
 
 /* ---------- Pricing ---------- */
 .price-head{text-align:center}
@@ -587,7 +588,7 @@ ul,ol{padding:0;list-style:none}
 .cta-chip{right:18px;bottom:18px}
 @media (max-width:860px){.cta{grid-template-columns:1fr}.cta .art{min-height:300px}}
 @media (max-width:420px){.cta .art{min-height:340px}.cta-orb,.cta-core{top:45%}.cta-orb{width:210px;height:210px;margin:-105px 0 0 -105px}.cta-core{width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:27px}}
-.foot{padding:56px 0 40px;border-top:1px solid var(--line);background:var(--bg-2)}
+.foot{padding:70px 0 50px;border-top:1px solid var(--line);background:var(--bg-2)}
 .foot-top{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:24px}
 .foot-tag{margin-top:10px;font-size:14px;color:var(--soft)}
 .foot-links{display:flex;flex-wrap:wrap;gap:0 22px;font-size:14.5px;font-weight:500;color:#4c4f58}
@@ -640,12 +641,10 @@ html.wl-lock{overflow:hidden}
 html.still .still-btn .i-play{display:block}
 html.still *,html.still *::before,html.still *::after{animation:none!important;transition:none!important}
 html.still .g-geo{display:none}
-html.still .g-you{transform:translate(56px,8px)}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
   .g-geo{display:none}
-  .g-you{transform:translate(56px,8px)}
   .still-btn{display:none}
 }
 /* ---------- Cookie notice for the Meta pixel in the head: a small card in the bottom left corner; full width on phones ---------- */
@@ -736,7 +735,7 @@ html.still .g-you{transform:translate(56px,8px)}
         <p class="lead">GEO helps ChatGPT, Gemini and Perplexity pick your products. Then it shows you the sales that came from AI. No ads. No paying per click.</p>
         <div class="hero-cta">
           <a class="btn btn-pri" href="#waitlist" data-waitlist="hero" aria-haspopup="dialog">Join the waitlist</a>
-          <a class="btn btn-sec" href="#how">See how it works</a>
+          <p class="founder"><img src="__ROSS_PHOTO__" alt="" width="56" height="56" decoding="async"><span>Not sure if GEO suits your store?<br><b>Text Ross, the founder: <a href="sms:+61400369865">0400 369 865</a></b></span></p>
         </div>
       </div>
 
@@ -814,13 +813,13 @@ html.still .g-you{transform:translate(56px,8px)}
                 <linearGradient id="e-g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbfaff"/><stop offset="1" stop-color="#e4e1f9"/></linearGradient>
               </defs>
               <path class="e-fu" d="M10 92 150 6l140 86z" fill="#e4e1fa" stroke="#fff" stroke-opacity=".8" stroke-width="1.5" stroke-linejoin="round"/>
-              <rect x="10" y="84" width="280" height="190" rx="24" fill="url(#e-g1)"/>
+              <path d="M10 92H290V250a24 24 0 01-24 24H34a24 24 0 01-24-24z" fill="url(#e-g1)"/>
             </svg>
             <span class="e-tile"><svg viewBox="0 0 48 48"><path d="M14 25l7 7 14-15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             <svg class="e-front" viewBox="0 0 300 230">
-              <path d="M10 104 150 184 290 104v146a24 24 0 01-24 24H34a24 24 0 01-24-24z" fill="url(#e-g2)" stroke="#fff" stroke-opacity=".9" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M10 92 150 180 290 92V250a24 24 0 01-24 24H34a24 24 0 01-24-24z" fill="url(#e-g2)" stroke="#fff" stroke-opacity=".9" stroke-width="1.5" stroke-linejoin="round"/>
               <path d="M18 266 150 196l132 70" fill="none" stroke="#8f84e6" stroke-opacity=".18" stroke-width="1.5"/>
-              <path class="e-fd" d="M14 92h272L150 176z" fill="#f4f2fe" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
+              <path class="e-fd" d="M10 92h280L150 184z" fill="#f4f2fe" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
             </svg>
           </div>
           <p class="chip e-c1" aria-hidden="true"><b>14×</b>cited by AI</p>
@@ -828,7 +827,7 @@ html.still .g-you{transform:translate(56px,8px)}
           <p class="chip e-c3" aria-hidden="true"><b><svg><use href="#i-check"/></svg></b>Pitch ready</p>
         </div>
         <div class="card-tx">
-          <h3>Get on the sites AI trusts</h3>
+          <h3>Be the site AI trusts</h3>
         </div>
       </article>
 
@@ -871,9 +870,8 @@ html.still .g-you{transform:translate(56px,8px)}
               <span class="tile g-day">Sat<b>21</b><i class="is-wait"></i></span>
             </div>
           </div>
-          <div class="g-bar" aria-hidden="true"><span class="g-btn">Skip</span><span class="g-btn g-ok"><span class="g-ok1">Approve</span><span class="g-ok2">Approved</span></span></div>
+          <div class="g-bar" aria-hidden="true"><span class="g-btn g-ok"><svg><use href="#i-check"/></svg>Done for you</span></div>
           <span class="g-cur g-geo" aria-hidden="true"><svg><use href="#i-cursor"/></svg><span>GEO</span></span>
-          <span class="g-cur g-you" aria-hidden="true"><svg><use href="#i-cursor"/></svg><span>You</span></span>
         </div>
         <div class="card-tx">
           <h3>Buying guides, three a week</h3>
@@ -888,7 +886,7 @@ html.still .g-you{transform:translate(56px,8px)}
           <span class="tile b-tile" aria-hidden="true"><svg viewBox="0 0 64 64"><use href="#i-bolt"/></svg><i class="b-shine"></i></span>
         </div>
         <div class="card-tx">
-          <h3>Ready in minutes</h3>
+          <h3>Fast onboarding</h3>
         </div>
       </article>
     </div>
@@ -923,50 +921,50 @@ html.still .g-you{transform:translate(56px,8px)}
 <section class="sec sec-soft" id="how" aria-labelledby="how-h">
   <div class="wrap">
     <div class="sec-head">
-      <h2 class="h2" id="how-h">Three steps. <b>We do the hard work.</b></h2>
+      <h2 class="h2" id="how-h">Three steps. <b>You only do the first.</b></h2>
       <a class="btn btn-sec btn-sm" href="#faq">Questions? Read the FAQ</a>
     </div>
     <ol class="steps">
       <li class="card">
-        <div class="art" data-anim role="img" aria-label="A store address being typed into GEO, then products read and questions written.">
+        <div class="art" data-anim role="img" aria-label="A store address being typed in, then a note that we take it from here.">
           <div class="s-box s1-bar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="s1-url"><span>yourstore.com</span></span><span class="s1-go"><svg><use href="#i-arrow"/></svg></span></div>
-          <p class="chip s1-c1" aria-hidden="true"><b><svg><use href="#i-check"/></svg></b>Products read</p>
-          <p class="chip s1-c2" aria-hidden="true"><b><svg><use href="#i-check"/></svg></b>Buying questions written</p>
+          <p class="chip s1-c1" aria-hidden="true"><b><svg><use href="#i-check"/></svg></b>Store added</p>
+          <p class="chip s1-c2" aria-hidden="true"><b><svg><use href="#i-check"/></svg></b>We take it from here</p>
         </div>
         <div class="card-tx">
           <span class="step-n">1</span>
-          <h3>Add your store</h3>
-          <p>Type your store’s address. We read your products and write the questions shoppers ask AI.</p>
+          <h3>Fast onboarding</h3>
+          <p>Give us your store’s address and tell us what you sell. This is the only step that needs you.</p>
         </div>
       </li>
       <li class="card">
-        <div class="art" data-anim role="img" aria-label="Example: for the question best beard oil for dry skin, ChatGPT does not name the store, Gemini ranks it first and Perplexity third.">
-          <p class="chip s2-q" aria-hidden="true">“best beard oil for dry skin”</p>
-          <div class="s-box s2-box" aria-hidden="true">
-            <p class="s2-row"><svg><use href="#i-chatgpt"/></svg>ChatGPT<em class="is-no">Not named</em></p>
-            <p class="s2-row"><svg><use href="#i-gemini"/></svg>Gemini<em>You’re #1</em></p>
-            <p class="s2-row"><svg><use href="#i-perplexity"/></svg>Perplexity<em>You’re #3</em></p>
+        <div class="art" data-anim role="img" aria-label="Example: a list of work done for the store this week being ticked off: a buying guide, a product page and an email to a review site.">
+          <div class="s-box s3-box" aria-hidden="true">
+            <p class="s3-h">Done for you this week</p>
+            <p class="s3-row"><i class="s3-ck"></i><span>Guide: Best beard oil for dry skin</span></p>
+            <p class="s3-row"><i class="s3-ck"></i><span>Product page: Daily Beard Wash</span></p>
+            <p class="s3-row"><i class="s3-ck"></i><span>Email to examplereviews.com</span></p>
           </div>
         </div>
         <div class="card-tx">
           <span class="step-n">2</span>
-          <h3>See who AI picks</h3>
-          <p>We ask ChatGPT and others each question. Then we show who they pick instead of you.</p>
+          <h3>We do all the work</h3>
+          <p>We ask ChatGPT and others what your buyers ask. Then we write guides, fix product pages and email the sites AI trusts.</p>
         </div>
       </li>
       <li class="card">
-        <div class="art" data-anim role="img" aria-label="Example: three pieces of work ready for review being ticked off: a buying guide, a pitch to a review site and a Reddit reply.">
-          <div class="s-box s3-box" aria-hidden="true">
-            <p class="s3-h">Ready for your review</p>
-            <p class="s3-row"><i class="s3-ck"></i><span>Guide: Best beard oil for dry skin</span></p>
-            <p class="s3-row"><i class="s3-ck"></i><span>Pitch to examplereviews.com</span></p>
-            <p class="s3-row"><i class="s3-ck"></i><span>Reply on r/beards</span></p>
+        <div class="art" data-anim role="img" aria-label="Example: 1,240 dollars of sales from AI this month. ChatGPT ranks the store second, Gemini first, and Perplexity does not name it yet.">
+          <p class="chip s2-q" aria-hidden="true"><b>$1,240</b>sales from AI this month</p>
+          <div class="s-box s2-box" aria-hidden="true">
+            <p class="s2-row"><svg><use href="#i-chatgpt"/></svg>ChatGPT<em>You’re #2</em></p>
+            <p class="s2-row"><svg><use href="#i-gemini"/></svg>Gemini<em>You’re #1</em></p>
+            <p class="s2-row"><svg><use href="#i-perplexity"/></svg>Perplexity<em class="is-no">Not yet</em></p>
           </div>
         </div>
         <div class="card-tx">
           <span class="step-n">3</span>
-          <h3>Review our changes</h3>
-          <p>We write the guides, the emails to websites and the Reddit replies. You take a quick look. We check AI again every day.</p>
+          <h3>You see the sales</h3>
+          <p>We check AI every day and keep the work going. Look in any time to see who AI picks and the sales it sends you.</p>
         </div>
       </li>
     </ol>
@@ -977,7 +975,7 @@ html.still .g-you{transform:translate(56px,8px)}
   <div class="wrap money">
     <div>
       <h2 class="h2" id="money-h">See what AI <b>is worth to your store.</b></h2>
-      <p class="lead">Paste one small code into Shopify. Then see the visits, orders and sales that came from AI. We only count sales we can link to AI, so the numbers stay honest.</p>
+      <p class="lead">See the visits, orders and sales that came from AI. We only count sales we can link to AI, so the numbers stay honest.</p>
       <ul class="ticks">
         <li><svg aria-hidden="true"><use href="#i-check"/></svg>See which AI sent each order</li>
         <li><svg aria-hidden="true"><use href="#i-check"/></svg>AI side by side with Google and everything else</li>
@@ -1064,17 +1062,24 @@ html.still .g-you{transform:translate(56px,8px)}
   </div>
 </section>
 
-<section class="sec sec-soft" aria-labelledby="safe-h">
+<section class="sec sec-soft all-sec" id="included" aria-labelledby="all-h">
   <div class="wrap">
     <div class="sec-head">
-      <h2 class="h2" id="safe-h">Safe for your brand. <b>No shortcuts.</b></h2>
+      <h2 class="h2" id="all-h">All of this. <b>Done for you.</b></h2>
+      <p class="all-lead">Our team does all of this for your store, every week, for A$1,000 a month. You just keep running your business.</p>
     </div>
-    <ul class="promise">
-      <li class="pr"><span class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.4-3 8.3-7 9.5-4-1.2-7-5.1-7-9.5V6z"/><path d="M9 12l2 2 4-4"/></svg></span><h3>You stay in charge</h3><p>GEO only reads your public pages. You choose what goes live.</p></li>
-      <li class="pr"><span class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span><h3>Only real facts</h3><p>We never make up facts, awards, reviews or numbers.</p></li>
-      <li class="pr"><span class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"/><path d="M9 12h6"/></svg></span><h3>No fake posts</h3><p>Every reply and email says who you are. No fake customers.</p></li>
-      <li class="pr"><span class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><h3>Honest numbers</h3><p>We only count sales we can link to AI.</p></li>
+    <ul class="all">
+      <li><h3>Buyer questions</h3><p>We find 100 questions your buyers ask AI, and how many people search them each month.</p></li>
+      <li><h3>Daily AI checks</h3><p>We ask ChatGPT, Gemini, Perplexity and Google’s AI each question. Every day.</p></li>
+      <li><h3>Who AI picks</h3><p>See the brands AI picks instead of you, and the sites it reads to choose.</p></li>
+      <li><h3>Buying guides</h3><p>Three a week, written for you. Each one answers a real buyer question.</p></li>
+      <li><h3>Product page fixes</h3><p>Clearer titles and descriptions, so AI knows what you sell and who it’s for.</p></li>
+      <li><h3>Sites AI trusts</h3><p>We find the sites AI quotes most for your products, and the people who write for them.</p></li>
+      <li><h3>Emails to those sites</h3><p>Up to 40 a month, sent and followed up by our team.</p></li>
+      <li><h3>Fact checks</h3><p>Everything we write is checked against your real facts. No made-up claims or reviews.</p></li>
+      <li><h3>Sales from AI</h3><p>See the visits, orders and sales AI sends you. We only count what we can link to AI.</p></li>
     </ul>
+    <p class="all-more">Plus a 30-minute call with our team, no lock-in contract, and a full refund if you’re not happy after month one.</p>
   </div>
 </section>
 
@@ -1128,13 +1133,13 @@ html.still .g-you{transform:translate(56px,8px)}
               <div class="fq-pair" id="fq-p1">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">What does GEO actually do?</h3></div>
                 <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
-                  <p>It shows you if ChatGPT, Gemini and Perplexity pick your products, and who they pick instead. Then we do the work. We write buying guides and Reddit replies for you. Our team emails the sites AI quotes most. It also counts the sales that came from AI.</p>
+                  <p>We check if ChatGPT, Gemini and Perplexity pick your products, and who they pick instead. Then our team does the work for you. We write buying guides, fix your product pages and email the sites AI quotes most. You see the sales that came from AI.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p2">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">How do you know a sale came from AI?</h3></div>
                 <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
-                  <p>You paste a small code into Shopify once. It takes about 2 minutes. The code spots shoppers who come from ChatGPT, Gemini, Perplexity and other AI apps. Some AI apps hide where a shopper came from, so the real number is often a bit higher. We can’t tell Google AI Overviews apart from normal Google, so we count them as search.</p>
+                  <p>At onboarding, we help you add a small code to Shopify. It takes about 2 minutes. The code spots shoppers who come from ChatGPT, Gemini, Perplexity and other AI apps. Some AI apps hide where a shopper came from, so the real number is often a bit higher. We can’t tell Google AI Overviews apart from normal Google, so we count them as search.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p3">
@@ -1147,19 +1152,19 @@ html.still .g-you{transform:translate(56px,8px)}
               <div class="fq-pair" id="fq-p4">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">Will GEO change my store without asking?</h3></div>
                 <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
-                  <p>No. GEO only reads what anyone can see on your store. Nothing in your Shopify admin changes. You decide what goes live.</p>
+                  <p>No. At the start, we agree with you on what we can change. Then we do the work, and you can see everything we did.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p5">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">Do I need to install an app?</h3></div>
                 <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
-                  <p>No. You sign in with your email and type your store’s address. To count sales from AI, you paste one small code into Shopify.</p>
+                  <p>No. At onboarding, you give us your store’s address and we help you add one small code to Shopify. That code counts sales from AI.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p6">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">How long does setup take?</h3></div>
                 <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
-                  <p>About 5 minutes of your time. Your first check then runs by itself and takes a few minutes. You can close the page while it works.</p>
+                  <p>Not long. Onboarding is the only part you do. You tell us about your store and add one small code. After that, we do all the work.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p7">

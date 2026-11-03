@@ -3,6 +3,8 @@ import { serveHome } from "../../lib/home-page.server";
 import { STORIES } from "../../lib/stories";
 import { logoSrc, storyPath } from "../../lib/stories/pages";
 import font from "../../fonts/inter-geo.woff2?url";
+// Ross's photo beside the main hero button (Ross, 3 Nov 2026): a square head-and-shoulders crop, 168px for a 56px box.
+import rossPhoto from "../../home/ross.webp?url";
 
 // The public home page, usegeo.app (Ross, 2 Nov 2026: the new design from /newhomepage, which now sends people here).
 // One HTML file with its styles and scripts inline. The font is Inter (with its Display cut for big text),
@@ -30,7 +32,7 @@ const storyGroup = (copy: boolean) =>
   "</ul>";
 
 // Functions as replacements, so a "$" in a headline is never read as a replace pattern.
-const page = raw.replaceAll("__FONT_URL__", () => font).replace("<!-- STORY_CARDS -->", () => storyGroup(false) + storyGroup(true));
+const page = raw.replaceAll("__FONT_URL__", () => font).replace("__ROSS_PHOTO__", () => rossPhoto).replace("<!-- STORY_CARDS -->", () => storyGroup(false) + storyGroup(true));
 
 // No component: this route sends the finished HTML page as-is.
 export const loader = async ({ request }: LoaderFunctionArgs) => serveHome(request, page);

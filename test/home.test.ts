@@ -80,6 +80,18 @@ describe("home page", () => {
     expect(script).not.toMatch(/order from Google/);
   });
 
+  it("shows Ross's photo and number beside the main hero button, in place of See how it works (Ross, 3 Nov 2026)", async () => {
+    const html = await home();
+    expect(html).not.toContain("__ROSS_PHOTO__");
+    expect(html).not.toContain("See how it works");
+    const start = html.indexOf('<div class="hero-cta">');
+    const cta = html.slice(start, html.indexOf("</div>", start));
+    expect(cta).toContain('data-waitlist="hero"');
+    expect(cta).toMatch(/<img src="[^"]*ross[^"]*\.webp" alt="" width="56" height="56"/);
+    expect(cta).toContain("Not sure if GEO suits your store?");
+    expect(cta).toContain('Text Ross, the founder: <a href="sms:+61400369865">0400 369 865</a>');
+  });
+
   it("has no 'Example' pills on its pictures, nor do the language pages (Ross, 2 Nov 2026)", async () => {
     const html = await home();
     expect(html).not.toMatch(/>\s*Example\s*</);
