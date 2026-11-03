@@ -76,7 +76,7 @@ beforeEach(() => {
 });
 
 describe("free times", () => {
-  it("are 30-minute calls, Monday to Friday, 9 am to 5 pm Perth, from 4 hours ahead to 2 weeks out", () => {
+  it("are 15-minute calls starting every half hour, Monday to Friday, 9 am to 5 pm Perth, from 4 hours ahead to 2 weeks out", () => {
     const slots = openSlots(NOW, []);
     // Tuesday: from 12:00 pm (8 am + 4 hours) to the 4:30 pm call; then 9 more weekdays of 16 calls each
     expect(slots).toHaveLength(10 + 9 * 16);
@@ -86,14 +86,15 @@ describe("free times", () => {
     for (const s of slots) {
       expect(perth(s)).toMatch(/^(Mon|Tue|Wed|Thu|Fri) (09|1[0-6]):(00|30)$/);
     }
-    expect(CALL.minutes).toBe(30);
+    expect(CALL.minutes).toBe(15);
+    expect(CALL.every).toBe(30);
   });
 
   it("skip anything that touches a busy time in Ross's calendar", () => {
     h.busy = [];
     const slots = openSlots(NOW, [
       { start: Date.parse("2026-11-03T05:00:00Z"), end: Date.parse("2026-11-03T06:00:00Z") }, // 1 to 2 pm Perth
-      { start: Date.parse("2026-11-03T06:15:00Z"), end: Date.parse("2026-11-03T06:20:00Z") }, // inside the 2 pm call
+      { start: Date.parse("2026-11-03T06:05:00Z"), end: Date.parse("2026-11-03T06:10:00Z") }, // inside the 2 pm call
     ]);
     expect(slots).not.toContain("2026-11-03T05:00:00.000Z");
     expect(slots).not.toContain("2026-11-03T05:30:00.000Z");
@@ -146,6 +147,12 @@ describe("the page", () => {
     expect(html).toMatch(/<img src="[^"]*ross[^"]*\.webp" alt=""/);
     // the true promises from the home page, and Ross's rules: no em dashes
     expect(html).toContain("Full refund if you’re not happy after month 1");
+    expect(html).toContain("</svg>No lock-in contract</li>");
+    // Ross (3 Nov 2026): the line under the calendar, and a 15-minute call to match it
+    expect(html).toContain('<p class="intro" hidden>15 minute <b>FREE</b> introduction call. No obligation.</p>');
+    expect(html).toContain("</svg>15 minutes</span>");
+    expect(html).not.toContain("30 minutes");
+    expect(html).not.toContain("Can’t find a time");
     expect(html).toContain("A$1,000 a month, and we do the work");
     expect(html).not.toContain("—");
     expect(html).not.toMatch(/ – /);
@@ -190,7 +197,7 @@ describe("booking a call", () => {
     expect(body).toMatchObject({
       summary: "GEO call: Ross and Jane Smith",
       start: { dateTime: "2026-11-04T01:00:00.000Z" },
-      end: { dateTime: "2026-11-04T01:30:00.000Z" },
+      end: { dateTime: "2026-11-04T01:15:00.000Z" }, // a 15-minute call
       attendees: [{ email: "jane@shopjane.com.au", displayName: "Jane Smith" }],
       conferenceData: { createRequest: { conferenceSolutionKey: { type: "hangoutsMeet" } } },
     });
