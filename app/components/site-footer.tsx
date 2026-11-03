@@ -14,6 +14,7 @@ const SITE_LINKS: [string, string][] = [
   ["Stories", "/stories"],
   ["Blog", "/blog"],
   ["Privacy", "/privacy"],
+  ["Terms", "/terms"],
 ];
 
 export function SiteFooter() {

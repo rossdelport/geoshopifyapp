@@ -14,13 +14,14 @@ import { HUB, TOOLS } from "../app/lib/tools/registry";
 import { STORIES } from "../app/lib/stories";
 import { STORIES_UPDATED } from "../app/lib/stories/pages";
 import { COMPARE_HUB, COMPARE_PAGES } from "../app/lib/compare/pages";
-import { HOME_LANGS_UPDATED, HOME_UPDATED, PRIVACY_UPDATED } from "../app/lib/tools/site";
+import { HOME_LANGS_UPDATED, HOME_UPDATED, PRIVACY_UPDATED, TERMS_UPDATED } from "../app/lib/tools/site";
 import { BLOG_LAUNCHED, siteLlmsTxt, siteRobotsTxt, sitemapPages, sitemapXml } from "../app/lib/tools/site-files";
 import { loader as robotsLoader } from "../app/routes/robots[.]txt";
 import { loader as sitemapLoader } from "../app/routes/sitemap[.]xml";
 import { loader as llmsLoader } from "../app/routes/llms[.]txt";
 import * as checkStart from "../app/routes/check._index";
 import * as privacy from "../app/routes/privacy";
+import * as terms from "../app/routes/terms";
 
 // The sitemap route asks the database for the blog posts; here there are none.
 vi.mock("../app/db.server", () => ({ default: { blogPost: { findMany: async () => [] } } }));
@@ -90,9 +91,9 @@ describe("sitemap.xml", () => {
   it("is a well-formed sitemaps.org file", () => {
     expect(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')).toBe(true);
     expect(xml.trimEnd().endsWith("</urlset>")).toBe(true);
-    // home and 5 languages, tools hub, 7 tools, stories hub, 15 stories, blog, compare hub and pages, privacy
-    expect(xml.match(/<url>/g)).toHaveLength(18 + STORIES.length + COMPARE_PAGES.length);
-    expect(xml.match(/<\/url>/g)).toHaveLength(18 + STORIES.length + COMPARE_PAGES.length);
+    // home and 5 languages, tools hub, 7 tools, stories hub, 15 stories, blog, compare hub and pages, privacy, terms
+    expect(xml.match(/<url>/g)).toHaveLength(19 + STORIES.length + COMPARE_PAGES.length);
+    expect(xml.match(/<\/url>/g)).toHaveLength(19 + STORIES.length + COMPARE_PAGES.length);
     expect(xml).not.toMatch(/priority|changefreq/);
     expect(xml).not.toMatch(/&(?!amp;|lt;|gt;|quot;|apos;)/);
   });
@@ -109,6 +110,7 @@ describe("sitemap.xml", () => {
       "https://usegeo.app/compare",
       ...COMPARE_PAGES.map((p) => `https://usegeo.app/compare/${p.slug}`),
       "https://usegeo.app/privacy",
+      "https://usegeo.app/terms",
     ]);
     expect(STORIES).toHaveLength(15);
     for (const l of locs) expect(l.startsWith("https://usegeo.app/")).toBe(true);
@@ -123,6 +125,7 @@ describe("sitemap.xml", () => {
       COMPARE_HUB.updated,
       ...COMPARE_PAGES.map((p) => p.checked),
       PRIVACY_UPDATED,
+      TERMS_UPDATED,
     ]);
     for (const d of lastmods) expect(d).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(sitemapPages().map((p) => p.path)).not.toContain("/check");
@@ -170,6 +173,7 @@ describe("llms.txt for usegeo.app", () => {
       "- [Stories](https://usegeo.app/stories): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are GEO customers)",
     );
     expect(txt).toContain("- [Privacy policy](https://usegeo.app/privacy): what data GEO collects and why");
+    expect(txt).toContain("- [Terms of service](https://usegeo.app/terms): the rules for using GEO, the refund after month one and stopping any time");
   });
 
   it("takes the price from the offer in plans.ts, never typed in, and says new stores join through the waitlist", () => {
@@ -266,5 +270,52 @@ describe("/privacy after the free tools", () => {
     const moved = await call(privacy.loader, "https://www.usegeo.app/privacy");
     expect(moved.status).toBe(301);
     expect(moved.headers.get("location")).toBe("https://usegeo.app/privacy");
+  });
+});
+
+describe("/terms (Ross, 3 Nov 2026: the same layout as the privacy page)", () => {
+  const env = process.env.NODE_ENV;
+  beforeEach(() => {
+    process.env.NODE_ENV = "production";
+  });
+  afterEach(() => {
+    process.env.NODE_ENV = env;
+  });
+
+  it("has a description, a canonical and share tags", () => {
+    const meta = callMeta(terms.meta);
+    expect(meta[0]).toEqual({ title: "GEO terms of service" });
+    const desc = meta.find((m) => (m as { name?: string }).name === "description") as { content: string };
+    expect(desc.content.length).toBeGreaterThan(40);
+    expect(desc.content.length).toBeLessThan(155);
+    expect(meta.filter((m) => (m as { rel?: string }).rel === "canonical")).toEqual([{ tagName: "link", rel: "canonical", href: "https://usegeo.app/terms" }]);
+    expect(meta).toContainEqual({ property: "og:image", content: "https://usegeo.app/og/home.png" });
+  });
+
+  it("uses the privacy page's layout and makes the home page's promises", async () => {
+    const data = await call(terms.loader, "https://usegeo.app/terms");
+    const Stub = createRoutesStub([{ id: "terms", path: "/terms", Component: terms.default as ComponentType, loader: () => data }]);
+    const html = renderToStaticMarkup(createElement(Stub, { initialEntries: ["/terms"], hydrationData: { loaderData: { terms: data } } }));
+    const text = html.replace(/<[^>]+>/g, "").replace(/&#x27;/g, "'");
+    // the same page and heading styles as /privacy, and the same footer
+    expect(html).toContain('<main style="max-width:720px;margin:0 auto;padding:48px 20px 80px;font-family:Inter, system-ui, sans-serif;color:#30313d;line-height:1.7">');
+    expect(html).toContain('<h2 style="font-size:20px;margin:36px 0 8px;color:#0b0c2b">Full refund after month one</h2>');
+    expect(html).toContain('<footer class="tl-foot">');
+    expect(text).toContain("Last updated 3 November 2026");
+    expect(text).toContain(`It costs ${OFFER.price}, including GST.`);
+    expect(text).toContain("We'll refund that month in full, and you keep all the work we did.");
+    expect(text).toContain("You can stop any time.");
+    expect(text).toContain("we can't promise exact results");
+    expect(text).toContain("We never pretend to be a customer, on Reddit or anywhere else.");
+    expect(text).toContain("Nothing in these terms takes away your rights under the Australian Consumer Law.");
+    expect(html).toContain('<a href="/privacy">privacy policy</a>');
+    expect(html).toContain('<a href="sms:+61400369865">0400 369 865</a>');
+    expect(DASHES.test(text)).toBe(false);
+  });
+
+  it("sends www to usegeo.app", async () => {
+    const moved = await call(terms.loader, "https://www.usegeo.app/terms");
+    expect(moved.status).toBe(301);
+    expect(moved.headers.get("location")).toBe("https://usegeo.app/terms");
   });
 });

@@ -135,9 +135,12 @@ describe("the page", () => {
     expect(html).toContain('<h1 class="h1">Book a call <b>with Ross.</b></h1>');
     expect(html).toContain('<meta name="robots" content="noindex">');
     expect(html).toContain('<link rel="canonical" href="https://usegeo.app/book">');
-    // no menu: the only links are home, privacy and texting Ross
+    // no menu: the only links are home, privacy, terms and texting Ross
     const links = [...new Set([...html.matchAll(/<a [^>]*href="([^"]+)"/g)].map((m) => m[1]))].sort();
-    expect(links).toEqual(["/", "/privacy", "/privacy#cookies", "sms:+61400369865"]);
+    expect(links).toEqual(["/", "/privacy", "/privacy#cookies", "/terms", "sms:+61400369865"]);
+    // Ross (3 Nov 2026): next to his name, "Want to txt Ross instead?" with the number in purple
+    expect(html).toContain('<span class="who-txt">Want to txt Ross instead? <a href="sms:+61400369865">0400 369 865</a></span>');
+    expect(html).toContain(".who-txt a{color:var(--accent-ink);");
     // the route filled everything in
     expect(html).not.toMatch(/__[A-Z_]+__|<!-- (META_PIXEL|COOKIE_SCRIPT) -->/);
     expect(html).toMatch(/<img src="[^"]*ross[^"]*\.webp" alt=""/);

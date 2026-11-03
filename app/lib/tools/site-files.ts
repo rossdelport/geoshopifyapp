@@ -8,7 +8,7 @@ import { COMPARE_HUB, COMPARE_PAGES, comparePath } from "../compare/pages";
 import { OFFER } from "../plans";
 import { STORIES } from "../stories";
 import { STORIES_HUB, STORIES_UPDATED, storyPath } from "../stories/pages";
-import { HOME_LANGS, HOME_LANGS_UPDATED, HOME_UPDATED, PRIVACY_UPDATED, SITE, abs } from "./site";
+import { HOME_LANGS, HOME_LANGS_UPDATED, HOME_UPDATED, PRIVACY_UPDATED, SITE, TERMS_UPDATED, abs } from "./site";
 import { HUB, TOOLS } from "./registry";
 
 /**
@@ -58,6 +58,7 @@ export function sitemapPages(posts: { path: string; updated: string }[] = []): {
     { path: COMPARE_HUB.path, updated: COMPARE_HUB.updated },
     ...COMPARE_PAGES.map((p) => ({ path: comparePath(p.slug), updated: p.checked })),
     { path: "/privacy", updated: PRIVACY_UPDATED },
+    { path: "/terms", updated: TERMS_UPDATED },
   ];
 }
 
@@ -102,6 +103,7 @@ export function siteLlmsTxt(): string {
     `- [Blog](${abs(BLOG_HUB.path)}): plain-English articles for Shopify stores on getting recommended by AI assistants, new ones three times a week`,
     `- [Compare](${abs(COMPARE_HUB.path)}): honest comparisons of GEO with agencies, tracking tools and prices in Australia`,
     `- [Privacy policy](${abs("/privacy")}): what data GEO collects and why`,
+    `- [Terms of service](${abs("/terms")}): the rules for using GEO, the refund after month one and stopping any time`,
     "",
   ].join("\n");
 }
