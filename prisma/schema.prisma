@@ -650,6 +650,15 @@ model GuideSlot {
   @@index([shopId, status])
 }
 
+/// Ross's Google Calendar for the book-a-call page (usegeo.app/book): one row, id "booking", saved when Ross connects
+/// it in Admin > System. The refresh token lets the server read his free times and add booked calls.
+model CalendarLink {
+  id           String   @id
+  email        String
+  refreshToken String
+  updatedAt    DateTime @updatedAt
+}
+
 // The 3-month giveaway at usegeo.app/giveaway (Nov 2026, lib/giveaway.server.ts): one entry per store. The admin's
 // random draw marks the picked entry (drawnAt). Deleted 24 months after entry (retention.server.ts).
 model GiveawayEntry {

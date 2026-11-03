@@ -49,6 +49,7 @@ Postgres (Supabase, "geo" schema only)  ◄──  background worker (same proce
 | `RESEND_API_KEY`, `GEO_EMAIL_FROM` | Monthly report emails. |
 | `GEO_ALERT_EMAIL` | Who is emailed when a store starts or leaves Done-for-you (hand outreach and the monthly call). Must be set at launch. |
 | `SHOPIFY_BILLING_TEST` | `true` = test charges (use for development stores). Not set = test charges too: set `false` at launch. |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google Cloud OAuth client for the book-a-call page (usegeo.app/book). Redirect URI `https://usegeo.app/dash/admin/calendar`; then Admin > System > Connect Google Calendar. |
 | `RUN_WORKER` | `false` to run a web-only process. |
 | `GEO_SELFTEST` | `1` = run a live end-to-end check at start-up and print it to the logs. |
 

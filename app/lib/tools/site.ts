@@ -7,7 +7,7 @@ export const SITE_HOST = "usegeo.app";
 export const BRAND = "GEO";
 export const BRAND_ALT = "GEO for Shopify";
 /** The last real change to the home page, app/home/new-home.html (git log -1 --format=%cs app/home/new-home.html). Sitemap lastmod for "/". */
-export const HOME_UPDATED = "2026-11-02";
+export const HOME_UPDATED = "2026-11-03";
 /** The last real change to the pages in other languages, app/home/home-<code>.html. Sitemap lastmod for /de, /fr, /nl, /es, /it. */
 export const HOME_LANGS_UPDATED = "2026-10-23";
 /** The home page in other languages, at usegeo.app/<code> (built by design/overview/i18n.mjs into app/home/home-<code>.html). */

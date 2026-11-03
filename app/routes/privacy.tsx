@@ -173,6 +173,15 @@ function PrivacyText() {
         you ask.
       </p>
 
+      <h2 style={h2}>Booking a call</h2>
+      <p>
+        If you book a call with Ross on our website, we add it to Ross&apos;s Google Calendar with your name, your email
+        address and your store&apos;s website. Google then emails you the invite with a Google Meet link. We also email
+        Ross the same details, and the ad&apos;s tracking tags (like utm_campaign) if you came from an ad. To stop abuse,
+        we keep a scrambled (hashed) copy of your IP address for a day.
+      </p>
+      <p>We use this only to talk with you about GEO, and we delete it if you ask.</p>
+
       <h2 style={h2}>Giveaway</h2>
       <p>
         If you enter our giveaway, we keep your store&apos;s website, your name, email address and phone number, the
@@ -186,13 +195,13 @@ function PrivacyText() {
       </p>
 
       <h2 style={h2} id="cookies">
-        Ads and cookies on our home page and giveaway page
+        Ads and cookies on our home page, giveaway page and booking page
       </h2>
       <p>
-        Our home page and giveaway page use Meta&apos;s pixel (Meta runs Facebook and Instagram). It lets us see which
-        of our ads work and show our ads to people who visited. It tells Meta that a browser looked at the page. If you
-        join the waitlist or enter the giveaway, it tells Meta that someone did. It never sends your name, email address
-        or phone number. Meta may set cookies, and it gets your
+        Our home page, giveaway page and booking page use Meta&apos;s pixel (Meta runs Facebook and Instagram). It lets us
+        see which of our ads work and show our ads to people who visited. It tells Meta that a browser looked at the page.
+        If you join the waitlist, enter the giveaway or book a call, it tells Meta that someone did. It never sends your
+        name, email address or phone number. Meta may set cookies, and it gets your
         browser&apos;s details and IP address, as Meta&apos;s own privacy policy says.
       </p>
       <p>
@@ -213,6 +222,9 @@ function PrivacyText() {
       </p>
       <p>
         <b>Waitlist:</b> only to contact you about GEO.
+      </p>
+      <p>
+        <b>Booking a call:</b> only to talk with you about GEO.
       </p>
       <p>
         <b>Giveaway:</b> to run the draw and to contact you about GEO.
@@ -244,7 +256,8 @@ function PrivacyText() {
       <h2 style={h2}>Services we use</h2>
       <ul>
         <li>Railway (Singapore): runs the app.</li>
-        <li>Meta (Facebook and Instagram): our own ads, and the pixel on our home page described above.</li>
+        <li>Meta (Facebook and Instagram): our own ads, and the pixel on our home page, giveaway page and booking page described above.</li>
+        <li>Google: Google Calendar and Google Meet, for calls booked on our website.</li>
         <li>Supabase (Tokyo): stores the data.</li>
         <li>Treg: gets public AI answers to buying questions. It gets the questions only, never customer data.</li>
         <li>Anthropic (Claude): reads AI answers and writes draft fixes from your product details. It never gets customer data.</li>
@@ -268,8 +281,8 @@ function PrivacyText() {
       </p>
       <p>
         If you asked for a free check report by email, you can ask us for the email address we hold about you, or ask us
-        to delete it. Do it the same way, or reply to any of our emails. If you joined the waitlist or entered the
-        giveaway, you can ask us for your details or ask us to delete them the same way.
+        to delete it. Do it the same way, or reply to any of our emails. If you joined the waitlist, entered the
+        giveaway or booked a call, you can ask us for your details or ask us to delete them the same way.
       </p>
     </main>
   );
