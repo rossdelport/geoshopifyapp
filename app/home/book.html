@@ -79,6 +79,14 @@ ul{padding:0;list-style:none}
 .who{display:flex;align-items:center;gap:12px;margin-bottom:22px;font-size:14px;line-height:1.35}
 .who img{flex:none;width:52px;height:52px;border-radius:14px;object-fit:cover;background:#eceae6;box-shadow:0 0 0 1px rgba(18,18,40,.08),0 8px 18px -8px rgba(40,25,130,.45)}
 .who b{display:block;font-size:15px;font-weight:600;color:var(--ink)}
+/* Ross (3 Nov 2026): "Want to txt Ross instead?" next to his name, the number in purple. Two lines beside the name
+   (after a thin line) when the column has room, one line under it when it doesn't. */
+.book-tx{container-type:inline-size}
+.who{flex-wrap:wrap}
+.who-txt{flex-basis:100%;color:var(--text)}
+.who-txt a{color:var(--accent-ink);font-weight:600;white-space:nowrap;text-decoration:none}
+.who-txt a:hover{text-decoration:underline}
+@container (min-width:390px){.who-txt{flex-basis:auto;margin-left:6px;padding-left:18px;border-left:1px solid var(--line)}.who-txt a{display:block}}
 .book .lead{margin-top:18px;max-width:30em}
 .ticks{display:grid;gap:12px;margin-top:26px}
 .ticks li{display:flex;align-items:center;gap:10px;font-size:15.5px;font-weight:500;color:var(--head)}
@@ -150,7 +158,7 @@ ul{padding:0;list-style:none}
 
 <main class="wrap book">
   <div class="book-tx">
-    <p class="who"><img src="__ROSS_PHOTO__" alt="" width="52" height="52" decoding="async"><span><b>Ross</b>Founder of GEO</span></p>
+    <p class="who"><img src="__ROSS_PHOTO__" alt="" width="52" height="52" decoding="async"><span><b>Ross</b>Founder of GEO</span><span class="who-txt">Want to txt Ross instead? <a href="sms:+61400369865">0400 369 865</a></span></p>
     <h1 class="h1">Book a call <b>with Ross.</b></h1>
     <p class="lead">Pick a time that suits you. We’ll chat about your store and see if GEO is a good fit.</p>
     <ul class="ticks">
@@ -213,7 +221,7 @@ ul{padding:0;list-style:none}
 </main>
 
 <footer class="foot">
-  <div class="wrap"><span>© 2026 GEO</span><a href="/">Home</a><a href="/privacy">Privacy</a></div>
+  <div class="wrap"><span>© 2026 GEO</span><a href="/">Home</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
 </footer>
 
 <!-- Cookie notice for the Meta pixel in the head (the same as the home page's) -->

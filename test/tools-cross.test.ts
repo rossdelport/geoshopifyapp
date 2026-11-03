@@ -24,6 +24,7 @@ import { COMPARE_PAGES } from "../app/lib/compare/pages";
 import * as layout from "../app/routes/tools";
 import * as hub from "../app/routes/tools._index";
 import * as privacy from "../app/routes/privacy";
+import * as terms from "../app/routes/terms";
 import * as checkIndex from "../app/routes/check._index";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
@@ -115,6 +116,7 @@ describe("each tool page's head", () => {
       { path: "/", title: home.match(/<title>([^<]*)<\/title>/)?.[1], description: home.match(/<meta name="description" content="([^"]*)"/)?.[1] },
       { path: "/tools", title: titleOf(metaOf(hub)), description: descriptionOf(metaOf(hub)) },
       { path: "/privacy", title: titleOf(metaOf(privacy)), description: descriptionOf(metaOf(privacy)) },
+      { path: "/terms", title: titleOf(metaOf(terms)), description: descriptionOf(metaOf(terms)) },
       ...TOOLS.map((t) => ({ path: t.path, title: titleOf(metaOf(ROUTES.get(t.slug))), description: descriptionOf(metaOf(ROUTES.get(t.slug))) })),
     ];
     for (const h of heads) {
@@ -211,7 +213,7 @@ describe("one list of seven pages everywhere", () => {
   it("the sitemap lists exactly the public pages (the tools, the stories, the blog and the rest), each with its date", () => {
     const xml = sitemapXml();
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-    expect(locs).toEqual([abs("/"), ...HOME_LANGS.map((l) => abs(`/${l}`)), abs("/tools"), ...SEVEN.map(abs), abs("/stories"), ...STORIES.map((s) => abs(`/stories/${s.slug}`)), abs("/blog"), abs("/compare"), ...COMPARE_PAGES.map((p) => abs(`/compare/${p.slug}`)), abs("/privacy")]);
+    expect(locs).toEqual([abs("/"), ...HOME_LANGS.map((l) => abs(`/${l}`)), abs("/tools"), ...SEVEN.map(abs), abs("/stories"), ...STORIES.map((s) => abs(`/stories/${s.slug}`)), abs("/blog"), abs("/compare"), ...COMPARE_PAGES.map((p) => abs(`/compare/${p.slug}`)), abs("/privacy"), abs("/terms")]);
     // The blog posts come from the database: the route passes them in, newest first, and the hub takes the newest date.
     const withPosts = sitemapXml([{ path: "/blog/second", updated: "2026-10-20" }, { path: "/blog/first", updated: "2026-10-15" }]);
     const postLocs = [...withPosts.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
