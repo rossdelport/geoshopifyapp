@@ -515,7 +515,7 @@ Write exactly 3 natural, unbranded buyer questions a shopper in ${where} would a
 
 // ---------- Ask the AI assistants ----------
 
-async function askOne(
+export async function askOne(
   q: CheckQuestion,
   question: number,
   engine: CheckEngine,

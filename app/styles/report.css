@@ -1,0 +1,723 @@
+/* Store report page (/report/<slug>, app/routes/report.$slug.tsx). It is the background of Ross's phone videos:
+   one column, big type, each heading close to its rows, so it reads at a glance with a person filmed over the
+   lower middle. The look is the home page's: white, near-black text, greys, one purple only for small accents
+   (the logo dot, links), and green, amber and red only for good, so-so and bad. No motion. */
+
+body {
+  margin: 0;
+  background: #fff;
+}
+
+.rp {
+  --ink: #111218;
+  --text: #3a3d46;
+  --grey: #6b6e78;
+  --line: #ececf0;
+  --bg-2: #f6f6f9;
+  --accent: #6c5cf2;
+  --accent-ink: #5442df;
+  --accent-100: #e4e0fd;
+  --good: #15803d;
+  --good-bg: #e7f7ed;
+  --warn: #a16207;
+  --warn-bg: #fdf2d8;
+  --bad: #c0262d;
+  --bad-bg: #fdecec;
+  --font: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 16px 20px 56px;
+  font-family: var(--font);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--text);
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-wrap: break-word;
+}
+.rp *,
+.rp *::before,
+.rp *::after {
+  box-sizing: border-box;
+}
+/* :where keeps these resets weak, so each part's own margins win without !important. */
+.rp :where(h1, h2, h3, p, ul, ol, dl, dd, figure, blockquote) {
+  margin: 0;
+}
+.rp :where(ul, ol) {
+  padding: 0;
+  list-style: none;
+}
+.rp a {
+  color: var(--accent-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-100);
+  text-underline-offset: 3px;
+}
+.rp a:hover {
+  text-decoration-color: currentColor;
+}
+.rp :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+.rp ::selection {
+  background: var(--accent-100);
+  color: var(--ink);
+}
+.rp-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Top: logo, Share, "Made with GEO" ---------- */
+
+.rp-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 40px;
+}
+.rp-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 21px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+/* The home page's mark: two overlapping circles. */
+.rp .mark {
+  position: relative;
+  flex: none;
+  width: 25px;
+  height: 23px;
+}
+.rp .mark i {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+.rp .mark i:first-child {
+  left: 0;
+  top: 0;
+  background: #cdc6fc;
+}
+.rp .mark i:last-child {
+  right: 0;
+  bottom: 0;
+  background: var(--accent);
+}
+.rp-share {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 15px 0 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(18, 18, 40, 0.06);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.rp-share:hover {
+  background: var(--bg-2);
+}
+.rp-share svg {
+  flex: none;
+}
+.rp-share.is-done {
+  color: var(--good);
+}
+.rp-made {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--grey);
+}
+
+/* ---------- The store ---------- */
+
+.rp-store {
+  margin-top: 34px;
+}
+.rp-kicker {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+.rp-h1 {
+  margin-top: 6px;
+  font-size: 40px;
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.rp-sells {
+  margin-top: 12px;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--text);
+  text-wrap: pretty;
+}
+.rp-where {
+  margin-top: 10px;
+  font-size: 15px;
+  color: var(--grey);
+}
+
+/* ---------- Sections ---------- */
+
+.rp-sec {
+  margin-top: 48px;
+}
+.rp-h2 {
+  margin-bottom: 16px;
+  font-size: 30px;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.rp-line {
+  margin-top: 14px;
+  font-size: 17px;
+  text-wrap: pretty;
+}
+.rp-note {
+  margin-top: 12px;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--grey);
+  text-wrap: pretty;
+}
+
+/* Where you stand: 2 by 2 tiles, small label over a big number */
+.rp-tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.rp-tiles.is-odd .rp-tile:last-child {
+  grid-column: 1 / -1;
+}
+.rp-tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px 15px 15px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+}
+.rp-tile dt {
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+.rp-tile dd {
+  font-size: 44px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.rp-tile dd.is-long {
+  font-size: 37px;
+}
+.rp-tile dd.is-longer {
+  font-size: 30px;
+}
+.rp-tile dd small {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--grey);
+}
+.rp-tile.is-bad {
+  border-color: #f7d3d3;
+  background: var(--bad-bg);
+}
+.rp-tile.is-bad dd {
+  color: var(--bad);
+}
+.rp-tile.is-warn {
+  border-color: #f3e2b5;
+  background: var(--warn-bg);
+}
+.rp-tile.is-warn dd {
+  color: var(--warn);
+}
+.rp-tile.is-good {
+  border-color: #c9ebd5;
+  background: var(--good-bg);
+}
+.rp-tile.is-good dd {
+  color: var(--good);
+}
+
+/* What shoppers search. On a phone: search word with its place under it, then the two numbers, so the words
+   get room and nothing scrolls sideways. From 520px wide the place gets its own column, like the OpenSEO table. */
+.rp-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-variant-numeric: tabular-nums;
+}
+.rp-table th,
+.rp-table td {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.rp-table thead th {
+  padding: 0 0 8px;
+  border-bottom-color: #dcdce2;
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--grey);
+  vertical-align: bottom;
+}
+.rp-table .rp-month-col {
+  width: 76px;
+}
+.rp-table .rp-hard-col {
+  width: 92px;
+}
+.rp-table tbody th {
+  padding-right: 12px;
+  font-size: 17px;
+  line-height: 1.3;
+  font-weight: 650;
+  color: var(--ink);
+}
+.rp-table td {
+  font-size: 17px;
+  line-height: 1.3;
+  font-weight: 500;
+  color: var(--ink);
+}
+.rp-table .rp-n {
+  text-align: right;
+}
+.rp-table .rp-sub {
+  display: block;
+  margin-top: 3px;
+  font-size: 14px;
+  line-height: 1.35;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--grey);
+}
+.rp-table thead .rp-sub {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #a3a6ae;
+}
+.rp-table .rp-place {
+  display: none;
+}
+.rp-hard {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.rp-easy {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--good-bg);
+  color: var(--good);
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 650;
+}
+@media (min-width: 520px) {
+  .rp-table .rp-sub {
+    display: none;
+  }
+  .rp-table .rp-place {
+    display: table-cell;
+    width: 170px;
+    padding-left: 22px;
+  }
+  .rp-table td.rp-place {
+    padding-top: 13px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--grey);
+  }
+}
+
+/* Who AI picks now: a chat with the question and the answer's list */
+.rp-chat {
+  padding: 14px;
+  border-radius: 22px;
+  background: var(--bg-2);
+}
+.rp-asked {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+.rp-bubble {
+  width: fit-content;
+  max-width: 90%;
+  margin: 12px 0 12px auto;
+  padding: 11px 15px;
+  border-radius: 20px 20px 6px 20px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 17px;
+  line-height: 1.4;
+  font-weight: 500;
+  text-wrap: pretty;
+}
+.rp-picks {
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(18, 18, 40, 0.05);
+  overflow: hidden;
+}
+.rp-picks li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 9px 14px;
+  font-size: 17px;
+  line-height: 1.3;
+  font-weight: 550;
+  color: var(--ink);
+}
+.rp-picks li + li {
+  border-top: 1px solid var(--line);
+}
+.rp-rank {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--bg-2);
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--grey);
+  font-variant-numeric: tabular-nums;
+}
+.rp-brand {
+  flex: 1;
+  min-width: 0;
+}
+.rp-picks li.is-you {
+  background: var(--good-bg);
+}
+.rp-picks li.is-you .rp-rank {
+  background: var(--good);
+  color: #fff;
+}
+.rp-picks li.is-missing {
+  background: var(--bad-bg);
+  color: var(--bad);
+}
+/* The brands between the 8th and the store, when AI named it later */
+.rp-picks li.is-gap {
+  min-height: 40px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--grey);
+}
+.rp-picks li.is-missing .rp-rank {
+  background: var(--bad);
+  color: #fff;
+}
+.rp-tag {
+  flex: none;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  font-weight: 650;
+}
+.rp-tag.is-good {
+  background: var(--good);
+  color: #fff;
+}
+.rp-most {
+  font-size: 15px;
+  color: var(--grey);
+}
+.rp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.rp-chips li {
+  padding: 6px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 15px;
+  line-height: 1.3;
+  font-weight: 550;
+  color: var(--ink);
+}
+.rp-chips li span {
+  color: #b4b6bd;
+}
+.rp-chips li b {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sites AI trusts: domain and page title, how many answers used it, and a bar for the share */
+.rp-sites li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: 14px;
+  padding: 12px 0 13px;
+  border-bottom: 1px solid var(--line);
+}
+.rp-sites li:first-child {
+  padding-top: 2px;
+}
+.rp-site {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+/* The address is the fact on this row: a long one wraps instead of being cut off */
+.rp-site b {
+  font-size: 17px;
+  line-height: 1.35;
+  font-weight: 650;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.rp-site-title {
+  overflow: hidden;
+  font-size: 14.5px;
+  line-height: 1.4;
+  color: var(--grey);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rp-site-n {
+  padding-top: 1px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.rp-bar-track {
+  grid-column: 1 / -1;
+  height: 5px;
+  margin-top: 9px;
+  border-radius: 999px;
+  background: var(--bg-2);
+  overflow: hidden;
+}
+.rp-bar-track span {
+  display: block;
+  height: 100%;
+  min-width: 5px;
+  border-radius: inherit;
+  background: #2b2d36;
+}
+
+/* Your next 3 moves */
+.rp-moves li {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.rp-moves li:first-child {
+  padding-top: 2px;
+}
+.rp-step {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+}
+.rp-moves p {
+  padding-top: 3px;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--text);
+  text-wrap: pretty;
+}
+.rp-moves b {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* +N more moves: one line each, the place shows and the words are blurred */
+.rp-locked {
+  display: grid;
+  gap: 6px;
+}
+.rp-locked li {
+  display: grid;
+  grid-template-columns: 18px auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--bg-2);
+}
+.rp-lock {
+  color: var(--grey);
+}
+.rp-locked b {
+  font-size: 15.5px;
+  line-height: 1.3;
+  font-weight: 650;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.rp-blur {
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--text);
+  white-space: nowrap;
+  filter: blur(5px);
+  -webkit-mask-image: linear-gradient(90deg, #000 75%, transparent);
+  mask-image: linear-gradient(90deg, #000 75%, transparent);
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+}
+
+/* Month by month */
+.rp-months {
+  display: grid;
+  gap: 10px;
+  /* A long site address in month 1 wraps inside its card, never pushing the page sideways */
+  overflow-wrap: anywhere;
+}
+.rp-month {
+  padding: 16px 18px 18px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+}
+.rp-month h3 {
+  margin-top: 4px;
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+.rp-month ul {
+  display: grid;
+  gap: 7px;
+  margin-top: 12px;
+}
+.rp-month ul li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 16px;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+.rp-month ul li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+/* Small print */
+.rp-small {
+  margin-top: 52px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--grey);
+}
+.rp-small p {
+  margin: 0;
+  text-wrap: pretty;
+}
+.rp-site-link {
+  margin-top: 14px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+@media (min-width: 560px) {
+  .rp {
+    padding-top: 24px;
+  }
+  .rp-h1 {
+    font-size: 46px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rp *,
+  .rp *::before,
+  .rp *::after {
+    transition: none !important;
+  }
+}

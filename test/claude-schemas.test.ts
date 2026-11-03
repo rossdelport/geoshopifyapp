@@ -10,6 +10,7 @@ describe("Claude output formats", async () => {
   const fixes = await import("../app/lib/fixes.server");
   const outreach = await import("../app/lib/outreach.server");
   const check = await import("../app/lib/check.server");
+  const storeReport = await import("../app/lib/store-report.server");
   const schemas = {
     ProfileSchema: onboarding.ProfileSchema,
     QuestionsSchema: onboarding.QuestionsSchema,
@@ -20,6 +21,8 @@ describe("Claude output formats", async () => {
     ClaimsSchema: fixes.ClaimsSchema,
     PitchSchema: outreach.PitchSchema,
     UnderstandSchema: check.UnderstandSchema,
+    ReportStoreSchema: storeReport.ReportStoreSchema,
+    ReportPlanSchema: storeReport.ReportPlanSchema,
   };
   for (const [name, schema] of Object.entries(schemas)) {
     it(name, () => {

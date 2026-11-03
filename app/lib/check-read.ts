@@ -606,9 +606,14 @@ export function detectCountry(s: CountrySignals): { country: CheckCountry; how: 
 
 const SUFFIX_LABELS = new Set(["com", "net", "org", "co", "au", "nz", "uk", "ca", "us", "io", "shop", "store", "online", "myshopify", "biz", "info", "ie", "gov", "edu", "ac", "id"]);
 
-/** "shop.coolabah-grooming.com.au" -> "coolabah-grooming" (titleCase makes it "Coolabah Grooming"). */
+/**
+ * "shop.coolabah-grooming.com.au" -> "coolabah-grooming" (titleCase makes it "Coolabah Grooming"). The last label
+ * is always the ending, even a new one that is also a word: "glow.beauty" is "glow", never "beauty", which would
+ * make every "... Beauty" brand look like the store.
+ */
 export function domainStem(domain: string): string {
   const labels = domain.toLowerCase().replace(/^www\./, "").split(".").filter(Boolean);
+  if (labels.length > 1) labels.pop();
   while (labels.length > 1 && SUFFIX_LABELS.has(labels[labels.length - 1])) labels.pop();
   return labels[labels.length - 1] ?? domain;
 }

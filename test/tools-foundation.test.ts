@@ -406,15 +406,17 @@ describe("publicHostRedirect", () => {
     expect(publicHostRedirect(req("https://www.usegeo.app/tools"))?.headers.get("location")).toBe("https://usegeo.app/tools");
     // Railway's proxy says which host the visitor asked for
     expect(publicHostRedirect(req("http://10.0.0.5:8080/privacy", { headers: { "x-forwarded-host": "www.usegeo.app" } }))?.status).toBe(301);
-    for (const p of ["/check", "/tools", "/sitemap.xml", "/llms.txt", "/privacy", "/stories", "/stories/viv-chatgpt-sales"]) {
+    for (const p of ["/check", "/tools", "/sitemap.xml", "/llms.txt", "/privacy", "/stories", "/stories/viv-chatgpt-sales", "/report/bondi-wash"]) {
       expect(publicHostRedirect(req(`https://www.usegeo.app${p}`)), p).not.toBeNull();
     }
+    // A store report link Ross shares from the Railway address goes to usegeo.app.
+    expect(publicHostRedirect(req("https://geo-shopify-app-production.up.railway.app/report/bondi-wash"))?.headers.get("location")).toBe("https://usegeo.app/report/bondi-wash");
   });
 
-  it("leaves usegeo.app, POSTs, the app, Shopify admin visits, report pages, robots.txt and non-production alone", () => {
+  it("leaves usegeo.app, POSTs, the app, Shopify admin visits, free check reports, robots.txt and non-production alone", () => {
     expect(publicHostRedirect(req("https://usegeo.app/tools", { host: "usegeo.app" }))).toBeNull();
     expect(publicHostRedirect(req("https://www.usegeo.app/tools", { method: "POST", body: "a=1" }))).toBeNull();
-    for (const p of ["/app", "/app/fixes", "/auth/login", "/webhooks/app/uninstalled", "/api/pixel", "/healthz", "/check/abc123", "/robots.txt", "/tools/x.data", "/stories/x.data"]) {
+    for (const p of ["/app", "/app/fixes", "/auth/login", "/webhooks/app/uninstalled", "/api/pixel", "/healthz", "/check/abc123", "/robots.txt", "/tools/x.data", "/stories/x.data", "/report/x.data", "/report"]) {
       expect(publicHostRedirect(req(`https://geo-shopify-app-production.up.railway.app${p}`)), p).toBeNull();
     }
     expect(publicHostRedirect(req("https://x.up.railway.app/?shop=a.myshopify.com"))).toBeNull();
