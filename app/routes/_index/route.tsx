@@ -3,7 +3,7 @@ import { serveHome } from "../../lib/home-page.server";
 import { STORIES } from "../../lib/stories";
 import { logoSrc, storyPath } from "../../lib/stories/pages";
 import font from "../../fonts/inter-geo.woff2?url";
-// Ross's photo beside the main hero button (Ross, 3 Nov 2026): a square head-and-shoulders crop, 168px for a 56px box.
+// Ross's photo beside the main hero button (Ross, 3 Nov 2026): a square head-and-shoulders crop, 168px for a 46px box (as tall as the button).
 import rossPhoto from "../../home/ross.webp?url";
 
 // The public home page, usegeo.app (Ross, 2 Nov 2026: the new design from /newhomepage, which now sends people here).

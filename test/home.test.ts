@@ -28,7 +28,7 @@ describe("home page", () => {
     expect(html).toContain('<html lang="en">');
     expect(html).toContain("<title>GEO · Get your products recommended by AI</title>");
     expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
-    expect(html).toContain('<h1 class="h1" id="hero-h">Shoppers ask ChatGPT what to buy. <b>Help it pick you.</b></h1>');
+    expect(html).toContain('<h1 class="h1" id="hero-h">Shoppers ask AI what to buy. <b>Make it pick you.</b></h1>');
     // no longer a hidden preview
     expect(html).not.toMatch(/<meta name="robots"/);
     expect(html).not.toMatch(/noindex/i);
@@ -87,7 +87,7 @@ describe("home page", () => {
     const start = html.indexOf('<div class="hero-cta">');
     const cta = html.slice(start, html.indexOf("</div>", start));
     expect(cta).toContain('data-waitlist="hero"');
-    expect(cta).toMatch(/<img src="[^"]*ross[^"]*\.webp" alt="" width="56" height="56"/);
+    expect(cta).toMatch(/<img src="[^"]*ross[^"]*\.webp" alt="" width="46" height="46"/);
     expect(cta).toContain("Not sure if GEO suits your store?");
     expect(cta).toContain('Text Ross, the founder: <a href="sms:+61400369865">0400 369 865</a>');
   });
@@ -103,14 +103,17 @@ describe("home page", () => {
     }
   });
 
-  it("shows the first month and the full refund where 'More ways we help' used to be", async () => {
+  it("shows the first three months, one card each, with the full refund (Ross, 3 Nov 2026)", async () => {
     const html = await home();
-    const start = html.indexOf('<section class="sec sec-soft" id="first-month"');
+    const start = html.indexOf('<section class="sec sec-soft" id="months"');
     expect(start).toBeGreaterThan(-1);
     const sec = html.slice(start, html.indexOf("</section>", start));
-    expect(sec).toContain("Try us for a month. <b>Full refund if you’re not happy.</b>");
-    expect([...sec.matchAll(/<h3>([^<]+)<\/h3>/g)].map((m) => m[1])).toEqual(["See where you stand", "We do the work", "Not happy? Full refund."]);
-    expect(sec).toContain("You keep all the work. No lock-in contract");
+    expect(sec).toContain("How it builds up. <b>Month by month.</b>");
+    expect([...sec.matchAll(/<span class="mo-when">([^<]+)<\/span>/g)].map((m) => m[1])).toEqual(["Month 1", "Month 2", "Month 3"]);
+    expect([...sec.matchAll(/<h3>([^<]+)<\/h3>/g)].map((m) => m[1])).toEqual(["We start the work", "Google and AI find you", "Clicks and sales grow"]);
+    expect(sec).toContain("Not happy after month 1? Full refund, and you keep the work.");
+    // honest: no promised numbers
+    expect(sec).toContain("we can’t promise exact results");
     expect(html).not.toContain("More ways");
     // the same promise as the price card
     expect(html).toContain("Not happy after the first month? Full refund, and you keep all the work.");
