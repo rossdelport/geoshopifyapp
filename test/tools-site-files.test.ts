@@ -247,10 +247,13 @@ describe("/privacy after the free tools", () => {
     expect(text).toContain("Crawl4AI, or AnyAPI as a backup");
     expect(text).toContain("We hold it in memory and clear it within a day.");
     expect(text).toContain("We record what each search cost us, without your IP address or your search.");
-    expect(text).toContain("Last updated 13 October 2026");
-    // the Meta pixel on the home page (Ross's ads, 13 Oct 2026)
-    expect(text).toContain("Our home page uses Meta's pixel");
-    expect(text).toContain("It never sends your name or email address.");
+    expect(text).toContain("Last updated 3 November 2026");
+    // the Meta pixel on the home page (Ross's ads, 13 Oct 2026) and the giveaway page (3 Nov 2026)
+    expect(text).toContain("Our home page and giveaway page use Meta's pixel");
+    expect(text).toContain("It never sends your name, email address or phone number.");
+    // the giveaway entries (usegeo.app/giveaway): what we keep, why, and for how long
+    expect(text).toContain("If you enter our giveaway, we keep your store's website, your name, email address and phone number");
+    expect(text).toContain("We delete it 24 months after you entered, or sooner if you ask.");
     expect(text).toContain("In Europe and the UK, the pixel only starts after you click OK on the cookie notice.");
     expect(DASHES.test(text)).toBe(false);
   });

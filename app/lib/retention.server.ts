@@ -20,6 +20,8 @@ export const RETENTION = {
   inactiveSubscriberMonths: 24,
   /** Waitlist signups (name, email, where they came from): deleted this long after they first joined. */
   waitlistMonths: 24,
+  /** Giveaway entries (store, name, email, phone, where they came from): deleted this long after they entered. */
+  giveawayMonths: 24,
 };
 
 /**
@@ -82,6 +84,14 @@ export async function purgeOldData(now = new Date()) {
   const waitlist = await db.waitlistSignup.deleteMany({
     where: { createdAt: { lt: new Date(now.getTime() - RETENTION.waitlistMonths * 30.44 * DAY) } },
   });
+  // Giveaway entries: the same, the hashed IP after a day and the entry 24 months after it was made.
+  await db.giveawayEntry.updateMany({
+    where: { ipHash: { not: null }, createdAt: { lt: new Date(now.getTime() - RETENTION.checkIpHours * 3_600_000) } },
+    data: { ipHash: null },
+  });
+  const giveaway = await db.giveawayEntry.deleteMany({
+    where: { createdAt: { lt: new Date(now.getTime() - RETENTION.giveawayMonths * 30.44 * DAY) } },
+  });
   if (visits.count || shops.count || checks.count || reportEmails.count || subscribers.count) {
     console.log(
       `[retention] cleared ${visits.count} old visit ids, deleted ${shops.count} uninstalled shops, ${checks.count} free checks, ${reportEmails.count} report emails and ${subscribers.count} unsubscribed or inactive addresses`,
@@ -96,5 +106,6 @@ export async function purgeOldData(now = new Date()) {
     reportEmailIps: reportEmailIps.count,
     subscribers: subscribers.count,
     waitlist: waitlist.count,
+    giveaway: giveaway.count,
   };
 }

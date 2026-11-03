@@ -19,6 +19,7 @@ const TABS = [
   { to: "/dash/admin/usage", label: "Usage" },
   { to: "/dash/admin/users", label: "Users" },
   { to: "/dash/admin/waitlist", label: "Waitlist" },
+  { to: "/dash/admin/giveaway", label: "Giveaway" },
   { to: "/dash/admin/support", label: "Support" },
   { to: "/dash/admin/blog", label: "Blog" },
   { to: "/dash/admin/system", label: "System" },
