@@ -8,7 +8,8 @@ export const CALL = {
   weekdays: [1, 2, 3, 4, 5], // Monday to Friday (0 is Sunday)
   firstStart: 9 * 60, // 9:00 am, in minutes after midnight
   lastEnd: 17 * 60, // the last call ends by 5:00 pm
-  minutes: 30, // how long a call is
+  minutes: 15, // how long a call is (Ross, 3 Nov 2026: "15 minute FREE introduction call")
+  every: 30, // a call can start every half hour, so there is a gap between calls
   daysAhead: 14, // the furthest ahead someone can book
   noticeHours: 4, // the soonest someone can book, from now
 };
@@ -43,7 +44,7 @@ export function openSlots(now: Date, busy: Busy[], call = CALL): string[] {
   for (let i = 0; i <= call.daysAhead; i++) {
     const day = new Date(Date.UTC(today.year, today.month - 1, today.day + i));
     if (!call.weekdays.includes(day.getUTCDay())) continue;
-    for (let t = call.firstStart; t + call.minutes <= call.lastEnd; t += call.minutes) {
+    for (let t = call.firstStart; t + call.minutes <= call.lastEnd; t += call.every) {
       const start = atZoneTime(day.getUTCFullYear(), day.getUTCMonth() + 1, day.getUTCDate(), t, call.timeZone);
       const end = start + call.minutes * 60_000;
       if (start < soonest || start > latest) continue;

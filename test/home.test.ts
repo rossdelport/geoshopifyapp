@@ -117,6 +117,18 @@ describe("home page", () => {
     expect(html).not.toContain("More ways");
     // the same promise as the price card
     expect(html).toContain("Not happy after the first month? Full refund, and you keep all the work.");
+    // the price card (Ross, 3 Nov 2026: "make it POP"): no lock-in, the free intro call with Ross's photo, and the
+    // numbers from the plan ("up to" where the plan says up to)
+    const price = html.slice(html.indexOf('id="pricing"'), html.indexOf('id="faq"'));
+    expect(price).toContain("</svg>No lock-in contract</li>");
+    expect(price).toContain("15 minute <b>FREE</b> introduction call with Ross. No obligation.");
+    expect(price).toMatch(/<p class="plan-call"><img src="[^"]*ross[^"]*\.webp"/);
+    expect(html).not.toContain("__ROSS_PHOTO__");
+    expect([...price.matchAll(/<span data-roll>(\d+)<\/span>/g)].map((m) => m[1])).toEqual(["100", "12", "20", "40"]);
+    expect(price.match(/<small>up to<\/small>/g)).toHaveLength(2);
+    // the stories row moves again: its keyframes went missing with the old guides card on 3 Nov 2026
+    expect(html).toContain("animation:belt 90s linear infinite");
+    expect(html).toContain("@keyframes belt{to{transform:translateX(-50%)}}");
   });
 
   it("has one canonical address, the five other languages, share tags and the same organisation as the tool pages", async () => {

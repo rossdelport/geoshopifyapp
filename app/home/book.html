@@ -134,8 +134,9 @@ ul{padding:0;list-style:none}
 .badge{display:grid;place-items:center;width:56px;height:56px;margin:0 auto 16px;border-radius:50%;color:#fff;background:linear-gradient(180deg,var(--accent-hi),var(--accent));box-shadow:0 0 0 6px var(--accent-50)}
 .badge svg{width:26px;height:26px}
 .off .btn{margin-top:22px}
-.sms{margin-top:22px;text-align:center;font-size:14px}
-.sms a{color:var(--accent-ink);white-space:nowrap;text-decoration:underline;text-decoration-color:var(--accent-100);text-underline-offset:3px}
+/* Ross (3 Nov 2026): the line under the calendar now sells the call (his number is next to his name). */
+.intro{margin-top:22px;text-align:center;font-size:14px}
+.intro b{color:var(--accent-ink);font-weight:650}
 
 .foot{border-top:1px solid var(--line);padding:22px 0;font-size:13.5px;color:var(--soft)}
 .foot .wrap{display:flex;gap:20px}
@@ -165,6 +166,7 @@ ul{padding:0;list-style:none}
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>The call is free</li>
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>A$1,000 a month, and we do the work</li>
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Full refund if you’re not happy after month 1</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>No lock-in contract</li>
     </ul>
   </div>
 
@@ -183,7 +185,7 @@ ul{padding:0;list-style:none}
         <p class="err" role="alert" hidden></p>
         <div class="pick">
           <p class="pills">
-            <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>30 minutes</span>
+            <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>15 minutes</span>
             <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg>Video call on Google Meet</span>
           </p>
           <div class="has-times">
@@ -216,7 +218,7 @@ ul{padding:0;list-style:none}
         </div>
       </div>
     </div>
-    <p class="sms" hidden>Can’t find a time? Text Ross: <a href="sms:+61400369865">0400 369 865</a></p>
+    <p class="intro" hidden>15 minute <b>FREE</b> introduction call. No obligation.</p>
   </div>
 </main>
 
@@ -250,7 +252,7 @@ ul{padding:0;list-style:none}
 
   var err = on.querySelector('.err'), pick = on.querySelector('.pick'), form = on.querySelector('.bk-form'), done = on.querySelector('.done');
   var daysEl = on.querySelector('.days'), timesEl = on.querySelector('.times'), btn = form.querySelector('.go');
-  var sms = document.querySelector('.sms');
+  var intro = document.querySelector('.intro');
   var tz = '';
   try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { /* unknown: "your time" */ }
   var place = /\//.test(tz) ? tz.split('/').pop().replace(/_/g, ' ') + ' time' : 'your time';
@@ -283,7 +285,7 @@ ul{padding:0;list-style:none}
     });
     on.querySelector('.has-times').hidden = !order.length;
     on.querySelector('.none').hidden = !!order.length;
-    sms.hidden = false;
+    intro.hidden = false;
     if (!byDay[current]) current = order[0];
     daysEl.innerHTML = '';
     order.forEach(function (k) {
@@ -343,7 +345,7 @@ ul{padding:0;list-style:none}
           done.querySelector('[data-when]').textContent = longDay.format(new Date(chosen)) + ' at ' + clock.format(new Date(chosen)) + ' (' + place + ')';
           done.querySelector('[data-email]').textContent = out.email;
           form.hidden = true;
-          sms.hidden = true;
+          intro.hidden = true;
           done.hidden = false;
           done.querySelector('h2').focus();
           if (typeof window.fbq === 'function') window.fbq('track', 'Lead', { content_name: 'book a call' });

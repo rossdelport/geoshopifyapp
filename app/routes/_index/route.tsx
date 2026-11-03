@@ -32,7 +32,7 @@ const storyGroup = (copy: boolean) =>
   "</ul>";
 
 // Functions as replacements, so a "$" in a headline is never read as a replace pattern.
-const page = raw.replaceAll("__FONT_URL__", () => font).replace("__ROSS_PHOTO__", () => rossPhoto).replace("<!-- STORY_CARDS -->", () => storyGroup(false) + storyGroup(true));
+const page = raw.replaceAll("__FONT_URL__", () => font).replaceAll("__ROSS_PHOTO__", () => rossPhoto).replace("<!-- STORY_CARDS -->", () => storyGroup(false) + storyGroup(true));
 
 // No component: this route sends the finished HTML page as-is.
 export const loader = async ({ request }: LoaderFunctionArgs) => serveHome(request, page);
