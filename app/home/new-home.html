@@ -147,7 +147,13 @@ ul,ol{padding:0;list-style:none}
 @media (min-width:1080px){.hero-in{grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:56px}}
 @media (min-width:1080px){.hero .h1{font-size:clamp(3.1rem,1.2rem + 2.9vw,3.9rem)}}
 .hero .lead{margin-top:22px;max-width:34em}
-.hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.hero-cta{display:flex;flex-wrap:wrap;align-items:center;gap:16px 22px;margin-top:28px}
+/* Ross's photo and number beside the main button (Ross, 3 Nov 2026); under it on phones */
+.founder{display:flex;align-items:center;gap:12px;font-size:14px;line-height:1.45;color:var(--text)}
+.founder img{flex:none;width:56px;height:56px;border-radius:16px;object-fit:cover;background:#eceae6;box-shadow:0 0 0 3px #fff,0 8px 18px -8px rgba(40,25,130,.45)}
+.founder b{font-weight:600;color:var(--head)}
+.founder a{color:var(--accent-ink);white-space:nowrap;text-decoration:underline;text-decoration-color:var(--accent-100);text-underline-offset:3px}
+.founder a:hover{text-decoration-color:currentColor}
 /* the chat sits in the page flow here (not pinned in the middle), so the panel grows with it on small screens */
 .art-hero{height:auto;min-height:clamp(400px,36vw,460px);display:grid;place-items:center;padding:52px 20px 62px}
 .art-hero .chat{position:relative;left:auto;top:auto;transform:none}
@@ -728,7 +734,7 @@ html.still .g-geo{display:none}
         <p class="lead">GEO helps ChatGPT, Gemini and Perplexity pick your products. Then it shows you the sales that came from AI. No ads. No paying per click.</p>
         <div class="hero-cta">
           <a class="btn btn-pri" href="#waitlist" data-waitlist="hero" aria-haspopup="dialog">Join the waitlist</a>
-          <a class="btn btn-sec" href="#how">See how it works</a>
+          <p class="founder"><img src="__ROSS_PHOTO__" alt="" width="56" height="56" decoding="async"><span>Not sure if GEO suits your store?<br><b>Text Ross, the founder: <a href="sms:+61400369865">0400 369 865</a></b></span></p>
         </div>
       </div>
 
@@ -1126,13 +1132,13 @@ html.still .g-geo{display:none}
               <div class="fq-pair" id="fq-p1">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">What does GEO actually do?</h3></div>
                 <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
-                  <p>It shows you if ChatGPT, Gemini and Perplexity pick your products, and who they pick instead. Then we do the work. We write buying guides and Reddit replies for you. Our team emails the sites AI quotes most. It also counts the sales that came from AI.</p>
+                  <p>We check if ChatGPT, Gemini and Perplexity pick your products, and who they pick instead. Then our team does the work for you. We write buying guides, fix your product pages and email the sites AI quotes most. You see the sales that came from AI.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p2">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">How do you know a sale came from AI?</h3></div>
                 <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
-                  <p>You paste a small code into Shopify once. It takes about 2 minutes. The code spots shoppers who come from ChatGPT, Gemini, Perplexity and other AI apps. Some AI apps hide where a shopper came from, so the real number is often a bit higher. We can’t tell Google AI Overviews apart from normal Google, so we count them as search.</p>
+                  <p>At onboarding, we help you add a small code to Shopify. It takes about 2 minutes. The code spots shoppers who come from ChatGPT, Gemini, Perplexity and other AI apps. Some AI apps hide where a shopper came from, so the real number is often a bit higher. We can’t tell Google AI Overviews apart from normal Google, so we count them as search.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p3">
@@ -1145,19 +1151,19 @@ html.still .g-geo{display:none}
               <div class="fq-pair" id="fq-p4">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">Will GEO change my store without asking?</h3></div>
                 <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
-                  <p>No. GEO only reads what anyone can see on your store. Nothing in your Shopify admin changes. You decide what goes live.</p>
+                  <p>No. At the start, we agree with you on what we can change. Then we do the work, and you can see everything we did.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p5">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">Do I need to install an app?</h3></div>
                 <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
-                  <p>No. You sign in with your email and type your store’s address. To count sales from AI, you paste one small code into Shopify.</p>
+                  <p>No. At onboarding, you give us your store’s address and we help you add one small code to Shopify. That code counts sales from AI.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p6">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">How long does setup take?</h3></div>
                 <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
-                  <p>About 5 minutes of your time. Your first check then runs by itself and takes a few minutes. You can close the page while it works.</p>
+                  <p>Not long. Onboarding is the only part you do. You tell us about your store and add one small code. After that, we do all the work.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p7">
