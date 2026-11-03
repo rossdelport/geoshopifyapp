@@ -28,7 +28,7 @@ describe("home page", () => {
     expect(html).toContain('<html lang="en">');
     expect(html).toContain("<title>GEO · Get your products recommended by AI</title>");
     expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
-    expect(html).toContain('<h1 class="h1" id="hero-h">Shoppers ask ChatGPT what to buy. <b>Help it pick you.</b></h1>');
+    expect(html).toContain('<h1 class="h1" id="hero-h">Shoppers ask AI what to buy. <b>Make it pick you.</b></h1>');
     // no longer a hidden preview
     expect(html).not.toMatch(/<meta name="robots"/);
     expect(html).not.toMatch(/noindex/i);
@@ -87,7 +87,7 @@ describe("home page", () => {
     const start = html.indexOf('<div class="hero-cta">');
     const cta = html.slice(start, html.indexOf("</div>", start));
     expect(cta).toContain('data-waitlist="hero"');
-    expect(cta).toMatch(/<img src="[^"]*ross[^"]*\.webp" alt="" width="56" height="56"/);
+    expect(cta).toMatch(/<img src="[^"]*ross[^"]*\.webp" alt="" width="46" height="46"/);
     expect(cta).toContain("Not sure if GEO suits your store?");
     expect(cta).toContain('Text Ross, the founder: <a href="sms:+61400369865">0400 369 865</a>');
   });
