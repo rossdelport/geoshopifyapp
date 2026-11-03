@@ -126,6 +126,13 @@ describe("home page", () => {
     expect(html).not.toContain("__ROSS_PHOTO__");
     expect([...price.matchAll(/<span data-roll>(\d+)<\/span>/g)].map((m) => m[1])).toEqual(["100", "12", "20", "40"]);
     expect(price.match(/<small>up to<\/small>/g)).toHaveLength(2);
+    // a soft light follows the mouse over the purple panel and the button (Ross, 3 Nov 2026)
+    expect(price).toContain('<span class="plan-glow" aria-hidden="true"></span>');
+    expect(price).toContain('<span class="btn-glow" aria-hidden="true"></span></a>');
+    expect(html).toContain("matchMedia('(hover: hover) and (pointer: fine)')");
+    // Ross (3 Nov 2026): the FAQ's "More questions?" chip is gone, and its question tile has a clean icon
+    expect(html).not.toContain("More questions? Ask GEO inside the app");
+    expect(html).toContain('<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>');
     // the stories row moves again: its keyframes went missing with the old guides card on 3 Nov 2026
     expect(html).toContain("animation:belt 90s linear infinite");
     expect(html).toContain("@keyframes belt{to{transform:translateX(-50%)}}");
