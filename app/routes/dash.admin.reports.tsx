@@ -3,6 +3,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { useFetcher, useFetchers, useLoaderData, useRevalidator } from "react-router";
 import { requireAdmin } from "../lib/admin.server";
 import { createReports, deleteReport, listReports } from "../lib/store-report.server";
+import { makerLink } from "../lib/report-maker.server";
 import { REPORTS_AT_ONCE } from "../lib/store-report";
 import { SITE } from "../lib/tools/site";
 import { CopyButton } from "../components/web";
@@ -29,7 +30,8 @@ const running = (r: Report) => r.status !== "done" && r.status !== "failed";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await requireAdmin(request);
-  return { reports: await listReports() };
+  // The phone report maker's private link (no sign-in needed there), to copy onto Ross's phone.
+  return { reports: await listReports(), phoneLink: makerLink() };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -195,7 +197,7 @@ function badLine(bad: string[]): string {
 }
 
 export default function AdminReports() {
-  const { reports } = useLoaderData<typeof loader>();
+  const { reports, phoneLink } = useLoaderData<typeof loader>();
   const revalidator = useRevalidator();
   const make = useFetcher<typeof action>();
   const busy = make.state !== "idle";
@@ -272,6 +274,18 @@ export default function AdminReports() {
               ) : null}
             </div>
           </make.Form>
+        </div>
+        <div className="w-box" style={{ padding: 16, marginTop: 12, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
+          <div style={{ flex: "1 1 280px", minWidth: 0 }}>
+            <b style={{ color: "var(--ink)" }}>On your phone, no sign-in</b>
+            <p className="w-note" style={{ marginTop: 2 }}>
+              A private page that makes one report at a time, with your script. Keep the link private: anyone with it can make reports.
+            </p>
+          </div>
+          <CopyButton text={phoneLink} label="Copy phone link" />
+          <a className="w-btn w-btn-ghost w-btn-sm" href={phoneLink} target="_blank" rel="noreferrer">
+            Open
+          </a>
         </div>
       </section>
       <section className="w-sec">

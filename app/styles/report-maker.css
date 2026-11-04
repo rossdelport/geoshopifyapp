@@ -1,0 +1,35 @@
+/* The phone report maker (app/routes/report-maker.$key.tsx): one column, big tap targets, on top of web.css. */
+body { background: #fafafa; }
+.rm { max-width: 560px; min-height: 100vh; margin: 0 auto; padding: 18px 16px 48px; background: #fafafa; }
+.rm-head { display: flex; align-items: center; gap: 9px; margin-bottom: 18px; font-size: 19px; font-weight: 650; letter-spacing: -0.02em; color: var(--ink); }
+.rm-head em { margin-left: auto; font-style: normal; font-size: 13px; font-weight: 500; letter-spacing: 0; color: var(--muted); }
+.rm-mark { position: relative; width: 22px; height: 20px; flex: none; }
+.rm-mark i { position: absolute; width: 14px; height: 14px; border-radius: 50%; }
+.rm-mark i:first-child { left: 0; top: 0; background: #cdc6fc; }
+.rm-mark i:last-child { right: 0; bottom: 0; background: var(--accent); }
+
+.rm-form { display: grid; gap: 10px; padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); box-shadow: var(--shadow-sm); }
+.rm-form label { font-size: 14px; font-weight: 600; color: var(--ink); }
+.rm-form .w-input { height: 50px; font-size: 17px; }
+.rm-form .w-btn { min-height: 50px; font-size: 16px; }
+.rm-form .w-note { margin: 0; }
+
+.rm-list { display: grid; gap: 12px; margin: 18px 0 0; padding: 0; list-style: none; }
+.rm-card { display: grid; gap: 10px; padding: 14px 16px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); box-shadow: var(--shadow-sm); min-width: 0; }
+.rm-card .w-note { margin: 0; }
+.rm-top { display: flex; align-items: flex-start; gap: 10px; }
+.rm-name { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.rm-name b { font-size: 16px; font-weight: 650; letter-spacing: -0.01em; color: var(--ink); overflow-wrap: anywhere; }
+.rm-name span { font-size: 12.5px; color: var(--muted); overflow-wrap: anywhere; }
+.rm-bar { height: 6px; border-radius: 99px; background: var(--bg-2); overflow: hidden; }
+.rm-bar i { display: block; height: 100%; background: var(--accent); transform-origin: left center; transition: transform 0.6s ease; }
+.rm-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.rm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.rm-actions .w-btn { min-height: 46px; font-size: 15px; }
+.rm-again { display: grid; gap: 8px; }
+.rm-again .w-btn { min-height: 44px; }
+.rm-script summary { cursor: pointer; color: var(--accent); font-weight: 600; font-size: 14px; }
+.rm-script ol { display: grid; gap: 8px; margin: 10px 0; padding-left: 20px; color: var(--ink-2); font-size: 15px; line-height: 1.5; }
+.rm-script .w-note { margin: 0 0 10px; }
+.rm-empty { margin-top: 18px; text-align: center; }
+@media (prefers-reduced-motion: reduce) { .rm-bar i { transition: none; } }

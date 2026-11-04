@@ -59,7 +59,7 @@ describe("Admin > Reports", () => {
   });
 
   it("lists the reports", async () => {
-    expect(await load()).toEqual({ reports: rows });
+    expect(await load()).toEqual({ reports: rows, phoneLink: expect.stringMatching(/^https:\/\/usegeo\.app\/report-maker\/[\w-]{16,}$/) });
     expect(requireAdmin).toHaveBeenCalledTimes(1);
   });
 
@@ -95,9 +95,9 @@ describe("Admin > Reports", () => {
   });
 
   it("shows status, tags, the link and the script, with no em dashes", () => {
-    const Stub = createRoutesStub([{ id: "reports", path: "/dash/admin/reports", Component: route.default, loader: () => ({ reports: rows }) }]);
+    const Stub = createRoutesStub([{ id: "reports", path: "/dash/admin/reports", Component: route.default, loader: () => ({ reports: rows, phoneLink: "https://usegeo.app/report-maker/k" }) }]);
     const html = renderToStaticMarkup(
-      createElement(Stub, { initialEntries: ["/dash/admin/reports"], hydrationData: { loaderData: { reports: { reports: rows } } } } as never),
+      createElement(Stub, { initialEntries: ["/dash/admin/reports"], hydrationData: { loaderData: { reports: { reports: rows, phoneLink: "https://usegeo.app/report-maker/k" } } } } as never),
     );
     for (const s of [
       "Store addresses, one per line",
@@ -117,6 +117,9 @@ describe("Admin > Reports", () => {
       "Episode ___",
       "Only 20 of 24",
       "Copy script",
+      "On your phone, no sign-in",
+      "Copy phone link",
+      'href="https://usegeo.app/report-maker/k"',
     ]) {
       expect(html, s).toContain(s);
     }
