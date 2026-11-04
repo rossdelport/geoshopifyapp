@@ -97,7 +97,8 @@ const fmt = (n: number) => n.toLocaleString("en-US");
 
 // `left`: what wasn't started (addresses past the first REPORTS_AT_ONCE, then the bits that weren't addresses),
 // so Admin > Reports can put them back in the box.
-export type CreateReportsResult = { ok: true; created: number; bad: string[]; capped: boolean; left: string[] } | { ok: false; error: string };
+// `ids`: the reports that started, so the report maker page can follow one.
+export type CreateReportsResult = { ok: true; created: number; ids: string[]; bad: string[]; capped: boolean; left: string[] } | { ok: false; error: string };
 
 /** One report for each store address Ross pasted (the first REPORTS_AT_ONCE), each run by the "report.run" job. */
 export async function createReports(input: string, by: string | null): Promise<CreateReportsResult> {
@@ -125,10 +126,12 @@ export async function createReports(input: string, by: string | null): Promise<C
   if (!rows) return { ok: false, error: ERRORS.tooMany };
 
   let created = 0;
+  const ids: string[] = [];
   for (const { id } of rows) {
     try {
       await enqueue("report.run", { id }, { dedupeKey: `report:${id}` });
       created++;
+      ids.push(id);
     } catch (err) {
       console.error("[store-report] could not queue:", (err as Error).message);
       await db.storeReport
@@ -137,7 +140,7 @@ export async function createReports(input: string, by: string | null): Promise<C
     }
   }
   if (!created) return { ok: false, error: ERRORS.notQueued };
-  return { ok: true, created, bad: bad.slice(0, 20), capped, left: [...more, ...bad.slice(0, 20)] };
+  return { ok: true, created, ids, bad: bad.slice(0, 20), capped, left: [...more, ...bad.slice(0, 20)] };
 }
 
 // ---------- Read the store (its public pages only) ----------
@@ -735,37 +738,48 @@ export interface ReportListItem {
 
 const STATUSES: ReportStatus[] = ["queued", "reading", "asking", "writing", "done", "failed"];
 
+type ReportRow = NonNullable<Awaited<ReturnType<typeof db.storeReport.findUnique>>>;
+
 /** The newest reports first, for Admin > Reports. A report stuck for 30 minutes shows as failed. */
 export async function listReports(limit = 60): Promise<ReportListItem[]> {
   const rows = await db.storeReport.findMany({ orderBy: { createdAt: "desc" }, take: Math.max(1, Math.min(200, Math.floor(limit) || 60)) });
   const now = Date.now();
-  return rows.map((row) => {
-    let status = (STATUSES as string[]).includes(row.status) ? (row.status as ReportStatus) : "queued";
-    let error = status === "failed" ? row.error || ERRORS.generic : null;
-    // A report that never finished (worker gone, job lost) shows as failed, so the page stops waiting.
-    if (status !== "done" && status !== "failed" && now - row.createdAt.getTime() > STALE_MS) {
-      status = "failed";
-      error = ERRORS.tooSlow;
-    }
-    const data = status === "done" ? ((row.data as unknown as StoreReportData | null) ?? null) : null;
-    return {
-      id: row.id,
-      host: row.host,
-      slug: status === "done" ? row.slug : null,
-      status,
-      done: Math.min(row.done, row.total),
-      total: row.total,
-      error,
-      createdAt: row.createdAt.toISOString(),
-      brand: data?.store?.brand ?? null,
-      tags: data?.tags ?? [],
-      notes: data?.notes ?? [],
-      script: data?.script ?? [],
-      named: data ? data.named : null,
-      answers: data ? data.answers : null,
-      moves: data?.moves?.length ?? 0,
-    };
-  });
+  return rows.map((row) => toListItem(row, now));
+}
+
+/** One report by its id, for the report maker page to follow while it runs. Null when there's no such report. */
+export async function getReportItem(id: string): Promise<ReportListItem | null> {
+  if (typeof id !== "string" || !id || id.length > 64) return null;
+  const row = await db.storeReport.findUnique({ where: { id } });
+  return row ? toListItem(row, Date.now()) : null;
+}
+
+function toListItem(row: ReportRow, now: number): ReportListItem {
+  let status = (STATUSES as string[]).includes(row.status) ? (row.status as ReportStatus) : "queued";
+  let error = status === "failed" ? row.error || ERRORS.generic : null;
+  // A report that never finished (worker gone, job lost) shows as failed, so the page stops waiting.
+  if (status !== "done" && status !== "failed" && now - row.createdAt.getTime() > STALE_MS) {
+    status = "failed";
+    error = ERRORS.tooSlow;
+  }
+  const data = status === "done" ? ((row.data as unknown as StoreReportData | null) ?? null) : null;
+  return {
+    id: row.id,
+    host: row.host,
+    slug: status === "done" ? row.slug : null,
+    status,
+    done: Math.min(row.done, row.total),
+    total: row.total,
+    error,
+    createdAt: row.createdAt.toISOString(),
+    brand: data?.store?.brand ?? null,
+    tags: data?.tags ?? [],
+    notes: data?.notes ?? [],
+    script: data?.script ?? [],
+    named: data ? data.named : null,
+    answers: data ? data.answers : null,
+    moves: data?.moves?.length ?? 0,
+  };
 }
 
 /** Delete a report: its page stops working. A report still running stops when it next saves. */

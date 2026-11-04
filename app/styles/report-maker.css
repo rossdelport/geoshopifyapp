@@ -1,4 +1,4 @@
-/* The phone report maker (app/routes/report-maker.$key.tsx): one column, big tap targets, on top of web.css. */
+/* The report maker, usegeo.app/report-maker (app/routes/report-maker.tsx): one column, big tap targets, on top of web.css. */
 body { background: #fafafa; }
 .rm { max-width: 560px; min-height: 100vh; margin: 0 auto; padding: 18px 16px 48px; background: #fafafa; }
 .rm-head { display: flex; align-items: center; gap: 9px; margin-bottom: 18px; font-size: 19px; font-weight: 650; letter-spacing: -0.02em; color: var(--ink); }
@@ -14,22 +14,16 @@ body { background: #fafafa; }
 .rm-form .w-btn { min-height: 50px; font-size: 16px; }
 .rm-form .w-note { margin: 0; }
 
-.rm-list { display: grid; gap: 12px; margin: 18px 0 0; padding: 0; list-style: none; }
 .rm-card { display: grid; gap: 10px; padding: 14px 16px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); box-shadow: var(--shadow-sm); min-width: 0; }
 .rm-card .w-note { margin: 0; }
+.rm-card > .w-btn { min-height: 50px; font-size: 16px; }
+.rm-card .rm-form { padding: 0; border: 0; box-shadow: none; }
+.rm-another { justify-self: center; padding: 6px; font-size: 14px; font-weight: 600; color: var(--accent); }
 .rm-top { display: flex; align-items: flex-start; gap: 10px; }
 .rm-name { display: grid; gap: 2px; min-width: 0; flex: 1; }
 .rm-name b { font-size: 16px; font-weight: 650; letter-spacing: -0.01em; color: var(--ink); overflow-wrap: anywhere; }
 .rm-name span { font-size: 12.5px; color: var(--muted); overflow-wrap: anywhere; }
 .rm-bar { height: 6px; border-radius: 99px; background: var(--bg-2); overflow: hidden; }
 .rm-bar i { display: block; height: 100%; background: var(--accent); transform-origin: left center; transition: transform 0.6s ease; }
-.rm-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.rm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.rm-actions .w-btn { min-height: 46px; font-size: 15px; }
-.rm-again { display: grid; gap: 8px; }
-.rm-again .w-btn { min-height: 44px; }
-.rm-script summary { cursor: pointer; color: var(--accent); font-weight: 600; font-size: 14px; }
-.rm-script ol { display: grid; gap: 8px; margin: 10px 0; padding-left: 20px; color: var(--ink-2); font-size: 15px; line-height: 1.5; }
-.rm-script .w-note { margin: 0 0 10px; }
 .rm-empty { margin-top: 18px; text-align: center; }
 @media (prefers-reduced-motion: reduce) { .rm-bar i { transition: none; } }

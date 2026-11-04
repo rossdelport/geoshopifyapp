@@ -59,19 +59,19 @@ describe("Admin > Reports", () => {
   });
 
   it("lists the reports", async () => {
-    expect(await load()).toEqual({ reports: rows, phoneLink: expect.stringMatching(/^https:\/\/usegeo\.app\/report-maker\/[\w-]{16,}$/) });
+    expect(await load()).toEqual({ reports: rows });
     expect(requireAdmin).toHaveBeenCalledTimes(1);
   });
 
   it("passes the paste and the admin's email to createReports", async () => {
-    vi.mocked(srv.createReports).mockResolvedValue({ ok: true, created: 2, bad: [], capped: false, left: [] });
-    expect(await act({ intent: "create", stores: "a.example\nb.example" })).toEqual({ ok: true, created: 2, bad: [], capped: false, left: [] });
+    vi.mocked(srv.createReports).mockResolvedValue({ ok: true, created: 2, ids: ["x", "y"], bad: [], capped: false, left: [] });
+    expect(await act({ intent: "create", stores: "a.example\nb.example" })).toEqual({ ok: true, created: 2, ids: ["x", "y"], bad: [], capped: false, left: [] });
     expect(srv.createReports).toHaveBeenCalledWith("a.example\nb.example", "ross@example.com");
     expect(srv.deleteReport).not.toHaveBeenCalled();
   });
 
   it("runs a failed report again: a new report for the same store takes its place", async () => {
-    vi.mocked(srv.createReports).mockResolvedValue({ ok: true, created: 1, bad: [], capped: false, left: [] });
+    vi.mocked(srv.createReports).mockResolvedValue({ ok: true, created: 1, ids: ["z"], bad: [], capped: false, left: [] });
     expect(await act({ intent: "rerun", stores: "nope.example", id: "c" })).toMatchObject({ ok: true, created: 1 });
     expect(srv.createReports).toHaveBeenCalledWith("nope.example", "ross@example.com");
     expect(srv.deleteReport).toHaveBeenCalledWith("c");
@@ -95,9 +95,9 @@ describe("Admin > Reports", () => {
   });
 
   it("shows status, tags, the link and the script, with no em dashes", () => {
-    const Stub = createRoutesStub([{ id: "reports", path: "/dash/admin/reports", Component: route.default, loader: () => ({ reports: rows, phoneLink: "https://usegeo.app/report-maker/k" }) }]);
+    const Stub = createRoutesStub([{ id: "reports", path: "/dash/admin/reports", Component: route.default, loader: () => ({ reports: rows }) }]);
     const html = renderToStaticMarkup(
-      createElement(Stub, { initialEntries: ["/dash/admin/reports"], hydrationData: { loaderData: { reports: { reports: rows, phoneLink: "https://usegeo.app/report-maker/k" } } } } as never),
+      createElement(Stub, { initialEntries: ["/dash/admin/reports"], hydrationData: { loaderData: { reports: { reports: rows } } } } as never),
     );
     for (const s of [
       "Store addresses, one per line",
@@ -118,14 +118,13 @@ describe("Admin > Reports", () => {
       "Only 20 of 24",
       "Copy script",
       "On your phone, no sign-in",
-      "Copy phone link",
-      'href="https://usegeo.app/report-maker/k"',
+      'href="/report-maker"',
     ]) {
       expect(html, s).toContain(s);
     }
     expect(html).not.toMatch(/—|―| –|– /);
     // Only the ready report has a link to copy; only the failed one can be run again.
-    expect(html.match(/Copy link/g)).toHaveLength(1);
+    expect(html.match(/Copy link/g)).toHaveLength(2); // the ready report's, and the report maker's
     expect(html.match(/>Run again</g)).toHaveLength(1);
     expect(html).toMatch(/name="intent" value="rerun"\/><input type="hidden" name="stores" value="nope.example"\/><input type="hidden" name="id" value="c"\/>/);
     // A report without a brand shows its address once.

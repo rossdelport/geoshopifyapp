@@ -3,7 +3,6 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { useFetcher, useFetchers, useLoaderData, useRevalidator } from "react-router";
 import { requireAdmin } from "../lib/admin.server";
 import { createReports, deleteReport, listReports } from "../lib/store-report.server";
-import { makerLink } from "../lib/report-maker.server";
 import { REPORTS_AT_ONCE } from "../lib/store-report";
 import { SITE } from "../lib/tools/site";
 import { CopyButton } from "../components/web";
@@ -14,6 +13,9 @@ import { CopyButton } from "../components/web";
 // here: the public page never shows them.
 
 type Report = Awaited<ReturnType<typeof listReports>>[number];
+
+// The report maker, for Ross's phone (routes/report-maker.tsx).
+const MAKER = `${SITE}/report-maker`;
 
 // Perth time, like the giveaway page: Ross films from Perth.
 const perth = (iso: string) =>
@@ -30,8 +32,7 @@ const running = (r: Report) => r.status !== "done" && r.status !== "failed";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await requireAdmin(request);
-  // The phone report maker's private link (no sign-in needed there), to copy onto Ross's phone.
-  return { reports: await listReports(), phoneLink: makerLink() };
+  return { reports: await listReports() };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -197,7 +198,7 @@ function badLine(bad: string[]): string {
 }
 
 export default function AdminReports() {
-  const { reports, phoneLink } = useLoaderData<typeof loader>();
+  const { reports } = useLoaderData<typeof loader>();
   const revalidator = useRevalidator();
   const make = useFetcher<typeof action>();
   const busy = make.state !== "idle";
@@ -279,11 +280,11 @@ export default function AdminReports() {
           <div style={{ flex: "1 1 280px", minWidth: 0 }}>
             <b style={{ color: "var(--ink)" }}>On your phone, no sign-in</b>
             <p className="w-note" style={{ marginTop: 2 }}>
-              A private page that makes one report at a time, with your script. Keep the link private: anyone with it can make reports.
+              usegeo.app/report-maker makes one report and opens it when it&apos;s ready. Scripts stay here.
             </p>
           </div>
-          <CopyButton text={phoneLink} label="Copy phone link" />
-          <a className="w-btn w-btn-ghost w-btn-sm" href={phoneLink} target="_blank" rel="noreferrer">
+          <CopyButton text={MAKER} label="Copy link" />
+          <a className="w-btn w-btn-ghost w-btn-sm" href="/report-maker" target="_blank" rel="noreferrer">
             Open
           </a>
         </div>

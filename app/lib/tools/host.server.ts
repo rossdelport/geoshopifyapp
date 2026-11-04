@@ -2,8 +2,8 @@
 // and the *.up.railway.app address, with no redirect between them (codebase-brief §1.7). Public page views
 // on the other two get a 301 to https://usegeo.app. The Shopify app keeps working on the Railway address:
 // /app, /auth, /webhooks, /api, /healthz and the free check's report pages (/check/<id>) are never redirected,
-// nor is any URL carrying Shopify's admin parameters. Store reports (/report/<slug>) are public pages, so they
-// are redirected. robots.txt is served on every host (bots must read it, not be redirected).
+// nor is any URL carrying Shopify's admin parameters. Store reports (/report/<slug>) and the report maker
+// (/report-maker) are public pages, so they are redirected. robots.txt is served on every host (bots must read it, not be redirected).
 
 import { redirect } from "react-router";
 import { HOME_LANGS, SITE, SITE_HOST } from "./site";
@@ -11,7 +11,7 @@ import { HOME_LANGS, SITE, SITE_HOST } from "./site";
 /** Query parameters Shopify adds when the admin opens the app: those visits must stay where they are. */
 const SHOPIFY_PARAMS = ["shop", "host", "embedded", "hmac", "id_token"];
 
-const EXACT_PUBLIC = new Set(["/", "/newhomepage", "/check", "/check/", "/tools", "/tools/", "/stories", "/stories/", "/privacy", "/privacy/", "/terms", "/terms/", "/sitemap.xml", "/llms.txt", ...HOME_LANGS.map((l) => `/${l}`)]);
+const EXACT_PUBLIC = new Set(["/", "/newhomepage", "/check", "/check/", "/tools", "/tools/", "/stories", "/stories/", "/privacy", "/privacy/", "/terms", "/terms/", "/report-maker", "/sitemap.xml", "/llms.txt", ...HOME_LANGS.map((l) => `/${l}`)]);
 
 function isPublicPath(path: string): boolean {
   if (path.endsWith(".data")) return false; // React Router's own data requests come from the page's host
