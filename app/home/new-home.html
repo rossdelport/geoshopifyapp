@@ -493,7 +493,7 @@ ul,ol{padding:0;list-style:none}
 .plan-tag .mark{width:19px;height:17px}.plan-tag .mark i{width:12px;height:12px}
 .plan-tag .mark i:first-child{background:#e4e0fd}.plan-tag .mark i:last-child{background:#fff}
 .price{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-top:26px}
-.price b{font-size:clamp(3.4rem,2.4rem + 3vw,4.6rem);line-height:.95;font-weight:650;letter-spacing:-.055em;font-variant-numeric:tabular-nums;color:#ffdc96;text-shadow:0 1px 0 rgba(120,70,0,.25),0 10px 30px rgba(30,12,140,.4)}
+.price b{font-size:clamp(3.4rem,2.4rem + 3vw,4.6rem);line-height:.95;font-weight:650;letter-spacing:-.055em;font-variant-numeric:tabular-nums;text-shadow:0 10px 30px rgba(30,12,140,.35)}
 .price>span{font-size:16px;font-weight:500;color:rgba(255,255,255,.82);white-space:nowrap}
 @media (max-width:359px){.price b{font-size:2.9rem}}
 .price-alt{margin-top:12px;font-size:15px;line-height:1.5;color:rgba(255,255,255,.88);text-wrap:pretty}
@@ -501,8 +501,8 @@ ul,ol{padding:0;list-style:none}
 .plan-ok li{display:inline-flex;align-items:center;gap:7px;padding:6px 12px 6px 7px;border-radius:999px;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.24);font-size:13.5px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
 .plan-ok svg{width:18px;height:18px;padding:3px;border-radius:50%;color:var(--accent-ink);background:#fff}
 .plan-go{margin-top:auto;padding-top:28px}
-.plan-l .btn{width:100%;height:52px;font-size:16px;color:var(--accent-ink);background:#fff;border:1px solid #fff;box-shadow:0 1px 2px rgba(30,12,140,.25),0 14px 28px -12px rgba(20,8,110,.75)}
-.plan-l .btn:hover{background:#fff;transform:translateY(-1px);box-shadow:0 1px 2px rgba(30,12,140,.25),0 18px 32px -12px rgba(20,8,110,.85)}
+.plan-l .btn{width:100%;height:52px;font-size:16px;font-weight:650;color:var(--gold-ink);background:linear-gradient(180deg,var(--gold-hi),var(--gold));border:1px solid #f9dfa6;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 1px 2px rgba(110,60,0,.3),0 14px 28px -12px rgba(20,8,110,.75)}
+.plan-l .btn:hover{background:linear-gradient(180deg,#f9dc9e,#efb862);transform:translateY(-1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 1px 2px rgba(110,60,0,.3),0 18px 32px -12px rgba(20,8,110,.85)}
 .plan-l .btn svg{width:17px;height:17px;transition:transform .2s ease}
 /* Ross (3 Nov 2026): "a shimmer that follows my mouse" over the purple panel and the Get started button. A soft
    light sits where the mouse is (moved by transform, faded by opacity), only with a mouse, never when paused or
@@ -510,7 +510,7 @@ ul,ol{padding:0;list-style:none}
 .plan-glow,.btn-glow{position:absolute;left:0;top:0;z-index:-1;border-radius:50%;pointer-events:none;opacity:0;transition:opacity .35s ease}
 .plan-glow{width:460px;height:460px;margin:-230px 0 0 -230px;background:radial-gradient(closest-side,rgba(255,255,255,.42),rgba(225,220,255,.16) 45%,transparent)}
 .plan-l .btn{position:relative;overflow:hidden;isolation:isolate}
-.btn-glow{width:180px;height:180px;margin:-90px 0 0 -90px;background:radial-gradient(closest-side,rgba(108,92,242,.26),rgba(108,92,242,.08) 50%,transparent)}
+.btn-glow{width:180px;height:180px;margin:-90px 0 0 -90px;background:radial-gradient(closest-side,rgba(255,255,255,.6),rgba(255,248,230,.2) 50%,transparent)}
 .plan-l.is-lit>.plan-glow,.plan-l .btn.is-lit>.btn-glow{opacity:1}
 html.still .plan-glow,html.still .btn-glow{display:none}
 .plan-l .btn:hover svg{transform:translateX(3px)}
