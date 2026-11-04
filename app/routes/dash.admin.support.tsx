@@ -4,7 +4,7 @@ import db from "../db.server";
 import { requireAdmin } from "../lib/admin.server";
 import { shortDate } from "../components/admin";
 
-// Admin support: questions Ask GEO passed to the team (a summary each; the email has the chat).
+// Admin support: questions Ask FirstPicked passed to the team (a summary each; the email has the chat).
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await requireAdmin(request);
@@ -36,7 +36,7 @@ export default function AdminSupport() {
   return (
     <section className="w-sec">
       <div className="w-sec-head">
-        <h2>Passed to you by Ask GEO</h2>
+        <h2>Passed to you by Ask FirstPicked</h2>
         <p>Each one was also emailed to you with the chat. Reply to that email to answer them.</p>
       </div>
       <div className="w-box w-table-wrap">

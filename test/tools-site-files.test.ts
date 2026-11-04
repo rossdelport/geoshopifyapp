@@ -154,12 +154,12 @@ describe("llms.txt for firstpicked.com.au", () => {
   const lines = txt.split("\n");
 
   it("follows the llmstxt.org shape: H1, a summary quote, detail, then H2 link lists", () => {
-    expect(lines[0]).toBe("# GEO");
-    expect(lines[2].startsWith("> GEO is a Shopify app that helps stores get their products recommended by AI assistants")).toBe(true);
+    expect(lines[0]).toBe("# FirstPicked");
+    expect(lines[2].startsWith("> FirstPicked is a Shopify app that helps stores get their products recommended by AI assistants")).toBe(true);
     expect(txt.match(/^# /gm)).toHaveLength(1);
-    expect(txt.match(/^## .*/gm)).toEqual(["## Free tools", "## About GEO"]);
+    expect(txt.match(/^## .*/gm)).toEqual(["## Free tools", "## About FirstPicked"]);
     expect(txt).toContain("\n## Free tools\n\n");
-    expect(txt).toContain("\n## About GEO\n\n");
+    expect(txt).toContain("\n## About FirstPicked\n\n");
     expect(txt.endsWith("\n")).toBe(true);
     expect(DASHES.test(txt)).toBe(false);
   });
@@ -167,13 +167,13 @@ describe("llms.txt for firstpicked.com.au", () => {
   it("links every tool in registry order with its one line, and the main pages", () => {
     const toolLines = lines.filter((l) => l.startsWith("- [") && l.includes("/tools/"));
     expect(toolLines).toEqual(TOOLS.map((t) => `- [${t.name}](https://firstpicked.com.au${t.path}): ${t.short}`));
-    expect(txt).toContain("- [Home](https://firstpicked.com.au/): what GEO does, how it works and pricing");
+    expect(txt).toContain("- [Home](https://firstpicked.com.au/): what FirstPicked does, how it works and pricing");
     expect(txt).toContain("- [All free tools](https://firstpicked.com.au/tools): the full list of free tools");
     expect(txt).toContain(
-      "- [Stories](https://firstpicked.com.au/stories): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are GEO customers)",
+      "- [Stories](https://firstpicked.com.au/stories): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are FirstPicked customers)",
     );
-    expect(txt).toContain("- [Privacy policy](https://firstpicked.com.au/privacy): what data GEO collects and why");
-    expect(txt).toContain("- [Terms of service](https://firstpicked.com.au/terms): the rules for using GEO, the refund after month one and stopping any time");
+    expect(txt).toContain("- [Privacy policy](https://firstpicked.com.au/privacy): what data FirstPicked collects and why");
+    expect(txt).toContain("- [Terms of service](https://firstpicked.com.au/terms): the rules for using FirstPicked, the refund after month one and stopping any time");
   });
 
   it("takes the price from the offer in plans.ts, never typed in, and says new stores join through the waitlist", () => {
@@ -200,7 +200,7 @@ describe("/check after the free tools", () => {
     const meta = callMeta(checkStart.meta);
     const canonicals = meta.filter((m) => (m as { rel?: string }).rel === "canonical");
     expect(canonicals).toEqual([{ tagName: "link", rel: "canonical", href: "https://firstpicked.com.au/tools/ai-visibility-checker" }]);
-    expect(meta[0]).toEqual({ title: "Free product check: does AI recommend your product? · GEO" });
+    expect(meta[0]).toEqual({ title: "Free product check: does AI recommend your product? · FirstPicked" });
   });
 
   it("sends www to firstpicked.com.au on GET, and stays put otherwise", async () => {
@@ -228,7 +228,7 @@ describe("/privacy after the free tools", () => {
 
   it("has a description, a canonical and share tags", () => {
     const meta = callMeta(privacy.meta);
-    expect(meta[0]).toEqual({ title: "GEO privacy policy" });
+    expect(meta[0]).toEqual({ title: "FirstPicked privacy policy" });
     const desc = meta.find((m) => (m as { name?: string }).name === "description") as { content: string };
     expect(desc.content.length).toBeGreaterThan(40);
     expect(desc.content.length).toBeLessThan(155);
@@ -284,7 +284,7 @@ describe("/terms (Ross, 3 Nov 2026: the same layout as the privacy page)", () =>
 
   it("has a description, a canonical and share tags", () => {
     const meta = callMeta(terms.meta);
-    expect(meta[0]).toEqual({ title: "GEO terms of service" });
+    expect(meta[0]).toEqual({ title: "FirstPicked terms of service" });
     const desc = meta.find((m) => (m as { name?: string }).name === "description") as { content: string };
     expect(desc.content.length).toBeGreaterThan(40);
     expect(desc.content.length).toBeLessThan(155);

@@ -19,7 +19,7 @@ export const meta: MetaFunction = () =>
 
 export const headers = toolHeaders;
 
-const HUB_CTA = { text: "See how GEO works", href: "/?ref=tools-hub#how" };
+const HUB_CTA = { text: "See how FirstPicked works", href: "/?ref=tools-hub#how" };
 
 export default function ToolsHub() {
   const visibility = toolBySlug("ai-visibility-checker");

@@ -176,7 +176,7 @@ const Dots = () => (
   </span>
 );
 
-/** The GEO mark (two circles), slowly turning: the "AI at work" sign. */
+/** The FirstPicked mark (two circles), slowly turning: the "AI at work" sign. */
 const Orb = ({ big = false }: { big?: boolean }) => (
   <span className={`cl-orb${big ? " is-big" : ""}`} aria-hidden="true">
     <span className="cl-orb-spin">

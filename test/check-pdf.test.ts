@@ -41,7 +41,7 @@ describe("buildCheckPdf", () => {
     const raw = pdf.toString("latin1");
     expect(raw.startsWith("%PDF-")).toBe(true);
     expect(pdf.length).toBeGreaterThan(10_000);
-    expect(raw).toContain("GEO free product check: Manuka Honey Lip Balm 15g"); // the document title
+    expect(raw).toContain("FirstPicked free product check: Manuka Honey Lip Balm 15g"); // the document title
     expect(raw).toContain("Geist"); // the embedded font (accents and curly quotes)
     expect(raw).toContain("/FontFile2");
     expect(pageCount(pdf)).toBeGreaterThanOrEqual(2);
@@ -76,7 +76,7 @@ describe("PDF text", () => {
   });
 
   it("makes a safe file name from the brand", () => {
-    expect(reportFileName("Kōwhai & Co")).toBe("GEO-report-Kowhai-Co.pdf");
-    expect(reportFileName("***")).toBe("GEO-report-product.pdf");
+    expect(reportFileName("Kōwhai & Co")).toBe("FirstPicked-report-Kowhai-Co.pdf");
+    expect(reportFileName("***")).toBe("FirstPicked-report-product.pdf");
   });
 });

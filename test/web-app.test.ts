@@ -1,6 +1,6 @@
-// GEO web app against a real Postgres (set TEST_DATABASE_URL), in its own schema. Covers: email-link sign-in (a
+// FirstPicked web app against a real Postgres (set TEST_DATABASE_URL), in its own schema. Covers: email-link sign-in (a
 // link works once, for 30 minutes, at most 5 an hour, and opening it doesn't use it), only safe "next" pages, adding
-// a store (real Shopify stores only, never one already on GEO), reading the public catalog, and the pages that need
+// a store (real Shopify stores only, never one already on FirstPicked), reading the public catalog, and the pages that need
 // a signed-in account.
 
 import { execSync } from "node:child_process";
@@ -220,7 +220,7 @@ describe.skipIf(!url)("web app (needs TEST_DATABASE_URL)", () => {
     expect(data).toEqual({ admin: false, email: "ross@beard.com", store: "Beard Co", host: "beard.com", country: "AU", plan: "Free scan", left: null });
   });
 
-  it("only adds real Shopify stores, and never one already on GEO", async () => {
+  it("only adds real Shopify stores, and never one already on FirstPicked", async () => {
     const cookie = await signIn();
     fetched.pages["https://notshop.com/meta.json"] = { status: 404, text: "" };
     expect(await start.action(args(post("/start", { store: "notshop.com" }, cookie)))).toEqual({ error: pc.STORE_ERRORS.notShopify });

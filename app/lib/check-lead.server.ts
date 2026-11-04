@@ -52,7 +52,7 @@ export const LEAD_ERRORS = {
   perIp: "You’ve asked for a lot of reports today. Please try again tomorrow.",
   perAddress: "We’ve sent a lot of reports to this address today. Please try again tomorrow.",
   busy: "We’re very busy right now. Please try again later today.",
-  crossSite: "Please use the form on the GEO website.",
+  crossSite: "Please use the form on the FirstPicked website.",
   tooBig: "That was too much to send. Please enter just your email address.",
   // Email isn't set up on the server: say so, and save nothing (never promise an email we can't send).
   paused: "Emailed reports are paused right now. Please try again later.",
@@ -338,11 +338,11 @@ export function emailSafe(raw: string, max = 160): string {
   return plain.replace(/(\.|@|\/\/)(?=\S)/g, "$1​");
 }
 
-/** Where "Join the GEO waitlist" goes: the home page, which opens the waitlist popup. */
+/** Where "Join the FirstPicked waitlist" goes: the home page, which opens the waitlist popup. */
 export const JOIN_PATH = "/#waitlist";
 
 function appUrl(): string {
-  if (!env.appUrl) throw new Error("SHOPIFY_APP_URL is not set, so the report email can't link back to GEO");
+  if (!env.appUrl) throw new Error("SHOPIFY_APP_URL is not set, so the report email can't link back to FirstPicked");
   return env.appUrl;
 }
 
@@ -382,8 +382,8 @@ export function reportEmailContent(i: ReportEmailInput): { subject: string; html
   const rival = top ? `It recommended ${emailSafe(top.name, 80)} most often, in ${top.count} ${top.count === 1 ? "answer" : "answers"}.` : "";
   const steps = plan.steps.filter((s) => s.kind !== "geo").slice(0, 3).map((s) => emailSafe(s.title, 120));
   const price = `${OFFER.line} Join the waitlist and we’ll reach out shortly.`;
-  const cta = "Join the GEO waitlist";
-  const why = "You’re getting this because you asked for this report on the GEO website.";
+  const cta = "Join the FirstPicked waitlist";
+  const why = "You’re getting this because you asked for this report on the FirstPicked website.";
   const tipsLine =
     i.tips === "on"
       ? "You’re on our list for occasional tips on getting recommended by AI."
@@ -402,7 +402,7 @@ export function reportEmailContent(i: ReportEmailInput): { subject: string; html
 <tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
 <tr><td style="padding:0 6px 16px;font-size:20px;font-weight:700;color:#0b0c2b;letter-spacing:-0.01em;">
-<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#9faaf2;vertical-align:middle;"></span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#4050b0;margin-left:-4px;margin-right:8px;vertical-align:middle;"></span>GEO
+<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#9faaf2;vertical-align:middle;"></span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#4050b0;margin-left:-4px;margin-right:8px;vertical-align:middle;"></span>FirstPicked
 </td></tr>
 <tr><td style="background:#ffffff;border-radius:18px;padding:28px 26px;border:1px solid #e4e0f8;">
 <p style="margin:0 0 6px;font-size:13px;color:#4050b0;font-weight:600;">Your free product check</p>

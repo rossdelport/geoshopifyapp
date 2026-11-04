@@ -20,7 +20,7 @@ import { formatUpdated } from "../lib/tools/format";
 
 // One story at /stories/<slug>: our plain-English retelling of another company's result, answer first, then the
 // numbers, what happened, their own words, what other stores can take from it, the caveat, and at the bottom the
-// link to the original with the note that the brand is not a GEO customer. Then three related stories.
+// link to the original with the note that the brand is not a FirstPicked customer. Then three related stories.
 // Content: app/lib/stories/stories.json (research: docs/case-studies.md). An unknown slug is a real 404 with
 // noindex that lists every story.
 
@@ -48,7 +48,7 @@ export const meta: MetaFunction<typeof loader> = ({ data: d }) =>
       })
     : pageMeta({
         path: STORIES_HUB.path,
-        title: "We couldn't find that story | GEO",
+        title: "We couldn't find that story | FirstPicked",
         description: "This page doesn't exist. See every story of brands getting sales from AI.",
         noindex: true,
       });
@@ -160,7 +160,7 @@ function StoryHero({ story }: { story: Story }) {
       </h1>
       <p className="ck-lead st-intro">{story.intro}</p>
       <p className="st-byline">
-        Summary by GEO · <time dateTime={STORIES_UPDATED}>{formatUpdated(STORIES_UPDATED)}</time> · Source:{" "}
+        Summary by FirstPicked · <time dateTime={STORIES_UPDATED}>{formatUpdated(STORIES_UPDATED)}</time> · Source:{" "}
         <a href="#source">{publisherName(story.source.publisher)}</a>
       </p>
     </header>

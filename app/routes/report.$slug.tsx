@@ -76,9 +76,9 @@ export const meta: MetaFunction<typeof loader> = ({ data, error }) => {
   const brand = data?.report.store.brand;
   if (!brand) {
     const missing = !error || (isRouteErrorResponse(error) && error.status === 404);
-    return [{ title: missing ? "Report not found | GEO" : "Something went wrong | GEO" }, { name: "robots", content: "noindex" }];
+    return [{ title: missing ? "Report not found | FirstPicked" : "Something went wrong | FirstPicked" }, { name: "robots", content: "noindex" }];
   }
-  const title = `${brand}: how to get picked by AI | GEO`;
+  const title = `${brand}: how to get picked by AI | FirstPicked`;
   const description = `What shoppers search, who AI picks today, and the next moves for ${brand}.`;
   return [
     { title },
@@ -88,7 +88,7 @@ export const meta: MetaFunction<typeof loader> = ({ data, error }) => {
     { property: "og:title", content: title },
     { property: "og:description", content: description },
     { property: "og:type", content: "website" },
-    { property: "og:site_name", content: "GEO" },
+    { property: "og:site_name", content: "FirstPicked" },
   ];
 };
 
@@ -139,7 +139,7 @@ function Logo() {
         <i></i>
         <i></i>
       </span>
-      GEO
+      FirstPicked
     </span>
   );
 }
@@ -152,7 +152,7 @@ function TopBar({ brand, checked }: { brand: string; checked: string }) {
         <ShareButton title={`${brand}: how to get picked by AI`} />
       </div>
       <p className="rp-made">
-        Made with GEO{checked ? ` · Checked ${checked}` : ""}
+        Made with FirstPicked{checked ? ` · Checked ${checked}` : ""}
       </p>
     </header>
   );
@@ -488,7 +488,7 @@ function SmallPrint({ report, checked }: { report: PageReport; checked: string }
       <p>
         {checked ? `Checked on ${checked}. ` : ""}We asked ChatGPT, Gemini and Perplexity {fmt(questions.length)} buying questions, as a
         shopper in {store.countryName}, twice each. AI answers change from day to day, so this is a snapshot. Every store is different,
-        so we can&apos;t promise exact results. GEO isn&apos;t linked to {store.brand}. Want this report taken down? Email{" "}
+        so we can&apos;t promise exact results. FirstPicked isn&apos;t linked to {store.brand}. Want this report taken down? Email{" "}
         <a href="mailto:ross@firstpicked.com.au">ross@firstpicked.com.au</a>.
       </p>
       <p className="rp-site-link">

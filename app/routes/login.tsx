@@ -8,7 +8,7 @@ import styles from "../styles/web.css?url";
 // firstpicked.com.au/login: type your email, get a sign-in link. No passwords (Ross, 2026-10-14).
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
-export const meta: MetaFunction = () => [{ title: "Sign in · GEO" }, { name: "robots", content: "noindex" }];
+export const meta: MetaFunction = () => [{ title: "Sign in · FirstPicked" }, { name: "robots", content: "noindex" }];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const next = safeNext(new URL(request.url).searchParams.get("next"));
@@ -17,7 +17,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  if (fromAnotherSite(request)) return { ok: false as const, error: "Please use the form on the GEO website." };
+  if (fromAnotherSite(request)) return { ok: false as const, error: "Please use the form on the FirstPicked website." };
   const form = await request.formData();
   try {
     return await sendLoginLink(form.get("email"), form.get("next"));
@@ -53,7 +53,7 @@ export default function Login() {
   return (
     <Solo>
       <div>
-        <h1>Sign in to GEO</h1>
+        <h1>Sign in to FirstPicked</h1>
         <p style={{ marginTop: 6 }}>Type your email and we’ll send you a link. No password needed.</p>
       </div>
       <Form method="post" className="w-form">
@@ -77,7 +77,7 @@ export default function Login() {
           )}
         </button>
       </Form>
-      <p className="w-note">New to GEO? The same link creates your account.</p>
+      <p className="w-note">New to FirstPicked? The same link creates your account.</p>
     </Solo>
   );
 }

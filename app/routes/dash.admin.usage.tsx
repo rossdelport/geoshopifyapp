@@ -65,7 +65,7 @@ export default function AdminUsage() {
       <div className="w-stats">
         <Stat hero label="Total spend" icon={ICONS.money} value={usd(u.totals.total)} caption={`${dayLabel(u.from)} to ${dayLabel(u.to)} · about ${usd(avg)} a day`} />
         <Stat label="Treg (data)" icon={ICONS.gauge} value={usd(u.totals.treg)} caption="AI answers, Reddit, keywords, writer lookups" />
-        <Stat label="Claude (AI)" icon={ICONS.spark} value={usd(u.totals.anthropic)} caption="Reading answers, writing questions, replies, pitches, Ask GEO" />
+        <Stat label="Claude (AI)" icon={ICONS.spark} value={usd(u.totals.anthropic)} caption="Reading answers, writing questions, replies, pitches, Ask FirstPicked" />
         <Stat label="Calls" icon={ICONS.click} value={u.totals.calls.toLocaleString("en-US")} caption="Paid requests to Treg, Claude and email" />
       </div>
 

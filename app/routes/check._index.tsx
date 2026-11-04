@@ -12,7 +12,7 @@ import styles from "../styles/check.css?url";
 // that still sends `country` gets that country (createCheck checks it).
 
 export const meta: MetaFunction = () => [
-  { title: "Free product check: does AI recommend your product? · GEO" },
+  { title: "Free product check: does AI recommend your product? · FirstPicked" },
   {
     name: "description",
     content:
@@ -84,7 +84,7 @@ async function readSmallForm(request: Request): Promise<URLSearchParams | null> 
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   if (fromAnotherSite(request)) {
-    return data({ error: "Please start your check from the GEO website.", url: "" }, { status: 403 });
+    return data({ error: "Please start your check from the FirstPicked website.", url: "" }, { status: 403 });
   }
   const form = await readSmallForm(request);
   if (!form) return data({ error: "That was too much to send. Please paste just the product link.", url: "" }, { status: 413 });

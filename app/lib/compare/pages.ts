@@ -1,4 +1,4 @@
-// The /compare pages: honest buying pages for store owners choosing between GEO, an agency, a tool or an app
+// The /compare pages: honest buying pages for store owners choosing between FirstPicked, an agency, a tool or an app
 // (Ross, 2026-10-23: write for people who are choosing, not learning; naming other companies is OK). Every page
 // says where the other option wins, and every price of another company carries the day we checked it: re-check
 // them monthly (docs/ads/ad-rules.md) and move `checked`. Written by hand, never by the blog job (whose rule of
@@ -27,7 +27,7 @@ export interface CompareSource {
 
 export interface ComparePage {
   slug: string;
-  /** Under 60 characters, ends in " | GEO". */
+  /** Under 60 characters, ends in " | FirstPicked". */
   title: string;
   /** Under 155 characters. */
   description: string;
@@ -47,12 +47,12 @@ export interface ComparePage {
 export const COMPARE_HUB = {
   name: "Compare",
   path: "/compare",
-  title: "Compare GEO with agencies, tools and apps | GEO",
+  title: "Compare FirstPicked with agencies and tools | FirstPicked",
   description:
     "Honest comparisons for Shopify brands choosing how to get recommended by ChatGPT and other AI assistants: agencies, tools, apps and prices.",
   h1: "Choosing how to get recommended by AI",
   intro:
-    "Simple comparisons for store owners choosing between an agency, a tool they run themselves, or GEO. Each page says when the other option is the better pick. Every price from another company shows the day we checked it.",
+    "Simple comparisons for store owners choosing between an agency, a tool they run themselves, or FirstPicked. Each page says when the other option is the better pick. Every price from another company shows the day we checked it.",
   ogImage: "/og/home.png",
   ogAlt: "A small clay shop with a star in a speech bubble above it",
   updated: "2026-10-23",
@@ -76,7 +76,7 @@ const GOOGLE_IO = { title: "Google: Sundar Pichai's I/O 2026 keynote (May 2026)"
 export const COMPARE_PAGES: ComparePage[] = [
   {
     slug: "geo-vs-seo-agency",
-    title: "GEO vs an SEO agency: which does your store need? | GEO",
+    title: "GEO vs an SEO agency: which one do you need? | FirstPicked",
     description:
       "SEO agency or GEO? What each does in a month, where each one wins, and the questions to ask before you sign. For Australian Shopify brands.",
     short: "What each one does in a month, where each wins, and what to ask before you sign.",
@@ -90,12 +90,12 @@ export const COMPARE_PAGES: ComparePage[] = [
       {
         heading: "What each one does in a month",
         table: {
-          head: ["", "SEO agency", "GEO (done for you)"],
+          head: ["", "SEO agency", "FirstPicked (done for you)"],
           rows: [
             ["The goal", "Rank higher in Google's results and Maps", "Get named when shoppers ask ChatGPT, Gemini, Perplexity or Google AI Overviews what to buy"],
             ["What they change", "Site speed, technical fixes, keywords, blog posts, links", "Product details AI reads, buying guides, pitches to the sites AI quotes, honest Reddit replies"],
             ["What they report", "Rankings and Google traffic", "Which buying questions name you, which sites AI quotes, and orders and sales from AI"],
-            ["Price in Australia", "Quoted per store", "Agencies: about A$2,000 to A$20,000+ a month. GEO: A$1,000 a month"],
+            ["Price in Australia", "Quoted per store", "GEO agencies: about A$2,000 to A$20,000+ a month. FirstPicked: A$1,000 a month"],
           ],
         },
         paragraphs: ["Agency GEO prices are from Optimising's Australian price guide. SEO prices vary too much to quote fairly, so ask for a fixed monthly price."],
@@ -136,9 +136,9 @@ export const COMPARE_PAGES: ComparePage[] = [
         ],
       },
       {
-        heading: "Where GEO fits",
+        heading: "Where FirstPicked fits",
         paragraphs: [
-          "GEO is a done-for-you service for Shopify brands. It's A$1,000 a month, with no lock-in and a full refund if you're not happy after the first month. Our team and AI check 100 buying questions every day and fix your product pages. We write 12 buying guides a month, send up to 40 emails to websites, and show you the sales AI sends you.",
+          "FirstPicked is a done-for-you service for Shopify brands. It's A$1,000 a month, with no lock-in and a full refund if you're not happy after the first month. Our team and AI check 100 buying questions every day and fix your product pages. We write 12 buying guides a month, send up to 40 emails to websites, and show you the sales AI sends you.",
           "We are not an SEO agency. We don't do site speed, ads or full technical SEO. If you need those, keep your SEO agency and use us alongside it.",
         ],
       },
@@ -166,7 +166,7 @@ export const COMPARE_PAGES: ComparePage[] = [
   },
   {
     slug: "geo-vs-seo-vs-aeo",
-    title: "GEO vs SEO vs AEO: what's the difference? | GEO",
+    title: "GEO vs SEO vs AEO: what's the difference? | FirstPicked",
     description:
       "SEO, AEO and GEO in plain words: where each shows up, what helps, and how a Shopify store sees the money from each. Plus which one to start with.",
     short: "The three in plain words, where they overlap, and which to start with.",
@@ -209,7 +209,7 @@ export const COMPARE_PAGES: ComparePage[] = [
           "ChatGPT adds utm_source=chatgpt.com to the links it shows, so those visits and orders can be counted.",
           "Perplexity, Gemini, Copilot and Claude show up as the site the visitor came from.",
           "Google AI Overviews and AI Mode can't be separated from normal Google traffic. Anyone who says otherwise is guessing.",
-          "GEO shows visits, orders and sales from AI and from search engines side by side. It uses a small code you paste into Shopify.",
+          "FirstPicked shows visits, orders and sales from AI and from search engines side by side. It uses a small code you paste into Shopify.",
         ],
       },
       {
@@ -231,14 +231,14 @@ export const COMPARE_PAGES: ComparePage[] = [
   },
   {
     slug: "geo-cost-australia",
-    title: "How much does GEO cost in Australia? (2026) | GEO",
+    title: "How much does GEO cost in Australia? (2026) | FirstPicked",
     description:
       "GEO prices in Australia compared: agencies, tracking tools and done-for-you services, with what you get at each price and the costs people miss.",
     short: "Agency, tool and done-for-you prices side by side, with the costs people miss.",
     h1: "How much does GEO cost in Australia? Agency, tool and done-for-you prices compared",
     intro: [
       "Australian agencies charge about A$2,000 to A$20,000 or more a month for GEO, according to Optimising's price guide. Tracking tools cost far less, about A$50 to A$500 a month, but you do the work yourself.",
-      "GEO is A$1,000 a month, done for you, with no lock-in contract.",
+      "FirstPicked is A$1,000 a month, done for you, with no lock-in contract.",
     ],
     checked: "2026-10-23",
     sections: [
@@ -253,7 +253,7 @@ export const COMPARE_PAGES: ComparePage[] = [
             ["Australian agency, full", "Various", "A$10,000 to A$20,000+ a month", "All of the above plus SEO, structured data and ongoing content"],
             ["Shopify GEO agency (overseas)", "Netalico (US)", "About US$3,000 a month", "Product data, schema and feed work for Shopify Plus stores"],
             ["Done for you, software only", "FirstIndex", "US$2,000 a month after a 3-month start, or US$1,500 a month on 12 months", "Daily site changes, up to 12 articles and 50+ page fixes a month"],
-            ["Done for you, Shopify brands", "GEO", "A$1,000 a month, no lock-in", "100 questions checked daily, fixes, 12 guides, up to 40 pitches, Reddit replies, sales from AI, a monthly call"],
+            ["Done for you, Shopify brands", "FirstPicked", "A$1,000 a month, no lock-in", "100 questions checked daily, fixes, 12 guides, up to 40 pitches, Reddit replies, sales from AI, a monthly call"],
           ],
         },
         paragraphs: [
@@ -287,7 +287,7 @@ export const COMPARE_PAGES: ComparePage[] = [
     ],
     faqs: [
       {
-        q: "Why is GEO cheaper than most agencies?",
+        q: "Why is FirstPicked cheaper than most agencies?",
         a: "We only work with Shopify brands and offer one plan. AI does most of the research and first drafts, and our team checks and sends everything. That keeps the cost down without cutting the work.",
       },
       { q: "Is there a contract?", a: "No lock-in. You pay monthly and can cancel any time." },

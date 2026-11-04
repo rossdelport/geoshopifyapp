@@ -80,7 +80,7 @@ describe("tool registry", () => {
   it("keeps titles, descriptions and short lines within their lengths, ending titles with the brand", () => {
     for (const t of TOOLS) {
       expect(t.title.length, t.title).toBeLessThan(60);
-      expect(t.title.endsWith(" | GEO"), t.title).toBe(true);
+      expect(t.title.endsWith(" | FirstPicked"), t.title).toBe(true);
       expect(t.description.length, t.description).toBeLessThan(155);
       expect(t.short.length, t.short).toBeLessThan(95);
       expect(t.timing.length).toBeGreaterThan(0);
@@ -158,7 +158,7 @@ describe("house rules in the shared copy", () => {
   it("uses no jargon in the registry copy", () => {
     const words = TOOLS.flatMap((t) => [t.name, t.h1, t.title, t.description, t.short]).join(" ") + HUB.intro + HUB.description;
     expect(words).not.toMatch(/\bAEO\b|\bLLMs?\b|generative engine optimi[sz]ation/);
-    expect(words.replace(/\| GEO/g, "")).not.toMatch(/\bGEO\b/);
+    expect(words.replace(/\| FirstPicked/g, "")).not.toMatch(/\bGEO\b/);
   });
 });
 
@@ -177,7 +177,7 @@ describe("pageMeta and JSON-LD", () => {
     expect(m.canonicals[0].href.startsWith(SITE)).toBe(true);
     expect(m.prop("og:url")).toBe(m.canonicals[0].href);
     expect(m.prop("og:type")).toBe("website");
-    expect(m.prop("og:site_name")).toBe("GEO");
+    expect(m.prop("og:site_name")).toBe("FirstPicked");
     expect(m.prop("og:title")).toBe(tool.title);
     expect(m.prop("og:image")).toBe(`https://firstpicked.com.au/og/ai-overview-checker.png`);
     expect(m.prop("og:image:width")).toBe("1200");
@@ -205,7 +205,7 @@ describe("pageMeta and JSON-LD", () => {
     const page = byType("WebPage");
     expect(page.dateModified).toBe(tool.updated);
     expect(page.name).toBe(stripBrand(tool.title));
-    expect(page.name.endsWith("| GEO")).toBe(false);
+    expect(page.name.endsWith("| FirstPicked")).toBe(false);
     expect(page.isPartOf["@id"]).toBe("https://firstpicked.com.au/#website");
     const crumbs = byType("BreadcrumbList").itemListElement;
     expect(crumbs.map((c: { name: string }) => c.name)).toEqual(["Home", "Free tools", tool.name]);
@@ -236,7 +236,7 @@ describe("pageMeta and JSON-LD", () => {
   });
 
   it("marks a noindex page without a canonical (the 404 page) and defaults the image to the hub's", () => {
-    const n = metaOf(pageMeta({ path: "/tools", title: "Not found | GEO", description: "x", noindex: true }));
+    const n = metaOf(pageMeta({ path: "/tools", title: "Not found | FirstPicked", description: "x", noindex: true }));
     expect(n.name("robots")).toBe("noindex");
     expect(n.canonicals).toHaveLength(0);
     expect(n.prop("og:url")).toBeUndefined();
@@ -412,7 +412,7 @@ describe("publicHostRedirect", () => {
     }
     // A store report link Ross shares from the Railway address goes to firstpicked.com.au.
     expect(publicHostRedirect(req("https://geo-shopify-app-production.up.railway.app/report/bondi-wash"))?.headers.get("location")).toBe("https://firstpicked.com.au/report/bondi-wash");
-    // The old brand's address (GEO, until 4 Nov 2026): old links, sign-in emails and Google land on the new site.
+    // The old brand's address (FirstPicked, until 4 Nov 2026): old links, sign-in emails and Google land on the new site.
     for (const host of ["usegeo.app", "www.usegeo.app"]) {
       expect(publicHostRedirect(req(`https://${host}/blog/some-post?utm_source=x`))?.headers.get("location")).toBe("https://firstpicked.com.au/blog/some-post?utm_source=x");
       expect(publicHostRedirect(req(`https://${host}/`))?.status).toBe(301);
@@ -788,7 +788,7 @@ describe("the tool page frame and its parts", () => {
         page: tool,
         hero: createElement(ui.ToolHero, { h1: tool.h1, intro: "The AI Crawler Checker is a free tool that reads robots.txt.", timing: tool.timing }),
         result: createElement("div", null, createElement(ui.SampleLabel, null, "A made-up robots.txt"), createElement(ui.ResultHeading, null, "2 bots are blocked")),
-        cta: { text: "See how GEO gets you into AI answers", href: "/?ref=tool-ai-crawler-checker#how" },
+        cta: { text: "See how FirstPicked gets you into AI answers", href: "/?ref=tool-ai-crawler-checker#how" },
         announce: "Your result is ready",
       },
       createElement(ui.WhatItChecks, { items: ["Which AI bots may read your pages"] }),
@@ -818,8 +818,8 @@ describe("the tool page frame and its parts", () => {
     expect(out).not.toContain('>Example</span>'); // no "Example" pill (Ross, 2 Nov 2026)
     expect(out).toContain('tabindex="-1" data-tl-focus=""');
     expect(out).toContain('<h2 class="ck-h2" id="what-is-gptbot">What is GPTBot?</h2>');
-    expect(text(out)).toContain("Maintained by GEO. Updated 11 October 2026.");
-    expect(text(out)).toContain("Updated 11 October 2026 · Made by GEO");
+    expect(text(out)).toContain("Maintained by FirstPicked. Updated 11 October 2026.");
+    expect(text(out)).toContain("Updated 11 October 2026 · Made by FirstPicked");
     expect(out.indexOf("tl-foot")).toBeGreaterThan(out.indexOf("tl-updated"));
   });
 
@@ -881,7 +881,7 @@ describe("the site footer", () => {
 
   it("links the hub, all 7 tools in registry order, and the main pages (with the stories and the blog), as plain links", () => {
     expect(footer).toContain('<nav class="tl-foot-tools" aria-label="Free tools">');
-    expect(footer).toContain('<nav class="tl-foot-site" aria-label="GEO">');
+    expect(footer).toContain('<nav class="tl-foot-site" aria-label="FirstPicked">');
     expect(footer).toContain('<a href="/tools">All free tools</a>');
     const positions = TOOLS.map((t) => footer.indexOf(`<a href="${t.path}">${t.name}</a>`));
     for (const p of positions) expect(p).toBeGreaterThan(-1);
@@ -889,7 +889,7 @@ describe("the site footer", () => {
     for (const [label, href] of [["Home", "/"], ["How it works", "/#how"], ["Pricing", "/#pricing"], ["Stories", "/stories"], ["Blog", "/blog"], ["Privacy", "/privacy"], ["Terms", "/terms"]]) {
       expect(footer).toContain(`<a href="${href}">${label}</a>`);
     }
-    expect(footer).toContain("GEO · Helps ChatGPT &amp; co recommend your products");
+    expect(footer).toContain("FirstPicked · Helps ChatGPT &amp; co recommend your products");
     expect(footer).not.toMatch(/onClick|<button/);
   });
 
@@ -919,7 +919,7 @@ describe("the home page links every tool", () => {
     expect(page).toContain('<link rel="canonical" href="https://firstpicked.com.au/">');
     expect(page).toContain('<meta property="og:url" content="https://firstpicked.com.au/">');
     expect(page).toContain('<meta property="og:image" content="https://firstpicked.com.au/og/home.png">');
-    expect(page).toContain('<meta property="og:title" content="GEO · Get your products recommended by AI">');
+    expect(page).toContain('<meta property="og:title" content="FirstPicked · Get your products recommended by AI">');
     expect(page).toContain('<meta name="twitter:card" content="summary_large_image">');
     const json = /<script type="application\/ld\+json">([^<]*)<\/script>/.exec(page)?.[1];
     expect(json).toBeTruthy();
@@ -935,7 +935,7 @@ describe("the hub page", () => {
   const m = metaOf(callMeta(hub.meta));
 
   it("has its own head: title, description, canonical /tools and the hub JSON-LD", () => {
-    expect(m.title?.title).toBe("Free AI Search Tools for Shopify Stores | GEO");
+    expect(m.title?.title).toBe("Free AI Search Tools for Shopify Stores | FirstPicked");
     expect(m.name("description")).toBe(HUB.description);
     expect(m.canonicals.map((c) => c.href)).toEqual(["https://firstpicked.com.au/tools"]);
     expect(m.prop("og:image")).toBe("https://firstpicked.com.au/og/tools.png");
@@ -954,9 +954,9 @@ describe("the hub page", () => {
     }
     expect(text(out)).toContain("Not sure? Start with the AI Visibility Checker to see if AI recommends your product today.");
     expect(out.match(/tl-cta"/g)).toHaveLength(1);
-    expect(out).toMatch(/<a class="ck-btn ck-btn-dark tl-cta" href="\/\?ref=tools-hub#how">See how GEO works/);
+    expect(out).toMatch(/<a class="ck-btn ck-btn-dark tl-cta" href="\/\?ref=tools-hub#how">See how FirstPicked works/);
     expect(out).toContain('<span aria-current="page">Free tools</span>');
-    expect(text(out)).toContain("Updated 11 October 2026 · Made by GEO");
+    expect(text(out)).toContain("Updated 11 October 2026 · Made by FirstPicked");
     expect(out).not.toContain("Free · No sign-up ·");
     expect(out).toContain('aria-label="Free tools"');
   });

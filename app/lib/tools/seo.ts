@@ -54,8 +54,8 @@ export function pageMeta(p: PageSeo): MetaDescriptor[] {
   return out;
 }
 
-/** "AI Overview Checker: Is Your Site Cited by Google AI? | GEO" -> the part before " | GEO". */
-export const stripBrand = (title: string) => title.replace(/\s*\|\s*GEO$/, "");
+/** "AI Overview Checker: Does Google AI Cite You? | FirstPicked" -> the part before " | FirstPicked". */
+export const stripBrand = (title: string) => title.replace(/\s*\|\s*FirstPicked$/, "");
 
 // ---------- JSON-LD nodes ----------
 

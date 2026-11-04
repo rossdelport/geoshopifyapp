@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { PageHead } from "../components/web";
 
-// firstpicked.com.au/dash/ask: Ask GEO, the help chat (lib/ask.server.ts, answered by dash.ask_.answer.tsx). The chat
+// firstpicked.com.au/dash/ask: Ask FirstPicked, the help chat (lib/ask.server.ts, answered by dash.ask_.answer.tsx). The chat
 // lives in the page only: nothing is saved, and closing or refreshing the page starts a new one.
 
 const MAX_CHARS = 2000; // ASK_LIMITS.messageChars
@@ -55,7 +55,7 @@ export default function Ask() {
   return (
     <>
       <PageHead
-        title="Ask GEO"
+        title="Ask FirstPicked"
         right={
           msgs.length ? (
             <button className="w-btn w-btn-ghost w-btn-sm" type="button" onClick={() => setMsgs([])} disabled={busy}>
@@ -70,7 +70,7 @@ export default function Ask() {
             {msgs.map((m, i) => (
               <div key={i} className={`w-ask-msg ${m.role}${m.error ? " err" : ""}`}>
                 <p>{m.content}</p>
-                {m.flagged ? <span className="w-chip ok">Passed to the GEO team</span> : null}
+                {m.flagged ? <span className="w-chip ok">Passed to the FirstPicked team</span> : null}
               </div>
             ))}
             {busy ? (
@@ -89,8 +89,8 @@ export default function Ask() {
             <span className="w-logo" aria-hidden="true">
               <i />
             </span>
-            <h2>Ask GEO</h2>
-            <p>Ask anything about GEO or getting your store recommended by AI. Straight answers, no fluff.</p>
+            <h2>Ask FirstPicked</h2>
+            <p>Ask anything about FirstPicked or getting your store recommended by AI. Straight answers, no fluff.</p>
             <div className="w-ask-starts">
               {STARTERS.map((s) => (
                 <button key={s.q} type="button" onClick={() => send(s.q)}>

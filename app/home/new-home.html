@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>GEO · Get your products recommended by AI</title>
-<meta name="description" content="Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO helps your Shopify products get recommended in those AI answers, then shows the sales you can trace back to AI.">
+<title>FirstPicked · Get your products recommended by AI</title>
+<meta name="description" content="Shoppers ask ChatGPT, Gemini and Perplexity what to buy. FirstPicked helps your Shopify products get recommended in those AI answers, then shows the sales you can trace back to AI.">
 <!-- The home page, firstpicked.com.au (served by app/routes/_index/route.tsx). One address for search engines (www and the
      Railway address also serve it, and /newhomepage sends people here), the same page in five other languages, link
-     previews, and who GEO is as JSON-LD (the same nodes as ORG_NODE and WEBSITE_NODE in app/lib/tools/seo.ts). -->
+     previews, and who FirstPicked is as JSON-LD (the same nodes as ORG_NODE and WEBSITE_NODE in app/lib/tools/seo.ts). -->
 <link rel="canonical" href="https://firstpicked.com.au/">
 <link rel="alternate" hreflang="en" href="https://firstpicked.com.au/">
 <link rel="alternate" hreflang="de" href="https://firstpicked.com.au/de">
@@ -18,16 +18,16 @@
 <link rel="alternate" hreflang="x-default" href="https://firstpicked.com.au/">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="GEO">
-<meta property="og:title" content="GEO · Get your products recommended by AI">
-<meta property="og:description" content="Shoppers ask AI what to buy. GEO makes it pick you, and shows you the sales that came from AI. Done for you.">
+<meta property="og:site_name" content="FirstPicked">
+<meta property="og:title" content="FirstPicked · Get your products recommended by AI">
+<meta property="og:description" content="Shoppers ask AI what to buy. FirstPicked makes it pick you, and shows you the sales that came from AI. Done for you.">
 <meta property="og:url" content="https://firstpicked.com.au/">
 <meta property="og:image" content="https://firstpicked.com.au/og/home.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="A small clay shop with a star in a speech bubble above it">
 <meta name="twitter:card" content="summary_large_image">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://firstpicked.com.au/#org","name":"GEO","alternateName":"GEO for Shopify","url":"https://firstpicked.com.au/","logo":"https://firstpicked.com.au/apple-touch-icon.png"},{"@type":"WebSite","@id":"https://firstpicked.com.au/#website","name":"GEO","alternateName":"GEO for Shopify","url":"https://firstpicked.com.au/","publisher":{"@id":"https://firstpicked.com.au/#org"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://firstpicked.com.au/#org","name":"FirstPicked","alternateName":"First Picked","url":"https://firstpicked.com.au/","logo":"https://firstpicked.com.au/apple-touch-icon.png"},{"@type":"WebSite","@id":"https://firstpicked.com.au/#website","name":"FirstPicked","alternateName":"First Picked","url":"https://firstpicked.com.au/","publisher":{"@id":"https://firstpicked.com.au/#org"}}]}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -43,7 +43,7 @@
 :root{
   --ink:#0e0e13;--ink-2:#53565f;--head:#25272e;--text:#666972;--soft:#6e717a;
   --line:#ececf0;--bg-2:#f6f6f9;
-  /* GEO purple (#5b47e0), a step lighter for this page */
+  /* FirstPicked purple (#5b47e0), a step lighter for this page */
   --accent:#6c5cf2;--accent-hi:#8476f7;--accent-lo:#5a49e6;--accent-ink:#5442df;
   --accent-50:#f2f0fe;--accent-100:#e4e0fd;--accent-ring:rgba(108,92,242,.35);
   /* the picture panels: purple at the top fading lighter, with a soft white glow at the bottom */
@@ -256,7 +256,7 @@ ul,ol{padding:0;list-style:none}
 .c-mid .art{container-type:inline-size}
 @container (max-width:400px){.e-c2,.e-c3{top:auto;bottom:14px}.e-c2{left:10px}.e-c3{right:10px}}
 
-/* C. The AIs going round GEO */
+/* C. The AIs going round FirstPicked */
 .h-ring{position:absolute;left:50%;top:50%;width:0;height:0;--r:96px;animation:h-turn 12s cubic-bezier(.65,0,.35,1) infinite}
 .h-spoke{position:absolute;left:-1px;top:0;width:2px;height:var(--r);transform-origin:50% 0;transform:rotate(calc(var(--n)*90deg + 180deg));background:linear-gradient(rgba(255,255,255,.95),rgba(255,255,255,.45))}
 .h-pos{position:absolute;left:-25px;top:-25px;width:50px;height:50px;transform:rotate(calc(var(--n)*90deg)) translateY(calc(var(--r)*-1)) rotate(calc(var(--n)*-90deg))}
@@ -540,7 +540,7 @@ html.still .plan-glow,html.still .btn-glow{display:none}
 @media (max-width:860px){.plan{grid-template-columns:minmax(0,1fr)}.plan-r{padding:24px 18px 18px}}
 @media (max-width:420px){.plan-l{padding:28px 22px 24px}.p-stat{padding:14px 12px 13px}}
 
-/* ---------- FAQ: a chat with the GEO assistant ----------
+/* ---------- FAQ: a chat with the FirstPicked assistant ----------
    The first answer shows; the other questions wait as chips under the chat. Choosing one adds it to the
    conversation, shows the assistant typing, then the answer. Without JavaScript every pair shows as one
    conversation (the .is-live rules never apply). Waiting pairs are hidden="until-found", so find in page
@@ -710,10 +710,10 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
 .ck-btns{display:flex;gap:8px;flex:none}
 @media (max-width:600px){.ck{left:12px;right:12px;bottom:12px;max-width:none;flex-direction:column;align-items:stretch;gap:10px;padding:14px}.ck-btns>*{flex:1}}
 </style>
-<!-- Meta Pixel Code (GEO's own, for Ross's ads; a copy of design/overview/pixel-head.js, which the pages in other
+<!-- Meta Pixel Code (FirstPicked's own, for Ross's ads; a copy of design/overview/pixel-head.js, which the pages in other
      languages use too. It asks first in Europe and the UK, see the cookie notice below.) -->
 <script>
-// Meta Pixel for GEO's own ads, added to the live home page's <head> only
+// Meta Pixel for FirstPicked's own ads, added to the live home page's <head> only
 // (assemble.mjs; the design preview never loads it). Meta's base code, with one change: visitors in Europe and
 // the UK (guessed from the browser's time zone) are asked first, so it waits for "OK" on the cookie notice
 // (parts/47-cookies.*). Everyone else gets it at once unless they said "No thanks" before. The choice is kept in
@@ -768,7 +768,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
 </svg>
 <header class="nav" id="top">
   <div class="wrap nav-in">
-    <a class="logo" href="#top" aria-label="GEO, back to top"><span class="mark" aria-hidden="true"><i></i><i></i></span>GEO</a>
+    <a class="logo" href="#top" aria-label="FirstPicked, back to top"><span class="mark" aria-hidden="true"><i></i><i></i></span>FirstPicked</a>
     <nav aria-label="Main">
       <ul class="nav-links">
         <li><a href="#how">How it works</a></li>
@@ -788,10 +788,10 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
       <div class="hero-tx">
         <p class="eyebrow"><b>Early access</b>For Shopify stores</p>
         <h1 class="h1" id="hero-h">Shoppers ask AI what to buy. <b>Make it <span class="hl">pick you</span>.</b></h1>
-        <p class="lead">GEO helps all AIs recommend your products. Then it shows you the sales that came from AI. No paying per click. Done for you.</p>
+        <p class="lead">FirstPicked helps all AIs recommend your products. Then it shows you the sales that came from AI. No paying per click. Done for you.</p>
         <div class="hero-cta">
           <a class="btn btn-pri" href="/book">Get started</a>
-          <p class="founder"><img src="__ROSS_PHOTO__" alt="" width="46" height="46" decoding="async"><span>Not sure if GEO suits your store?<br><b>Text Ross, the founder: <a href="sms:+61400369865">0400 369 865</a></b></span></p>
+          <p class="founder"><img src="__ROSS_PHOTO__" alt="" width="46" height="46" decoding="async"><span>Not sure if FirstPicked suits your store?<br><b>Text Ross, the founder: <a href="sms:+61400369865">0400 369 865</a></b></span></p>
         </div>
       </div>
 
@@ -888,7 +888,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
       </article>
 
       <article class="card">
-        <div class="art" data-anim role="img" aria-label="The logos of ChatGPT, Gemini, Perplexity and Google AI Overviews going round the GEO logo.">
+        <div class="art" data-anim role="img" aria-label="The logos of ChatGPT, Gemini, Perplexity and Google AI Overviews going round the FirstPicked logo.">
           <div class="h-ring" aria-hidden="true">
             <i class="h-spoke" style="--n:0"></i><i class="h-spoke" style="--n:1"></i><i class="h-spoke" style="--n:2"></i><i class="h-spoke" style="--n:3"></i>
             <span class="h-pos" style="--n:0"><span class="tile h-sat"><svg><use href="#i-chatgpt"/></svg></span></span>
@@ -1096,7 +1096,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
     <div class="sec-head">
       <div>
         <h2 class="h2" id="stories-h">Brands already <b>winning customers from AI.</b></h2>
-        <p class="sec-sub">From news sites like Modern Retail and Digital Commerce 360. These brands don’t use GEO.</p>
+        <p class="sec-sub">From news sites like Modern Retail and Digital Commerce 360. These brands don’t use FirstPicked.</p>
       </div>
       <a class="btn btn-sec btn-sm" href="/stories">See all stories <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </div>
@@ -1183,8 +1183,8 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
           <div class="fq-bar">
             <span class="tile" aria-hidden="true"><span class="mark"><i></i><i></i></span></span>
             <div>
-              <p class="fq-name">GEO assistant</p>
-              <p class="fq-by"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.4 3.6a1 1 0 0 1 3 3L7.4 18.6a2 2 0 0 1-.9.5l-2.9.8a.5.5 0 0 1-.6-.6l.8-2.9a2 2 0 0 1 .5-.9z"/></svg>Answers written by the GEO team</p>
+              <p class="fq-name">FirstPicked assistant</p>
+              <p class="fq-by"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.4 3.6a1 1 0 0 1 3 3L7.4 18.6a2 2 0 0 1-.9.5l-2.9.8a.5.5 0 0 1-.6-.6l.8-2.9a2 2 0 0 1 .5-.9z"/></svg>Answers written by the FirstPicked team</p>
             </div>
           </div>
           <!-- Every question and answer is real text in the page. Without JavaScript they all show as one
@@ -1195,7 +1195,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
             <div class="fq-log-in">
             <div class="fq-thread" role="log" aria-label="Conversation">
               <div class="fq-pair" id="fq-p1">
-                <div class="fq-msg fq-qw"><h3 class="fq-q">What does GEO actually do?</h3></div>
+                <div class="fq-msg fq-qw"><h3 class="fq-q">What does FirstPicked actually do?</h3></div>
                 <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
                   <p>We check if ChatGPT, Gemini and Perplexity pick your products, and who they pick instead. Then our team does the work for you. We write buying guides, fix your product pages and email the sites AI quotes most. You see the sales that came from AI.</p>
                 </div></div>
@@ -1209,12 +1209,12 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
               <div class="fq-pair" id="fq-p3">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">Can I pay to appear in AI answers?</h3></div>
                 <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
-                  <p>Not inside ChatGPT’s answers. ChatGPT shows some ads under its answers, marked as ads. But OpenAI says ads can’t change what the answer says. Google sells ads in AI Overviews in many countries. GEO helps you get picked without paying for ads.</p>
+                  <p>Not inside ChatGPT’s answers. ChatGPT shows some ads under its answers, marked as ads. But OpenAI says ads can’t change what the answer says. Google sells ads in AI Overviews in many countries. FirstPicked helps you get picked without paying for ads.</p>
                   <p class="fq-src">Sources: <a href="https://help.openai.com/en/articles/20001047-ads-in-chatgpt" target="_blank" rel="noopener">OpenAI</a> and <a href="https://support.google.com/google-ads/answer/16297775?hl=en" target="_blank" rel="noopener">Google Ads Help</a>.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p4">
-                <div class="fq-msg fq-qw"><h3 class="fq-q">Will GEO change my store without asking?</h3></div>
+                <div class="fq-msg fq-qw"><h3 class="fq-q">Will FirstPicked change my store without asking?</h3></div>
                 <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
                   <p>No. At the start, we agree with you on what we can change. Then we do the work, and you can see everything we did.</p>
                 </div></div>
@@ -1234,7 +1234,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
               <div class="fq-pair" id="fq-p7">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">What’s free?</h3></div>
                 <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
-                  <p>A call with Ross, our <a href="/tools">free tools</a> and a first check of your store. The check asks ChatGPT, Gemini and Perplexity 10 buying questions. GEO itself costs A$1,000 a month. We do the work, and there’s no lock-in contract.</p>
+                  <p>A call with Ross, our <a href="/tools">free tools</a> and a first check of your store. The check asks ChatGPT, Gemini and Perplexity 10 buying questions. FirstPicked itself costs A$1,000 a month. We do the work, and there’s no lock-in contract.</p>
                 </div></div>
               </div>
             </div>
@@ -1258,7 +1258,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
     <div class="cta">
       <div class="cta-tx">
         <h2 class="h2" id="cta-h">Is AI recommending <b>your products?</b></h2>
-        <p class="lead">Book a free call with Ross, the founder. We’ll see if GEO suits your store.</p>
+        <p class="lead">Book a free call with Ross, the founder. We’ll see if FirstPicked suits your store.</p>
         <a class="btn btn-pri" href="/book">Get started <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
       </div>
       <div class="art" data-anim aria-hidden="true">
@@ -1280,7 +1280,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
   <div class="wrap">
     <div class="foot-top">
       <div>
-        <a class="logo" href="#top" aria-label="GEO, back to top"><span class="mark" aria-hidden="true"><i></i><i></i></span>GEO</a>
+        <a class="logo" href="#top" aria-label="FirstPicked, back to top"><span class="mark" aria-hidden="true"><i></i><i></i></span>FirstPicked</a>
         <p class="foot-tag">Shoppers ask. AI recommends. You get the sale.</p>
       </div>
       <nav aria-label="Footer">
@@ -1308,7 +1308,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
         <li><a href="/tools/ai-bot-checker">AI Bot Checker</a></li>
       </ul>
     </nav>
-    <p class="foot-copy">© 2026 GEO · Made for Shopify stores worldwide</p>
+    <p class="foot-copy">© 2026 FirstPicked · Made for Shopify stores worldwide</p>
   </div>
 </footer>
 
@@ -1331,13 +1331,13 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
     <form class="wl-form" method="post" action="/waitlist" novalidate>
       <span class="wl-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5c.6 5 4.5 8.9 9.5 9.5-5 .6-8.9 4.5-9.5 9.5-.6-5-4.5-8.9-9.5-9.5 5-.6 8.9-4.5 9.5-9.5Z"/></svg></span>
       <h2 class="wl-h" id="wl-title">Join the waitlist</h2>
-      <p class="wl-sub">Be first to get GEO for your store.</p>
+      <p class="wl-sub">Be first to get FirstPicked for your store.</p>
       <label class="wl-field"><span class="wl-label">Name</span><input class="wl-input" type="text" name="name" autocomplete="name" maxlength="80" required placeholder="Your name"></label>
       <label class="wl-field"><span class="wl-label">Email</span><input class="wl-input" type="email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" maxlength="254" required placeholder="you@yourstore.com"></label>
       <div class="wl-hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
       <p class="wl-err" id="wl-err" role="alert" hidden></p>
       <button class="btn btn-pri wl-btn" type="submit">Join the waitlist</button>
-      <p class="wl-small">We’ll only use this to contact you about GEO.</p>
+      <p class="wl-small">We’ll only use this to contact you about FirstPicked.</p>
     </form>
     <div class="wl-done" hidden>
       <span class="wl-tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
@@ -1440,7 +1440,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
       [1, 'Ember Roasters', 'Gift box with three blends', 'gift', '#ebe7fe'],
       [0, 'Bluegum Coffee Co.', 'Beans and a hand grinder', 'balm', '#f7d6c2'],
       [0, 'Larrikin Brew', 'Cold brew starter kit', 'wash', '#d7ece3']] },
-    // GEO checks where a store comes up in Google AI Overviews, but can't tell those sales from normal Google, so
+    // FirstPicked checks where a store comes up in Google AI Overviews, but can't tell those sales from normal Google, so
     // this one shows the place, not an order.
     { icon: 'google', name: 'Google AI Overviews', q: 'Which natural deodorant lasts all day?', chip: ['#1', 'in Google AI Overviews'], picks: [
       [1, 'Coastline Naturals', 'No aluminium, light scent', 'balm', '#d7ece3'],

@@ -1,4 +1,4 @@
-// GEO web app sign-in: email link only (Ross, 2026-10-14). /login sends a link; the link signs the browser in
+// FirstPicked web app sign-in: email link only (Ross, 2026-10-14). /login sends a link; the link signs the browser in
 // with a signed cookie that holds the account id for 30 days. Only a hash of each link's token is stored, and a
 // link works once, for 30 minutes.
 
@@ -56,7 +56,7 @@ export async function sendLoginLink(rawEmail: unknown, next?: unknown): Promise<
   if ((await db.loginLink.count({ where: { email, createdAt: { gte: hourAgo } } })) >= MAX_LINKS_PER_HOUR) {
     return { ok: false, error: LOGIN_ERRORS.tooMany };
   }
-  // Across everyone: a script feeding the form a list of addresses can't turn GEO into a spam sender.
+  // Across everyone: a script feeding the form a list of addresses can't turn FirstPicked into a spam sender.
   if ((await db.loginLink.count({ where: { createdAt: { gte: hourAgo } } })) >= MAX_LINKS_PER_HOUR_ALL) {
     return { ok: false, error: LOGIN_ERRORS.tooMany };
   }
@@ -74,12 +74,12 @@ export async function sendLoginLink(rawEmail: unknown, next?: unknown): Promise<
 /** The sign-in email (exported for tests). */
 export function loginEmail(url: string): { subject: string; html: string; text: string } {
   return {
-    subject: "Your GEO sign-in link",
+    subject: "Your FirstPicked sign-in link",
     html:
-      `<p>Click the button to sign in to GEO. The link works once, for ${LINK_MINUTES} minutes.</p>` +
-      `<p><a href="${url}" style="display:inline-block;padding:12px 20px;background:#15163c;color:#fff;border-radius:10px;text-decoration:none;font-weight:600">Sign in to GEO</a></p>` +
+      `<p>Click the button to sign in to FirstPicked. The link works once, for ${LINK_MINUTES} minutes.</p>` +
+      `<p><a href="${url}" style="display:inline-block;padding:12px 20px;background:#15163c;color:#fff;border-radius:10px;text-decoration:none;font-weight:600">Sign in to FirstPicked</a></p>` +
       `<p style="color:#5c5d78">If you didn’t ask for this, you can ignore this email.</p>`,
-    text: `Sign in to GEO: ${url}\n\nThe link works once, for ${LINK_MINUTES} minutes. If you didn't ask for this, ignore this email.`,
+    text: `Sign in to FirstPicked: ${url}\n\nThe link works once, for ${LINK_MINUTES} minutes. If you didn't ask for this, ignore this email.`,
   };
 }
 

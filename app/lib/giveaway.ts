@@ -1,5 +1,5 @@
 // The 3-month giveaway at firstpicked.com.au/giveaway (Ross, 3 Nov 2026): one Australian Shopify brand wins 3 months of
-// GEO Done for you, drawn at random on Saturday 7 November 2026. Facebook ads send people to the page.
+// FirstPicked Done for you, drawn at random on Saturday 7 November 2026. Facebook ads send people to the page.
 // The dates here are the rules' dates: the page (app/home/giveaway.html), the server and the admin page all use
 // them. A test checks the page says the same.
 
@@ -11,7 +11,7 @@ export const GIVEAWAY = {
 };
 
 /** The words under the form, saved with each entry. app/home/giveaway.html shows the same. */
-export const GIVEAWAY_CONSENT_TEXT = "We’ll use this to run the draw and to contact you about GEO.";
+export const GIVEAWAY_CONSENT_TEXT = "We’ll use this to run the draw and to contact you about FirstPicked.";
 
 export const GIVEAWAY_ERRORS = {
   generic: "Something went wrong. Please try again.",
@@ -22,7 +22,7 @@ export const GIVEAWAY_ERRORS = {
   closed: "Sorry, entries are closed. The winner is drawn on Saturday 7 November.",
   perIp: "You’ve entered a lot today. Please try again tomorrow.",
   busy: "We’re very busy right now. Please try again later today.",
-  crossSite: "Please use the form on the GEO website.",
+  crossSite: "Please use the form on the FirstPicked website.",
   tooBig: "That was too much to send. Please fill in just the four boxes.",
 };
 

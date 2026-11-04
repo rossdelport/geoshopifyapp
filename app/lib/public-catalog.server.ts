@@ -1,4 +1,4 @@
-// Shopify stores on the GEO web app, read from their public pages only (no Shopify app connection needed):
+// Shopify stores on the FirstPicked web app, read from their public pages only (no Shopify app connection needed):
 // /meta.json (shop name, myshopify address, country, currency) and /products.json (the catalog every Shopify store
 // shows publicly). Product ids are the same as in the Admin API, so a later Shopify connection matches the rows.
 
@@ -8,7 +8,7 @@ import { safeFetch } from "./check.server";
 export const STORE_ERRORS = {
   address: "Please type your store’s address, like yourstore.com.",
   notShopify: "We couldn’t find a Shopify store at that address. Please check it and try again.",
-  taken: "That store is already on GEO under another email. Ask the person who added it, or email ross@firstpicked.com.au.",
+  taken: "That store is already on FirstPicked under another email. Ask the person who added it, or email ross@firstpicked.com.au.",
 };
 
 /** "https://www.Store.com/products/x?y" -> "www.store.com". Null when it isn't a web address. */
@@ -170,7 +170,7 @@ export async function syncPublicCatalog(shopId: string, max = 250): Promise<numb
   return count;
 }
 
-/** Add a store to a GEO account (or give back the one it already has). */
+/** Add a store to a FirstPicked account (or give back the one it already has). */
 export async function addWebStore(
   userId: string,
   found: FoundStore,
@@ -178,7 +178,7 @@ export async function addWebStore(
   const existing = await db.shop.findUnique({ where: { domain: found.myshopifyDomain } });
   if (existing) {
     if (existing.userId === userId) return { ok: true, shopId: existing.id, isNew: false };
-    // Anyone can type any address, so a store already on GEO (another account, or installed from Shopify with
+    // Anyone can type any address, so a store already on FirstPicked (another account, or installed from Shopify with
     // its orders) is never handed to whoever typed it.
     return { ok: false, error: STORE_ERRORS.taken };
   }

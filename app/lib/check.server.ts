@@ -88,7 +88,7 @@ const GENERIC = "Something went wrong while checking this product. Please try ag
 const INTERRUPTED = "This check was interrupted. Please run it again.";
 const TOO_SLOW = "This check took too long. Please try again.";
 const BUSY = "We’re very busy right now. Please try again later.";
-const LIMIT = "This connection has reached the free check limit for now (3 checks in 24 hours). Try again tomorrow, or join the GEO waitlist.";
+const LIMIT = "This connection has reached the free check limit for now (3 checks in 24 hours). Try again tomorrow, or join the FirstPicked waitlist.";
 
 // ---------- Limits ----------
 // IPs are hashed with CHECK_IP_SECRET (hashIp in public-form.server.ts, shared with the report email form).
@@ -117,7 +117,7 @@ async function alertSpendCap(spent: number, cap: number) {
   if (!env.alertEmail || !emailConfigured()) return;
   await sendEmail(
     [env.alertEmail],
-    "GEO: free product checks paused (daily spend cap)",
+    "FirstPicked: free product checks paused (daily spend cap)",
     `<p>Free product checks spent US$${spent.toFixed(2)} in the last 24 hours, over the US$${cap} cap (GEO_CHECKS_USD_PER_DAY).</p><p>New checks are paused until the 24-hour total drops below the cap.</p>`,
   ).catch((err) => console.error("[check] could not send the spend alert:", (err as Error).message));
 }
@@ -342,7 +342,7 @@ export async function safeFetch(
     if (!fetchableUrl(current)) throw new CheckError(CANT_READ);
     await publicAddresses(current.hostname); // a clear early "no"; the connection checks again itself
     const res = await httpGet(current, {
-      headers: { "user-agent": "Mozilla/5.0 (compatible; GEO-check/1.0)", accept, "accept-language": "en" },
+      headers: { "user-agent": "Mozilla/5.0 (compatible; FirstPicked-check/1.0)", accept, "accept-language": "en" },
       signal: AbortSignal.timeout(opts.timeoutMs ?? 10_000),
       lookup: safeLookup,
     });

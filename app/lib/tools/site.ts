@@ -4,8 +4,8 @@
 
 export const SITE = "https://firstpicked.com.au"; // canonical origin, never from env
 export const SITE_HOST = "firstpicked.com.au";
-export const BRAND = "GEO";
-export const BRAND_ALT = "GEO for Shopify";
+export const BRAND = "FirstPicked";
+export const BRAND_ALT = "First Picked";
 /** The last real change to the home page, app/home/new-home.html (git log -1 --format=%cs app/home/new-home.html). Sitemap lastmod for "/". */
 export const HOME_UPDATED = "2026-11-03";
 /** The last real change to the pages in other languages, app/home/home-<code>.html. Sitemap lastmod for /de, /fr, /nl, /es, /it. */

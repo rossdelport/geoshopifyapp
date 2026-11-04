@@ -12,7 +12,7 @@ import { BAD_EMAIL_ERROR } from "./check-consent";
 import { HOME_LANGS } from "./tools/site";
 
 /** The words under the form, saved with each signup. design/overview/parts/46-waitlist.html shows the same. */
-export const WAITLIST_CONSENT_TEXT = "We’ll only use this to contact you about GEO.";
+export const WAITLIST_CONSENT_TEXT = "We’ll only use this to contact you about FirstPicked.";
 
 export const WAITLIST_ERRORS = {
   generic: "Something went wrong. Please try again.",
@@ -20,7 +20,7 @@ export const WAITLIST_ERRORS = {
   email: BAD_EMAIL_ERROR,
   perIp: "You’ve joined a lot today. Please try again tomorrow.",
   busy: "We’re very busy right now. Please try again later today.",
-  crossSite: "Please use the form on the GEO website.",
+  crossSite: "Please use the form on the FirstPicked website.",
   tooBig: "That was too much to send. Please enter just your name and email.",
 };
 

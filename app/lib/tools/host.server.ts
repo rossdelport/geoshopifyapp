@@ -3,7 +3,7 @@
 // www.usegeo.app, and the *.up.railway.app address. A page viewed on any of them gets a 301 to the same path and
 // query on https://firstpicked.com.au, so old links, bookmarks, sign-in emails and Google all land on the new site.
 // What must keep working where it is never moves: the Shopify app (/app, /auth), webhooks, the tracking code's
-// endpoint (/api/pixel: stores pasted code that posts to https://usegeo.app/api/pixel), /healthz, robots.txt
+// endpoint (/api/pixel), /healthz, robots.txt
 // (bots must read it, not be redirected), POSTs, React Router's data requests and any URL carrying Shopify's
 // admin parameters. The root route's loader calls this for every page; resource routes (llms.txt, sitemap.xml)
 // call it themselves.

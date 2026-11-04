@@ -1,4 +1,4 @@
-// Ask GEO and the admin area. Pure parts: cleaning the chat the page sends, the hourly limit, the knowledge in the
+// Ask FirstPicked and the admin area. Pure parts: cleaning the chat the page sends, the hourly limit, the knowledge in the
 // prompt, who counts as admin, and the day picker. With a real Postgres (TEST_DATABASE_URL): an answer that
 // needs the team saves a short flag and emails it (the chat itself is never saved); spend adds up per Sydney day
 // and provider; the users table shows plan, AI score and setup steps; only the admin can open the admin pages.
@@ -56,7 +56,7 @@ beforeAll(async () => {
   admin = await import("../app/lib/admin.server");
 });
 
-describe("Ask GEO and admin: the pure parts", () => {
+describe("Ask FirstPicked and admin: the pure parts", () => {
   it("cleans the chat the page sends: alternating turns, ending with the person, within limits", () => {
     expect(ask.cleanHistory(null)).toBeNull();
     expect(ask.cleanHistory([{ role: "assistant", content: "hi" }])).toBeNull(); // nothing from the person
@@ -116,7 +116,7 @@ describe("Ask GEO and admin: the pure parts", () => {
   });
 });
 
-describe.skipIf(!url)("Ask GEO and admin with a database (needs TEST_DATABASE_URL)", () => {
+describe.skipIf(!url)("Ask FirstPicked and admin with a database (needs TEST_DATABASE_URL)", () => {
   let db: typeof import("../app/db.server").default;
 
   beforeAll(async () => {
@@ -158,7 +158,7 @@ describe.skipIf(!url)("Ask GEO and admin with a database (needs TEST_DATABASE_UR
 
   it("passes billing and bugs to the team: a short saved summary plus an email with the chat", async () => {
     const { user, shop } = await seed();
-    fake.next = { reply: "I've passed this to the GEO team, who'll reply by email.", flag: { reason: "billing", summary: "Wants to start Standard now." } };
+    fake.next = { reply: "I've passed this to the FirstPicked team, who'll reply by email.", flag: { reason: "billing", summary: "Wants to start Standard now." } };
     const route = await import("../app/routes/dash.ask_.answer");
     session.user = user;
     session.shop = shop;
@@ -173,7 +173,7 @@ describe.skipIf(!url)("Ask GEO and admin with a database (needs TEST_DATABASE_UR
     const mail = fake.emails[0] as { to: string[]; replyTo: string; subject: string; html: string };
     expect(mail.to).toEqual(["founder@geo.test"]);
     expect(mail.replyTo).toBe("owner@store.com");
-    expect(mail.subject).toBe("Ask GEO flag (billing): Store");
+    expect(mail.subject).toBe("Ask FirstPicked flag (billing): Store");
     expect(mail.html).toContain("How do I pay?");
   });
 

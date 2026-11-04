@@ -19,7 +19,7 @@ const TIMEOUT = 10_000;
 
 export const googleReady = () => Boolean(env.googleClientId && env.googleClientSecret);
 
-/** Google's sign-in page, asking Ross to let GEO see his free times and add calls to his calendar. */
+/** Google's sign-in page, asking Ross to let FirstPicked see his free times and add calls to his calendar. */
 export function consentUrl(state: string): string {
   const q = new URLSearchParams({
     client_id: env.googleClientId,
@@ -157,7 +157,7 @@ export async function bookCall(input: BookInput, now = new Date()): Promise<{ st
 
   const end = new Date(Date.parse(start) + CALL.minutes * 60_000).toISOString();
   await google(token, "calendars/primary/events?conferenceDataVersion=1&sendUpdates=all", {
-    summary: `GEO call: Ross and ${name}`,
+    summary: `FirstPicked call: Ross and ${name}`,
     description: `Booked at ${SITE}/book\n\nName: ${name}\nEmail: ${email}\nStore: ${store}`,
     start: { dateTime: start },
     end: { dateTime: end },

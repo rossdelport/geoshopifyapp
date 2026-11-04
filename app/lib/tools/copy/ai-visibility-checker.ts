@@ -17,7 +17,7 @@ const BING_2025: FaqSource = {
   url: "https://about.ads.microsoft.com/en/blog/post/october-2025/optimizing-your-content-for-inclusion-in-ai-search-answers",
   label: "Microsoft Bing on writing for AI answers (2025)",
 };
-const PRIVACY: FaqSource = { url: "/privacy", label: "GEO privacy policy" };
+const PRIVACY: FaqSource = { url: "/privacy", label: "FirstPicked privacy policy" };
 
 // Timing: the spec's draft said "about 2 minutes" (from a planning estimate in competitors.md 9, never measured).
 // The check's own running page says "usually 3 to 6 min" (check-live.tsx) and docs/copy-deck.md says "a few
@@ -134,7 +134,7 @@ export const FAQS: ToolFaqItem[] = [
     a: "Yes. There's no sign-up and no card. Each check costs us real money to run, so there's a limit of 3 checks per person per day.",
   },
   {
-    q: "What does GEO do with my product link?",
+    q: "What does FirstPicked do with my product link?",
     // source: check.$id.tsx sends noindex; RETENTION.publicCheckDays (30) is shown on /privacy.
     a: "We use it to run your check and show your report. Reports aren't listed anywhere public. We ask search engines not to show them, and we delete them after a set time. Our privacy policy has the details.",
     sources: [PRIVACY],

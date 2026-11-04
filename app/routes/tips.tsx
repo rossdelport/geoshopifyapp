@@ -8,7 +8,7 @@ import { EMAIL_PAGE_FONTS, EmailPage, emailPage as s } from "../components/email
 // GET only shows a confirm page (a mail scanner opening the link changes nothing); POST confirms. Asking
 // for a report never puts anyone on the tips list by itself: the box and this click both have to happen.
 
-export const meta: MetaFunction = () => [{ title: "Tips from GEO" }, { name: "robots", content: "noindex" }];
+export const meta: MetaFunction = () => [{ title: "Tips from FirstPicked" }, { name: "robots", content: "noindex" }];
 
 export const links: LinksFunction = () => EMAIL_PAGE_FONTS;
 
@@ -38,9 +38,9 @@ export default function Tips() {
     body = (
       <>
         <h1 style={s.h1}>This link doesn’t work</h1>
-        <p style={s.p}>It may be old or cut short. Use the link in your latest email from GEO, or reply to that email.</p>
+        <p style={s.p}>It may be old or cut short. Use the link in your latest email from FirstPicked, or reply to that email.</p>
         <a href="/" style={s.link}>
-          Back to GEO
+          Back to FirstPicked
         </a>
       </>
     );
@@ -50,7 +50,7 @@ export default function Tips() {
         <h1 style={s.h1}>You’re on the list</h1>
         <p style={s.p}>We’ll send {who} occasional tips on getting recommended by AI. Every email has an unsubscribe link.</p>
         <a href="/" style={s.link}>
-          Back to GEO
+          Back to FirstPicked
         </a>
       </>
     );
@@ -63,7 +63,7 @@ export default function Tips() {
           next time you ask for a report.
         </p>
         <a href="/" style={s.link}>
-          Back to GEO
+          Back to FirstPicked
         </a>
       </>
     );

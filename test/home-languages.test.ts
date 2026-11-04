@@ -34,7 +34,7 @@ describe("home page in other languages", () => {
       expect(html).toContain(`<html lang="${lang}">`);
       expect(html).toContain(`<link rel="canonical" href="https://firstpicked.com.au/${lang}">`);
       expect(html).toContain(`window.GEO_LANG="${lang}"`);
-      expect(html).not.toContain("<title>GEO · Get your products recommended by AI</title>");
+      expect(html).not.toContain("<title>FirstPicked · Get your products recommended by AI</title>");
       // English words that must be gone
       for (const enText of ["The free sales channel", "Join the waitlist</button>", "Simple pricing", "Questions store owners ask"]) {
         expect(html, `"${enText}" is still in English`).not.toContain(enText);
@@ -43,7 +43,7 @@ describe("home page in other languages", () => {
       expect(html).toContain(`>${PRICES[lang]}<`);
       expect(html).not.toContain(">A$1,000<");
       // the company details line, with the real address and email
-      expect(html).toContain(`<p class="foot-legal">${LEGAL[lang]}: GEO, 237 Adelaide Terrace, East Perth WA 6000,`);
+      expect(html).toContain(`<p class="foot-legal">${LEGAL[lang]}: FirstPicked, 237 Adelaide Terrace, East Perth WA 6000,`);
       expect(html).toContain('<a href="mailto:ross@firstpicked.com.au">ross@firstpicked.com.au</a>');
       // no explainer video section or its script
       expect(html).not.toContain('<video class="vid"');

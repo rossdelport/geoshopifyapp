@@ -56,7 +56,7 @@ describe("giveaway page", () => {
     expect(html).toContain('<meta name="robots" content="noindex">');
     expect(html).toContain('<link rel="canonical" href="https://firstpicked.com.au/giveaway">');
     expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
-    expect(html).toContain("One Australian brand wins <b>3 months of GEO, free.</b>");
+    expect(html).toContain("One Australian brand wins <b>3 months of FirstPicked, free.</b>");
     // the route filled in the font, Ross's photo and the closing time
     expect(html).not.toMatch(/__[A-Z_]+__/);
     expect(html).toContain(`data-closes="${GIVEAWAY.closesAt.toISOString()}"`);
@@ -87,7 +87,7 @@ describe("giveaway page", () => {
     expect(html).toContain("isn’t run, backed or linked with Facebook, Instagram, Meta or Shopify");
   });
 
-  it("loads GEO's Meta pixel and cookie notice like the home page, and tells Meta about a new entry without any details", async () => {
+  it("loads FirstPicked's Meta pixel and cookie notice like the home page, and tells Meta about a new entry without any details", async () => {
     const { html } = await page();
     const head = html.slice(0, html.indexOf("</head>"));
     expect(head).toContain(readFileSync(join(ROOT, "design", "overview", "pixel-head.js"), "utf8").trim());

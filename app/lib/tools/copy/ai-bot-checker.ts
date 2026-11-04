@@ -297,8 +297,8 @@ export const FAQS: ToolFaqItem[] = [
   },
 ];
 
-/** The one button under the result. True: GEO's fix engine rewrites descriptions from catalog facts only, and the store approves (CLAUDE.md §11). */
+/** The one button under the result. True: FirstPicked's fix engine rewrites descriptions from catalog facts only, and the store approves (CLAUDE.md §11). */
 export const CTA = {
-  text: "See how GEO rewrites product pages with your facts",
+  text: "See how FirstPicked rewrites product pages with your facts",
   href: "/?ref=tool-ai-bot-checker#how",
 } as const;

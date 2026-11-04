@@ -1,4 +1,4 @@
-// The GEO tracking code for web app stores: a Shopify "custom pixel" the store pastes into Shopify admin ->
+// The FirstPicked tracking code for web app stores: a Shopify "custom pixel" the store pastes into Shopify admin ->
 // Settings -> Customer events. It sends the first page of each visit (where the shopper came from) and each order
 // (total, products, and the shopper's first and latest visit), never names, emails or addresses. Each store's code
 // carries its own key, so only that store's code can send its orders.
@@ -20,16 +20,16 @@ export async function trackKeyFor(shopId: string): Promise<string> {
 
 /** The code to paste into Shopify. Plain JavaScript: Shopify runs it in its own sandbox. */
 export function trackingCode(key: string): string {
-  return `// GEO tracking code: counts visits from AI assistants (ChatGPT and co) and the orders they lead to.
+  return `// FirstPicked tracking code: counts visits from AI assistants (ChatGPT and co) and the orders they lead to.
 // It sends no names, emails or addresses. Made for your store only: please don't share it.
-const GEO = { key: "${key}", endpoint: "${SITE}/api/pixel" };
+const FIRSTPICKED = { key: "${key}", endpoint: "${SITE}/api/pixel" };
 
 function geoSend(body) {
-  fetch(GEO.endpoint, {
+  fetch(FIRSTPICKED.endpoint, {
     method: "POST",
     keepalive: true,
     headers: { "content-type": "text/plain" },
-    body: JSON.stringify(Object.assign({ k: GEO.key }, body)),
+    body: JSON.stringify(Object.assign({ k: FIRSTPICKED.key }, body)),
   }).catch(function () {});
 }
 

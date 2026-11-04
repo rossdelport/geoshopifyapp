@@ -93,7 +93,7 @@ export function translatePage(site, l) {
   page = head + body;
 
   // 4b. The company details line under the copyright (an Impressum / mentions légales / aviso legal).
-  const copy = `<p>${text['© 2026 GEO · Made for Shopify stores worldwide']}</p>`;
+  const copy = `<p>${text['© 2026 FirstPicked · Made for Shopify stores worldwide']}</p>`;
   if (!page.includes(copy)) throw new Error(`i18n ${meta.lang}: footer copyright line not found`);
   page = page.replace(copy, `${copy}\n      <p class="foot-legal">${esc(meta.legal.label)}: ${esc(meta.legal.details)} · <a href="mailto:${meta.legal.email}">${meta.legal.email}</a></p>`);
 

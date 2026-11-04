@@ -16,8 +16,8 @@ export const headers = toolHeaders;
 export const meta: MetaFunction = () =>
   pageMeta({
     path: HUB.path,
-    title: "We couldn't find that tool | GEO",
-    description: "This page doesn't exist. See all of GEO's free tools for Shopify stores.",
+    title: "We couldn't find that tool | FirstPicked",
+    description: "This page doesn't exist. See all of FirstPicked's free tools for Shopify stores.",
     noindex: true,
   });
 

@@ -91,7 +91,7 @@ interface ChatOptions<S extends z.ZodType> {
   label: string;
 }
 
-/** A multi-turn chat that answers in typed JSON (Ask GEO). Smart model, low effort, cached system prompt. */
+/** A multi-turn chat that answers in typed JSON (Ask FirstPicked). Smart model, low effort, cached system prompt. */
 export async function chatJson<S extends z.ZodType>(opts: ChatOptions<S>): Promise<z.infer<S>> {
   const model = env.modelSmart;
   const response = await claudeGate.run(() =>

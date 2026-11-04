@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- reads meta descriptors and JSON-LD of many shapes */
 // The stories: /stories (the hub) and /stories/<slug> (one page per story), rendered on the server with
 // createRoutesStub (no JavaScript, no network). Every story page shows its H1, intro, the link to the original and
-// the note that the brand is not a GEO customer; the head has one canonical and Article JSON-LD based on the source;
+// the note that the brand is not a FirstPicked customer; the head has one canonical and Article JSON-LD based on the source;
 // "Read next" shows the story's three related stories; the Shopify badge only shows for stores on Shopify; no page
 // has an em dash; an unknown slug is a 404 with noindex.
 
@@ -101,10 +101,10 @@ describe("the stories content", () => {
     expect(publisherPossessive("The SEO Works (agency)")).toBe("The SEO Works'");
     expect(publisherPossessive("Ahrefs blog")).toBe("the Ahrefs blog's");
     expect(notCustomerNote(storyBySlug("viv-chatgpt-sales")!)).toBe(
-      "Viv is not a GEO customer. This page is our summary of Modern Retail's reporting. The figures and quotes are theirs.",
+      "Viv is not a FirstPicked customer. This page is our summary of Modern Retail's reporting. The figures and quotes are theirs.",
     );
     expect(notCustomerNote(storyBySlug("levenger-chatgpt-sales")!)).toBe(
-      "Levenger is not a GEO customer. This page is our summary of Volume Nine's reporting. The figures are theirs.",
+      "Levenger is not a FirstPicked customer. This page is our summary of Volume Nine's reporting. The figures are theirs.",
     );
     expect(notCustomerNote(storyBySlug("joe-and-bella-chatgpt-customers")!)).toContain("The quotes are theirs.");
     expect(splitLesson("Go into detail. Viv explains manufacturing.")).toEqual(["Go into detail.", "Viv explains manufacturing."]);
@@ -145,7 +145,7 @@ describe("each story page (server-rendered, no JavaScript)", () => {
     if (story.source.dateNote) expect(text(source)).toContain(story.source.dateNote);
     for (const m of story.moreSources ?? []) expect(source).toContain(`href="${m.url}" target="_blank" rel="noopener noreferrer"`);
     expect(text(source)).toContain(notCustomerNote(story));
-    expect(text(source)).toContain(`${story.brand} is not a GEO customer.`);
+    expect(text(source)).toContain(`${story.brand} is not a FirstPicked customer.`);
     // after the story, before "Read next"
     expect(html.indexOf('id="source"')).toBeGreaterThan(html.indexOf('id="lessons"'));
     expect(html.indexOf('id="source"')).toBeLessThan(html.indexOf('id="read-next"'));
@@ -174,15 +174,15 @@ describe("each story page (server-rendered, no JavaScript)", () => {
     cards.forEach((card, i) => expect(card.includes("logos/shopify.svg")).toBe(storyBySlug(story.related[i])!.onShopify));
   });
 
-  it.each(PAGES.map((p) => [p.story.slug, p] as const))("%s: no em dash, no spaced en dash, and never a hint the brand uses GEO", (_slug, { story, html }) => {
+  it.each(PAGES.map((p) => [p.story.slug, p] as const))("%s: no em dash, no spaced en dash, and never a hint the brand uses FirstPicked", (_slug, { story, html }) => {
     const words = text(html);
     expect(words).not.toMatch(EM_DASH);
     expect(words).not.toMatch(SPACED_EN_DASH);
-    // "GEO customer" only ever as "not a GEO customer"
-    expect(words.match(/GEO customer/g)).toHaveLength(1);
-    expect(words).toContain(`${story.brand} is not a GEO customer`);
-    expect(words).not.toMatch(/\b(with|using|used|uses|thanks to) GEO\b/i);
-    // the one quiet line about GEO's free check is about the reader's products
+    // "FirstPicked customer" only ever as "not a FirstPicked customer"
+    expect(words.match(/FirstPicked customer/g)).toHaveLength(1);
+    expect(words).toContain(`${story.brand} is not a FirstPicked customer`);
+    expect(words).not.toMatch(/\b(with|using|used|uses|thanks to) FirstPicked\b/i);
+    // the one quiet line about FirstPicked's free check is about the reader's products
     expect(html).toContain(
       '<p class="st-try">Want to see if ChatGPT recommends your products? <a href="/tools/ai-visibility-checker">Try our free AI Visibility Checker</a>.</p>',
     );
@@ -233,7 +233,7 @@ describe("the hub at /stories", () => {
     const order = [...STORIES.filter((s) => s.ecommerce), ...STORIES.filter((s) => !s.ecommerce)];
     expect(cardHrefs(main)).toEqual(order.map((s) => `/stories/${s.slug}`));
     expect(main.match(/logos\/shopify\.svg/g)).toHaveLength(6 + 1); // six cards and the key
-    expect(text(HUB_HTML)).toContain("None of these brands are GEO customers.");
+    expect(text(HUB_HTML)).toContain("None of these brands are FirstPicked customers.");
     expect(text(HUB_HTML)).not.toMatch(EM_DASH);
     expect(text(HUB_HTML)).not.toMatch(SPACED_EN_DASH);
     expect(HUB_HTML).toContain('<span aria-current="page">Stories</span>');

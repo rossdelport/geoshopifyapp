@@ -1,4 +1,4 @@
-// New store email: a store installing GEO (or coming back after uninstalling) queues one "install.notice" email
+// New store email: a store installing FirstPicked (or coming back after uninstalling) queues one "install.notice" email
 // to GEO_ALERT_EMAIL; a store that is just logging in again does not. No database: the shop table is faked.
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -73,7 +73,7 @@ describe("new store email", () => {
       { domain: "beard.myshopify.com", name: "Beard <Co>", email: "hi@beard.co", country: "AU", devStore: true },
       true,
     );
-    expect(subject).toBe("New store installed GEO: Beard <Co> (beard.myshopify.com)");
+    expect(subject).toBe("New store installed FirstPicked: Beard <Co> (beard.myshopify.com)");
     expect(html).toContain("Beard &lt;Co&gt;");
     expect(html).toContain("hi@beard.co");
     expect(html).toContain("Test store:</b> yes");

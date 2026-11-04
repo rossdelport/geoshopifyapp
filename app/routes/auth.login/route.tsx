@@ -7,7 +7,7 @@ import { savePlanIntentFromLogin } from "../../lib/plan-intent.server";
 import { parsePlanChoice } from "../../lib/plans";
 import { loginErrorMessage } from "./error.server";
 
-export const meta: MetaFunction = () => [{ title: "Log in · GEO" }, { name: "robots", content: "noindex" }];
+export const meta: MetaFunction = () => [{ title: "Log in · FirstPicked" }, { name: "robots", content: "noindex" }];
 
 /** Shopify's login reads a form; anything else posted here (a bot sending JSON) used to crash with a 500. */
 const isFormPost = (request: Request) => /^(application\/x-www-form-urlencoded|multipart\/form-data)\b/i.test(request.headers.get("content-type") ?? "");
@@ -19,7 +19,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const choice = parsePlanChoice(url.searchParams.get("plan"), url.searchParams.get("cycle"));
 
   // Shopify's App Store rules ban asking a merchant to type their store address, so the live site never shows
-  // the form: GEO opens from the Shopify admin. login() above still sends ?shop= links on to Shopify.
+  // the form: FirstPicked opens from the Shopify admin. login() above still sends ?shop= links on to Shopify.
   return { errors, choice, showForm: process.env.NODE_ENV !== "production" };
 };
 
@@ -45,10 +45,10 @@ export default function Auth() {
       <>
         <script src="https://cdn.shopify.com/shopifycloud/polaris.js" />
         <s-page>
-          <s-section heading="Open GEO from your Shopify admin">
-            <s-paragraph>GEO runs inside your Shopify admin. Go to Apps in your Shopify admin and choose GEO.</s-paragraph>
+          <s-section heading="Open FirstPicked from your Shopify admin">
+            <s-paragraph>FirstPicked runs inside your Shopify admin. Go to Apps in your Shopify admin and choose FirstPicked.</s-paragraph>
             <s-paragraph>
-              Don&apos;t have GEO yet? <s-link href="https://firstpicked.com.au/#waitlist">Join the waitlist</s-link>.
+              Don&apos;t have FirstPicked yet? <s-link href="https://firstpicked.com.au/#waitlist">Join the waitlist</s-link>.
             </s-paragraph>
           </s-section>
         </s-page>

@@ -46,7 +46,7 @@ export interface Plan {
 export const OFFER = {
   name: "Done for you",
   price: "A$1,000 a month",
-  line: "GEO is A$1,000 a month, done for you, with no lock-in contract.",
+  line: "FirstPicked is A$1,000 a month, done for you, with no lock-in contract.",
 } as const;
 
 export const PLANS: Record<PlanId, Plan> = {
@@ -149,7 +149,8 @@ export const PLANS: Record<PlanId, Plan> = {
 export const PAID_PLAN_IDS: PaidPlanId[] = ["core", "pro"];
 
 // Shopify Billing plan names (the billing config keys). Shopify shows these to the store, and stored
-// subscriptions carry them, so never rename one: add a new name and map the old one below instead.
+// subscriptions carry them, so never rename one: add a new name and map the old one below instead. They keep the
+// old GEO name: only the paused Shopify app uses them (the web app will bill through Stripe).
 export const BILLING_PLAN_NAMES = {
   core: { monthly: "GEO Standard", yearly: "GEO Standard yearly" },
   pro: { monthly: "GEO Done-for-you", yearly: "GEO Done-for-you yearly" },

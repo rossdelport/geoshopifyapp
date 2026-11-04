@@ -1,8 +1,8 @@
 // The /stories pages' fixed words and their <head>: the hub's copy, the little a card needs, the source line,
-// the "not a GEO customer" note and the JSON-LD. Pure and browser-safe (route `meta` runs in the browser too).
+// the "not a FirstPicked customer" note and the JSON-LD. Pure and browser-safe (route `meta` runs in the browser too).
 // It never imports stories.json: the routes' loaders read the stories and pass them in, so each page carries only
 // its own story in the HTML, not all fifteen in its JavaScript.
-// Copy rules: plain English, no em dashes, and never a word that suggests these brands use GEO.
+// Copy rules: plain English, no em dashes, and never a word that suggests these brands use FirstPicked.
 
 import type { Story, StorySource } from "./index";
 import { abs } from "../tools/site";
@@ -15,7 +15,7 @@ export const STORIES_HUB = {
   name: "Stories",
   path: "/stories",
   /** Under 60 characters. */
-  title: "Stories: brands getting sales from AI | GEO",
+  title: "Stories: brands getting sales from AI | FirstPicked",
   /** Under 155 characters. */
   description:
     "Online stores and software companies that got sales or sign-ups from ChatGPT and other AI assistants, each story linked to the original report.",
@@ -61,7 +61,7 @@ export function notCustomerNote(s: Story): string {
   const figures = s.keyNumbers.length > 0;
   const quotes = s.quotes.length > 0;
   const theirs = figures && quotes ? "The figures and quotes are theirs." : figures ? "The figures are theirs." : quotes ? "The quotes are theirs." : "The facts are theirs.";
-  return `${s.brand} is not a GEO customer. This page is our summary of ${publisherPossessive(s.source.publisher)} reporting. ${theirs}`;
+  return `${s.brand} is not a FirstPicked customer. This page is our summary of ${publisherPossessive(s.source.publisher)} reporting. ${theirs}`;
 }
 
 /** "Lesson. The rest." -> ["Lesson.", "The rest."], so the page can set the lesson itself in bold. */

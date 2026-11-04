@@ -24,15 +24,15 @@ export interface EmailMessage {
   shopId?: string | null;
 }
 
-/** "GEO <hello@geo.example>" -> "hello@geo.example". */
+/** "FirstPicked <hello@geo.example>" -> "hello@geo.example". */
 export function addressOf(from: string): string {
   return from.match(/<([^>]+)>/)?.[1]?.trim() ?? from.trim();
 }
 
 /**
  * Who sends our emails, as the Spam Act (and CAN-SPAM, CASL) asks: the business's legal name, ABN and a
- * postal address (a PO box is fine), from GEO_LEGAL_NAME, GEO_ABN and GEO_POSTAL_ADDRESS. GEO is a
- * working name, so without them the footer can only say "Sent by GEO" (check-lead.server.ts warns at
+ * postal address (a PO box is fine), from GEO_LEGAL_NAME, GEO_ABN and GEO_POSTAL_ADDRESS. FirstPicked is a
+ * working name, so without them the footer can only say "Sent by FirstPicked" (check-lead.server.ts warns at
  * start-up in production). The privacy page shows the same.
  */
 export function senderIdentity(): { legalName: string; abn: string; postal: string; complete: boolean; line: string } {
@@ -40,8 +40,8 @@ export function senderIdentity(): { legalName: string; abn: string; postal: stri
   const abn = (process.env.GEO_ABN || "").trim();
   const postal = (process.env.GEO_POSTAL_ADDRESS || "").trim();
   const line = legalName
-    ? `Sent by ${legalName}${abn ? ` (ABN ${abn})` : ""}, trading as GEO${postal ? `, ${postal}` : ""}.`
-    : "Sent by GEO.";
+    ? `Sent by ${legalName}${abn ? ` (ABN ${abn})` : ""}, trading as FirstPicked${postal ? `, ${postal}` : ""}.`
+    : "Sent by FirstPicked.";
   return { legalName, abn, postal, complete: Boolean(legalName && postal), line };
 }
 

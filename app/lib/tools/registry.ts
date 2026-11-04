@@ -1,6 +1,6 @@
 // The free tools at firstpicked.com.au/tools: one list for the footer, the hub, "More free tools", the sitemap,
 // llms.txt and the tests, so names and links never drift apart. Pure and browser-safe.
-// Copy rules (docs/tools/spec.md 3.2): titles under 60 characters including " | GEO", descriptions
+// Copy rules (docs/tools/spec.md 3.2): titles under 60 characters including " | FirstPicked", descriptions
 // under 155, `short` under 95. No em dashes. Change `updated` only when a tool or its copy really changes.
 
 export type ToolSlug =
@@ -20,7 +20,7 @@ export interface ToolEntry {
   /** Exact tool name, the same in the H1 (unless `h1` says otherwise), footer, hub and JSON-LD. */
   name: string;
   h1: string;
-  /** <title> and og:title. Under 60 characters including " | GEO". */
+  /** <title> and og:title. Under 60 characters including " | FirstPicked". */
   title: string;
   /** Meta and og:description. Under 155 characters. */
   description: string;
@@ -48,7 +48,7 @@ export const TOOLS: ToolEntry[] = [
     path: "/tools/ai-visibility-checker",
     name: "AI Visibility Checker",
     h1: "AI Visibility Checker",
-    title: "AI Visibility Checker: Does ChatGPT Recommend You? | GEO",
+    title: "AI Visibility Checker: Does ChatGPT Pick You? | FirstPicked",
     description:
       "Free AI visibility checker for Shopify products. See if ChatGPT, Gemini and Perplexity recommend your product and who they pick instead. No sign-up.",
     short: "See if ChatGPT, Gemini and Perplexity recommend your product, and who they pick instead.",
@@ -66,7 +66,7 @@ export const TOOLS: ToolEntry[] = [
     path: "/tools/ai-overview-checker",
     name: "AI Overview Checker",
     h1: "AI Overview Checker",
-    title: "AI Overview Checker: Is Your Site Cited by Google AI? | GEO",
+    title: "AI Overview Checker: Does Google AI Cite You? | FirstPicked",
     description:
       "Free AI Overview checker. Type a shopping search to see if Google shows an AI Overview, which sites it cites and if yours is one. No sign-up.",
     short: "See if Google shows an AI Overview for a search, which sites it cites and if yours is one.",
@@ -83,7 +83,7 @@ export const TOOLS: ToolEntry[] = [
     path: "/tools/ai-crawler-checker",
     name: "AI Crawler Checker",
     h1: "AI Crawler Checker",
-    title: "AI Crawler Checker: Which AI Bots Can Read Your Site | GEO",
+    title: "AI Crawler Checker: Can AI Read Your Site? | FirstPicked",
     description:
       "Free AI crawler checker. See which AI bots your robots.txt lets in, like OAI-SearchBot, GPTBot and PerplexityBot, with Shopify fixes. No sign-up.",
     short: "See which AI bots your robots.txt lets in, and which blocks really hide you from AI answers.",
@@ -100,7 +100,7 @@ export const TOOLS: ToolEntry[] = [
     path: "/tools/product-schema-checker",
     name: "Product Schema Checker",
     h1: "Product Schema Checker",
-    title: "Product Schema Checker: What Google and AI Can Read | GEO",
+    title: "Product Schema Checker: What AI Can Read | FirstPicked",
     description:
       "Free product schema checker for Shopify. Paste a product link to see which facts Google and AI shopping tools can read and what's missing. No sign-up.",
     short: "See which product facts Google and AI shopping tools can read from your product page.",
@@ -117,7 +117,7 @@ export const TOOLS: ToolEntry[] = [
     path: "/tools/llms-txt-checker",
     name: "llms.txt Checker",
     h1: "llms.txt Checker",
-    title: "llms.txt Checker: Validate and Generate Your File | GEO",
+    title: "llms.txt Checker: Validate and Generate | FirstPicked",
     description:
       "Free llms.txt checker and generator. See if your site has an llms.txt, check it against the llmstxt.org format and copy a starter file. No sign-up.",
     short: "Check your llms.txt against the llmstxt.org format and copy a starter file.",
@@ -134,7 +134,7 @@ export const TOOLS: ToolEntry[] = [
     path: "/tools/faq-schema-generator",
     name: "FAQ Schema Generator",
     h1: "FAQ Schema Generator",
-    title: "FAQ Schema Generator: Free JSON-LD for Shopify | GEO",
+    title: "FAQ Schema Generator: JSON-LD for Shopify | FirstPicked",
     description:
       "Free FAQ schema generator. Type questions and answers, then copy FAQPage JSON-LD or a ready Shopify section. Runs in your browser. No sign-up.",
     short: "Turn your questions and answers into FAQ markup and a ready Shopify section.",
@@ -151,7 +151,7 @@ export const TOOLS: ToolEntry[] = [
     path: "/tools/ai-bot-checker",
     name: "AI Bot Checker",
     h1: "AI Bot Checker for product descriptions",
-    title: "AI Bot Checker for Product Descriptions | GEO",
+    title: "AI Bot Checker for Product Descriptions | FirstPicked",
     description:
       "Does your product copy sound like a bot wrote it? Free checker for vague phrases, hype words and missing facts shoppers and AI need. No sign-up.",
     short: "Check if your product copy sounds generic, and which facts shoppers and AI are missing.",
@@ -183,7 +183,7 @@ const latest = TOOLS.reduce((max, t) => (t.updated > max ? t.updated : max), TOO
 export const HUB = {
   path: "/tools" as const,
   name: "Free tools",
-  title: "Free AI Search Tools for Shopify Stores | GEO",
+  title: "Free AI Search Tools for Shopify Stores | FirstPicked",
   description:
     "Seven free tools that show how AI search sees your Shopify store: AI Overviews, AI crawlers, product schema, FAQ schema, llms.txt and product copy.",
   h1: "Free AI search tools for Shopify stores",
@@ -191,7 +191,7 @@ export const HUB = {
     "Seven free tools that show how Google's AI Overviews, ChatGPT, Gemini and Perplexity see your store, and what to fix. No sign-up, and every result shows right on the page.",
   updated: latest,
   ogImage: "/og/tools.png",
-  ogAlt: "GEO free tools: checks for AI Overviews, AI crawlers, product schema, FAQ schema, llms.txt and product copy",
+  ogAlt: "FirstPicked free tools: checks for AI Overviews, AI crawlers, product schema, FAQ schema, llms.txt and product copy",
 };
 
 /** The hub's groups, in page order (docs/tools/spec.md section 6). Every tool appears in exactly one. */

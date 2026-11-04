@@ -151,7 +151,7 @@ on all of them). "YouTube mentions" means the brand being named in YouTube video
 is the same "consensus" signal as web mentions; a brand's own new channel with few views is a much weaker
 version of it.
 
-### What this means for GEO (suggestions, Oct 2026)
+### What this means for FirstPicked (suggestions, Oct 2026)
 
 Already built (section 2 table): long-tail questions grouped into topics (fan-out), crawler check, answer-first
 descriptions, guide pages kept fresh, "others only" outreach per assistant. New ideas from this video:
@@ -185,20 +185,20 @@ What Railway did, in short:
 - Fresh pages every week (a changelog every Friday since 2021) to stay in front of Google and the models.
 - Its gap: front-end apps, where Claude Code picks Vercel every time. Winning one kind of question doesn't win them all.
 
-### What this means for GEO
+### What this means for FirstPicked
 
-For GEO's own growth (being the answer when someone asks "how do I get ChatGPT to recommend my Shopify store?"):
+For FirstPicked's own growth (being the answer when someone asks "how do I get ChatGPT to recommend my Shopify store?"):
 
 | Idea | What it would do | Effort | Impact |
 |---|---|---|---|
 | Who AI recommends, by product type | Public pages like "Who ChatGPT recommends for beard oil in Australia", from our own scans, refreshed weekly. Real data nobody else has, which AI loves to cite. Only aggregated public answers, never a customer's private data | Medium | High |
-| Comparison pages | GEO vs AgentIQ, Kedra, Mento, RankPill and others, honest and checked, each with a "switching" section | Small to medium | High |
+| Comparison pages | FirstPicked vs AgentIQ, Kedra, Mento, RankPill and others, honest and checked, each with a "switching" section | Small to medium | High |
 | How-to pages per question | "How to get ChatGPT to recommend your skincare store", one per niche, each ending with the free check | Medium | Medium to high |
 | Weekly "What's new" page | A short changelog every Friday | Small | Medium (freshness) |
 | Help pages in plain text | Extend llms.txt with a summary per page and a plain-text version of each help page | Small | Medium |
-| GEO inside ChatGPT | A ChatGPT app that runs the free check in the chat | Large | High, later |
+| FirstPicked inside ChatGPT | A ChatGPT app that runs the free check in the chat | Large | High, later |
 
-For merchants (this is the same playbook GEO sells): guide pages per buying question (the guide calendar),
+For merchants (this is the same playbook FirstPicked sells): guide pages per buying question (the guide calendar),
 comparison guides against the rivals AI names, an llms.txt for the store, and fresh content on a schedule.
 It backs the guide calendar as the next build, with comparison pages as one guide type.
 
@@ -232,19 +232,19 @@ A founder got about half his signups from ChatGPT after publishing pages around 
 
 There is no secret GEO markup.
 
-### What this means for GEO
+### What this means for FirstPicked
 
-This is GEO's own product, run on GEO itself. Steps 2, 9, 10 and 12 are what scans, Sites AI trusts and the
+This is FirstPicked's own product, run on FirstPicked itself. Steps 2, 9, 10 and 12 are what scans, Sites AI trusts and the
 money dashboard already do for stores.
 
 | Idea | What it would do | Effort | Impact |
 |---|---|---|---|
-| Run GEO on firstpicked.com.au | Add GEO as a store-like account with 30 to 50 buying questions ("best app to get my Shopify store recommended by ChatGPT", "Kedra alternative", "AgentIQ vs Kedra", "is an AI visibility app worth it"), scanned monthly. Shows which sites ChatGPT cites and whether GEO is named | Small | High |
-| Buying pages on firstpicked.com.au | Honest comparison and alternative pages (GEO vs Kedra, AgentIQ, Mento, FirstIndex, an SEO agency), "for skincare stores" style buyer pages and a clear pricing page. Each says where the other option wins. Must pass `docs/ads/ad-rules.md` (accurate on the day, re-checked) | Medium | High |
-| Something only GEO has | Aggregated data from our scans ("which sites ChatGPT cites for beauty products in Australia") and the free check as a built-in tool on each page | Medium | High |
+| Run FirstPicked on firstpicked.com.au | Add FirstPicked as a store-like account with 30 to 50 buying questions ("best app to get my Shopify store recommended by ChatGPT", "Kedra alternative", "AgentIQ vs Kedra", "is an AI visibility app worth it"), scanned monthly. Shows which sites ChatGPT cites and whether FirstPicked is named | Small | High |
+| Buying pages on firstpicked.com.au | Honest comparison and alternative pages (FirstPicked vs Kedra, AgentIQ, Mento, FirstIndex, an SEO agency), "for skincare stores" style buyer pages and a clear pricing page. Each says where the other option wins. Must pass `docs/ads/ad-rules.md` (accurate on the day, re-checked) | Medium | High |
+| Something only FirstPicked has | Aggregated data from our scans ("which sites ChatGPT cites for beauty products in Australia") and the free check as a built-in tool on each page | Medium | High |
 | Follow signups to money | The waitlist already saves utm source and referrer. Add the same for sign-ups and paid customers, and an admin table: source and landing page to signup to paying | Small | High |
 | Let ChatGPT in | Check firstpicked.com.au's robots.txt and Railway/CDN rules allow OAI-SearchBot, GPTBot, PerplexityBot and ClaudeBot | Small | Medium |
-| Pitch the cited pages | Use Sites AI trusts on GEO's own questions and pitch the roundups and threads ChatGPT already cites | Small | Medium to high |
+| Pitch the cited pages | Use Sites AI trusts on FirstPicked's own questions and pitch the roundups and threads ChatGPT already cites | Small | Medium to high |
 
 For stores, the same thinking backs the guide calendar: choose buying questions over learning questions,
 comparison guides with honest limits, and something original on every page.
@@ -252,5 +252,5 @@ comparison guides with honest limits, and something original on every page.
 ## 6. Interview: Josh Pigford on Firstindex (shared 23 Oct 2026)
 
 A one-person, done-for-you SEO and AI visibility service at US$1,000 a month, run with Claude, that reached about
-US$570k a year within a month. The summary, what it means for GEO and the full transcript are in
+US$570k a year within a month. The summary, what it means for FirstPicked and the full transcript are in
 `docs/firstindex-interview.md`. Ross's project overview from the same day is in `docs/project-summary.md`.

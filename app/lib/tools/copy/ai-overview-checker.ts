@@ -115,7 +115,7 @@ export const ANNOUNCE = {
 
 // ---------- the one button ----------
 
-export const CTA = { text: "See how GEO gets you into AI answers", href: "/?ref=tool-ai-overview-checker#how" } as const;
+export const CTA = { text: "See how FirstPicked gets you into AI answers", href: "/?ref=tool-ai-overview-checker#how" } as const;
 
 // ---------- sections under the button ----------
 

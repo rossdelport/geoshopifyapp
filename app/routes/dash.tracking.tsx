@@ -36,7 +36,7 @@ export default function Tracking() {
             .
           </li>
           <li>
-            Click <b>Add custom pixel</b> and name it <b>GEO</b>.
+            Click <b>Add custom pixel</b> and name it <b>FirstPicked</b>.
           </li>
           <li>Delete the example code Shopify shows, then paste the code below.</li>
           <li>
@@ -60,7 +60,7 @@ export default function Tracking() {
           readOnly
           value={code}
           rows={12}
-          aria-label="Your GEO tracking code"
+          aria-label="Your FirstPicked tracking code"
         />
       </section>
     </>
