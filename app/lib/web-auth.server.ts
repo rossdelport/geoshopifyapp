@@ -1,4 +1,5 @@
-// FirstPicked web app sign-in: email link only (Ross, 2026-10-14). /login sends a link; the link signs the browser in
+// FirstPicked web app sign-in: email link only (Ross, 2026-10-14; the admin area also takes a password, Ross 2026-11-04,
+// see admin.server.ts and routes/admin.tsx). /login sends a link; the link signs the browser in
 // with a signed cookie that holds the account id for 30 days. Only a hash of each link's token is stored, and a
 // link works once, for 30 minutes.
 
@@ -125,14 +126,19 @@ export async function redeemLoginLink(token: string): Promise<{ setCookie: strin
   // Mark it used first (only if nobody else just did), so a link can't sign in twice.
   const marked = await db.loginLink.updateMany({ where: { id: link.id, usedAt: null }, data: { usedAt: new Date() } });
   if (marked.count !== 1) return null;
+  return { setCookie: await signInCookie(link.email), next: link.next || "/dash" };
+}
+
+/** Sign this account in (made if new): the cookie header that keeps the browser signed in for 30 days. */
+export async function signInCookie(email: string): Promise<string> {
   const user = await db.user.upsert({
-    where: { email: link.email },
-    create: { email: link.email, lastLoginAt: new Date() },
+    where: { email },
+    create: { email, lastLoginAt: new Date() },
     update: { lastLoginAt: new Date() },
   });
   const session = await storage.getSession();
   session.set("userId", user.id);
-  return { setCookie: await storage.commitSession(session), next: link.next || "/dash" };
+  return storage.commitSession(session);
 }
 
 export async function currentUser(request: Request) {
@@ -141,12 +147,17 @@ export async function currentUser(request: Request) {
   return id ? db.user.findUnique({ where: { id } }) : null;
 }
 
+/** Where to sign in, coming back to `path` afterwards: the admin area has its own password page (Ross, 4 Nov 2026). */
+export function signInPage(path: string): string {
+  const next = encodeURIComponent(safeNext(path));
+  return path.startsWith("/dash/admin") ? `/admin?next=${next}` : `/login?next=${next}`;
+}
+
 /** The signed-in account, or a redirect to /login (coming back here afterwards). */
 export async function requireUser(request: Request) {
   const user = await currentUser(request);
   if (!user) {
-    const path = new URL(request.url).pathname;
-    throw redirect(`/login?next=${encodeURIComponent(safeNext(path))}`);
+    throw redirect(signInPage(new URL(request.url).pathname));
   }
   return user;
 }
@@ -178,8 +189,7 @@ async function loadWebShop(request: Request) {
     ? await Promise.all([db.user.findUnique({ where: { id } }), db.shop.findFirst({ where: { userId: id }, orderBy: { createdAt: "asc" } })])
     : [null, null];
   if (!user) {
-    const path = new URL(request.url).pathname;
-    throw redirect(`/login?next=${encodeURIComponent(safeNext(path))}`);
+    throw redirect(signInPage(new URL(request.url).pathname));
   }
   if (!shop) throw redirect("/start");
   return { user, shop };

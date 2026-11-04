@@ -699,3 +699,24 @@ model StoreReport {
 
   @@index([createdAt])
 }
+
+// Visits to firstpicked.com.au/book and calls booked there, with the ad's tags, for the chart on the admin Overview
+// (Ross, 4 Nov 2026: "track how many people are clicking thru on my ad to the /book page"). lib/book-stats.server.ts.
+// No names, emails or IP addresses. `visitor` (a scrambled IP and browser) only stops a person counting twice in a
+// day, and is cleared after 2 days (retention.server.ts).
+model BookEvent {
+  id          String   @id @default(cuid())
+  kind        String // view (the page was on screen) | booked (a call was booked)
+  visitor     String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmContent  String?
+  utmTerm     String?
+  fbclid      Boolean  @default(false) // Facebook's click id was in the link (it came from a Facebook or Instagram ad or post)
+  referrer    String? // the site that sent them, host only (m.facebook.com, firstpicked.com.au)
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([visitor, createdAt])
+}

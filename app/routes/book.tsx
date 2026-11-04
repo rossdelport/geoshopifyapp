@@ -2,6 +2,8 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { serveHome } from "../lib/home-page.server";
 import { bookCall, freeSlots, type BookResult } from "../lib/booking.server";
 import { BOOK_ERRORS } from "../lib/booking";
+import { readAdTags } from "../lib/book-stats";
+import { saveBookView, visitorId } from "../lib/book-stats.server";
 import { clientIp, fromAnotherSite, readSmallForm } from "../lib/public-form.server";
 import font from "../fonts/inter-geo.woff2?url";
 import rossPhoto from "../home/ross.webp?url";
@@ -14,6 +16,8 @@ import raw from "../home/book.html?raw";
 // GET: the page (app/home/book.html) with Ross's free times from his Google Calendar, or "Text Ross" when his
 // calendar isn't connected yet. POST: urlencoded `start` (one of those times), `name`, `email`, `store`, `website`
 // (honeypot) and the utm_* tags; JSON reply BookResult. The call goes into Ross's calendar with a Meet link.
+// POST `seen=1` (sent by the page once it is on screen, with the same tags): counts the visit for the ad chart on the
+// admin Overview (lib/book-stats.server.ts), reply 204.
 
 const page = raw
   .replaceAll("__FONT_URL__", () => font)
@@ -36,6 +40,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (fromAnotherSite(request)) return reply({ ok: false, error: BOOK_ERRORS.crossSite }, 403);
   const form = await readSmallForm(request);
   if (!form) return reply({ ok: false, error: BOOK_ERRORS.generic }, 413);
+  const ad = readAdTags(form);
+  if (form.get("seen") === "1") {
+    await saveBookView(ad, visitorId(request)).catch((err) => console.error("[book] could not count a visit", err));
+    return new Response(null, { status: 204, headers: { "Cache-Control": "no-store" } });
+  }
   try {
     const out = await bookCall({
       start: form.get("start"),
@@ -44,6 +53,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       store: form.get("store"),
       honeypot: form.get("website"),
       from: Object.fromEntries(["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"].map((k) => [k, form.get(k)])),
+      ad,
       ip: clientIp(request),
     });
     return reply(out.result, out.status);

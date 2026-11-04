@@ -19,6 +19,7 @@ const h = vi.hoisted(() => {
     busy: [] as { start: string; end: string }[],
     events: [] as { url: string; body: Record<string, unknown> }[],
     emails: [] as unknown[][],
+    counted: [] as Record<string, unknown>[],
   };
 });
 
@@ -27,6 +28,9 @@ vi.mock("../app/db.server", () => ({
     calendarLink: {
       findUnique: vi.fn(async () => h.link),
       upsert: vi.fn(async ({ create }: { create: { id: string; email: string; refreshToken: string } }) => (h.link = { ...create, updatedAt: new Date() })),
+    },
+    bookEvent: {
+      create: vi.fn(async ({ data }: { data: Record<string, unknown> }) => h.counted.push(data)),
     },
   },
 }));
@@ -72,6 +76,7 @@ beforeEach(() => {
   h.busy = [];
   h.events = [];
   h.emails = [];
+  h.counted = [];
   env.googleClientId = "client-id";
 });
 
@@ -168,6 +173,17 @@ describe("the page", () => {
     expect(html).not.toContain("facebook.com/tr?");
   });
 
+  it("counts the visit for Ross's ad chart once the page is on screen, with the ad's tags and the site that sent them", async () => {
+    const html = await (await call()).text();
+    expect(html).toContain("document.visibilityState !== 'visible'");
+    expect(html).toContain("navigator.sendBeacon('/book', body)");
+    expect(html).toContain("body = new URLSearchParams({ seen: '1' })");
+    // the counter isn't inside the calendar's script, which stops early when the calendar isn't connected
+    expect(html.indexOf("sendBeacon")).toBeLessThan(html.indexOf("var slots = null"));
+    // a booking sends the same tags
+    expect(html.match(/if \(q\.get\('fbclid'\)\) body\.set\('fb', '1'\);/g)).toHaveLength(2);
+  });
+
   it("lists Ross's free times once his calendar is connected", async () => {
     const html = await (await call()).text();
     const json = /<script type="application\/json" id="slots">([^<]*)<\/script>/.exec(html)?.[1];
@@ -209,6 +225,15 @@ describe("booking a call", () => {
     expect(to).toEqual(["ross@geo.test"]);
     expect(subject).toBe("New call booked: Jane Smith, Wednesday 4 November, 9:00 am");
     expect(html).toContain("utm_source=facebook, utm_campaign=waitlist");
+  });
+
+  it("counts a booked call for the ad chart, with the ad's tags and no name or email", async () => {
+    const ad = { utmSource: "facebook", utmMedium: null, utmCampaign: null, utmContent: "50_million", utmTerm: null, fbclid: true, referrer: "m.facebook.com" };
+    expect((await bookCall({ ...good, ip: "203.0.113.60", ad }, NOW)).status).toBe(200);
+    expect(h.counted).toEqual([{ kind: "booked", ...ad }]);
+    // a bot that filled the hidden field isn't counted
+    await bookCall({ ...good, ip: "203.0.113.61", honeypot: "spam.com", ad }, NOW);
+    expect(h.counted).toHaveLength(1);
   });
 
   it("checks the name, email and store website first", async () => {
