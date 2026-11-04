@@ -124,18 +124,19 @@ describe("home page", () => {
     expect(price).toContain("15 minute <b>FREE</b> introduction call with Ross. No obligation.");
     expect(price).toMatch(/<p class="plan-call"><img src="[^"]*ross[^"]*\.webp"/);
     expect(html).not.toContain("__ROSS_PHOTO__");
-    expect([...price.matchAll(/<span data-roll>(\d+)<\/span>/g)].map((m) => m[1])).toEqual(["12", "50"]);
+    expect([...price.matchAll(/<span data-roll>(\d+)<\/span>/g)].map((m) => m[1])).toEqual(["100", "12", "50"]);
     // laid out like a price list (Ross, 4 Nov 2026): "Each month, up to:", then words left and a number or tick right
     expect(price).toContain('<p class="plan-r-h">Each month, up to:</p>');
-    // Ross (4 Nov 2026): the same monthly items as FirstIndex's list, word for word, and no emails to 20 to 40 sites
+    // Ross (4 Nov 2026): no writers found and no emails to sites in the price list, "Fixes to your pages 50+" instead
     expect([...price.matchAll(/<li(?: class="p-stat")?><span>([^<]+)<\/span>/g)].map((m) => m[1])).toEqual([
-      "Tracking and fixes in AI answers",
-      "In-depth articles",
-      "Fixes to the pages you have",
-      "Index checks and index requests",
-      "Comparison pages and free tools",
-      "A weekly report on what moved",
+      "Buying questions checked every day",
+      "Buying guides written for you",
+      "Fixes to your pages",
+      "ChatGPT, Gemini, Perplexity and Google AI Overviews, plus Claude every week",
+      "See the sales AI sends you",
+      "A 30-minute call with our team",
     ]);
+    expect(price).toContain('<span data-roll>50</span>+</b><span class="sr">50+</span>');
     expect(price).not.toContain("Emails to those sites");
     // a soft light follows the mouse over the purple panel and the button (Ross, 3 Nov 2026)
     expect(price).toContain('<span class="plan-glow" aria-hidden="true"></span>');
