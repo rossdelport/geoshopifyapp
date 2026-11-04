@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -396,6 +397,21 @@ describe("report page", () => {
     expect(sent).not.toContain("Email me my action plan");
     expect(sent).toContain("Your action plan is in your inbox");
     expect(sent).toContain("ck-plan-badge-tick"); // the lock becomes a letter with a tick
+  });
+
+  it("has the home page's Meta pixel on every check page (the free check ad links here), outside the page's .ck styles", () => {
+    const Page = createRoutesStub([{ path: "/", Component: () => createElement(CheckShell, { hero: createElement(CheckIntro, {}) }) }]);
+    const html = renderToStaticMarkup(createElement(Page));
+    // The pixel's part of the page, with the notice's own class names (.ck is the check page itself). The pixel and
+    // the notice start in the browser: no pixel script in the HTML, where Meta's code would put its script inside React's.
+    expect(html).toContain(".fp-ck{position:fixed");
+    expect(html).not.toContain("28710910728563304");
+    expect(html).not.toContain('id="ck"');
+    // the same pixel code as the home page, giveaway and booking page
+    const source = readFileSync(new URL("../app/components/meta-pixel.tsx", import.meta.url), "utf8");
+    expect(source).toContain('import pixelHead from "../../design/overview/pixel-head.js?raw";');
+    expect(source).toContain("script.text = pixelHead;");
+    expect(source).toContain('const KEY = "geo-cookies";');
   });
 
   it("shows the popup with the exact consent words the server stores, and an unticked tips box", () => {

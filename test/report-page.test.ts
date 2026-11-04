@@ -104,13 +104,21 @@ describe("report page", () => {
   it("has no em dashes, no spaced en dashes, no price, no booking link and no button but Share", async () => {
     const html = await render();
     expect(html).not.toMatch(/—|\s–\s/);
-    expect(html).not.toMatch(/book/i);
+    // (the Meta pixel's script says "facebook", so look at the page without its scripts)
+    expect(html.replace(/<script\b[\s\S]*?<\/script>/g, "")).not.toMatch(/book/i);
     expect(html).not.toContain("A$");
     expect(html).not.toContain("$");
     const buttons = html.match(/<button\b[^>]*>[\s\S]*?<\/button>/g) ?? [];
     expect(buttons).toHaveLength(1);
     expect(text(buttons[0] ?? "")).toContain("Share");
     expect(html).not.toMatch(/Example/); // no "Example" pills (the made-up sites end in .example, lower case)
+  });
+
+  it("has the home page's Meta pixel, which starts with its cookie notice once the page is open in a browser", async () => {
+    const html = await render();
+    expect(html).toContain(".fp-ck{position:fixed"); // the pixel's part of the page (app/components/meta-pixel.tsx)
+    expect(html).not.toContain("28710910728563304"); // no pixel script in the HTML: it starts in the browser
+    expect(html).not.toContain('class="fp-ck"'); // the notice comes after the page loads, never in the film's first frame
   });
 
   it("never shows the script, tags or notes", async () => {

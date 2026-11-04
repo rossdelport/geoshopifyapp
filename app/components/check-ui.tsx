@@ -21,6 +21,7 @@ import type { SourceType } from "../lib/sources";
 import { sameBrand } from "../lib/match";
 import { LeadProvider, LockIcon, MailIcon, planLine, useLead, type LeadView } from "./check-lead";
 import { SiteFooter } from "./site-footer";
+import { MetaPixel } from "./meta-pixel";
 
 const SOURCE_CHIPS: Record<SourceType, string> = {
   editorial: "Review site",
@@ -160,7 +161,13 @@ export function CheckShell({
       <SiteFooter />
     </>
   );
-  return <div className="ck">{lead ? <LeadProvider view={lead}>{page}</LeadProvider> : page}</div>;
+  return (
+    <>
+      <div className="ck">{lead ? <LeadProvider view={lead}>{page}</LeadProvider> : page}</div>
+      {/* Our Meta pixel and its cookie notice, like the home page: the free check ad links here. */}
+      <MetaPixel />
+    </>
+  );
 }
 
 // ---------- the form (same fields as the home page hero form) ----------
