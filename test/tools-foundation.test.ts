@@ -406,7 +406,7 @@ describe("publicHostRedirect", () => {
     expect(publicHostRedirect(req("https://www.usegeo.app/tools"))?.headers.get("location")).toBe("https://usegeo.app/tools");
     // Railway's proxy says which host the visitor asked for
     expect(publicHostRedirect(req("http://10.0.0.5:8080/privacy", { headers: { "x-forwarded-host": "www.usegeo.app" } }))?.status).toBe(301);
-    for (const p of ["/check", "/tools", "/sitemap.xml", "/llms.txt", "/privacy", "/stories", "/stories/viv-chatgpt-sales", "/report/bondi-wash"]) {
+    for (const p of ["/check", "/tools", "/sitemap.xml", "/llms.txt", "/privacy", "/stories", "/stories/viv-chatgpt-sales", "/report/bondi-wash", "/report-maker"]) {
       expect(publicHostRedirect(req(`https://www.usegeo.app${p}`)), p).not.toBeNull();
     }
     // A store report link Ross shares from the Railway address goes to usegeo.app.

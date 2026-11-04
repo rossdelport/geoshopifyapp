@@ -77,7 +77,7 @@ vi.mock("../app/lib/check.server", () => ({
 vi.mock("../app/lib/ai.server", () => ({ aiConfigured: () => true, askJson: vi.fn() }));
 
 const { keywordIdeas, keywordStats, parseSerpstat } = await import("../app/lib/treg.server");
-const { createReports, deleteReport, getReport, listReports, repeatsMove, runReport, tidyStore, templateQuestions } = await import("../app/lib/store-report.server");
+const { createReports, deleteReport, getReport, getReportItem, listReports, repeatsMove, runReport, tidyStore, templateQuestions } = await import("../app/lib/store-report.server");
 const { askOne } = await import("../app/lib/check.server");
 const { askJson } = await import("../app/lib/ai.server");
 const { enqueue } = await import("../app/lib/jobs.server");
@@ -417,7 +417,7 @@ describe("runReport", () => {
 
   async function queued() {
     const result = await createReports("https://www.bondiwash.com/products/x?y=1", "Ross@Example.com");
-    expect(result).toEqual({ ok: true, created: 1, bad: [], capped: false, left: [] });
+    expect(result).toEqual({ ok: true, created: 1, ids: [expect.any(String)], bad: [], capped: false, left: [] });
     return [...fake.rows.values()].at(-1);
   }
 
@@ -485,6 +485,9 @@ describe("runReport", () => {
     expect(await getReport("Bondi Wash")).toBeNull();
     const [item] = await listReports();
     expect(item).toMatchObject({ id: row.id, status: "done", slug: "bondi-wash", brand: "Bondi Wash", named: 2, answers: 23, moves: data.moves.length });
+    // The report maker follows one report by its id.
+    expect(await getReportItem(row.id)).toEqual(item);
+    expect(await getReportItem("nope")).toBeNull();
   });
 
   it("gives the next free address when the brand's is taken", async () => {
@@ -546,7 +549,8 @@ describe("runReport", () => {
     const many = Array.from({ length: 12 }, (_, i) => `store${i}.com`).join("\n");
     const first = await createReports(`${many}\nnot an address`, null);
     // What wasn't started goes back to Ross: the addresses past the first 10, then the bits that weren't addresses.
-    expect(first).toEqual({ ok: true, created: 10, bad: ["not", "an", "address"], capped: true, left: ["store10.com", "store11.com", "not", "an", "address"] });
+    expect(first).toEqual({ ok: true, created: 10, ids: expect.any(Array), bad: ["not", "an", "address"], capped: true, left: ["store10.com", "store11.com", "not", "an", "address"] });
+    expect(first.ok && first.ids).toHaveLength(10);
     // Exactly 10 (with repeats) isn't capped; an 11th after a ";" is.
     const ten = Array.from({ length: 10 }, (_, i) => `ten${i}.com`);
     expect(await createReports([...ten, "ten0.com", "https://www.ten1.com/"].join(", "), null)).toMatchObject({ ok: true, created: 10, capped: false });
@@ -563,6 +567,7 @@ describe("runReport", () => {
     row.createdAt = new Date(Date.now() - 31 * 60_000);
     const [item] = await listReports();
     expect(item).toMatchObject({ status: "failed", error: "This report took too long. Please run it again.", slug: null, brand: null, moves: 0 });
+    expect(await getReportItem(row.id)).toMatchObject({ status: "failed", error: "This report took too long. Please run it again." });
     await deleteReport(row.id);
     expect(fake.rows.size).toBe(0);
   });
