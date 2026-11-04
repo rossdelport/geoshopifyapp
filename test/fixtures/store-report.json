@@ -214,28 +214,90 @@
   "months": [
     {
       "month": 1,
-      "title": "We start the work",
-      "items": [
-        "Make your product pages clearer for AI: 34 products.",
-        "Write your first buying guides, starting with \"best dish soap\".",
-        "Email the sites AI trusts, starting with greenhomereview.example and kitchenpicks.example."
+      "title": "Fix your own store",
+      "steps": [
+        {
+          "title": "Check AI can read your store",
+          "how": "Open sampledishco.example/robots.txt. Make sure it doesn't block Googlebot, OAI-SearchBot or PerplexityBot. Google, ChatGPT and Perplexity use them to read your pages. If one is blocked, remove that rule."
+        },
+        {
+          "title": "Put the key facts first on every product page",
+          "how": "Start each page with one plain line: what it is, who it's for, and the main facts like size and what it's made of. Do your best sellers first, then the rest of your 34 products."
+        },
+        {
+          "title": "Use the words shoppers search",
+          "how": "Put \"natural dish soap\" in the title and first line of the product page it fits. About 1,900 searches a month. Do the same with \"dish soap\" on your collection page. About 6,600 searches a month."
+        },
+        {
+          "title": "Add a short FAQ to your product pages",
+          "how": "Answer the questions shoppers ask AI, like \"Which eco friendly dish soap is gentle on hands?\" Put each question in bold, with a short, clear answer under it."
+        },
+        {
+          "title": "Fill in every product's details in Shopify",
+          "how": "Set the category, product type, tags and each size or colour. AI shopping tools can read these facts, so leave none blank."
+        }
       ]
     },
     {
       "month": 2,
-      "title": "Google and AI find you",
-      "items": [
-        "Up to 12 new buying guides a month, each aimed at a real search word.",
-        "Honest Reddit replies where shoppers ask about natural dish soap, always saying who's writing.",
-        "Up to 40 emails a month to sites AI uses. AI used 23 different sites for these questions."
+      "title": "Write buying guides",
+      "steps": [
+        {
+          "title": "Write your first buying guide",
+          "how": "Make it about \"best dish soap\". About 1,300 searches a month. Answer the question in the first lines. Then compare real options and say who each one suits."
+        },
+        {
+          "title": "Write an honest comparison",
+          "how": "Compare your natural dish soap with Fern & Suds. AI named Fern & Suds in 11 answers. Be fair, and say where the other side does better too."
+        },
+        {
+          "title": "Add a new guide every week",
+          "how": "Each one answers one buying question. Next up: \"dish soap vs dishwashing liquid\" and \"dish soap for sensitive skin\"."
+        },
+        {
+          "title": "Link your guides and products",
+          "how": "Each guide links to the products it talks about, and each product page links back. It helps shoppers and Google find both."
+        },
+        {
+          "title": "Add something only you have",
+          "how": "Real photos of your natural dish soap in use, a size chart or a simple table of your range. A page that says what every other page says gives AI no reason to quote you."
+        }
       ]
     },
     {
       "month": 3,
-      "title": "Clicks and sales grow",
-      "items": [
-        "We ask ChatGPT, Gemini and Perplexity your buying questions every day, and do more of what works.",
-        "You see every visit, order and sale that came from AI."
+      "title": "Get named on other sites",
+      "steps": [
+        {
+          "title": "Email the sites AI trusts",
+          "how": "Start with greenhomereview.example and kitchenpicks.example. Find the writer's name, say who you are, and ask if your natural dish soap fits their list. Offer to send a sample."
+        },
+        {
+          "title": "Follow up once",
+          "how": "No reply after a week? Send one short, friendly follow up. Never pay for a spot on a list."
+        },
+        {
+          "title": "Join the chats on Reddit",
+          "how": "AI used reddit.com in 7 of 24 answers. Search Reddit for \"natural dish soap\" and help with real questions. Always say you're from Sample Dish Co, and never pretend to be a customer."
+        },
+        {
+          "title": "Ask AI again",
+          "how": "Ask ChatGPT, Gemini and Perplexity the same questions we asked. Write down who they name and which sites they use, then compare with this report.",
+          "list": [
+            "What's the best natural dish soap in Australia?",
+            "Which eco friendly dish soap is gentle on hands?",
+            "What dish soap refill brands do people recommend in Australia?",
+            "Is plant based dish soap as good as normal dish soap?"
+          ]
+        },
+        {
+          "title": "Look for visits from AI",
+          "how": "In Shopify Analytics, see where your visits came from. Look for chatgpt.com, perplexity.ai and gemini.google.com."
+        },
+        {
+          "title": "Keep it going every month",
+          "how": "Write a new guide each week and update old ones every 2 to 3 months. Ask AI your questions again each month, and email any new sites it starts to use."
+        }
       ]
     }
   ],
@@ -246,7 +308,7 @@
     "\"natural dish soap\" gets 1,900 Google searches a month, and it's easy to rank for.",
     "Here's what I'd do. First, put \"natural dish soap\" in your main product's title and first line. Then, write a guide on the best dish soap in Australia. Then, ask greenhomereview.example to test your soap for their list.",
     "And there are 9 more moves on the list.",
-    "Month 2 and 3 keep it going: more guides, emails to the sites AI trusts, and checking AI every day.",
+    "Then there's a month by month plan, step by step, so you can do it all yourself.",
     "If you're a Shopify brand and want this done for your store, comment your store and I'll send you your report."
   ],
   "tags": [
