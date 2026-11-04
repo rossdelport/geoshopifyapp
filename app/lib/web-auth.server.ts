@@ -71,15 +71,42 @@ export async function sendLoginLink(rawEmail: unknown, next?: unknown): Promise<
   return { ok: true, email };
 }
 
-/** The sign-in email (exported for tests). */
+/** The home page's purple (white text on it passes 4.7:1) and its logo's two circles. */
+const PURPLE = "#6c5cf2";
+const LILAC = "#cdc6fc";
+
+/** The sign-in email (exported for tests): the logo, a white card and one purple button, in tables so every inbox shows it. */
 export function loginEmail(url: string): { subject: string; html: string; text: string } {
+  const font = "font-family:Inter,'Segoe UI',Helvetica,Arial,sans-serif;";
+  const html = `<!doctype html><html><body style="margin:0;padding:0;background:#f4f3f9;">
+<div style="display:none;max-height:0;overflow:hidden;">Your sign-in link works once, for ${LINK_MINUTES} minutes.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f3f9;padding:36px 14px;${font}">
+<tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;">
+<tr><td align="center" style="padding:0 0 20px;font-size:21px;font-weight:700;letter-spacing:-0.02em;color:#0e0e13;">
+<span style="display:inline-block;width:15px;height:15px;border-radius:50%;background:${LILAC};vertical-align:middle;"></span><span style="display:inline-block;width:15px;height:15px;border-radius:50%;background:${PURPLE};margin-left:-6px;margin-right:9px;vertical-align:middle;"></span>FirstPicked
+</td></tr>
+<tr><td style="background:#ffffff;border:1px solid #e9e7f3;border-radius:20px;padding:36px 32px;text-align:center;">
+<h1 style="margin:0 0 10px;font-size:23px;line-height:1.3;font-weight:700;letter-spacing:-0.01em;color:#0e0e13;">Sign in to FirstPicked</h1>
+<p style="margin:0 0 26px;font-size:15px;line-height:1.6;color:#53565f;">Press the button to sign in. The link works once, for ${LINK_MINUTES} minutes.</p>
+<table role="presentation" cellpadding="0" cellspacing="0" align="center" style="margin:0 auto 26px;"><tr>
+<td bgcolor="${PURPLE}" style="background:${PURPLE};border-radius:12px;">
+<a href="${url}" style="display:inline-block;padding:14px 30px;font-size:16px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:12px;">Sign in to FirstPicked</a>
+</td></tr></table>
+<p style="margin:0 0 6px;font-size:13px;line-height:1.5;color:#6e717a;">Button not working? Copy this link into your browser:</p>
+<p style="margin:0;font-size:12px;line-height:1.5;word-break:break-all;"><a href="${url}" style="color:${PURPLE};text-decoration:none;">${url}</a></p>
+</td></tr>
+<tr><td align="center" style="padding:20px 12px 0;font-size:12px;line-height:1.6;color:#6e717a;">
+If you didn’t ask for this, you can ignore this email.<br>
+<a href="${SITE}" style="color:#6e717a;text-decoration:underline;">firstpicked.com.au</a>
+</td></tr>
+</table>
+</td></tr></table>
+</body></html>`;
   return {
     subject: "Your FirstPicked sign-in link",
-    html:
-      `<p>Click the button to sign in to FirstPicked. The link works once, for ${LINK_MINUTES} minutes.</p>` +
-      `<p><a href="${url}" style="display:inline-block;padding:12px 20px;background:#15163c;color:#fff;border-radius:10px;text-decoration:none;font-weight:600">Sign in to FirstPicked</a></p>` +
-      `<p style="color:#5c5d78">If you didn’t ask for this, you can ignore this email.</p>`,
-    text: `Sign in to FirstPicked: ${url}\n\nThe link works once, for ${LINK_MINUTES} minutes. If you didn't ask for this, ignore this email.`,
+    html,
+    text: `Sign in to FirstPicked: ${url}\n\nThe link works once, for ${LINK_MINUTES} minutes. If you didn't ask for this, ignore this email.\n\nFirstPicked, firstpicked.com.au`,
   };
 }
 
