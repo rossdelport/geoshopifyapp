@@ -1,4 +1,4 @@
-// The home page in German, French, Dutch, Spanish and Italian (usegeo.app/de, /fr, /nl, /es, /it), built by
+// The home page in German, French, Dutch, Spanish and Italian (firstpicked.com.au/de, /fr, /nl, /es, /it), built by
 // design/overview/i18n.mjs. Each page: its own language, address and title; the price in Australian dollars; the company details line;
 // no explainer video; the waitlist form tells the server the language; the Meta pixel once; no English left in the
 // big headings; no em dash. The English page ("/", the new design since 2 Nov 2026) points search engines at all five.
@@ -32,7 +32,7 @@ describe("home page in other languages", () => {
       expect(res.headers.get("content-type")).toContain("text/html");
       const html = await res.text();
       expect(html).toContain(`<html lang="${lang}">`);
-      expect(html).toContain(`<link rel="canonical" href="https://usegeo.app/${lang}">`);
+      expect(html).toContain(`<link rel="canonical" href="https://firstpicked.com.au/${lang}">`);
       expect(html).toContain(`window.GEO_LANG="${lang}"`);
       expect(html).not.toContain("<title>GEO · Get your products recommended by AI</title>");
       // English words that must be gone
@@ -44,7 +44,7 @@ describe("home page in other languages", () => {
       expect(html).not.toContain(">A$1,000<");
       // the company details line, with the real address and email
       expect(html).toContain(`<p class="foot-legal">${LEGAL[lang]}: GEO, 237 Adelaide Terrace, East Perth WA 6000,`);
-      expect(html).toContain('<a href="mailto:ross@usegeo.app">ross@usegeo.app</a>');
+      expect(html).toContain('<a href="mailto:ross@firstpicked.com.au">ross@firstpicked.com.au</a>');
       // no explainer video section or its script
       expect(html).not.toContain('<video class="vid"');
       expect(html).not.toContain("// 11v-video.js");
@@ -58,8 +58,8 @@ describe("home page in other languages", () => {
   it("the English page lists every language for search engines", async () => {
     const html = await (await get(en, "https://geo.test/")).text();
     expect(html).toContain('<html lang="en">');
-    expect(html).toContain('<link rel="alternate" hreflang="x-default" href="https://usegeo.app/">');
-    for (const lang of HOME_LANGS) expect(html).toContain(`<link rel="alternate" hreflang="${lang}" href="https://usegeo.app/${lang}">`);
+    expect(html).toContain('<link rel="alternate" hreflang="x-default" href="https://firstpicked.com.au/">');
+    for (const lang of HOME_LANGS) expect(html).toContain(`<link rel="alternate" hreflang="${lang}" href="https://firstpicked.com.au/${lang}">`);
     expect(html).not.toContain('window.GEO_LANG="');
   });
 

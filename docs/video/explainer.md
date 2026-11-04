@@ -40,7 +40,7 @@ waitlist".
 | 16 | Sites | dark | "We ask the sites AI trusts / to list your brand.": three example sites with a "Best beard oils" list, a pitch flies to each ("Pitch sent"), Beard Weekly adds the store ("NEW"), "3 pitches sent" | 132 |
 | 17 | Money | light | "You see the sales from AI.": $4,280, 37 orders, 612 clicks, split by ChatGPT, Perplexity, Gemini | 120 |
 | 18 | Slogan | dark | "Shoppers ask. / AI recommends. / You get the sale." | 96 |
-| 19 | Unlock | dark | "Unlock the free sales channel", "usegeo.app" glowing under it | 84 |
+| 19 | Unlock | dark | "Unlock the free sales channel", "firstpicked.com.au" glowing under it | 84 |
 | 20 | EndCard | lilac | GEO logo, "Get recommended by AI", then fades to scene 1's first frame for the loop | 90 |
 
 Honest wording: "we rewrite" shows the Approve click (Standard asks first; Done-for-you does it for you); "we ask

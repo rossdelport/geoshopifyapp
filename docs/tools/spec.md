@@ -1,6 +1,6 @@
 # Free tool pages: build spec
 
-Seven free tools, one hub, and the site files that go with them, for https://usegeo.app.
+Seven free tools, one hub, and the site files that go with them, for https://firstpicked.com.au.
 Written 11 October 2026 from the research in `docs/tools/research/` (seo-2026, geo-2026, facts-2026,
 competitors, codebase-brief) plus four live checks made for this spec (section 0). Builders: read section 0
 to 4 first, then only your own tool section.
@@ -48,7 +48,7 @@ The lead's decisions stand except for these. Each change comes from research or 
    Source: https://shopify.dev/docs/storefronts/themes/architecture/templates/llms-txt-liquid
 4. **`/check` and `/tools/ai-visibility-checker` would compete for one search intent.** Default in this spec
    (reversible, Ross to confirm): `/check` keeps working exactly as now (the home hero form posts to it), its
-   page gets `<link rel="canonical" href="https://usegeo.app/tools/ai-visibility-checker">`, and `/check` leaves
+   page gets `<link rel="canonical" href="https://firstpicked.com.au/tools/ai-visibility-checker">`, and `/check` leaves
    the sitemap. The footer links the tool page, not `/check` (Google: link to canonical URLs).
 5. **Do not use the fact pack's line "Google shows AI Overviews for only a small share of shopping searches".**
    It rests on Ahrefs' September 2025 data (3.2% of shopping keywords). On 11 Oct 2026 all 3 shopping searches
@@ -133,8 +133,8 @@ browser). Never import `env.server.ts` or any `.server` file into them.
 ### 3.1 `site.ts`
 
 ```ts
-export const SITE = "https://usegeo.app";          // canonical origin, never from env
-export const SITE_HOST = "usegeo.app";
+export const SITE = "https://firstpicked.com.au";          // canonical origin, never from env
+export const SITE_HOST = "firstpicked.com.au";
 export const BRAND = "GEO";
 export const BRAND_ALT = "GEO for Shopify";
 export const HOME_UPDATED = "YYYY-MM-DD";           // F: date of the last real change to app/home/home.html (git log -1 --format=%cs app/home/home.html, after the footer edit)
@@ -217,22 +217,22 @@ href: abs(path) }`, `robots: noindex` only when asked, `og:type=website`, `og:si
 `nosnippet` or `max-snippet` directive. The canonical never comes from `request.url` or env.
 
 `toolJsonLd` returns one `@graph`:
-- `Organization` `@id https://usegeo.app/#org`: `name` "GEO", `alternateName` "GEO for Shopify", `url`
-  "https://usegeo.app/", `logo` "https://usegeo.app/apple-touch-icon.png". No `sameAs` (R3).
+- `Organization` `@id https://firstpicked.com.au/#org`: `name` "GEO", `alternateName` "GEO for Shopify", `url`
+  "https://firstpicked.com.au/", `logo` "https://firstpicked.com.au/apple-touch-icon.png". No `sameAs` (R3).
 - `WebApplication` `@id <url>#app`: `name` = tool name, `url`, `description` = registry description,
   `applicationCategory` "BusinessApplication", `operatingSystem` "Any", `isAccessibleForFree` true,
   `offers` `{ "@type": "Offer", price: "0", priceCurrency: "USD" }`, `publisher` `{ @id #org }`.
   **No `aggregateRating`, no `review`** (we have no real ones; Google added a rule on fake reviews on 24 Jul 2026).
 - `WebPage` `@id <url>`: `url`, `name` = title without " | GEO", `dateModified` = registry `updated`,
   `primaryImageOfPage` = og image URL, `mainEntity` `{ @id #app }`, `breadcrumb` `{ @id #crumbs }`,
-  `isPartOf` `{ "@type": "WebSite", "@id": "https://usegeo.app/#website", url, name: "GEO" }`.
-- `BreadcrumbList` `@id <url>#crumbs`: Home (`https://usegeo.app/`), Free tools (`https://usegeo.app/tools`),
+  `isPartOf` `{ "@type": "WebSite", "@id": "https://firstpicked.com.au/#website", url, name: "GEO" }`.
+- `BreadcrumbList` `@id <url>#crumbs`: Home (`https://firstpicked.com.au/`), Free tools (`https://firstpicked.com.au/tools`),
   tool name (no `item` on the last one).
 - `FAQPage` `@id <url>#faq` with `mainEntity` built from the **same array** the page renders, so the text is
   identical word for word. It is harmless when it matches visible text and earns no Google display since 7 May
   2026 (facts §3). Never say on any page that it gets rich results.
 
-`hubJsonLd`: Organization, `CollectionPage` (`@id https://usegeo.app/tools`, `dateModified`), `ItemList` of the 7
+`hubJsonLd`: Organization, `CollectionPage` (`@id https://firstpicked.com.au/tools`, `dateModified`), `ItemList` of the 7
 tools (`ListItem` position, name, url), BreadcrumbList (Home, Free tools).
 
 React Router 7.18.2 renders `script:ld+json` with HTML escaping, so `</script>` inside strings is safe
@@ -281,10 +281,10 @@ starts; every regex runs on a slice of at most 2,000 characters):
 ```ts
 export function publicHostRedirect(request: Request): Response | null
 ```
-Returns a 301 to `https://usegeo.app<path><search>` when ALL of:
+Returns a 301 to `https://firstpicked.com.au<path><search>` when ALL of:
 - method is GET or HEAD;
 - `process.env.NODE_ENV === "production"`;
-- the host (`x-forwarded-host`, else `host`, port stripped, lowercased) is `www.usegeo.app` or ends with
+- the host (`x-forwarded-host`, else `host`, port stripped, lowercased) is `www.firstpicked.com.au` or ends with
   `.up.railway.app`;
 - the URL has none of `shop`, `host`, `embedded`, `hmac`, `id_token` in its query (Shopify admin traffic);
 - the path is public: `/`, `/check`, `/tools`, `/tools/*`, `/privacy`, `/sitemap.xml`, `/llms.txt`.
@@ -303,8 +303,8 @@ export async function readToolForm(request: Request, maxBytes: number): Promise<
 export const honeypot = (form: URLSearchParams) => String(form.get("website") ?? "") !== "";
 ```
 `allowedPost` is true when `sec-fetch-site` is `same-origin`, `same-site` or `none`; or there is no `Origin`
-header; or the `Origin` host is one of: the request's `x-forwarded-host`/`host`, `usegeo.app`,
-`www.usegeo.app`, the host of `SHOPIFY_APP_URL`. False when `sec-fetch-site` is `cross-site`.
+header; or the `Origin` host is one of: the request's `x-forwarded-host`/`host`, `firstpicked.com.au`,
+`www.firstpicked.com.au`, the host of `SHOPIFY_APP_URL`. False when `sec-fetch-site` is `cross-site`.
 (`fromAnotherSite` in `public-form.server.ts` compares origins with `request.url`, which is `http://` behind
 Railway's proxy, so www visitors may be refused there: codebase-brief §1.7.)
 
@@ -366,7 +366,7 @@ Plain error copy for the outcomes (shared, in `fetch.server.ts` as `OUTCOME_COPY
 - turned-away: "Your site turned our check away (a firewall or bot protection answered {status}). AI bots may be turned away too, so check your firewall or bot settings."
 - server-error: "Your site answered with a server error ({status}). Try again in a few minutes."
 
-### 3.11 `site-files.ts` (pure): robots.txt, sitemap.xml and llms.txt for usegeo.app
+### 3.11 `site-files.ts` (pure): robots.txt, sitemap.xml and llms.txt for firstpicked.com.au
 
 ```ts
 export function siteRobotsTxt(): string
@@ -377,7 +377,7 @@ export const SITEMAP_PAGES: { path: string; updated: string }[]
 
 robots.txt (exact):
 ```
-# usegeo.app: search engines and AI assistants are welcome on every public page.
+# firstpicked.com.au: search engines and AI assistants are welcome on every public page.
 User-agent: *
 Allow: /
 Disallow: /app$
@@ -387,7 +387,7 @@ Disallow: /auth/
 Disallow: /api/
 Disallow: /webhooks/
 
-Sitemap: https://usegeo.app/sitemap.xml
+Sitemap: https://firstpicked.com.au/sitemap.xml
 ```
 Why `/app$`, `/app?` and `/app/` instead of `/app`: robots rules match by prefix, so `Disallow: /app` would also
 block `/apple-touch-icon.png`. (`/app?` covers the embedded app opened with `?shop=...`.) Do not disallow `/check/`, `/tips` or `/unsubscribe` (they carry `noindex`, which
@@ -408,14 +408,14 @@ GEO has two plans: Standard at US$49 a month and Done-for-you at US$349 a month,
 
 ## Free tools
 
-- [AI Visibility Checker](https://usegeo.app/tools/ai-visibility-checker): See if ChatGPT, Gemini and Perplexity recommend your product, and who they pick instead.
+- [AI Visibility Checker](https://firstpicked.com.au/tools/ai-visibility-checker): See if ChatGPT, Gemini and Perplexity recommend your product, and who they pick instead.
 - (one line per tool, registry order, `[name](url): short`)
 
 ## About GEO
 
-- [Home](https://usegeo.app/): what GEO does, how it works and pricing
-- [All free tools](https://usegeo.app/tools): the full list of free tools
-- [Privacy policy](https://usegeo.app/privacy): what data GEO collects and why
+- [Home](https://firstpicked.com.au/): what GEO does, how it works and pricing
+- [All free tools](https://firstpicked.com.au/tools): the full list of free tools
+- [Privacy policy](https://firstpicked.com.au/privacy): what data GEO collects and why
 ```
 Prices come from `PLANS.core.priceUsd`, `PLANS.pro.priceUsd`, `PLANS.core.trialDays` (never typed in).
 
@@ -516,17 +516,17 @@ Plain `<a href>` only. Two columns on phones, four on wide screens.
   </nav>
   ```
 - `10-nav.html`: add `<li><a href="/tools">Free tools</a></li>` to `ul.nav-links`.
-- `assemble.mjs` head template (`site` string): add `<link rel="canonical" href="https://usegeo.app/">`, OG tags
+- `assemble.mjs` head template (`site` string): add `<link rel="canonical" href="https://firstpicked.com.au/">`, OG tags
   (`og:type website`, `og:site_name GEO`, `og:title` = the page title, `og:description` = the existing meta
-  description, `og:url https://usegeo.app/`, `og:image https://usegeo.app/og/home.png` with width, height,
+  description, `og:url https://firstpicked.com.au/`, `og:image https://firstpicked.com.au/og/home.png` with width, height,
   alt), `twitter:card summary_large_image`, and one JSON-LD `@graph` with the Organization (same as 3.3) and
-  `WebSite` (`@id https://usegeo.app/#website`, `name` "GEO", `alternateName` "GEO for Shopify", `url`,
+  `WebSite` (`@id https://firstpicked.com.au/#website`, `name` "GEO", `alternateName` "GEO for Shopify", `url`,
   `publisher` `#org`). Keep the title exactly as `test/home.test.ts` expects.
 - Rebuild with `node design/overview/assemble.mjs`; commit the parts **and** `app/home/home.html` (Railway skips
   commits that only touch `design/**`). `npx vitest run test/home.test.ts` must stay green; add assertions
   that the footer links `/tools` and every registry path.
 - `_index/route.tsx`: call `publicHostRedirect` after the existing `?shop=` redirect. Nothing else.
-- `check._index.tsx`: add to `meta` the canonical `{ tagName: "link", rel: "canonical", href: "https://usegeo.app/tools/ai-visibility-checker" }`
+- `check._index.tsx`: add to `meta` the canonical `{ tagName: "link", rel: "canonical", href: "https://firstpicked.com.au/tools/ai-visibility-checker" }`
   (R1); add `export const loader = ({ request }) => { const r = publicHostRedirect(request); if (r) throw r; return null; }`.
   Do not touch its action.
 - `privacy.tsx`: `meta` via `pageMeta` (title "GEO privacy policy", a one-line description, canonical
@@ -550,18 +550,18 @@ before routes, so `/og/*` never collides with a route.
   `updated` is an ISO date not in the future; `ogImage` file exists in `public/`.
 - No em dash (U+2014) and no spaced en dash (U+2013 with a space on each side) in: the registry, `site-files.ts` output, `tool-ui.tsx`,
   `site-footer.tsx`, and (added by each tool builder) every `copy/*.ts` module.
-- `pageMeta`: exactly one canonical, absolute, on `https://usegeo.app`; og:url equals the canonical; no
+- `pageMeta`: exactly one canonical, absolute, on `https://firstpicked.com.au`; og:url equals the canonical; no
   `nosnippet`; `toolJsonLd` parses as JSON, has no `aggregateRating`/`review`, `dateModified` equals `updated`,
   FAQPage questions equal the given FAQ array exactly.
 - robots.txt: parse it with `parseRobots`/`isAllowed` from `robots.ts`: for `Googlebot`, `OAI-SearchBot`,
   `GPTBot`, `PerplexityBot`, `ClaudeBot`: `/`, `/tools/ai-crawler-checker`, `/check/abc`,
   `/apple-touch-icon.png`, `/llms.txt` allowed; `/app`, `/app?shop=a.myshopify.com`, `/app/fixes`, `/auth/login`, `/webhooks/x`, `/api/pixel`
   blocked. Contains the Sitemap line. `existsSync("public/robots.txt")` is false (same for sitemap.xml, llms.txt).
-- sitemap.xml: well-formed; exactly the 10 expected `<loc>`s; every `<loc>` starts `https://usegeo.app/`; no
+- sitemap.xml: well-formed; exactly the 10 expected `<loc>`s; every `<loc>` starts `https://firstpicked.com.au/`; no
   `priority`/`changefreq`; lastmod values match the registry.
 - `SiteFooter` (render with `createElement` + `renderToStaticMarkup`): links `/tools` and all 7 registry paths.
 - `home.html` contains every registry path and `/tools` (keep in sync with the registry by test).
-- `publicHostRedirect`: 301 for `www.usegeo.app/tools` and `x.up.railway.app/`; none for `usegeo.app`, for
+- `publicHostRedirect`: 301 for `www.firstpicked.com.au/tools` and `x.up.railway.app/`; none for `firstpicked.com.au`, for
   POST, for `/app`, for `/?shop=a.myshopify.com`, for `/robots.txt`, outside production.
 - `allowedPost`: allows same-origin, www to apex, no Origin; refuses `sec-fetch-site: cross-site` and
   `Origin: https://evil.example`.
@@ -602,7 +602,7 @@ before routes, so `/og/*` never collides with a route.
   (no `pushState`, so the back button is never trapped).
 - Action return shape: `{ ok: true, result } | { ok: false, error: string }`; validation errors are 400, limits
   429, our own failures 502 with friendly copy. Never put a raw `err.message` on screen.
-- Every action: `allowedPost` (else 403 "Please run the check from usegeo.app."), `readToolForm` (else 413),
+- Every action: `allowedPost` (else 403 "Please run the check from firstpicked.com.au."), `readToolForm` (else 413),
   honeypot, `normalize` input, limits, then work.
 
 ### 4.3 Copy rules for every page
@@ -1470,7 +1470,7 @@ rich results 2026, faq schema for product pages.
 - Form 2 (`intent=paste`): `text`, label "Or paste an llms.txt to check it", max 200,000 characters; live with JS.
 
 **On load:** paste mode pre-filled with **this site's own llms.txt** (`siteLlmsTxt()` from `site-files.ts`, so it
-is always the real file), labelled "Example: the llms.txt on this site, usegeo.app". Its result shows all
+is always the real file), labelled "Example: the llms.txt on this site, firstpicked.com.au". Its result shows all
 checks passing, which also proves our own file passes our checker.
 
 **Checks** (llmstxt.org v2, August 2026, facts §4.1; "our tip" = our advice, not the format)
@@ -1877,7 +1877,7 @@ effects.
 **Limits and costs:** the free check's existing limits (3 good checks and 10 tries per hashed IP per 24 h, 150 a day
 overall, US$10 a day) and cost (about A$0.27 per check, task brief). Nothing new.
 
-**Edge cases:** the honeypot and cross-site guard live in `/check`'s action. A visitor from `www.usegeo.app` is
+**Edge cases:** the honeypot and cross-site guard live in `/check`'s action. A visitor from `www.firstpicked.com.au` is
 redirected to the apex by `publicHostRedirect` before they ever see the form (fixes the www Origin issue for this
 page, codebase-brief §1.7).
 
@@ -1912,7 +1912,7 @@ page, codebase-brief §1.7).
 ### 7.1 Every tool route (each tool builder, in their own test file)
 
 - `meta()` output: one `<title>` equal to the registry title (under 60 characters); description equal to the
-  registry (under 155); exactly one canonical `https://usegeo.app/tools/<slug>`; `og:url` equal to it; `og:image`
+  registry (under 155); exactly one canonical `https://firstpicked.com.au/tools/<slug>`; `og:url` equal to it; `og:image`
   absolute with width 1200 and height 630; `twitter:card` `summary_large_image`; no `robots` meta.
 - JSON-LD parses; has WebApplication (price "0", no ratings), WebPage (`dateModified` = registry `updated`),
   BreadcrumbList (3 items), Organization, and FAQPage whose questions and answers equal `FAQS` exactly.
@@ -1943,7 +1943,7 @@ env and the local test database) and for each of the 8 pages:
 curl -s http://localhost:3000/tools/ai-crawler-checker -A "Mozilla/5.0 (compatible; GPTBot/1.1)" > /tmp/p.html
 grep -c '<h1' /tmp/p.html                       # 1
 grep -o '<title>[^<]*' /tmp/p.html              # registry title
-grep -o 'rel="canonical" href="[^"]*' /tmp/p.html   # https://usegeo.app/tools/ai-crawler-checker
+grep -o 'rel="canonical" href="[^"]*' /tmp/p.html   # https://firstpicked.com.au/tools/ai-crawler-checker
 grep -c 'application/ld+json' /tmp/p.html       # 1
 grep -c 'The AI Crawler Checker is a free tool' /tmp/p.html   # 1
 grep -c 'href="/tools/' /tmp/p.html             # at least 8
@@ -1961,11 +1961,11 @@ with the right content type; `/tools/nope` answers 404 with `noindex`; HTML unde
 - Keyboard: every control reachable, visible focus, results announced via `aria-live`.
 - Screenshots of all 8 pages at 390 px for Ross.
 
-### 7.5 After deploy (integrator, through Treg because this sandbox can't reach usegeo.app)
+### 7.5 After deploy (integrator, through Treg because this sandbox can't reach firstpicked.com.au)
 
 Fetch each live page with `crawl4ai.web.scrape` (`format: "html"`, US$0.00015 each) or Railway logs and confirm
-the H1, title, canonical and one result block. Check `https://usegeo.app/robots.txt` and `/sitemap.xml`. Confirm
-`www.usegeo.app/tools` and the railway.app host 301 to `https://usegeo.app/tools`, and that `/app` and
+the H1, title, canonical and one result block. Check `https://firstpicked.com.au/robots.txt` and `/sitemap.xml`. Confirm
+`www.firstpicked.com.au/tools` and the railway.app host 301 to `https://firstpicked.com.au/tools`, and that `/app` and
 `/auth/login` on the railway.app host still work (Shopify admin). Run one live AI Overview search and confirm an
 `ApiCost` row (via Railway logs or the DB).
 
@@ -1979,7 +1979,7 @@ Breadcrumb: "Home", "Free tools", tool name.
 
 ### 8.2 Privacy page: new "Free tools" section (F adds to `privacy.tsx`)
 
-"**Free tools.** Our free tools at usegeo.app/tools work without an account.
+"**Free tools.** Our free tools at firstpicked.com.au/tools work without an account.
 - Tools that run in your browser (the FAQ Schema Generator, the AI Bot Checker with pasted text, and pasted
   robots.txt, llms.txt or product data) don't send what you type to us. If JavaScript is off in your browser, the
   form is sent to our server once to build the result, and we don't keep it.
@@ -1995,14 +1995,14 @@ The AI Visibility Checker is the free product check, already covered on the page
 
 ## 9. Launch checklist (Ross, after the push)
 
-1. Google Search Console: add a Domain property for `usegeo.app` (DNS TXT record). Submit
-   `https://usegeo.app/sitemap.xml`. URL Inspection on `/tools` and each tool: check "Page is indexable", the
-   Google-selected canonical is usegeo.app, then "Request indexing". Settings > Search generative AI: confirm
+1. Google Search Console: add a Domain property for `firstpicked.com.au` (DNS TXT record). Submit
+   `https://firstpicked.com.au/sitemap.xml`. URL Inspection on `/tools` and each tool: check "Page is indexable", the
+   Google-selected canonical is firstpicked.com.au, then "Request indexing". Settings > Search generative AI: confirm
    "Include" (the default). <!-- seo-2026 §4.4 -->
 2. Bing Webmaster Tools: import from Search Console, submit the sitemap, watch "AI Performance".
 3. IndexNow (optional): create a key (8 to 128 letters, digits or dashes), commit it as `public/<key>.txt`
    containing the key, then after each deploy that changes tool pages, POST
-   `{"host":"usegeo.app","key":"<key>","urlList":[...changed URLs]}` to `https://api.indexnow.org/indexnow`
+   `{"host":"firstpicked.com.au","key":"<key>","urlList":[...changed URLs]}` to `https://api.indexnow.org/indexnow`
    (200 or 202 = received). Bing and the other IndexNow engines share it; Google doesn't use it.
 4. Set `GEO_TOOLS_USD_PER_DAY` on Railway only if the US$2 default needs changing. Set `GEO_ALERT_EMAIL` (still
    unset, codebase-brief §4.4).
@@ -2043,7 +2043,7 @@ Research files (each lists its own primary sources with dates):
 - `docs/tools/research/seo-2026.md` (Google Search Central docs, spam policies, structured data status, sitemaps,
   canonical, Core Web Vitals, Open Graph)
 - `docs/tools/research/geo-2026.md` (assistant search providers, citation studies, llms.txt evidence, robots.txt
-  for usegeo.app, measurement)
+  for firstpicked.com.au, measurement)
 - `docs/tools/research/facts-2026.md` (bot table, Shopify robots.txt and llms.txt, product schema properties, FAQ
   timeline, AI detector evidence, AI Overview availability)
 - `docs/tools/research/competitors.md` (page-1 teardowns and how each tool wins)

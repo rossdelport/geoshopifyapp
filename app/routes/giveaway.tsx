@@ -6,7 +6,7 @@ import { clientIp, fromAnotherSite, readSmallForm } from "../lib/public-form.ser
 import font from "../fonts/inter-geo.woff2?url";
 import rossPhoto from "../home/ross.webp?url";
 
-// usegeo.app/giveaway (Ross, 3 Nov 2026): one Australian Shopify brand wins 3 months of GEO Done for you, drawn
+// firstpicked.com.au/giveaway (Ross, 3 Nov 2026): one Australian Shopify brand wins 3 months of GEO Done for you, drawn
 // on Saturday 7 November. Facebook ads send people here. One HTML file in the home page's style, with the entry
 // form at the top and the rules at the bottom (app/home/giveaway.html). The dates live in app/lib/giveaway.ts.
 // POST /giveaway: the form's fields `store`, `name`, `email`, `phone`, `website` (honeypot), the utm_* fields,

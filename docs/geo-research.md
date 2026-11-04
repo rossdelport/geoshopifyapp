@@ -239,11 +239,11 @@ money dashboard already do for stores.
 
 | Idea | What it would do | Effort | Impact |
 |---|---|---|---|
-| Run GEO on usegeo.app | Add GEO as a store-like account with 30 to 50 buying questions ("best app to get my Shopify store recommended by ChatGPT", "Kedra alternative", "AgentIQ vs Kedra", "is an AI visibility app worth it"), scanned monthly. Shows which sites ChatGPT cites and whether GEO is named | Small | High |
-| Buying pages on usegeo.app | Honest comparison and alternative pages (GEO vs Kedra, AgentIQ, Mento, FirstIndex, an SEO agency), "for skincare stores" style buyer pages and a clear pricing page. Each says where the other option wins. Must pass `docs/ads/ad-rules.md` (accurate on the day, re-checked) | Medium | High |
+| Run GEO on firstpicked.com.au | Add GEO as a store-like account with 30 to 50 buying questions ("best app to get my Shopify store recommended by ChatGPT", "Kedra alternative", "AgentIQ vs Kedra", "is an AI visibility app worth it"), scanned monthly. Shows which sites ChatGPT cites and whether GEO is named | Small | High |
+| Buying pages on firstpicked.com.au | Honest comparison and alternative pages (GEO vs Kedra, AgentIQ, Mento, FirstIndex, an SEO agency), "for skincare stores" style buyer pages and a clear pricing page. Each says where the other option wins. Must pass `docs/ads/ad-rules.md` (accurate on the day, re-checked) | Medium | High |
 | Something only GEO has | Aggregated data from our scans ("which sites ChatGPT cites for beauty products in Australia") and the free check as a built-in tool on each page | Medium | High |
 | Follow signups to money | The waitlist already saves utm source and referrer. Add the same for sign-ups and paid customers, and an admin table: source and landing page to signup to paying | Small | High |
-| Let ChatGPT in | Check usegeo.app's robots.txt and Railway/CDN rules allow OAI-SearchBot, GPTBot, PerplexityBot and ClaudeBot | Small | Medium |
+| Let ChatGPT in | Check firstpicked.com.au's robots.txt and Railway/CDN rules allow OAI-SearchBot, GPTBot, PerplexityBot and ClaudeBot | Small | Medium |
 | Pitch the cited pages | Use Sites AI trusts on GEO's own questions and pitch the roundups and threads ChatGPT already cites | Small | Medium to high |
 
 For stores, the same thinking backs the guide calendar: choose buying questions over learning questions,

@@ -8,7 +8,7 @@ import { GUIDE_KIND_LABELS, type GuideKind } from "../lib/guide";
 import { formatNumber } from "../lib/format";
 import { PageHead } from "../components/web";
 
-// usegeo.app/dash/guides: the guide calendar. One guide page per day slot, each answering a buying question AI
+// firstpicked.com.au/dash/guides: the guide calendar. One guide page per day slot, each answering a buying question AI
 // doesn't name the store for, written two days before its day and live on the day (lib/guide-calendar.server.ts).
 // A month view like RankPill's article calendar (Ross, 2026-10-16), in GEO's style; click a day to read the page.
 

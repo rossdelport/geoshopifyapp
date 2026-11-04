@@ -10,7 +10,7 @@ import pixelHead from "../../design/overview/pixel-head.js?raw";
 import cookieScript from "../../design/overview/parts/47-cookies.js?raw";
 import raw from "../home/book.html?raw";
 
-// usegeo.app/book: book a call with Ross (Ross, 3 Nov 2026). Every "Get started" button on the home page opens it.
+// firstpicked.com.au/book: book a call with Ross (Ross, 3 Nov 2026). Every "Get started" button on the home page opens it.
 // GET: the page (app/home/book.html) with Ross's free times from his Google Calendar, or "Text Ross" when his
 // calendar isn't connected yet. POST: urlencoded `start` (one of those times), `name`, `email`, `store`, `website`
 // (honeypot) and the utm_* tags; JSON reply BookResult. The call goes into Ross's calendar with a Meet link.

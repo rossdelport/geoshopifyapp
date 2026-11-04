@@ -5,7 +5,7 @@ import { requireAdmin } from "../lib/admin.server";
 import { drawWinner } from "../lib/giveaway.server";
 import { GIVEAWAY, isOpen } from "../lib/giveaway";
 
-// Admin giveaway (usegeo.app/giveaway, Nov 2026): every entry, numbered in the order they came in, where they came
+// Admin giveaway (firstpicked.com.au/giveaway, Nov 2026): every entry, numbered in the order they came in, where they came
 // from, a download for following up, and the random draw once entries close.
 
 const perth = (iso: string) =>

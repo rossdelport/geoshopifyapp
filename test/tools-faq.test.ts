@@ -415,9 +415,9 @@ describe("the page head", () => {
     expect(find("name", "description")?.content).toBe(TOOL.description);
     expect(TOOL.description.length).toBeLessThan(155);
     const canonicals = list.filter((m) => (m as { rel?: string }).rel === "canonical") as { href: string }[];
-    expect(canonicals.map((c) => c.href)).toEqual(["https://usegeo.app/tools/faq-schema-generator"]);
-    expect(find("property", "og:url")?.content).toBe("https://usegeo.app/tools/faq-schema-generator");
-    expect(find("property", "og:image")?.content).toBe("https://usegeo.app/og/faq-schema-generator.png");
+    expect(canonicals.map((c) => c.href)).toEqual(["https://firstpicked.com.au/tools/faq-schema-generator"]);
+    expect(find("property", "og:url")?.content).toBe("https://firstpicked.com.au/tools/faq-schema-generator");
+    expect(find("property", "og:image")?.content).toBe("https://firstpicked.com.au/og/faq-schema-generator.png");
     expect(find("property", "og:image:width")?.content).toBe("1200");
     expect(find("property", "og:image:height")?.content).toBe("630");
     expect(find("name", "twitter:card")?.content).toBe("summary_large_image");
@@ -638,7 +638,7 @@ describe("bounded work on worst-case input", () => {
 // ---------- the action ----------
 
 function post(body: string | URLSearchParams, headers: Record<string, string> = {}) {
-  const request = new Request("https://usegeo.app/tools/faq-schema-generator", {
+  const request = new Request("https://firstpicked.com.au/tools/faq-schema-generator", {
     method: "POST",
     body,
     headers: { "content-type": "application/x-www-form-urlencoded", "x-real-ip": "203.0.113.20", ...headers },

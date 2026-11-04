@@ -3,7 +3,7 @@
 A short overview Ross wrote for pasting into other chats. Saved here as it was written (only the Firstindex web address corrected), so it may go out of date:
 CLAUDE.md is the source of truth.
 
-**Context:** GEO (usegeo.app), owner Ross Delport, Perth, Australia.
+**Context:** GEO (firstpicked.com.au), owner Ross Delport, Perth, Australia.
 
 **What GEO is:** a web app (the Shopify App Store version is paused) that helps Shopify stores get recommended by
 ChatGPT, Gemini, Perplexity, Google AI Overviews and Claude.
@@ -48,7 +48,7 @@ ChatGPT, Gemini, Perplexity, Google AI Overviews and Claude.
 
 ## Ideas agreed or recommended, not built yet
 
-1. Connect usegeo.app to Google Search Console and Bing. Count GEO's own website visits (AI, search, other) and add a
+1. Connect firstpicked.com.au to Google Search Console and Bing. Count GEO's own website visits (AI, search, other) and add a
    "sign-ups by ad" table in the admin area.
 2. Run GEO on itself: 30 to 50 buying questions about GEO's own market, checked monthly.
 3. Honest comparison pages: GEO vs Kedra, AgentIQ, Mento, FirstIndex and SEO agencies, saying where the other option

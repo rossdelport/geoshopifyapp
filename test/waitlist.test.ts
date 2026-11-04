@@ -79,7 +79,7 @@ describe.skipIf(!url)("website waitlist (needs TEST_DATABASE_URL)", () => {
       utm_medium: "paid",
       utm_campaign: "waitlist-oct",
       fbclid: "IwAR123",
-      referrer: "https://l.facebook.com/l.php?u=https%3A%2F%2Fusegeo.app%2F&h=secret",
+      referrer: "https://l.facebook.com/l.php?u=https%3A%2F%2Ffirstpicked.com.au%2F&h=secret",
       lang: "de",
     });
     expect(res.status).toBe(200);

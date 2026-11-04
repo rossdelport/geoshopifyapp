@@ -37,12 +37,12 @@ The app uses offline access tokens only, so no staff names or emails are saved w
 | Requirement | Answer |
 |---|---|
 | Process only the minimum personal data | Yes. No customer fields at all. Ten line items per order. Landing pages cut to path + utm tags. Visit ids hashed. Non-AI orders kept only as daily totals. |
-| Tell merchants what you process and why | Yes. https://usegeo.app/privacy ("What we collect", "Why we use it"), and in the app: Settings > "How we keep this honest" says no customer names, emails or addresses are stored. |
+| Tell merchants what you process and why | Yes. https://firstpicked.com.au/privacy ("What we collect", "Why we use it"), and in the app: Settings > "How we keep this honest" says no customer names, emails or addresses are stored. |
 | Limit processing to the stated purposes | Yes. Order and visit data is used only for the store's own AI sales figures and monthly report. Never for ads, never sold, never used for another store. |
 | Respect customer consent | Yes. The pixel declares `analytics = true`, `marketing = false`, `preferences = false` in `customer_privacy`, so Shopify only runs it when the shopper allows analytics. No consent, no data. |
 | Respect opt-outs of data sale or sharing | Yes. `sale_of_data = "disabled"`: we don't sell or share it. |
 | Automated decisions with legal or significant effects | None. |
-| Privacy and data protection agreements with merchants | The privacy policy at https://usegeo.app/privacy. (If you want a separate data processing agreement, that is still to write.) |
+| Privacy and data protection agreements with merchants | The privacy policy at https://firstpicked.com.au/privacy. (If you want a separate data processing agreement, that is still to write.) |
 | Retention periods | Yes, see section 5. |
 | Encrypt at rest and in transit | Yes. Supabase Postgres (Tokyo) is encrypted at rest. The app forces TLS on every database connection (`sslmode=require` is added in `app/db.server.ts`), and the app, webhooks and pixel endpoint are served over HTTPS (Railway, Singapore). |
 

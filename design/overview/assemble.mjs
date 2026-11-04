@@ -71,8 +71,8 @@ if (!only && outName === 'index.html') {
   // the same as ORG_NODE in app/lib/tools/seo.ts (test/tools-foundation.test.ts checks they match).
   const title = 'GEO · Get your products recommended by AI';
   const description = 'Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO helps your Shopify products get recommended in those AI answers, then counts the orders it can trace back to AI.';
-  const org = { '@type': 'Organization', '@id': 'https://usegeo.app/#org', name: 'GEO', alternateName: 'GEO for Shopify', url: 'https://usegeo.app/', logo: 'https://usegeo.app/apple-touch-icon.png' };
-  const website = { '@type': 'WebSite', '@id': 'https://usegeo.app/#website', name: 'GEO', alternateName: 'GEO for Shopify', url: 'https://usegeo.app/', publisher: { '@id': 'https://usegeo.app/#org' } };
+  const org = { '@type': 'Organization', '@id': 'https://firstpicked.com.au/#org', name: 'GEO', alternateName: 'GEO for Shopify', url: 'https://firstpicked.com.au/', logo: 'https://firstpicked.com.au/apple-touch-icon.png' };
+  const website = { '@type': 'WebSite', '@id': 'https://firstpicked.com.au/#website', name: 'GEO', alternateName: 'GEO for Shopify', url: 'https://firstpicked.com.au/', publisher: { '@id': 'https://firstpicked.com.au/#org' } };
   const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': [org, website] }).replaceAll('<', '\\u003c');
   // The same page in German, French, Dutch, Spanish and Italian (design/overview/i18n.mjs).
   const langs = languages(dir);
@@ -82,14 +82,14 @@ if (!only && outName === 'index.html') {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="${description}">
-<link rel="canonical" href="https://usegeo.app/">
+<link rel="canonical" href="https://firstpicked.com.au/">
 ${hreflangTags(langs)}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="GEO">
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${description}">
-<meta property="og:url" content="https://usegeo.app/">
-<meta property="og:image" content="https://usegeo.app/og/home.png">
+<meta property="og:url" content="https://firstpicked.com.au/">
+<meta property="og:image" content="https://firstpicked.com.au/og/home.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="A small clay shop with a star in a speech bubble above it">
@@ -113,13 +113,13 @@ ${body}</body>
 `
     .replaceAll('src="img/', 'src="/home/img/')
     .replaceAll('poster="img/', 'poster="/home/img/')
-    .replace('href="https://usegeo.app/privacy" target="_blank" rel="noopener"', 'href="/privacy"');
+    .replace('href="https://firstpicked.com.au/privacy" target="_blank" rel="noopener"', 'href="/privacy"');
   fs.mkdirSync(path.join(root, 'app', 'home'), { recursive: true });
   fs.writeFileSync(path.join(root, 'app', 'home', 'home.html'), site);
   for (const l of langs) {
     const page = translatePage(site, l);
     fs.writeFileSync(path.join(root, 'app', 'home', `home-${l.meta.lang}.html`), page);
-    console.log(`app/home/home-${l.meta.lang}.html: ${(page.length / 1024).toFixed(0)} KB (usegeo.app/${l.meta.path})`);
+    console.log(`app/home/home-${l.meta.lang}.html: ${(page.length / 1024).toFixed(0)} KB (firstpicked.com.au/${l.meta.path})`);
   }
 
   const imgOut = path.join(root, 'public', 'home', 'img');

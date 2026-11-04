@@ -1,24 +1,24 @@
-// One canonical host for the public website. Railway serves the same pages on usegeo.app, www.usegeo.app
-// and the *.up.railway.app address, with no redirect between them (codebase-brief §1.7). Public page views
-// on the other two get a 301 to https://usegeo.app. The Shopify app keeps working on the Railway address:
-// /app, /auth, /webhooks, /api, /healthz and the free check's report pages (/check/<id>) are never redirected,
-// nor is any URL carrying Shopify's admin parameters. Store reports (/report/<slug>) and the report maker
-// (/report-maker) are public pages, so they are redirected. robots.txt is served on every host (bots must read it, not be redirected).
+// One canonical host for the public website: https://firstpicked.com.au (the rebrand from GEO, Ross 4 Nov 2026).
+// The same Railway service can be reached on other addresses: www.firstpicked.com.au, the old usegeo.app and
+// www.usegeo.app, and the *.up.railway.app address. A page viewed on any of them gets a 301 to the same path and
+// query on https://firstpicked.com.au, so old links, bookmarks, sign-in emails and Google all land on the new site.
+// What must keep working where it is never moves: the Shopify app (/app, /auth), webhooks, the tracking code's
+// endpoint (/api/pixel: stores pasted code that posts to https://usegeo.app/api/pixel), /healthz, robots.txt
+// (bots must read it, not be redirected), POSTs, React Router's data requests and any URL carrying Shopify's
+// admin parameters. The root route's loader calls this for every page; resource routes (llms.txt, sitemap.xml)
+// call it themselves.
 
 import { redirect } from "react-router";
-import { HOME_LANGS, SITE, SITE_HOST } from "./site";
+import { SITE, SITE_HOST } from "./site";
 
 /** Query parameters Shopify adds when the admin opens the app: those visits must stay where they are. */
 const SHOPIFY_PARAMS = ["shop", "host", "embedded", "hmac", "id_token"];
 
-const EXACT_PUBLIC = new Set(["/", "/newhomepage", "/check", "/check/", "/tools", "/tools/", "/stories", "/stories/", "/privacy", "/privacy/", "/terms", "/terms/", "/report-maker", "/sitemap.xml", "/llms.txt", ...HOME_LANGS.map((l) => `/${l}`)]);
+/** The old brand's addresses (GEO, until 4 Nov 2026). */
+export const OLD_HOSTS = ["usegeo.app", "www.usegeo.app"];
 
-function isPublicPath(path: string): boolean {
-  if (path.endsWith(".data")) return false; // React Router's own data requests come from the page's host
-  // The web app too (/login, /start, /dash): its sign-in cookie lives on usegeo.app only.
-  if (/^\/(login|start|dash)(\/|$)/.test(path)) return true;
-  return EXACT_PUBLIC.has(path) || path.startsWith("/tools/") || path.startsWith("/stories/") || path.startsWith("/report/");
-}
+/** Paths that stay on whatever host they were asked on. */
+const STAYS = /^\/(app|auth|webhooks|api|healthz)(\/|$)|^\/robots\.txt$|\.data$/;
 
 /** The host the visitor asked for: x-forwarded-host (Railway's proxy), else host, else the URL's. No port, lowercase. */
 export function requestHost(request: Request): string {
@@ -33,12 +33,12 @@ export function requestHost(request: Request): string {
   return raw.toLowerCase().replace(/:\d+$/, "").replace(/\.$/, "");
 }
 
-/** True for the hosts that should send visitors to usegeo.app. */
-const isOtherHost = (host: string) => host === `www.${SITE_HOST}` || host.endsWith(".up.railway.app");
+/** True for the hosts that should send visitors to the canonical site. */
+const isOtherHost = (host: string) => host === `www.${SITE_HOST}` || OLD_HOSTS.includes(host) || host.endsWith(".up.railway.app");
 
 /**
- * A 301 to https://usegeo.app with the same path and query, when a public page is viewed on www or the
- * Railway address in production. Otherwise null. Loaders `throw` the response.
+ * A 301 to https://firstpicked.com.au with the same path and query, when a page is viewed on another of our
+ * addresses in production. Otherwise null. Loaders `throw` the response.
  */
 export function publicHostRedirect(request: Request): Response | null {
   if (request.method !== "GET" && request.method !== "HEAD") return null;
@@ -51,6 +51,6 @@ export function publicHostRedirect(request: Request): Response | null {
     return null;
   }
   if (SHOPIFY_PARAMS.some((p) => url.searchParams.has(p))) return null;
-  if (!isPublicPath(url.pathname)) return null;
+  if (STAYS.test(url.pathname)) return null;
   return redirect(`${SITE}${url.pathname}${url.search}`, 301);
 }

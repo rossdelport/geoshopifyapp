@@ -8,7 +8,7 @@ import { safeFetch } from "./check.server";
 export const STORE_ERRORS = {
   address: "Please type your store’s address, like yourstore.com.",
   notShopify: "We couldn’t find a Shopify store at that address. Please check it and try again.",
-  taken: "That store is already on GEO under another email. Ask the person who added it, or email ross@usegeo.app.",
+  taken: "That store is already on GEO under another email. Ask the person who added it, or email ross@firstpicked.com.au.",
 };
 
 /** "https://www.Store.com/products/x?y" -> "www.store.com". Null when it isn't a web address. */

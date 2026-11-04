@@ -26,7 +26,7 @@ const text = (html: string) =>
     .replace(/\s+/g, " ");
 
 const load = (slug = "sample-dish-co") =>
-  route.loader({ request: new Request(`https://usegeo.app/report/${slug}`), params: { slug }, context: {} } as unknown as LoaderFunctionArgs);
+  route.loader({ request: new Request(`https://firstpicked.com.au/report/${slug}`), params: { slug }, context: {} } as unknown as LoaderFunctionArgs);
 
 /** The page's HTML for a report, the way the route renders it from its loader's data. */
 async function render(data: StoreReportData = fixture()): Promise<string> {
@@ -247,9 +247,9 @@ describe("report page", () => {
       expect(text(html)).toContain(`Month ${m.month} ${m.title}`);
       for (const item of m.items) expect(text(html)).toContain(item);
     }
-    expect(text(html)).toContain("GEO isn't linked to Sample Dish Co. Want this report taken down? Email ross@usegeo.app .");
-    expect(html).toContain('<a href="mailto:ross@usegeo.app">ross@usegeo.app</a>');
-    expect(html).toContain('<a href="https://usegeo.app/">usegeo.app</a>');
+    expect(text(html)).toContain("GEO isn't linked to Sample Dish Co. Want this report taken down? Email ross@firstpicked.com.au .");
+    expect(html).toContain('<a href="mailto:ross@firstpicked.com.au">ross@firstpicked.com.au</a>');
+    expect(html).toContain('<a href="https://firstpicked.com.au/">firstpicked.com.au</a>');
     expect(text(html)).toContain("Every store is different, so we can't promise exact results.");
   });
 

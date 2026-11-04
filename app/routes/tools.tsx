@@ -9,7 +9,7 @@ import checkCss from "../styles/check.css?url";
 import toolsCss from "../styles/tools.css?url";
 
 // Layout for the free tools: /tools (the hub) and every /tools/* page. One place for the fonts and
-// stylesheets, the canonical host (www and the Railway address get a 301 to usegeo.app), the default
+// stylesheets, the canonical host (www and the Railway address get a 301 to firstpicked.com.au), the default
 // headers and an error page in the site's frame. Each page sets its own `meta` (React Router uses the
 // deepest route's meta only); the meta here only fills in for the error page.
 

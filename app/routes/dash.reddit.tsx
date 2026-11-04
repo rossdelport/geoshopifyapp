@@ -7,7 +7,7 @@ import { getPlan } from "../lib/plans";
 import { formatNumber, timeAgo } from "../lib/format";
 import { Icon, ICONS, PageHead, Tabs } from "../components/web";
 
-// usegeo.app/dash/reddit: Reddit threads where people ask about the store's kind of product (found weekly,
+// firstpicked.com.au/dash/reddit: Reddit threads where people ask about the store's kind of product (found weekly,
 // lib/reddit.server.ts). Left: every thread. Right: the post and a neutral reply written as the owner, which
 // they copy, then post themselves in the thread. We never post for them.
 

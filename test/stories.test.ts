@@ -27,7 +27,7 @@ const decode = (h: string) =>
 const text = (h: string) => decode(h.replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ");
 
 type PageData = { story: Story | null; related: StoryCardData[]; all: StoryCardData[] };
-const args = (slug: string, url = `https://usegeo.app/stories/${slug}`) =>
+const args = (slug: string, url = `https://firstpicked.com.au/stories/${slug}`) =>
   ({ request: new Request(url), params: { slug }, context: {} }) as unknown as LoaderFunctionArgs;
 /** The page loader's answer: { data, init } (React Router's data() helper). */
 const load = (slug: string) => page.loader(args(slug)) as unknown as { data: PageData; init?: ResponseInit };
@@ -194,10 +194,10 @@ describe("each story page's head", () => {
     const m = metaOf(page.meta, load(slug).data);
     expect(m[0]).toEqual({ title: story.title });
     expect(find(m, "name", "description").content).toBe(story.description);
-    const url = `https://usegeo.app/stories/${slug}`;
+    const url = `https://firstpicked.com.au/stories/${slug}`;
     expect(m.filter((d: any) => d.rel === "canonical")).toEqual([{ tagName: "link", rel: "canonical", href: url }]);
     expect(find(m, "property", "og:url").content).toBe(url);
-    expect(find(m, "property", "og:image").content).toBe("https://usegeo.app/og/home.png");
+    expect(find(m, "property", "og:image").content).toBe("https://firstpicked.com.au/og/home.png");
     expect(m.some((d: any) => d.name === "robots")).toBe(false);
 
     const ld = jsonLdOf(m);
@@ -216,11 +216,11 @@ describe("each story page's head", () => {
     expect(article.isBasedOn).toMatchObject({ "@type": "CreativeWork", url: story.source.url, name: story.source.title });
     expect(article.isBasedOn.publisher.name.length).toBeGreaterThan(2);
     expect(article.citation.map((c: any) => c.url)).toEqual([story.source.url, ...(story.moreSources ?? []).map((x) => x.url)]);
-    expect(article.image).toBe("https://usegeo.app/og/home.png");
+    expect(article.image).toBe("https://firstpicked.com.au/og/home.png");
     const crumbs = ld["@graph"][2].itemListElement.map((c: any) => [c.name, c.item]);
     expect(crumbs).toEqual([
-      ["Home", "https://usegeo.app/"],
-      ["Stories", "https://usegeo.app/stories"],
+      ["Home", "https://firstpicked.com.au/"],
+      ["Stories", "https://firstpicked.com.au/stories"],
       [story.brand, undefined],
     ]);
   });
@@ -245,12 +245,12 @@ describe("the hub at /stories", () => {
     expect(m[0]).toEqual({ title: STORIES_HUB.title });
     expect(STORIES_HUB.title.length).toBeLessThan(60);
     expect(STORIES_HUB.description.length).toBeLessThan(155);
-    expect(m.filter((d: any) => d.rel === "canonical")).toEqual([{ tagName: "link", rel: "canonical", href: "https://usegeo.app/stories" }]);
+    expect(m.filter((d: any) => d.rel === "canonical")).toEqual([{ tagName: "link", rel: "canonical", href: "https://firstpicked.com.au/stories" }]);
     const ld = jsonLdOf(m);
     expect(ld["@graph"].map((n) => n["@type"])).toEqual(["Organization", "CollectionPage", "ItemList", "BreadcrumbList"]);
     const list = ld["@graph"][2];
     expect(list.numberOfItems).toBe(15);
-    expect(list.itemListElement.map((i: any) => i.url)).toEqual(STORIES.map((s) => `https://usegeo.app/stories/${s.slug}`));
+    expect(list.itemListElement.map((i: any) => i.url)).toEqual(STORIES.map((s) => `https://firstpicked.com.au/stories/${s.slug}`));
   });
 });
 
@@ -282,15 +282,15 @@ describe("the canonical host", () => {
     process.env.NODE_ENV = env;
   });
 
-  it("sends www and the Railway address to usegeo.app for the hub and every story", async () => {
+  it("sends www and the Railway address to firstpicked.com.au for the hub and every story", async () => {
     for (const path of ["/stories", "/stories/viv-chatgpt-sales"]) {
       const moved = (await Promise.resolve()
-        .then(() => layout.loader({ request: new Request(`https://www.usegeo.app${path}`), params: {}, context: {} } as unknown as LoaderFunctionArgs))
+        .then(() => layout.loader({ request: new Request(`https://www.firstpicked.com.au${path}`), params: {}, context: {} } as unknown as LoaderFunctionArgs))
         .catch((r: Response) => r)) as Response;
       expect(moved.status, path).toBe(301);
-      expect(moved.headers.get("location")).toBe(`https://usegeo.app${path}`);
+      expect(moved.headers.get("location")).toBe(`https://firstpicked.com.au${path}`);
     }
-    expect(layout.loader({ request: new Request("https://usegeo.app/stories"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).toBeNull();
+    expect(layout.loader({ request: new Request("https://firstpicked.com.au/stories"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).toBeNull();
   });
 });
 

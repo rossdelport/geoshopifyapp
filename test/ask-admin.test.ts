@@ -163,7 +163,7 @@ describe.skipIf(!url)("Ask GEO and admin with a database (needs TEST_DATABASE_UR
     session.user = user;
     session.shop = shop;
     const res = (await route.action({
-      request: new Request("https://usegeo.app/dash/ask/answer", { method: "POST", body: JSON.stringify({ messages: [{ role: "user", content: "How do I pay?" }] }) }),
+      request: new Request("https://firstpicked.com.au/dash/ask/answer", { method: "POST", body: JSON.stringify({ messages: [{ role: "user", content: "How do I pay?" }] }) }),
       params: {},
       context: {},
     } as never)) as Response;
@@ -211,7 +211,7 @@ describe.skipIf(!url)("Ask GEO and admin with a database (needs TEST_DATABASE_UR
 
   it("only the admin can open the admin pages", async () => {
     const route = await import("../app/routes/dash.admin.usage");
-    const load = () => route.loader({ request: new Request("https://usegeo.app/dash/admin/usage"), params: {}, context: {} } as never);
+    const load = () => route.loader({ request: new Request("https://firstpicked.com.au/dash/admin/usage"), params: {}, context: {} } as never);
     session.user = await db.user.create({ data: { email: "someone@store.com" } });
     await expect(load()).rejects.toMatchObject({ status: 404 });
     session.user = await db.user.create({ data: { email: "rossdelport1998@gmail.com" } });

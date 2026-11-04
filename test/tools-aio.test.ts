@@ -448,9 +448,9 @@ describe("meta", () => {
     expect(name("description")).toBe(tool.description);
     expect(tool.description.length).toBeLessThan(155);
     const canonicals = list.filter((m) => (m as any).tagName === "link" && (m as any).rel === "canonical") as any[];
-    expect(canonicals.map((c) => c.href)).toEqual(["https://usegeo.app/tools/ai-overview-checker"]);
-    expect(prop("og:url")).toBe("https://usegeo.app/tools/ai-overview-checker");
-    expect(prop("og:image")).toBe("https://usegeo.app/og/ai-overview-checker.png");
+    expect(canonicals.map((c) => c.href)).toEqual(["https://firstpicked.com.au/tools/ai-overview-checker"]);
+    expect(prop("og:url")).toBe("https://firstpicked.com.au/tools/ai-overview-checker");
+    expect(prop("og:image")).toBe("https://firstpicked.com.au/og/ai-overview-checker.png");
     expect(prop("og:image:width")).toBe("1200");
     expect(prop("og:image:height")).toBe("630");
     expect(name("twitter:card")).toBe("summary_large_image");
@@ -602,7 +602,7 @@ describe("the page (server-rendered, no JavaScript)", () => {
 
 const IP = "203.0.113.7";
 function post(fields: Record<string, string>, headers: Record<string, string> = {}, body?: string) {
-  return new Request("https://usegeo.app/tools/ai-overview-checker", {
+  return new Request("https://firstpicked.com.au/tools/ai-overview-checker", {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded", "sec-fetch-site": "same-origin", "x-real-ip": IP, ...headers },
     body: body ?? new URLSearchParams(fields).toString(),

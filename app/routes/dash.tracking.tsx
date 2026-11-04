@@ -4,7 +4,7 @@ import { requireWebShop } from "../lib/web-auth.server";
 import { trackKeyFor, trackingCode } from "../lib/tracking-code.server";
 import { CopyButton, PageHead } from "../components/web";
 
-// usegeo.app/dash/tracking: the store's tracking code and how to paste it into Shopify (Settings -> Customer
+// firstpicked.com.au/dash/tracking: the store's tracking code and how to paste it into Shopify (Settings -> Customer
 // events -> Add custom pixel). Once it sends its first visit, the dashboard shows AI clicks, orders and revenue.
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {

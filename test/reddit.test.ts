@@ -214,7 +214,7 @@ describe.skipIf(!url)("Reddit finder with a database (needs TEST_DATABASE_URL)",
     current.shop = mine;
     const route = await import("../app/routes/dash.reddit");
     const act = (form: Record<string, string>) =>
-      route.action({ request: new Request("https://usegeo.app/dash/reddit", { method: "POST", body: new URLSearchParams(form) }), params: {}, context: {} } as never);
+      route.action({ request: new Request("https://firstpicked.com.au/dash/reddit", { method: "POST", body: new URLSearchParams(form) }), params: {}, context: {} } as never);
 
     const t = (await db.redditThread.findFirstOrThrow({ where: { shopId: mine.id, postId: "1aaa" } })).id;
     expect(await act({ intent: "replied", id: t })).toEqual({ ok: true });
@@ -224,7 +224,7 @@ describe.skipIf(!url)("Reddit finder with a database (needs TEST_DATABASE_URL)",
     await act({ intent: "save", id: t, draft: "(I run sunday, so I'm biased.) Edited." });
     expect((await db.redditThread.findUniqueOrThrow({ where: { id: t } })).draft).toBe("(I run sunday, so I'm biased.) Edited.");
     await act({ intent: "hide", id: t });
-    const page = await route.loader({ request: new Request("https://usegeo.app/dash/reddit"), params: {}, context: {} } as never);
+    const page = await route.loader({ request: new Request("https://firstpicked.com.au/dash/reddit"), params: {}, context: {} } as never);
     expect(page.list.map((x) => x.title)).toEqual(["Any recommendations for matching hoodies for couples?"]);
     expect(page.counts).toEqual({ all: 1, todo: 1, replied: 0 });
 

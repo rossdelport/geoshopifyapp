@@ -48,7 +48,7 @@ export default function Auth() {
           <s-section heading="Open GEO from your Shopify admin">
             <s-paragraph>GEO runs inside your Shopify admin. Go to Apps in your Shopify admin and choose GEO.</s-paragraph>
             <s-paragraph>
-              Don&apos;t have GEO yet? <s-link href="https://usegeo.app/#waitlist">Join the waitlist</s-link>.
+              Don&apos;t have GEO yet? <s-link href="https://firstpicked.com.au/#waitlist">Join the waitlist</s-link>.
             </s-paragraph>
           </s-section>
         </s-page>

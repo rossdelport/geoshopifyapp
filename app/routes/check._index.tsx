@@ -23,7 +23,7 @@ export const meta: MetaFunction = () => [
   { tagName: "link", rel: "canonical", href: abs("/tools/ai-visibility-checker") },
 ];
 
-// One public address: www.usegeo.app and the Railway address send visitors to https://usegeo.app.
+// One public address: www, the old usegeo.app and the Railway address send visitors to https://firstpicked.com.au.
 export const loader = ({ request }: LoaderFunctionArgs) => {
   const moved = publicHostRedirect(request);
   if (moved) throw moved;

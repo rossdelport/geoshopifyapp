@@ -686,7 +686,7 @@ describe("checkLlmsSite reads the store's real address", () => {
 // ---------- the action ----------
 
 function post(fields: Record<string, string>, headers: Record<string, string> = {}, body?: string) {
-  const request = new Request("https://usegeo.app/tools/llms-txt-checker", {
+  const request = new Request("https://firstpicked.com.au/tools/llms-txt-checker", {
     method: "POST",
     body: body ?? new URLSearchParams(fields),
     headers: { "content-type": "application/x-www-form-urlencoded", "x-real-ip": "203.0.113.9", ...headers },
@@ -738,7 +738,7 @@ describe("the action", () => {
     expect(big.data.error).toBe(TOO_BIG_COPY);
     // only a pasted file gets that big, so the error shows by the paste box (with the example back in it)
     expect(big.data).toEqual({ ok: false, intent: "paste", text: null, error: TOO_BIG_COPY });
-    expect(text(renderPage(big.data))).toContain("The llms.txt on this site, usegeo.app");
+    expect(text(renderPage(big.data))).toContain("The llms.txt on this site, firstpicked.com.au");
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -807,9 +807,9 @@ describe("the page head", () => {
     expect(find("name", "description")?.content).toBe(TOOL.description);
     expect(TOOL.description.length).toBeLessThan(155);
     const canonicals = list.filter((m) => (m as { rel?: string }).rel === "canonical") as { href: string }[];
-    expect(canonicals.map((c) => c.href)).toEqual(["https://usegeo.app/tools/llms-txt-checker"]);
-    expect(find("property", "og:url")?.content).toBe("https://usegeo.app/tools/llms-txt-checker");
-    expect(find("property", "og:image")?.content).toBe("https://usegeo.app/og/llms-txt-checker.png");
+    expect(canonicals.map((c) => c.href)).toEqual(["https://firstpicked.com.au/tools/llms-txt-checker"]);
+    expect(find("property", "og:url")?.content).toBe("https://firstpicked.com.au/tools/llms-txt-checker");
+    expect(find("property", "og:image")?.content).toBe("https://firstpicked.com.au/og/llms-txt-checker.png");
     expect(find("property", "og:image:width")?.content).toBe("1200");
     expect(find("property", "og:image:height")?.content).toBe("630");
     expect(find("name", "twitter:card")?.content).toBe("summary_large_image");
@@ -872,7 +872,7 @@ describe("the page (server render, no JavaScript)", () => {
   });
 
   it("shows this site's own llms.txt as the labelled example, with all checks passing", () => {
-    expect(out).toMatch(/<p class="tl-sample">The llms.txt on this site, usegeo.app. Edit it to test your own.<\/p>/);
+    expect(out).toMatch(/<p class="tl-sample">The llms.txt on this site, firstpicked.com.au. Edit it to test your own.<\/p>/);
     expect(plain).toContain("> GEO is a Shopify app that helps stores");
     expect(out).toContain('name="text"');
     expect(out).toContain('value="paste"');
@@ -914,7 +914,7 @@ describe("the page (server render, no JavaScript)", () => {
 
   it("shows a no-JavaScript paste result in place of the example", () => {
     const page = text(renderPage({ ok: true, intent: "paste", text: "# Cedar\n\n## Pages\n\n- no link here" }));
-    expect(page).not.toContain("The llms.txt on this site, usegeo.app");
+    expect(page).not.toContain("The llms.txt on this site, firstpicked.com.au");
     expect(page).toContain("Your llms.txt has 1 problem");
     expect(page).toContain("Line 5 is a list item without a link.");
     expect(page).toContain("- no link here");
@@ -941,7 +941,7 @@ describe("the page (server render, no JavaScript)", () => {
     expect(page).toContain("# {{ agents.store_name }}");
     expect(page).toContain(copy.GENERATOR.shopifyNote);
     expect(page).toContain(copy.GENERATOR.shopifySteps);
-    expect(page).not.toContain("The llms.txt on this site, usegeo.app");
+    expect(page).not.toContain("The llms.txt on this site, firstpicked.com.au");
     expect(page).toContain("Paste an llms.txt");
     expect(page).toContain("Before you spend time on it");
     expect(html.match(/tl-cta"/g)).toHaveLength(1);

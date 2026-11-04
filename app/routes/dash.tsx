@@ -105,7 +105,7 @@ export default function Dash() {
                 <Icon d={ICONS.spark} />
                 Ask GEO
               </NavLink>
-              <a href="mailto:ross@usegeo.app">
+              <a href="mailto:ross@firstpicked.com.au">
                 <Icon d={ICONS.mail} />
                 Email us
               </a>

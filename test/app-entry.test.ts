@@ -1,4 +1,4 @@
-// The embedded app's layout route (/app). A person who types usegeo.app/app in a normal browser tab
+// The embedded app's layout route (/app). A person who types firstpicked.com.au/app in a normal browser tab
 // (nothing from Shopify on the address) goes to the login page, and every request that comes from the
 // Shopify admin (shop, host, embedded, hmac, id_token, a session token header, a page in the admin's
 // frame) still goes to Shopify's own login check untouched. Its error boundary shows what the server
@@ -38,10 +38,10 @@ beforeEach(() => {
 
 describe("/app opened outside Shopify", () => {
   it.each([
-    "https://usegeo.app/app",
-    "https://usegeo.app/app/",
-    "https://usegeo.app/app/questions",
-    "https://usegeo.app/app?utm_source=newsletter",
+    "https://firstpicked.com.au/app",
+    "https://firstpicked.com.au/app/",
+    "https://firstpicked.com.au/app/questions",
+    "https://firstpicked.com.au/app?utm_source=newsletter",
     "https://geo-shopify-app-production.up.railway.app/app",
   ])("sends a typed visit to %s to the login page", async (url) => {
     const out = await load(url, TYPED);
@@ -74,7 +74,7 @@ describe("/app opened by the Shopify admin", () => {
   ];
 
   it.each(cases)("leaves %s to Shopify's login check", async (_label, path, headers) => {
-    const out = await load(`https://usegeo.app${path}`, headers);
+    const out = await load(`https://firstpicked.com.au${path}`, headers);
     expect(out).toBe(SHOPIFY_CHECK);
     expect(requireShop).toHaveBeenCalledTimes(1);
   });

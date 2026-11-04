@@ -8,7 +8,7 @@ import { SITE } from "../lib/tools/site";
 import { CopyButton } from "../components/web";
 
 // Admin reports (Ross, 3 Nov 2026): paste Shopify store addresses, and about 3 minutes later each store has its own
-// page at usegeo.app/report/<slug> for Ross's teardown videos (lib/store-report.server.ts). The list shows how each
+// page at firstpicked.com.au/report/<slug> for Ross's teardown videos (lib/store-report.server.ts). The list shows how each
 // one is going, the story tags for picking which store to film, and Ross's script. The script and notes live only
 // here: the public page never shows them.
 
@@ -280,7 +280,7 @@ export default function AdminReports() {
           <div style={{ flex: "1 1 280px", minWidth: 0 }}>
             <b style={{ color: "var(--ink)" }}>On your phone, no sign-in</b>
             <p className="w-note" style={{ marginTop: 2 }}>
-              usegeo.app/report-maker makes one report and opens it when it&apos;s ready. Scripts stay here.
+              firstpicked.com.au/report-maker makes one report and opens it when it&apos;s ready. Scripts stay here.
             </p>
           </div>
           <CopyButton text={MAKER} label="Copy link" />

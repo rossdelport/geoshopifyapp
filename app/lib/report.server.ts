@@ -7,6 +7,7 @@ import { registerJob } from "./jobs.server";
 import { AI_ENGINE_LABELS } from "./attribution";
 import { formatMoney } from "./format";
 import { startOfMonth } from "./limits";
+import { abs } from "./tools/site";
 
 /**
  * The month a report covers: the whole calendar month before `now` (UTC). The worker sends reports in the
@@ -44,7 +45,7 @@ export async function buildMonthlyReport(shopId: string, now = new Date()) {
   // Web app stores have no Shopify app to open: what waits for them is guide pages needing their OK, on the calendar.
   const web = shop.source === "web";
   const pending = web ? await db.guideSlot.count({ where: { shopId, status: "ready", approvedAt: null } }) : await db.fix.count({ where: { shopId, status: "pending" } });
-  const appUrl = web ? "https://usegeo.app/dash/guides" : `https://admin.shopify.com/store/${shop.domain.replace(".myshopify.com", "")}/apps/${process.env.SHOPIFY_API_KEY ?? ""}`;
+  const appUrl = web ? abs("/dash/guides") : `https://admin.shopify.com/store/${shop.domain.replace(".myshopify.com", "")}/apps/${process.env.SHOPIFY_API_KEY ?? ""}`;
   const m = (n: number) => formatMoney(n, shop.currency);
   const engines = month.byEngine
     .slice(0, 4)

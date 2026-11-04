@@ -1,4 +1,4 @@
-// The admin area (usegeo.app/dash/admin), for Ross only (Ross, 2026-10-15). Who can open it: GEO_ADMIN_EMAILS
+// The admin area (firstpicked.com.au/dash/admin), for Ross only (Ross, 2026-10-15). Who can open it: GEO_ADMIN_EMAILS
 // (comma separated), else Ross's email. Everyone else gets "Not found", so the pages don't show they exist.
 // Days are Sydney days (Ross is in Australia).
 

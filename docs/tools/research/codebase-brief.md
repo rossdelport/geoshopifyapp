@@ -8,9 +8,9 @@ is marked UNVERIFIED. Sibling research: `seo-2026.md`, `geo-2026.md`, `facts-202
 
 ## 0. The gotchas that will bite first
 
-1. **Two hosts serve the site with no redirect.** Railway has custom domains `usegeo.app` AND `www.usegeo.app`;
-   live HTTP logs show `GET /` on `www.usegeo.app` answering 200 (not 301). Every public page needs a
-   `rel=canonical` to `https://usegeo.app/...`, and a www to apex 301 is worth adding (see 1.7).
+1. **Two hosts serve the site with no redirect.** Railway has custom domains `firstpicked.com.au` AND `www.firstpicked.com.au`;
+   live HTTP logs show `GET /` on `www.firstpicked.com.au` answering 200 (not 301). Every public page needs a
+   `rel=canonical` to `https://firstpicked.com.au/...`, and a www to apex 301 is worth adding (see 1.7).
 2. **`/robots.txt` and `/sitemap.xml` are 404 today** on both hosts (Railway HTTP logs, 11 Oct: OAI-SearchBot,
    ClaudeBot and others got 404). No `public/robots.txt` exists, so a route file can serve them (1.2).
 3. **`meta` does not merge.** React Router uses the deepest route's `meta` only (parent meta is dropped when a child
@@ -29,7 +29,7 @@ is marked UNVERIFIED. Sibling research: `seo-2026.md`, `geo-2026.md`, `facts-202
 9. **Tests must be `.ts`, not `.tsx`** (`vitest.config.ts` includes `test/**/*.test.ts`); render with
    `createElement`, as `test/check-pages.test.ts` does (6).
 10. **`meta` and `links` run in the browser too**: never import `env.server.ts` (or anything `.server`) into code used by
-    `meta`; use a constant `https://usegeo.app` for canonicals (1.3).
+    `meta`; use a constant `https://firstpicked.com.au` for canonicals (1.3).
 11. The site is **light theme only** (`color-scheme: light` in `design/overview/base.css`; no dark styles anywhere) (5).
 12. One Railway replica, but deploys overlap during draining, and in-memory state resets on each deploy (7.3).
 
@@ -98,13 +98,13 @@ What React Router 7.18.2 supports (read in `node_modules/react-router/dist/devel
 
 - **Leaf wins:** a route that exports `meta` replaces its parents' meta; a route without `meta` inherits the
   nearest parent's. To merge, read `matches` inside `meta`.
-- **Canonical in `meta`:** `{ tagName: "link", rel: "canonical", href: "https://usegeo.app/tools/ai-crawler-checker" }`
+- **Canonical in `meta`:** `{ tagName: "link", rel: "canonical", href: "https://firstpicked.com.au/tools/ai-crawler-checker" }`
   (only `tagName` `link` or `meta` are allowed). It can also go in `links`.
 - **Open Graph / Twitter:** `{ property: "og:title", content }`, `{ name: "twitter:card", content: "summary_large_image" }`.
 - **JSON-LD:** `{ "script:ld+json": { "@context": "https://schema.org", "@type": "WebApplication", ... } }` renders a
   `<script type="application/ld+json">` with the JSON HTML-escaped by React Router.
 - `meta` runs on the server AND in the browser (on client navigation), so it must not import server code.
-  Put the origin in a browser-safe constant, e.g. `export const SITE = "https://usegeo.app"` in a new
+  Put the origin in a browser-safe constant, e.g. `export const SITE = "https://firstpicked.com.au"` in a new
   `app/lib/tools/site.ts`. (`env.appUrl` is `SHOPIFY_APP_URL`, server only; tests set it to `https://geo.test`.)
 
 Suggested helper (new file, pure): `toolMeta({ path, title, description, image?, jsonLd? })` returning title,
@@ -148,21 +148,21 @@ and return `data(result, { headers: { "Cache-Control": "no-store" } })` from act
 | `/app/*` | requires Shopify auth (redirects) | none |
 
 robots.txt advice: `Disallow: /app/`, `/auth/`, `/api/`, `/webhooks/`; do **not** disallow `/check/` (Google must
-crawl the report pages to see their `noindex`). Add `Sitemap: https://usegeo.app/sitemap.xml`.
+crawl the report pages to see their `noindex`). Add `Sitemap: https://firstpicked.com.au/sitemap.xml`.
 Sitemap: `/`, `/check`, `/tools`, the 7 tool pages, `/privacy`. Never `/check/:id`, `/auth/*`, `/app/*`, `/tips`,
 `/unsubscribe`.
 
 ### 1.7 www, canonical and the form guard
 
-- Live: `www.usegeo.app` serves the same pages as `usegeo.app` with 200s (Railway HTTP logs, 11 Oct 2026).
+- Live: `www.firstpicked.com.au` serves the same pages as `firstpicked.com.au` with 200s (Railway HTTP logs, 11 Oct 2026).
 - The express adapter builds `request.url` from `req.protocol` with no `trust proxy`, so behind Railway's TLS proxy
   `request.url` is `http://<host>/...` (node_modules/@react-router/express/dist/index.js line 80).
 - `fromAnotherSite()` (public-form.server.ts) accepts a POST only when `Origin` equals `new URL(request.url).origin`
   or `env.appUrl`. Since `request.url` is `http://...` and browsers send `Origin: https://...`, a same-site POST is
-  accepted only if `Origin` equals `SHOPIFY_APP_URL`. A visitor on `www.usegeo.app` would likely get the 403
+  accepted only if `Origin` equals `SHOPIFY_APP_URL`. A visitor on `www.firstpicked.com.au` would likely get the 403
   "Please start your check from the GEO website." **UNVERIFIED** (the `SHOPIFY_APP_URL` value is hidden; logs show
-  successful POSTs on `usegeo.app` and on the railway.app host). Fix options: 301 `www` to apex in the public loaders
-  (a small `canonicalHost(request)` helper that throws `redirect("https://usegeo.app" + path, 301)` when the `Host`
+  successful POSTs on `firstpicked.com.au` and on the railway.app host). Fix options: 301 `www` to apex in the public loaders
+  (a small `canonicalHost(request)` helper that throws `redirect("https://firstpicked.com.au" + path, 301)` when the `Host`
   header starts with `www.`), or compare `new URL(origin).host` with the `Host` header in a tools-only guard.
 
 ---
@@ -184,9 +184,9 @@ redirected to `/app?...`. `app/home/home.html` is generated; never hand-edit it.
 `<!doctype html><html lang="en">`, the meta description, favicons, `window.GEO_LIVE=true`, the Google Fonts links,
 and these string rewrites: `src="img/` and `poster="img/` become `/home/img/`; pricing buttons `href="#pricing"
 data-plan="core|pro"` become `/auth/login?plan=..&amp;cycle=monthly`; other `href="#pricing"` buttons become
-`/auth/login`; `href="https://usegeo.app/privacy" target="_blank" rel="noopener"` becomes `href="/privacy"`.
+`/auth/login`; `href="https://firstpicked.com.au/privacy" target="_blank" rel="noopener"` becomes `href="/privacy"`.
 The page `<head>` template (canonical, OG, JSON-LD) lives in the `site` template string in `assemble.mjs`; add
-`<link rel="canonical" href="https://usegeo.app/">` and OG tags there.
+`<link rel="canonical" href="https://firstpicked.com.au/">` and OG tags there.
 
 ### 2.3 Assets
 
@@ -565,7 +565,7 @@ Production builds run `npm ci --omit=dev` then `npm run build` (Dockerfile): a n
 
 Tests worth adding: registry/footer/sitemap agree (every tool linked from `home.html`, `SiteFooter` and
 `/sitemap.xml`); `robots.txt` content and `Content-Type`; each tool page's `meta` has title, description, one
-canonical on `https://usegeo.app`; no em dash (U+2014) in tool copy; tool actions refuse cross-site posts, oversized bodies and the
+canonical on `https://firstpicked.com.au`; no em dash (U+2014) in tool copy; tool actions refuse cross-site posts, oversized bodies and the
 honeypot; SSRF cases (private IP, `localhost`, redirect to `127.0.0.1`) through the tool fetch path; the AI Overview
 action never calls Treg over the cap.
 
@@ -579,7 +579,7 @@ action never calls Treg over the cap.
   only sets `Content-Security-Policy: frame-ancestors https://<shop> https://admin.shopify.com ...` and a `Link`
   preload header **when the URL has `?shop=`**. Public pages get **no CSP, no HSTS, no X-Frame-Options, no
   X-Content-Type-Options, no Referrer-Policy** from the app. (Railway's edge headers: UNVERIFIED, the sandbox proxy
-  blocks usegeo.app.) Adding security headers belongs in the tool routes' `headers` or resource responses; keep any
+  blocks firstpicked.com.au.) Adding security headers belongs in the tool routes' `headers` or resource responses; keep any
   CSP compatible with Google Fonts and the inline `window.GEO_LIVE` script on the home page.
 - Express: compression on, `x-powered-by` off, no `trust proxy`.
 

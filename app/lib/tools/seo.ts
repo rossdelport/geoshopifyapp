@@ -1,4 +1,4 @@
-// One helper for every public page's <head>: title, description, one canonical on https://usegeo.app,
+// One helper for every public page's <head>: title, description, one canonical on https://firstpicked.com.au,
 // Open Graph and Twitter tags, and one JSON-LD @graph. Pure and browser-safe: React Router runs `meta`
 // on the server and in the browser, so nothing here may read env or request.url.
 // No `nosnippet` or `max-snippet` ever (AI Overviews and assistants quote snippets), and no

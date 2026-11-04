@@ -8,7 +8,7 @@ import { publicHostRedirect } from "../lib/tools/host.server";
 import { SECURITY_HEADERS } from "../lib/tools/http";
 import styles from "../styles/report.css?url";
 
-// A store's report for Ross's teardown videos (Ross, 3 Nov 2026): usegeo.app/report/<slug>. Ross films it on his
+// A store's report for Ross's teardown videos (Ross, 3 Nov 2026): firstpicked.com.au/report/<slug>. Ross films it on his
 // phone with himself green-screened on top, tags the brand and DMs them the link, so it is phone first, every
 // number on it is one we found, and the tone stays kind. It stands alone like the OpenSEO report it copies: no
 // site menu, no price, no booking link and no call-to-action button (Ross does the ask out loud). The script,
@@ -489,10 +489,10 @@ function SmallPrint({ report, checked }: { report: PageReport; checked: string }
         {checked ? `Checked on ${checked}. ` : ""}We asked ChatGPT, Gemini and Perplexity {fmt(questions.length)} buying questions, as a
         shopper in {store.countryName}, twice each. AI answers change from day to day, so this is a snapshot. Every store is different,
         so we can&apos;t promise exact results. GEO isn&apos;t linked to {store.brand}. Want this report taken down? Email{" "}
-        <a href="mailto:ross@usegeo.app">ross@usegeo.app</a>.
+        <a href="mailto:ross@firstpicked.com.au">ross@firstpicked.com.au</a>.
       </p>
       <p className="rp-site-link">
-        <a href="https://usegeo.app/">usegeo.app</a>
+        <a href="https://firstpicked.com.au/">firstpicked.com.au</a>
       </p>
     </footer>
   );
@@ -516,7 +516,7 @@ export function ErrorBoundary() {
           {missing ? "The link may be wrong, or the report was taken down." : "Please try again in a minute."}
         </p>
         <p className="rp-site-link">
-          <a href="https://usegeo.app/">usegeo.app</a>
+          <a href="https://firstpicked.com.au/">firstpicked.com.au</a>
         </p>
       </main>
     </div>

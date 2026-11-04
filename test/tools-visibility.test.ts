@@ -219,9 +219,9 @@ describe("the page head", () => {
     );
     expect(TOOL.description.length).toBeLessThan(155);
     const canonicals = list.filter((m) => (m as { rel?: string }).rel === "canonical") as { href: string }[];
-    expect(canonicals.map((c) => c.href)).toEqual(["https://usegeo.app/tools/ai-visibility-checker"]);
-    expect(find("property", "og:url")?.content).toBe("https://usegeo.app/tools/ai-visibility-checker");
-    expect(find("property", "og:image")?.content).toBe("https://usegeo.app/og/ai-visibility-checker.png");
+    expect(canonicals.map((c) => c.href)).toEqual(["https://firstpicked.com.au/tools/ai-visibility-checker"]);
+    expect(find("property", "og:url")?.content).toBe("https://firstpicked.com.au/tools/ai-visibility-checker");
+    expect(find("property", "og:image")?.content).toBe("https://firstpicked.com.au/og/ai-visibility-checker.png");
     expect(find("property", "og:image:width")?.content).toBe("1200");
     expect(find("property", "og:image:height")?.content).toBe("630");
     expect(find("name", "twitter:card")?.content).toBe("summary_large_image");

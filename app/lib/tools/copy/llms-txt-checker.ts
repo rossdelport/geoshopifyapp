@@ -47,10 +47,10 @@ export const FORM = {
 } as const;
 
 /**
- * Above the on-load example (SampleLabel). The spec's words were "Example: the llms.txt on this site, usegeo.app";
+ * Above the on-load example (SampleLabel). The spec's words were "Example: the llms.txt on this site, firstpicked.com.au";
  * there is no "Example" pill any more (Ross, 2 Nov 2026), and this file is real, so the words say what it is.
  */
-export const SAMPLE_LABEL = "The llms.txt on this site, usegeo.app. Edit it to test your own.";
+export const SAMPLE_LABEL = "The llms.txt on this site, firstpicked.com.au. Edit it to test your own.";
 
 /** The longest llms.txt people can paste. */
 export const MAX_PASTE = 200_000;

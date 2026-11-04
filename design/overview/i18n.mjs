@@ -1,5 +1,5 @@
 /* eslint-env node */
-// The home page in other languages (usegeo.app/de, /fr, /nl, /es, /it). assemble.mjs builds the English page, then
+// The home page in other languages (firstpicked.com.au/de, /fr, /nl, /es, /it). assemble.mjs builds the English page, then
 // this turns a copy of it into each language from design/overview/i18n/<lang>.json, so the English parts stay the
 // one source. The build stops if any English text is left untranslated, so a new English line can't slip through.
 //
@@ -27,9 +27,9 @@ export function languages(dir) {
 /** The <link rel="alternate"> tags that tell search engines which page is which language. */
 export function hreflangTags(langs) {
   return [
-    '<link rel="alternate" hreflang="en" href="https://usegeo.app/">',
-    ...langs.map((l) => `<link rel="alternate" hreflang="${l.meta.lang}" href="https://usegeo.app/${l.meta.path}">`),
-    '<link rel="alternate" hreflang="x-default" href="https://usegeo.app/">',
+    '<link rel="alternate" hreflang="en" href="https://firstpicked.com.au/">',
+    ...langs.map((l) => `<link rel="alternate" hreflang="${l.meta.lang}" href="https://firstpicked.com.au/${l.meta.path}">`),
+    '<link rel="alternate" hreflang="x-default" href="https://firstpicked.com.au/">',
   ].join('\n');
 }
 
@@ -61,8 +61,8 @@ export function translatePage(site, l) {
     .replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${desc}">`)
     .replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${desc}">`)
     .replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${esc(meta.title)}">`)
-    .replace('<link rel="canonical" href="https://usegeo.app/">', `<link rel="canonical" href="https://usegeo.app/${meta.path}">`)
-    .replace('<meta property="og:url" content="https://usegeo.app/">', `<meta property="og:url" content="https://usegeo.app/${meta.path}">\n<meta property="og:locale" content="${meta.locale}">`)
+    .replace('<link rel="canonical" href="https://firstpicked.com.au/">', `<link rel="canonical" href="https://firstpicked.com.au/${meta.path}">`)
+    .replace('<meta property="og:url" content="https://firstpicked.com.au/">', `<meta property="og:url" content="https://firstpicked.com.au/${meta.path}">\n<meta property="og:locale" content="${meta.locale}">`)
     .replace('<script>window.GEO_LIVE=true</script>', `<script>window.GEO_LIVE=true;window.GEO_LANG="${meta.lang}"</script>`);
 
   // 4. Body text and attributes, outside scripts and styles.

@@ -62,7 +62,7 @@ varies is when AI re-reads the pages, whether it then names the store, and wheth
 
 ### 1.2 The real first-day path for someone who signs up on the website
 
-1. Clicks "Start 7-day free trial" on usegeo.app, which goes to `/auth/login?plan=..&cycle=..`; the choice is saved by
+1. Clicks "Start 7-day free trial" on firstpicked.com.au, which goes to `/auth/login?plan=..&cycle=..`; the choice is saved by
    shop domain (`PlanIntent`). (CLAUDE.md section 18; `app/lib/plan-intent.server.ts`)
 2. Installs, lands on the welcome screen, clicks "Start my free scan": products, profile, questions, the free scan
    (60 answers) and the 60-day order check run.

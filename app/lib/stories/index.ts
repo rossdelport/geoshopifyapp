@@ -1,4 +1,4 @@
-// Customer stories shown on usegeo.app (scrolling cards + one page per story).
+// Customer stories shown on firstpicked.com.au (scrolling cards + one page per story).
 // The content lives in stories.json so the React pages and the plain-Node home
 // page build can both read it. Every story is another company's result as
 // reported by the source; none of them used GEO.

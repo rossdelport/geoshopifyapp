@@ -34,6 +34,7 @@ const toolsLayout = await import("../app/routes/tools");
 const hub = await import("../app/routes/tools._index");
 const notFound = await import("../app/routes/tools.$");
 const home = await import("../app/routes/_index/route");
+const root = await import("../app/root");
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const read = (p: string) => readFileSync(join(ROOT, p), "utf8");
@@ -172,13 +173,13 @@ describe("pageMeta and JSON-LD", () => {
     expect(m.title?.title).toBe(tool.title);
     expect(m.name("description")).toBe(tool.description);
     expect(m.canonicals).toHaveLength(1);
-    expect(m.canonicals[0].href).toBe(`https://usegeo.app${tool.path}`);
+    expect(m.canonicals[0].href).toBe(`https://firstpicked.com.au${tool.path}`);
     expect(m.canonicals[0].href.startsWith(SITE)).toBe(true);
     expect(m.prop("og:url")).toBe(m.canonicals[0].href);
     expect(m.prop("og:type")).toBe("website");
     expect(m.prop("og:site_name")).toBe("GEO");
     expect(m.prop("og:title")).toBe(tool.title);
-    expect(m.prop("og:image")).toBe(`https://usegeo.app/og/ai-overview-checker.png`);
+    expect(m.prop("og:image")).toBe(`https://firstpicked.com.au/og/ai-overview-checker.png`);
     expect(m.prop("og:image:width")).toBe("1200");
     expect(m.prop("og:image:height")).toBe("630");
     expect(m.prop("og:image:alt")).toBe(tool.ogAlt);
@@ -205,11 +206,11 @@ describe("pageMeta and JSON-LD", () => {
     expect(page.dateModified).toBe(tool.updated);
     expect(page.name).toBe(stripBrand(tool.title));
     expect(page.name.endsWith("| GEO")).toBe(false);
-    expect(page.isPartOf["@id"]).toBe("https://usegeo.app/#website");
+    expect(page.isPartOf["@id"]).toBe("https://firstpicked.com.au/#website");
     const crumbs = byType("BreadcrumbList").itemListElement;
     expect(crumbs.map((c: { name: string }) => c.name)).toEqual(["Home", "Free tools", tool.name]);
-    expect(crumbs[0].item).toBe("https://usegeo.app/");
-    expect(crumbs[1].item).toBe("https://usegeo.app/tools");
+    expect(crumbs[0].item).toBe("https://firstpicked.com.au/");
+    expect(crumbs[1].item).toBe("https://firstpicked.com.au/tools");
     expect(crumbs[2]).not.toHaveProperty("item");
     const faq = byType("FAQPage").mainEntity.map((q: any) => ({ q: q.name, a: q.acceptedAnswer.text }));
     expect(faq).toEqual(FAQS);
@@ -227,7 +228,7 @@ describe("pageMeta and JSON-LD", () => {
     const list = ld["@graph"].find((n) => n["@type"] === "ItemList")!;
     expect(list.itemListElement.map((i: { url: string }) => i.url)).toEqual(TOOLS.map((t) => abs(t.path)));
     const page = ld["@graph"].find((n) => n["@type"] === "CollectionPage")!;
-    expect(page["@id"]).toBe("https://usegeo.app/tools");
+    expect(page["@id"]).toBe("https://firstpicked.com.au/tools");
     expect(page.dateModified).toBe(HUB.updated);
     const crumbs = ld["@graph"].find((n) => n["@type"] === "BreadcrumbList")!.itemListElement;
     expect(crumbs.map((c: { name: string }) => c.name)).toEqual(["Home", "Free tools"]);
@@ -239,13 +240,13 @@ describe("pageMeta and JSON-LD", () => {
     expect(n.name("robots")).toBe("noindex");
     expect(n.canonicals).toHaveLength(0);
     expect(n.prop("og:url")).toBeUndefined();
-    expect(n.prop("og:image")).toBe("https://usegeo.app/og/tools.png");
+    expect(n.prop("og:image")).toBe("https://firstpicked.com.au/og/tools.png");
     expect(n.prop("og:image:alt")).toBe(HUB.ogAlt);
   });
 
   it("makes absolute URLs on the canonical origin", () => {
-    expect(abs("/")).toBe("https://usegeo.app/");
-    expect(abs("/tools")).toBe("https://usegeo.app/tools");
+    expect(abs("/")).toBe("https://firstpicked.com.au/");
+    expect(abs("/tools")).toBe("https://firstpicked.com.au/tools");
   });
 });
 
@@ -396,56 +397,74 @@ describe("publicHostRedirect", () => {
   const req = (url: string, init: RequestInit & { host?: string } = {}) =>
     new Request(url, { ...init, headers: { ...(init.host ? { host: init.host } : {}), ...((init.headers as Record<string, string>) ?? {}) } });
 
-  it("sends www and the Railway address to https://usegeo.app with the same path and query", () => {
-    const www = publicHostRedirect(req("http://www.usegeo.app/tools/ai-crawler-checker?utm_source=chatgpt.com", { host: "www.usegeo.app" }));
+  it("sends www, the old usegeo.app and the Railway address to https://firstpicked.com.au with the same path and query", () => {
+    const www = publicHostRedirect(req("http://www.firstpicked.com.au/tools/ai-crawler-checker?utm_source=chatgpt.com", { host: "www.firstpicked.com.au" }));
     expect(www?.status).toBe(301);
-    expect(www?.headers.get("location")).toBe("https://usegeo.app/tools/ai-crawler-checker?utm_source=chatgpt.com");
+    expect(www?.headers.get("location")).toBe("https://firstpicked.com.au/tools/ai-crawler-checker?utm_source=chatgpt.com");
     const railway = publicHostRedirect(req("http://x.up.railway.app/", { host: "x.up.railway.app" }));
     expect(railway?.status).toBe(301);
-    expect(railway?.headers.get("location")).toBe("https://usegeo.app/");
-    expect(publicHostRedirect(req("https://www.usegeo.app/tools"))?.headers.get("location")).toBe("https://usegeo.app/tools");
+    expect(railway?.headers.get("location")).toBe("https://firstpicked.com.au/");
+    expect(publicHostRedirect(req("https://www.firstpicked.com.au/tools"))?.headers.get("location")).toBe("https://firstpicked.com.au/tools");
     // Railway's proxy says which host the visitor asked for
-    expect(publicHostRedirect(req("http://10.0.0.5:8080/privacy", { headers: { "x-forwarded-host": "www.usegeo.app" } }))?.status).toBe(301);
-    for (const p of ["/check", "/tools", "/sitemap.xml", "/llms.txt", "/privacy", "/stories", "/stories/viv-chatgpt-sales", "/report/bondi-wash", "/report-maker"]) {
-      expect(publicHostRedirect(req(`https://www.usegeo.app${p}`)), p).not.toBeNull();
+    expect(publicHostRedirect(req("http://10.0.0.5:8080/privacy", { headers: { "x-forwarded-host": "www.firstpicked.com.au" } }))?.status).toBe(301);
+    for (const p of ["/check", "/tools", "/sitemap.xml", "/llms.txt", "/privacy", "/stories", "/stories/viv-chatgpt-sales", "/report/bondi-wash", "/report-maker", "/blog", "/compare/x", "/book", "/giveaway", "/check/abc123"]) {
+      expect(publicHostRedirect(req(`https://www.firstpicked.com.au${p}`)), p).not.toBeNull();
     }
-    // A store report link Ross shares from the Railway address goes to usegeo.app.
-    expect(publicHostRedirect(req("https://geo-shopify-app-production.up.railway.app/report/bondi-wash"))?.headers.get("location")).toBe("https://usegeo.app/report/bondi-wash");
+    // A store report link Ross shares from the Railway address goes to firstpicked.com.au.
+    expect(publicHostRedirect(req("https://geo-shopify-app-production.up.railway.app/report/bondi-wash"))?.headers.get("location")).toBe("https://firstpicked.com.au/report/bondi-wash");
+    // The old brand's address (GEO, until 4 Nov 2026): old links, sign-in emails and Google land on the new site.
+    for (const host of ["usegeo.app", "www.usegeo.app"]) {
+      expect(publicHostRedirect(req(`https://${host}/blog/some-post?utm_source=x`))?.headers.get("location")).toBe("https://firstpicked.com.au/blog/some-post?utm_source=x");
+      expect(publicHostRedirect(req(`https://${host}/`))?.status).toBe(301);
+    }
+    expect(publicHostRedirect(req("https://usegeo.app/login/abc123"))?.headers.get("location")).toBe("https://firstpicked.com.au/login/abc123");
   });
 
-  it("leaves usegeo.app, POSTs, the app, Shopify admin visits, free check reports, robots.txt and non-production alone", () => {
-    expect(publicHostRedirect(req("https://usegeo.app/tools", { host: "usegeo.app" }))).toBeNull();
-    expect(publicHostRedirect(req("https://www.usegeo.app/tools", { method: "POST", body: "a=1" }))).toBeNull();
-    for (const p of ["/app", "/app/fixes", "/auth/login", "/webhooks/app/uninstalled", "/api/pixel", "/healthz", "/check/abc123", "/robots.txt", "/tools/x.data", "/stories/x.data", "/report/x.data", "/report"]) {
-      expect(publicHostRedirect(req(`https://geo-shopify-app-production.up.railway.app${p}`)), p).toBeNull();
+  it("leaves firstpicked.com.au, POSTs, the app, Shopify admin visits, the tracking code, robots.txt and non-production alone", () => {
+    expect(publicHostRedirect(req("https://firstpicked.com.au/tools", { host: "firstpicked.com.au" }))).toBeNull();
+    expect(publicHostRedirect(req("https://www.firstpicked.com.au/tools", { method: "POST", body: "a=1" }))).toBeNull();
+    expect(publicHostRedirect(req("https://usegeo.app/check", { method: "POST", body: "a=1" }))).toBeNull();
+    for (const host of ["geo-shopify-app-production.up.railway.app", "usegeo.app"]) {
+      for (const p of ["/app", "/app/fixes", "/auth/login", "/webhooks/app/uninstalled", "/api/pixel", "/healthz", "/robots.txt", "/tools/x.data", "/stories/x.data", "/report/x.data"]) {
+        expect(publicHostRedirect(req(`https://${host}${p}`)), `${host}${p}`).toBeNull();
+      }
     }
     expect(publicHostRedirect(req("https://x.up.railway.app/?shop=a.myshopify.com"))).toBeNull();
-    expect(publicHostRedirect(req("https://x.up.railway.app/?embedded=1&host=abc"))).toBeNull();
+    expect(publicHostRedirect(req("https://usegeo.app/?embedded=1&host=abc"))).toBeNull();
     process.env.NODE_ENV = "development";
-    expect(publicHostRedirect(req("https://www.usegeo.app/tools"))).toBeNull();
+    expect(publicHostRedirect(req("https://www.firstpicked.com.au/tools"))).toBeNull();
+    expect(publicHostRedirect(req("https://usegeo.app/tools"))).toBeNull();
   });
 
   it("reads the host from x-forwarded-host, then host, then the URL", () => {
-    expect(requestHost(req("http://a/", { headers: { "x-forwarded-host": "WWW.usegeo.app:443, proxy" }, host: "b" }))).toBe("www.usegeo.app");
-    expect(requestHost(req("http://a/", { host: "Usegeo.app:80" }))).toBe("usegeo.app");
+    expect(requestHost(req("http://a/", { headers: { "x-forwarded-host": "WWW.firstpicked.com.au:443, proxy" }, host: "b" }))).toBe("www.firstpicked.com.au");
+    expect(requestHost(req("http://a/", { host: "FirstPicked.com.au:80" }))).toBe("firstpicked.com.au");
     expect(requestHost(req("https://c.example/"))).toBe("c.example");
   });
 
   it("runs in the layout, home, /check and privacy loaders", async () => {
     const thrown = await Promise.resolve()
-      .then(() => toolsLayout.loader({ request: req("https://www.usegeo.app/tools"), params: {}, context: {} } as unknown as LoaderFunctionArgs))
+      .then(() => toolsLayout.loader({ request: req("https://www.firstpicked.com.au/tools"), params: {}, context: {} } as unknown as LoaderFunctionArgs))
       .catch((r: Response) => r);
     expect((thrown as Response).status).toBe(301);
-    const homeMoved = await Promise.resolve(home.loader({ request: req("https://www.usegeo.app/"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).catch(
+    const homeMoved = await Promise.resolve(home.loader({ request: req("https://www.firstpicked.com.au/"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).catch(
       (r: Response) => r,
     );
     expect((homeMoved as Response).status).toBe(301);
     // Shopify admin visits still go into the app first
-    const shop = await Promise.resolve(home.loader({ request: req("https://www.usegeo.app/?shop=a.myshopify.com"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).catch(
+    const shop = await Promise.resolve(home.loader({ request: req("https://www.firstpicked.com.au/?shop=a.myshopify.com"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).catch(
       (r: Response) => r,
     );
     expect((shop as Response).headers.get("location")).toBe("/app?shop=a.myshopify.com");
-    expect(toolsLayout.loader({ request: req("https://usegeo.app/tools"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).toBeNull();
+    expect(toolsLayout.loader({ request: req("https://firstpicked.com.au/tools"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).toBeNull();
+    // The root loader covers every page, including the ones without their own call (/dash, /book, /giveaway).
+    for (const p of ["/dash", "/book", "/giveaway", "/login"]) {
+      const moved = await Promise.resolve()
+        .then(() => root.loader({ request: req(`https://usegeo.app${p}`), params: {}, context: {} } as unknown as LoaderFunctionArgs))
+        .catch((r: Response) => r);
+      expect((moved as Response).headers.get("location"), p).toBe(`https://firstpicked.com.au${p}`);
+    }
+    expect(root.loader({ request: req("https://firstpicked.com.au/dash"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).toBeNull();
   });
 });
 
@@ -453,22 +472,22 @@ describe("publicHostRedirect", () => {
 
 describe("allowedPost and the tool form", () => {
   const post = (headers: Record<string, string>, body: BodyInit = "url=a.com") =>
-    new Request("http://usegeo.app/tools/ai-crawler-checker", { method: "POST", body, headers: { "content-type": "application/x-www-form-urlencoded", ...headers } });
+    new Request("http://firstpicked.com.au/tools/ai-crawler-checker", { method: "POST", body, headers: { "content-type": "application/x-www-form-urlencoded", ...headers } });
 
   it("allows our own pages, www to apex, and requests with no Origin", () => {
     expect(allowedPost(post({ "sec-fetch-site": "same-origin" }))).toBe(true);
-    expect(allowedPost(post({ "sec-fetch-site": "same-site", origin: "https://www.usegeo.app" }))).toBe(true);
-    expect(allowedPost(post({ origin: "https://www.usegeo.app", host: "usegeo.app" }))).toBe(true);
-    expect(allowedPost(post({ origin: "https://usegeo.app", host: "www.usegeo.app" }))).toBe(true);
+    expect(allowedPost(post({ "sec-fetch-site": "same-site", origin: "https://www.firstpicked.com.au" }))).toBe(true);
+    expect(allowedPost(post({ origin: "https://www.firstpicked.com.au", host: "firstpicked.com.au" }))).toBe(true);
+    expect(allowedPost(post({ origin: "https://firstpicked.com.au", host: "www.firstpicked.com.au" }))).toBe(true);
     expect(allowedPost(post({ origin: "https://geo-shopify-app-production.up.railway.app", host: "geo-shopify-app-production.up.railway.app" }))).toBe(true);
     expect(allowedPost(post({ origin: "http://localhost:4100", host: "localhost:4100" }))).toBe(true);
     expect(allowedPost(post({}))).toBe(true);
   });
 
   it("refuses other websites", () => {
-    expect(allowedPost(post({ "sec-fetch-site": "cross-site", origin: "https://usegeo.app" }))).toBe(false);
-    expect(allowedPost(post({ origin: "https://evil.example", host: "usegeo.app" }))).toBe(false);
-    expect(allowedPost(post({ origin: "null", host: "usegeo.app" }))).toBe(false);
+    expect(allowedPost(post({ "sec-fetch-site": "cross-site", origin: "https://firstpicked.com.au" }))).toBe(false);
+    expect(allowedPost(post({ origin: "https://evil.example", host: "firstpicked.com.au" }))).toBe(false);
+    expect(allowedPost(post({ origin: "null", host: "firstpicked.com.au" }))).toBe(false);
   });
 
   it("reads small forms, refuses big ones, and spots the honeypot", async () => {
@@ -897,9 +916,9 @@ describe("the home page links every tool", () => {
 
   it("has one canonical, share tags and the same organisation as the tool pages", () => {
     expect(page.match(/rel="canonical"/g)).toHaveLength(1);
-    expect(page).toContain('<link rel="canonical" href="https://usegeo.app/">');
-    expect(page).toContain('<meta property="og:url" content="https://usegeo.app/">');
-    expect(page).toContain('<meta property="og:image" content="https://usegeo.app/og/home.png">');
+    expect(page).toContain('<link rel="canonical" href="https://firstpicked.com.au/">');
+    expect(page).toContain('<meta property="og:url" content="https://firstpicked.com.au/">');
+    expect(page).toContain('<meta property="og:image" content="https://firstpicked.com.au/og/home.png">');
     expect(page).toContain('<meta property="og:title" content="GEO · Get your products recommended by AI">');
     expect(page).toContain('<meta name="twitter:card" content="summary_large_image">');
     const json = /<script type="application\/ld\+json">([^<]*)<\/script>/.exec(page)?.[1];
@@ -918,8 +937,8 @@ describe("the hub page", () => {
   it("has its own head: title, description, canonical /tools and the hub JSON-LD", () => {
     expect(m.title?.title).toBe("Free AI Search Tools for Shopify Stores | GEO");
     expect(m.name("description")).toBe(HUB.description);
-    expect(m.canonicals.map((c) => c.href)).toEqual(["https://usegeo.app/tools"]);
-    expect(m.prop("og:image")).toBe("https://usegeo.app/og/tools.png");
+    expect(m.canonicals.map((c) => c.href)).toEqual(["https://firstpicked.com.au/tools"]);
+    expect(m.prop("og:image")).toBe("https://firstpicked.com.au/og/tools.png");
     expect(m.ld).toEqual(hubJsonLd());
     expect(m.name("robots")).toBeUndefined();
   });

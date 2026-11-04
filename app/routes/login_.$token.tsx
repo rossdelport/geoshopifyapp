@@ -4,7 +4,7 @@ import { Solo } from "../components/web";
 import { loginLinkUsable, redeemLoginLink } from "../lib/web-auth.server";
 import styles from "../styles/web.css?url";
 
-// usegeo.app/login/<token>: the link in the sign-in email. Opening it only shows a button: email scanners open
+// firstpicked.com.au/login/<token>: the link in the sign-in email. Opening it only shows a button: email scanners open
 // links before people do, and a link works once. The button signs this browser in and goes on to the app.
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];

@@ -51,7 +51,7 @@ import llmsCss from "../styles/tool-llms.css?url";
 // On load, the paste box holds this site's own /llms.txt (the real file, from site-files.ts) and its result.
 
 const TOOL = toolBySlug("llms-txt-checker");
-/** The on-load example: usegeo.app's own llms.txt, exactly as /llms.txt serves it. */
+/** The on-load example: firstpicked.com.au's own llms.txt, exactly as /llms.txt serves it. */
 const SAMPLE = siteLlmsTxt();
 
 export const meta: MetaFunction = () =>

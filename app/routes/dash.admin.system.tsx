@@ -7,7 +7,7 @@ import { timeAgo } from "../lib/format";
 
 // Admin system: the background jobs (scans, Reddit, emails...): how many are waiting, running and failed, the
 // latest failures with their error, and a button to try one again. At the top: Ross's Google Calendar for the
-// book-a-call page (usegeo.app/book), with the button that connects it (route dash.admin_.calendar.tsx).
+// book-a-call page (firstpicked.com.au/book), with the button that connects it (route dash.admin_.calendar.tsx).
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await requireAdmin(request);
@@ -58,7 +58,7 @@ export default function AdminSystem() {
         <div className="w-sec-head">
           <h2>Booking calendar</h2>
           <p>
-            Your Google Calendar for <a href="/book">usegeo.app/book</a>. It shows people your free times and adds each booked call with a Google
+            Your Google Calendar for <a href="/book">firstpicked.com.au/book</a>. It shows people your free times and adds each booked call with a Google
             Meet link.
           </p>
         </div>

@@ -275,7 +275,7 @@ Card lines stay at 8 words or fewer. On phones (760px and below) the cards sit i
   We ask the top AIs / buying questions about your product · We see who AI picks · We rewrite your product pages (Approve, Live on your store) · We
   write buying guides · We ask the sites AI trusts / to list your brand (a pitch flies to each example site, "Pitch sent", one
   adds the store as "NEW", "3 pitches sent") · You see the sales from AI ($4,280, 37 orders,
-  612 clicks) · Shoppers ask. AI recommends. You get the sale. · Unlock the free sales channel usegeo.app · logo. Made-up store
+  612 clicks) · Shoppers ask. AI recommends. You get the sale. · Unlock the free sales channel firstpicked.com.au · logo. Made-up store
   and sample numbers, with "Example" tags. The old member tour (`storyboard.md`) is retired.
 - **aria-label:** Short explainer, with a made-up store and sample numbers: shoppers don’t just Google anymore,
   they ask AI, and AI then picks a few brands. Every week GEO asks the top AIs buying questions about your product

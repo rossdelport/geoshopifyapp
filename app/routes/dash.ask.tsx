@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { PageHead } from "../components/web";
 
-// usegeo.app/dash/ask: Ask GEO, the help chat (lib/ask.server.ts, answered by dash.ask_.answer.tsx). The chat
+// firstpicked.com.au/dash/ask: Ask GEO, the help chat (lib/ask.server.ts, answered by dash.ask_.answer.tsx). The chat
 // lives in the page only: nothing is saved, and closing or refreshing the page starts a new one.
 
 const MAX_CHARS = 2000; // ASK_LIMITS.messageChars
-const FAILED = "Sorry, something went wrong answering that. Please try again, or email ross@usegeo.app.";
+const FAILED = "Sorry, something went wrong answering that. Please try again, or email ross@firstpicked.com.au.";
 type Answer = { ok: true; reply: string; flagged: boolean } | { ok: false; error: string };
 
 type Msg = { role: "user" | "assistant"; content: string; flagged?: boolean; error?: boolean };
@@ -128,7 +128,7 @@ export default function Ask() {
             Send
           </button>
         </form>
-        <p className="w-note w-ask-foot">Chats aren’t saved. Need billing or account help? Email ross@usegeo.app.</p>
+        <p className="w-note w-ask-foot">Chats aren’t saved. Need billing or account help? Email ross@firstpicked.com.au.</p>
       </div>
     </>
   );

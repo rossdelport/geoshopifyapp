@@ -1,4 +1,4 @@
-// usegeo.app/report-maker (app/routes/report-maker.tsx): no sign-in. One store a time goes to createReports,
+// firstpicked.com.au/report-maker (app/routes/report-maker.tsx): no sign-in. One store a time goes to createReports,
 // the page follows that one report by its id (never anyone else's, never the script) and opens it when ready.
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -12,10 +12,10 @@ vi.mock("../app/lib/public-form.server", () => ({ clientIp: (r: Request) => r.he
 const srv = await import("../app/lib/store-report.server");
 const route = await import("../app/routes/report-maker");
 
-const load = (q = "") => route.loader({ request: new Request(`https://usegeo.app/report-maker${q}`), params: {}, context: {} } as unknown as LoaderFunctionArgs);
+const load = (q = "") => route.loader({ request: new Request(`https://firstpicked.com.au/report-maker${q}`), params: {}, context: {} } as unknown as LoaderFunctionArgs);
 const act = (store: string, headers: Record<string, string> = {}) =>
   route.action({
-    request: new Request("https://usegeo.app/report-maker", { method: "POST", body: new URLSearchParams({ store }), headers: { "x-real-ip": "1.2.3.4", ...headers } }),
+    request: new Request("https://firstpicked.com.au/report-maker", { method: "POST", body: new URLSearchParams({ store }), headers: { "x-real-ip": "1.2.3.4", ...headers } }),
     params: {},
     context: {},
   } as unknown as ActionFunctionArgs);
