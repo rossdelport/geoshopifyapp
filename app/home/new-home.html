@@ -501,8 +501,19 @@ ul,ol{padding:0;list-style:none}
 .plan-ok li{display:inline-flex;align-items:center;gap:7px;padding:6px 12px 6px 7px;border-radius:999px;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.24);font-size:13.5px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
 .plan-ok svg{width:18px;height:18px;padding:3px;border-radius:50%;color:var(--accent-ink);background:#fff}
 .plan-go{margin-top:auto;padding-top:28px}
-.plan-l .btn{width:100%;height:52px;font-size:16px;font-weight:650;color:var(--gold-ink);background:linear-gradient(180deg,var(--gold-hi),var(--gold));border:1px solid #f9dfa6;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 1px 2px rgba(110,60,0,.3),0 14px 28px -12px rgba(20,8,110,.75)}
-.plan-l .btn:hover{background:linear-gradient(180deg,#f9dc9e,#efb862);transform:translateY(-1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 1px 2px rgba(110,60,0,.3),0 18px 32px -12px rgba(20,8,110,.85)}
+/* The price card's button is a golden ticket (Ross, 4 Nov 2026): a gold foil face with a wavy edge all round (a mask of small circles), a thin printed frame, shiny stripes, engraved capitals and a glint that crosses it now and then.
+   Our own drawing: no film name or logo. The shadow sits on .ticket, because a mask would cut it off the button. */
+.ticket{display:block;filter:drop-shadow(0 1px 1px rgba(110,60,0,.35)) drop-shadow(0 12px 14px rgba(20,8,110,.45));transition:filter .2s ease}
+.plan-l .btn{--b:4px;--t:8px;width:100%;height:56px;border:0;border-radius:3px;font-family:Georgia,"Times New Roman",Times,serif;font-size:17px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-ink);text-shadow:0 1px 0 rgba(255,250,225,.7);
+  background:linear-gradient(115deg,transparent 0 14%,rgba(255,255,255,.38) 14% 20%,transparent 20% 64%,rgba(255,255,255,.26) 64% 69%,transparent 69%),linear-gradient(180deg,#fde68a 0%,#f6cd4a 48%,#e6ad25 100%);
+  -webkit-mask:linear-gradient(#000 0 0) 50% 50%/calc(100% - 2*var(--b)) calc(100% - 2*var(--b)) no-repeat,radial-gradient(closest-side,#000 94%,#0000) 0 0/var(--t) calc(2*var(--b)) round no-repeat,radial-gradient(closest-side,#000 94%,#0000) 0 100%/var(--t) calc(2*var(--b)) round no-repeat,radial-gradient(closest-side,#000 94%,#0000) 0 0/calc(2*var(--b)) var(--t) no-repeat round,radial-gradient(closest-side,#000 94%,#0000) 100% 0/calc(2*var(--b)) var(--t) no-repeat round;
+  mask:linear-gradient(#000 0 0) 50% 50%/calc(100% - 2*var(--b)) calc(100% - 2*var(--b)) no-repeat,radial-gradient(closest-side,#000 94%,#0000) 0 0/var(--t) calc(2*var(--b)) round no-repeat,radial-gradient(closest-side,#000 94%,#0000) 0 100%/var(--t) calc(2*var(--b)) round no-repeat,radial-gradient(closest-side,#000 94%,#0000) 0 0/calc(2*var(--b)) var(--t) no-repeat round,radial-gradient(closest-side,#000 94%,#0000) 100% 0/calc(2*var(--b)) var(--t) no-repeat round}
+.plan-l .btn::before{content:"";position:absolute;inset:7px 8px;z-index:-1;border:1px solid rgba(90,56,0,.6);border-radius:2px;box-shadow:inset 0 0 0 2px rgba(255,236,170,.55),inset 0 0 0 3px rgba(90,56,0,.28);pointer-events:none}
+.plan-l .btn::after{content:"";position:absolute;top:-20%;bottom:-20%;left:0;width:34%;z-index:-1;pointer-events:none;background:linear-gradient(100deg,transparent,rgba(255,255,255,.65),transparent);transform:translateX(-140%) skewX(-18deg);animation:tk-glint 6s ease-in-out 2s infinite}
+@keyframes tk-glint{0%,70%{transform:translateX(-140%) skewX(-18deg)}92%,100%{transform:translateX(420%) skewX(-18deg)}}
+.plan-l .btn:hover{transform:translateY(-1px)}
+.ticket:hover{filter:drop-shadow(0 1px 1px rgba(110,60,0,.35)) drop-shadow(0 16px 18px rgba(20,8,110,.55))}
+@media (max-width:380px){.plan-l .btn{font-size:15px;letter-spacing:.1em}}
 .plan-l .btn svg{width:17px;height:17px;transition:transform .2s ease}
 /* Ross (3 Nov 2026): "a shimmer that follows my mouse" over the purple panel and the Get started button. A soft
    light sits where the mouse is (moved by transform, faded by opacity), only with a mouse, never when paused or
@@ -1141,7 +1152,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
           <li><svg aria-hidden="true"><use href="#i-check"/></svg>Stop any time</li>
         </ul>
         <div class="plan-go">
-          <a class="btn btn-pri" href="/book">Get started <svg aria-hidden="true"><use href="#i-arrow"/></svg><span class="btn-glow" aria-hidden="true"></span></a>
+          <span class="ticket"><a class="btn btn-pri" href="/book">Get started <svg aria-hidden="true"><use href="#i-arrow"/></svg><span class="btn-glow" aria-hidden="true"></span></a></span>
           <p class="plan-call"><img src="__ROSS_PHOTO__" alt="" width="34" height="34" loading="lazy" decoding="async"><span>15 minute <b>FREE</b> introduction call with Ross. No obligation.</span></p>
         </div>
       </div>
