@@ -1,7 +1,7 @@
 // Store reports for Ross's teardown videos (Ross, 3 Nov 2026). Ross types a Shopify store's address in
 // Admin > Reports; about 3 minutes later the store has its own page at firstpicked.com.au/report/<slug>: what shoppers
-// search, who ChatGPT, Gemini and Perplexity pick today, the sites AI trusts, the first 3 moves, "+N more moves"
-// and a month 1, 2, 3 plan. He screen-records it on his phone with himself green-screened on top, tags the brand
+// search, who ChatGPT, Gemini and Perplexity pick today, the sites AI trusts, the first 3 moves, every other move
+// in full, and a month 1, 2, 3 plan of steps the store could follow itself. He screen-records it on his phone with himself green-screened on top, tags the brand
 // and DMs them the link. Everything on the page comes from real data, and every number in a move must be one of
 // the numbers we found (numbersOk). The page has no button: Ross does the ask out loud (Ross, 3 Nov 2026).
 //
@@ -11,7 +11,6 @@
 
 import type { CheckAnswer, CheckEngine } from "./check-types";
 import { brandKey, sameBrand, textNamesBrand } from "./match";
-import { PLANS } from "./plans";
 import { isRivalDomain, noOutreach, outreachKind, type SourceType } from "./sources";
 
 export const REPORT_ENGINES: CheckEngine[] = ["chatgpt", "gemini", "perplexity"];
@@ -21,7 +20,7 @@ export const REPORT_TOTAL = REPORT_QUESTIONS * REPORT_ENGINES.length * REPORT_RU
 export const REPORTS_PER_DAY = 40; // a backstop: about US$0.30 each
 export const REPORTS_AT_ONCE = 10; // addresses per paste
 export const EASY_DIFFICULTY = 30; // Serpstat difficulty (0 to 100) under this counts as "easy"
-export const SHOWN_MOVES = 3; // the rest are "+N more moves", locked
+export const SHOWN_MOVES = 3; // "Your next 3 moves"; the rest show in full under "N more moves"
 export const MAX_SEARCH_WORDS = 8;
 
 /** Where a search word goes (the OpenSEO video's "Put it" column). */
@@ -90,10 +89,17 @@ export interface Move {
   text: string; // one or two short sentences, with the number behind it
 }
 
+/** One step of the month plan: what to do, then how, with this store's own words and numbers. */
+export interface MonthStep {
+  title: string;
+  how: string;
+  list?: string[]; // things to copy, e.g. the buying questions to ask AI again
+}
+
 export interface MonthPlan {
   month: 1 | 2 | 3;
   title: string;
-  items: string[];
+  steps: MonthStep[];
 }
 
 /** Everything the page shows. Saved as StoreReport.data. */
@@ -110,7 +116,7 @@ export interface StoreReportData {
   searchWords: SearchWord[]; // max 8, most searched first
   searches: number; // the searchWords' volumes added up
   picks: PickList | null;
-  moves: Move[]; // most important first: SHOWN_MOVES shown, the rest locked
+  moves: Move[]; // most important first: SHOWN_MOVES on top, the rest under "N more moves"
   months: MonthPlan[];
   script: string[]; // Ross's 35-second script, one line per beat (admin only, never on the page)
   tags: string[]; // story tags for picking which stores to film, e.g. "Not named once"
@@ -660,7 +666,7 @@ export function fallbackMoves(f: ReportFacts): Move[] {
   const reddit: Move = { place: "Reddit", text: `Reply honestly where shoppers ask about ${category}, and always say you're from ${f.store.brand}.` };
 
   // Lead with a product page word (or the top word), then a new guide, then the top site; the rest take turns
-  // by kind so the locked list shows a mix of places.
+  // by kind so the "more moves" list shows a mix of places.
   const productAt = f.searchWords.findIndex((w) => w.place === "Product page");
   const first = productAt >= 0 ? productAt : 0;
   const guideAt = f.searchWords.findIndex((w, i) => i !== first && w.place === "New guide");
@@ -681,39 +687,135 @@ export function fallbackMoves(f: ReportFacts): Move[] {
   return out;
 }
 
-/** Month 1, 2, 3: what the A$1,000 Done for you plan does, with this store's real numbers. */
+/**
+ * Month 1, 2, 3: the steps the store could follow itself, with its own search words, sites and rivals (Ross,
+ * 4 Nov 2026: "actionable steps that the brand could actually follow and not how we work"). The steps come from
+ * docs/geo-research.md. They say what to check, never that something is broken: we didn't look at the store's
+ * pages or its robots.txt.
+ */
 export function buildMonths(f: ReportFacts): MonthPlan[] {
-  const { products, productsCapped, category } = f.store;
-  const guideWord = f.searchWords.find((w) => w.place === "New guide" || w.place === "Comparison guide") ?? f.searchWords[0];
-  // Done for you emails the writers of articles and roundups, so only those are named here.
-  const [site1, site2] = articleSites(f.sites);
-  const pro = PLANS.pro;
-  // We never checked the store's product pages, so this says what we do, not that theirs are broken.
-  const month1 = [
-    products > 0
-      ? `Make your product pages clearer for AI: ${fmt(products)}${productsCapped ? "+" : ""} ${products === 1 && !productsCapped ? "product" : "products"}.`
-      : "Make your product pages clearer for AI.",
-    guideWord ? `Write your first buying guides, starting with "${guideWord.keyword}".` : "Write your first buying guides.",
-    ...(site1 ? [`Email the sites AI trusts, starting with ${site1.domain}${site2 ? ` and ${site2.domain}` : ""}.`] : []),
+  const { host, brand, products, productsCapped } = f.store;
+  const kind = f.store.category.trim(); // "natural dish soap", or "" when we couldn't tell
+  const category = kind || "products";
+  const words = f.searchWords ?? [];
+  const questions = f.questions ?? [];
+  const searches = (w: SearchWord) => `About ${fmt(w.volume)} ${w.volume === 1 ? "search" : "searches"} a month.`;
+  const firstOn = (...places: Place[]) => words.find((w) => places.includes(w.place));
+
+  // Month 1: their own store.
+  const productWord = firstOn("Product page");
+  const pageWord = firstOn("Collection page", "Home page");
+  const wordLines = [
+    productWord ? `Put "${productWord.keyword}" in the title and first line of the product page it fits. ${searches(productWord)}` : "",
+    pageWord ? `Do the same with "${pageWord.keyword}" on your ${pageWord.place === "Home page" ? "home page" : "collection page"}. ${searches(pageWord)}` : "",
+  ].filter(Boolean);
+  const faq = questions.find((q) => !/\bbest\b/i.test(q)) ?? questions[0];
+  const count = products > 0 ? ` of your ${fmt(products)}${productsCapped ? "+" : ""} ${products === 1 && !productsCapped ? "product" : "products"}` : "";
+  const month1: MonthStep[] = [
+    {
+      title: "Check AI can read your store",
+      how: `Open ${host}/robots.txt. Make sure it doesn't block Googlebot, OAI-SearchBot or PerplexityBot. Google, ChatGPT and Perplexity use them to read your pages. If one is blocked, remove that rule.`,
+    },
+    {
+      title: "Put the key facts first on every product page",
+      how: `Start each page with one plain line: what it is, who it's for, and the main facts like size and what it's made of. Do your best sellers first, then the rest${count}.`,
+    },
+    ...(wordLines.length ? [{ title: "Use the words shoppers search", how: wordLines.join(" ") }] : []),
+    {
+      title: "Add a short FAQ to your product pages",
+      how: faq
+        ? `Answer the questions shoppers ask AI, like "${faq}" Put each question in bold, with a short, clear answer under it.`
+        : "Answer the questions shoppers ask before they buy. Put each question in bold, with a short, clear answer under it.",
+    },
+    {
+      title: "Fill in every product's details in Shopify",
+      how: "Set the category, product type, tags and each size or colour. AI shopping tools can read these facts, so leave none blank.",
+    },
   ];
-  const month2 = [
-    `Up to ${pro.guidePagesPerMonth} new buying guides a month, each aimed at a real search word.`,
-    `Honest Reddit replies where shoppers ask about ${category.trim() || "products like yours"}, always saying who's writing.`,
-    `Up to ${pro.outreachPerMonth} emails a month to sites AI uses.${
-      f.siteCount > 0 ? ` AI used ${fmt(f.siteCount)} different ${f.siteCount === 1 ? "site" : "sites"} for these questions.` : ""
-    }`,
+
+  // Month 2: buying guides on their own store.
+  const guideWords = words.filter((w) => w.place === "New guide" || w.place === "Comparison guide");
+  const guide = guideWords.find((w) => w.place === "New guide") ?? guideWords[0];
+  const [rival] = f.rivals ?? [];
+  const versus = rival ? undefined : guideWords.find((w) => w.place === "Comparison guide" && w !== guide);
+  const next = guideWords.filter((w) => w !== guide && w !== versus).slice(0, 3).map((w) => `"${w.keyword}"`);
+  const month2: MonthStep[] = [
+    {
+      title: "Write your first buying guide",
+      how: `${guide ? `Make it about "${guide.keyword}". ${searches(guide)} ` : "Pick the question shoppers ask most before they buy. "}Answer the question in the first lines. Then compare real options and say who each one suits.`,
+    },
+    {
+      title: "Write an honest comparison",
+      how: `${
+        rival
+          ? `Compare your ${category} with ${rival.name}. AI named ${rival.name} in ${fmt(rival.count)} ${answersWord(rival.count)}.`
+          : versus
+            ? `Aim it at "${versus.keyword}". ${searches(versus)}`
+            : `Compare your ${category} with the brands shoppers weigh you against.`
+      } Be fair, and say where the other side does better too.`,
+    },
+    {
+      title: "Add a new guide every week",
+      how: `Each one answers one buying question.${next.length ? ` Next up: ${joinAnd(next)}.` : ""}`,
+    },
+    {
+      title: "Link your guides and products",
+      how: "Each guide links to the products it talks about, and each product page links back. It helps shoppers and Google find both.",
+    },
+    {
+      title: "Add something only you have",
+      how: `Real photos of your ${category} in use, a size chart or a simple table of your range. A page that says what every other page says gives AI no reason to quote you.`,
+    },
   ];
-  const month3 = [
-    "We ask ChatGPT, Gemini and Perplexity your buying questions every day, and do more of what works.",
-    "You see every visit, order and sale that came from AI.",
+
+  // Month 3: other sites, then check what changed.
+  const [site1, site2] = articleSites(f.sites ?? []);
+  const reddit = (f.sites ?? []).find((s) => s.domain.toLowerCase() === "reddit.com");
+  const month3: MonthStep[] = [
+    {
+      title: "Email the sites AI trusts",
+      how: `${
+        site1
+          ? `Start with ${site1.domain}${site2 ? ` and ${site2.domain}` : ""}. Find the writer's name,`
+          : `Search Google for ${kind ? `"best ${kind}"` : "the best of what you sell"} and find the lists that name other brands but not you. Find the writer's name,`
+      } say who you are, and ask if your ${category} fits their list. Offer to send a sample.`,
+    },
+    {
+      title: "Follow up once",
+      how: "No reply after a week? Send one short, friendly follow up. Never pay for a spot on a list.",
+    },
+    {
+      title: "Join the chats on Reddit",
+      how: `${reddit ? `AI used reddit.com in ${fmt(reddit.count)} of ${fmt(f.answers)} answers. ` : ""}Search Reddit for ${kind ? `"${kind}"` : "what you sell"} and help with real questions. Always say you're from ${brand}, and never pretend to be a customer.`,
+    },
+    {
+      title: "Ask AI again",
+      how: "Ask ChatGPT, Gemini and Perplexity the same questions we asked. Write down who they name and which sites they use, then compare with this report.",
+      ...(questions.length ? { list: questions } : {}),
+    },
+    {
+      title: "Look for visits from AI",
+      how: "In Shopify Analytics, see where your visits came from. Look for chatgpt.com, perplexity.ai and gemini.google.com.",
+    },
+    {
+      title: "Keep it going every month",
+      how: "Write a new guide each week and update old ones every 2 to 3 months. Ask AI your questions again each month, and email any new sites it starts to use.",
+    },
   ];
+
   const plans: MonthPlan[] = [
-    { month: 1, title: "We start the work", items: month1 },
-    { month: 2, title: "Google and AI find you", items: month2 },
-    { month: 3, title: "Clicks and sales grow", items: month3 },
+    { month: 1, title: "Fix your own store", steps: month1 },
+    { month: 2, title: "Write buying guides", steps: month2 },
+    { month: 3, title: "Get named on other sites", steps: month3 },
   ];
-  return plans.map((m) => ({ ...m, items: m.items.map(noDashes) }));
+  return plans.map((m) => ({
+    ...m,
+    steps: m.steps.map((s) => ({ ...s, title: noDashes(s.title), how: noDashes(s.how), ...(s.list ? { list: s.list.map(noDashes) } : {}) })),
+  }));
 }
+
+// "a", "a and b", "a, b and c".
+const joinAnd = (items: string[]) => (items.length < 2 ? items.join("") : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`);
 
 // First words that are names and keep their capital letter in the middle of a sentence.
 const KEEP_CAPS = new Set([
@@ -819,11 +921,11 @@ export function buildScript(f: ReportFacts, moves: Move[]): string[] {
     lines.push(`Here's what I'd do. ${said.map((s, i) => end(`${i === 0 ? "First" : "Then"}, ${s}`)).join(" ")}`);
   }
 
-  const locked = lockedCount(moves);
-  if (locked === 1) lines.push("And there's 1 more move on the list.");
-  else if (locked > 1) lines.push(`And there are ${fmt(locked)} more moves on the list.`);
+  const more = moreCount(moves);
+  if (more === 1) lines.push("And there's 1 more move on the list.");
+  else if (more > 1) lines.push(`And there are ${fmt(more)} more moves on the list.`);
 
-  lines.push("Month 2 and 3 keep it going: more guides, emails to the sites AI trusts, and checking AI every day.");
+  lines.push("Then there's a month by month plan, step by step, so you can do it all yourself.");
   lines.push("If you're a Shopify brand and want this done for your store, comment your store and I'll send you your report.");
   return lines.map(noDashes);
 }
@@ -841,7 +943,7 @@ export function storyTags(f: ReportFacts): string[] {
   return tags;
 }
 
-/** How many moves are locked ("+N more moves"). */
-export function lockedCount(moves: Move[]): number {
+/** How many moves come after the first 3 ("N more moves"). */
+export function moreCount(moves: Move[]): number {
   return Math.max(0, (moves ?? []).length - SHOWN_MOVES);
 }

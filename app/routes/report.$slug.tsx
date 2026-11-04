@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import type { HeadersFunction, LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
 import { isRouteErrorResponse, useLoaderData, useRouteError } from "react-router";
 import { getReport } from "../lib/store-report.server";
-import { EASY_DIFFICULTY, SHOWN_MOVES, type MovePlace, type StoreReportData } from "../lib/store-report";
+import { EASY_DIFFICULTY, SHOWN_MOVES, buildMonths, type Move, type StoreReportData } from "../lib/store-report";
 import { ENGINE_LABELS } from "../lib/plans";
 import { publicHostRedirect } from "../lib/tools/host.server";
 import { SECURITY_HEADERS } from "../lib/tools/http";
@@ -14,20 +14,16 @@ import styles from "../styles/report.css?url";
 // site menu, no price, no booking link and no call-to-action button (Ross does the ask out loud). The script,
 // story tags and notes are for Admin > Reports only and never reach this page. Made by app/lib/store-report.server.ts.
 
-/**
- * What the page shows: the report without Ross's script, tags and notes. `moves` holds only the moves on show;
- * the locked ones ("+N more moves") go out as their places only, so "view source" can't read them.
- */
+/** What the page shows: the report without Ross's script, tags and notes. Every move shows in full (Ross, 4 Nov 2026). */
 type PageReport = Pick<
   StoreReportData,
   "store" | "checkedAt" | "questions" | "answers" | "named" | "rivals" | "rivalCount" | "sites" | "siteCount" | "searchWords" | "searches" | "picks" | "moves" | "months"
-> & { locked: MovePlace[] };
+>;
 
 // A list of what goes out, not a list of what stays in: anything added to the report later stays on the server
 // until someone puts it here. (The loader's data is in the page's HTML too, so hiding it in the view isn't enough.)
 function pageReport(d: StoreReportData): PageReport {
-  const moves = d.moves ?? [];
-  return {
+  const facts = {
     store: d.store,
     checkedAt: d.checkedAt,
     questions: d.questions ?? [],
@@ -40,10 +36,9 @@ function pageReport(d: StoreReportData): PageReport {
     searchWords: d.searchWords ?? [],
     searches: d.searches ?? 0,
     picks: d.picks ?? null,
-    moves: moves.slice(0, SHOWN_MOVES),
-    locked: moves.slice(SHOWN_MOVES).map((m) => m.place),
-    months: d.months ?? [],
   };
+  // The month plan is built from the numbers each time, so reports made before a change to it get the new steps.
+  return { ...facts, moves: d.moves ?? [], months: buildMonths(facts) };
 }
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -401,18 +396,9 @@ function Sites({ report }: { report: PageReport }) {
   );
 }
 
-// Made-up words under the blur, the same for every report: the locked moves' own words never reach the browser.
-const FILLER = [
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do.",
-  "Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
-  "Duis aute irure dolor in reprehenderit in voluptate velit esse.",
-  "Excepteur sint occaecat cupidatat non proident, sunt in culpa.",
-];
-
 function Moves({ report }: { report: PageReport }) {
   const shown = report.moves.slice(0, SHOWN_MOVES);
-  const locked = report.locked ?? [];
-  const more = locked.length;
+  const rest = report.moves.slice(SHOWN_MOVES);
   if (!shown.length) return null;
   return (
     <>
@@ -420,40 +406,34 @@ function Moves({ report }: { report: PageReport }) {
         <h2 className="rp-h2" id="rp-moves">
           {shown.length === 1 ? "Your next move" : `Your next ${shown.length} moves`}
         </h2>
-        <ol className="rp-moves">
-          {shown.map((m, i) => (
-            <li key={m.text}>
-              <span className="rp-step" aria-hidden="true">
-                {i + 1}
-              </span>
-              <p>
-                <b>{m.place}:</b> {m.text}
-              </p>
-            </li>
-          ))}
-        </ol>
+        <MoveList moves={shown} from={1} />
       </section>
-      {more > 0 ? (
+      {rest.length ? (
         <section className="rp-sec" aria-labelledby="rp-more">
           <h2 className="rp-h2" id="rp-more">
-            +{fmt(more)} more {more === 1 ? "move" : "moves"}
+            {fmt(rest.length)} more {rest.length === 1 ? "move" : "moves"}
           </h2>
-          <ul className="rp-locked">
-            {locked.map((place, i) => (
-              <li key={i}>
-                <LockIcon />
-                <b>{place}</b>
-                <span className="rp-blur" aria-hidden="true">
-                  {FILLER[i % FILLER.length]}
-                </span>
-                <span className="rp-sr">Hidden in the full plan</span>
-              </li>
-            ))}
-          </ul>
-          <p className="rp-note">These are in the full plan.</p>
+          <MoveList moves={rest} from={SHOWN_MOVES + 1} more />
         </section>
       ) : null}
     </>
+  );
+}
+
+function MoveList({ moves, from, more }: { moves: Move[]; from: number; more?: boolean }) {
+  return (
+    <ol className={more ? "rp-moves is-more" : "rp-moves"} start={from}>
+      {moves.map((m, i) => (
+        <li key={`${i}-${m.text}`}>
+          <span className="rp-step" aria-hidden="true">
+            {from + i}
+          </span>
+          <p>
+            <b>{m.place}:</b> {m.text}
+          </p>
+        </li>
+      ))}
+    </ol>
   );
 }
 
@@ -464,16 +444,30 @@ function Months({ report }: { report: PageReport }) {
       <h2 className="rp-h2" id="rp-months">
         Month by month
       </h2>
+      <p className="rp-line rp-months-intro">Every step, so you can do it yourself.</p>
       <ol className="rp-months">
         {report.months.map((m) => (
           <li key={m.month} className="rp-month">
             <p className="rp-kicker">Month {m.month}</p>
             <h3>{m.title}</h3>
-            <ul>
-              {m.items.map((item) => (
-                <li key={item}>{item}</li>
+            <ol className="rp-todo">
+              {m.steps.map((step) => (
+                <li key={step.title}>
+                  <span className="rp-box" aria-hidden="true"></span>
+                  <div>
+                    <h4>{step.title}</h4>
+                    <p>{step.how}</p>
+                    {step.list?.length ? (
+                      <ul className="rp-ask">
+                        {step.list.map((item) => (
+                          <li key={item}>&ldquo;{item}&rdquo;</li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </div>
+                </li>
               ))}
-            </ul>
+            </ol>
           </li>
         ))}
       </ol>
@@ -545,15 +539,6 @@ function CrossIcon() {
   return (
     <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true">
       <path d="M6 6l12 12M18 6 6 18" />
-    </svg>
-  );
-}
-
-function LockIcon() {
-  return (
-    <svg className="rp-lock" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="4.5" y="10.5" width="15" height="10" rx="2.5" />
-      <path d="M8 10.5V7.5a4 4 0 0 1 8 0v3" />
     </svg>
   );
 }

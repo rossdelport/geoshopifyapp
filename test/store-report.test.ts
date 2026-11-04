@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import type { CheckAnswer, CheckEngine, CheckSource } from "../app/lib/check-types";
-import { PLANS } from "../app/lib/plans";
 import {
   EASY_DIFFICULTY,
   MOVE_PLACES,
@@ -17,7 +16,7 @@ import {
   fallbackMoves,
   guessPlace,
   knownNumbers,
-  lockedCount,
+  moreCount,
   movesNumbersOk,
   noDashes,
   numbersOk,
@@ -861,62 +860,104 @@ describe("fallbackMoves", () => {
 
 describe("buildMonths", () => {
   const months = buildMonths(facts());
+  const step = (m: number, title: string) => months[m - 1].steps.find((x) => x.title === title);
 
-  it("follows the home page's month by month", () => {
+  it("is steps the store could follow itself, a month at a time", () => {
     expect(months.map((m) => [m.month, m.title])).toEqual([
-      [1, "We start the work"],
-      [2, "Google and AI find you"],
-      [3, "Clicks and sales grow"],
+      [1, "Fix your own store"],
+      [2, "Write buying guides"],
+      [3, "Get named on other sites"],
+    ]);
+    const all = months.flatMap((m) => m.steps.map((x) => `${x.title} ${x.how}`)).join(" ");
+    // Never how FirstPicked works (Ross, 4 Nov 2026), and never the plan's limits.
+    expect(all).not.toMatch(/\bwe (will|do|write|email|send|fix|start|ask ChatGPT)\b|\bour team\b|\bup to\b|FirstPicked|done for you/i);
+  });
+
+  it("fills month 1 with this store's address, product count, search words and a real question", () => {
+    expect(months[0].steps).toEqual([
+      {
+        title: "Check AI can read your store",
+        how: "Open sampledish.com.au/robots.txt. Make sure it doesn't block Googlebot, OAI-SearchBot or PerplexityBot. Google, ChatGPT and Perplexity use them to read your pages. If one is blocked, remove that rule.",
+      },
+      {
+        title: "Put the key facts first on every product page",
+        how: "Start each page with one plain line: what it is, who it's for, and the main facts like size and what it's made of. Do your best sellers first, then the rest of your 37 products.",
+      },
+      {
+        title: "Use the words shoppers search",
+        how: 'Put "natural dish soap" in the title and first line of the product page it fits. About 1,900 searches a month. Do the same with "dish soap" on your collection page. About 8,100 searches a month.',
+      },
+      {
+        title: "Add a short FAQ to your product pages",
+        how: 'Answer the questions shoppers ask AI, like "Which dish soap is gentle on hands?" Put each question in bold, with a short, clear answer under it.',
+      },
+      {
+        title: "Fill in every product's details in Shopify",
+        how: "Set the category, product type, tags and each size or colour. AI shopping tools can read these facts, so leave none blank.",
+      },
     ]);
   });
 
-  it("fills month 1 with this store's real numbers", () => {
-    expect(months[0].items).toEqual([
-      "Make your product pages clearer for AI: 37 products.",
-      'Write your first buying guides, starting with "best eco dish soap".',
-      "Email the sites AI trusts, starting with reviewsite.example and shopping.example.",
-    ]);
+  it("aims month 2's guides at real search words and compares with the brand AI named most", () => {
+    expect(step(2, "Write your first buying guide")?.how).toBe(
+      'Make it about "best eco dish soap". About 480 searches a month. Answer the question in the first lines. Then compare real options and say who each one suits.',
+    );
+    expect(step(2, "Write an honest comparison")?.how).toBe(
+      "Compare your dish soap with Fakebrand Eco. AI named Fakebrand Eco in 9 answers. Be fair, and say where the other side does better too.",
+    );
+    expect(step(2, "Add a new guide every week")?.how).toBe('Each one answers one buying question. Next up: "dish soap vs dishwashing liquid".');
+    // With no rival, the comparison search word is the comparison.
+    const noRival = buildMonths(facts({ rivals: [] }));
+    expect(noRival[1].steps[1].how).toBe('Aim it at "dish soap vs dishwashing liquid". About 140 searches a month. Be fair, and say where the other side does better too.');
+    expect(noRival[1].steps[2].how).toBe("Each one answers one buying question.");
   });
 
-  it("uses the plan's limits in month 2", () => {
-    expect(months[1].items).toEqual([
-      `Up to ${PLANS.pro.guidePagesPerMonth} new buying guides a month, each aimed at a real search word.`,
-      "Honest Reddit replies where shoppers ask about dish soap, always saying who's writing.",
-      `Up to ${PLANS.pro.outreachPerMonth} emails a month to sites AI uses. AI used 17 different sites for these questions.`,
-    ]);
-    expect(months[2].items).toHaveLength(2);
+  it("names only articles to email in month 3, and lists the questions to ask AI again", () => {
+    expect(step(3, "Email the sites AI trusts")?.how).toBe(
+      "Start with reviewsite.example and shopping.example. Find the writer's name, say who you are, and ask if your dish soap fits their list. Offer to send a sample.",
+    );
+    expect(step(3, "Ask AI again")?.list).toEqual(facts().questions);
+    expect(step(3, "Join the chats on Reddit")?.how).toBe(
+      'Search Reddit for "dish soap" and help with real questions. Always say you\'re from Sample Dish Co, and never pretend to be a customer.',
+    );
+    const site = (domain: string, url: string, type: CheckSource["type"], count = 9) => ({ domain, count, url, title: null, type });
+    const reddit = site("reddit.com", "https://www.reddit.com/r/x/comments/1/y/", "ugc", 6);
+    const shop = site("chemistwarehouse.com.au", "https://www.chemistwarehouse.com.au/buy/1", "retailer");
+    const article = site("choice.com.au", "https://www.choice.com.au/best", "editorial");
+    const mixed = buildMonths(facts({ sites: [reddit, shop, article] }))[2].steps;
+    expect(mixed[0].how).toMatch(/^Start with choice\.com\.au\. Find the writer's name/);
+    expect(mixed[2].how).toMatch(/^AI used reddit\.com in 6 of 23 answers\. Search Reddit/);
+    // No article to name: how to find one.
+    expect(buildMonths(facts({ sites: [reddit, shop] }))[2].steps[0].how).toBe(
+      'Search Google for "best dish soap" and find the lists that name other brands but not you. Find the writer\'s name, say who you are, and ask if your dish soap fits their list. Offer to send a sample.',
+    );
   });
 
   it("only says what it knows", () => {
-    const thin = buildMonths(facts({ store: { ...facts().store, products: 0 }, sites: [], siteCount: 0, searchWords: [] }));
-    expect(thin[0].items).toEqual(["Make your product pages clearer for AI.", "Write your first buying guides."]);
-    expect(thin[1].items[2]).toBe(`Up to ${PLANS.pro.outreachPerMonth} emails a month to sites AI uses.`);
+    const thin = buildMonths(facts({ store: { ...facts().store, products: 0, category: "" }, questions: [], rivals: [], sites: [], siteCount: 0, searchWords: [] }));
+    const titles = thin[0].steps.map((x) => x.title);
+    expect(titles).not.toContain("Use the words shoppers search");
+    expect(thin[0].steps[1].how).toMatch(/Do your best sellers first, then the rest\.$/);
+    expect(thin[0].steps.find((x) => x.title.startsWith("Add a short FAQ"))?.how).toMatch(/^Answer the questions shoppers ask before they buy\./);
+    expect(thin[1].steps[0].how).toMatch(/^Pick the question shoppers ask most before they buy\./);
+    expect(thin[1].steps[1].how).toMatch(/^Compare your products with the brands shoppers weigh you against\./);
+    expect(thin[2].steps.find((x) => x.title === "Ask AI again")?.list).toBeUndefined();
+    expect(thin[2].steps[0].how).toMatch(/^Search Google for the best of what you sell and find the lists/);
+    expect(thin[2].steps[2].how).toMatch(/^Search Reddit for what you sell and help/);
 
-    const capped = buildMonths(facts({ store: { ...facts().store, products: 250, productsCapped: true }, sites: facts().sites.slice(0, 1), siteCount: 1 }));
-    expect(capped[0].items[0]).toBe("Make your product pages clearer for AI: 250+ products.");
-    expect(capped[0].items[2]).toBe("Email the sites AI trusts, starting with reviewsite.example.");
-    expect(capped[1].items[2]).toMatch(/AI used 1 different site for these questions\.$/);
-
-    // With no guide word, the first word is used.
-    const noGuide = buildMonths(facts({ searchWords: [{ keyword: "dish soap", volume: 8100, difficulty: 54, place: "Product page" }] }));
-    expect(noGuide[0].items[1]).toBe('Write your first buying guides, starting with "dish soap".');
-  });
-
-  it("only names articles to email, never Reddit, a shop or a brand's own site", () => {
-    const site = (domain: string, url: string, type: CheckSource["type"]) => ({ domain, count: 9, url, title: null, type });
-    const reddit = site("reddit.com", "https://www.reddit.com/r/x/comments/1/y/", "ugc");
-    const shop = site("chemistwarehouse.com.au", "https://www.chemistwarehouse.com.au/buy/1", "retailer");
-    const article = site("choice.com.au", "https://www.choice.com.au/best", "editorial");
-    expect(buildMonths(facts({ sites: [reddit, shop, article] }))[0].items[2]).toBe("Email the sites AI trusts, starting with choice.com.au.");
-    expect(buildMonths(facts({ sites: [reddit, shop] }))[0].items).toHaveLength(2);
+    const capped = buildMonths(facts({ store: { ...facts().store, products: 250, productsCapped: true } }));
+    expect(capped[0].steps[1].how).toMatch(/the rest of your 250\+ products\.$/);
+    const one = buildMonths(facts({ store: { ...facts().store, products: 1 }, searchWords: [{ keyword: "dish soap", volume: 1, difficulty: null, place: "Home page" }] }));
+    expect(one[0].steps[1].how).toMatch(/the rest of your 1 product\.$/);
+    expect(one[0].steps[2].how).toBe('Do the same with "dish soap" on your home page. About 1 search a month.');
   });
 
   it("has no em dashes and only real numbers", () => {
     const f = facts({ store: { ...facts().store, category: "dish soap \u2014 refills" } });
-    const known = knownNumbers(f, PLANS.pro.guidePagesPerMonth, PLANS.pro.outreachPerMonth);
-    const items = buildMonths(f).flatMap((m) => m.items);
-    noBadDashes(items);
-    for (const item of items) expect(numbersOk(item, known)).toBe(true);
+    const known = knownNumbers(f);
+    const lines = buildMonths(f).flatMap((m) => m.steps.flatMap((x) => [x.title, x.how, ...(x.list ?? [])]));
+    noBadDashes(lines);
+    for (const line of lines) expect(numbersOk(line, known)).toBe(true);
   });
 });
 
@@ -934,13 +975,13 @@ describe("buildScript", () => {
       'Here\'s what I\'d do. First, aim your product page at "natural dish soap". Then, write a new guide for "best eco dish soap". Then, get your dish soap onto reviewsite.example.',
     );
     expect(script[5]).toBe("And there are 9 more moves on the list.");
-    expect(script[6]).toBe("Month 2 and 3 keep it going: more guides, emails to the sites AI trusts, and checking AI every day.");
+    expect(script[6]).toBe("Then there's a month by month plan, step by step, so you can do it all yourself.");
     expect(script[7]).toBe("If you're a Shopify brand and want this done for your store, comment your store and I'll send you your report.");
     expect(script).toHaveLength(8);
   });
 
   it("uses only numbers from the data and no em dashes", () => {
-    const known = knownNumbers(f, lockedCount(moves));
+    const known = knownNumbers(f, moreCount(moves));
     for (const line of script) expect(numbersOk(line.replace("___", ""), known)).toBe(true);
     noBadDashes(script);
     const dashy = buildScript(facts({ store: { ...f.store, brand: "Dash \u2014 Co", sells: "Soap \u2014 for kitchens" } }), [{ place: "FAQ", text: "Add sizes \u2014 like 500 ml \u2013 to each page." }]);
@@ -1029,13 +1070,13 @@ describe("storyTags", () => {
   });
 });
 
-describe("lockedCount", () => {
-  it("locks everything after the first 3", () => {
+describe("moreCount", () => {
+  it("counts every move after the first 3", () => {
     const m = (n: number): Move[] => Array.from({ length: n }, (_, i) => ({ place: "FAQ", text: `Move ${i}` }));
     expect(SHOWN_MOVES).toBe(3);
-    expect(lockedCount(m(0))).toBe(0);
-    expect(lockedCount(m(3))).toBe(0);
-    expect(lockedCount(m(12))).toBe(9);
+    expect(moreCount(m(0))).toBe(0);
+    expect(moreCount(m(3))).toBe(0);
+    expect(moreCount(m(12))).toBe(9);
   });
 
   it("matches the report's full answer count", () => {

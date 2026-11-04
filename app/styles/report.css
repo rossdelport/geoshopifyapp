@@ -604,50 +604,20 @@ body {
   color: var(--ink);
 }
 
-/* +N more moves: one line each, the place shows and the words are blurred */
-.rp-locked {
-  display: grid;
-  gap: 6px;
-}
-.rp-locked li {
-  display: grid;
-  grid-template-columns: 18px auto minmax(0, 1fr);
-  align-items: center;
-  gap: 10px;
-  min-height: 48px;
-  padding: 10px 14px;
-  border-radius: 14px;
+/* N more moves: the same list, every move in full, with grey numbers so the first 3 stay on top */
+.rp-moves.is-more .rp-step {
   background: var(--bg-2);
-}
-.rp-lock {
-  color: var(--grey);
-}
-.rp-locked b {
-  font-size: 15.5px;
-  line-height: 1.3;
-  font-weight: 650;
   color: var(--ink);
-  white-space: nowrap;
-}
-.rp-blur {
-  overflow: hidden;
-  font-size: 15px;
-  line-height: 1.4;
-  color: var(--text);
-  white-space: nowrap;
-  filter: blur(5px);
-  -webkit-mask-image: linear-gradient(90deg, #000 75%, transparent);
-  mask-image: linear-gradient(90deg, #000 75%, transparent);
-  user-select: none;
-  -webkit-user-select: none;
-  pointer-events: none;
 }
 
-/* Month by month */
+/* Month by month: a to-do list per month, each step with what to do and how */
+.rp-months-intro {
+  margin-bottom: 14px;
+}
 .rp-months {
   display: grid;
   gap: 10px;
-  /* A long site address in month 1 wraps inside its card, never pushing the page sideways */
+  /* A long site address wraps inside its card, never pushing the page sideways */
   overflow-wrap: anywhere;
 }
 .rp-month {
@@ -663,27 +633,50 @@ body {
   letter-spacing: -0.025em;
   color: var(--ink);
 }
-.rp-month ul {
+.rp-todo {
   display: grid;
-  gap: 7px;
-  margin-top: 12px;
+  gap: 16px;
+  margin-top: 16px;
 }
-.rp-month ul li {
-  position: relative;
-  padding-left: 18px;
-  font-size: 16px;
-  line-height: 1.45;
+.rp-todo > li {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 12px;
+}
+/* An empty tick box: a list to work through */
+.rp-box {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  border: 2px solid #c9cad3;
+  border-radius: 6px;
+}
+.rp-todo h4 {
+  margin: 0;
+  font-size: 16.5px;
+  line-height: 1.35;
+  font-weight: 700;
+  color: var(--ink);
   text-wrap: pretty;
 }
-.rp-month ul li::before {
-  content: "";
-  position: absolute;
-  left: 2px;
-  top: 0.62em;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ink);
+.rp-todo p {
+  margin-top: 3px;
+  font-size: 15.5px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+.rp-ask {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+.rp-ask li {
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--bg-2);
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--ink);
 }
 
 /* Small print */

@@ -1,6 +1,7 @@
 // The public store report page (/report/<slug>, app/routes/report.$slug.tsx) with a made-up store, Sample Dish Co
 // (test/fixtures/store-report.json). Ross films this page, tags the brand and DMs them the link: no button but
-// Share, no price or booking link, no em dashes, and Ross's script, tags and notes never leave the server.
+// Share, no price or booking link, no em dashes, every move in full, and Ross's script, tags and notes never leave
+// the server.
 
 import { readFileSync } from "node:fs";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -8,7 +9,7 @@ import { createElement, type ComponentType } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createRoutesStub, type HeadersArgs, type LoaderFunctionArgs } from "react-router";
 import fixtureJson from "./fixtures/store-report.json";
-import { EASY_DIFFICULTY, SHOWN_MOVES, lockedCount, type StoreReportData } from "../app/lib/store-report";
+import { EASY_DIFFICULTY, SHOWN_MOVES, buildMonths, moreCount, type StoreReportData } from "../app/lib/store-report";
 
 vi.mock("../app/lib/store-report.server", () => ({ getReport: vi.fn() }));
 
@@ -46,18 +47,16 @@ describe("report page loader", () => {
     expect((thrown as Response).status).toBe(404);
   });
 
-  it("sends only what the page shows: never Ross's script, tags or notes, nor the locked moves' words", async () => {
+  it("sends only what the page shows: never Ross's script, tags or notes", async () => {
     vi.mocked(getReport).mockResolvedValue({ slug: "sample-dish-co", data: fixture() });
     const { report, checked } = await load();
     expect(Object.keys(report).sort()).toEqual(
-      ["answers", "checkedAt", "locked", "months", "moves", "named", "picks", "questions", "rivalCount", "rivals", "searchWords", "searches", "siteCount", "sites", "store"].sort(),
+      ["answers", "checkedAt", "months", "moves", "named", "picks", "questions", "rivalCount", "rivals", "searchWords", "searches", "siteCount", "sites", "store"].sort(),
     );
     const sent = JSON.stringify(report);
     for (const line of [...fixture().script, ...fixture().tags, ...fixture().notes]) expect(sent).not.toContain(line);
-    // The moves on show, then only the places of the locked ones.
-    expect(report.moves).toEqual(fixture().moves.slice(0, SHOWN_MOVES));
-    expect(report.locked).toEqual(fixture().moves.slice(SHOWN_MOVES).map((m) => m.place));
-    for (const m of fixture().moves.slice(SHOWN_MOVES)) expect(sent).not.toContain(m.text);
+    // Every move, in full (Ross, 4 Nov 2026: blurred moves felt scammy).
+    expect(report.moves).toEqual(fixture().moves);
     expect(checked).toBe("3 Nov 2026"); // 02:30 UTC is 10:30 am in Perth
   });
 
@@ -96,7 +95,7 @@ describe("report page", () => {
     expect(words).toContain("Plant based dish soap and refills for home kitchens.");
     expect(words).toContain("They named Sample Dish Co 2 times out of 24.");
     expect(words).toContain("11,970"); // searches, with commas
-    const order = ["Where you stand", "What shoppers search", "Who AI picks now", "Sites AI trusts", "Your next 3 moves", "+9 more moves", "Month by month", "Checked on 3 Nov 2026"];
+    const order = ["Where you stand", "What shoppers search", "Who AI picks now", "Sites AI trusts", "Your next 3 moves", "9 more moves", "Month by month", "Checked on 3 Nov 2026"];
     const at = order.map((h) => words.indexOf(h));
     expect(at.every((i) => i >= 0)).toBe(true);
     expect([...at].sort((a, b) => a - b)).toEqual(at);
@@ -122,37 +121,34 @@ describe("report page", () => {
     for (const tag of f.tags) expect(text(html)).not.toContain(tag);
   });
 
-  it("shows 3 moves and locks the rest, blurred, with their places visible and their words never in the page", async () => {
+  it("shows 3 moves on top and every other move in full, numbered on from 4", async () => {
     const f = fixture();
     const html = await render(f);
-    const locked = lockedCount(f.moves);
-    expect(locked).toBe(f.moves.length - SHOWN_MOVES);
-    expect(text(html)).toContain(`+${locked} more moves`);
-    expect(html.match(/class="rp-blur"/g)).toHaveLength(locked);
-    expect(html.match(/Hidden in the full plan/g)).toHaveLength(locked);
-    expect(html).toContain("These are in the full plan.");
+    const more = moreCount(f.moves);
+    expect(more).toBe(f.moves.length - SHOWN_MOVES);
+    expect(text(html)).toContain(`${more} more moves`);
+    expect(text(html)).not.toContain(`+${more} more moves`);
+    for (const gone of ["rp-blur", "rp-locked", "Lorem ipsum", "full plan", "Hidden"]) expect(html).not.toContain(gone);
     const shown = html.slice(html.indexOf('class="rp-moves"'), html.indexOf('id="rp-more"'));
     expect(shown.match(/<li>/g)).toHaveLength(SHOWN_MOVES);
     expect(text(shown)).toContain('Product page: Put "natural dish soap" in your main product');
-    // "View source" shows made-up words under the blur, never the locked moves.
-    const lockedList = html.slice(html.indexOf('class="rp-locked"'));
-    for (const m of f.moves.slice(SHOWN_MOVES)) {
-      expect(text(html)).not.toContain(m.text);
-      expect(lockedList).toContain(`<b>${m.place}</b>`);
-    }
-    expect(lockedList).toContain("Lorem ipsum");
+    const rest = html.slice(html.indexOf('class="rp-moves is-more"'), html.indexOf('id="rp-months"'));
+    expect(rest).toContain('start="4"');
+    expect(rest.match(/<li>/g)).toHaveLength(more);
+    f.moves.slice(SHOWN_MOVES).forEach((m, i) => expect(text(rest)).toContain(`${SHOWN_MOVES + 1 + i} ${m.place}: ${m.text}`));
   });
 
-  it("names the heading by how many moves there are, and drops the locked list when there's nothing locked", async () => {
+  it("names the heading by how many moves there are, and drops the second list when there are only 3", async () => {
     const two = await render({ ...fixture(), moves: fixture().moves.slice(0, 2) });
     expect(text(two)).toContain("Your next 2 moves");
-    expect(two).not.toContain("more moves");
-    expect(two).not.toContain("rp-blur");
+    expect(two).not.toContain("more move");
+    const three = await render({ ...fixture(), moves: fixture().moves.slice(0, 3) });
+    expect(three).not.toContain('id="rp-more"');
     const one = await render({ ...fixture(), moves: fixture().moves.slice(0, 1) });
     expect(text(one)).toContain("Your next move");
     const four = await render({ ...fixture(), moves: fixture().moves.slice(0, 4) });
-    expect(text(four)).toContain("+1 more move");
-    expect(text(four)).not.toContain("+1 more moves");
+    expect(text(four)).toContain("1 more move");
+    expect(text(four)).not.toContain("1 more moves");
   });
 
   it("marks the store in the pick list, and colours the score by how often AI named it", async () => {
@@ -240,13 +236,21 @@ describe("report page", () => {
     expect(text(html)).toContain("AI read these sites to decide. Getting onto them helps you get picked.");
   });
 
-  it("shows the month by month plan and the small print", async () => {
+  it("shows the month by month steps, built from the report's own numbers, and the small print", async () => {
     const f = fixture();
     const html = await render(f);
-    for (const m of f.months) {
+    const months = buildMonths(f);
+    expect(text(html)).toContain("Every step, so you can do it yourself.");
+    for (const m of months) {
       expect(text(html)).toContain(`Month ${m.month} ${m.title}`);
-      for (const item of m.items) expect(text(html)).toContain(item);
+      for (const step of m.steps) {
+        expect(text(html)).toContain(`${step.title} ${step.how}`);
+        for (const item of step.list ?? []) expect(text(html)).toContain(`“${item}”`);
+      }
     }
+    expect(html.match(/class="rp-box"/g)).toHaveLength(months.flatMap((m) => m.steps).length);
+    // Never how FirstPicked works, and never the old plan's words.
+    for (const old of ["We start the work", "Up to 12", "Up to 40", "We ask ChatGPT"]) expect(text(html)).not.toContain(old);
     expect(text(html)).toContain("FirstPicked isn't linked to Sample Dish Co. Want this report taken down? Email ross@firstpicked.com.au .");
     expect(html).toContain('<a href="mailto:ross@firstpicked.com.au">ross@firstpicked.com.au</a>');
     expect(html).toContain('<a href="https://firstpicked.com.au/">firstpicked.com.au</a>');
@@ -277,5 +281,15 @@ describe("report page source", () => {
     const css = readFileSync(new URL("../app/styles/report.css", import.meta.url), "utf8");
     expect(css).toContain("--accent: #6c5cf2");
     expect(css).toContain("prefers-reduced-motion: reduce");
+  });
+});
+
+describe("report page for a report made before 4 Nov 2026", () => {
+  it("shows the new month steps, not the plan saved with it", async () => {
+    const f = fixture() as unknown as Record<string, unknown>;
+    f.months = [{ month: 1, title: "We start the work", items: ["Make your product pages clearer for AI: 34 products."] }];
+    const html = await render(f as unknown as StoreReportData);
+    expect(text(html)).not.toContain("We start the work");
+    expect(text(html)).toContain("Month 1 Fix your own store");
   });
 });
