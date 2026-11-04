@@ -2,9 +2,11 @@
 // (comma separated), else Ross's email. Everyone else gets "Not found", so the pages don't show they exist.
 // Days are Sydney days (Ross is in Australia).
 
+import { createHash, timingSafeEqual } from "node:crypto";
 import { Prisma } from "@prisma/client";
 import db from "../db.server";
-import { requireUser } from "./web-auth.server";
+import { requireUser, signInCookie } from "./web-auth.server";
+import { hashIp } from "./public-form.server";
 import { getPlan } from "./plans";
 
 export const ADMIN_TZ = "Australia/Sydney";
@@ -22,6 +24,38 @@ export async function requireAdmin(request: Request) {
   const user = await requireUser(request);
   if (!isAdmin(user.email)) throw new Response("Not found", { status: 404 });
   return user;
+}
+
+// The admin password (Ross, 4 Nov 2026: "password protected not link protected"): firstpicked.com.au/admin asks for
+// GEO_ADMIN_PASSWORD (a Railway variable, never in the code) and signs the browser in as the first admin email for 30
+// days. With no password set, the page says to use an email link. Wrong tries are limited (kept in memory: a deploy
+// starts again): 5 per visitor in 15 minutes, 50 an hour from everyone together.
+export const adminPassword = () => (process.env.GEO_ADMIN_PASSWORD ?? "").trim();
+
+export const PASSWORD_ERRORS = {
+  off: "The admin password isn’t set up yet. Please sign in with an email link.",
+  wrong: "That’s not the password. Please try again.",
+  tooMany: "Too many wrong tries. Please wait 15 minutes, or sign in with an email link.",
+};
+
+const wrongTries = new Map<string, number[]>(); // scrambled IP -> when
+let wrongAll: number[] = [];
+const sha = (s: string) => createHash("sha256").update(s).digest();
+
+export async function passwordSignIn(raw: unknown, ip: string | null, now = Date.now()): Promise<{ ok: true; setCookie: string } | { ok: false; error: string }> {
+  const password = adminPassword();
+  if (!password) return { ok: false, error: PASSWORD_ERRORS.off };
+  const who = hashIp(ip);
+  const mine = (wrongTries.get(who) ?? []).filter((t) => t > now - 15 * 60_000);
+  wrongAll = wrongAll.filter((t) => t > now - 3_600_000);
+  if (mine.length >= 5 || wrongAll.length >= 50) return { ok: false, error: PASSWORD_ERRORS.tooMany };
+  if (!timingSafeEqual(sha(String(raw ?? "").trim()), sha(password))) {
+    wrongTries.set(who, [...mine, now]);
+    wrongAll.push(now);
+    return { ok: false, error: PASSWORD_ERRORS.wrong };
+  }
+  wrongTries.delete(who);
+  return { ok: true, setCookie: await signInCookie(adminEmails()[0]) };
 }
 
 /**

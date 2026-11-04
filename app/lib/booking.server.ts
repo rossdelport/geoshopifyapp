@@ -11,6 +11,8 @@ import { normalizeEmail } from "./check-lead.server";
 import { hashIp } from "./public-form.server";
 import { SITE } from "./tools/site";
 import { BOOK_ERRORS, CALL, openSlots, rossTime, type Busy } from "./booking";
+import { saveBooking } from "./book-stats.server";
+import type { AdTags } from "./book-stats";
 
 const ROW = "booking"; // the one CalendarLink row
 export const CALENDAR_REDIRECT = `${SITE}/dash/admin/calendar`;
@@ -130,6 +132,7 @@ export interface BookInput {
   store: unknown;
   honeypot?: unknown;
   from?: Record<string, unknown>; // the ad's utm_* tags, for Ross's email
+  ad?: AdTags; // the same tags, for the ad chart on the admin Overview
   ip: string | null;
 }
 
@@ -165,6 +168,7 @@ export async function bookCall(input: BookInput, now = new Date()): Promise<{ st
     conferenceData: { createRequest: { requestId: randomUUID(), conferenceSolutionKey: { type: "hangoutsMeet" } } },
   });
   recent.set(ip, [...mine, now.getTime()]);
+  if (input.ad) await saveBooking(input.ad).catch((err) => console.error("[book] booked, but could not count it for the ad chart", err));
 
   // Tell Ross (Google doesn't email you about events added to your own calendar).
   if (env.alertEmail && emailConfigured()) {

@@ -239,6 +239,25 @@ ul{padding:0;list-style:none}
 <script type="application/json" id="slots">__SLOTS__</script>
 <!-- COOKIE_SCRIPT -->
 <script>
+// Counts this visit for Ross's ad chart (admin Overview), once the page is on screen, so link previews and pages
+// loaded early in the background don't count. It sends the ad's tags and the site that sent the visitor, nothing about
+// the person.
+(function () {
+  var sent = false;
+  function send() {
+    if (sent || document.visibilityState !== 'visible' || !navigator.sendBeacon) return;
+    sent = true;
+    var q = new URLSearchParams(location.search), body = new URLSearchParams({ seen: '1' });
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) { if (q.get(k)) body.set(k, q.get(k).slice(0, 200)); });
+    if (q.get('fbclid')) body.set('fb', '1');
+    if (document.referrer) body.set('ref', document.referrer.slice(0, 300));
+    try { navigator.sendBeacon('/book', body); } catch (e) { /* not counted */ }
+  }
+  send();
+  document.addEventListener('visibilitychange', send);
+})();
+</script>
+<script>
 // The calendar. Ross's free times are shown in the visitor's own time zone: pick a day, a time, then name, email
 // and store. It posts to /book, which adds the call to Ross's Google Calendar, and Google emails the invite.
 // A booked call tells Meta "Lead" (no name or email), like joining the waitlist does.
@@ -338,6 +357,8 @@ ul{padding:0;list-style:none}
     body.set('start', chosen);
     var q = new URLSearchParams(location.search);
     ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) { if (q.get(k)) body.set(k, q.get(k).slice(0, 200)); });
+    if (q.get('fbclid')) body.set('fb', '1');
+    if (document.referrer) body.set('ref', document.referrer.slice(0, 300));
     fetch('/book', { method: 'POST', body: body, headers: { Accept: 'application/json' }, credentials: 'same-origin' })
       .then(function (r) { return r.json(); })
       .then(function (out) {

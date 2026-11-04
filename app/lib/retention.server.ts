@@ -22,6 +22,8 @@ export const RETENTION = {
   waitlistMonths: 24,
   /** Giveaway entries (store, name, email, phone, where they came from): deleted this long after they entered. */
   giveawayMonths: 24,
+  /** The scrambled id on a booking page visit only stops a person counting twice in a day, so it goes after 2 days. */
+  bookVisitorDays: 2,
 };
 
 /**
@@ -91,6 +93,11 @@ export async function purgeOldData(now = new Date()) {
   });
   const giveaway = await db.giveawayEntry.deleteMany({
     where: { createdAt: { lt: new Date(now.getTime() - RETENTION.giveawayMonths * 30.44 * DAY) } },
+  });
+  // Booking page visits: the scrambled id goes after 2 days; the count by ad stays.
+  await db.bookEvent.updateMany({
+    where: { visitor: { not: null }, createdAt: { lt: new Date(now.getTime() - RETENTION.bookVisitorDays * DAY) } },
+    data: { visitor: null },
   });
   if (visits.count || shops.count || checks.count || reportEmails.count || subscribers.count) {
     console.log(

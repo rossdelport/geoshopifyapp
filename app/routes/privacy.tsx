@@ -40,6 +40,7 @@ const privacyData = () => ({
   unsubscribedDays: RETENTION.unsubscribedDays,
   waitlistMonths: RETENTION.waitlistMonths,
   giveawayMonths: RETENTION.giveawayMonths,
+  bookVisitorDays: RETENTION.bookVisitorDays,
 });
 
 const page = { maxWidth: 720, margin: "0 auto", padding: "48px 20px 80px", fontFamily: "Inter, system-ui, sans-serif", color: "#30313d", lineHeight: 1.7 };
@@ -56,7 +57,7 @@ export default function Privacy() {
 }
 
 function PrivacyText() {
-  const { contact, owner, inactiveYears, visitIdDays, uninstalledDays, publicCheckDays, checkIpHours, reportEmailDays, unsubscribedDays, waitlistMonths, giveawayMonths } =
+  const { contact, owner, inactiveYears, visitIdDays, uninstalledDays, publicCheckDays, checkIpHours, reportEmailDays, unsubscribedDays, waitlistMonths, giveawayMonths, bookVisitorDays } =
     useLoaderData<typeof loader>();
   return (
     <main style={page}>
@@ -179,6 +180,12 @@ function PrivacyText() {
         address and your store&apos;s website. Google then emails you the invite with a Google Meet link. We also email
         Ross the same details, and the ad&apos;s tracking tags (like utm_campaign) if you came from an ad. To stop abuse,
         we keep a scrambled (hashed) copy of your IP address for a day.
+      </p>
+      <p>
+        When you open the booking page, we count the visit, so we can see which of our ads work. We keep the ad&apos;s
+        tracking tags, whether the link had Facebook&apos;s click id, and the name of the website that sent you. To count
+        each person once a day, we also keep a scrambled (hashed) id made from your IP address and browser, and we
+        remove it after {bookVisitorDays} days. We don&apos;t keep your name, email or IP address with the count.
       </p>
       <p>We use this only to talk with you about FirstPicked, and we delete it if you ask.</p>
 
