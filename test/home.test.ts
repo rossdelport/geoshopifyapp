@@ -125,7 +125,17 @@ describe("home page", () => {
     expect(price).toMatch(/<p class="plan-call"><img src="[^"]*ross[^"]*\.webp"/);
     expect(html).not.toContain("__ROSS_PHOTO__");
     expect([...price.matchAll(/<span data-roll>(\d+)<\/span>/g)].map((m) => m[1])).toEqual(["100", "12", "20", "40"]);
-    expect(price.match(/<small>up to<\/small>/g)).toHaveLength(2);
+    // laid out like a price list (Ross, 4 Nov 2026): "Each month, up to:", then words left and a number or tick right
+    expect(price).toContain('<p class="plan-r-h">Each month, up to:</p>');
+    expect([...price.matchAll(/<li(?: class="p-stat")?><span>([^<]+)<\/span>/g)].map((m) => m[1])).toEqual([
+      "Buying questions checked every day",
+      "Buying guides written for you",
+      "Writers found on the sites AI trusts",
+      "Emails to those sites, sent and followed up",
+      "ChatGPT, Gemini, Perplexity and Google AI Overviews, plus Claude every week",
+      "See the sales AI sends you",
+      "A 30-minute call with our team",
+    ]);
     // a soft light follows the mouse over the purple panel and the button (Ross, 3 Nov 2026)
     expect(price).toContain('<span class="plan-glow" aria-hidden="true"></span>');
     expect(price).toContain('<span class="btn-glow" aria-hidden="true"></span></a>');
