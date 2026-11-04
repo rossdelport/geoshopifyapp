@@ -251,9 +251,10 @@ describe("/privacy after the free tools", () => {
     expect(text).toContain("Crawl4AI, or AnyAPI as a backup");
     expect(text).toContain("We hold it in memory and clear it within a day.");
     expect(text).toContain("We record what each search cost us, without your IP address or your search.");
-    expect(text).toContain("Last updated 3 November 2026");
-    // the Meta pixel on the home page (Ross's ads, 13 Oct 2026), the giveaway page and the book-a-call page (3 Nov 2026)
-    expect(text).toContain("Our home page, giveaway page and booking page use Meta's pixel");
+    expect(text).toContain("Last updated 4 November 2026");
+    // the Meta pixel on the home page (Ross's ads, 13 Oct 2026), the giveaway page and the book-a-call page (3 Nov 2026),
+    // the free check and the store reports (4 Nov 2026)
+    expect(text).toContain("Our home page, giveaway page, booking page, free check and store reports use Meta's pixel");
     expect(text).toContain("If you join the waitlist, enter the giveaway or book a call, it tells Meta that someone did.");
     expect(text).toContain("It never sends your name, email address or phone number.");
     // booking a call puts the person's details in Ross's Google Calendar (firstpicked.com.au/book)

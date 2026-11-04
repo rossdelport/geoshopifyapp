@@ -6,6 +6,7 @@ import { EASY_DIFFICULTY, SHOWN_MOVES, buildMonths, type Move, type StoreReportD
 import { ENGINE_LABELS } from "../lib/plans";
 import { publicHostRedirect } from "../lib/tools/host.server";
 import { SECURITY_HEADERS } from "../lib/tools/http";
+import { MetaPixel } from "../components/meta-pixel";
 import styles from "../styles/report.css?url";
 
 // A store's report for Ross's teardown videos (Ross, 3 Nov 2026): firstpicked.com.au/report/<slug>. Ross films it on his
@@ -95,7 +96,13 @@ const answersWord = (n: number) => `${fmt(n)} ${n === 1 ? "answer" : "answers"}`
 
 export default function StoreReportPage() {
   const { report, checked } = useLoaderData<typeof loader>();
-  return <Report report={report} checked={checked} />;
+  return (
+    <>
+      <Report report={report} checked={checked} />
+      {/* Our Meta pixel and its cookie notice, like the home page: people who saw a report can see our ads. */}
+      <MetaPixel />
+    </>
+  );
 }
 
 function Report({ report, checked }: { report: PageReport; checked: string }) {

@@ -195,11 +195,12 @@ function PrivacyText() {
       </p>
 
       <h2 style={h2} id="cookies">
-        Ads and cookies on our home page, giveaway page and booking page
+        Ads and cookies on our home page, giveaway page, booking page, free check and store reports
       </h2>
       <p>
-        Our home page, giveaway page and booking page use Meta&apos;s pixel (Meta runs Facebook and Instagram). It lets us
-        see which of our ads work and show our ads to people who visited. It tells Meta that a browser looked at the page.
+        Our home page, giveaway page, booking page, free check and store reports use Meta&apos;s pixel (Meta runs Facebook
+        and Instagram). It lets us see which of our ads work and show our ads to people who visited. It tells Meta that
+        a browser looked at the page.
         If you join the waitlist, enter the giveaway or book a call, it tells Meta that someone did. It never sends your
         name, email address or phone number. Meta may set cookies, and it gets your
         browser&apos;s details and IP address, as Meta&apos;s own privacy policy says.
@@ -256,7 +257,7 @@ function PrivacyText() {
       <h2 style={h2}>Services we use</h2>
       <ul>
         <li>Railway (Singapore): runs the app.</li>
-        <li>Meta (Facebook and Instagram): our own ads, and the pixel on our home page, giveaway page and booking page described above.</li>
+        <li>Meta (Facebook and Instagram): our own ads, and the pixel on our home page, giveaway page, booking page, free check and store reports described above.</li>
         <li>Google: Google Calendar and Google Meet, for calls booked on our website.</li>
         <li>Supabase (Tokyo): stores the data.</li>
         <li>Treg: gets public AI answers to buying questions. It gets the questions only, never customer data.</li>
