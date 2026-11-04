@@ -81,7 +81,7 @@ describe("report page headers and meta", () => {
     vi.mocked(getReport).mockResolvedValue({ slug: "sample-dish-co", data: fixture() });
     const data = await load();
     const tags = route.meta({ data } as unknown as Parameters<typeof route.meta>[0]);
-    expect(tags).toContainEqual({ title: "Sample Dish Co: how to get picked by AI | GEO" });
+    expect(tags).toContainEqual({ title: "Sample Dish Co: how to get picked by AI | FirstPicked" });
     expect(tags).toContainEqual({ name: "robots", content: "noindex" });
   });
 });
@@ -91,7 +91,7 @@ describe("report page", () => {
     const html = await render();
     const words = text(html);
     expect(html).toContain('<h1 class="rp-h1">Sample Dish Co</h1>');
-    expect(words).toContain("Made with GEO · Checked 3 Nov 2026");
+    expect(words).toContain("Made with FirstPicked · Checked 3 Nov 2026");
     expect(words).toContain("sampledishco.example · Australia");
     expect(words).toContain("Plant based dish soap and refills for home kitchens.");
     expect(words).toContain("They named Sample Dish Co 2 times out of 24.");
@@ -247,7 +247,7 @@ describe("report page", () => {
       expect(text(html)).toContain(`Month ${m.month} ${m.title}`);
       for (const item of m.items) expect(text(html)).toContain(item);
     }
-    expect(text(html)).toContain("GEO isn't linked to Sample Dish Co. Want this report taken down? Email ross@firstpicked.com.au .");
+    expect(text(html)).toContain("FirstPicked isn't linked to Sample Dish Co. Want this report taken down? Email ross@firstpicked.com.au .");
     expect(html).toContain('<a href="mailto:ross@firstpicked.com.au">ross@firstpicked.com.au</a>');
     expect(html).toContain('<a href="https://firstpicked.com.au/">firstpicked.com.au</a>');
     expect(text(html)).toContain("Every store is different, so we can't promise exact results.");

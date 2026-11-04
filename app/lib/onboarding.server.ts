@@ -97,7 +97,7 @@ export async function readHomepage(domain: string | null): Promise<string> {
   if (!domain) return "";
   try {
     const res = await fetch(`https://${domain}`, {
-      headers: { "user-agent": "Mozilla/5.0 (compatible; GEO-app/1.0)" },
+      headers: { "user-agent": "Mozilla/5.0 (compatible; FirstPicked/1.0)" },
       signal: AbortSignal.timeout(10_000),
     });
     if (!res.ok) return "";

@@ -72,7 +72,7 @@
 .st-caveat p { font-size: 14.5px; line-height: 1.6; color: var(--text); }
 .st-caveat strong { font-weight: 600; color: var(--navy); }
 
-/* the source: the original article, then the note that the brand is not a GEO customer next to it */
+/* the source: the original article, then the note that the brand is not a FirstPicked customer next to it */
 .st-source {
   display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 20px 16px; border-radius: 22px;
   background: #fff; box-shadow: var(--ring-soft), var(--shadow-neutral); scroll-margin-top: 24px;
@@ -109,7 +109,7 @@
 .st-key img { width: 16px; height: 16px; flex: none; }
 .st-hub-note { max-width: 640px; margin: 0 auto; text-align: center; font-size: 14px; line-height: 1.6; color: var(--text); text-wrap: balance; }
 
-/* the one quiet line about GEO's free check */
+/* the one quiet line about FirstPicked's free check */
 .st-try { max-width: 640px; margin: 0 auto; padding-bottom: 8px; text-align: center; font-size: 15px; line-height: 1.6; color: var(--text); text-wrap: balance; }
 .st-try a { color: var(--navy); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(11, 12, 43, 0.35); }
 .st-try a:hover { text-decoration-color: currentColor; }

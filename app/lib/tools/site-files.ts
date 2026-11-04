@@ -85,9 +85,9 @@ function plansLine(): string {
  */
 export function siteLlmsTxt(): string {
   return [
-    "# GEO",
+    "# FirstPicked",
     "",
-    "> GEO is a Shopify app that helps stores get their products recommended by AI assistants like ChatGPT, Gemini and Perplexity, and shows the sales that come from AI.",
+    "> FirstPicked is a Shopify app that helps stores get their products recommended by AI assistants like ChatGPT, Gemini and Perplexity, and shows the sales that come from AI.",
     "",
     plansLine(),
     "",
@@ -95,15 +95,15 @@ export function siteLlmsTxt(): string {
     "",
     ...TOOLS.map((t) => `- [${t.name}](${abs(t.path)}): ${t.short}`),
     "",
-    "## About GEO",
+    "## About FirstPicked",
     "",
-    `- [Home](${abs("/")}): what GEO does, how it works and pricing`,
+    `- [Home](${abs("/")}): what FirstPicked does, how it works and pricing`,
     `- [All free tools](${abs(HUB.path)}): the full list of free tools`,
-    `- [Stories](${abs(STORIES_HUB.path)}): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are GEO customers)`,
+    `- [Stories](${abs(STORIES_HUB.path)}): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are FirstPicked customers)`,
     `- [Blog](${abs(BLOG_HUB.path)}): plain-English articles for Shopify stores on getting recommended by AI assistants, new ones three times a week`,
-    `- [Compare](${abs(COMPARE_HUB.path)}): honest comparisons of GEO with agencies, tracking tools and prices in Australia`,
-    `- [Privacy policy](${abs("/privacy")}): what data GEO collects and why`,
-    `- [Terms of service](${abs("/terms")}): the rules for using GEO, the refund after month one and stopping any time`,
+    `- [Compare](${abs(COMPARE_HUB.path)}): honest comparisons of FirstPicked with agencies, tracking tools and prices in Australia`,
+    `- [Privacy policy](${abs("/privacy")}): what data FirstPicked collects and why`,
+    `- [Terms of service](${abs("/terms")}): the rules for using FirstPicked, the refund after month one and stopping any time`,
     "",
   ].join("\n");
 }

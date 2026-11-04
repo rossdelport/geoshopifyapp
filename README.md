@@ -1,4 +1,4 @@
-# GEO — get recommended by AI shopping assistants
+# FirstPicked: get recommended by AI shopping assistants
 
 A Shopify app that checks whether ChatGPT, Gemini, Perplexity, Google AI Overviews and Claude
 recommend a store, shows who they recommend instead, writes fixes the merchant approves in one

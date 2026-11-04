@@ -1,12 +1,12 @@
-// GEO's own blog at firstpicked.com.au/blog (Ross, 2026-10-15: "practise what we preach"). A background job (`blog.write`)
+// FirstPicked's own blog at firstpicked.com.au/blog (Ross, 2026-10-15: "practise what we preach"). A background job (`blog.write`)
 // writes one article at a time from the topics in lib/blog/topics.ts, has Claude check every fact against the
 // knowledge pack, tidies it (`finishPost`) and publishes it. Timing (`blogDue`): a first batch of six, half an hour
 // apart, then one on Monday, Wednesday and Friday from 9am Sydney time. Ross gets an email for every post; Admin >
 // Blog can hide a post or write one now. Costs are logged like every other Claude call (labels blog-*, no store).
 //
 // Honesty rules, in the prompts, the check pass and `finishPost`: only numbers that are in the knowledge pack
-// (docs/facts.md with its source links, docs/geo-research.md, the stories, the Ask GEO guide); sources are only the
-// outside pages in that pack; never a line that says a brand in the stories uses GEO; no em dashes; never advice to
+// (docs/facts.md with its source links, docs/geo-research.md, the stories, the Ask FirstPicked guide); sources are only the
+// outside pages in that pack; never a line that says a brand in the stories uses FirstPicked; no em dashes; never advice to
 // fake reviews, pose as a customer on Reddit, buy links or stuff keywords.
 
 import type { Prisma } from "@prisma/client";
@@ -123,7 +123,7 @@ function storiesDigest(): string {
       s.caveat ? `Caveat: ${s.caveat}` : "",
       `Source: "${s.source.title}", ${s.source.publisher}${s.source.date ? `, ${s.source.date}` : ""}: ${s.source.url}`,
       ...(s.moreSources ?? []).map((m) => `Also: "${m.title}", ${m.publisher}: ${m.url}`),
-      `${s.brand} is not a GEO customer; this is their result as reported by the source.`,
+      `${s.brand} is not a FirstPicked customer; this is their result as reported by the source.`,
     ]
       .filter(Boolean)
       .join("\n"),
@@ -140,11 +140,11 @@ export function knowledgePack(): string {
     facts,
     "## 2. What we know about getting recommended by AI (research notes)",
     research,
-    "## 3. How GEO works (the product guide)",
+    "## 3. How FirstPicked works (the product guide)",
     guide,
-    "## 4. Stories: other brands' results from AI, as their sources reported them (none are GEO customers)",
+    "## 4. Stories: other brands' results from AI, as their sources reported them (none are FirstPicked customers)",
     storiesDigest(),
-    "## 5. GEO's free tools (link one when it genuinely helps the reader)",
+    "## 5. FirstPicked's free tools (link one when it genuinely helps the reader)",
     toolsDigest(),
   ].join("\n\n");
 }
@@ -208,28 +208,28 @@ export const TopicSchema = z.object({
   brief: z.string().describe("Two or three sentences on what the piece covers and why a store owner would read it"),
 });
 
-const WRITER_SYSTEM = `You write GEO's blog: short, honest articles for Shopify store owners about getting their products recommended by AI assistants (ChatGPT, Gemini, Perplexity, Google AI Overviews) and about the search traffic around it.
+const WRITER_SYSTEM = `You write FirstPicked's blog: short, honest articles for Shopify store owners about getting their products recommended by AI assistants (ChatGPT, Gemini, Perplexity, Google AI Overviews) and about the search traffic around it.
 
 Rules:
-- Plain English a busy shop owner reads in one go, at about a grade 5 reading level: short sentences (most under 15 words), everyday words ("buy" not "convert", "visits" not "referral traffic", "use" not "utilise"). Australian spelling. No jargon: say "AI assistants" or "ChatGPT and co", never "LLM", "AEO", "generative engine optimisation" or "GEO" as a technique. GEO is only the name of our product. When a technical word is needed (robots.txt, schema), say what it is in a few simple words.
+- Plain English a busy shop owner reads in one go, at about a grade 5 reading level: short sentences (most under 15 words), everyday words ("buy" not "convert", "visits" not "referral traffic", "use" not "utilise"). Australian spelling. No jargon: say "AI assistants" or "ChatGPT and co", never "LLM", "AEO", "generative engine optimisation" or "GEO". FirstPicked is the name of our product. When a technical word is needed (robots.txt, schema), say what it is in a few simple words.
 - Never use an em dash. Use a full stop, comma, colon or "and".
 - Facts: use only numbers, quotes, names, studies and dates that appear in the knowledge pack, and say where each comes from (the source and its year, for example "OpenAI said in July 2025"). If the pack has no number for something, say so plainly or leave it out. Never invent a statistic, a study, a quote, a customer or a result.
-- The brands in the stories are other companies. Never say or imply that any of them uses GEO or is a GEO customer.
+- The brands in the stories are other companies. Never say or imply that any of them uses FirstPicked or is a FirstPicked customer.
 - Never recommend fake reviews, posting on Reddit as a customer, buying links or link swaps, or stuffing keywords. Where a topic touches these, say they are against the platforms' rules and hurt the store.
 - No promises of results, no medical or legal claims. Say what tends to help and why.
 - Answer first: the intro answers the title directly. Every section stands on its own, so an AI assistant could quote it alone. Never "as mentioned above".
-- Mention GEO at most once, in one plain sentence, only where it genuinely helps the reader. This is advice, not an ad.
+- Mention FirstPicked at most once, in one plain sentence, only where it genuinely helps the reader. This is advice, not an ad.
 - Length: 900 to 1,400 words in total.`;
 
-const CHECK_SYSTEM = `You are the fact checker for GEO's blog. You get an article as JSON and the knowledge pack it was written from. Return the same article, corrected:
+const CHECK_SYSTEM = `You are the fact checker for FirstPicked's blog. You get an article as JSON and the knowledge pack it was written from. Return the same article, corrected:
 - Any number, date, quote, name, study or result the pack does not support: change it to what the pack says, or remove that sentence.
-- Any sentence that says or implies a brand uses GEO or is a GEO customer: remove it.
+- Any sentence that says or implies a brand uses FirstPicked or is a FirstPicked customer: remove it.
 - Any promise of results, medical or legal claim, or advice to fake reviews, pose as a customer, buy links or stuff keywords: remove it or soften it.
 - Any em dash: replace it with a full stop, comma or colon.
 - Any source URL that is not in the pack: remove that source.
 Keep everything else exactly as written. List every change you made in plain English; an empty list means the article was fine.`;
 
-const TOPIC_SYSTEM = `You plan GEO's blog for Shopify store owners who want their products recommended by AI assistants (ChatGPT, Gemini, Perplexity, Google AI Overviews). Propose one new article topic a store owner would search for, that can be answered honestly from the knowledge pack alone, and that none of the existing posts already covers. Never a comparison that names another company's product. No em dashes.`;
+const TOPIC_SYSTEM = `You plan FirstPicked's blog for Shopify store owners who want their products recommended by AI assistants (ChatGPT, Gemini, Perplexity, Google AI Overviews). Propose one new article topic a store owner would search for, that can be answered honestly from the knowledge pack alone, and that none of the existing posts already covers. Never a comparison that names another company's product. No em dashes.`;
 
 function writerPrompt(topic: BlogTopic, existingTitles: string[], allowed: Map<string, string>, pack: string): string {
   return [
@@ -273,15 +273,15 @@ export function fitDescription(d: string, max = 160): string {
 }
 
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-/** Phrases that would make a reader think someone is a GEO customer, or that GEO caused a result. */
-const CUSTOMER_CLAIM = /\bGEO(?:'s)? (?:customer|client|user|member)s?\b|\b(?:uses?|used|using|switched to|signed up (?:to|for)|joined|installed|thanks to|because of) GEO\b|\bGEO (?:helped|got|gave|grew|drove)\b/i;
+/** Phrases that would make a reader think someone is a FirstPicked customer, or that FirstPicked caused a result (GEO was our old name). */
+const CUSTOMER_CLAIM = /\b(?:FirstPicked|GEO)(?:'s)? (?:customer|client|user|member)s?\b|\b(?:uses?|used|using|switched to|signed up (?:to|for)|joined|installed|thanks to|because of) (?:FirstPicked|GEO)\b|\b(?:FirstPicked|GEO) (?:helped|got|gave|grew|drove)\b/i;
 const BRAND_RES = STORIES.map((s) => new RegExp(`\\b${escapeRe(s.brand)}\\b`));
 
-/** The first sentence that says a story's brand uses GEO or that GEO did something, or null. */
+/** The first sentence that says a story's brand uses FirstPicked or that FirstPicked did something, or null. */
 export function customerClaim(text: string): string | null {
   for (const sentence of text.split(/(?<=[.!?])\s+|\n+/)) {
     if (CUSTOMER_CLAIM.test(sentence)) return sentence;
-    if (/\bGEO\b/.test(sentence) && BRAND_RES.some((re) => re.test(sentence))) return sentence;
+    if (/\b(?:FirstPicked|GEO)\b/.test(sentence) && BRAND_RES.some((re) => re.test(sentence))) return sentence;
   }
   return null;
 }
@@ -307,7 +307,7 @@ export interface FinishedPost {
 
 /**
  * Turns Claude's article into what we save: dashes tidied, sources only from the pack, related links only to real
- * pages, and the article refused (PostProblem) when it is too short or long, thin, or claims a brand uses GEO.
+ * pages, and the article refused (PostProblem) when it is too short or long, thin, or claims a brand uses FirstPicked.
  */
 export function finishPost(a: PostDraft, topic: Pick<BlogTopic, "key" | "kind">, allowed: Map<string, string>): FinishedPost {
   const title = clean(a.title).replace(/[.:]+$/, "");
@@ -345,7 +345,7 @@ export function finishPost(a: PostDraft, topic: Pick<BlogTopic, "key" | "kind">,
   const words = wordCount(body);
   if (words < 600 || words > 1800) throw new PostProblem(`${words} words (we publish 600 to 1,800)`);
   const claim = customerClaim([title, description, ...bodyText(body)].join("\n"));
-  if (claim) throw new PostProblem(`says a brand uses GEO: "${claim.slice(0, 120)}"`);
+  if (claim) throw new PostProblem(`says a brand uses FirstPicked: "${claim.slice(0, 120)}"`);
   return { title, description, kind: topic.kind, topicKey: topic.key, body, words };
 }
 
@@ -426,8 +426,8 @@ async function notifyPublished(post: { id: string; slug: string; title: string; 
   await sendEmailMessage({
     to: [env.alertEmail],
     subject: `New blog post: ${post.title}`,
-    html: `<p>A new post is live on the GEO blog.</p><p><a href="${esc(url)}"><strong>${esc(post.title)}</strong></a><br>${esc(BLOG_KIND_LABELS[post.kind as BlogKind] ?? "Article")} · ${post.words} words · about ${readMinutes(post.words)} minute read</p><p>${esc(post.description)}</p>${changesHtml}<p>Not happy with it? Hide it in <a href="${esc(adminUrl)}">Admin, Blog</a>. It disappears from the blog, the sitemap and search within minutes.</p>`,
-    text: `A new post is live on the GEO blog: ${post.title}\n${url}\n\n${post.description}\n\n${changes.length ? `The fact check changed:\n${changes.map((c) => `- ${c}`).join("\n")}` : "The fact check found nothing to change."}\n\nNot happy with it? Hide it in Admin, Blog: ${adminUrl}`,
+    html: `<p>A new post is live on the FirstPicked blog.</p><p><a href="${esc(url)}"><strong>${esc(post.title)}</strong></a><br>${esc(BLOG_KIND_LABELS[post.kind as BlogKind] ?? "Article")} · ${post.words} words · about ${readMinutes(post.words)} minute read</p><p>${esc(post.description)}</p>${changesHtml}<p>Not happy with it? Hide it in <a href="${esc(adminUrl)}">Admin, Blog</a>. It disappears from the blog, the sitemap and search within minutes.</p>`,
+    text: `A new post is live on the FirstPicked blog: ${post.title}\n${url}\n\n${post.description}\n\n${changes.length ? `The fact check changed:\n${changes.map((c) => `- ${c}`).join("\n")}` : "The fact check found nothing to change."}\n\nNot happy with it? Hide it in Admin, Blog: ${adminUrl}`,
     idempotencyKey: `blog:${post.id}`,
   });
 }

@@ -1,4 +1,4 @@
-/* GEO web app (firstpicked.com.au/login, /start, /dash). Ross, 2026-10-15: white base, near-black text, neutral greys,
+/* FirstPicked web app (firstpicked.com.au/login, /start, /dash). Ross, 2026-10-15: white base, near-black text, neutral greys,
    and one purple used only for things to act on (buttons, links, focus). Status colours (green, amber, red) only
    for good / needs a look / bad. A sidebar on computers, a top bar on phones. Small, quick transitions; all of
    them switch off for people who ask their device for less motion. */
@@ -344,7 +344,7 @@ body { margin: 0; }
   .w-rd-detail { padding: 16px; }
 }
 
-/* ---------- Ask GEO: the help chat ---------- */
+/* ---------- Ask FirstPicked: the help chat ---------- */
 .w-ask { display: grid; gap: 12px; max-width: 820px; width: 100%; margin: 0 auto; min-height: calc(100vh - 120px); grid-template-rows: 1fr auto auto; }
 .w-ask-empty { display: grid; justify-items: center; align-content: center; gap: 10px; text-align: center; padding: 24px 0; }
 .w-ask-empty .w-logo i { width: 40px; height: 40px; }

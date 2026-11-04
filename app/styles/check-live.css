@@ -73,7 +73,7 @@
 .cl-cols { flex: 1; display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); gap: 16px; align-items: stretch; }
 .cl-cols.is-ask { grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); }
 
-/* narrator: the GEO mark turning, and what it is doing, typed in */
+/* narrator: the FirstPicked mark turning, and what it is doing, typed in */
 .cl-say { display: flex; align-items: center; gap: 14px; min-height: 50px; }
 .cl-say-tx { min-width: 0; font-family: var(--font-head); font-size: 18px; font-weight: 500; letter-spacing: -0.3px; line-height: 1.35; color: var(--navy); overflow-wrap: anywhere; }
 .cl-say-lead { color: var(--e-ink, var(--cobalt)); font-weight: 600; }
@@ -432,7 +432,7 @@
 @keyframes cl-sweep { 0% { transform: translateX(-100%); opacity: 0; } 10% { opacity: 1; } 75% { opacity: 1; } 85%, 100% { transform: translateX(340%); opacity: 0; } }
 @keyframes cl-pop { from { opacity: 0; transform: translateY(8px) scale(.92); } to { opacity: 1; transform: none; } }
 @keyframes cl-tick { from { transform: scale(0); } to { transform: none; } }
-/* a pulse from the GEO node to each lane (the wires run from the top middle to each lane's middle) */
+/* a pulse from the FirstPicked node to each lane (the wires run from the top middle to each lane's middle) */
 @keyframes cl-pulse-0 { 0% { transform: translate(0, 0); opacity: 0; } 8% { opacity: 1; } 52% { opacity: 1; } 60% { transform: translate(-33.333%, 100%); opacity: 0; } 100% { transform: translate(-33.333%, 100%); opacity: 0; } }
 @keyframes cl-pulse-1 { 0% { transform: translate(0, 0); opacity: 0; } 8% { opacity: 1; } 52% { opacity: 1; } 60% { transform: translate(0, 100%); opacity: 0; } 100% { transform: translate(0, 100%); opacity: 0; } }
 @keyframes cl-pulse-2 { 0% { transform: translate(0, 0); opacity: 0; } 8% { opacity: 1; } 52% { opacity: 1; } 60% { transform: translate(33.333%, 100%); opacity: 0; } 100% { transform: translate(33.333%, 100%); opacity: 0; } }

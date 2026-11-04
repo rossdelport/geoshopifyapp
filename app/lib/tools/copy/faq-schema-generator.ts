@@ -249,7 +249,7 @@ export const FAQS: ToolFaqItem[] = [
  * the store approves them, and its theme block adds them with the markup (CLAUDE.md section 11).
  */
 export const CTA = {
-  text: "See how GEO writes FAQs that AI can quote",
+  text: "See how FirstPicked writes FAQs that AI can quote",
   href: "/?ref=tool-faq-schema-generator#how",
-  note: "The GEO app writes FAQs for your products from your own product details. You approve them, and it adds them to your store with the markup.",
+  note: "The FirstPicked app writes FAQs for your products from your own product details. You approve them, and it adds them to your store with the markup.",
 } as const;

@@ -10,7 +10,7 @@ Rules for using these facts:
 - Say where the data comes from when it is not global. Adobe and Exploding Topics are **US** data.
   Triple Whale is **its own merchants**. None of these are Australia-only numbers.
 - "Messages" are not "people". One shopper can send several messages.
-- Never say AI growth was caused by GEO.
+- Never say AI growth was caused by FirstPicked.
 
 ---
 
@@ -184,7 +184,7 @@ labelled, and OpenAI says advertisers cannot change the answer itself.
 
 - OK: "ChatGPT has ads now, but they sit below the answer and are labelled. OpenAI says advertisers can't change what the answer recommends. That part has to be earned."
 - OK: "The recommendation inside the answer isn't for sale. It's earned from what AI can read about your products."
-- OK (headline idea stays fair): "The free sales channel your store is missing", because the organic recommendation costs nothing per click. When talking about GEO itself, say "no ad spend", not "free".
+- OK (headline idea stays fair): "The free sales channel your store is missing", because the organic recommendation costs nothing per click. When talking about FirstPicked itself, say "no ad spend", not "free".
 - **Don't say:** "AI assistants don't have ads", "ChatGPT is ad-free", or "you can't pay to appear in Google's AI answers" (Google sells ad slots inside AI Overviews in AU/NZ).
 
 ---

@@ -101,7 +101,7 @@ export async function scheduleDueWork(now = new Date()) {
   }
   // Free check report emails that missed their queue (check-lead.server.ts also registers check.email).
   await queueStrandedReportEmails(now).catch((err) => console.error("[check] report email sweep failed:", err.message));
-  // GEO's own blog: the next post when it is due (lib/blog.server.ts).
+  // FirstPicked's own blog: the next post when it is due (lib/blog.server.ts).
   await queueBlogIfDue(now).catch((err) => console.error("[blog] schedule failed:", err.message));
   const shops = await db.shop.findMany({ where: { status: "installed", onboarding: "done" } });
 

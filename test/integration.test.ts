@@ -418,7 +418,7 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
         if (dev instanceof Error) throw dev;
         const data = query.includes("partnerDevelopment")
           ? { shop: { plan: { partnerDevelopment: dev } } }
-          : { currentAppInstallation: { activeSubscriptions: [{ id: "1", name: "GEO Standard", status: "ACTIVE", test: true }, { id: "2", name: "GEO Standard", status: "ACTIVE", test: false }] } };
+          : { currentAppInstallation: { activeSubscriptions: [{ id: "1", name: "FirstPicked Standard", status: "ACTIVE", test: true }, { id: "2", name: "FirstPicked Standard", status: "ACTIVE", test: false }] } };
         return new Response(JSON.stringify({ data }));
       },
     });
@@ -464,8 +464,8 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
     try {
       // The plans page and the webhook can both report the same change: only one runs it.
       const results = await Promise.all([
-        onPlanChanged(shopId, "pro", { billingName: "GEO Done-for-you yearly", trialEndsAt: trialEnds }),
-        onPlanChanged(shopId, "pro", { billingName: "GEO Done-for-you yearly", trialEndsAt: trialEnds }),
+        onPlanChanged(shopId, "pro", { billingName: "FirstPicked Done-for-you yearly", trialEndsAt: trialEnds }),
+        onPlanChanged(shopId, "pro", { billingName: "FirstPicked Done-for-you yearly", trialEndsAt: trialEnds }),
       ]);
       expect(results.filter(Boolean)).toHaveLength(1);
       let shop = await db.shop.findUniqueOrThrow({ where: { id: shopId } });
@@ -484,19 +484,19 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
       expect(sent.mock.calls[0][2]).not.toMatch(/\u2014| \u2013 /);
 
       // The first live trial subscription saves when the store's one trial ends; later ones never move it.
-      await syncPlanFromSubscriptions(shopId, [sub("GEO Done-for-you")]);
+      await syncPlanFromSubscriptions(shopId, [sub("FirstPicked Done-for-you")]);
       const savedEnd = (await db.shop.findUniqueOrThrow({ where: { id: shopId } })).trialEndsAt;
       expect(savedEnd).not.toBeNull();
-      await syncPlanFromSubscriptions(shopId, [sub("GEO Done-for-you yearly", new Date(Date.now() + 3 * DAY))]);
+      await syncPlanFromSubscriptions(shopId, [sub("FirstPicked Done-for-you yearly", new Date(Date.now() + 3 * DAY))]);
       expect((await db.shop.findUniqueOrThrow({ where: { id: shopId } })).trialEndsAt).toEqual(savedEnd);
 
       // The store switches autopilot off (as the Fixes page does); plan changes never switch it back on.
       await db.shop.update({ where: { id: shopId }, data: { autopilot: false, autopilotOptOut: true } });
-      expect(await syncPlanFromSubscriptions(shopId, [sub("GEO Done-for-you")])).toBe(false);
+      expect(await syncPlanFromSubscriptions(shopId, [sub("FirstPicked Done-for-you")])).toBe(false);
       expect((await db.shop.findUniqueOrThrow({ where: { id: shopId } })).autopilot).toBe(false);
 
       // Leaving Done-for-you: autopilot off, founder told.
-      expect(await syncPlanFromSubscriptions(shopId, [sub("GEO Standard")])).toBe(true);
+      expect(await syncPlanFromSubscriptions(shopId, [sub("FirstPicked Standard")])).toBe(true);
       shop = await db.shop.findUniqueOrThrow({ where: { id: shopId } });
       expect(shop).toMatchObject({ plan: "core", autopilot: false });
       await runNotices();
@@ -504,12 +504,12 @@ describe.skipIf(!url)("integration (needs TEST_DATABASE_URL)", () => {
       expect(sent.mock.calls[1][1]).toContain("left Done-for-you");
 
       // Back to Done-for-you: still off, because the store chose that.
-      expect(await syncPlanFromSubscriptions(shopId, [sub("GEO Done-for-you")])).toBe(true);
+      expect(await syncPlanFromSubscriptions(shopId, [sub("FirstPicked Done-for-you")])).toBe(true);
       expect((await db.shop.findUniqueOrThrow({ where: { id: shopId } })).autopilot).toBe(false);
-      await syncPlanFromSubscriptions(shopId, [sub("GEO Standard")]);
+      await syncPlanFromSubscriptions(shopId, [sub("FirstPicked Standard")]);
 
       // Standard monthly to yearly: the old one's CANCELLED webhook must not drop the store to free.
-      expect(await syncPlanFromSubscriptions(shopId, [sub("GEO Standard yearly")])).toBe(false);
+      expect(await syncPlanFromSubscriptions(shopId, [sub("FirstPicked Standard yearly")])).toBe(false);
       expect((await db.shop.findUniqueOrThrow({ where: { id: shopId } })).plan).toBe("core");
       // No live subscription at all: back to the free scan.
       expect(await syncPlanFromSubscriptions(shopId, [])).toBe(true);

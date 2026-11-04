@@ -169,7 +169,7 @@ describe("each tool page (server-rendered, no JavaScript)", () => {
     expect(words).not.toMatch(/\bAEO\b/);
     expect(words).not.toMatch(/ LLM/);
     expect(words.toLowerCase()).not.toContain("generative engine optimization");
-    // "GEO" only as the brand name, never as the topic.
+    // "FirstPicked" only as the brand name, never as the topic.
     expect(words).not.toMatch(/\bGEO (tool|tools|checker|score|audit|strategy)\b/);
   });
 
@@ -177,7 +177,7 @@ describe("each tool page (server-rendered, no JavaScript)", () => {
     const loaderData = { contact: null, owner: null, inactiveYears: 2, visitIdDays: 30, uninstalledDays: 30, publicCheckDays: 30, checkIpHours: 24, reportEmailDays: 30, unsubscribedDays: 30 };
     const Stub = createRoutesStub([{ id: "privacy", path: "/privacy", Component: privacy.default as ComponentType, loader: () => loaderData }]);
     const html = renderToStaticMarkup(createElement(Stub, { initialEntries: ["/privacy"], hydrationData: { loaderData: { privacy: loaderData } } }));
-    expect(html).toContain("GEO privacy policy");
+    expect(html).toContain("FirstPicked privacy policy");
     expect(toolHrefs(footerOf(html))).toEqual(SEVEN);
     expect(footerOf(html)).toContain('href="/tools"');
   });

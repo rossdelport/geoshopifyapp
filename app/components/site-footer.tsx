@@ -34,8 +34,8 @@ export function SiteFooter() {
             ))}
           </ul>
         </nav>
-        <nav className="tl-foot-site" aria-label="GEO">
-          <p className="tl-foot-h">GEO</p>
+        <nav className="tl-foot-site" aria-label="FirstPicked">
+          <p className="tl-foot-h">FirstPicked</p>
           <ul>
             {SITE_LINKS.map(([label, href]) => (
               <li key={href}>
@@ -44,7 +44,7 @@ export function SiteFooter() {
             ))}
           </ul>
         </nav>
-        <p className="tl-foot-line">GEO · Helps ChatGPT &amp; co recommend your products</p>
+        <p className="tl-foot-line">FirstPicked · Helps ChatGPT &amp; co recommend your products</p>
       </div>
     </footer>
   );

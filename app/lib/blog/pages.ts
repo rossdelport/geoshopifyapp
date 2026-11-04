@@ -1,6 +1,6 @@
 // The /blog pages' fixed words, paths, the shape of a post's body, and the JSON-LD. Pure and browser-safe (route
 // `meta` runs in the browser too): no database, no env. The writer lives in lib/blog.server.ts.
-// Copy rules: plain English, no em dashes, Australian spelling, and never a line that says a brand uses GEO.
+// Copy rules: plain English, no em dashes, Australian spelling, and never a line that says a brand uses FirstPicked.
 
 import { abs } from "../tools/site";
 import { HOME_CRUMB, ORG_NODE, PART_OF, breadcrumbs } from "../tools/seo";
@@ -10,7 +10,7 @@ export const BLOG_HUB = {
   name: "Blog",
   path: "/blog",
   /** Under 60 characters. */
-  title: "Blog: getting your store recommended by AI | GEO",
+  title: "Blog: getting your store recommended by AI | FirstPicked",
   /** Under 155 characters. */
   description:
     "Plain-English articles for Shopify stores on getting recommended by ChatGPT, Gemini, Perplexity and Google AI Overviews, and on tracking the sales that follow.",
@@ -20,7 +20,7 @@ export const BLOG_HUB = {
   ogImage: "/og/home.png",
   ogAlt: "A small clay shop with a star in a speech bubble above it",
   /** The author on every post. */
-  author: "The GEO team",
+  author: "The FirstPicked team",
 } as const;
 
 export const postPath = (slug: string) => `${BLOG_HUB.path}/${slug}`;

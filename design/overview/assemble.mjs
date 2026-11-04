@@ -43,7 +43,7 @@ const html = files
   .join('\n\n')
   .replace('<!-- STORY_CARDS -->', `${storyGroup(false)}\n${storyGroup(true)}`);
 const js = files.filter((f) => f.endsWith('.js')).map((f) => `// ${f}\n${read(f)}`).join('\n\n');
-const out = `<title>GEO Overview</title>
+const out = `<title>FirstPicked Overview</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap">
@@ -67,12 +67,12 @@ if (!only && outName === 'index.html') {
   const head = out.slice(0, out.indexOf('<div class="page">')).trim();
   const body = out.slice(out.indexOf('<div class="page">'));
   // The page head for search engines, link previews and AI assistants: one canonical address (www and the
-  // Railway address also serve this page), Open Graph tags, and who GEO is as JSON-LD. The Organization node is
+  // Railway address also serve this page), Open Graph tags, and who FirstPicked is as JSON-LD. The Organization node is
   // the same as ORG_NODE in app/lib/tools/seo.ts (test/tools-foundation.test.ts checks they match).
-  const title = 'GEO · Get your products recommended by AI';
-  const description = 'Shoppers ask ChatGPT, Gemini and Perplexity what to buy. GEO helps your Shopify products get recommended in those AI answers, then counts the orders it can trace back to AI.';
-  const org = { '@type': 'Organization', '@id': 'https://firstpicked.com.au/#org', name: 'GEO', alternateName: 'GEO for Shopify', url: 'https://firstpicked.com.au/', logo: 'https://firstpicked.com.au/apple-touch-icon.png' };
-  const website = { '@type': 'WebSite', '@id': 'https://firstpicked.com.au/#website', name: 'GEO', alternateName: 'GEO for Shopify', url: 'https://firstpicked.com.au/', publisher: { '@id': 'https://firstpicked.com.au/#org' } };
+  const title = 'FirstPicked · Get your products recommended by AI';
+  const description = 'Shoppers ask ChatGPT, Gemini and Perplexity what to buy. FirstPicked helps your Shopify products get recommended in those AI answers, then counts the orders it can trace back to AI.';
+  const org = { '@type': 'Organization', '@id': 'https://firstpicked.com.au/#org', name: 'FirstPicked', alternateName: 'First Picked', url: 'https://firstpicked.com.au/', logo: 'https://firstpicked.com.au/apple-touch-icon.png' };
+  const website = { '@type': 'WebSite', '@id': 'https://firstpicked.com.au/#website', name: 'FirstPicked', alternateName: 'First Picked', url: 'https://firstpicked.com.au/', publisher: { '@id': 'https://firstpicked.com.au/#org' } };
   const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': [org, website] }).replaceAll('<', '\\u003c');
   // The same page in German, French, Dutch, Spanish and Italian (design/overview/i18n.mjs).
   const langs = languages(dir);
@@ -85,7 +85,7 @@ if (!only && outName === 'index.html') {
 <link rel="canonical" href="https://firstpicked.com.au/">
 ${hreflangTags(langs)}
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="GEO">
+<meta property="og:site_name" content="FirstPicked">
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${description}">
 <meta property="og:url" content="https://firstpicked.com.au/">
@@ -100,8 +100,8 @@ ${hreflangTags(langs)}
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>[hidden]:not([hidden="until-found"]){display:none!important}</style>
 <script>window.GEO_LIVE=true</script>
-${head.replace('<title>GEO Overview</title>', `<title>${title}</title>`)}
-<!-- Meta Pixel Code (GEO's own; asks first in Europe and the UK, see design/overview/pixel-head.js) -->
+${head.replace('<title>FirstPicked Overview</title>', `<title>${title}</title>`)}
+<!-- Meta Pixel Code (FirstPicked's own; asks first in Europe and the UK, see design/overview/pixel-head.js) -->
 <script>
 ${fs.readFileSync(path.join(dir, 'pixel-head.js'), 'utf8').trim()}
 </script>

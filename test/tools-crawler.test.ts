@@ -742,7 +742,7 @@ describe("the page head", () => {
   const find = (k: string, v: string) => list.find((m) => (m as Record<string, unknown>)[k] === v) as Record<string, string> | undefined;
 
   it("has the registry title and description, one canonical, Open Graph and Twitter tags, no robots meta", () => {
-    expect(list.filter((m) => "title" in m)).toEqual([{ title: "AI Crawler Checker: Which AI Bots Can Read Your Site | GEO" }]);
+    expect(list.filter((m) => "title" in m)).toEqual([{ title: "AI Crawler Checker: Can AI Read Your Site? | FirstPicked" }]);
     expect(TOOL.title.length).toBeLessThan(60);
     expect(find("name", "description")?.content).toBe(TOOL.description);
     expect(TOOL.description.length).toBeLessThan(155);
@@ -767,7 +767,7 @@ describe("the page head", () => {
     expect(byType("WebApplication").offers.price).toBe("0");
     expect(byType("WebPage").dateModified).toBe(TOOL.updated);
     expect(byType("BreadcrumbList").itemListElement).toHaveLength(3);
-    expect(byType("Organization").name).toBe("GEO");
+    expect(byType("Organization").name).toBe("FirstPicked");
     expect(byType("FAQPage").mainEntity.map((q: any) => [q.name, q.acceptedAnswer.text])).toEqual(copy.FAQS.map((f) => [f.q, f.a]));
   });
 
@@ -830,7 +830,7 @@ describe("the page (server render, no JavaScript)", () => {
 
   it("has exactly one button under the result, with the spec's words and link", () => {
     expect(out.match(/tl-cta"/g)).toHaveLength(1);
-    expect(out).toMatch(/<a class="ck-btn ck-btn-dark tl-cta" href="\/\?ref=tool-ai-crawler-checker#how">Let GEO check this for you every week/);
+    expect(out).toMatch(/<a class="ck-btn ck-btn-dark tl-cta" href="\/\?ref=tool-ai-crawler-checker#how">Let FirstPicked check this for you every week/);
     expect(out.indexOf('id="result"')).toBeLessThan(out.indexOf("tl-cta-card"));
     expect(out.indexOf("tl-cta-card")).toBeLessThan(out.indexOf('id="what-it-checks"'));
   });
@@ -853,7 +853,7 @@ describe("the page (server render, no JavaScript)", () => {
     }
     expect(out).not.toMatch(/<details|\shidden[\s>=]/);
     for (const s of TOOL.related) expect(out).toContain(`<a href="${toolBySlug(s).path}">${toolBySlug(s).name}</a>`);
-    expect(plain).toContain("Updated 11 October 2026 · Made by GEO");
+    expect(plain).toContain("Updated 11 October 2026 · Made by FirstPicked");
     expect(out).toContain('class="tl-foot"');
     expect(out).toContain('href="/tools"');
     for (const t of TOOLS) expect(out).toContain(`href="${t.path}"`);
@@ -925,8 +925,9 @@ describe("copy rules", () => {
     const shown = text(renderPage());
     expect(shown).not.toMatch(/\u2014|\s\u2013\s/);
     expect(shown).not.toMatch(/\bAEO\b| LLM|generative engine optimization/);
-    // "GEO" only as the brand name.
-    expect(shown.match(/\bGEO\b/g)?.length).toBeGreaterThan(0);
+    // "FirstPicked" only as the brand name.
+    expect(shown.match(/\bFirstPicked\b/g)?.length).toBeGreaterThan(0);
+    expect(shown).not.toMatch(/\bGEO\b/);
   });
 
   it("never says FAQ markup or robots.txt gets anyone into AI answers or rich results", () => {

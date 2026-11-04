@@ -216,11 +216,11 @@ function geoStep(joinUrl: string): PlanStep {
   const plan = PLANS.pro;
   return {
     kind: "geo",
-    title: "Let GEO do this for you",
-    body: `GEO checks up to ${plan.questions} buying questions every day on ChatGPT, Gemini, Perplexity and Google AI Overviews, writes buying guides and Reddit replies for you, and our team pitches the sites AI quotes most.`,
+    title: "Let FirstPicked do this for you",
+    body: `FirstPicked checks up to ${plan.questions} buying questions every day on ChatGPT, Gemini, Perplexity and Google AI Overviews, writes buying guides and Reddit replies for you, and our team pitches the sites AI quotes most.`,
     items: [
       {
-        label: "Join the GEO waitlist",
+        label: "Join the FirstPicked waitlist",
         detail: `${OFFER.line} We’ll reach out shortly.`,
         urls: [joinUrl],
       },

@@ -1,25 +1,25 @@
-# Ask GEO: what the assistant knows
+# Ask FirstPicked: what the assistant knows
 
-This file is the knowledge behind "Ask GEO", the help chat inside the GEO web app (firstpicked.com.au/dash/ask). It is
-written from this repository: what the app does today, the plans, and the GEO research notes
+This file is the knowledge behind "Ask FirstPicked", the help chat inside the FirstPicked web app (firstpicked.com.au/dash/ask). It is
+written from this repository: what the app does today, the plans, and the FirstPicked research notes
 (docs/geo-research.md). Keep it true: when a feature ships or changes, update this file in the same commit.
 Everything here may be said to customers. Internal plans, costs, suppliers and other customers never belong here.
 
 ---
 
-## About GEO
+## About FirstPicked
 
-GEO helps Shopify stores get recommended by AI assistants: ChatGPT, Gemini, Perplexity, Google AI Overviews
+FirstPicked helps Shopify stores get recommended by AI assistants: ChatGPT, Gemini, Perplexity, Google AI Overviews
 (and Claude on the paid plan). Shoppers now ask AI things like "best beard oil for dry skin in Australia" and buy
-what it names. GEO shows which brands AI recommends for the questions shoppers ask about the store's kind of
+what it names. FirstPicked shows which brands AI recommends for the questions shoppers ask about the store's kind of
 product, why, and what to do about it, and it shows the clicks, orders and money that come from AI.
 
-- Website: firstpicked.com.au. Support email: ross@firstpicked.com.au. Ross is GEO's founder.
-- GEO's blog is at firstpicked.com.au/blog: plain-English articles on getting recommended by AI, three new ones a week
+- Website: firstpicked.com.au. Support email: ross@firstpicked.com.au. Ross is FirstPicked's founder.
+- FirstPicked's blog is at firstpicked.com.au/blog: plain-English articles on getting recommended by AI, three new ones a week
   (Monday, Wednesday and Friday). Free, no sign-in.
-- GEO works for Shopify stores only, worldwide, in English.
-- GEO reads only what anyone can see on the store (its public product pages). Nothing in the store's Shopify
-  admin changes. GEO can't edit the store for them yet.
+- FirstPicked works for Shopify stores only, worldwide, in English.
+- FirstPicked reads only what anyone can see on the store (its public product pages). Nothing in the store's Shopify
+  admin changes. FirstPicked can't edit the store for them yet.
 - Sign-in is by email link only: type your email at firstpicked.com.au/login, open the link we email (it works once,
   for 30 minutes), and tap Continue. You stay signed in for 30 days. There are no passwords.
 
@@ -36,7 +36,7 @@ product, why, and what to do about it, and it shows the clicks, orders and money
 4. Your dashboard appears with your results.
 5. Add the tracking code (Tracking code tab) so the dashboard can show sales from AI.
 
-One email account has one store. A store already on GEO under another email can't be added again; email
+One email account has one store. A store already on FirstPicked under another email can't be added again; email
 ross@firstpicked.com.au if that's your store.
 
 ## The tabs in the app
@@ -78,7 +78,7 @@ setup). Left: every thread (All, To reply, Replied). Right: the post and a reply
 - The reply is written as you, the owner, and always says who you are, for example "(I run Brand, so I'm
   biased.)". Keep that line: Reddit asks for it, and people trust an honest reply more.
 - Edit the reply if you like, tap **Copy and open thread**, paste it into the thread on Reddit and post it
-  yourself. GEO never posts for you.
+  yourself. FirstPicked never posts for you.
 - **Mark as replied** keeps track. **Not relevant** removes a thread.
 - Tips: reply to a few good threads a week rather than many; check the subreddit's rules on self-promotion first;
   answer the question properly before naming your product; never pretend to be a customer and never ask friends
@@ -86,7 +86,7 @@ setup). Left: every thread (All, To reply, Replied). Right: the post and a reply
 
 ### Guide calendar
 
-A month view of the guide pages GEO writes for your website: one guide per day slot, each answering one buying
+A month view of the guide pages FirstPicked writes for your website: one guide per day slot, each answering one buying
 question AI doesn't name you for (the ones it never names you for come first, then bigger searches first). Each
 day shows the question, how many people search it a month, the kind of guide and where it is at. Click a day to
 read the whole page as it will look. The paid plan gets 12 a month (three a week).
@@ -115,17 +115,17 @@ How pages get onto your site: today by copy and paste as above. One-click publis
 connection is coming; don't promise a date.
 
 ### Tracking code
-A small code you paste into Shopify so GEO can count visits and orders that came from AI. It takes 2 minutes:
+A small code you paste into Shopify so FirstPicked can count visits and orders that came from AI. It takes 2 minutes:
 1. In Shopify admin, open Settings, then Customer events.
-2. Click **Add custom pixel** and name it GEO.
-3. Delete the example code Shopify shows, then paste your GEO code (Copy code button).
+2. Click **Add custom pixel** and name it FirstPicked.
+3. Delete the example code Shopify shows, then paste your FirstPicked code (Copy code button).
 4. Click **Save**, then **Connect**.
 The tab shows "Working" once the first visit arrives. It sends no names, emails or addresses, and it follows the
-store's cookie settings. To remove it, delete the GEO pixel in Settings, then Customer events.
+store's cookie settings. To remove it, delete the FirstPicked pixel in Settings, then Customer events.
 
-### Ask GEO
-This chat. It answers questions about GEO and about getting recommended by AI. Chats aren't saved: each visit
-starts fresh. If it can't help, it passes the question to the GEO team, who reply by email.
+### Ask FirstPicked
+This chat. It answers questions about FirstPicked and about getting recommended by AI. Chats aren't saved: each visit
+starts fresh. If it can't help, it passes the question to the FirstPicked team, who reply by email.
 
 ## How AI money is counted (and its limits)
 
@@ -134,7 +134,7 @@ starts fresh. If it can't help, it passes the question to the GEO team, who repl
 - It's always an undercount. Some AI apps pass no referrer, and a shopper who sees you in ChatGPT and then Googles
   your name shows up as Google. Google AI Overviews can't be separated from normal Google search, so they aren't
   counted as AI.
-- GEO never claims all AI money was caused by GEO.
+- FirstPicked never claims all AI money was caused by FirstPicked.
 
 ## Plans and prices (USD)
 
@@ -162,14 +162,14 @@ score trend over time, and the monthly email report. Never say a coming-soon fea
 
 ## Privacy and data
 
-- GEO reads the store's public product pages and asks AI assistants questions about products like the store's.
+- FirstPicked reads the store's public product pages and asks AI assistants questions about products like the store's.
 - The tracking code sends visits that came from AI and order totals and products, never names, emails or
   addresses.
 - One store's data is never shown to or used for another store.
 - To delete an account or store, email ross@firstpicked.com.au (the assistant flags it to the team).
-- Ask GEO chats aren't saved.
+- Ask FirstPicked chats aren't saved.
 
-## What GEO never does
+## What FirstPicked never does
 
 Fake reviews, fake Reddit posts, posing as a customer, link swaps or link networks, buying links, or making up
 facts about products (ingredients, awards, certifications, stats). Health, skin and supplement products: no
@@ -179,11 +179,11 @@ medical or therapeutic claims.
 
 ## How to get recommended by AI: best practices
 
-These come from GEO's research (Ahrefs' studies of 75,000 brands and millions of AI answers, Hostinger, and our
+These come from FirstPicked's research (Ahrefs' studies of 75,000 brands and millions of AI answers, Hostinger, and our
 own checks). Nobody knows the full recipe yet; these are the strongest signals so far.
 
 ### How AI picks what to recommend
-- SEO gets you ranked, GEO gets you quoted. Normal SEO is still the foundation: most pages AI cites already rank
+- SEO gets you ranked, and being named in AI answers gets you quoted. Normal SEO is still the foundation: most pages AI cites already rank
   well on Google.
 - AI splits one question into many smaller searches ("fan-out") and builds its answer from several sources. A
   brand needs to be relevant across a whole topic, not one keyword.

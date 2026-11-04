@@ -1,4 +1,4 @@
-// Meta Pixel for GEO's own ads, added to the live home page's <head> only
+// Meta Pixel for FirstPicked's own ads, added to the live home page's <head> only
 // (assemble.mjs; the design preview never loads it). Meta's base code, with one change: visitors in Europe and
 // the UK (guessed from the browser's time zone) are asked first, so it waits for "OK" on the cookie notice
 // (parts/47-cookies.*). Everyone else gets it at once unless they said "No thanks" before. The choice is kept in

@@ -357,17 +357,17 @@ describe.skipIf(!url)("free check email capture (needs TEST_DATABASE_URL)", () =
       expect(msg.replyTo).toBe("hello@geo.test");
       expect(msg.headers).toEqual({ "List-Unsubscribe": `<${unsubscribeUrl}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" });
       expect(msg.idempotencyKey).toBe(`geo-report-email/${row.id}`);
-      expect(msg.attachments[0].filename).toBe("GEO-report-Kowhai-Co.pdf");
+      expect(msg.attachments[0].filename).toBe("FirstPicked-report-Kowhai-Co.pdf");
       expect(msg.attachments[0].content.subarray(0, 5).toString()).toBe("%PDF-");
       for (const body of [msg.html, msg.text]) {
         expect(body).toContain(unsubscribeUrl.replace(/&/g, body === msg.html ? "&amp;" : "&"));
-        expect(body).toContain("Sent by GEO."); // no legal name set in this test
+        expect(body).toContain("Sent by FirstPicked."); // no legal name set in this test
         expect(body).toContain("We won’t email you again unless you ask."); // didn't tick the tips box
         expect(body).not.toContain("keep sending me tips");
         expect(body).toContain("hello@geo.test");
         expect(body).toContain(`https://geo.test/check/${c.id}`);
         expect(body).toContain("https://geo.test/#waitlist");
-        expect(body).toContain("Join the GEO waitlist");
+        expect(body).toContain("Join the FirstPicked waitlist");
         expect(body).not.toMatch(/free trial/i);
         expect(body).toContain("Fix these on your product page");
         expect(body).toContain("Café Lip Co");
@@ -395,7 +395,7 @@ describe.skipIf(!url)("free check email capture (needs TEST_DATABASE_URL)", () =
       const msg = send.mock.calls[0][0];
       expect(msg.subject).toBe("Your free AI visibility report");
       for (const body of [msg.html, msg.text]) {
-        expect(body).toContain("Sent by Delport Digital Pty Ltd (ABN 12 345 678 901), trading as GEO, PO Box 123, Sydney NSW 2001.");
+        expect(body).toContain("Sent by Delport Digital Pty Ltd (ABN 12 345 678 901), trading as FirstPicked, PO Box 123, Sydney NSW 2001.");
         expect(body).not.toContain("evil.example"); // a zero-width space after the dot: no live link
         expect(body).toContain("evil.\u200bexample");
         expect(body).not.toContain("\u202e");

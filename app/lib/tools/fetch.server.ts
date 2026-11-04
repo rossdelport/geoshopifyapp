@@ -1,7 +1,7 @@
 // Guarded fetches for the site tools (robots.txt, llms.txt, home and product pages). Strangers choose
 // these addresses, so every fetch goes through safeFetch (check.server.ts): no private addresses,
 // DNS rebinding guard, redirects checked hop by hop (4 at most), body capped, decoded as UTF-8.
-// Our user agent stays "Mozilla/5.0 (compatible; GEO-check/1.0)": we never pretend to be a bot.
+// Our user agent stays "Mozilla/5.0 (compatible; FirstPicked-check/1.0)": we never pretend to be a bot.
 // A thrown error's message is never shown: every throw becomes "unreachable" with our own copy.
 
 import { safeFetch } from "../check.server";

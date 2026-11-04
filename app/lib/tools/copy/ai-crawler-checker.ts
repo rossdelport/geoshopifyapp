@@ -236,4 +236,4 @@ export const FAQS: ToolFaqItem[] = [
 ];
 
 /** The one button under the result. True: the app reads each store's robots.txt weekly (robots.server.ts). */
-export const CTA = { text: "Let GEO check this for you every week", href: "/?ref=tool-ai-crawler-checker#how" };
+export const CTA = { text: "Let FirstPicked check this for you every week", href: "/?ref=tool-ai-crawler-checker#how" };

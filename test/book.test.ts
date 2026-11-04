@@ -131,7 +131,7 @@ describe("the page", () => {
 
   it("is one page with one job: book a call, in the home page's look, kept out of search", async () => {
     const html = await (await call()).text();
-    expect(html).toContain("<title>Book a call with Ross · GEO</title>");
+    expect(html).toContain("<title>Book a call with Ross · FirstPicked</title>");
     expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
     expect(html).toContain('<h1 class="h1">Book a call <b>with Ross.</b></h1>');
     expect(html).toContain('<meta name="robots" content="noindex">');
@@ -195,7 +195,7 @@ describe("booking a call", () => {
     const { url, body } = h.events[0];
     expect(url).toBe("https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1&sendUpdates=all");
     expect(body).toMatchObject({
-      summary: "GEO call: Ross and Jane Smith",
+      summary: "FirstPicked call: Ross and Jane Smith",
       start: { dateTime: "2026-11-04T01:00:00.000Z" },
       end: { dateTime: "2026-11-04T01:15:00.000Z" }, // a 15-minute call
       attendees: [{ email: "jane@shopjane.com.au", displayName: "Jane Smith" }],

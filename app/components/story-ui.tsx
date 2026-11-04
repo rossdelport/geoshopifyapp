@@ -2,7 +2,7 @@
 // components; the routes load the stories. Styles: app/styles/check.css (the ck-* frame), app/styles/tools.css
 // (breadcrumb and header pill, tl-*), app/styles/story-card.css (the card, shared with the home page) and
 // app/styles/stories.css (st-*), all linked by routes/stories.tsx. Everything renders on the server and works
-// without JavaScript. Every story is another company's result: nothing here may suggest they use GEO.
+// without JavaScript. Every story is another company's result: nothing here may suggest they use FirstPicked.
 
 import type { ReactNode } from "react";
 import type { Crumb } from "../lib/tools/seo";
@@ -50,12 +50,12 @@ export function StoryShell({
         <div className="ck-band">
           <div className="ck-band-grid" aria-hidden="true" />
           <header className="ck-top">
-            <a className="ck-logo" href="/" aria-label="GEO home">
+            <a className="ck-logo" href="/" aria-label="FirstPicked home">
               <span className="ck-mark" aria-hidden="true">
                 <i />
                 <i />
               </span>
-              <span className="ck-word">GEO</span>
+              <span className="ck-word">FirstPicked</span>
             </a>
             <a className="ck-pill tl-pill" href={pill.href}>
               {pill.label}
@@ -131,7 +131,7 @@ export function ShopifyKey() {
   );
 }
 
-/** The one quiet invitation on these pages: GEO's free check, for the reader's own products. */
+/** The one quiet invitation on these pages: FirstPicked's free check, for the reader's own products. */
 export function TryLine() {
   return (
     <p className="st-try">

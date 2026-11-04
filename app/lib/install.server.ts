@@ -89,7 +89,7 @@ async function tellFounderNewStore(domain: string, again: boolean) {
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
-/** The email to GEO_ALERT_EMAIL when a store installs GEO (exported for tests). */
+/** The email to GEO_ALERT_EMAIL when a store installs FirstPicked (exported for tests). */
 export function installNoticeEmail(
   s: { domain: string; name: string | null; email: string | null; country: string; devStore: boolean },
   again: boolean,
@@ -101,8 +101,8 @@ export function installNoticeEmail(
     `<b>Country:</b> ${esc(s.country)}`,
   ];
   if (s.devStore) lines.push("<b>Test store:</b> yes (a Shopify development store, never charged)");
-  if (again) lines.push("They had GEO before and came back.");
-  return { subject: `New store installed GEO: ${store}`, html: `<p>${lines.join("<br>")}</p>` };
+  if (again) lines.push("They had FirstPicked before and came back.");
+  return { subject: `New store installed FirstPicked: ${store}`, html: `<p>${lines.join("<br>")}</p>` };
 }
 
 registerJob("install.notice", async (job) => {

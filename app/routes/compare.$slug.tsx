@@ -31,8 +31,8 @@ export const meta: MetaFunction<typeof loader> = ({ data: d }) =>
       })
     : pageMeta({
         path: COMPARE_HUB.path,
-        title: "We couldn't find that page | GEO",
-        description: "This page doesn't exist. See every comparison of agencies, tools and GEO.",
+        title: "We couldn't find that page | FirstPicked",
+        description: "This page doesn't exist. See every comparison of agencies, tools and FirstPicked.",
         noindex: true,
       });
 
@@ -96,7 +96,7 @@ export default function ComparePageView() {
             <h2 className="ck-h2" id="cta-h">
               Want us to do it for you?
             </h2>
-            <p>GEO is A$1,000 a month, done for you, for 5 Australian Shopify brands. No lock-in, and a full refund if you&apos;re not happy after the first month.</p>
+            <p>FirstPicked is A$1,000 a month, done for you, for 5 Australian Shopify brands. No lock-in, and a full refund if you&apos;re not happy after the first month.</p>
             <a className="ck-btn ck-btn-dark" href={waitlistHref(page.slug)}>
               Join the waitlist
             </a>
@@ -130,7 +130,7 @@ export default function ComparePageView() {
             </ul>
             <p className="bl-sources-note">
               Other companies&apos; prices and features were checked on {formatUpdated(page.checked)} and can change. Tell us if something is out of
-              date and we&apos;ll fix it. GEO is not linked to any company named here.
+              date and we&apos;ll fix it. FirstPicked is not linked to any company named here.
             </p>
           </section>
         </article>
@@ -169,7 +169,7 @@ function CompareHero({ page }: { page: ComparePage }) {
         </p>
       ))}
       <p className="st-byline">
-        By the GEO team · Checked <time dateTime={page.checked}>{formatUpdated(page.checked)}</time>
+        By the FirstPicked team · Checked <time dateTime={page.checked}>{formatUpdated(page.checked)}</time>
       </p>
     </header>
   );

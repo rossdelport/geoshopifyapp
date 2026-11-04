@@ -281,7 +281,7 @@ describe.skipIf(!url)("free product check (needs TEST_DATABASE_URL)", () => {
     expect(third.ok).toBe(true);
     expect(await check.createCheck({ url: "https://shop-b.com.au/products/b", country: "AU", ip: "1.2.3.4" })).toEqual({
       ok: false,
-      error: "This connection has reached the free check limit for now (3 checks in 24 hours). Try again tomorrow, or join the GEO waitlist.",
+      error: "This connection has reached the free check limit for now (3 checks in 24 hours). Try again tomorrow, or join the FirstPicked waitlist.",
     });
     // Re-using an existing report still works when the allowance is used up.
     expect((await check.createCheck({ url: LINK, ip: "1.2.3.4" })).ok).toBe(true);

@@ -8,7 +8,7 @@ import styles from "../styles/web.css?url";
 // links before people do, and a link works once. The button signs this browser in and goes on to the app.
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
-export const meta: MetaFunction = () => [{ title: "Sign in · GEO" }, { name: "robots", content: "noindex" }];
+export const meta: MetaFunction = () => [{ title: "Sign in · FirstPicked" }, { name: "robots", content: "noindex" }];
 
 export const loader = async ({ params }: LoaderFunctionArgs) => ({ usable: await loginLinkUsable(params.token ?? "") });
 
@@ -34,7 +34,7 @@ export default function LoginLink() {
   }
   return (
     <Solo>
-      <h1>Welcome to GEO</h1>
+      <h1>Welcome to FirstPicked</h1>
       <p>Click the button to finish signing in.</p>
       <Form method="post">
         <button className="w-btn" type="submit" disabled={busy} style={{ width: "100%" }}>
@@ -43,7 +43,7 @@ export default function LoginLink() {
               <span className="w-spin" aria-hidden="true" /> Signing in…
             </>
           ) : (
-            "Continue to GEO"
+            "Continue to FirstPicked"
           )}
         </button>
       </Form>

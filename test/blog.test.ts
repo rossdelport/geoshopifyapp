@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- reads meta descriptors and JSON-LD of many shapes */
-// GEO's own blog. Pure parts: the schedule (first six half an hour apart, then Monday, Wednesday and Friday from 9am
+// FirstPicked's own blog. Pure parts: the schedule (first six half an hour apart, then Monday, Wednesday and Friday from 9am
 // Sydney, one a day, a pause after a failed write), the topic list (comparisons first, each once), the knowledge pack
 // and allowed sources, and `finishPost` (dashes tidied, sources only from the pack, real related links, refused when
-// thin or when it says a brand uses GEO). Pages: /blog and /blog/<slug> rendered with createRoutesStub and a faked
+// thin or when it says a brand uses FirstPicked). Pages: /blog and /blog/<slug> rendered with createRoutesStub and a faked
 // database: H1, cards, byline, sources, the AI note, JSON-LD, no em dash, and a 404 with noindex for unknown slugs.
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -118,7 +118,7 @@ describe("the knowledge pack", () => {
     expect(pack).toContain(TECHCRUNCH);
     for (const s of STORIES) expect(pack).toContain(`Story slug: ${s.slug}`);
     for (const t of TOOLS) expect(pack).toContain(`tool slug: ${t.slug}`);
-    expect(pack).toContain("none are GEO customers");
+    expect(pack).toContain("none are FirstPicked customers");
   });
 
   it("allows only outside pages as sources", () => {
@@ -158,14 +158,14 @@ describe("finishPost", () => {
     expect(() => blog.finishPost(draft({ intro: [] }), TOPIC, allowed)).toThrow(/intro/);
   });
 
-  it("refuses any line that makes a story's brand a GEO customer", () => {
+  it("refuses any line that makes a story's brand a FirstPicked customer", () => {
     const brand = STORIES[0].brand;
-    expect(blog.customerClaim(`${brand} got sales from ChatGPT. GEO shows you the same numbers for your store.`)).toBeNull();
+    expect(blog.customerClaim(`${brand} got sales from ChatGPT. FirstPicked shows you the same numbers for your store.`)).toBeNull();
     expect(blog.customerClaim("Stores on any plan see this on the dashboard.")).toBeNull();
-    expect(blog.customerClaim(`${brand} uses GEO to track this.`)).toMatch(/uses GEO/);
-    expect(blog.customerClaim(`With GEO, ${brand} doubled its sales.`)).toContain(brand);
-    expect(blog.customerClaim("Thanks to GEO, the brand doubled its sales.")).toMatch(/Thanks to GEO/);
-    expect(() => blog.finishPost(draft({ intro: [`${brand} uses GEO to track this.`, para(2)] }), TOPIC, allowed)).toThrow(/uses GEO/);
+    expect(blog.customerClaim(`${brand} uses FirstPicked to track this.`)).toMatch(/uses FirstPicked/);
+    expect(blog.customerClaim(`With FirstPicked, ${brand} doubled its sales.`)).toContain(brand);
+    expect(blog.customerClaim("Thanks to FirstPicked, the brand doubled its sales.")).toMatch(/Thanks to FirstPicked/);
+    expect(() => blog.finishPost(draft({ intro: [`${brand} uses FirstPicked to track this.`, para(2)] }), TOPIC, allowed)).toThrow(/uses FirstPicked/);
   });
 
   it("fits a description under 160 characters by whole sentences, or at a word", () => {
@@ -262,7 +262,7 @@ describe("the pages", () => {
     const html = render("/blog/first-post", data, page.default as ComponentType, "post");
     const plain = text(html);
     expect(html).toContain('<h1 class="ck-h1 st-h1" id="post-h1">ChatGPT vs Google AI Overviews: where product questions get answered</h1>');
-    expect(plain).toContain("The GEO team · 15 October 2026 · ");
+    expect(plain).toContain("The FirstPicked team · 15 October 2026 · ");
     expect(plain).toMatch(/\d+ minute read/);
     for (const s of post.body.sections) expect(html).toContain(`>${s.heading}</h2>`);
     expect(html).toContain("<li>One, two</li>");
@@ -270,7 +270,7 @@ describe("the pages", () => {
     expect(plain).toContain("Questions people ask");
     expect(html).toContain("<summary>Does it change?</summary>");
     expect(html).toContain(`<a href="${TECHCRUNCH}" target="_blank" rel="noopener noreferrer">TechCrunch`);
-    expect(plain).toContain("Written by the GEO team with help from AI");
+    expect(plain).toContain("Written by the FirstPicked team with help from AI");
     expect(plain).toContain("Stories worth reading");
     expect(html).toContain(`href="/stories/${STORIES[0].slug}"`);
     expect(plain).toContain("Free tools that help");

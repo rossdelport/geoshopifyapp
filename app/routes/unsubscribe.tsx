@@ -8,7 +8,7 @@ import { EMAIL_PAGE_FONTS, EmailPage, emailPage } from "../components/email-page
 // GET shows a small confirm page; POST unsubscribes. Mail apps' one-click unsubscribe
 // (List-Unsubscribe-Post) POSTs "List-Unsubscribe=One-Click" to the same link, token in the URL.
 
-export const meta: MetaFunction = () => [{ title: "Unsubscribe · GEO" }, { name: "robots", content: "noindex" }];
+export const meta: MetaFunction = () => [{ title: "Unsubscribe · FirstPicked" }, { name: "robots", content: "noindex" }];
 
 export const links: LinksFunction = () => EMAIL_PAGE_FONTS;
 
@@ -45,7 +45,7 @@ export default function Unsubscribe() {
           for another report later, we’ll send just that report.
         </p>
         <a href="/" style={s.link}>
-          Back to GEO
+          Back to FirstPicked
         </a>
       </>
     );
@@ -53,16 +53,16 @@ export default function Unsubscribe() {
     body = (
       <>
         <h1 style={s.h1}>This link doesn’t work</h1>
-        <p style={s.p}>It may be old or cut short. Use the unsubscribe link in your latest email from GEO, or reply to that email and we’ll take you off the list.</p>
+        <p style={s.p}>It may be old or cut short. Use the unsubscribe link in your latest email from FirstPicked, or reply to that email and we’ll take you off the list.</p>
         <a href="/" style={s.link}>
-          Back to GEO
+          Back to FirstPicked
         </a>
       </>
     );
   } else {
     body = (
       <>
-        <h1 style={s.h1}>Unsubscribe from GEO emails?</h1>
+        <h1 style={s.h1}>Unsubscribe from FirstPicked emails?</h1>
         <p style={s.p}>
           We’ll stop sending {maskedEmail ? <b>{maskedEmail}</b> : "you"} reports and tips about getting recommended by AI.
         </p>

@@ -33,7 +33,7 @@ export const headers = toolHeaders;
 
 /** Only for the error page (every page under /stories exports its own meta). */
 export const meta: MetaFunction = ({ error }) =>
-  error ? [{ title: "Something went wrong | GEO" }, { name: "robots", content: "noindex" }] : [];
+  error ? [{ title: "Something went wrong | FirstPicked" }, { name: "robots", content: "noindex" }] : [];
 
 export default function StoriesLayout() {
   return <Outlet />;

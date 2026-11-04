@@ -216,7 +216,7 @@
   });
 
   // ---------- fix: approve and undo ----------
-  // Approving shows the fix as live, says when GEO asks AI again, takes one off the Fixes count and marks
+  // Approving shows the fix as live, says when FirstPicked asks AI again, takes one off the Fixes count and marks
   // the question it helps in Questions. Undo puts all of it back.
   var fix = $('.scr-fix');
   var approve = $('.scr-approve');
@@ -234,7 +234,7 @@
     if (badge) { badge.textContent = done ? '1' : '2'; play(badge, 'is-bump'); }
     if (chip) { chip.hidden = !done; if (done) play(chip, 'is-enter'); }
     (done ? undo : approve).focus();
-    say(done ? 'Pushed to Shopify. GEO asks AI again on Monday. You can undo it.' : 'Undone. The old description is back.');
+    say(done ? 'Pushed to Shopify. FirstPicked asks AI again on Monday. You can undo it.' : 'Undone. The old description is back.');
   }
   if (fix && approve && undo) {
     approve.addEventListener('click', function () { if (!fix.classList.contains('is-done')) setDone(true); });

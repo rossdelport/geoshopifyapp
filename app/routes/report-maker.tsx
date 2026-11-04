@@ -60,7 +60,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export const headers: HeadersFunction = () => new Headers({ "Cache-Control": "no-store", "X-Robots-Tag": "noindex" });
 
-export const meta: MetaFunction = () => [{ title: "Report maker | GEO" }, { name: "robots", content: "noindex" }];
+export const meta: MetaFunction = () => [{ title: "Report maker | FirstPicked" }, { name: "robots", content: "noindex" }];
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: webStyles },
@@ -152,7 +152,7 @@ export default function ReportMaker() {
           <i />
           <i />
         </span>
-        <span>GEO</span>
+        <span>FirstPicked</span>
         <em>Report maker</em>
       </header>
 

@@ -1,4 +1,4 @@
-// Small shared pieces for the GEO web app pages (firstpicked.com.au/login, /start, /dash).
+// Small shared pieces for the FirstPicked web app pages (firstpicked.com.au/login, /start, /dash).
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { Link, useNavigation } from "react-router";
 
@@ -10,12 +10,12 @@ export function Logo({ to }: { to?: string }) {
   return to ? (
     <Link className="w-logo" to={to} prefetch="intent">
       <i aria-hidden="true" />
-      GEO
+      FirstPicked
     </Link>
   ) : (
     <a className="w-logo" href="/">
       <i aria-hidden="true" />
-      GEO
+      FirstPicked
     </a>
   );
 }

@@ -70,6 +70,6 @@ export const BOOK_ERRORS = {
   store: "Please enter your store’s website, like yourstore.com.au.",
   taken: "Sorry, that time was just taken. Please pick another one.",
   tooMany: "You’ve booked a lot today. Please text Ross on 0400 369 865.",
-  crossSite: "Please use the form on the GEO website.",
+  crossSite: "Please use the form on the FirstPicked website.",
   closed: "Online booking isn’t open right now. Please text Ross on 0400 369 865.",
 };

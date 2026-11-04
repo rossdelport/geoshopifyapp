@@ -1,4 +1,4 @@
-// The guide calendar for web app stores (Ross, 2026-10-16): a month view of the guide pages GEO writes for the store,
+// The guide calendar for web app stores (Ross, 2026-10-16): a month view of the guide pages FirstPicked writes for the store,
 // one per buying question AI doesn't name it for. Each day's guide is written two days before (the guide.write job,
 // through the fix engine's writer, so the same checks apply: strict question-and-answer form, the claims check, links
 // only to pages we know) and goes live on the day: through the store's Shopify connection when it has one

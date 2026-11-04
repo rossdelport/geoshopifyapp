@@ -1,8 +1,8 @@
-// What GEO's own blog writes about (Ross, 2026-10-15: practise what we preach). Each topic is written once, in
+// What FirstPicked's own blog writes about (Ross, 2026-10-15: practise what we preach). Each topic is written once, in
 // order, three a week; when the list runs out the writer proposes new ones that fit the kinds below. Pure.
 // Rules for every topic: for Shopify store owners, about getting recommended by AI assistants and the search
 // traffic around it, answerable from the knowledge pack (docs/facts.md, docs/geo-research.md, the stories, the
-// Ask GEO guide). Never a comparison that names another company's product.
+// Ask FirstPicked guide). Never a comparison that names another company's product.
 
 export const BLOG_KINDS = ["comparison", "how-to", "explainer", "checklist", "myths", "data"] as const;
 export type BlogKind = (typeof BLOG_KINDS)[number];
@@ -169,7 +169,7 @@ export const BLOG_TOPICS: BlogTopic[] = [
     key: "stories-what-brands-did",
     kind: "data",
     title: "What brands that got sales from AI actually did: the pattern across the stories",
-    brief: "Only from the stories pages: the common moves (clear answers, mentions, Reddit, product data) and the honest caveats (not GEO customers, self-reported numbers).",
+    brief: "Only from the stories pages: the common moves (clear answers, mentions, Reddit, product data) and the honest caveats (not FirstPicked customers, self-reported numbers).",
   },
   {
     key: "product-data-vs-blog-content",

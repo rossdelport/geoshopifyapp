@@ -26,7 +26,7 @@ describe("home page", () => {
     const html = await res.text();
     expect(html).toContain("<!doctype html>");
     expect(html).toContain('<html lang="en">');
-    expect(html).toContain("<title>GEO · Get your products recommended by AI</title>");
+    expect(html).toContain("<title>FirstPicked · Get your products recommended by AI</title>");
     expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
     expect(html).toContain('<h1 class="h1" id="hero-h">Shoppers ask AI what to buy. <b>Make it <span class="hl">pick you</span>.</b></h1>');
     // no longer a hidden preview
@@ -45,7 +45,7 @@ describe("home page", () => {
     expect(html).not.toMatch(/ – /);
   });
 
-  it("uses the GEO logo as its icon (svg, ico and the home screen icon)", async () => {
+  it("uses the FirstPicked logo as its icon (svg, ico and the home screen icon)", async () => {
     const html = await home();
     expect(html).toContain('<link rel="icon" href="/favicon.svg" type="image/svg+xml">');
     expect(html).toContain('<link rel="icon" href="/favicon.ico" sizes="any">');
@@ -75,7 +75,7 @@ describe("home page", () => {
     expect([...script.matchAll(/name: '([^']+)'/g)].map((m) => m[1])).toEqual(["ChatGPT", "Gemini", "Perplexity", "Google AI Overviews", "Claude"]);
     expect(script.match(/q: '/g)).toHaveLength(5);
     expect(html).toContain("var HOLD = 3000");
-    // GEO can't tell sales from Google AI Overviews apart from normal Google, so that answer shows a place, not an order
+    // FirstPicked can't tell sales from Google AI Overviews apart from normal Google, so that answer shows a place, not an order
     expect(script).toContain("chip: ['#1', 'in Google AI Overviews']");
     expect(script).not.toMatch(/order from Google/);
   });
@@ -88,7 +88,7 @@ describe("home page", () => {
     const cta = html.slice(start, html.indexOf("</div>", start));
     expect(cta).toContain('href="/book">Get started</a>');
     expect(cta).toMatch(/<img src="[^"]*ross[^"]*\.webp" alt="" width="46" height="46"/);
-    expect(cta).toContain("Not sure if GEO suits your store?");
+    expect(cta).toContain("Not sure if FirstPicked suits your store?");
     expect(cta).toContain('Text Ross, the founder: <a href="sms:+61400369865">0400 369 865</a>');
   });
 
@@ -131,7 +131,7 @@ describe("home page", () => {
     expect(price).toContain('<span class="btn-glow" aria-hidden="true"></span></a>');
     expect(html).toContain("matchMedia('(hover: hover) and (pointer: fine)')");
     // Ross (3 Nov 2026): the FAQ's "More questions?" chip is gone, and its question tile has a clean icon
-    expect(html).not.toContain("More questions? Ask GEO inside the app");
+    expect(html).not.toContain("More questions? Ask FirstPicked inside the app");
     expect(html).toContain('<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>');
     // "Why now" ends with a small graph going up, on the same line as "fast." (Ross, 3 Nov 2026), in gold since 4 Nov
     expect(html).toContain('<b>And it’s growing <span class="up">fast.<svg class="up-graph"');
@@ -151,7 +151,7 @@ describe("home page", () => {
     for (const lang of HOME_LANGS) expect(head).toContain(`<link rel="alternate" hreflang="${lang}" href="https://firstpicked.com.au/${lang}">`);
     expect(head).toContain('<meta property="og:url" content="https://firstpicked.com.au/">');
     expect(head).toContain('<meta property="og:image" content="https://firstpicked.com.au/og/home.png">');
-    expect(head).toContain('<meta property="og:title" content="GEO · Get your products recommended by AI">');
+    expect(head).toContain('<meta property="og:title" content="FirstPicked · Get your products recommended by AI">');
     expect(head).toContain('<meta name="twitter:card" content="summary_large_image">');
     expect(existsSync(join(ROOT, "public", "og", "home.png"))).toBe(true);
     const json = /<script type="application\/ld\+json">([^<]*)<\/script>/.exec(head)?.[1];
@@ -198,7 +198,7 @@ describe("home page", () => {
     expect(html.toLowerCase()).toContain("our 2025 estimate");
   });
 
-  it("loads GEO's Meta pixel in the head (asking first in Europe and the UK), with the cookie notice and Lead on joining", async () => {
+  it("loads FirstPicked's Meta pixel in the head (asking first in Europe and the UK), with the cookie notice and Lead on joining", async () => {
     const html = await home();
     const head = html.slice(0, html.indexOf("</head>"));
     // the same code as the pages in other languages (design/overview/pixel-head.js)
@@ -222,7 +222,7 @@ describe("home page", () => {
     expect(start).toBeGreaterThan(-1);
     const sec = html.slice(start, html.indexOf("</section>", start));
     expect(sec).toContain('href="/stories">See all stories');
-    expect(sec).toContain("These brands don’t use GEO.");
+    expect(sec).toContain("These brands don’t use FirstPicked.");
     // The track holds the cards twice: the second copy is hidden from screen readers and skipped by the keyboard.
     const groups = [...sec.matchAll(/<ul class="st-group" role="list"( aria-hidden="true")?>([\s\S]*?)<\/ul>/g)];
     expect(groups.map((g) => Boolean(g[1]))).toEqual([false, true]);

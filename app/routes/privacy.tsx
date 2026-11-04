@@ -14,8 +14,8 @@ import { SiteFooter } from "../components/site-footer";
 export const meta: MetaFunction = () =>
   pageMeta({
     path: "/privacy",
-    title: "GEO privacy policy",
-    description: "What data GEO collects and why, how long we keep it, and who helps us run GEO, its free product check and its free tools.",
+    title: "FirstPicked privacy policy",
+    description: "What data FirstPicked collects and why, how long we keep it, and who helps us run FirstPicked, its free product check and its free tools.",
     image: "/og/home.png",
     imageAlt: "A small clay shop with a star in a speech bubble above it",
   });
@@ -29,7 +29,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 const privacyData = () => ({
   contact: process.env.SUPPORT_EMAIL ?? null,
-  // Who runs GEO (GEO_LEGAL_NAME, GEO_ABN, GEO_POSTAL_ADDRESS): the same words as every email's footer.
+  // Who runs FirstPicked (GEO_LEGAL_NAME, GEO_ABN, GEO_POSTAL_ADDRESS): the same words as every email's footer.
   owner: (({ legalName, abn, postal }) => (legalName ? { legalName, abn, postal } : null))(senderIdentity()),
   inactiveYears: Math.round(RETENTION.inactiveSubscriberMonths / 12),
   visitIdDays: RETENTION.visitIdDays,
@@ -60,17 +60,17 @@ function PrivacyText() {
     useLoaderData<typeof loader>();
   return (
     <main style={page}>
-      <h1 style={{ fontSize: 34, color: "#0b0c2b", marginBottom: 4 }}>GEO privacy policy</h1>
+      <h1 style={{ fontSize: 34, color: "#0b0c2b", marginBottom: 4 }}>FirstPicked privacy policy</h1>
       <p style={{ color: "#707075", marginTop: 0 }}>Last updated {formatUpdated(PRIVACY_UPDATED)}</p>
 
       <p>
-        GEO is a Shopify app. It shows store owners how AI apps (like ChatGPT, Gemini and Perplexity) recommend their
+        FirstPicked is a Shopify app. It shows store owners how AI apps (like ChatGPT, Gemini and Perplexity) recommend their
         store. It suggests fixes and shows which sales came from AI. This page explains what data we use, why we use it,
         and how we keep it safe.
       </p>
       {owner ? (
         <p>
-          GEO is run by {owner.legalName}
+          FirstPicked is run by {owner.legalName}
           {owner.abn ? ` (ABN ${owner.abn})` : ""}
           {owner.postal ? `, ${owner.postal}` : ""}.
         </p>
@@ -100,7 +100,7 @@ function PrivacyText() {
 
       <h2 style={h2}>Free product check</h2>
       <p>
-        Anyone can check a product on our website without installing GEO. To run the check, we send the text of that
+        Anyone can check a product on our website without installing FirstPicked. To run the check, we send the text of that
         public product page to Claude (Anthropic). We send the questions to ChatGPT, Gemini and Perplexity through our
         data provider. We keep the product link, what we read from the page and the AI answers, and delete them after{" "}
         {publicCheckDays} days. We also keep a scrambled (hashed) copy of your IP address, so we can limit how many free
@@ -169,7 +169,7 @@ function PrivacyText() {
         website. To stop abuse, we keep a scrambled (hashed) copy of your IP address for a day.
       </p>
       <p>
-        We use this only to contact you about GEO. We delete it {waitlistMonths} months after you joined, or sooner if
+        We use this only to contact you about FirstPicked. We delete it {waitlistMonths} months after you joined, or sooner if
         you ask.
       </p>
 
@@ -180,7 +180,7 @@ function PrivacyText() {
         Ross the same details, and the ad&apos;s tracking tags (like utm_campaign) if you came from an ad. To stop abuse,
         we keep a scrambled (hashed) copy of your IP address for a day.
       </p>
-      <p>We use this only to talk with you about GEO, and we delete it if you ask.</p>
+      <p>We use this only to talk with you about FirstPicked, and we delete it if you ask.</p>
 
       <h2 style={h2}>Giveaway</h2>
       <p>
@@ -190,7 +190,7 @@ function PrivacyText() {
         of your IP address for a day.
       </p>
       <p>
-        We use this to run the draw and to contact you about GEO. We delete it {giveawayMonths} months after you
+        We use this to run the draw and to contact you about FirstPicked. We delete it {giveawayMonths} months after you
         entered, or sooner if you ask.
       </p>
 
@@ -207,12 +207,12 @@ function PrivacyText() {
       <p>
         In Europe and the UK, the pixel only starts after you click OK on the cookie notice. Everywhere else, it runs
         unless you click No thanks. To change your choice, clear this site&apos;s cookies and data in your browser, and the
-        notice shows again. The pixel is not part of the GEO app and never sees your store&apos;s data.
+        notice shows again. The pixel is not part of the FirstPicked app and never sees your store&apos;s data.
       </p>
 
       <h2 style={h2}>Why we use it</h2>
       <p>
-        <b>Your store&apos;s data:</b> only to run GEO for you. That means checking AI answers about your products,
+        <b>Your store&apos;s data:</b> only to run FirstPicked for you. That means checking AI answers about your products,
         writing suggested fixes for you to approve, and showing the clicks, orders and sales that came from AI. We
         don&apos;t use it for ads or anything else.
       </p>
@@ -221,13 +221,13 @@ function PrivacyText() {
         if you ticked the box and confirmed. We don&apos;t use your email address for anything else, and never for ads.
       </p>
       <p>
-        <b>Waitlist:</b> only to contact you about GEO.
+        <b>Waitlist:</b> only to contact you about FirstPicked.
       </p>
       <p>
-        <b>Booking a call:</b> only to talk with you about GEO.
+        <b>Booking a call:</b> only to talk with you about FirstPicked.
       </p>
       <p>
-        <b>Giveaway:</b> to run the draw and to contact you about GEO.
+        <b>Giveaway:</b> to run the draw and to contact you about FirstPicked.
       </p>
 
       <h2 style={h2}>Shoppers&apos; choices</h2>
@@ -239,7 +239,7 @@ function PrivacyText() {
       <h2 style={h2}>How long we keep it</h2>
       <ul>
         <li>We remove the scrambled browser id from visit records after {visitIdDays} days.</li>
-        <li>We keep everything else while GEO is installed, so you can compare with your starting point.</li>
+        <li>We keep everything else while FirstPicked is installed, so you can compare with your starting point.</li>
         <li>
           When you uninstall, Shopify tells us to delete your store&apos;s data (usually 48 hours later), and we do. As a
           backup, we delete it ourselves {uninstalledDays} days after you uninstall.
@@ -250,7 +250,7 @@ function PrivacyText() {
       <h2 style={h2}>How we protect it</h2>
       <p>
         All data is locked (encrypted) while it travels (HTTPS and encrypted database connections) and while it&apos;s
-        stored. Each store&apos;s data is kept apart, and only the GEO app can read it.
+        stored. Each store&apos;s data is kept apart, and only the FirstPicked app can read it.
       </p>
 
       <h2 style={h2}>Services we use</h2>
@@ -276,7 +276,7 @@ function PrivacyText() {
             by emailing <a href={`mailto:${contact}`}>{contact}</a>.
           </>
         ) : (
-          <> using the contact details on GEO&apos;s Shopify App Store listing. Uninstalling GEO also deletes everything.</>
+          <> using the contact details on FirstPicked&apos;s Shopify App Store listing. Uninstalling FirstPicked also deletes everything.</>
         )}
       </p>
       <p>

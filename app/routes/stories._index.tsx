@@ -53,7 +53,7 @@ export default function StoriesHub() {
         </section>
       ))}
       <p className="st-hub-note">
-        None of these brands are GEO customers. Each story is our summary of what the source reported, and links to it. The figures and quotes are
+        None of these brands are FirstPicked customers. Each story is our summary of what the source reported, and links to it. The figures and quotes are
         theirs.
       </p>
       <TryLine />

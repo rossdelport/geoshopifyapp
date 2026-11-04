@@ -1,5 +1,5 @@
 // The small pages our report emails link to (/unsubscribe, /tips): a white card on the lilac gradient
-// with the GEO mark. Inline styles, so they need no stylesheet. No login.
+// with the FirstPicked mark. Inline styles, so they need no stylesheet. No login.
 
 import type { ReactNode } from "react";
 
@@ -47,12 +47,12 @@ export function EmailPage({ children }: { children: ReactNode }) {
   return (
     <main style={emailPage.page}>
       <div style={emailPage.card}>
-        <a href="/" style={emailPage.logo} aria-label="GEO home">
+        <a href="/" style={emailPage.logo} aria-label="FirstPicked home">
           <svg width="22" height="22" viewBox="0 0 40 40" aria-hidden="true">
             <circle cx="13.5" cy="13.5" r="13.5" fill="#9faaf2" />
             <circle cx="26.5" cy="26.5" r="13.5" fill="#4050b0" />
           </svg>
-          GEO
+          FirstPicked
         </a>
         {children}
       </div>

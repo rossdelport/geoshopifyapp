@@ -10,12 +10,12 @@ import { countGuidePagesThisMonth } from "../lib/usage.server";
 import { localMonthStart } from "../lib/guide-calendar";
 import styles from "../styles/web.css?url";
 
-// The GEO web app's frame: the menu on the left (a top bar on phones) and the page on the right. Like RankPill's
-// layout (Ross, 2026-10-14) in GEO's colours: menu sections, this month's allowance, the store and the account at
+// The FirstPicked web app's frame: the menu on the left (a top bar on phones) and the page on the right. Like RankPill's
+// layout (Ross, 2026-10-14) in FirstPicked's colours: menu sections, this month's allowance, the store and the account at
 // the bottom.
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
-export const meta: MetaFunction = () => [{ title: "GEO" }, { name: "robots", content: "noindex" }];
+export const meta: MetaFunction = () => [{ title: "FirstPicked" }, { name: "robots", content: "noindex" }];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { user, shop } = await requireWebShop(request);
@@ -103,7 +103,7 @@ export default function Dash() {
               <span className="w-nav-label">Support</span>
               <NavLink to="/dash/ask" prefetch="intent" className={navClass}>
                 <Icon d={ICONS.spark} />
-                Ask GEO
+                Ask FirstPicked
               </NavLink>
               <a href="mailto:ross@firstpicked.com.au">
                 <Icon d={ICONS.mail} />

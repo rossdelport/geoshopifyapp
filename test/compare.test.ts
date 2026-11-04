@@ -16,7 +16,7 @@ describe("compare content", () => {
     expect(new Set(COMPARE_PAGES.map((p) => p.slug)).size).toBe(COMPARE_PAGES.length);
     for (const p of COMPARE_PAGES) {
       expect(p.title.length, p.slug).toBeLessThanOrEqual(60);
-      expect(p.title.endsWith(" | GEO")).toBe(true);
+      expect(p.title.endsWith(" | FirstPicked")).toBe(true);
       expect(p.description.length, p.slug).toBeLessThanOrEqual(155);
       expect(p.checked).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(p.sources.length).toBeGreaterThan(0);

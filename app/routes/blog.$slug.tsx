@@ -55,7 +55,7 @@ export const meta: MetaFunction<typeof loader> = ({ data: d }) =>
   d?.post
     ? pageMeta({
         path: postPath(d.post.slug),
-        title: `${d.post.title} | GEO`,
+        title: `${d.post.title} | FirstPicked`,
         description: d.post.description,
         image: BLOG_HUB.ogImage,
         imageAlt: BLOG_HUB.ogAlt,
@@ -63,7 +63,7 @@ export const meta: MetaFunction<typeof loader> = ({ data: d }) =>
       })
     : pageMeta({
         path: BLOG_HUB.path,
-        title: "We couldn't find that post | GEO",
+        title: "We couldn't find that post | FirstPicked",
         description: "This page doesn't exist. See every article on getting your store recommended by AI.",
         noindex: true,
       });
@@ -161,7 +161,7 @@ export default function BlogPostPage() {
             ) : null}
             <p className="bl-sources-note">
               {body.sources.length ? "Every number in this article comes from one of these pages. " : ""}
-              Written by the GEO team with help from AI, and checked against our facts sheet and these sources before publishing. Nothing here
+              Written by the FirstPicked team with help from AI, and checked against our facts sheet and these sources before publishing. Nothing here
               is a promise of results.
             </p>
           </section>

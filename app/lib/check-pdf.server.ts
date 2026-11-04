@@ -155,7 +155,7 @@ class Pdf {
       autoFirstPage: true,
       // A fixed creation date (pdfkit would use "now" and build the file ID from it), so the same check always
       // makes the same bytes: a retry then reuses Resend's idempotency key without a 409 (check-lead.server.ts).
-      info: { Title: title, Author: "GEO", Subject: "Free product check: does AI recommend this product?", Creator: "GEO", CreationDate: created },
+      info: { Title: title, Author: "FirstPicked", Subject: "Free product check: does AI recommend this product?", Creator: "FirstPicked", CreationDate: created },
     });
     const winAnsi: GlyphCheck = (cp) => WIN_ANSI.test(String.fromCodePoint(cp));
     if (fonts) {
@@ -299,7 +299,7 @@ class Pdf {
       const keep = this.doc.page.margins.bottom;
       this.doc.page.margins.bottom = 0; // writing below the margin must not start a new page
       this.doc.save().moveTo(M, H - 42).lineTo(W - M, H - 42).lineWidth(0.6).strokeColor(C.line).stroke().restore();
-      this.write("GEO, for Shopify stores worldwide", M, H - 34, { size: 8, color: C.muted, width: CW - 80 });
+      this.write("FirstPicked, for Shopify stores worldwide", M, H - 34, { size: 8, color: C.muted, width: CW - 80 });
       this.write(`Page ${i - range.start + 1} of ${range.count}`, W - M - 80, H - 34, { size: 8, color: C.muted, width: 80, align: "right" });
       this.doc.page.margins.bottom = keep;
     }
@@ -332,7 +332,7 @@ function drawTop(pdf: Pdf, input: PdfReportInput) {
   d.restore();
 
   pdf.logo(M, 30, 24);
-  pdf.write("GEO", M + 32, 33, { key: "bold", size: 16, color: C.navy, width: 80 });
+  pdf.write("FirstPicked", M + 32, 33, { key: "bold", size: 16, color: C.navy, width: 140 });
   const pill = "Free product check";
   pdf.use("bold", 9, C.cobalt);
   const pillW = d.widthOfString(pdf.t(pill, "bold")) + 22;
@@ -572,7 +572,7 @@ function drawQuestions(pdf: Pdf, input: PdfReportInput) {
     pdf.y += 8;
   });
   pdf.y += pdf.write(
-    `This quick check used ${input.questions.length} questions. GEO tracks up to ${PLANS.pro.questions} every day.`,
+    `This quick check used ${input.questions.length} questions. FirstPicked tracks up to ${PLANS.pro.questions} every day.`,
     M,
     pdf.y,
     { size: 8.5, color: C.muted },
@@ -582,8 +582,8 @@ function drawQuestions(pdf: Pdf, input: PdfReportInput) {
 
 function drawCta(pdf: Pdf, input: PdfReportInput) {
   const plan = PLANS.pro;
-  const heading = "Let GEO track this and do the work for you";
-  const body = `GEO checks up to ${plan.questions} buying questions every day, writes buying guides and Reddit replies for you, pitches the sites AI quotes most, and counts the orders it can trace back to AI.`;
+  const heading = "Let FirstPicked track this and do the work for you";
+  const body = `FirstPicked checks up to ${plan.questions} buying questions every day, writes buying guides and Reddit replies for you, pitches the sites AI quotes most, and counts the orders it can trace back to AI.`;
   const price = `${OFFER.line} Join the waitlist and we’ll reach out shortly.`;
   const iw = CW - 48;
   const online = input.checkUrl ? `See this report online: ${shortUrl(input.checkUrl, 90)}` : "";
@@ -595,7 +595,7 @@ function drawCta(pdf: Pdf, input: PdfReportInput) {
   let y = top + 24;
   y += pdf.write(heading, M + 24, y, { key: "bold", size: 15, color: C.white, width: iw, lineGap: 1 }) + 6;
   y += pdf.write(body, M + 24, y, { size: 10, color: C.onDark, width: iw }) + 16;
-  const label = "Join the GEO waitlist";
+  const label = "Join the FirstPicked waitlist";
   pdf.use("bold", 10.5, C.white);
   const bw = d.widthOfString(pdf.t(label, "bold")) + 36;
   d.save().roundedRect(M + 24, y, bw, 30, 15).fill(C.mid).restore();
@@ -611,7 +611,7 @@ function drawCta(pdf: Pdf, input: PdfReportInput) {
 
 /** The PDF report. Returns the file's bytes. */
 export async function buildCheckPdf(input: PdfReportInput): Promise<Buffer> {
-  const title = `GEO free product check: ${input.product.title}`;
+  const title = `FirstPicked free product check: ${input.product.title}`;
   const created = new Date(input.finishedAt ?? input.createdAt);
   const pdf = new Pdf(noDashes(title), `Free product check: ${input.product.title}`, Number.isFinite(created.getTime()) ? created : new Date(0));
   drawTop(pdf, input);
@@ -625,7 +625,7 @@ export async function buildCheckPdf(input: PdfReportInput): Promise<Buffer> {
   return pdf.finish();
 }
 
-/** "GEO-report-Coolabah-Grooming-Co.pdf": a safe file name from the brand. */
+/** "FirstPicked-report-Coolabah-Grooming-Co.pdf": a safe file name from the brand. */
 export function reportFileName(brand: string): string {
   const slug = brand
     .normalize("NFKD")
@@ -633,5 +633,5 @@ export function reportFileName(brand: string): string {
     .replace(/[^A-Za-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 60);
-  return `GEO-report-${slug || "product"}.pdf`;
+  return `FirstPicked-report-${slug || "product"}.pdf`;
 }

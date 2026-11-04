@@ -1,9 +1,9 @@
-# GEO overview page — build brief
+# FirstPicked overview page — build brief
 
-One long, very high-fidelity marketing + product-overview page for **GEO** (Shopify app that gets stores
+One long, very high-fidelity marketing + product-overview page for **FirstPicked** (Shopify app that gets stores
 recommended by ChatGPT & co and shows the money it brings in). It must **look and feel exactly like
 https://qarin.framer.website/** (same layout rhythm, type, colours, radii, shadows, card styles, section
-order) but with GEO's own content and screens. Reference screenshots of Qarin: `design/overview/ref/ref-00.png`
+order) but with FirstPicked's own content and screens. Reference screenshots of Qarin: `design/overview/ref/ref-00.png`
 … `ref-08.png` (1440 wide, top to bottom; some Qarin images failed to load in those shots — imagine real
 imagery there). Qarin's original copy: `design/overview/ref/qarin-copy.md`.
 
@@ -35,7 +35,7 @@ The page doubles as a **UI/UX overview**: every app screen appears as a crisp, r
     sales channels, later a post-purchase "How did you find us?" survey. Google AI Overviews can't be
     cleanly split from normal Google — we label that. We show a baseline and "growth since joining" and
     never claim all AI revenue was caused by the app.
-- **Plain English.** Never say GEO/AEO/LLM as jargon in copy (the product name "GEO" is fine). Say "AI
+- **Plain English.** Never say GEO/AEO/LLM as jargon in copy (the product name "FirstPicked" is fine). Say "AI
   search", "ChatGPT & co", "AI shopping assistants". Short sentences.
 - Sample store for mockups: **"Coolabah Grooming Co."** (fictional, men's grooming, Australia, AUD). Sample
   rivals are fictional too: **Ridgeback Beard Co., Saltbush Beard Co., Banksia Beard Co. and Wattlebird
@@ -46,7 +46,7 @@ The page doubles as a **UI/UX overview**: every app screen appears as a crisp, r
 
 ## Artifact contract (the page is published as a claude.ai Artifact)
 
-- No `<!doctype>`, `<html>`, `<head>`, `<body>`. The final file starts with `<title>GEO Overview</title>`,
+- No `<!doctype>`, `<html>`, `<head>`, `<body>`. The final file starts with `<title>FirstPicked Overview</title>`,
   then the Google Fonts `<link>`, then `<style>`.
 - Fonts only from Google Fonts: Geist (500, 600) for headings, Inter (400, 500, 600) for body.
   Fallback stacks are in base.css.
@@ -76,13 +76,13 @@ Tokens and primitives are in `design/overview/base.css` — use them, don't rede
 - Cards radius 16px (big frames 24px), soft shadow `0 20px 25px -5px rgba(0,0,0,.05)`, 1px borders.
 - Container max-width 1296px (72px side padding on desktop, 16px on mobile). Sections ~120px vertical.
 
-## Section map (Qarin section → GEO content). Keep Qarin's order and layouts.
+## Section map (Qarin section → FirstPicked content). Keep Qarin's order and layouts.
 
-1. **Nav** (floating rounded bar, `#fafafa`): GEO logo mark (two overlapping rounded shapes in blue/lavender
-   like Qarin's mark, plus wordmark "GEO"), links: Overview, Screens, How it works, Pricing, FAQ; right:
+1. **Nav** (floating rounded bar, `#fafafa`): FirstPicked logo mark (two overlapping rounded shapes in blue/lavender
+   like Qarin's mark, plus wordmark "FirstPicked"), links: Overview, Screens, How it works, Pricing, FAQ; right:
    dark button "Get your free scan". Mobile: links hide, button stays.
 2. **Hero**: pill "New · Now checks Google AI Overviews →". h1 "Get your store recommended by ChatGPT & co".
-   Sub: "GEO shows where AI shopping assistants recommend you, fixes your product pages in one click, and
+   Sub: "FirstPicked shows where AI shopping assistants recommend you, fixes your product pages in one click, and
    shows the sales AI sends your way." Buttons: dark "Get your free scan", white "See every screen".
    Below: the big **Dashboard mockup** (Shopify-admin-style embedded app frame: thin admin top bar, left
    app nav: Dashboard, Questions, Competitors, Fixes, Outreach, Settings) inside a white rounded 24px frame
@@ -93,7 +93,7 @@ Tokens and primitives are in `design/overview/base.css` — use them, don't rede
 3. **Engines marquee** (instead of "Trusted by"): line "Checks the answers shoppers actually see in" then a
    slow CSS marquee of engine/platform name chips with simple monogram icons: ChatGPT, Gemini, Perplexity,
    Google AI Overviews, Claude (Pro), Shopify. Fade edges.
-4. **Meet GEO** (bg `#fafafa`): label "Meet GEO", h2 "Everything you need to get picked by AI", sub. 2×2-ish
+4. **Meet FirstPicked** (bg `#fafafa`): label "Meet FirstPicked", h2 "Everything you need to get picked by AI", sub. 2×2-ish
    grid exactly like Qarin: left column two short wide cards, right column one tall card. Lavender gradient
    cards with mini UIs:
    - "Visibility by engine" — mini stacked bar chart (ChatGPT, Gemini, Perplexity, AI Overviews, Claude).
@@ -105,7 +105,7 @@ Tokens and primitives are in `design/overview/base.css` — use them, don't rede
    "1-click" undo on every change we make · "$0" for your first scan.
 6. **"See the money, not just mentions"** (Qarin "Visibility into every sales action"): left h2 + text +
    checklist with dividers (✓ Spot orders that came from ChatGPT, Perplexity and Gemini ✓ See revenue from
-   the guide pages GEO builds ✓ Compare against your own baseline from before you joined). Right: photo
+   the guide pages FirstPicked builds ✓ Compare against your own baseline from before you joined). Right: photo
    `img/team-laptop.jpg` (rounded 16px) + overlapping blue gradient stat card "How we spot an AI sale"
    ("ChatGPT adds utm_source=chatgpt.com to its links — we read it on every order.") + overlapping white
    chart card (AI orders per week bars).
@@ -147,10 +147,10 @@ Tokens and primitives are in `design/overview/base.css` — use them, don't rede
     stats right): label "Proof, not promises", h2 "What a real AI answer looks like". Card 1: image
     `img/beard-oil.jpg`; "quote" = the question in quotes; below it "ChatGPT · Australia · live test, Oct 2026";
     right stats: "4 brands named" · "4 sites cited". Card 2: image `img/founder-phone.jpg`; quote: "24 of 24
-    answers came back from 4 AI assistants in our live test." ; meta "GEO self-test · 9 Oct 2026"; stats
+    answers came back from 4 AI assistants in our live test." ; meta "FirstPicked self-test · 9 Oct 2026"; stats
     "~US$0.003 per answer" · "2 runs per engine".
 12. **Connections hub** (Qarin integrations): label "Connections", h2 "Plugs into Shopify. Reads the AI
-    answers for you.", sub, dark button "See what we connect to". Hub: centre GEO tile (blue, concentric
+    answers for you.", sub, dark button "See what we connect to". Hub: centre FirstPicked tile (blue, concentric
     lavender rounded rings) with tiles around it: Shopify, ChatGPT, Gemini, Perplexity, Google, Claude,
     Email reports, Web pixel. Tiles are white rounded squares with monogram/simple icons + tiny caption.
 13. **Pricing** (full-width blue gradient rounded section): label "Pricing", h2 "Simple plans. Real money
@@ -161,16 +161,16 @@ Tokens and primitives are in `design/overview/base.css` — use them, don't rede
 14. **FAQ**: left: label "FAQs", h2 "Got questions?", text, then dark rounded card with `img/support.jpg`
     (fills card, dark gradient at bottom) + text "Stuck on setup? We'll help you get your first scan
     running." + "Contact us ↗". Right: accordion cards (first open): How do you know a sale came from AI? ·
-    Will GEO change my store without asking? · Which AI assistants do you check? · Can I undo a change? ·
+    Will FirstPicked change my store without asking? · Which AI assistants do you check? · Can I undo a change? ·
     Does it write health or skin claims? · What's in the free scan?
-15. **Guides** (Qarin blog): label "Guide pages", h2 "Pages GEO can write for you", three cards with
+15. **Guides** (Qarin blog): label "Guide pages", h2 "Pages FirstPicked can write for you", three cards with
     images `img/guide-beard-oil.jpg`, `img/guide-sensitive.jpg`, `img/guide-gifts.jpg`; meta "Example ·
     Guide page"; titles "Best beard oil for dry skin in Australia", "Beard care for sensitive skin: what to
     look for", "Gift ideas for bearded men under $80"; link "See example →".
 16. **CTA + footer**: big light rounded section (hero-grid bg) with h2 "See where you stand with AI today",
     sub, white button "Get your free scan". Footer inside the same rounded light block: logo + one line,
     columns Product (Overview, Screens, Pricing, Changelog), Company (About, Privacy, Terms), Support
-    (Help, Contact, Setup guide). Bottom line: "© 2026 GEO · Made for Shopify stores in Australia & NZ".
+    (Help, Contact, Setup guide). Bottom line: "© 2026 FirstPicked · Made for Shopify stores in Australia & NZ".
 
 ## Images (generated with Treg → Gemini image, saved in `design/overview/img/`)
 

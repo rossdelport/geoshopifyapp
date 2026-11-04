@@ -16,8 +16,8 @@ import { SiteFooter } from "../components/site-footer";
 export const meta: MetaFunction = () =>
   pageMeta({
     path: "/terms",
-    title: "GEO terms of service",
-    description: "The rules for using GEO: our Done for you plan, the refund after month one, stopping any time, and our free tools.",
+    title: "FirstPicked terms of service",
+    description: "The rules for using FirstPicked: our Done for you plan, the refund after month one, stopping any time, and our free tools.",
     image: "/og/home.png",
     imageAlt: "A small clay shop with a star in a speech bubble above it",
   });
@@ -28,7 +28,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   if (moved) throw moved;
   return {
     contact: process.env.SUPPORT_EMAIL ?? null,
-    // Who runs GEO (GEO_LEGAL_NAME, GEO_ABN, GEO_POSTAL_ADDRESS): the same words as the privacy page and every email.
+    // Who runs FirstPicked (GEO_LEGAL_NAME, GEO_ABN, GEO_POSTAL_ADDRESS): the same words as the privacy page and every email.
     owner: (({ legalName, abn, postal }) => (legalName ? { legalName, abn, postal } : null))(senderIdentity()),
   };
 };
@@ -49,24 +49,24 @@ function TermsText() {
   const { contact, owner } = useLoaderData<typeof loader>();
   return (
     <main style={page}>
-      <h1 style={{ fontSize: 34, color: "#0b0c2b", marginBottom: 4 }}>GEO terms of service</h1>
+      <h1 style={{ fontSize: 34, color: "#0b0c2b", marginBottom: 4 }}>FirstPicked terms of service</h1>
       <p style={{ color: "#707075", marginTop: 0 }}>Last updated {formatUpdated(TERMS_UPDATED)}</p>
 
       <p>
-        These terms are the rules for using GEO. That means our website, our free tools and our {OFFER.name} plan. By
-        using GEO, you agree to them. If you don&apos;t agree, please don&apos;t use GEO.
+        These terms are the rules for using FirstPicked. That means our website, our free tools and our {OFFER.name} plan. By
+        using FirstPicked, you agree to them. If you don&apos;t agree, please don&apos;t use FirstPicked.
       </p>
       {owner ? (
         <p>
-          GEO is run by {owner.legalName}
+          FirstPicked is run by {owner.legalName}
           {owner.abn ? ` (ABN ${owner.abn})` : ""}
           {owner.postal ? `, ${owner.postal}` : ""}.
         </p>
       ) : null}
 
-      <h2 style={h2}>What GEO does</h2>
+      <h2 style={h2}>What FirstPicked does</h2>
       <p>
-        GEO helps your store get picked by AI apps like ChatGPT, Gemini and Perplexity. On our {OFFER.name} plan, our
+        FirstPicked helps your store get picked by AI apps like ChatGPT, Gemini and Perplexity. On our {OFFER.name} plan, our
         team does the work for you. We check which products AI picks, write buying guides, fix your product pages and
         email the sites AI trusts. We also show you the sales that came from AI.
       </p>
@@ -114,7 +114,7 @@ function TermsText() {
       <h2 style={h2}>Your part</h2>
       <ul>
         <li>Give us true facts about your store and products. We write from them, and we never make up facts.</li>
-        <li>Only use GEO for a store you own, or one you&apos;re allowed to run.</li>
+        <li>Only use FirstPicked for a store you own, or one you&apos;re allowed to run.</li>
         <li>If something we wrote is wrong, tell us and we&apos;ll fix it.</li>
         <li>You&apos;re in charge of your store, your products and your prices.</li>
       </ul>
@@ -131,7 +131,7 @@ function TermsText() {
       <h2 style={h2}>Who owns what</h2>
       <p>
         The work we make for you is yours. That means the buying guides, product page text and emails. You keep it,
-        even after you stop. GEO itself is ours. That means our website, our app, our tools and our code.
+        even after you stop. FirstPicked itself is ours. That means our website, our app, our tools and our code.
       </p>
       <p>You let us use your store&apos;s pages and the facts you give us, but only to do the work for you.</p>
 
@@ -147,7 +147,7 @@ function TermsText() {
 
       <h2 style={h2}>Other companies&apos; services</h2>
       <p>
-        GEO works with other companies&apos; services, like Shopify and the AI apps. Their own terms apply to them, and
+        FirstPicked works with other companies&apos; services, like Shopify and the AI apps. Their own terms apply to them, and
         we can&apos;t control what they do.
       </p>
 
