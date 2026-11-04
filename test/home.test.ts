@@ -28,7 +28,7 @@ describe("home page", () => {
     expect(html).toContain('<html lang="en">');
     expect(html).toContain("<title>GEO · Get your products recommended by AI</title>");
     expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
-    expect(html).toContain('<h1 class="h1" id="hero-h">Shoppers ask AI what to buy. <b>Make it pick you.</b></h1>');
+    expect(html).toContain('<h1 class="h1" id="hero-h">Shoppers ask AI what to buy. <b>Make it <span class="hl">pick you</span>.</b></h1>');
     // no longer a hidden preview
     expect(html).not.toMatch(/<meta name="robots"/);
     expect(html).not.toMatch(/noindex/i);
@@ -133,9 +133,9 @@ describe("home page", () => {
     // Ross (3 Nov 2026): the FAQ's "More questions?" chip is gone, and its question tile has a clean icon
     expect(html).not.toContain("More questions? Ask GEO inside the app");
     expect(html).toContain('<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>');
-    // "Why now" ends with a small purple graph going up, on the same line as "fast." (Ross, 3 Nov 2026)
+    // "Why now" ends with a small graph going up, on the same line as "fast." (Ross, 3 Nov 2026), in gold since 4 Nov
     expect(html).toContain('<b>And it’s growing <span class="up">fast.<svg class="up-graph"');
-    expect(html).toMatch(/\.up-graph\{[^}]*stroke:var\(--accent\)/);
+    expect(html).toMatch(/\.up-graph\{[^}]*stroke:var\(--gold-deep\)/);
     // the stories row moves again: its keyframes went missing with the old guides card on 3 Nov 2026
     expect(html).toContain("animation:belt 90s linear infinite");
     expect(html).toContain("@keyframes belt{to{transform:translateX(-50%)}}");
