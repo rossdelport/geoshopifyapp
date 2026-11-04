@@ -48,6 +48,8 @@
   --accent-50:#f2f0fe;--accent-100:#e4e0fd;--accent-ring:rgba(108,92,242,.35);
   /* the picture panels: purple at the top fading lighter, with a soft white glow at the bottom */
   --t1:#aba3f4;--t2:#bbb4f6;--t3:#dcd9fc;
+  /* one gold, only for a win: the store AI picks, the sale it brought, the price and growth (Ross, 4 Nov 2026) */
+  --gold:#edb158;--gold-hi:#f7d58f;--gold-deep:#d9982f;--gold-ink:#3a2604;--gold-50:#fdf5e6;--gold-100:#f4dcab;
   --good:#15803d;--good-bg:#e7f7ed;--warn:#a16207;--warn-bg:#fdf2d8;
   --shadow:0 1px 2px rgba(18,18,40,.05),0 14px 36px -18px rgba(18,18,40,.2);
   --font:Inter,"Inter Fallback",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -75,6 +77,9 @@ ul,ol{padding:0;list-style:none}
 /* Type: big lines in grey with the key words in near-black and bolder, like the reference video */
 .h1,.h2{font-family:Inter,"Inter Display Fallback",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink-2);font-weight:450;text-wrap:balance}
 .h1 b,.h2 b{color:var(--ink);font-weight:600}
+.hl{position:relative;isolation:isolate;white-space:nowrap}
+.hl::after{content:"";position:absolute;z-index:-1;left:-.04em;right:-.04em;bottom:.04em;height:.2em;border-radius:.1em;background:linear-gradient(90deg,var(--gold-hi),var(--gold));opacity:.8;transform-origin:left center;animation:hl-in .9s cubic-bezier(.2,.7,.2,1) .5s both}
+@keyframes hl-in{from{transform:scaleX(0)}}
 .h1{font-size:clamp(2.6rem,1.15rem + 4.4vw,4.25rem);line-height:1.06;letter-spacing:-.04em}
 .h1 b{display:block}
 .h2{font-size:clamp(1.85rem,1.35rem + 1.4vw,2.4rem);line-height:1.18;letter-spacing:-.03em}
@@ -188,10 +193,12 @@ ul,ol{padding:0;list-style:none}
 .pk-t b,.pk-t span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .pk-t b{font-weight:600;color:var(--head)}
 .pk-t span{font-size:12px;color:var(--soft)}
-.pk-you{flex:none;display:none;padding:2px 8px;border-radius:99px;background:var(--accent);color:#fff;font-size:11px;font-weight:600}
-.pick.is-you{border-color:#dcd6fd;background:linear-gradient(90deg,#f5f3ff,#fff 70%);box-shadow:0 0 0 3px rgba(108,92,242,.1)}
+.pk-you{flex:none;display:none;padding:2px 8px;border-radius:99px;background:linear-gradient(180deg,var(--gold-hi),var(--gold));color:var(--gold-ink);font-size:11px;font-weight:650;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 2px 6px -2px rgba(150,95,10,.45)}
+.pick.is-you{border-color:var(--gold-100);background:linear-gradient(90deg,var(--gold-50),#fff 70%);box-shadow:0 0 0 3px rgba(237,177,88,.18)}
+.pick.is-you .pk-n{color:var(--gold-deep)}
 .pick.is-you .pk-you{display:block}
 .hc2{bottom:16px;right:16px}
+.hc2 b{background:linear-gradient(180deg,var(--gold-hi),var(--gold));color:var(--gold-ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.55)}
 @media (max-width:480px){.ans-av{display:none}.pick{position:relative}.pk-you{position:absolute;top:-8px;right:8px}.art-hero{padding:48px 14px 60px}.hc2{right:12px;bottom:14px}}
 @media (max-width:380px){.chat-body{padding:14px 12px 16px}.pk-th{width:30px;height:30px}}
 
@@ -379,7 +386,7 @@ ul,ol{padding:0;list-style:none}
 .money .h2 b{display:inline}
 /* "Why now": a small purple graph going up, right after "fast." (Ross, 3 Nov 2026); kept on the same line as the word */
 .up{white-space:nowrap}
-.up-graph{display:inline-block;width:.95em;height:.95em;margin-left:.22em;vertical-align:-.1em;fill:none;stroke:var(--accent);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.up-graph{display:inline-block;width:.95em;height:.95em;margin-left:.22em;vertical-align:-.1em;fill:none;stroke:var(--gold-deep);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 .ticks{display:grid;gap:10px;margin-top:24px}
 .ticks li{display:flex;gap:10px;align-items:flex-start;font-size:15.5px;color:var(--head);font-weight:500}
 .ticks svg{flex:none;width:20px;height:20px;padding:3px;margin-top:2px;border-radius:50%;color:var(--accent-ink);background:var(--accent-50)}
@@ -486,7 +493,7 @@ ul,ol{padding:0;list-style:none}
 .plan-tag .mark{width:19px;height:17px}.plan-tag .mark i{width:12px;height:12px}
 .plan-tag .mark i:first-child{background:#e4e0fd}.plan-tag .mark i:last-child{background:#fff}
 .price{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-top:26px}
-.price b{font-size:clamp(3.4rem,2.4rem + 3vw,4.6rem);line-height:.95;font-weight:650;letter-spacing:-.055em;font-variant-numeric:tabular-nums;text-shadow:0 10px 30px rgba(30,12,140,.35)}
+.price b{font-size:clamp(3.4rem,2.4rem + 3vw,4.6rem);line-height:.95;font-weight:650;letter-spacing:-.055em;font-variant-numeric:tabular-nums;color:#ffdc96;text-shadow:0 1px 0 rgba(120,70,0,.25),0 10px 30px rgba(30,12,140,.4)}
 .price>span{font-size:16px;font-weight:500;color:rgba(255,255,255,.82);white-space:nowrap}
 @media (max-width:359px){.price b{font-size:2.9rem}}
 .price-alt{margin-top:12px;font-size:15px;line-height:1.5;color:rgba(255,255,255,.88);text-wrap:pretty}
@@ -771,7 +778,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
     <div class="hero-in">
       <div class="hero-tx">
         <p class="eyebrow"><b>Early access</b>For Shopify stores</p>
-        <h1 class="h1" id="hero-h">Shoppers ask AI what to buy. <b>Make it pick you.</b></h1>
+        <h1 class="h1" id="hero-h">Shoppers ask AI what to buy. <b>Make it <span class="hl">pick you</span>.</b></h1>
         <p class="lead">GEO helps all AIs recommend your products. Then it shows you the sales that came from AI. No paying per click. Done for you.</p>
         <div class="hero-cta">
           <a class="btn btn-pri" href="/book">Get started</a>
