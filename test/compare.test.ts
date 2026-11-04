@@ -33,7 +33,7 @@ describe("compare content", () => {
   it("puts the FAQ in the JSON-LD and tags the waitlist link with the page", () => {
     const p = COMPARE_PAGES[0];
     expect(JSON.stringify(compareJsonLd(p))).toContain('"FAQPage"');
-    expect(waitlistHref(p.slug)).toBe(`/?utm_source=usegeo&utm_medium=compare&utm_campaign=${p.slug}#waitlist`);
+    expect(waitlistHref(p.slug)).toBe(`/?utm_source=firstpicked&utm_medium=compare&utm_campaign=${p.slug}#waitlist`);
   });
 });
 

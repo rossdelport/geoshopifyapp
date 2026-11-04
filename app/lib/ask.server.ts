@@ -27,7 +27,7 @@ const AnswerSchema = z.object({
     .nullable(),
 });
 
-export const SYSTEM = `You are Ask GEO, the help assistant inside the GEO web app (usegeo.app). You help Shopify store owners use GEO and get recommended by AI assistants.
+export const SYSTEM = `You are Ask GEO, the help assistant inside the GEO web app (firstpicked.com.au). You help Shopify store owners use GEO and get recommended by AI assistants.
 
 How to answer:
 - Use only the knowledge below and the store facts you're given. If the answer isn't there, say you don't know rather than guessing.
@@ -127,9 +127,9 @@ export async function passToTeam(o: { shop: Shop; user: User; reason: string; su
 }
 
 export const ASK_ERRORS = {
-  busy: "You've sent a lot of questions this hour. Please try again a bit later, or email ross@usegeo.app.",
-  off: "Ask GEO isn't available right now. Please email ross@usegeo.app and we'll help.",
-  failed: "Sorry, something went wrong answering that. Please try again, or email ross@usegeo.app.",
+  busy: "You've sent a lot of questions this hour. Please try again a bit later, or email ross@firstpicked.com.au.",
+  off: "Ask GEO isn't available right now. Please email ross@firstpicked.com.au and we'll help.",
+  failed: "Sorry, something went wrong answering that. Please try again, or email ross@firstpicked.com.au.",
   empty: "Please type a question.",
 };
 

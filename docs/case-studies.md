@@ -1,6 +1,6 @@
 # Case studies: brands that got sales from AI answers
 
-Research for the GEO home page (https://usegeo.app). Compiled 12 October 2026.
+Research for the GEO home page (https://firstpicked.com.au). Compiled 12 October 2026.
 
 **How to use these.** Every case below is another company's result, reported by that company or by the press about them. None of them used GEO. On the site, show each one as "Reported by [publisher]" with a link to the article, and use the brand's own numbers word for word. Do not round, combine or restate them as our results.
 

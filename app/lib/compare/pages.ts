@@ -61,7 +61,7 @@ export const COMPARE_HUB = {
 export const comparePath = (slug: string) => `${COMPARE_HUB.path}/${slug}`;
 
 /** The waitlist on the home page, tagged so a sign-up shows which page it came from. */
-export const waitlistHref = (slug: string) => `/?utm_source=usegeo&utm_medium=compare&utm_campaign=${slug}#waitlist`;
+export const waitlistHref = (slug: string) => `/?utm_source=firstpicked&utm_medium=compare&utm_campaign=${slug}#waitlist`;
 
 const OPTIMISING = { title: "Optimising: How much does GEO cost? (June 2025)", url: "https://www.optimising.com.au/blog/geo-cost" };
 const DEBUTIFY = { title: "Debutify: The best Shopify GEO agencies, ranked (July 2026)", url: "https://debutify.com/blog/best-shopify-geo-agencies-ranked" };

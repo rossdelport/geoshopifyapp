@@ -1,4 +1,4 @@
-// The 3-month giveaway at usegeo.app/giveaway (Ross, 3 Nov 2026). The page (no database needed) and, against a
+// The 3-month giveaway at firstpicked.com.au/giveaway (Ross, 3 Nov 2026). The page (no database needed) and, against a
 // real Postgres (set TEST_DATABASE_URL), entries in their own schema: saving one with where it came from, the
 // checks on each box, one entry per store, the hidden bot field, the per-IP limit, closing on time, the random draw,
 // the founder email and the clean-up after 24 months.
@@ -54,7 +54,7 @@ describe("giveaway page", () => {
     expect(res.headers.get("content-type")).toContain("text/html");
     expect(html).toContain("<!doctype html>");
     expect(html).toContain('<meta name="robots" content="noindex">');
-    expect(html).toContain('<link rel="canonical" href="https://usegeo.app/giveaway">');
+    expect(html).toContain('<link rel="canonical" href="https://firstpicked.com.au/giveaway">');
     expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
     expect(html).toContain("One Australian brand wins <b>3 months of GEO, free.</b>");
     // the route filled in the font, Ross's photo and the closing time
@@ -178,7 +178,7 @@ describe.skipIf(!url)("giveaway entries (needs TEST_DATABASE_URL)", () => {
       utm_source: "facebook",
       utm_campaign: "giveaway-nov",
       fbclid: "IwAR123",
-      referrer: "https://l.facebook.com/l.php?u=https%3A%2F%2Fusegeo.app%2Fgiveaway&h=secret",
+      referrer: "https://l.facebook.com/l.php?u=https%3A%2F%2Ffirstpicked.com.au%2Fgiveaway&h=secret",
     });
     expect(out).toEqual({ status: 200, result: { ok: true, isNew: true } });
     const row = await db.giveawayEntry.findUniqueOrThrow({ where: { store: "amazingproduct.com.au" } });

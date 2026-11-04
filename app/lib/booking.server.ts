@@ -1,4 +1,4 @@
-// The book-a-call page's link to Ross's Google Calendar (usegeo.app/book, Ross 3 Nov 2026).
+// The book-a-call page's link to Ross's Google Calendar (firstpicked.com.au/book, Ross 3 Nov 2026).
 // Ross connects his calendar once in Admin > System (route dash.admin_.calendar.tsx). After that the page shows his
 // free times (Google's free/busy) and a booked call is added to his calendar with a Google Meet link; Google emails
 // the invite to the person who booked. Needs GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET (a Google Cloud OAuth client).
@@ -176,7 +176,7 @@ export async function bookCall(input: BookInput, now = new Date()): Promise<{ st
     const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
     const lines = [`<b>When:</b> ${rossTime(start)} (your time)`, `<b>Name:</b> ${esc(name)}`, `<b>Email:</b> ${esc(email)}`, `<b>Store:</b> ${esc(store)}`];
     if (ad) lines.push(`<b>Came from:</b> ${esc(ad)}`);
-    await sendEmail([env.alertEmail], `New call booked: ${name}, ${rossTime(start)}`, `<p>Someone booked a call on usegeo.app/book. It's in your Google Calendar with a Meet link.</p><p>${lines.join("<br>")}</p>`).catch((err) =>
+    await sendEmail([env.alertEmail], `New call booked: ${name}, ${rossTime(start)}`, `<p>Someone booked a call on firstpicked.com.au/book. It's in your Google Calendar with a Meet link.</p><p>${lines.join("<br>")}</p>`).catch((err) =>
       console.error("[book] booked, but the email to Ross failed", err),
     );
   }

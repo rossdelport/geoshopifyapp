@@ -12,7 +12,7 @@ import { ENGINE_LABELS, type Engine, getPlan } from "../lib/plans";
 import { formatMoney, formatPct, timeAgo } from "../lib/format";
 import { ICONS, PageHead, Stat } from "../components/web";
 
-// usegeo.app/dash: the web app's home. While setting up: the steps and the scan's progress. Then, sales from AI
+// firstpicked.com.au/dash: the web app's home. While setting up: the steps and the scan's progress. Then, sales from AI
 // first (Ross's #1 rule), the visibility score, who AI names instead, and the questions where the store is missing.
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -126,7 +126,7 @@ export default function DashHome() {
           ) : null}
           {data.setupFailed ? (
             <div className="w-err" role="alert" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
-              <span>Setup stopped partway. Try again, and if it keeps stopping, email ross@usegeo.app.</span>
+              <span>Setup stopped partway. Try again, and if it keeps stopping, email ross@firstpicked.com.au.</span>
               <Form method="post">
                 <button className="w-btn w-btn-sm" type="submit" name="intent" value="retry" disabled={nav.state !== "idle"}>
                   Try again

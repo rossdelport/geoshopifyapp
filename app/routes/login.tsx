@@ -5,7 +5,7 @@ import { currentUser, safeNext, sendLoginLink } from "../lib/web-auth.server";
 import { fromAnotherSite } from "../lib/public-form.server";
 import styles from "../styles/web.css?url";
 
-// usegeo.app/login: type your email, get a sign-in link. No passwords (Ross, 2026-10-14).
+// firstpicked.com.au/login: type your email, get a sign-in link. No passwords (Ross, 2026-10-14).
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 export const meta: MetaFunction = () => [{ title: "Sign in · GEO" }, { name: "robots", content: "noindex" }];

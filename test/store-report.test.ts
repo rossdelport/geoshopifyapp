@@ -198,9 +198,9 @@ describe("parseHosts", () => {
   });
 
   it("lists the bits that aren't addresses", () => {
-    const { hosts, bad } = parseHosts("bondiwash.com hello ross@usegeo.app localhost nope.");
+    const { hosts, bad } = parseHosts("bondiwash.com hello ross@firstpicked.com.au localhost nope.");
     expect(hosts).toEqual(["bondiwash.com"]);
-    expect(bad).toEqual(["hello", "ross@usegeo.app", "localhost", "nope."]);
+    expect(bad).toEqual(["hello", "ross@firstpicked.com.au", "localhost", "nope."]);
   });
 
   it("ignores list markers and brackets", () => {

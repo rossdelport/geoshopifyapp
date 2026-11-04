@@ -128,8 +128,8 @@ Perplexity account, so listing them as integrations could read as a partnership.
 ## 11. Support, links and other fields
 
 - **Support email:** [SUPPORT EMAIL]
-- **Privacy policy URL:** https://usegeo.app/privacy
-- **Developer website:** https://usegeo.app
+- **Privacy policy URL:** https://firstpicked.com.au/privacy
+- **Developer website:** https://firstpicked.com.au
 - **Language:** English
 - **Install requirements:** Online Store sales channel (guide pages, the FAQ theme block and visit tracking need it).
   No country limits: stores in countries AI can't be asked from are checked as a shopper in the US.
@@ -137,7 +137,7 @@ Perplexity account, so listing them as integrations could read as a partnership.
 
 ## 12. FAQ
 
-The listing has no FAQ text field, only an optional FAQ link. If you add an FAQ page to usegeo.app, these answers
+The listing has no FAQ text field, only an optional FAQ link. If you add an FAQ page to firstpicked.com.au, these answers
 match the app (taken from `docs/copy-deck.md` and the code):
 
 - **What does it do?** It checks whether ChatGPT, Gemini, Perplexity and Google AI Overviews recommend your products,

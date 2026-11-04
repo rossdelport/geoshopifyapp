@@ -14,7 +14,7 @@ const { requireAdmin } = await import("../app/lib/admin.server");
 const route = await import("../app/routes/dash.admin.reports");
 
 const req = (body?: Record<string, string>) =>
-  new Request("https://usegeo.app/dash/admin/reports", body ? { method: "POST", body: new URLSearchParams(body) } : undefined);
+  new Request("https://firstpicked.com.au/dash/admin/reports", body ? { method: "POST", body: new URLSearchParams(body) } : undefined);
 const load = () => route.loader({ request: req(), params: {}, context: {} } as unknown as LoaderFunctionArgs);
 const act = (body: Record<string, string>) => route.action({ request: req(body), params: {}, context: {} } as unknown as ActionFunctionArgs);
 

@@ -13,7 +13,7 @@ export const URL_FORM_BYTES = 8_192;
 /** The longest paste is 300,000 characters of JSON-LD or HTML, and URL encoding can more than double it. */
 export const PASTE_FORM_BYTES = 1_048_576;
 
-export const CROSS_SITE_COPY = "Please run the check from usegeo.app.";
+export const CROSS_SITE_COPY = "Please run the check from firstpicked.com.au.";
 export const TOO_BIG_COPY = "That was too much to send in one go. Please send less.";
 
 function hostOf(url: string): string | null {

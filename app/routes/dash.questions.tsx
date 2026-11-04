@@ -5,7 +5,7 @@ import { questionRows } from "../lib/question-stats.server";
 import { formatNumber, formatPct } from "../lib/format";
 import { PageHead } from "../components/web";
 
-// usegeo.app/dash/questions: every buying question we ask AI for the store, how often AI named the store, its
+// firstpicked.com.au/dash/questions: every buying question we ask AI for the store, how often AI named the store, its
 // best position, and who AI named instead.
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {

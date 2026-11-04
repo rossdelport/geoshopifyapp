@@ -510,7 +510,7 @@ model ReportEmail {
   @@index([createdAt])
 }
 
-// GEO web app accounts (usegeo.app/login). Sign in by email link only: no passwords.
+// GEO web app accounts (firstpicked.com.au/login). Sign in by email link only: no passwords.
 model User {
   id          String    @id @default(cuid())
   email       String    @unique // lowercased
@@ -595,7 +595,7 @@ model SupportFlag {
   @@index([status, createdAt])
 }
 
-// GEO's own blog at usegeo.app/blog (Ross, 2026-10-15: practise what we preach). Written by Claude from the
+// GEO's own blog at firstpicked.com.au/blog (Ross, 2026-10-15: practise what we preach). Written by Claude from the
 // knowledge pack (docs/facts.md, docs/geo-research.md, the stories, docs/ask-geo-guide.md), fact-checked, and
 // published on its own three times a week (lib/blog.server.ts). Ross can hide a post in Admin.
 /** Every order a store's tracking code reports, once: a reloaded thank-you page or a replayed request can't count twice. */
@@ -650,7 +650,7 @@ model GuideSlot {
   @@index([shopId, status])
 }
 
-/// Ross's Google Calendar for the book-a-call page (usegeo.app/book): one row, id "booking", saved when Ross connects
+/// Ross's Google Calendar for the book-a-call page (firstpicked.com.au/book): one row, id "booking", saved when Ross connects
 /// it in Admin > System. The refresh token lets the server read his free times and add booked calls.
 model CalendarLink {
   id           String   @id
@@ -659,7 +659,7 @@ model CalendarLink {
   updatedAt    DateTime @updatedAt
 }
 
-// The 3-month giveaway at usegeo.app/giveaway (Nov 2026, lib/giveaway.server.ts): one entry per store. The admin's
+// The 3-month giveaway at firstpicked.com.au/giveaway (Nov 2026, lib/giveaway.server.ts): one entry per store. The admin's
 // random draw marks the picked entry (drawnAt). Deleted 24 months after entry (retention.server.ts).
 model GiveawayEntry {
   id          String    @id @default(cuid())
@@ -682,7 +682,7 @@ model GiveawayEntry {
   @@index([ipHash, createdAt])
 }
 
-// Store reports for Ross's teardown videos (Admin > Reports, usegeo.app/report/<slug>). Only admins make them.
+// Store reports for Ross's teardown videos (Admin > Reports, firstpicked.com.au/report/<slug>). Only admins make them.
 // The job that fills one is lib/store-report.server.ts; `data` is StoreReportData (lib/store-report.ts).
 model StoreReport {
   id         String    @id @default(cuid())

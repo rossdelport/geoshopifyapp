@@ -3,7 +3,7 @@ import { Outlet, useLocation, useNavigation } from "react-router";
 import { requireAdmin } from "../lib/admin.server";
 import { AdminSkeleton, PageHead, Tabs, useSlowLoad } from "../components/web";
 
-// usegeo.app/dash/admin: Ross's admin area (lib/admin.server.ts). Everyone else gets "Not found".
+// firstpicked.com.au/dash/admin: Ross's admin area (lib/admin.server.ts). Everyone else gets "Not found".
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await requireAdmin(request);

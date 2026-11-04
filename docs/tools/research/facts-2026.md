@@ -1,6 +1,6 @@
 # Fact pack for the free tools (verified 11 October 2026)
 
-Hard facts for the 7 free tool pages on usegeo.app. Builders can hard-code these into tool logic and page
+Hard facts for the 7 free tool pages on firstpicked.com.au. Builders can hard-code these into tool logic and page
 copy. Every fact has a source URL and the date it was checked. All "checked" dates are **11 Oct 2026**
 unless another date is given.
 

@@ -9,7 +9,7 @@ import { sanitizeHtml } from "../lib/sanitize";
 import { formatNumber } from "../lib/format";
 import { CopyButton, PageHead } from "../components/web";
 
-// usegeo.app/dash/guides/<day> (the file's underscore keeps it out of the calendar's layout): one guide page from the calendar, as it will look on the store's site, with what it
+// firstpicked.com.au/dash/guides/<day> (the file's underscore keeps it out of the calendar's layout): one guide page from the calendar, as it will look on the store's site, with what it
 // is at and what the store can do: OK it, skip it, try again, or add it to the store (copy and paste) when the store
 // has no Shopify connection yet.
 

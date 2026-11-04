@@ -12,14 +12,14 @@ hub, the free check pages and the privacy page, and the home page footer lists a
 
 | Page | Title | Meta description |
 |---|---|---|
-| https://usegeo.app/tools | Free AI Search Tools for Shopify Stores \| GEO | Seven free tools that show how AI search sees your Shopify store: AI Overviews, AI crawlers, product schema, FAQ schema, llms.txt and product copy. |
-| https://usegeo.app/tools/ai-visibility-checker | AI Visibility Checker: Does ChatGPT Recommend You? \| GEO | Free AI visibility checker for Shopify products. See if ChatGPT, Gemini and Perplexity recommend your product and who they pick instead. No sign-up. |
-| https://usegeo.app/tools/ai-overview-checker | AI Overview Checker: Is Your Site Cited by Google AI? \| GEO | Free AI Overview checker. Type a shopping search to see if Google shows an AI Overview, which sites it cites and if yours is one. No sign-up. |
-| https://usegeo.app/tools/ai-crawler-checker | AI Crawler Checker: Which AI Bots Can Read Your Site \| GEO | Free AI crawler checker. See which AI bots your robots.txt lets in, like OAI-SearchBot, GPTBot and PerplexityBot, with Shopify fixes. No sign-up. |
-| https://usegeo.app/tools/product-schema-checker | Product Schema Checker: What Google and AI Can Read \| GEO | Free product schema checker for Shopify. Paste a product link to see which facts Google and AI shopping tools can read and what's missing. No sign-up. |
-| https://usegeo.app/tools/llms-txt-checker | llms.txt Checker: Validate and Generate Your File \| GEO | Free llms.txt checker and generator. See if your site has an llms.txt, check it against the llmstxt.org format and copy a starter file. No sign-up. |
-| https://usegeo.app/tools/faq-schema-generator | FAQ Schema Generator: Free JSON-LD for Shopify \| GEO | Free FAQ schema generator. Type questions and answers, then copy FAQPage JSON-LD or a ready Shopify section. Runs in your browser. No sign-up. |
-| https://usegeo.app/tools/ai-bot-checker | AI Bot Checker for Product Descriptions \| GEO | Does your product copy sound like a bot wrote it? Free checker for vague phrases, hype words and missing facts shoppers and AI need. No sign-up. |
+| https://firstpicked.com.au/tools | Free AI Search Tools for Shopify Stores \| GEO | Seven free tools that show how AI search sees your Shopify store: AI Overviews, AI crawlers, product schema, FAQ schema, llms.txt and product copy. |
+| https://firstpicked.com.au/tools/ai-visibility-checker | AI Visibility Checker: Does ChatGPT Recommend You? \| GEO | Free AI visibility checker for Shopify products. See if ChatGPT, Gemini and Perplexity recommend your product and who they pick instead. No sign-up. |
+| https://firstpicked.com.au/tools/ai-overview-checker | AI Overview Checker: Is Your Site Cited by Google AI? \| GEO | Free AI Overview checker. Type a shopping search to see if Google shows an AI Overview, which sites it cites and if yours is one. No sign-up. |
+| https://firstpicked.com.au/tools/ai-crawler-checker | AI Crawler Checker: Which AI Bots Can Read Your Site \| GEO | Free AI crawler checker. See which AI bots your robots.txt lets in, like OAI-SearchBot, GPTBot and PerplexityBot, with Shopify fixes. No sign-up. |
+| https://firstpicked.com.au/tools/product-schema-checker | Product Schema Checker: What Google and AI Can Read \| GEO | Free product schema checker for Shopify. Paste a product link to see which facts Google and AI shopping tools can read and what's missing. No sign-up. |
+| https://firstpicked.com.au/tools/llms-txt-checker | llms.txt Checker: Validate and Generate Your File \| GEO | Free llms.txt checker and generator. See if your site has an llms.txt, check it against the llmstxt.org format and copy a starter file. No sign-up. |
+| https://firstpicked.com.au/tools/faq-schema-generator | FAQ Schema Generator: Free JSON-LD for Shopify \| GEO | Free FAQ schema generator. Type questions and answers, then copy FAQPage JSON-LD or a ready Shopify section. Runs in your browser. No sign-up. |
+| https://firstpicked.com.au/tools/ai-bot-checker | AI Bot Checker for Product Descriptions \| GEO | Does your product copy sound like a bot wrote it? Free checker for vague phrases, hype words and missing facts shoppers and AI need. No sign-up. |
 
 Also changed:
 - **Home page:** "Free tools" in the top menu, and a "Free tools" block in the footer. The page now has a canonical
@@ -27,24 +27,24 @@ Also changed:
 - **/check** (the free product check) works exactly as before, but tells Google that the AI Visibility Checker page
   is the one to list (decision R1 below). It is left out of the sitemap.
 - **Privacy page:** a "Free tools" section, share tags and the site footer.
-- **https://usegeo.app/robots.txt:** every public page is open to all search engines and AI bots. Only the app
+- **https://firstpicked.com.au/robots.txt:** every public page is open to all search engines and AI bots. Only the app
   and private paths are closed (`/app`, `/auth/`, `/api/`, `/webhooks/`). Report pages are not blocked, so Google
   can see that they say "don't list me".
-- **https://usegeo.app/sitemap.xml:** the home page, the hub, the seven tools and the privacy page, each with the
+- **https://firstpicked.com.au/sitemap.xml:** the home page, the hub, the seven tools and the privacy page, each with the
   date it last changed.
-- **https://usegeo.app/llms.txt:** a short summary of GEO, the plans and a link to each tool. It passes our own
+- **https://firstpicked.com.au/llms.txt:** a short summary of GEO, the plans and a link to each tool. It passes our own
   llms.txt Checker with no problems.
-- **One address for the site:** visits to www.usegeo.app or the Railway address are sent to https://usegeo.app
+- **One address for the site:** visits to www.firstpicked.com.au or the Railway address are sent to https://firstpicked.com.au
   (a permanent redirect). The Shopify app, logins, webhooks and robots.txt are never redirected.
 - **Share images** for every page in `public/og/`.
 
 ## Your steps after the push
 
 1. **Google Search Console**
-   - Add usegeo.app as a "Domain" property. Google gives you a TXT record to add where you bought the domain.
-   - Under Sitemaps, submit `https://usegeo.app/sitemap.xml`.
+   - Add firstpicked.com.au as a "Domain" property. Google gives you a TXT record to add where you bought the domain.
+   - Under Sitemaps, submit `https://firstpicked.com.au/sitemap.xml`.
    - Paste each new page's address into URL Inspection (the hub and the seven tools). Check it says the page can be
-     indexed and that the canonical Google picked is on usegeo.app, then click "Request indexing".
+     indexed and that the canonical Google picked is on firstpicked.com.au, then click "Request indexing".
    - Settings, then **Search generative AI**: make sure it says "Include" (the default). "Exclude" would take the
      site out of Google's AI Overviews and AI Mode.
    - Over the next 4 weeks, watch the **Generative AI performance** report (how often the pages show in AI
@@ -55,7 +55,7 @@ Also changed:
    - Pick a key: 8 to 128 letters, numbers or dashes.
    - Add a file `public/<key>.txt` that holds only the key (ask Claude to do it).
    - After each deploy that changes tool pages, send the changed addresses to `https://api.indexnow.org/indexnow`
-     as `{"host":"usegeo.app","key":"<key>","urlList":[...]}`. An answer of 200 or 202 means it was received.
+     as `{"host":"firstpicked.com.au","key":"<key>","urlList":[...]}`. An answer of 200 or 202 means it was received.
    - Google doesn't use IndexNow, so Search Console still matters most.
 4. **Railway settings:**
    - `GEO_TOOLS_USD_PER_DAY` caps what the AI Overview Checker's live Google searches can spend in a day. It
@@ -71,9 +71,9 @@ Also changed:
 
 ## Checks to run once it's live
 
-Claude can do these through Treg, because this build machine can't reach usegeo.app:
+Claude can do these through Treg, because this build machine can't reach firstpicked.com.au:
 - Load each page and confirm the title, H1, canonical and one result block. Load robots.txt and sitemap.xml.
-- Confirm `www.usegeo.app/tools` and the Railway address redirect to `https://usegeo.app/tools`, and that `/app`
+- Confirm `www.firstpicked.com.au/tools` and the Railway address redirect to `https://firstpicked.com.au/tools`, and that `/app`
   and `/auth/login` on the Railway address still work for the Shopify admin.
 - Run one live search on the AI Overview Checker and confirm a cost row of US$0.00015 for Crawl4AI.
 - Run one real website check on the AI Crawler Checker, Product Schema Checker, llms.txt Checker and AI Bot

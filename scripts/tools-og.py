@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Share images (Open Graph, 1200 x 630) for usegeo.app: the home page, the tools hub and each free tool.
+"""Share images (Open Graph, 1200 x 630) for firstpicked.com.au: the home page, the tools hub and each free tool.
 
 Run from the repo root:  python3 scripts/tools-og.py
 Needs Python 3 and Pillow (dev time only, not part of the Docker build). Writes public/og/*.png; commit them.

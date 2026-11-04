@@ -125,7 +125,7 @@ describe("the knowledge pack", () => {
     const allowed = blog.allowedSourceUrls();
     expect(allowed.get(TECHCRUNCH.replace(/\/$/, ""))).toBe(TECHCRUNCH);
     for (const s of STORIES) expect(allowed.get(s.source.url.replace(/\/$/, "").toLowerCase())).toBe(s.source.url);
-    for (const u of allowed.keys()) expect(u).not.toContain("usegeo.app");
+    for (const u of allowed.keys()) expect(u).not.toContain("firstpicked.com.au");
   });
 });
 
@@ -200,11 +200,11 @@ describe("the pure page helpers", () => {
     const types = (ld["@graph"] as any[]).map((n) => n["@type"]);
     expect(types).toEqual(["Organization", "BlogPosting", "BreadcrumbList", "FAQPage"]);
     const posting = (ld["@graph"] as any[])[1];
-    expect(posting.url).toBe("https://usegeo.app/blog/a-post");
+    expect(posting.url).toBe("https://firstpicked.com.au/blog/a-post");
     expect(posting.datePublished).toBe("2026-10-15");
     expect(posting.citation).toHaveLength(1);
     const hubLd = pages.blogHubJsonLd([pages.toPostCard({ ...post, slug: "a-post", publishedAt: new Date("2026-10-15T00:00:00Z") })]);
-    expect((hubLd["@graph"] as any[])[1].blogPost[0].url).toBe("https://usegeo.app/blog/a-post");
+    expect((hubLd["@graph"] as any[])[1].blogPost[0].url).toBe("https://firstpicked.com.au/blog/a-post");
   });
 });
 
@@ -213,7 +213,7 @@ describe("the pages", () => {
     const post = blog.finishPost(draft({ title }), { key: slug, kind: "comparison" }, blog.allowedSourceUrls());
     return { id: slug, slug, ...post, status: "published", publishedAt: new Date("2026-10-15T00:00:00Z"), createdAt: new Date("2026-10-15T00:00:00Z"), updatedAt: new Date("2026-10-15T00:00:00Z"), ...over };
   };
-  const args = (slug: string) => ({ request: new Request(`https://usegeo.app/blog/${slug}`), params: { slug }, context: {} }) as unknown as LoaderFunctionArgs;
+  const args = (slug: string) => ({ request: new Request(`https://firstpicked.com.au/blog/${slug}`), params: { slug }, context: {} }) as unknown as LoaderFunctionArgs;
   const dataOf = async (p: Promise<unknown>) => (await p) as { data: any; init?: ResponseInit };
 
   beforeEach(() => {
@@ -242,7 +242,7 @@ describe("the pages", () => {
     expect(html).toContain('href="/stories"');
     expect(html).not.toMatch(EM_DASH);
     const meta = hub.meta({ data } as any) as any[];
-    expect(meta.find((m) => m.tagName === "link" && m.rel === "canonical")?.href).toBe("https://usegeo.app/blog");
+    expect(meta.find((m) => m.tagName === "link" && m.rel === "canonical")?.href).toBe("https://firstpicked.com.au/blog");
   });
 
   it("an empty hub says the first articles are on their way", async () => {
@@ -280,7 +280,7 @@ describe("the pages", () => {
     expect(html).toContain('class="ck-pill tl-pill" href="/blog">All posts</a>');
     expect(html).not.toMatch(EM_DASH);
     const meta = page.meta({ data } as any) as any[];
-    expect(meta.find((m) => m.tagName === "link" && m.rel === "canonical")?.href).toBe("https://usegeo.app/blog/first-post");
+    expect(meta.find((m) => m.tagName === "link" && m.rel === "canonical")?.href).toBe("https://firstpicked.com.au/blog/first-post");
     const ld = JSON.stringify(meta.find((m) => m["script:ld+json"])?.["script:ld+json"]);
     expect(ld).toContain('"BlogPosting"');
     expect(ld).toContain('"FAQPage"');

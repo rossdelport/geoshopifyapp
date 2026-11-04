@@ -9,7 +9,7 @@ import { STORE_ERRORS, addWebStore, findShopifyStore, storeHost } from "../lib/p
 import { fromAnotherSite } from "../lib/public-form.server";
 import styles from "../styles/web.css?url";
 
-// usegeo.app/start: after the first sign-in, type the Shopify store's address. We read its public pages (no
+// firstpicked.com.au/start: after the first sign-in, type the Shopify store's address. We read its public pages (no
 // Shopify app needed), then set it up: catalog, brand profile, buying questions and the first AI scan.
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];

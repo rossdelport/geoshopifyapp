@@ -8,7 +8,7 @@ import { PITCHABLE, findWriter, pitchSite, trustedSites, writersUsedThisMonth } 
 import { formatPct } from "../lib/format";
 import { CopyButton, ICONS, PageHead, Stat } from "../components/web";
 
-// usegeo.app/dash/sites: Sites AI trusts. The websites AI cites most for the store's buying questions, over every
+// firstpicked.com.au/dash/sites: Sites AI trusts. The websites AI cites most for the store's buying questions, over every
 // scan since it joined, with the writer behind each one and a pitch to send (or, on Done-for-you, that we send).
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {

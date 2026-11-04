@@ -600,7 +600,7 @@ describe("readLinkedDescription", () => {
 // ---------- the action ----------
 
 function post(fields: Record<string, string>, headers: Record<string, string> = {}, body?: string) {
-  const request = new Request("https://usegeo.app/tools/ai-bot-checker", {
+  const request = new Request("https://firstpicked.com.au/tools/ai-bot-checker", {
     method: "POST",
     body: body ?? new URLSearchParams(fields),
     headers: { "content-type": "application/x-www-form-urlencoded", "x-real-ip": "203.0.113.9", ...headers },
@@ -710,9 +710,9 @@ describe("the page head", () => {
     expect(find("name", "description")?.content).toBe(TOOL.description);
     expect(TOOL.description.length).toBeLessThan(155);
     const canonicals = list.filter((m) => (m as { rel?: string }).rel === "canonical") as { href: string }[];
-    expect(canonicals.map((c) => c.href)).toEqual(["https://usegeo.app/tools/ai-bot-checker"]);
-    expect(find("property", "og:url")?.content).toBe("https://usegeo.app/tools/ai-bot-checker");
-    expect(find("property", "og:image")?.content).toBe("https://usegeo.app/og/ai-bot-checker.png");
+    expect(canonicals.map((c) => c.href)).toEqual(["https://firstpicked.com.au/tools/ai-bot-checker"]);
+    expect(find("property", "og:url")?.content).toBe("https://firstpicked.com.au/tools/ai-bot-checker");
+    expect(find("property", "og:image")?.content).toBe("https://firstpicked.com.au/og/ai-bot-checker.png");
     expect(find("property", "og:image:width")?.content).toBe("1200");
     expect(find("property", "og:image:height")?.content).toBe("630");
     expect(find("name", "twitter:card")?.content).toBe("summary_large_image");

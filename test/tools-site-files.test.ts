@@ -1,4 +1,4 @@
-// The site files for usegeo.app (robots.txt, sitemap.xml, llms.txt) and their routes, plus the head and
+// The site files for firstpicked.com.au (robots.txt, sitemap.xml, llms.txt) and their routes, plus the head and
 // host changes on /check and /privacy that came with the free tools.
 
 import { existsSync } from "node:fs";
@@ -35,7 +35,7 @@ const call = async (fn: (a: LoaderFunctionArgs) => unknown, url: string, init?: 
 const callMeta = (m: unknown) => (m as (a: unknown) => MetaDescriptor[])({ params: {}, location: {}, matches: [], data: undefined, error: undefined });
 const DASHES = /\u2014|\s\u2013\s/;
 
-describe("robots.txt for usegeo.app", () => {
+describe("robots.txt for firstpicked.com.au", () => {
   const body = siteRobotsTxt();
   const groups = parseRobots(body);
   const BOTS = ["Googlebot", "OAI-SearchBot", "GPTBot", "PerplexityBot", "ClaudeBot", "Claude-SearchBot", "Bingbot"];
@@ -57,10 +57,10 @@ describe("robots.txt for usegeo.app", () => {
   });
 
   it("names the sitemap, has only the * group, and no dashes in the comment", () => {
-    expect(body).toContain("\nSitemap: https://usegeo.app/sitemap.xml\n");
+    expect(body).toContain("\nSitemap: https://firstpicked.com.au/sitemap.xml\n");
     expect(groups).toHaveLength(1);
     expect(groups[0].agents).toEqual(["*"]);
-    expect(body.startsWith("# usegeo.app: search engines and AI assistants are welcome on every public page.\nUser-agent: *\n")).toBe(true);
+    expect(body.startsWith("# firstpicked.com.au: search engines and AI assistants are welcome on every public page.\nUser-agent: *\n")).toBe(true);
     expect(body).not.toMatch(/Disallow: \/app\n|Disallow: \/check/);
     expect(DASHES.test(body)).toBe(false);
   });
@@ -69,14 +69,14 @@ describe("robots.txt for usegeo.app", () => {
     const env = process.env.NODE_ENV;
     process.env.NODE_ENV = "production";
     try {
-      for (const url of ["https://usegeo.app/robots.txt", "https://www.usegeo.app/robots.txt", "https://geo-shopify-app-production.up.railway.app/robots.txt"]) {
+      for (const url of ["https://firstpicked.com.au/robots.txt", "https://www.firstpicked.com.au/robots.txt", "https://geo-shopify-app-production.up.railway.app/robots.txt"]) {
         const res = await call(robotsLoader, url);
         expect(res.status, url).toBe(200);
         expect(res.headers.get("content-type")).toBe("text/plain; charset=utf-8");
         expect(res.headers.get("cache-control")).toBe("public, max-age=3600");
         expect(await res.text()).toBe(body);
       }
-      expect((await call(robotsLoader, "https://usegeo.app/robots.txt", { method: "HEAD" })).status).toBe(200);
+      expect((await call(robotsLoader, "https://firstpicked.com.au/robots.txt", { method: "HEAD" })).status).toBe(200);
     } finally {
       process.env.NODE_ENV = env;
     }
@@ -100,20 +100,20 @@ describe("sitemap.xml", () => {
 
   it("lists exactly the home page (and its 5 languages), the hub, the 7 tools, the stories, the blog and the privacy page, with their dates", () => {
     expect(locs).toEqual([
-      "https://usegeo.app/",
-      ...["de", "fr", "nl", "es", "it"].map((l) => `https://usegeo.app/${l}`),
-      "https://usegeo.app/tools",
-      ...TOOLS.map((t) => `https://usegeo.app${t.path}`),
-      "https://usegeo.app/stories",
-      ...STORIES.map((s) => `https://usegeo.app/stories/${s.slug}`),
-      "https://usegeo.app/blog",
-      "https://usegeo.app/compare",
-      ...COMPARE_PAGES.map((p) => `https://usegeo.app/compare/${p.slug}`),
-      "https://usegeo.app/privacy",
-      "https://usegeo.app/terms",
+      "https://firstpicked.com.au/",
+      ...["de", "fr", "nl", "es", "it"].map((l) => `https://firstpicked.com.au/${l}`),
+      "https://firstpicked.com.au/tools",
+      ...TOOLS.map((t) => `https://firstpicked.com.au${t.path}`),
+      "https://firstpicked.com.au/stories",
+      ...STORIES.map((s) => `https://firstpicked.com.au/stories/${s.slug}`),
+      "https://firstpicked.com.au/blog",
+      "https://firstpicked.com.au/compare",
+      ...COMPARE_PAGES.map((p) => `https://firstpicked.com.au/compare/${p.slug}`),
+      "https://firstpicked.com.au/privacy",
+      "https://firstpicked.com.au/terms",
     ]);
     expect(STORIES).toHaveLength(15);
-    for (const l of locs) expect(l.startsWith("https://usegeo.app/")).toBe(true);
+    for (const l of locs) expect(l.startsWith("https://firstpicked.com.au/")).toBe(true);
     expect(lastmods).toEqual([
       HOME_UPDATED,
       ...Array(5).fill(HOME_LANGS_UPDATED),
@@ -131,8 +131,8 @@ describe("sitemap.xml", () => {
     expect(sitemapPages().map((p) => p.path)).not.toContain("/check");
   });
 
-  it("is served as XML, and www sends it to usegeo.app", async () => {
-    const res = await call(sitemapLoader, "https://usegeo.app/sitemap.xml");
+  it("is served as XML, and www sends it to firstpicked.com.au", async () => {
+    const res = await call(sitemapLoader, "https://firstpicked.com.au/sitemap.xml");
     expect(res.status).toBe(200);
     expect(res.headers.get("content-type")).toBe("application/xml; charset=utf-8");
     expect(res.headers.get("cache-control")).toBe("public, max-age=3600");
@@ -140,16 +140,16 @@ describe("sitemap.xml", () => {
     const env = process.env.NODE_ENV;
     process.env.NODE_ENV = "production";
     try {
-      const moved = await call(sitemapLoader, "https://www.usegeo.app/sitemap.xml");
+      const moved = await call(sitemapLoader, "https://www.firstpicked.com.au/sitemap.xml");
       expect(moved.status).toBe(301);
-      expect(moved.headers.get("location")).toBe("https://usegeo.app/sitemap.xml");
+      expect(moved.headers.get("location")).toBe("https://firstpicked.com.au/sitemap.xml");
     } finally {
       process.env.NODE_ENV = env;
     }
   });
 });
 
-describe("llms.txt for usegeo.app", () => {
+describe("llms.txt for firstpicked.com.au", () => {
   const txt = siteLlmsTxt();
   const lines = txt.split("\n");
 
@@ -166,23 +166,23 @@ describe("llms.txt for usegeo.app", () => {
 
   it("links every tool in registry order with its one line, and the main pages", () => {
     const toolLines = lines.filter((l) => l.startsWith("- [") && l.includes("/tools/"));
-    expect(toolLines).toEqual(TOOLS.map((t) => `- [${t.name}](https://usegeo.app${t.path}): ${t.short}`));
-    expect(txt).toContain("- [Home](https://usegeo.app/): what GEO does, how it works and pricing");
-    expect(txt).toContain("- [All free tools](https://usegeo.app/tools): the full list of free tools");
+    expect(toolLines).toEqual(TOOLS.map((t) => `- [${t.name}](https://firstpicked.com.au${t.path}): ${t.short}`));
+    expect(txt).toContain("- [Home](https://firstpicked.com.au/): what GEO does, how it works and pricing");
+    expect(txt).toContain("- [All free tools](https://firstpicked.com.au/tools): the full list of free tools");
     expect(txt).toContain(
-      "- [Stories](https://usegeo.app/stories): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are GEO customers)",
+      "- [Stories](https://firstpicked.com.au/stories): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are GEO customers)",
     );
-    expect(txt).toContain("- [Privacy policy](https://usegeo.app/privacy): what data GEO collects and why");
-    expect(txt).toContain("- [Terms of service](https://usegeo.app/terms): the rules for using GEO, the refund after month one and stopping any time");
+    expect(txt).toContain("- [Privacy policy](https://firstpicked.com.au/privacy): what data GEO collects and why");
+    expect(txt).toContain("- [Terms of service](https://firstpicked.com.au/terms): the rules for using GEO, the refund after month one and stopping any time");
   });
 
   it("takes the price from the offer in plans.ts, never typed in, and says new stores join through the waitlist", () => {
-    expect(txt).toContain(`${OFFER.line} New stores start by booking a call with the founder at https://usegeo.app/book.`);
+    expect(txt).toContain(`${OFFER.line} New stores start by booking a call with the founder at https://firstpicked.com.au/book.`);
     expect(txt).not.toMatch(/free trial/i);
   });
 
   it("is served as plain text", async () => {
-    const res = await call(llmsLoader, "https://usegeo.app/llms.txt");
+    const res = await call(llmsLoader, "https://firstpicked.com.au/llms.txt");
     expect(res.status).toBe(200);
     expect(res.headers.get("content-type")).toBe("text/plain; charset=utf-8");
     expect(await res.text()).toBe(txt);
@@ -199,18 +199,18 @@ describe("/check after the free tools", () => {
   it("points search engines at the AI Visibility Checker page and keeps its own title", () => {
     const meta = callMeta(checkStart.meta);
     const canonicals = meta.filter((m) => (m as { rel?: string }).rel === "canonical");
-    expect(canonicals).toEqual([{ tagName: "link", rel: "canonical", href: "https://usegeo.app/tools/ai-visibility-checker" }]);
+    expect(canonicals).toEqual([{ tagName: "link", rel: "canonical", href: "https://firstpicked.com.au/tools/ai-visibility-checker" }]);
     expect(meta[0]).toEqual({ title: "Free product check: does AI recommend your product? · GEO" });
   });
 
-  it("sends www to usegeo.app on GET, and stays put otherwise", async () => {
+  it("sends www to firstpicked.com.au on GET, and stays put otherwise", async () => {
     const env = process.env.NODE_ENV;
     process.env.NODE_ENV = "production";
     try {
-      const moved = await call(checkStart.loader, "https://www.usegeo.app/check");
+      const moved = await call(checkStart.loader, "https://www.firstpicked.com.au/check");
       expect(moved.status).toBe(301);
-      expect(moved.headers.get("location")).toBe("https://usegeo.app/check");
-      expect(await call(checkStart.loader, "https://usegeo.app/check")).toBeNull();
+      expect(moved.headers.get("location")).toBe("https://firstpicked.com.au/check");
+      expect(await call(checkStart.loader, "https://firstpicked.com.au/check")).toBeNull();
     } finally {
       process.env.NODE_ENV = env;
     }
@@ -232,19 +232,19 @@ describe("/privacy after the free tools", () => {
     const desc = meta.find((m) => (m as { name?: string }).name === "description") as { content: string };
     expect(desc.content.length).toBeGreaterThan(40);
     expect(desc.content.length).toBeLessThan(155);
-    expect(meta.filter((m) => (m as { rel?: string }).rel === "canonical")).toEqual([{ tagName: "link", rel: "canonical", href: "https://usegeo.app/privacy" }]);
-    expect(meta).toContainEqual({ property: "og:image", content: "https://usegeo.app/og/home.png" });
+    expect(meta.filter((m) => (m as { rel?: string }).rel === "canonical")).toEqual([{ tagName: "link", rel: "canonical", href: "https://firstpicked.com.au/privacy" }]);
+    expect(meta).toContainEqual({ property: "og:image", content: "https://firstpicked.com.au/og/home.png" });
   });
 
   it("explains the free tools, with the date it last changed", async () => {
-    const data = await call(privacy.loader, "https://usegeo.app/privacy");
+    const data = await call(privacy.loader, "https://firstpicked.com.au/privacy");
     expect(data).toBeTruthy();
     const Stub = createRoutesStub([{ id: "privacy", path: "/privacy", Component: privacy.default as ComponentType, loader: () => data }]);
     const html = renderToStaticMarkup(createElement(Stub, { initialEntries: ["/privacy"], hydrationData: { loaderData: { privacy: data } } }));
     const text = html.replace(/<[^>]+>/g, "").replace(/&#x27;/g, "'");
     expect(html).toContain('<h2 style="font-size:20px;margin:36px 0 8px;color:#0b0c2b">Free tools</h2>');
-    expect(text).toContain("Our free tools at usegeo.app/tools work without an account.");
-    expect(html).toContain('<a href="/tools">usegeo.app/tools</a>');
+    expect(text).toContain("Our free tools at firstpicked.com.au/tools work without an account.");
+    expect(html).toContain('<a href="/tools">firstpicked.com.au/tools</a>');
     expect(text).toContain("don't send what you type to us");
     expect(text).toContain("We don't keep the files.");
     expect(text).toContain("The AI Overview Checker sends your search to our data provider, Treg.");
@@ -256,20 +256,20 @@ describe("/privacy after the free tools", () => {
     expect(text).toContain("Our home page, giveaway page and booking page use Meta's pixel");
     expect(text).toContain("If you join the waitlist, enter the giveaway or book a call, it tells Meta that someone did.");
     expect(text).toContain("It never sends your name, email address or phone number.");
-    // booking a call puts the person's details in Ross's Google Calendar (usegeo.app/book)
+    // booking a call puts the person's details in Ross's Google Calendar (firstpicked.com.au/book)
     expect(text).toContain("we add it to Ross's Google Calendar with your name, your email address and your store's website.");
     expect(text).toContain("Google: Google Calendar and Google Meet, for calls booked on our website.");
-    // the giveaway entries (usegeo.app/giveaway): what we keep, why, and for how long
+    // the giveaway entries (firstpicked.com.au/giveaway): what we keep, why, and for how long
     expect(text).toContain("If you enter our giveaway, we keep your store's website, your name, email address and phone number");
     expect(text).toContain("We delete it 24 months after you entered, or sooner if you ask.");
     expect(text).toContain("In Europe and the UK, the pixel only starts after you click OK on the cookie notice.");
     expect(DASHES.test(text)).toBe(false);
   });
 
-  it("sends www to usegeo.app", async () => {
-    const moved = await call(privacy.loader, "https://www.usegeo.app/privacy");
+  it("sends www to firstpicked.com.au", async () => {
+    const moved = await call(privacy.loader, "https://www.firstpicked.com.au/privacy");
     expect(moved.status).toBe(301);
-    expect(moved.headers.get("location")).toBe("https://usegeo.app/privacy");
+    expect(moved.headers.get("location")).toBe("https://firstpicked.com.au/privacy");
   });
 });
 
@@ -288,12 +288,12 @@ describe("/terms (Ross, 3 Nov 2026: the same layout as the privacy page)", () =>
     const desc = meta.find((m) => (m as { name?: string }).name === "description") as { content: string };
     expect(desc.content.length).toBeGreaterThan(40);
     expect(desc.content.length).toBeLessThan(155);
-    expect(meta.filter((m) => (m as { rel?: string }).rel === "canonical")).toEqual([{ tagName: "link", rel: "canonical", href: "https://usegeo.app/terms" }]);
-    expect(meta).toContainEqual({ property: "og:image", content: "https://usegeo.app/og/home.png" });
+    expect(meta.filter((m) => (m as { rel?: string }).rel === "canonical")).toEqual([{ tagName: "link", rel: "canonical", href: "https://firstpicked.com.au/terms" }]);
+    expect(meta).toContainEqual({ property: "og:image", content: "https://firstpicked.com.au/og/home.png" });
   });
 
   it("uses the privacy page's layout and makes the home page's promises", async () => {
-    const data = await call(terms.loader, "https://usegeo.app/terms");
+    const data = await call(terms.loader, "https://firstpicked.com.au/terms");
     const Stub = createRoutesStub([{ id: "terms", path: "/terms", Component: terms.default as ComponentType, loader: () => data }]);
     const html = renderToStaticMarkup(createElement(Stub, { initialEntries: ["/terms"], hydrationData: { loaderData: { terms: data } } }));
     const text = html.replace(/<[^>]+>/g, "").replace(/&#x27;/g, "'");
@@ -313,9 +313,9 @@ describe("/terms (Ross, 3 Nov 2026: the same layout as the privacy page)", () =>
     expect(DASHES.test(text)).toBe(false);
   });
 
-  it("sends www to usegeo.app", async () => {
-    const moved = await call(terms.loader, "https://www.usegeo.app/terms");
+  it("sends www to firstpicked.com.au", async () => {
+    const moved = await call(terms.loader, "https://www.firstpicked.com.au/terms");
     expect(moved.status).toBe(301);
-    expect(moved.headers.get("location")).toBe("https://usegeo.app/terms");
+    expect(moved.headers.get("location")).toBe("https://firstpicked.com.au/terms");
   });
 });

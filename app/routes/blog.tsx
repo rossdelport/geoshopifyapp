@@ -13,7 +13,7 @@ import blogCss from "../styles/blog.css?url";
 
 // Layout for the blog: /blog (the hub) and every /blog/<slug> post. Same frame as the stories (fonts, the free
 // tools' stylesheets, the story card and reading column) plus blog.css, the canonical host (www and the Railway
-// address get a 301 to usegeo.app), the default headers and an error page in the site's frame. Each page sets its
+// address get a 301 to firstpicked.com.au), the default headers and an error page in the site's frame. Each page sets its
 // own `meta`; the meta here only fills in for the error page.
 
 export const loader = ({ request }: LoaderFunctionArgs) => {

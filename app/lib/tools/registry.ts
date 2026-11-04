@@ -1,4 +1,4 @@
-// The free tools at usegeo.app/tools: one list for the footer, the hub, "More free tools", the sitemap,
+// The free tools at firstpicked.com.au/tools: one list for the footer, the hub, "More free tools", the sitemap,
 // llms.txt and the tests, so names and links never drift apart. Pure and browser-safe.
 // Copy rules (docs/tools/spec.md 3.2): titles under 60 characters including " | GEO", descriptions
 // under 155, `short` under 95. No em dashes. Change `updated` only when a tool or its copy really changes.

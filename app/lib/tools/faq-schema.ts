@@ -278,7 +278,7 @@ export function toShopifySection(rows: FaqRow[]): string {
     ],
   };
   return `{%- comment -%}
-  FAQ section made with GEO's free FAQ Schema Generator: https://usegeo.app/tools/faq-schema-generator
+  FAQ section made with GEO's free FAQ Schema Generator: https://firstpicked.com.au/tools/faq-schema-generator
   Shows your questions and answers on the page and adds FAQPage structured data (JSON-LD) built from
   the same text, so the two always match. Change the questions in the theme editor (Customize).
 {%- endcomment -%}
@@ -316,7 +316,7 @@ export function productFaqSection(): string {
     presets: [{ name: "Product FAQ" }],
   };
   return `{%- comment -%}
-  Product FAQ section made with GEO's free FAQ Schema Generator: https://usegeo.app/tools/faq-schema-generator
+  Product FAQ section made with GEO's free FAQ Schema Generator: https://firstpicked.com.au/tools/faq-schema-generator
   Reads each product's FAQ from the product metafield custom.faq (type JSON), written like this:
   [{"q": "Your question?", "a": "Your answer."}]
   Shows the questions and answers and adds FAQPage structured data from the same text.

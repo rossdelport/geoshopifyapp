@@ -1,4 +1,4 @@
-// The site files for usegeo.app: robots.txt, sitemap.xml and llms.txt, built from the tool registry, the
+// The site files for firstpicked.com.au: robots.txt, sitemap.xml and llms.txt, built from the tool registry, the
 // stories, the blog and the plans, so they never drift from the pages. Pure. Served by routes/robots[.]txt.ts,
 // sitemap[.]xml.ts and llms[.]txt.ts. Never add public/robots.txt, public/sitemap.xml or public/llms.txt:
 // static files are served before routes and would hide these.
@@ -20,7 +20,7 @@ import { HUB, TOOLS } from "./registry";
  */
 export function siteRobotsTxt(): string {
   return [
-    "# usegeo.app: search engines and AI assistants are welcome on every public page.",
+    "# firstpicked.com.au: search engines and AI assistants are welcome on every public page.",
     "User-agent: *",
     "Allow: /",
     "Disallow: /app$",

@@ -1,4 +1,4 @@
-// Small shared pieces for the GEO web app pages (usegeo.app/login, /start, /dash).
+// Small shared pieces for the GEO web app pages (firstpicked.com.au/login, /start, /dash).
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { Link, useNavigation } from "react-router";
 

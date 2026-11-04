@@ -1,6 +1,6 @@
 # Ask GEO: what the assistant knows
 
-This file is the knowledge behind "Ask GEO", the help chat inside the GEO web app (usegeo.app/dash/ask). It is
+This file is the knowledge behind "Ask GEO", the help chat inside the GEO web app (firstpicked.com.au/dash/ask). It is
 written from this repository: what the app does today, the plans, and the GEO research notes
 (docs/geo-research.md). Keep it true: when a feature ships or changes, update this file in the same commit.
 Everything here may be said to customers. Internal plans, costs, suppliers and other customers never belong here.
@@ -14,18 +14,18 @@ GEO helps Shopify stores get recommended by AI assistants: ChatGPT, Gemini, Perp
 what it names. GEO shows which brands AI recommends for the questions shoppers ask about the store's kind of
 product, why, and what to do about it, and it shows the clicks, orders and money that come from AI.
 
-- Website: usegeo.app. Support email: ross@usegeo.app. Ross is GEO's founder.
-- GEO's blog is at usegeo.app/blog: plain-English articles on getting recommended by AI, three new ones a week
+- Website: firstpicked.com.au. Support email: ross@firstpicked.com.au. Ross is GEO's founder.
+- GEO's blog is at firstpicked.com.au/blog: plain-English articles on getting recommended by AI, three new ones a week
   (Monday, Wednesday and Friday). Free, no sign-in.
 - GEO works for Shopify stores only, worldwide, in English.
 - GEO reads only what anyone can see on the store (its public product pages). Nothing in the store's Shopify
   admin changes. GEO can't edit the store for them yet.
-- Sign-in is by email link only: type your email at usegeo.app/login, open the link we email (it works once,
+- Sign-in is by email link only: type your email at firstpicked.com.au/login, open the link we email (it works once,
   for 30 minutes), and tap Continue. You stay signed in for 30 days. There are no passwords.
 
 ## Getting started
 
-1. Sign in at usegeo.app/login.
+1. Sign in at firstpicked.com.au/login.
 2. Type your store's address (for example yourstore.com). It must be a Shopify store. We check it in a few
    seconds.
 3. Setup runs by itself and takes a few minutes. You can leave the page and come back:
@@ -37,7 +37,7 @@ product, why, and what to do about it, and it shows the clicks, orders and money
 5. Add the tracking code (Tracking code tab) so the dashboard can show sales from AI.
 
 One email account has one store. A store already on GEO under another email can't be added again; email
-ross@usegeo.app if that's your store.
+ross@firstpicked.com.au if that's your store.
 
 ## The tabs in the app
 
@@ -96,7 +96,7 @@ How a day goes:
 - Planned: the question is chosen; the guide is written two days before its day.
 - Needs your OK: on the paid plan guides are OK'd for you when written,
   unless our claims check softened something or the guide needs a fact from you: those wait for your OK. Email
-  ross@usegeo.app if you'd rather OK every guide yourself.
+  ross@firstpicked.com.au if you'd rather OK every guide yourself.
 - Scheduled: OK'd, waiting for its day.
 - Add to your store: on its day, stores without a Shopify connection get two-minute steps: copy the title, copy
   the content, paste them into Shopify's "Add page" screen (Online Store, Pages, Add page; use the <> button to
@@ -138,16 +138,16 @@ starts fresh. If it can't help, it passes the question to the GEO team, who repl
 
 ## Plans and prices (USD)
 
-Paid plans on the web app open soon. Until then new accounts start on the free plan; email ross@usegeo.app for
+Paid plans on the web app open soon. Until then new accounts start on the free plan; email ross@firstpicked.com.au for
 early access.
 
 - **Free:** one check of 10 buying questions on ChatGPT, Gemini and Perplexity, your visibility score and top
   competitors, and one look for Reddit threads.
 - **Done for you:** A$1,000 a month (Australian dollars). No lock-in contract, cancel any time. Only 5 spots. Not
-  happy after the first month? Full refund, and you keep all the work (ask ross@usegeo.app). No free trial.
+  happy after the first month? Full refund, and you keep all the work (ask ross@firstpicked.com.au). No free trial.
   - 100 buying questions, checked every day on ChatGPT, Gemini, Perplexity and Google AI Overviews, plus Claude in a
     full check every week.
-  - 12 guide pages a month (three a week) on the Guide calendar, written and OK'd for you (email ross@usegeo.app if
+  - 12 guide pages a month (three a week) on the Guide calendar, written and OK'd for you (email ross@firstpicked.com.au if
     you'd rather OK each one yourself), rotating through how-to-choose guides, comparisons, use-case pages, buying
     advice and single question deep dives.
   - Sites AI trusts: 20 writer lookups and up to 40 pitches a month, sent and followed up for you by our team
@@ -166,7 +166,7 @@ score trend over time, and the monthly email report. Never say a coming-soon fea
 - The tracking code sends visits that came from AI and order totals and products, never names, emails or
   addresses.
 - One store's data is never shown to or used for another store.
-- To delete an account or store, email ross@usegeo.app (the assistant flags it to the team).
+- To delete an account or store, email ross@firstpicked.com.au (the assistant flags it to the team).
 - Ask GEO chats aren't saved.
 
 ## What GEO never does

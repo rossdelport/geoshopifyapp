@@ -1,5 +1,5 @@
 // Store reports for Ross's teardown videos (Ross, 3 Nov 2026). Ross types a Shopify store's address in
-// Admin > Reports; about 3 minutes later the store has its own page at usegeo.app/report/<slug>: what shoppers
+// Admin > Reports; about 3 minutes later the store has its own page at firstpicked.com.au/report/<slug>: what shoppers
 // search, who ChatGPT, Gemini and Perplexity pick today, the sites AI trusts, the first 3 moves, "+N more moves"
 // and a month 1, 2, 3 plan. He screen-records it on his phone with himself green-screened on top, tags the brand
 // and DMs them the link. Everything on the page comes from real data, and every number in a move must be one of

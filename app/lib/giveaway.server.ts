@@ -1,4 +1,4 @@
-// The 3-month giveaway (app/lib/giveaway.ts has the dates and words). The form on usegeo.app/giveaway posts here
+// The 3-month giveaway (app/lib/giveaway.ts has the dates and words). The form on firstpicked.com.au/giveaway posts here
 // (routes/giveaway.tsx). One entry per store (GiveawayEntry, geo schema). A new entry emails GEO_ALERT_EMAIL
 // (job "giveaway.notice") when email is set up. Ross sees every entry, downloads them and draws the winner in
 // Admin > Giveaway.

@@ -18,7 +18,7 @@ export const env = {
   jobsSecret: process.env.JOBS_SECRET || "",
   // Key for scrambling free-check visitors' IPs. Unset: a random key per process (limits reset on deploy).
   checkIpSecret: process.env.CHECK_IP_SECRET || "",
-  // A Google Cloud OAuth client, so Ross can connect his Google Calendar to usegeo.app/book (lib/booking.server.ts).
+  // A Google Cloud OAuth client, so Ross can connect his Google Calendar to firstpicked.com.au/book (lib/booking.server.ts).
   googleClientId: process.env.GOOGLE_CLIENT_ID || "",
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
 };

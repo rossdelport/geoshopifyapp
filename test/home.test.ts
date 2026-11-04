@@ -11,7 +11,7 @@ import { HOME_LANGS } from "../app/lib/tools/site";
 import { STORIES } from "../app/lib/stories";
 import { WAITLIST_CONSENT_TEXT } from "../app/lib/waitlist.server";
 
-// usegeo.app: the new design (app/home/new-home.html), the home page since 2 Nov 2026 (Ross). It was the preview at
+// firstpicked.com.au: the new design (app/home/new-home.html), the home page since 2 Nov 2026 (Ross). It was the preview at
 // /newhomepage, which now sends people to "/".
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
@@ -145,12 +145,12 @@ describe("home page", () => {
     const html = await home();
     const head = html.slice(0, html.indexOf("</head>"));
     expect(head.match(/rel="canonical"/g)).toHaveLength(1);
-    expect(head).toContain('<link rel="canonical" href="https://usegeo.app/">');
-    expect(head).toContain('<link rel="alternate" hreflang="en" href="https://usegeo.app/">');
-    expect(head).toContain('<link rel="alternate" hreflang="x-default" href="https://usegeo.app/">');
-    for (const lang of HOME_LANGS) expect(head).toContain(`<link rel="alternate" hreflang="${lang}" href="https://usegeo.app/${lang}">`);
-    expect(head).toContain('<meta property="og:url" content="https://usegeo.app/">');
-    expect(head).toContain('<meta property="og:image" content="https://usegeo.app/og/home.png">');
+    expect(head).toContain('<link rel="canonical" href="https://firstpicked.com.au/">');
+    expect(head).toContain('<link rel="alternate" hreflang="en" href="https://firstpicked.com.au/">');
+    expect(head).toContain('<link rel="alternate" hreflang="x-default" href="https://firstpicked.com.au/">');
+    for (const lang of HOME_LANGS) expect(head).toContain(`<link rel="alternate" hreflang="${lang}" href="https://firstpicked.com.au/${lang}">`);
+    expect(head).toContain('<meta property="og:url" content="https://firstpicked.com.au/">');
+    expect(head).toContain('<meta property="og:image" content="https://firstpicked.com.au/og/home.png">');
     expect(head).toContain('<meta property="og:title" content="GEO · Get your products recommended by AI">');
     expect(head).toContain('<meta name="twitter:card" content="summary_large_image">');
     expect(existsSync(join(ROOT, "public", "og", "home.png"))).toBe(true);
@@ -265,10 +265,10 @@ describe("the old preview address, /newhomepage", () => {
       .catch((r: Response) => r);
 
   it("sends people to the home page for good, keeping any ad tags", async () => {
-    const res = (await visit("https://usegeo.app/newhomepage")) as Response;
+    const res = (await visit("https://firstpicked.com.au/newhomepage")) as Response;
     expect(res.status).toBe(301);
     expect(res.headers.get("location")).toBe("/");
-    const tagged = (await visit("https://usegeo.app/newhomepage?utm_source=x&utm_campaign=y")) as Response;
+    const tagged = (await visit("https://firstpicked.com.au/newhomepage?utm_source=x&utm_campaign=y")) as Response;
     expect(tagged.status).toBe(301);
     expect(tagged.headers.get("location")).toBe("/?utm_source=x&utm_campaign=y");
   });

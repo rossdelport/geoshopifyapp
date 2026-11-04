@@ -1,4 +1,13 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import { Links, Meta, Outlet, Scripts, ScrollRestoration, type LoaderFunctionArgs } from "react-router";
+import { publicHostRedirect } from "./lib/tools/host.server";
+
+// One address for every page: www, the old firstpicked.com.au and the Railway address get a 301 to
+// https://firstpicked.com.au (lib/tools/host.server.ts says what stays where it is).
+export const loader = ({ request }: LoaderFunctionArgs) => {
+  const moved = publicHostRedirect(request);
+  if (moved) throw moved;
+  return null;
+};
 
 export default function App() {
   return (

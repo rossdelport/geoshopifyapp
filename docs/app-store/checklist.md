@@ -20,7 +20,7 @@
 - [ ] `SHOPIFY_BILLING_TEST=false`. Safe now: Shopify development stores (yours and the reviewer's) always get test
       charges; real stores pay.
 - [ ] `GEO_ALERT_EMAIL`: your or the VA's inbox (told when a store starts or leaves Done-for-you).
-- [ ] `RESEND_API_KEY` and `GEO_EMAIL_FROM` (best from a usegeo.app address verified in Resend).
+- [ ] `RESEND_API_KEY` and `GEO_EMAIL_FROM` (best from a firstpicked.com.au address verified in Resend).
 - [ ] `GEO_LEGAL_NAME` and `GEO_POSTAL_ADDRESS` (a PO box is fine), plus `GEO_ABN`. They show on /privacy and in emails.
 - [ ] `SUPPORT_EMAIL`: the same address as the listing's support email. Without it /privacy shows no contact email.
 - [ ] `SHOPIFY_API_SECRET` is set (logins and webhooks need it).
@@ -38,7 +38,7 @@
 - [ ] Paste every field from `listing.md`; check each live character counter.
 - [ ] Upload the icon (`icon-1200-navy.png` or `icon-1200-lilac.png`, pick one), 3 to 6 screenshots and the feature image (`screenshots.md`).
 - [ ] Record and upload the screencast (script in `reviewer.md`), paste the testing instructions.
-- [ ] Privacy policy URL https://usegeo.app/privacy, support email [SUPPORT EMAIL].
+- [ ] Privacy policy URL https://firstpicked.com.au/privacy, support email [SUPPORT EMAIL].
 - [ ] **Submit for review.** Watch your email for the reviewer's questions and answer them quickly.
 
 ## 6. Approval day

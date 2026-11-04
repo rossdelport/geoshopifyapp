@@ -1,4 +1,4 @@
-// usegeo.app/book: people pick a time for a call with Ross, and it goes straight into Ross's Google Calendar
+// firstpicked.com.au/book: people pick a time for a call with Ross, and it goes straight into Ross's Google Calendar
 // (Ross, 3 Nov 2026: every home page button says "Get started" and opens this page). Pure helpers, used by the page
 // and by booking.server.ts.
 

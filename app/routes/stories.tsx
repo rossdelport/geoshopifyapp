@@ -12,7 +12,7 @@ import storiesCss from "../styles/stories.css?url";
 
 // Layout for the stories: /stories (the hub) and every /stories/<slug> page. One place for the fonts and
 // stylesheets (the free tools' frame, the story card shared with the home page, then stories.css), the canonical
-// host (www and the Railway address get a 301 to usegeo.app), the default headers and an error page in the site's
+// host (www and the Railway address get a 301 to firstpicked.com.au), the default headers and an error page in the site's
 // frame. Each page sets its own `meta`; the meta here only fills in for the error page.
 
 export const loader = ({ request }: LoaderFunctionArgs) => {

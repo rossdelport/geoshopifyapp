@@ -1,4 +1,4 @@
-// usegeo.app/book, the book-a-call page (Ross, 3 Nov 2026): the free times (Ross's hours in Perth, minus his busy
+// firstpicked.com.au/book, the book-a-call page (Ross, 3 Nov 2026): the free times (Ross's hours in Perth, minus his busy
 // times), the page with and without his Google Calendar connected, and booking a call (checks, the Google Calendar
 // event with a Meet link, a time someone just took, the per-IP limit, Ross's email). Google and the database are
 // stand-ins: no network, no database.
@@ -135,7 +135,7 @@ describe("the page", () => {
     expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
     expect(html).toContain('<h1 class="h1">Book a call <b>with Ross.</b></h1>');
     expect(html).toContain('<meta name="robots" content="noindex">');
-    expect(html).toContain('<link rel="canonical" href="https://usegeo.app/book">');
+    expect(html).toContain('<link rel="canonical" href="https://firstpicked.com.au/book">');
     // no menu: the only links are home, privacy, terms and texting Ross
     const links = [...new Set([...html.matchAll(/<a [^>]*href="([^"]+)"/g)].map((m) => m[1]))].sort();
     expect(links).toEqual(["/", "/privacy", "/privacy#cookies", "/terms", "sms:+61400369865"]);
@@ -256,7 +256,7 @@ describe("connecting Ross's Google Calendar", () => {
   it("asks Google for a refresh token to see free times and add events, coming back to the admin page", () => {
     const u = new URL(consentUrl("state123"));
     expect(u.origin + u.pathname).toBe("https://accounts.google.com/o/oauth2/v2/auth");
-    expect(u.searchParams.get("redirect_uri")).toBe("https://usegeo.app/dash/admin/calendar");
+    expect(u.searchParams.get("redirect_uri")).toBe("https://firstpicked.com.au/dash/admin/calendar");
     expect(u.searchParams.get("access_type")).toBe("offline");
     expect(u.searchParams.get("prompt")).toBe("consent");
     expect(u.searchParams.get("state")).toBe("state123");

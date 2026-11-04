@@ -1,4 +1,4 @@
-// GEO's own blog at usegeo.app/blog (Ross, 2026-10-15: "practise what we preach"). A background job (`blog.write`)
+// GEO's own blog at firstpicked.com.au/blog (Ross, 2026-10-15: "practise what we preach"). A background job (`blog.write`)
 // writes one article at a time from the topics in lib/blog/topics.ts, has Claude check every fact against the
 // knowledge pack, tidies it (`finishPost`) and publishes it. Timing (`blogDue`): a first batch of six, half an hour
 // apart, then one on Monday, Wednesday and Friday from 9am Sydney time. Ross gets an email for every post; Admin >

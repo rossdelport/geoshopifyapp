@@ -12,7 +12,7 @@ export function serveHome(request: Request, html: string): Response {
     throw redirect(`/app?${url.searchParams.toString()}`);
   }
 
-  // One public address: www.usegeo.app and the Railway address send visitors to https://usegeo.app.
+  // One public address: www, the old usegeo.app and the Railway address send visitors to https://firstpicked.com.au.
   const moved = publicHostRedirect(request);
   if (moved) throw moved;
 

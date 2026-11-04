@@ -1,4 +1,4 @@
-// The 3-month giveaway at usegeo.app/giveaway (Ross, 3 Nov 2026): one Australian Shopify brand wins 3 months of
+// The 3-month giveaway at firstpicked.com.au/giveaway (Ross, 3 Nov 2026): one Australian Shopify brand wins 3 months of
 // GEO Done for you, drawn at random on Saturday 7 November 2026. Facebook ads send people to the page.
 // The dates here are the rules' dates: the page (app/home/giveaway.html), the server and the admin page all use
 // them. A test checks the page says the same.

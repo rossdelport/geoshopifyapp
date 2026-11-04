@@ -14,7 +14,7 @@ const SHOPIFY_PARAMS = ["shop", "host", "embedded", "hmac", "id_token", "session
 const SHOPIFY_APP_AGENT = /Shopify (POS|Mobile)\//;
 
 /**
- * Someone typed usegeo.app/app (or opened a bookmark) in a normal browser tab. Shopify's check would answer
+ * Someone typed firstpicked.com.au/app (or opened a bookmark) in a normal browser tab. Shopify's check would answer
  * with a bare App Bridge page that does nothing outside the admin, so they go to the login page instead.
  * Inside the admin the app loads in a frame (Sec-Fetch-Dest "iframe") with shop and host on the address, and
  * data requests carry a session token, so none of that matches. Browsers that send no Sec-Fetch-Dest, and

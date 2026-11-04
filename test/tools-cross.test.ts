@@ -201,7 +201,7 @@ describe("one list of seven pages everywhere", () => {
     const sitemapLocs = [...sitemapXml().matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     expect(sitemapLocs.filter((l) => l.startsWith(`${SITE}/tools/`))).toEqual(SEVEN.map(abs));
 
-    const llmsLinks = [...siteLlmsTxt().matchAll(/\]\((https:\/\/usegeo\.app\/tools\/[a-z0-9-]+)\)/g)].map((m) => m[1]);
+    const llmsLinks = [...siteLlmsTxt().matchAll(/\]\((https:\/\/firstpicked\.com\.au\/tools\/[a-z0-9-]+)\)/g)].map((m) => m[1]);
     expect(llmsLinks).toEqual(SEVEN.map(abs));
 
     const home = read("app/home/new-home.html");
@@ -231,7 +231,7 @@ describe("one list of seven pages everywhere", () => {
 });
 
 describe("our own site files pass our own checkers", () => {
-  it("usegeo.app's llms.txt passes the llms.txt Checker with no problems and no tips", () => {
+  it("firstpicked.com.au's llms.txt passes the llms.txt Checker with no problems and no tips", () => {
     const report = llmsReport(siteLlmsTxt());
     expect(report.found).toBe(true);
     expect(report.problems).toBe(0);
@@ -239,7 +239,7 @@ describe("our own site files pass our own checkers", () => {
     expect(report.checks.filter((c) => c.tone !== "info")).toEqual([]);
   });
 
-  it("usegeo.app's robots.txt lets every bot the AI Crawler Checker knows read the public pages", () => {
+  it("firstpicked.com.au's robots.txt lets every bot the AI Crawler Checker knows read the public pages", () => {
     const paths = [
       { label: "the home page", path: "/" },
       ...TOOLS.map((t) => ({ label: t.name, path: t.path })),
