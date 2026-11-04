@@ -27,7 +27,7 @@ body {
 
   max-width: 620px;
   margin: 0 auto;
-  padding: 16px 20px 56px;
+  padding: 16px 30px 56px; /* 30px at the sides: room for Instagram to zoom in on a screen recording (Ross, 4 Nov 2026) */
   font-family: var(--font);
   font-size: 17px;
   line-height: 1.55;
