@@ -134,7 +134,8 @@ describe("home page", () => {
       "Fixes to your pages",
       "ChatGPT, Gemini, Perplexity and Google AI Overviews, plus Claude every week",
       "See the sales AI sends you",
-      "A 30-minute call with our team",
+      "Monthly call about updates and future plans",
+      "Weekly reports",
     ]);
     expect(price).toContain('<span data-roll>50</span>+</b><span class="sr">50+</span>');
     expect(price).not.toContain("Emails to those sites");
