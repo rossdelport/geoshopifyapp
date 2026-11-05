@@ -17,7 +17,7 @@ const ROUTES = { de, fr, nl, es, it: it_ };
 const get = async (route: { loader: (a: LoaderFunctionArgs) => Promise<Response> }, url: string) =>
   route.loader({ request: new Request(url), params: {}, context: {} } as unknown as LoaderFunctionArgs);
 
-const PRICES: Record<string, string> = { de: "1.000 A$", fr: "1 000 A$", nl: "A$ 1.000", es: "1.000 A$", it: "1.000 A$" };
+const PRICES: Record<string, string> = { de: "945 A$", fr: "945 A$", nl: "A$ 945", es: "945 A$", it: "945 A$" };
 const LEGAL: Record<string, string> = { de: "Impressum", fr: "Mentions légales", nl: "Bedrijfsgegevens", es: "Aviso legal", it: "Note legali" };
 
 describe("home page in other languages", () => {
@@ -41,7 +41,7 @@ describe("home page in other languages", () => {
       }
       // the one price, in Australian dollars written the local way
       expect(html).toContain(`>${PRICES[lang]}<`);
-      expect(html).not.toContain(">A$1,000<");
+      expect(html).not.toContain(">A$945<");
       // the company details line, with the real address and email
       expect(html).toContain(`<p class="foot-legal">${LEGAL[lang]}: FirstPicked, 237 Adelaide Terrace, East Perth WA 6000,`);
       expect(html).toContain('<a href="mailto:ross@firstpicked.com.au">ross@firstpicked.com.au</a>');

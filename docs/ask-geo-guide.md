@@ -143,7 +143,7 @@ early access.
 
 - **Free:** one check of 10 buying questions on ChatGPT, Gemini and Perplexity, your visibility score and top
   competitors, and one look for Reddit threads.
-- **Done for you:** A$1,000 a month (Australian dollars). No lock-in contract, cancel any time. Only 5 spots. Not
+- **Done for you:** A$945 a month (Australian dollars). No lock-in contract, cancel any time. Only 5 spots. Not
   happy after the first month? Full refund, and you keep all the work (ask ross@firstpicked.com.au). No free trial.
   - 100 buying questions, checked every day on ChatGPT, Gemini, Perplexity and Google AI Overviews, plus Claude in a
     full check every week.

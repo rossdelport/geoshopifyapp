@@ -158,7 +158,7 @@ describe("the page", () => {
     expect(html).toContain("</svg>15 minutes</span>");
     expect(html).not.toContain("30 minutes");
     expect(html).not.toContain("Can’t find a time");
-    expect(html).toContain("A$1,000 a month, and we do the work");
+    expect(html).toContain("A$945 a month, and we do the work");
     expect(html).not.toContain("—");
     expect(html).not.toMatch(/ – /);
   });

@@ -96,7 +96,7 @@ export default function ComparePageView() {
             <h2 className="ck-h2" id="cta-h">
               Want us to do it for you?
             </h2>
-            <p>FirstPicked is A$1,000 a month, done for you, for 5 Australian Shopify brands. No lock-in, and a full refund if you&apos;re not happy after the first month.</p>
+            <p>FirstPicked is A$945 a month, done for you, for 5 Australian Shopify brands. No lock-in, and a full refund if you&apos;re not happy after the first month.</p>
             <a className="ck-btn ck-btn-dark" href={waitlistHref(page.slug)}>
               Join the waitlist
             </a>

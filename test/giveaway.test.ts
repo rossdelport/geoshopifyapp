@@ -83,7 +83,7 @@ describe("giveaway page", () => {
     expect(perth(GIVEAWAY.drawAt, { weekday: "long", day: "numeric", month: "long", hour: "numeric" })).toBe("Saturday 7 November at 12 pm");
     expect(html).toContain("close at 11:59pm on Friday 6 November 2026, Perth time (AWST)");
     expect(html).toContain("at 12pm on Saturday 7 November 2026, Perth time, in Perth, Western Australia");
-    expect(html).toContain("worth A$3,000 including GST (A$1,000 a month)");
+    expect(html).toContain("worth A$2,835 including GST (A$945 a month)");
     expect(html).toContain("isn’t run, backed or linked with Facebook, Instagram, Meta or Shopify");
   });
 
