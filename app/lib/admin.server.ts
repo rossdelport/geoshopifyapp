@@ -5,20 +5,14 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { Prisma } from "@prisma/client";
 import db from "../db.server";
-import { requireUser, signInCookie } from "./web-auth.server";
+import { adminEmails, isAdmin, requireUser, signInCookie } from "./web-auth.server";
 import { hashIp } from "./public-form.server";
 import { getPlan } from "./plans";
 
 export const ADMIN_TZ = "Australia/Sydney";
 
-export function adminEmails(): string[] {
-  return (process.env.GEO_ADMIN_EMAILS || "rossdelport1998@gmail.com")
-    .split(",")
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
-}
-
-export const isAdmin = (email: string | null | undefined) => Boolean(email) && adminEmails().includes(email!.toLowerCase());
+// Who is an admin lives with the sign-in code (the agency hub's pages ask too); kept here for the admin pages.
+export { adminEmails, isAdmin };
 
 export async function requireAdmin(request: Request) {
   const user = await requireUser(request);
@@ -161,7 +155,9 @@ export async function usersTable() {
     const score = scoreBy.get(s.id);
     return {
       key: s.id,
-      email: user?.email ?? s.email ?? "(installed from Shopify)",
+      shopId: s.id as string | null,
+      // A client store added in the agency hub has no login of its own.
+      email: user?.email ?? s.email ?? (s.source === "web" ? "(added in the hub, no login)" : "(installed from Shopify)"),
       store: s.name || s.primaryDomain || s.domain,
       host: s.primaryDomain || s.domain,
       source: s.source,
@@ -178,6 +174,7 @@ export async function usersTable() {
   for (const u of users.filter((u) => !withStore.has(u.id))) {
     rows.push({
       key: u.id,
+      shopId: null,
       email: u.email,
       store: "No store yet",
       host: "",

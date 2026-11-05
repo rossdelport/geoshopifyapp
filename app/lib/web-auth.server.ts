@@ -11,6 +11,7 @@ import { isProd } from "./env.server";
 import { SITE } from "./tools/site";
 import { emailConfigured, sendEmailMessage } from "./email.server";
 import { normalizeEmail } from "./check-lead.server";
+import { clientIdFromPath } from "./hub-paths";
 
 const LINK_MINUTES = 30;
 const MAX_LINKS_PER_HOUR = 5;
@@ -141,16 +142,29 @@ export async function signInCookie(email: string): Promise<string> {
   return storage.commitSession(session);
 }
 
+/** Who can open the admin area and the agency hub: GEO_ADMIN_EMAILS (comma separated), else Ross's email. */
+export function adminEmails(): string[] {
+  return (process.env.GEO_ADMIN_EMAILS || "rossdelport1998@gmail.com")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+export const isAdmin = (email: string | null | undefined) => Boolean(email) && adminEmails().includes(email!.toLowerCase());
+
 export async function currentUser(request: Request) {
   const session = await storage.getSession(request.headers.get("cookie"));
   const id = session.get("userId");
   return id ? db.user.findUnique({ where: { id } }) : null;
 }
 
-/** Where to sign in, coming back to `path` afterwards: the admin area has its own password page (Ross, 4 Nov 2026). */
+/**
+ * Where to sign in, coming back to `path` afterwards: the admin area and the agency hub's own pages (only admins open
+ * them) have the admin password page (Ross, 4 Nov 2026); everyone else gets an email link.
+ */
 export function signInPage(path: string): string {
   const next = encodeURIComponent(safeNext(path));
-  return path.startsWith("/dash/admin") ? `/admin?next=${next}` : `/login?next=${next}`;
+  return /^\/dash\/(admin|log|clients)(\/|$)/.test(path) ? `/admin?next=${next}` : `/login?next=${next}`;
 }
 
 /** The signed-in account, or a redirect to /login (coming back here afterwards). */
@@ -163,35 +177,54 @@ export async function requireUser(request: Request) {
 }
 
 // The dashboard frame and the page inside it both ask at the same moment (each with its own copy of the request), so
-// lookups still on their way are shared by the browser's sign-in cookie. Each is forgotten as soon as it's done, so
-// nothing is ever served stale.
-const inFlight = new Map<string, Promise<{ user: User; shop: Shop }>>();
+// lookups still on their way are shared by the browser's sign-in cookie and the store the address names. Each is
+// forgotten as soon as it's done, so nothing is ever served stale.
+const inFlight = new Map<string, Promise<{ user: User; shop: Shop | null }>>();
 
-/** The signed-in account and its store; no store yet goes to /start. */
-export function requireWebShop(request: Request): Promise<{ user: User; shop: Shop }> {
+/**
+ * The signed-in account and the store the page is about, in one round trip: in the agency hub
+ * (/dash/clients/<store id>/...) the store the address names, for admins only (anyone else gets "Not found");
+ * elsewhere the account's first store, or null when it has none yet. Signed out goes to sign in.
+ */
+export function requireSession(request: Request): Promise<{ user: User; shop: Shop | null }> {
   const cookie = request.headers.get("cookie");
-  if (!cookie || (request.method !== "GET" && request.method !== "HEAD")) return loadWebShop(request); // forms always read fresh
-  let found = inFlight.get(cookie);
+  if (!cookie || (request.method !== "GET" && request.method !== "HEAD")) return loadSession(request); // forms always read fresh
+  const key = `${clientIdFromPath(new URL(request.url).pathname) ?? ""}|${cookie}`;
+  let found = inFlight.get(key);
   if (!found) {
-    found = loadWebShop(request);
-    inFlight.set(cookie, found);
-    const forget = () => inFlight.delete(cookie);
+    found = loadSession(request);
+    inFlight.set(key, found);
+    const forget = () => inFlight.delete(key);
     found.then(forget, forget);
   }
   return found;
 }
 
-async function loadWebShop(request: Request) {
+/** The signed-in account and its store (see requireSession); no store yet goes to /start. */
+export async function requireWebShop(request: Request): Promise<{ user: User; shop: Shop }> {
+  const { user, shop } = await requireSession(request);
+  if (!shop) throw redirect("/start");
+  return { user, shop };
+}
+
+async function loadSession(request: Request) {
   const session = await storage.getSession(request.headers.get("cookie"));
   const id = session.get("userId");
-  // The account and its store in one round trip (both only need the id in the cookie).
+  const pathname = new URL(request.url).pathname;
+  const clientId = clientIdFromPath(pathname);
+  // The account and its store in one round trip (both only need the cookie and the address).
   const [user, shop] = id
-    ? await Promise.all([db.user.findUnique({ where: { id } }), db.shop.findFirst({ where: { userId: id }, orderBy: { createdAt: "asc" } })])
+    ? await Promise.all([
+        db.user.findUnique({ where: { id } }),
+        clientId ? db.shop.findUnique({ where: { id: clientId } }) : db.shop.findFirst({ where: { userId: id }, orderBy: { createdAt: "asc" } }),
+      ])
     : [null, null];
   if (!user) {
-    throw redirect(signInPage(new URL(request.url).pathname));
+    throw redirect(signInPage(pathname));
   }
-  if (!shop) throw redirect("/start");
+  // A client's pages in the hub: only admins, and only a store that exists. The same answer for both, so the pages
+  // don't show they exist.
+  if (clientId && (!isAdmin(user.email) || !shop)) throw new Response("Not found", { status: 404 });
   return { user, shop };
 }
 

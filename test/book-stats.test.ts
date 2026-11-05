@@ -191,13 +191,13 @@ describe.skipIf(!url)("saving and counting (needs TEST_DATABASE_URL)", () => {
     expect(cookie).toContain("geo_session=");
     expect(cookie).toContain("Max-Age=2592000");
     expect(await db.user.findUnique({ where: { email: "rossdelport1998@gmail.com" } })).not.toBeNull();
-    // somewhere outside the admin area isn't allowed as the next page
+    // somewhere outside the admin area and the agency hub isn't allowed as the next page: the hub opens instead
     try {
       await call({ password: "purple-ticket-river", next: "/dash/sites" });
     } catch (thrown) {
       res = thrown as Response;
     }
-    expect(res?.headers.get("location")).toBe("/dash/admin");
+    expect(res?.headers.get("location")).toBe("/dash");
     // once signed in, the password page goes straight on
     let again: Response | null = null;
     try {
@@ -205,6 +205,6 @@ describe.skipIf(!url)("saving and counting (needs TEST_DATABASE_URL)", () => {
     } catch (thrown) {
       again = thrown as Response;
     }
-    expect(again?.headers.get("location")).toBe("/dash/admin");
+    expect(again?.headers.get("location")).toBe("/dash");
   });
 });

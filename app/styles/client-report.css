@@ -1,0 +1,637 @@
+/* Client reports (Ross, 5 Nov 2026). Two parts:
+   1. The client's page, /results/<token> (routes/results.$token.tsx): one calm column, phone first (nothing scrolls
+      sideways at 375px), in the web app's look: white, near-black text, greys, purple only for links, and green / red
+      only for up / down. No motion. Prints cleanly.
+   2. A few bits of Ross's Reports page in the hub (routes/dash.clients.$id.reports.tsx), which otherwise uses web.css. */
+
+/* ---------- 1. The client's page ---------- */
+
+body:has(> .cr) {
+  margin: 0;
+  background: #fff;
+}
+
+.cr {
+  --ink: #0a0a0b;
+  --ink-2: #27272a;
+  --ink-3: #3f3f46;
+  --text: #52525b;
+  --muted: #71717a;
+  --faint: #a1a1aa;
+  --line: #ececef;
+  --line-2: #e4e4e7;
+  --bg: #ffffff;
+  --bg-2: #fafafa;
+  --hover: #f4f4f5;
+  --accent: #5b47e0;
+  --accent-hover: #4a3cd8;
+  --green: #16a34a;
+  --green-ink: #15803d;
+  --green-bg: #f0fdf4;
+  --red-ink: #b91c1c;
+  --red-bg: #fef2f2;
+  --font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px 16px 48px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-wrap: anywhere;
+}
+.cr *,
+.cr *::before,
+.cr *::after {
+  box-sizing: border-box;
+}
+.cr :where(h1, h2, h3, p, ul, ol) {
+  margin: 0;
+}
+.cr :where(ul, ol) {
+  padding: 0;
+  list-style: none;
+}
+.cr :where(h1, h2, h3) {
+  color: var(--ink);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.cr a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+.cr a:hover {
+  color: var(--accent-hover);
+}
+.cr :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.cr b {
+  color: var(--ink-2);
+  font-weight: 650;
+}
+
+/* The logo, as in the web app (.w-logo): two overlapping circles and the name. */
+.cr-top {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+}
+.cr-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  font-size: 19px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.cr-logo i {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  flex: none;
+}
+.cr-logo i::before,
+.cr-logo i::after {
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+}
+.cr-logo i::before {
+  left: 0;
+  top: 0;
+  background: #c7cdf6;
+}
+.cr-logo i::after {
+  right: 0;
+  bottom: 0;
+  background: #4050b0;
+}
+
+.cr-main {
+  display: grid;
+  gap: 36px;
+  margin-top: 28px;
+}
+
+/* The brand and the days. */
+.cr-hero {
+  display: grid;
+  gap: 6px;
+}
+.cr-kicker {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.01em;
+}
+.cr-hero h1 {
+  font-size: 32px;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+}
+.cr-where {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* Ross's note: a quiet grey box with his words, line breaks kept. */
+.cr-note {
+  display: grid;
+  gap: 6px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg-2);
+}
+.cr-note-head {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+.cr-note-text {
+  color: var(--ink-2);
+  white-space: pre-line;
+}
+
+/* Sections: a heading, a line on what it means, then cards. */
+.cr-sec {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.cr-sec-head {
+  display: grid;
+  gap: 4px;
+}
+.cr-sec-head h2 {
+  font-size: 21px;
+  line-height: 1.25;
+}
+.cr-sec-head p {
+  font-size: 14.5px;
+  color: var(--muted);
+}
+.cr-card {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg);
+  box-shadow: 0 1px 2px rgba(10, 10, 11, 0.05);
+}
+.cr-quiet {
+  background: var(--bg-2);
+  box-shadow: none;
+}
+.cr-strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.cr-big {
+  color: var(--ink);
+  font-size: 38px;
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.cr-big small {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.cr-facts {
+  color: var(--ink-3);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.cr-line,
+.cr-lead {
+  font-size: 15px;
+  color: var(--text);
+}
+.cr-line {
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  margin-top: 4px;
+}
+
+/* Up (green), down (red), the same (grey). */
+.cr-change {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.cr-change.up {
+  color: var(--green-ink);
+}
+.cr-change.down {
+  color: var(--red-ink);
+}
+
+/* Sales per AI assistant: the name and money on one line, orders and visits under it. */
+.cr-rows {
+  gap: 0;
+  padding: 4px 18px;
+}
+.cr-rows li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.cr-rows li:last-child {
+  border-bottom: 0;
+}
+.cr-row-name {
+  color: var(--ink);
+  font-weight: 600;
+}
+.cr-row-num {
+  color: var(--ink);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.cr-row-sub {
+  grid-column: 1 / -1;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+/* The score per AI assistant: a thin grey bar each. */
+.cr-bars {
+  display: grid;
+  gap: 12px;
+  margin-top: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.cr-bars li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 12px;
+  align-items: center;
+  font-size: 14.5px;
+  color: var(--ink-3);
+}
+.cr-bar-num {
+  color: var(--ink);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.cr-bar {
+  grid-column: 1 / -1;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--hover);
+  overflow: hidden;
+}
+.cr-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--ink-3);
+}
+
+/* What we did: a number per kind of work, then the details. */
+.cr-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.cr-tiles li {
+  display: grid;
+  gap: 2px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+}
+.cr-tiles b {
+  color: var(--ink);
+  font-size: 26px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.cr-tiles span {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.cr-work {
+  gap: 0;
+  padding: 4px 18px;
+}
+.cr-part {
+  display: grid;
+  gap: 8px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.cr-part:last-child {
+  border-bottom: 0;
+}
+.cr-part h3 {
+  font-size: 15px;
+  line-height: 1.35;
+}
+.cr-part p {
+  font-size: 15px;
+}
+.cr-list {
+  display: grid;
+  gap: 6px;
+}
+.cr-list li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+.cr-list li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--faint);
+}
+.cr-dated {
+  display: grid;
+  gap: 12px;
+}
+.cr-dated li {
+  display: grid;
+  gap: 2px;
+}
+.cr-dated span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.cr-dated p {
+  color: var(--ink-2);
+  white-space: pre-line;
+}
+
+/* The questions with the most searches, each with Yes (green) or No (grey). */
+.cr-qs {
+  gap: 0;
+  padding: 16px 18px 6px;
+}
+.cr-qs h3 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2px 12px;
+  padding-bottom: 8px;
+  font-size: 15px;
+}
+.cr-qs h3 span {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+.cr-qs li {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.cr-q {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+.cr-q small {
+  font-size: 13px;
+  color: var(--muted);
+}
+.cr-pill {
+  flex: none;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--hover);
+  color: var(--ink-3);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.cr-pill.ok {
+  background: var(--green-bg);
+  color: var(--green-ink);
+}
+
+/* Who AI names instead, ranked. */
+.cr-rivals {
+  gap: 0;
+  padding: 4px 18px;
+}
+.cr-rivals li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.cr-rivals li:last-child {
+  border-bottom: 0;
+}
+.cr-rank {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--hover);
+  color: var(--ink-3);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.cr-rival {
+  color: var(--ink);
+  font-weight: 600;
+}
+.cr-rival-share {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+/* Coming next: the day, then the guide. */
+.cr-next {
+  gap: 0;
+  padding: 4px 18px;
+}
+.cr-next li {
+  display: grid;
+  gap: 2px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-2);
+}
+.cr-next li:last-child {
+  border-bottom: 0;
+}
+.cr-day {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* How we count: small print, plainly said. */
+.cr-how {
+  display: grid;
+  gap: 8px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+  color: var(--muted);
+}
+.cr-how h2 {
+  font-size: 15px;
+}
+
+.cr-foot {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+  color: var(--muted);
+}
+
+@media (min-width: 560px) {
+  .cr {
+    padding: 28px 24px 64px;
+  }
+  .cr-main {
+    gap: 44px;
+    margin-top: 36px;
+  }
+  .cr-hero h1 {
+    font-size: 40px;
+  }
+  .cr-big {
+    font-size: 44px;
+  }
+  .cr-tiles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .cr-next li {
+    grid-template-columns: 110px minmax(0, 1fr);
+    gap: 12px;
+  }
+}
+
+@media print {
+  body:has(> .cr) {
+    background: #fff;
+  }
+  .cr {
+    max-width: none;
+    padding: 0;
+    font-size: 12pt;
+  }
+  .cr-card,
+  .cr-tiles li,
+  .cr-note {
+    box-shadow: none;
+  }
+  .cr-sec,
+  .cr-card,
+  .cr-tiles li,
+  .cr-part,
+  .cr-how {
+    break-inside: avoid;
+  }
+  .cr a {
+    color: var(--ink);
+  }
+  .cr-bar span {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+/* ---------- 2. Ross's Reports page in the hub (with web.css) ---------- */
+
+.cr-make {
+  display: grid;
+  gap: 8px;
+}
+.cr-make label {
+  color: var(--ink-2);
+  font-weight: 600;
+  font-size: 14px;
+}
+.cr-make textarea {
+  min-height: 92px;
+  padding: 10px 14px;
+  font: 15px/1.55 var(--font-body);
+  resize: vertical;
+}
+.cr-made {
+  display: grid;
+  gap: 10px;
+}
+.cr-made-link {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--ink-3);
+  word-break: break-all;
+}
+.cr-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.cr-made .cr-acts {
+  justify-content: flex-start;
+}
+
+/* On a phone each report is a small card (no sideways scrolling to reach its buttons). */
+@media (max-width: 640px) {
+  .cr-list thead { display: none; }
+  .cr-list tr { display: grid; gap: 4px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  .cr-list tr:last-child { border-bottom: 0; }
+  .cr-list td { display: block; padding: 0; border: 0; }
+  .cr-list td.w-q { color: var(--ink); font-weight: 600; }
+  .cr-list td:nth-child(2)::before { content: "Covers "; color: var(--muted); }
+  .cr-list td:nth-child(3)::before { content: "Made "; color: var(--muted); }
+  .cr-list .cr-acts { justify-content: flex-start; margin-top: 8px; }
+}

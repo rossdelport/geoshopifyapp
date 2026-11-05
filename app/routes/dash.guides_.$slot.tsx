@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { Link, redirect, useFetcher, useLoaderData } from "react-router";
+import { Link, redirect, useFetcher, useLoaderData, useLocation } from "react-router";
 import { requireWebShop } from "../lib/web-auth.server";
 import { getPlan } from "../lib/plans";
 import { approveSlot, markAdded, publishSlot, retrySlot, skipSlot, slotView } from "../lib/guide-calendar.server";
@@ -8,6 +8,7 @@ import { GUIDE_KIND_LABELS, type GuideKind } from "../lib/guide";
 import { sanitizeHtml } from "../lib/sanitize";
 import { formatNumber } from "../lib/format";
 import { CopyButton, PageHead } from "../components/web";
+import { storeBase } from "../lib/hub-paths";
 
 // firstpicked.com.au/dash/guides/<day> (the file's underscore keeps it out of the calendar's layout): one guide page from the calendar, as it will look on the store's site, with what it
 // is at and what the store can do: OK it, skip it, try again, or add it to the store (copy and paste) when the store
@@ -32,7 +33,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     else if (intent === "publish") await publishSlot(id, shop.id);
     else if (intent === "skip") {
       await skipSlot(shop.id, id);
-      return redirect("/dash/guides");
+      return redirect(`${storeBase(new URL(request.url).pathname)}/guides`);
     } else return { ok: false as const, error: "Unknown action" };
     return { ok: true as const };
   } catch (err) {
@@ -42,6 +43,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 export default function GuideDay() {
   const d = useLoaderData<typeof loader>();
+  const base = storeBase(useLocation().pathname);
   const fetcher = useFetcher<typeof action>();
   const busy = fetcher.state !== "idle";
   const intent = fetcher.formData?.get("intent");
@@ -76,7 +78,7 @@ export default function GuideDay() {
         }
       />
       <p className="w-note" style={{ marginTop: -8 }}>
-        <Link to={`/dash/guides?m=${monthOf(d.day)}`}>‹ Back to the calendar</Link>
+        <Link to={`${base}/guides?m=${monthOf(d.day)}`}>‹ Back to the calendar</Link>
       </p>
 
       <div className="w-guide-wrap">

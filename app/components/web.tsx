@@ -1,6 +1,6 @@
 // Small shared pieces for the FirstPicked web app pages (firstpicked.com.au/login, /start, /dash).
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { Link, useNavigation } from "react-router";
+import { Link, useLocation, useNavigation } from "react-router";
 
 // useLayoutEffect warns on the server; this runs it only in the browser.
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -274,16 +274,60 @@ function SkBox({ lines = 4 }: { lines?: number }) {
   );
 }
 
-/** Which skeleton a page gets, from its address. */
-export function skeletonFor(path: string): string {
-  const part = path.split("/")[2] ?? "";
-  return ["questions", "sites", "reddit", "guides", "tracking", "ask", "admin"].includes(part) ? part : "home";
+/** The page being opened while its data loads (a different page, not a refresh or a form on this one). */
+export function usePendingPage(): { path: string; key: string } | null {
+  const nav = useNavigation();
+  const here = useLocation().pathname;
+  const next = nav.state === "loading" && !nav.formMethod ? nav.location : null;
+  if (!next || next.pathname === here) return null;
+  return { path: next.pathname, key: next.key };
 }
 
-export function PageSkeleton({ path }: { path: string }) {
-  const kind = skeletonFor(path);
+/**
+ * Which skeleton a page gets, from its address. A client's pages in the agency hub (/dash/clients/<id>/guides) get the
+ * same ones as a store's own; `hub` is the agency hub's frame, where /dash is the brand cards.
+ */
+export function skeletonFor(path: string, hub = false): string {
+  const parts = path.replace(/\.data$/, "").split("/");
+  const inClient = parts[2] === "clients" && Boolean(parts[3]) && parts[3] !== "new";
+  const part = (inClient ? parts[4] : parts[2]) ?? "";
+  if (["questions", "sites", "reddit", "guides", "tracking", "ask", "admin", "log", "stats", "reports", "details"].includes(part)) return part;
+  if (part === "clients") return "form"; // adding a client
+  return hub && !part ? "hub" : "home";
+}
+
+export function PageSkeleton({ path, hub = false }: { path: string; hub?: boolean }) {
+  const kind = skeletonFor(path, hub);
   let body: ReactNode;
   if (kind === "questions") body = <><SkHead intro /><SkTable rows={8} /></>;
+  else if (kind === "hub")
+    body = (
+      <>
+        <SkHead chips={1} />
+        <SkStats />
+        <SkBox lines={3} />
+        <div className="w-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}>
+          {Array.from({ length: 6 }, (_, i) => (
+            <div key={i} className="w-box w-box-pad w-sk-col" style={{ gap: 12 }}>
+              <span style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                <Sk w={36} h={36} r={10} />
+                <span className="w-sk-col" style={{ flex: 1, gap: 6 }}>
+                  <Sk w="60%" h={13} />
+                  <Sk w="40%" h={10} />
+                </span>
+              </span>
+              <Sk w="80%" h={22} />
+              <Sk w="90%" h={9} r={999} />
+              <Sk w="70%" h={9} r={999} />
+            </div>
+          ))}
+        </div>
+      </>
+    );
+  else if (kind === "log") body = <><SkHead chips={2} /><SkBox lines={3} /><SkTable rows={7} /></>;
+  else if (kind === "stats") body = <><SkHead chips={2} /><SkStats /><div className="w-box w-box-pad w-sk-col"><Sk w={160} h={13} /><Sk h={160} r={8} /></div><SkTable rows={5} /></>;
+  else if (kind === "reports") body = <><SkHead chips={2} intro /><SkTable rows={4} /></>;
+  else if (kind === "details" || kind === "form") body = <><SkHead chips={0} intro /><SkBox lines={7} /></>;
   else if (kind === "guides")
     body = (
       <>

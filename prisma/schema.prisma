@@ -73,6 +73,9 @@ model Shop {
   redditThreads     RedditThread[]
   supportFlags      SupportFlag[]
   guideSlots        GuideSlot[]
+  client            Client? // an agency client of Ross's done-for-you service (the hub at /dash)
+  workNotes         WorkNote[]
+  clientReports     ClientReport[]
   redditCheckedAt   DateTime? // last weekly look for Reddit threads (lib/reddit.server.ts)
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
@@ -719,4 +722,59 @@ model BookEvent {
 
   @@index([createdAt])
   @@index([visitor, createdAt])
+}
+
+// Ross's done-for-you clients (the agency hub at firstpicked.com.au/dash, Ross 5 Nov 2026: "the dash to be the hub for me
+// where i can see, add, delete, update ... my clients"). One row per store: the agency's own facts about a store it works
+// on. The store keeps its own data (questions, AI checks, guides...); this holds who to talk to, the fee, when month 1
+// started and whether the work is running. lib/clients.server.ts. Deleted with its store.
+model Client {
+  id          String   @id @default(cuid())
+  shopId      String   @unique
+  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  status      String   @default("active") // active (work runs, plan Done for you) | paused | ended (work stopped, plan free)
+  contactName String?
+  email       String? // where reports go: one address, or a few separated by commas
+  phone       String?
+  feeAud      Int // the monthly fee, in Australian dollars
+  startedOn   String // "2026-11-05": the first day of month 1, on Ross's calendar (Perth)
+  notes       String? // Ross's own notes about the client, never shown to the client
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// The work log's own entries: what Ross did by hand for a client (a change in their Shopify, a call, a note). What
+// FirstPicked did by itself (guides, AI checks, Reddit threads...) is read from the other tables (lib/work-log.server.ts),
+// so nothing is stored twice.
+model WorkNote {
+  id        String   @id @default(cuid())
+  shopId    String
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  kind      String   @default("note") // change and call show in client reports; note is only for Ross; status: the hub noting a pause, restart or end
+  text      String
+  doneAt    DateTime @default(now())
+  createdBy String? // the admin's email
+  createdAt DateTime @default(now())
+
+  @@index([shopId, doneAt])
+  @@index([doneAt])
+}
+
+// A report made for a client in the hub (a week or a month): a snapshot of the numbers and the work when it was made, at a
+// private link the client opens without signing in (firstpicked.com.au/client-report/<token>). lib/client-report.server.ts.
+model ClientReport {
+  id        String    @id @default(cuid())
+  shopId    String
+  shop      Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  kind      String // week | month
+  fromDay   String // the first day it covers, "2026-11-02" (Perth)
+  toDay     String // the last day it covers
+  token     String    @unique // the private link's key: random, never guessable
+  data      Json // ClientReportData (lib/client-report.ts)
+  sentAt    DateTime? // emailed to the client
+  sentTo    String?
+  createdBy String?
+  createdAt DateTime  @default(now())
+
+  @@index([shopId, createdAt])
 }

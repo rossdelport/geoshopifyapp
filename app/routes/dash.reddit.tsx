@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { Form, Link, useFetcher, useFetchers, useLoaderData, useNavigation, useRevalidator } from "react-router";
+import { Form, Link, useFetcher, useFetchers, useLoaderData, useLocation, useNavigation, useRevalidator } from "react-router";
 import db from "../db.server";
 import { requireWebShop } from "../lib/web-auth.server";
 import { getPlan } from "../lib/plans";
 import { formatNumber, timeAgo } from "../lib/format";
 import { Icon, ICONS, PageHead, Tabs } from "../components/web";
+import { storeBase } from "../lib/hub-paths";
 
 // firstpicked.com.au/dash/reddit: Reddit threads where people ask about the store's kind of product (found weekly,
 // lib/reddit.server.ts). Left: every thread. Right: the post and a neutral reply written as the owner, which
@@ -195,9 +196,10 @@ export default function Reddit() {
   const data = useLoaderData<typeof loader>();
   const revalidator = useRevalidator();
   const nav = useNavigation();
+  const base = storeBase(useLocation().pathname);
   const waiting = !data.checkedAt;
   // A click on a thread or tab shows straight away; the data follows.
-  const next = nav.state === "loading" && !nav.formMethod && nav.location.pathname === "/dash/reddit" ? new URLSearchParams(nav.location.search) : null;
+  const next = nav.state === "loading" && !nav.formMethod && nav.location.pathname === `${base}/reddit` ? new URLSearchParams(nav.location.search) : null;
   const nextShow = next ? ((SHOW as readonly string[]).includes(next.get("show") ?? "") ? (next.get("show") as Show) : "all") : data.show;
   const nextT = next?.get("t") ?? null;
   const loadingThread = nextT && nextT !== data.open?.id ? data.list.find((t) => t.id === nextT) : undefined;
@@ -225,7 +227,7 @@ export default function Reddit() {
     const show = o.show ?? data.show;
     if (show !== "all") q.set("show", show);
     if (o.t) q.set("t", o.t);
-    return `/dash/reddit${q.size ? `?${q}` : ""}`;
+    return `${base}/reddit${q.size ? `?${q}` : ""}`;
   };
 
   return (

@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { Link, useFetcher, useLoaderData } from "react-router";
+import { Link, useFetcher, useLoaderData, useLocation } from "react-router";
 import { requireWebShop } from "../lib/web-auth.server";
 import { getPlan } from "../lib/plans";
 import { autofillCalendar, monthView } from "../lib/guide-calendar.server";
@@ -7,6 +7,7 @@ import { STATE_LABEL, STATE_TONE, WEEKDAYS, calendarWeeks, dayLabel, isMonth, lo
 import { GUIDE_KIND_LABELS, type GuideKind } from "../lib/guide";
 import { formatNumber } from "../lib/format";
 import { PageHead } from "../components/web";
+import { storeBase } from "../lib/hub-paths";
 
 // firstpicked.com.au/dash/guides: the guide calendar. One guide page per day slot, each answering a buying question AI
 // doesn't name the store for, written two days before its day and live on the day (lib/guide-calendar.server.ts).
@@ -42,6 +43,7 @@ const kindLabel = (kind: string | null) => (kind && kind in GUIDE_KIND_LABELS ? 
 export default function Guides() {
   const { plan, today, month, offset, weeks, slots, connected } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
+  const base = storeBase(useLocation().pathname);
   const filling = fetcher.state !== "idle";
   const byDay = new Map(slots.map((s) => [s.day, s]));
   const planned = slots.filter((s) => s.state !== "failed").length;
@@ -125,7 +127,7 @@ export default function Guides() {
               <div key={day} className={`w-cal-day${day === today ? " today" : day < today ? " past" : ""}`}>
                 <span className="w-cal-num">{Number(day.slice(8))}</span>
                 {slot ? (
-                  <Link to={`/dash/guides/${slot.id}`} className={`w-cal-slot${tone ? ` ${tone}` : ""}`} prefetch="intent" aria-label={`${dayLabel(day, "long")}: ${slot.title ?? slot.question?.text ?? "guide page"}, ${STATE_LABEL[slot.state]}`}>
+                  <Link to={`${base}/guides/${slot.id}`} className={`w-cal-slot${tone ? ` ${tone}` : ""}`} prefetch="intent" aria-label={`${dayLabel(day, "long")}: ${slot.title ?? slot.question?.text ?? "guide page"}, ${STATE_LABEL[slot.state]}`}>
                     <span className="w-cal-kind">
                       {kindLabel(slot.kind)}
                       {slot.question?.volume ? ` · ${formatNumber(slot.question.volume)} searches` : ""}
@@ -145,7 +147,7 @@ export default function Guides() {
               const tone = STATE_TONE[s.state];
               return (
                 <li key={s.id}>
-                  <Link to={`/dash/guides/${s.id}`} prefetch="intent">
+                  <Link to={`${base}/guides/${s.id}`} prefetch="intent">
                     <span className="w-cal-date">{dayLabel(s.day)}</span>
                     <span className="w-cal-q">{s.title ?? s.question?.text ?? "Guide page"}</span>
                     <span className={`w-pill${tone ? ` ${tone}` : ""}`}>{STATE_LABEL[s.state]}</span>
@@ -183,7 +185,7 @@ export default function Guides() {
             that fit. The kind rotates: how to choose, comparison, use case, buying advice, one question in depth.
           </p>
           <p className="w-note">
-            Each guide is planned from your <Link to="/dash/questions">buying questions</Link>, starting with the ones AI never names you for. Searches a month shows how many
+            Each guide is planned from your <Link to={`${base}/questions`}>buying questions</Link>, starting with the ones AI never names you for. Searches a month shows how many
             people ask it.
           </p>
           {searches ? <p className="w-note">The questions planned this month are asked about {formatNumber(searches)} times a month between them.</p> : null}
