@@ -242,11 +242,11 @@
     "Cookies": "Cookies",
     "We check ChatGPT, Gemini, Perplexity and Google AI Overviews every week, plus Claude. Sales from Copilot and Meta AI count too.": "Wir prüfen ChatGPT, Gemini, Perplexity und Google AI Overviews jede Woche, dazu Claude. Verkäufe über Copilot und Meta AI zählen auch.",
     "We do the work, and you can see and undo every change.": "Wir erledigen die Arbeit, und Sie können jede Änderung sehen und rückgängig machen.",
-    "FirstPicked is A$1,000 a month, done for you. You decide what’s realistic for your store.": "FirstPicked kostet 1.000 A$ im Monat, komplett für Sie erledigt. Sie entscheiden, was für Ihren Shop realistisch ist.",
+    "FirstPicked is A$945 a month, done for you. You decide what’s realistic for your store.": "FirstPicked kostet 945 A$ im Monat, komplett für Sie erledigt. Sie entscheiden, was für Ihren Shop realistisch ist.",
     "One price. We do the work.": "Ein Preis. Wir machen die Arbeit.",
     "5 spots only": "Nur 5 Plätze",
     "Done for you": "Rundum-Service",
-    "A$1,000": "1.000 A$",
+    "A$945": "945 A$",
     "Not happy after the first month? Full refund, and you keep all the work.": "Nach dem ersten Monat nicht zufrieden? Volle Rückerstattung, und die Arbeit gehört Ihnen.",
     "Our team and AI do the work. You see the sales.": "Unser Team und KI machen die Arbeit. Sie sehen die Verkäufe.",
     "100 buying questions, checked every day": "100 Kauffragen, jeden Tag geprüft",
@@ -260,7 +260,7 @@
     "We’re taking on 5 Australian ecommerce brands. Join the waitlist and we’ll be in touch.": "Wir nehmen 5 australische Onlineshops auf. Tragen Sie sich in die Warteliste ein, wir melden uns.",
     "Price in Australian dollars. No lock-in contract. Cancel any time.": "Preis in australischen Dollar. Keine Vertragsbindung. Jederzeit kündbar.",
     "We make the changes for you, except risky ones like product claims, which wait for your OK. You can switch that off, and undo takes one click.": "Wir setzen die Änderungen für Sie um, außer riskante wie Produktversprechen, die auf Ihr OK warten. Sie können das abschalten, und Rückgängig geht mit einem Klick.",
-    "Joining the waitlist, our free tools and the first scan of your store. After that, FirstPicked is A$1,000 a month, done for you.": "Die Warteliste, unsere kostenlosen Tools und der erste Scan Ihres Shops. Danach kostet FirstPicked 1.000 A$ im Monat, komplett für Sie erledigt."
+    "Joining the waitlist, our free tools and the first scan of your store. After that, FirstPicked is A$945 a month, done for you.": "Die Warteliste, unsere kostenlosen Tools und der erste Scan Ihres Shops. Danach kostet FirstPicked 945 A$ im Monat, komplett für Sie erledigt."
   },
   "js": {
     "txt.textContent = paused ? 'Play' : 'Pause';": "txt.textContent = paused ? 'Abspielen' : 'Pause';",

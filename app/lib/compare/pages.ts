@@ -95,7 +95,7 @@ export const COMPARE_PAGES: ComparePage[] = [
             ["The goal", "Rank higher in Google's results and Maps", "Get named when shoppers ask ChatGPT, Gemini, Perplexity or Google AI Overviews what to buy"],
             ["What they change", "Site speed, technical fixes, keywords, blog posts, links", "Product details AI reads, buying guides, pitches to the sites AI quotes, honest Reddit replies"],
             ["What they report", "Rankings and Google traffic", "Which buying questions name you, which sites AI quotes, and orders and sales from AI"],
-            ["Price in Australia", "Quoted per store", "GEO agencies: about A$2,000 to A$20,000+ a month. FirstPicked: A$1,000 a month"],
+            ["Price in Australia", "Quoted per store", "GEO agencies: about A$2,000 to A$20,000+ a month. FirstPicked: A$945 a month"],
           ],
         },
         paragraphs: ["Agency GEO prices are from Optimising's Australian price guide. SEO prices vary too much to quote fairly, so ask for a fixed monthly price."],
@@ -138,7 +138,7 @@ export const COMPARE_PAGES: ComparePage[] = [
       {
         heading: "Where FirstPicked fits",
         paragraphs: [
-          "FirstPicked is a done-for-you service for Shopify brands. It's A$1,000 a month, with no lock-in and a full refund if you're not happy after the first month. Our team and AI check 100 buying questions every day and fix your product pages. We write 12 buying guides a month, send up to 40 emails to websites, and show you the sales AI sends you.",
+          "FirstPicked is a done-for-you service for Shopify brands. It's A$945 a month, with no lock-in and a full refund if you're not happy after the first month. Our team and AI check 100 buying questions every day and fix your product pages. We write 12 buying guides a month, send up to 40 emails to websites, and show you the sales AI sends you.",
           "We are not an SEO agency. We don't do site speed, ads or full technical SEO. If you need those, keep your SEO agency and use us alongside it.",
         ],
       },
@@ -238,7 +238,7 @@ export const COMPARE_PAGES: ComparePage[] = [
     h1: "How much does GEO cost in Australia? Agency, tool and done-for-you prices compared",
     intro: [
       "Australian agencies charge about A$2,000 to A$20,000 or more a month for GEO, according to Optimising's price guide. Tracking tools cost far less, about A$50 to A$500 a month, but you do the work yourself.",
-      "FirstPicked is A$1,000 a month, done for you, with no lock-in contract.",
+      "FirstPicked is A$945 a month, done for you, with no lock-in contract.",
     ],
     checked: "2026-10-23",
     sections: [
@@ -253,7 +253,7 @@ export const COMPARE_PAGES: ComparePage[] = [
             ["Australian agency, full", "Various", "A$10,000 to A$20,000+ a month", "All of the above plus SEO, structured data and ongoing content"],
             ["Shopify GEO agency (overseas)", "Netalico (US)", "About US$3,000 a month", "Product data, schema and feed work for Shopify Plus stores"],
             ["Done for you, software only", "FirstIndex", "US$2,000 a month after a 3-month start, or US$1,500 a month on 12 months", "Daily site changes, up to 12 articles and 50+ page fixes a month"],
-            ["Done for you, Shopify brands", "FirstPicked", "A$1,000 a month, no lock-in", "100 questions checked daily, fixes, 12 guides, up to 40 pitches, Reddit replies, sales from AI, a monthly call"],
+            ["Done for you, Shopify brands", "FirstPicked", "A$945 a month, no lock-in", "100 questions checked daily, fixes, 12 guides, up to 40 pitches, Reddit replies, sales from AI, a monthly call"],
           ],
         },
         paragraphs: [
@@ -280,7 +280,7 @@ export const COMPARE_PAGES: ComparePage[] = [
       {
         heading: "A quick sum before you spend",
         paragraphs: [
-          "Work out how many extra orders cover the cost. Say your average order is A$100 and you keep A$40 of it after costs. Then you need 25 extra orders a month from AI to cover A$1,000.",
+          "Work out how many extra orders cover the cost. Say your average order is A$100 and you keep A$40 of it after costs. Then you need 24 extra orders a month from AI to cover A$945.",
           "Shopify's president said in February 2026 that orders from AI search were 15 times higher than a year earlier. Whether that reaches your store depends on whether AI names you, which is what to check first.",
         ],
       },

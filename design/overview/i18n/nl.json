@@ -242,11 +242,11 @@
     "Cookies": "Cookies",
     "We check ChatGPT, Gemini, Perplexity and Google AI Overviews every week, plus Claude. Sales from Copilot and Meta AI count too.": "We controleren ChatGPT, Gemini, Perplexity en Google AI Overviews elke week, plus Claude. Verkopen via Copilot en Meta AI tellen ook mee.",
     "We do the work, and you can see and undo every change.": "Wij doen het werk, en je kunt elke wijziging zien en ongedaan maken.",
-    "FirstPicked is A$1,000 a month, done for you. You decide what’s realistic for your store.": "FirstPicked kost A$ 1.000 per maand, volledig voor je gedaan. Jij bepaalt wat realistisch is voor je winkel.",
+    "FirstPicked is A$945 a month, done for you. You decide what’s realistic for your store.": "FirstPicked kost A$ 945 per maand, volledig voor je gedaan. Jij bepaalt wat realistisch is voor je winkel.",
     "One price. We do the work.": "Eén prijs. Wij doen het werk.",
     "5 spots only": "Maar 5 plekken",
     "Done for you": "Volledig verzorgd",
-    "A$1,000": "A$ 1.000",
+    "A$945": "A$ 945",
     "Not happy after the first month? Full refund, and you keep all the work.": "Na de eerste maand niet tevreden? Volledige terugbetaling, en je houdt al het werk.",
     "Our team and AI do the work. You see the sales.": "Ons team en AI doen het werk. Jij ziet de verkopen.",
     "100 buying questions, checked every day": "100 koopvragen, elke dag gecontroleerd",
@@ -260,7 +260,7 @@
     "We’re taking on 5 Australian ecommerce brands. Join the waitlist and we’ll be in touch.": "We nemen 5 Australische webwinkels aan. Meld je aan voor de wachtlijst en we nemen contact op.",
     "Price in Australian dollars. No lock-in contract. Cancel any time.": "Prijs in Australische dollars. Geen vast contract. Altijd opzegbaar.",
     "We make the changes for you, except risky ones like product claims, which wait for your OK. You can switch that off, and undo takes one click.": "Wij voeren de wijzigingen voor je door, behalve risicovolle zoals productclaims, die op jouw akkoord wachten. Je kunt dat uitzetten, en ongedaan maken kost één klik.",
-    "Joining the waitlist, our free tools and the first scan of your store. After that, FirstPicked is A$1,000 a month, done for you.": "De wachtlijst, onze gratis tools en de eerste scan van je winkel. Daarna kost FirstPicked A$ 1.000 per maand, volledig voor je gedaan."
+    "Joining the waitlist, our free tools and the first scan of your store. After that, FirstPicked is A$945 a month, done for you.": "De wachtlijst, onze gratis tools en de eerste scan van je winkel. Daarna kost FirstPicked A$ 945 per maand, volledig voor je gedaan."
   },
   "js": {
     "txt.textContent = paused ? 'Play' : 'Pause';": "txt.textContent = paused ? 'Afspelen' : 'Pauze';",

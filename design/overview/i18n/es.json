@@ -242,11 +242,11 @@
     "Cookies": "Cookies",
     "We check ChatGPT, Gemini, Perplexity and Google AI Overviews every week, plus Claude. Sales from Copilot and Meta AI count too.": "Revisamos ChatGPT, Gemini, Perplexity y Google AI Overviews cada semana, más Claude. Las ventas desde Copilot y Meta AI también cuentan.",
     "We do the work, and you can see and undo every change.": "Nosotros hacemos el trabajo, y puedes ver y deshacer cada cambio.",
-    "FirstPicked is A$1,000 a month, done for you. You decide what’s realistic for your store.": "FirstPicked cuesta 1.000 A$ al mes, hecho por ti. Tú decides qué es realista para tu tienda.",
+    "FirstPicked is A$945 a month, done for you. You decide what’s realistic for your store.": "FirstPicked cuesta 945 A$ al mes, hecho por ti. Tú decides qué es realista para tu tienda.",
     "One price. We do the work.": "Un solo precio. Nosotros hacemos el trabajo.",
     "5 spots only": "Solo 5 plazas",
     "Done for you": "Todo hecho por ti",
-    "A$1,000": "1.000 A$",
+    "A$945": "945 A$",
     "Not happy after the first month? Full refund, and you keep all the work.": "¿No te convence tras el primer mes? Te devolvemos todo, y te quedas con el trabajo.",
     "Our team and AI do the work. You see the sales.": "Nuestro equipo y la IA hacen el trabajo. Tú ves las ventas.",
     "100 buying questions, checked every day": "100 preguntas de compra, revisadas cada día",
@@ -260,7 +260,7 @@
     "We’re taking on 5 Australian ecommerce brands. Join the waitlist and we’ll be in touch.": "Aceptamos 5 marcas de ecommerce australianas. Únete a la lista de espera y te contactaremos.",
     "Price in Australian dollars. No lock-in contract. Cancel any time.": "Precio en dólares australianos. Sin permanencia. Cancela cuando quieras.",
     "We make the changes for you, except risky ones like product claims, which wait for your OK. You can switch that off, and undo takes one click.": "Hacemos los cambios por ti, salvo los arriesgados como las afirmaciones sobre productos, que esperan tu visto bueno. Puedes desactivarlo, y deshacer es un clic.",
-    "Joining the waitlist, our free tools and the first scan of your store. After that, FirstPicked is A$1,000 a month, done for you.": "La lista de espera, nuestras herramientas gratis y el primer análisis de tu tienda. Después, FirstPicked cuesta 1.000 A$ al mes, hecho por ti."
+    "Joining the waitlist, our free tools and the first scan of your store. After that, FirstPicked is A$945 a month, done for you.": "La lista de espera, nuestras herramientas gratis y el primer análisis de tu tienda. Después, FirstPicked cuesta 945 A$ al mes, hecho por ti."
   },
   "js": {
     "txt.textContent = paused ? 'Play' : 'Pause';": "txt.textContent = paused ? 'Reproducir' : 'Pausa';",

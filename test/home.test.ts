@@ -36,7 +36,8 @@ describe("home page", () => {
     expect(html).not.toContain("__FONT_URL__");
     expect(html).not.toContain("<!-- STORY_CARDS -->");
     // the one offer, and every button books a call with Ross (no free trial, no install from the website)
-    expect(html).toContain('<p class="price"><b>A$1,000</b><span>a month</span></p>');
+    expect(html).toContain('<p class="price"><b>A$945</b><span>a month</span></p>');
+    expect(html).not.toContain("A$1,000"); // the old price (Ross, 2026-11-05: A$945 a month)
     expect(html).toContain('<a class="btn btn-pri" href="/book">Get started</a>');
     expect(html).not.toMatch(/free trial/i);
     expect(html).not.toContain("/auth/login");
