@@ -1,0 +1,105 @@
+/* One client's pages in the agency hub (Ross, 5 Nov 2026): Overview, Work log, Store stats and Details, under
+   /dash/clients/<id>. Built on web.css and hub.css: white, near-black text, greys, purple only for things to act on,
+   green / amber / red only for good / needs a look / bad. Every class here starts with "cp-". */
+
+/* A box's heading with a link on the right ("See the full work log"). */
+.cp-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 14px; }
+.cp-head h2 { font: 600 15px/1.3 var(--font-body); color: var(--ink); }
+.cp-head a { font-size: 13px; font-weight: 500; }
+.cp-col { display: grid; gap: 20px; min-width: 0; align-content: start; }
+
+/* Not a client yet: the one button sits at its own width. */
+.cp-cta { justify-self: start; }
+
+/* Number cards: a small line of scores beside the change, and the month 1 lines. */
+.cp-score-cap { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.cp-cap-line { display: block; margin-top: 2px; }
+
+/* "Coming up": the next guide days. */
+.cp-up { list-style: none; padding: 0; display: grid; }
+.cp-up li + li { border-top: 1px solid var(--line); }
+:where(.w) a.cp-up-row { display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; padding: 11px 16px; color: var(--ink-2); text-decoration: none; font-size: 13.5px; transition: background-color var(--duration-quick) ease-out; }
+:where(.w) a.cp-up-row:hover { background: var(--bg-2); color: var(--ink); }
+.cp-up-day { color: var(--muted); font-size: 12.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.cp-up-title { min-width: 0; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-weight: 500; }
+.cp-box-foot { padding: 10px 16px; border-top: 1px solid var(--line); font-size: 13px; }
+
+/* Facts in two columns (contact, their store). Long addresses wrap instead of pushing the page sideways. */
+.cp-facts dd { overflow-wrap: anywhere; }
+.cp-notes { white-space: pre-line; }
+.cp-links { display: flex; flex-wrap: wrap; gap: 2px 10px; }
+
+/* ---------- Work log ---------- */
+.cp-add { display: grid; gap: 14px; }
+.cp-choice { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; gap: 8px; }
+.cp-choice legend { padding: 0; margin-bottom: 8px; color: var(--ink-2); font-weight: 600; font-size: 14px; }
+.cp-options { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.cp-option {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; align-items: start; padding: 10px 12px;
+  border: 1px solid var(--line-2); border-radius: 10px; background: var(--bg); cursor: pointer; font-size: 13.5px;
+  transition: border-color var(--duration-quick) ease-out, background-color var(--duration-quick) ease-out;
+}
+.cp-option:hover { border-color: var(--line-3); }
+.cp-option:has(input:checked) { border-color: var(--ink-3); background: var(--bg-2); }
+.cp-option input { margin: 3px 0 0; accent-color: var(--accent); }
+.cp-option b { color: var(--ink); }
+.cp-option .w-note { grid-column: 2; font-size: 12.5px; line-height: 1.4; }
+.cp-textarea { min-height: 96px; padding: 10px 14px; line-height: 1.5; resize: vertical; }
+.cp-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+.cp-row .w-field { flex: 0 1 200px; }
+.cp-msg-ok { color: var(--green-ink); font-size: 13.5px; }
+.cp-summary { color: var(--ink-3); font-size: 13.5px; }
+
+/* ---------- Store stats ---------- */
+.cp-chart-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; margin-bottom: 10px; }
+.cp-chart-head h3 { font: 600 13px/1.3 var(--font-body); color: var(--ink); }
+.cp-chart-head span { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+/* 90 bars are too thin for every day's number: show one a week. */
+.cp-chart[data-span="90"] .w-col-day { visibility: hidden; }
+.cp-chart[data-span="90"] .w-col:nth-child(7n + 2) .w-col-day { visibility: visible; }
+
+/* The AI score over the days shown: a 0 to 100 scale, a line through the days with a check, and a dot for each. */
+.cp-score { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(220px, 1fr); gap: 20px 28px; align-items: start; }
+.cp-plot-wrap { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 6px 8px; }
+.cp-axis { position: relative; height: 150px; font-size: 11px; line-height: 1; color: var(--muted); font-variant-numeric: tabular-nums; }
+.cp-axis span { position: absolute; right: 0; transform: translateY(-50%); }
+.cp-plot { position: relative; height: 150px; border-bottom: 1px solid var(--line-2); }
+.cp-plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; color: var(--ink-3); }
+.cp-plot .grid { stroke: var(--line); }
+.cp-dot { position: absolute; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: var(--ink-3); box-shadow: 0 0 0 2px var(--bg); }
+.cp-dot.last { width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; background: var(--ink); }
+.cp-plot-days { grid-column: 2; display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+
+.cp-table td.num, .cp-table th.num { text-align: right; }
+.cp-bought { color: var(--muted); }
+
+/* ---------- Details ---------- */
+.cp-form { display: grid; gap: 18px; }
+.cp-form-grid { display: grid; gap: 14px 18px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); align-items: start; }
+.cp-hint { color: var(--muted); font-size: 12.5px; }
+.cp-field-err { color: var(--red-ink); font-size: 13px; }
+.w-input.cp-bad { border-color: var(--red); }
+.cp-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.cp-store-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
+.cp-del { display: grid; gap: 10px; max-width: 460px; }
+.cp-del label { color: var(--ink-2); font-weight: 600; font-size: 14px; }
+.cp-del label code { font-family: var(--font-mono); font-size: 13px; font-weight: 500; }
+.cp-danger-text { margin-top: 6px; max-width: 72ch; }
+/* Deleting can't be undone: red words, never the purple of an everyday button. */
+.w-btn.cp-btn-danger { justify-self: start; color: var(--red-ink); }
+:where(.w) .w-btn.cp-btn-danger:hover:not(:disabled) { color: var(--red-ink); background: var(--red-bg); border-color: #fecaca; }
+
+@media (max-width: 860px) {
+  .cp-score { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Phones: rows stack, and tables tighten so they fit 375px without scrolling sideways. */
+@media (max-width: 600px) {
+  :where(.w) a.cp-up-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .cp-up-day { grid-column: 1 / -1; }
+  .cp-table th, .cp-table td { padding: 10px 8px; }
+  .cp-table th { white-space: normal; }
+  .cp-table th:first-child, .cp-table td:first-child { padding-left: 12px; }
+  .cp-table th:last-child, .cp-table td:last-child { padding-right: 12px; }
+  .cp-row .w-field { flex-basis: 100%; }
+}

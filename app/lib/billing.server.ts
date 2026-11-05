@@ -85,7 +85,8 @@ const DAY = 86_400_000;
 export async function onPlanChanged(
   shopId: string,
   planId: PlanId,
-  opts: { billingName?: string | null; trialEndsAt?: Date | null } = {},
+  // quiet: Ross changed it himself in the agency hub (adding, pausing or ending a client), so he needs no email about it.
+  opts: { billingName?: string | null; trialEndsAt?: Date | null; quiet?: boolean } = {},
 ) {
   const shop = await db.shop.findUniqueOrThrow({ where: { id: shopId } });
   if (shop.plan === planId) return false;
@@ -123,7 +124,7 @@ export async function onPlanChanged(
   }
 
   // Done-for-you has human parts (outreach by hand, the monthly call): tell the founder.
-  if (planId === "pro" || shop.plan === "pro") {
+  if ((planId === "pro" || shop.plan === "pro") && !opts.quiet) {
     await notifyFounder(shop, shop.plan as PlanId, planId, {
       billingName: opts.billingName ?? null,
       trialEndsAt: opts.trialEndsAt ?? shop.trialEndsAt,

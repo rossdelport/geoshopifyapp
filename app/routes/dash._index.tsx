@@ -1,22 +1,34 @@
 import { useEffect } from "react";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { Form, Link, useLoaderData, useNavigation, useRevalidator } from "react-router";
+import type { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, ShouldRevalidateFunction } from "react-router";
+import { Form, Link, redirect, useLoaderData, useNavigation, useRevalidator, useSearchParams } from "react-router";
 import db from "../db.server";
-import { requireWebShop } from "../lib/web-auth.server";
-import { activeScan, latestVisibility, moneyThisMonth, topCompetitors } from "../lib/dashboard.server";
-import { enqueue } from "../lib/jobs.server";
+import { isAdmin, requireSession, requireWebShop } from "../lib/web-auth.server";
+import { activeScan, latestVisibility, moneyThisMonth, retrySetup, topCompetitors } from "../lib/dashboard.server";
 import { questionRows } from "../lib/question-stats.server";
 import { scanHasWorker } from "../lib/scan.server";
 import { SCORE_EXPLAINER, scoreLabel } from "../lib/score";
 import { ENGINE_LABELS, type Engine, getPlan } from "../lib/plans";
 import { formatMoney, formatPct, timeAgo } from "../lib/format";
-import { ICONS, PageHead, Stat } from "../components/web";
+import { clientCards } from "../lib/hub.server";
+import { CLIENT_STATUSES, STATUS_LABEL, formatFee, hubDay, hubTotals } from "../lib/clients";
+import { needsYou, onlyTabChanged, pickTab, plural, salesCaption, spotsLine } from "../lib/hub-pages";
+import { ICONS, PageHead, Stat, Tabs } from "../components/web";
+import { AlertList } from "../components/hub";
+import { BrandCard } from "../components/brand-card";
+import hubPagesStyles from "../styles/hub-pages.css?url";
 
 // firstpicked.com.au/dash: the web app's home. While setting up: the steps and the scan's progress. Then, sales from AI
 // first (Ross's #1 rule), the visibility score, who AI names instead, and the questions where the store is missing.
+//
+// For admins it is the agency hub's front page instead (Ross, 5 Nov 2026: "i want the dash to be the hub for me"):
+// the headline numbers, what needs Ross across all clients, and a card for each client brand.
+
+export const links: LinksFunction = () => [{ rel: "stylesheet", href: hubPagesStyles }];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { shop } = await requireWebShop(request);
+  const { user, shop } = await requireSession(request); // the frame asks too: one round trip shared
+  if (isAdmin(user.email)) return hubData();
+  if (!shop) throw redirect("/start");
   const storeName = shop.name || shop.primaryDomain || shop.domain;
 
   if (shop.onboarding !== "done") {
@@ -63,17 +75,22 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
+/** The hub: every client's card (sorted, worst health first), the totals over them, and what needs Ross. */
+async function hubData() {
+  const now = new Date();
+  const cards = await clientCards({}, now);
+  return { view: "hub" as const, today: hubDay(now), cards, totals: hubTotals(cards), alerts: needsYou(cards) };
+}
+
+// The hub's Active / Paused / Ended tabs only filter the cards already on the page, so switching needs no reload.
+export const shouldRevalidate: ShouldRevalidateFunction = ({ formMethod, currentUrl, nextUrl, defaultShouldRevalidate }) =>
+  !formMethod && onlyTabChanged(currentUrl, nextUrl) ? false : defaultShouldRevalidate;
+
 /** "Try again" on a setup that stopped: the stuck scan's job, or the whole setup, goes back in the queue. */
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { shop } = await requireWebShop(request);
   if (String((await request.formData()).get("intent")) !== "retry" || shop.onboarding === "done") return null;
-  const scan = await activeScan(shop.id);
-  const [type, payload, dedupeKey] = scan ? (["scan.run", { scanId: scan.id }, `scan-run:${scan.id}`] as const) : (["onboard", {}, `onboard:${shop.id}`] as const);
-  const again = await db.job.updateMany({
-    where: { dedupeKey, status: { in: ["failed", "done"] } },
-    data: { status: "queued", attempts: 0, error: null, lockedAt: null, runAfter: new Date() },
-  });
-  if (!again.count) await enqueue(type, payload, { shopId: shop.id, dedupeKey });
+  await retrySetup(shop.id);
   return null;
 };
 
@@ -87,8 +104,15 @@ const engineName = (e: string) => ENGINE_LABELS[e as Engine] ?? (e === "ours" ? 
 /** "ChatGPT, Gemini and Perplexity". */
 const listNames = (names: string[]) => (names.length > 1 ? `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}` : names[0] ?? "");
 
+type Data = ReturnType<typeof useLoaderData<typeof loader>>;
+
 export default function DashHome() {
   const data = useLoaderData<typeof loader>();
+  return data.view === "hub" ? <ClientsHub data={data} /> : <StoreHome data={data} />;
+}
+
+/** A store owner's own dashboard: setup while it runs, then the numbers. */
+function StoreHome({ data }: { data: Exclude<Data, { view: "hub" }> }) {
   const revalidator = useRevalidator();
   const nav = useNavigation();
   const working = data.view === "setup" || Boolean(data.scan);
@@ -342,6 +366,130 @@ export default function DashHome() {
           </div>
         </section>
       </div>
+    </>
+  );
+}
+
+/** The agency hub's front page: the headline numbers, what needs Ross, and a card for each client brand. */
+function ClientsHub({ data }: { data: Extract<Data, { view: "hub" }> }) {
+  const { cards, totals, alerts, today } = data;
+  const [params] = useSearchParams();
+  const revalidator = useRevalidator();
+  const tab = pickTab(params.get("show"), totals);
+  const settingUp = cards.some((c) => c.onboarding !== "done" && !c.alerts.some((a) => a.key === "setup" && a.tone === "no"));
+
+  // While a new client is being set up, look again now and then, so its card moves through the steps by itself.
+  useEffect(() => {
+    if (!settingUp) return;
+    const t = setInterval(() => !document.hidden && revalidator.state === "idle" && revalidator.revalidate(), 15000);
+    return () => clearInterval(t);
+  }, [settingUp, revalidator]);
+
+  const head = (
+    <PageHead
+      title="Clients"
+      right={
+        <>
+          <Link to="/dash/log" className="w-btn w-btn-ghost w-btn-sm" prefetch="intent">
+            Daily log
+          </Link>
+          <Link to="/dash/clients/new" className="w-btn w-btn-sm" prefetch="intent">
+            Add a client
+          </Link>
+        </>
+      }
+    />
+  );
+
+  if (!cards.length) {
+    return (
+      <>
+        {head}
+        <section className="w-panel hp-first">
+          <h2>Add your first client</h2>
+          <p>Type their store’s website. We read their products, write the questions their shoppers ask AI and check what AI says about them.</p>
+          <Link to="/dash/clients/new" className="w-btn" prefetch="intent">
+            Add a client
+          </Link>
+        </section>
+      </>
+    );
+  }
+
+  const active = cards.filter((c) => c.status === "active");
+  // Sales are only counted once a store's tracking code is on (or its orders come in another way), so no fake zeros.
+  const counted = active.some((c) => c.tracking || c.sales.orders > 0);
+  const notTracking = active.filter((c) => !c.tracking).length;
+  const worst = alerts.some((a) => a.tone === "no") ? " no" : alerts.some((a) => a.tone === "warn") ? " warn" : "";
+  const shown = cards.filter((c) => c.status === tab);
+  const tabs = CLIENT_STATUSES.filter((s) => s === "active" || totals[s] > 0).map((s) => ({
+    to: s === "active" ? "/dash" : `/dash?show=${s}`,
+    label: STATUS_LABEL[s],
+    count: totals[s],
+    active: s === tab,
+  }));
+
+  return (
+    <>
+      {head}
+      <div className="w-stats">
+        <Stat label="Active clients" icon={ICONS.user} value={totals.active} caption={spotsLine(totals.active)} />
+        <Stat label="Monthly fees" icon={ICONS.money} value={formatFee(totals.feesAud)} caption="From active clients" />
+        <Stat
+          label="Sales from AI this month"
+          icon={ICONS.bag}
+          value={!active.length || counted ? formatMoney(totals.sales.revenue, totals.sales.currency) : <span className="hp-stat-none">Not counted yet</span>}
+          caption={!active.length ? "No active clients right now" : counted ? salesCaption(totals.sales, notTracking) : "Their tracking codes aren’t on yet"}
+        />
+        <Stat
+          label="Guides this week"
+          icon={ICONS.calendar}
+          value={
+            <>
+              {totals.guidesThisWeek}
+              <small> written</small>
+            </>
+          }
+          caption={`${totals.liveThisWeek} went live in the last 7 days`}
+        />
+      </div>
+
+      <section className="w-sec" aria-labelledby="needs-h">
+        <div className="w-sec-head">
+          <h2 id="needs-h">
+            Needs you{" "}
+            {alerts.length ? <span className={`w-pill${worst} hp-count`}>{alerts.length}</span> : null}
+          </h2>
+          <p>From your active clients, the worst first.</p>
+        </div>
+        <div className="w-box">
+          <AlertList alerts={alerts} />
+        </div>
+      </section>
+
+      <section className="w-sec" aria-labelledby="clients-h">
+        <div className="w-row">
+          <div className="w-sec-head">
+            <h2 id="clients-h">Your clients</h2>
+            <p>Open a brand to see everything about them.</p>
+          </div>
+          {tabs.length > 1 ? <Tabs items={tabs} label="Which clients" /> : null}
+        </div>
+        {shown.length ? (
+          <div className="hp-cards">
+            {shown.map((c) => (
+              <BrandCard key={c.shopId} card={c} today={today} />
+            ))}
+          </div>
+        ) : (
+          <div className="w-box">
+            <p className="w-empty">
+              No active clients right now.
+              {totals.paused ? ` ${plural(totals.paused, "client is", "clients are")} paused: start the work again from their page.` : null}
+            </p>
+          </div>
+        )}
+      </section>
     </>
   );
 }

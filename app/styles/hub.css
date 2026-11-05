@@ -1,0 +1,76 @@
+/* The agency hub (Ross, 5 Nov 2026): brand cards, "Needs you", the work log, the client bar and the client menu.
+   Same look as the rest of the web app (web.css): white, near-black text, greys, purple only for things to act on,
+   green / amber / red only for good / needs a look / bad. */
+
+.h-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* A brand's mark: its first letter on a soft grey square. */
+.h-mark { display: inline-grid; place-items: center; flex: none; border-radius: 10px; background: var(--hover); color: var(--ink); font-weight: 650; line-height: 1; box-shadow: inset 0 0 0 1px var(--line); }
+
+/* Score changes and the small score line. */
+.h-delta { display: inline-flex; align-items: center; font-size: 12.5px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.h-delta.up { color: var(--green-ink); }
+.h-delta.down { color: var(--red-ink); }
+.h-spark { color: var(--ink-3); flex: none; overflow: visible; }
+
+/* A client's button with its answer beside it. */
+.h-act { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.h-act-ok { font-size: 12.5px; color: var(--green-ink); }
+.h-act-err { font-size: 12.5px; color: var(--red-ink); }
+
+/* "Needs you": a dot for how bad, the brand, what's wrong, and one button. */
+.h-alerts { list-style: none; padding: 0; display: grid; }
+.h-alert { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; padding: 11px 16px; border-bottom: 1px solid var(--line); font-size: 13.5px; color: var(--ink-3); }
+.h-alert:last-child { border-bottom: 0; }
+.h-alert-text { display: flex; align-items: baseline; gap: 10px; min-width: 0; flex: 1 1 260px; }
+.h-alert-text::before { content: ""; width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--faint); transform: translateY(-1px); }
+.h-alert.no .h-alert-text::before { background: var(--red); }
+.h-alert.warn .h-alert-text::before { background: var(--amber); }
+:where(.w) a.h-alert-client { color: var(--ink); font-weight: 600; text-decoration: none; white-space: nowrap; }
+:where(.w) a.h-alert-client:hover { text-decoration: underline; color: var(--ink); }
+.h-alerts-empty { padding: 14px 16px; color: var(--muted); font-size: 13.5px; display: flex; align-items: center; gap: 8px; }
+.h-alerts-empty::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+
+/* The work log: a heading per day, then one line per thing done. */
+.h-log { display: grid; gap: 18px; }
+.h-log-day { display: grid; gap: 6px; }
+.h-log-day h3 { font: 600 13px/1.3 var(--font-body); color: var(--ink); position: sticky; top: 56px; z-index: 1; padding: 6px 0; background: linear-gradient(var(--bg) 70%, transparent); }
+.h-log-day ul { list-style: none; padding: 0; display: grid; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); box-shadow: var(--shadow-sm); }
+.h-log-item { display: grid; grid-template-columns: 64px auto minmax(0, 1fr) auto; align-items: baseline; gap: 4px 12px; padding: 10px 14px; border-bottom: 1px solid var(--line); font-size: 13.5px; color: var(--ink-3); }
+.h-log-item:last-child { border-bottom: 0; }
+.h-log-item time { color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.h-log-item .w-pill { justify-self: start; }
+.h-log-text { min-width: 0; overflow-wrap: anywhere; white-space: pre-line; }
+:where(.w) a.h-log-client { color: var(--ink); font-weight: 600; text-decoration: none; margin-right: 8px; }
+:where(.w) a.h-log-client:hover { text-decoration: underline; color: var(--ink); }
+.h-log-del { align-self: center; }
+.h-log-del .w-icon-btn { width: 26px; height: 26px; font-size: 17px; line-height: 1; }
+
+/* The bar above a client's pages: back to all clients, the brand, its status and month. */
+.h-crumb { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding-top: 14px; font-size: 13px; color: var(--muted); }
+:where(.w) .h-crumb a { color: var(--muted); text-decoration: none; }
+:where(.w) .h-crumb a:hover { color: var(--ink); }
+:where(.w) .h-crumb a.h-crumb-name { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); font-weight: 600; }
+.h-crumb-sep { color: var(--line-3); }
+/* The crumb is the page's first row, so the sticky page bar sits right under it. */
+.h-crumb + .w-bar, .h-crumb + * > .w-bar:first-child { margin-top: -8px; }
+
+/* The menu: the client's block, the back link, and the client list in the hub. */
+:where(.w) a.h-back { display: inline-flex; align-items: center; gap: 6px; padding: 0 10px; color: var(--muted); font-size: 13px; font-weight: 500; text-decoration: none; }
+:where(.w) a.h-back:hover { color: var(--ink); }
+.h-side-client { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; align-items: center; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+.h-side-client .h-mark { grid-row: span 2; }
+.h-side-client b, .h-side-client span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.3; }
+.h-side-client b { color: var(--ink); font-size: 13px; }
+.h-side-client > span:last-child { color: var(--muted); font-size: 12px; }
+.w-nav a .h-nav-dot { margin-left: auto; width: 6px; height: 6px; border-radius: 50%; background: var(--line-3); flex: none; }
+.w-nav a .h-nav-dot.active { background: var(--green); }
+.w-nav a .h-nav-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+@media (max-width: 860px) {
+  .h-nav-clients { display: none !important; }
+  .h-side-client { display: none; }
+  .h-log-item { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .h-log-item time { grid-column: 1 / -1; }
+  .h-log-day h3 { top: 0; }
+}

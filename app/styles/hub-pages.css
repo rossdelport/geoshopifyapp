@@ -1,0 +1,122 @@
+/* The agency hub's own pages (Ross, 5 Nov 2026): the brand cards on /dash, adding a client (/dash/clients/new) and the
+   daily log (/dash/log). Same look as web.css and hub.css: white, near-black text, greys, purple only for things to
+   act on, green / amber / red only for good / needs a look / bad. Movement only with transform and opacity. */
+
+/* ---------- Clients (/dash for admins) ---------- */
+.hp-count { margin-left: 4px; vertical-align: 1px; font-variant-numeric: tabular-nums; }
+.hp-stat-none { font-size: 18px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+.hp-first { justify-items: start; max-width: 560px; padding: 24px; }
+.hp-first p { color: var(--text); }
+
+/* min(): a card never asks for more room than a small phone has. */
+.hp-cards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); }
+
+/* A brand card: one link, so its text keeps the page's colours instead of the link purple. */
+:where(.w) a.hp-card, :where(.w) a.hp-card:hover { color: var(--ink-3); text-decoration: none; }
+.hp-card {
+  display: flex; flex-direction: column; gap: 14px; min-width: 0; padding: 16px;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--bg); box-shadow: var(--shadow-sm); font-size: 13.5px;
+  transition: border-color var(--duration-quick) ease-out, box-shadow var(--duration-quick) ease-out, transform var(--duration-quick) var(--ease-smooth-out);
+}
+.hp-card:hover { border-color: var(--line-3); box-shadow: 0 10px 24px -16px rgba(10, 10, 11, 0.24), var(--shadow-sm); transform: translateY(-1px); }
+.hp-card:active { transform: translateY(0) scale(0.995); }
+.hp-card-top { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.hp-card-name { flex: 1; display: grid; min-width: 0; line-height: 1.3; }
+.hp-card-name b, .hp-card-name span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hp-card-name b { color: var(--ink); font-size: 15px; }
+.hp-card-name span { color: var(--muted); font-size: 12.5px; }
+.hp-card-term { margin-top: -6px; color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+
+/* The two numbers side by side, or how far setup is. */
+.hp-card-nums { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-top: 14px; border-top: 1px solid var(--line); }
+.hp-num { display: grid; gap: 3px; align-content: start; justify-items: start; min-width: 0; }
+.hp-num-label { font-size: 12px; font-weight: 500; color: var(--muted); }
+.hp-num-big { font: 600 24px/1.15 var(--font-head); color: var(--ink); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.hp-num-big small { margin-left: 2px; font-size: 13px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+.hp-num-none { font-size: 14px; font-weight: 500; line-height: 1.95; color: var(--muted); }
+.hp-num-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; font-size: 12px; color: var(--muted); }
+.hp-num-warn { font-size: 12px; color: var(--amber-ink); }
+.hp-num .h-spark { margin-top: 4px; }
+.hp-card-setup { display: grid; gap: 6px; padding-top: 14px; border-top: 1px solid var(--line); }
+.hp-step { display: flex; align-items: center; gap: 8px; color: var(--ink-2); font-size: 14px; font-weight: 500; }
+.hp-step .w-spin { width: 12px; height: 12px; color: var(--muted); }
+.hp-segs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; margin-top: 2px; }
+.hp-segs i { height: 4px; border-radius: 999px; background: var(--hover); }
+.hp-segs i.done { background: var(--ink-3); }
+.hp-segs i.now { background: var(--line-3); }
+
+/* This week and the next guide. */
+.hp-card-facts { display: grid; gap: 6px; margin: 0; font-size: 13px; }
+.hp-card-facts > div { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 10px; }
+.hp-card-facts dt { color: var(--muted); }
+.hp-card-facts dd { margin: 0; color: var(--ink-3); overflow-wrap: anywhere; }
+.hp-clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* The first thing that needs Ross, at the foot of the card. */
+.hp-card-alert { display: flex; align-items: baseline; gap: 8px; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-2); }
+.hp-card-alert::before { content: ""; width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--amber); transform: translateY(-1px); }
+.hp-card-alert.no::before { background: var(--red); }
+.hp-more { color: var(--muted); white-space: nowrap; }
+
+/* ---------- Add a client (/dash/clients/new) ---------- */
+.hp-form { max-width: 720px; }
+.hp-form fieldset, .hp-log-side fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.hp-form-sec { display: grid; gap: 14px; padding: 18px; border-bottom: 1px solid var(--line); }
+.hp-form-sec h2 { font: 600 14px/1.3 var(--font-body); color: var(--ink); }
+.hp-pair { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+.hp-opt { font-weight: 400; color: var(--muted); }
+.hp-legend { padding: 0; margin-bottom: 6px; color: var(--ink-2); font-weight: 600; font-size: 14px; }
+.hp-textarea { min-height: 96px; padding: 10px 14px; line-height: 1.5; resize: vertical; }
+.hp-form-foot { display: grid; gap: 12px; padding: 18px; }
+.hp-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
+/* A choice as a small card: the radio, its name and what it means. */
+.hp-choices { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); }
+.hp-choice {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; align-items: start; padding: 12px 14px;
+  border: 1px solid var(--line-2); border-radius: 10px; background: var(--bg); cursor: pointer;
+  transition: border-color var(--duration-quick) ease-out, box-shadow var(--duration-quick) ease-out;
+}
+.hp-choice:hover { border-color: var(--line-3); }
+.hp-choice:has(input:checked) { border-color: var(--ink-2); box-shadow: 0 0 0 1px var(--ink-2); }
+.hp-choice input { grid-row: span 2; margin: 3px 0 0; accent-color: var(--accent); }
+.hp-choice b { color: var(--ink); font-size: 14px; }
+.hp-choice span { grid-column: 2; color: var(--muted); font-size: 12.5px; line-height: 1.4; }
+
+/* ---------- Daily log (/dash/log) ---------- */
+.hp-day-form { display: flex; align-items: center; gap: 6px; }
+.hp-date { width: auto; min-height: 32px; padding: 0 8px; border-radius: 8px; font-size: 14px; }
+.hp-day-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.hp-day-head h2 { font: 600 20px/1.25 var(--font-head); letter-spacing: -0.015em; }
+.hp-day-head span { color: var(--muted); font-size: 13.5px; }
+.hp-sum { margin-top: 4px; color: var(--ink-3); font-size: 14px; }
+
+/* The entries on the left, the "Log what you did" form on the right (under the entries on phones). */
+.hp-log { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) 320px; align-items: start; }
+.hp-log-side { position: sticky; top: 72px; }
+.hp-log-side form { display: grid; gap: 12px; padding: 16px; }
+.hp-log-side h2 { font: 600 15px/1.3 var(--font-body); color: var(--ink); }
+.hp-kinds { display: flex; flex-wrap: wrap; gap: 6px; }
+.hp-kind { position: relative; display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border: 1px solid var(--line-2); border-radius: 999px; background: var(--bg); color: var(--ink-3); font-size: 13px; font-weight: 500; cursor: pointer; transition: border-color var(--duration-quick) ease-out, background-color var(--duration-quick) ease-out; }
+.hp-kind:hover { border-color: var(--line-3); }
+.hp-kind:has(input:checked) { border-color: var(--ink-2); background: var(--ink-2); color: #fff; }
+.hp-kind:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* The radio itself is hidden: the whole pill is the choice. */
+.hp-kind input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+.hp-kind-hint { margin-top: 6px; }
+.hp-ok { color: var(--green-ink); font-size: 13px; }
+:where(.w) a.hp-log-client { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); text-decoration: none; }
+:where(.w) a.hp-log-client:hover { color: var(--ink); text-decoration: underline; }
+
+@media (max-width: 960px) {
+  .hp-log { grid-template-columns: minmax(0, 1fr); }
+  .hp-log-side { position: static; }
+}
+@media (max-width: 600px) {
+  .hp-pair { grid-template-columns: minmax(0, 1fr); }
+  .hp-form-sec, .hp-form-foot { padding: 16px 14px; }
+  .hp-date { font-size: 16px; } /* phones zoom into smaller text in a field */
+}
+@media (prefers-reduced-motion: reduce) {
+  .hp-card:hover, .hp-card:active { transform: none; }
+}

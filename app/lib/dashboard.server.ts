@@ -3,6 +3,7 @@
 import type { Shop } from "@prisma/client";
 import db from "../db.server";
 import { startOfMonth } from "./limits";
+import { enqueue } from "./jobs.server";
 
 const DAY = 86_400_000;
 
@@ -101,6 +102,17 @@ export async function activeScan(shopId: string) {
     where: { shopId, status: { in: ["queued", "running"] } },
     orderBy: { startedAt: "desc" },
   });
+}
+
+/** "Try again" on a setup that stopped: the stuck first scan's job, or the whole setup, goes back in the queue. */
+export async function retrySetup(shopId: string) {
+  const scan = await activeScan(shopId);
+  const [type, payload, dedupeKey] = scan ? (["scan.run", { scanId: scan.id }, `scan-run:${scan.id}`] as const) : (["onboard", {}, `onboard:${shopId}`] as const);
+  const again = await db.job.updateMany({
+    where: { dedupeKey, status: { in: ["failed", "done"] } },
+    data: { status: "queued", attempts: 0, error: null, lockedAt: null, runAfter: new Date() },
+  });
+  if (!again.count) await enqueue(type, payload, { shopId, dedupeKey });
 }
 
 export async function topCompetitors(shopId: string, limit = 5) {

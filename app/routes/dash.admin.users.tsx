@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { SETUP_STEPS, requireAdmin, usersTable } from "../lib/admin.server";
 import { shortDate, usd } from "../components/admin";
 
@@ -45,7 +45,14 @@ export default function AdminUsers() {
                 <tr key={r.key}>
                   <td className="w-q">{r.email}</td>
                   <td>
-                    {r.store}
+                    {/* Any store opens in the agency hub, with its pages, work log and stats. */}
+                    {r.shopId ? (
+                      <Link to={`/dash/clients/${r.shopId}`} prefetch="intent">
+                        {r.store}
+                      </Link>
+                    ) : (
+                      r.store
+                    )}
                     {r.host && r.host !== r.store ? <span className="w-note w-block">{r.host}</span> : null}
                   </td>
                   <td>{r.plan}</td>

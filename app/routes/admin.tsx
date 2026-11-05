@@ -8,15 +8,16 @@ import styles from "../styles/web.css?url";
 
 // firstpicked.com.au/admin: the admin area's password page (Ross, 4 Nov 2026: "have it password protected not link
 // protected"). The right password (GEO_ADMIN_PASSWORD on Railway) signs this browser in for 30 days and opens the
-// admin Overview. Signed-out visits to /dash/admin come here (web-auth.server.ts).
+// agency hub (or the admin page it was asked for). Signed-out visits to /dash/admin and the hub's client pages come
+// here (web-auth.server.ts).
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 export const meta: MetaFunction = () => [{ title: "Admin · FirstPicked" }, { name: "robots", content: "noindex" }];
 
-/** Only somewhere inside the admin area. */
+/** Only somewhere inside the admin area or the agency hub; else the hub's front page, Ross's home (5 Nov 2026). */
 const adminNext = (raw: unknown) => {
   const next = safeNext(raw);
-  return next.startsWith("/dash/admin") ? next : "/dash/admin";
+  return /^\/dash(\/(admin|log|clients)(\/.*)?)?$/.test(next) ? next : "/dash";
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
