@@ -63,11 +63,31 @@ export function rossTime(iso: string, call = CALL): string {
   return `${day}, ${time}`;
 }
 
+/**
+ * The two questions above the times (Ross, 6 Nov 2026): "do you have a shopify brand?" (yes or no) and how much the
+ * store sells a month. Only a Shopify brand selling A$5,000 or more a month sees the times; anyone else gets a kind
+ * note instead. The page builds its drop-down from this list, and the answers go into Ross's calendar and email.
+ */
+export const SALES = [
+  { value: "under-5k", label: "Under A$5,000", fit: false },
+  { value: "5k-20k", label: "A$5,000 to A$20,000", fit: true },
+  { value: "20k-50k", label: "A$20,000 to A$50,000", fit: true },
+  { value: "50k-100k", label: "A$50,000 to A$100,000", fit: true },
+  { value: "over-100k", label: "Over A$100,000", fit: true },
+];
+
+/** What they sell a month, in words for Ross ("A$20,000 to A$50,000"), when the answers are a fit; else null. */
+export function fitSales(shopify: unknown, sales: unknown): string | null {
+  const pick = SALES.find((s) => s.value === sales);
+  return shopify === "yes" && pick?.fit ? pick.label : null;
+}
+
 export const BOOK_ERRORS = {
   generic: "Something went wrong. Please try again, or text Ross on 0400 369 865.",
   name: "Please enter your name.",
   email: "Please enter a real email address, like you@yourstore.com.",
   store: "Please enter your store’s website, like yourstore.com.au.",
+  questions: "Please answer the two questions above the times. If you can’t see them, reload the page.",
   taken: "Sorry, that time was just taken. Please pick another one.",
   tooMany: "You’ve booked a lot today. Please text Ross on 0400 369 865.",
   crossSite: "Please use the form on the FirstPicked website.",
