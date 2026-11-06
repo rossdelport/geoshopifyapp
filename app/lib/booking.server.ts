@@ -173,7 +173,12 @@ export async function bookCall(input: BookInput, now = new Date()): Promise<{ st
     conferenceData: { createRequest: { requestId: randomUUID(), conferenceSolutionKey: { type: "hangoutsMeet" } } },
   });
   recent.set(ip, [...mine, now.getTime()]);
-  if (input.ad) await saveBooking(input.ad).catch((err) => console.error("[book] booked, but could not count it for the ad chart", err));
+  // Keep the call and the answers for Admin > Calls (Ross, 6 Nov 2026: "please store that information too").
+  const ad = input.ad;
+  const call = { startsAt: new Date(start), name, email, store, sales: String(input.sales) };
+  const from = { utmSource: ad?.utmSource ?? null, utmCampaign: ad?.utmCampaign ?? null, utmContent: ad?.utmContent ?? null, referrer: ad?.referrer ?? null };
+  await db.callBooking.create({ data: { ...call, ...from } }).catch((err) => console.error("[book] booked, but could not save it for Admin > Calls", err));
+  if (ad) await saveBooking(ad, String(input.sales), now).catch((err) => console.error("[book] booked, but could not count it for the ad chart", err));
 
   // Tell Ross (Google doesn't email you about events added to your own calendar).
   if (env.alertEmail && emailConfigured()) {

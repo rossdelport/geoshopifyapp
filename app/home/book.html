@@ -326,7 +326,16 @@ ul{padding:0;list-style:none}
   var wd = fmt({ weekday: 'short' }), dn = fmt({ day: 'numeric' }), mo = fmt({ month: 'short' });
   var longDay = fmt({ weekday: 'long', day: 'numeric', month: 'long' }), clock = fmt({ hour: 'numeric', minute: '2-digit' });
   var byDay = {}, order = [], current = null, chosen = null, busy = false;
-  var shopify = '', salesEl = document.getElementById('sales'), yesNo = on.querySelectorAll('[data-shopify]');
+  var shopify = '', salesEl = document.getElementById('sales'), yesNo = on.querySelectorAll('[data-shopify]'), sent = '';
+
+  // What the page sends with a booking and with the answers: the ad's tags and the site that sent them.
+  function withAd(fields) {
+    var body = new URLSearchParams(fields), q = new URLSearchParams(location.search);
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) { if (q.get(k)) body.set(k, q.get(k).slice(0, 200)); });
+    if (q.get('fbclid')) body.set('fb', '1');
+    if (document.referrer) body.set('ref', document.referrer.slice(0, 300));
+    return body;
+  }
 
   // Shows the times only to a fit: a Shopify brand selling A$5,000 or more a month.
   function gate() {
@@ -334,6 +343,12 @@ ul{padding:0;list-style:none}
     var noShop = shopify === 'no';
     var small = !noShop && !!opt && opt.hasAttribute('data-small');
     var fit = shopify === 'yes' && !!salesEl.value && !small;
+    // Ross (6 Nov 2026): keep everyone's answers, even if they don't book (counted once a person a day, no name).
+    var answers = noShop ? 'no|' : small || fit ? shopify + '|' + salesEl.value : '';
+    if (answers && answers !== sent && navigator.sendBeacon) {
+      sent = answers;
+      try { navigator.sendBeacon('/book', withAd({ answered: '1', shopify: shopify, sales: noShop ? '' : salesEl.value })); } catch (e) { /* not counted */ }
+    }
     on.querySelector('[data-sales-q]').hidden = noShop;
     on.querySelector('[data-hint]').hidden = fit || noShop || small;
     on.querySelector('[data-nofit="shopify"]').hidden = !noShop;
@@ -419,15 +434,8 @@ ul{padding:0;list-style:none}
     busy = true;
     btn.setAttribute('aria-disabled', 'true');
     btn.textContent = 'Booking your call…';
-    var body = new URLSearchParams();
+    var body = withAd({ start: chosen, shopify: shopify, sales: salesEl.value });
     ['name', 'email', 'store', 'website'].forEach(function (k) { body.set(k, form.elements[k].value); });
-    body.set('start', chosen);
-    body.set('shopify', shopify);
-    body.set('sales', salesEl.value);
-    var q = new URLSearchParams(location.search);
-    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) { if (q.get(k)) body.set(k, q.get(k).slice(0, 200)); });
-    if (q.get('fbclid')) body.set('fb', '1');
-    if (document.referrer) body.set('ref', document.referrer.slice(0, 300));
     fetch('/book', { method: 'POST', body: body, headers: { Accept: 'application/json' }, credentials: 'same-origin' })
       .then(function (r) { return r.json(); })
       .then(function (out) {

@@ -8,7 +8,8 @@ import { shortDate, usd } from "../components/admin";
 import { timeAgo } from "../lib/format";
 
 // Admin overview: first, people who opened the booking page from the ads and the calls they booked (Ross, 4 Nov
-// 2026: "so i can wake up in the morning and see"); then the numbers to glance at, and anything that needs a look.
+// 2026: "so i can wake up in the morning and see"), and what they answered to the two questions above the times
+// (6 Nov 2026); then the numbers to glance at, and anything that needs a look.
 
 const SPANS = [7, 14, 30];
 
@@ -120,6 +121,31 @@ export default function AdminOverview() {
             </tbody>
           </table>
         </div>
+        {/* Ross (6 Nov 2026): the two questions above the times, and what people answered, even if they didn't book. */}
+        <div className="w-box w-table-wrap">
+          <table className="w-table">
+            <thead>
+              <tr>
+                <th>What they answered</th>
+                <th>People</th>
+                <th>Calls booked</th>
+              </tr>
+            </thead>
+            <tbody>
+              {book.answers.map((a) => (
+                <tr key={a.label}>
+                  <td className="w-q">{a.label}</td>
+                  <td className="num">{a.people.toLocaleString("en-US")}</td>
+                  <td className="num">{a.booked.toLocaleString("en-US")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="w-note">
+          Times only show for a Shopify brand selling A$5,000 or more a month. Each person counts once a day, under their
+          last answers. <Link to="/dash/admin/calls">See every call booked</Link>
+        </p>
         <details className="w-note">
           <summary>Day by day</summary>
           <div className="w-box w-table-wrap" style={{ marginTop: 8 }}>

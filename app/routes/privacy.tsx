@@ -41,6 +41,7 @@ const privacyData = () => ({
   waitlistMonths: RETENTION.waitlistMonths,
   giveawayMonths: RETENTION.giveawayMonths,
   bookVisitorDays: RETENTION.bookVisitorDays,
+  callMonths: RETENTION.callMonths,
 });
 
 const page = { maxWidth: 720, margin: "0 auto", padding: "48px 20px 80px", fontFamily: "Inter, system-ui, sans-serif", color: "#30313d", lineHeight: 1.7 };
@@ -57,7 +58,7 @@ export default function Privacy() {
 }
 
 function PrivacyText() {
-  const { contact, owner, inactiveYears, visitIdDays, uninstalledDays, publicCheckDays, checkIpHours, reportEmailDays, unsubscribedDays, waitlistMonths, giveawayMonths, bookVisitorDays } =
+  const { contact, owner, inactiveYears, visitIdDays, uninstalledDays, publicCheckDays, checkIpHours, reportEmailDays, unsubscribedDays, waitlistMonths, giveawayMonths, bookVisitorDays, callMonths } =
     useLoaderData<typeof loader>();
   return (
     <main style={page}>
@@ -176,18 +177,24 @@ function PrivacyText() {
 
       <h2 style={h2}>Booking a call</h2>
       <p>
-        If you book a call with Ross on our website, we add it to Ross&apos;s Google Calendar with your name, your email
-        address and your store&apos;s website. Google then emails you the invite with a Google Meet link. We also email
-        Ross the same details, and the ad&apos;s tracking tags (like utm_campaign) if you came from an ad. To stop abuse,
-        we keep a scrambled (hashed) copy of your IP address for a day.
+        Before you pick a time, we ask two questions: do you have a Shopify brand, and how much does your store sell
+        each month. If you book a call with Ross on our website, we add it to Ross&apos;s Google Calendar with your name,
+        your email address, your store&apos;s website and your answers. Google then emails you the invite with a Google
+        Meet link. We also email Ross the same details, and keep them with the ad&apos;s tracking tags (like
+        utm_campaign) if you came from an ad. To stop abuse, we keep a scrambled (hashed) copy of your IP address for a
+        day.
       </p>
       <p>
         When you open the booking page, we count the visit, so we can see which of our ads work. We keep the ad&apos;s
         tracking tags, whether the link had Facebook&apos;s click id, and the name of the website that sent you. To count
         each person once a day, we also keep a scrambled (hashed) id made from your IP address and browser, and we
-        remove it after {bookVisitorDays} days. We don&apos;t keep your name, email or IP address with the count.
+        remove it after {bookVisitorDays} days. We count your answers to the two questions the same way, even if you
+        don&apos;t book. We don&apos;t keep your name, email or IP address with the count.
       </p>
-      <p>We use this only to talk with you about FirstPicked, and we delete it if you ask.</p>
+      <p>
+        We use this only to talk with you about FirstPicked. We delete a booked call&apos;s details {callMonths} months
+        after you booked, or sooner if you ask.
+      </p>
 
       <h2 style={h2}>Giveaway</h2>
       <p>
