@@ -42,7 +42,7 @@ vi.mock("../app/lib/email.server", async (importOriginal) => ({
   }),
 }));
 
-import { CALL, openSlots, rossTime } from "../app/lib/booking";
+import { CALL, SALES, fitSales, openSlots, rossTime } from "../app/lib/booking";
 import { bookCall, connectCalendar, consentUrl, freeSlots } from "../app/lib/booking.server";
 import { env } from "../app/lib/env.server";
 import { action, loader } from "../app/routes/book";
@@ -141,9 +141,9 @@ describe("the page", () => {
     expect(html).toContain('<h1 class="h1">Book a call <b>with Ross.</b></h1>');
     expect(html).toContain('<meta name="robots" content="noindex">');
     expect(html).toContain('<link rel="canonical" href="https://firstpicked.com.au/book">');
-    // no menu: the only links are home, privacy, terms and texting Ross
+    // no menu: the only links are home, privacy, terms, texting Ross and (for stores too small to book) the free check
     const links = [...new Set([...html.matchAll(/<a [^>]*href="([^"]+)"/g)].map((m) => m[1]))].sort();
-    expect(links).toEqual(["/", "/privacy", "/privacy#cookies", "/terms", "sms:+61400369865"]);
+    expect(links).toEqual(["/", "/privacy", "/privacy#cookies", "/terms", "/tools/ai-visibility-checker", "sms:+61400369865"]);
     // Ross (3 Nov 2026): next to his name, "Want to txt Ross instead?" with the number in purple
     expect(html).toContain('<span class="who-txt">Want to txt Ross instead? <a href="sms:+61400369865">0400 369 865</a></span>');
     expect(html).toContain(".who-txt a{color:var(--accent-ink);");
@@ -184,6 +184,29 @@ describe("the page", () => {
     expect(html.match(/if \(q\.get\('fbclid'\)\) body\.set\('fb', '1'\);/g)).toHaveLength(2);
   });
 
+  it("asks two questions before the times, and only shows them to a Shopify brand selling A$5,000 or more a month (Ross, 6 Nov 2026)", async () => {
+    const html = await (await call()).text();
+    expect(html).toContain('<h2 class="cal-h" id="q-shop">Do you have a Shopify brand?</h2>');
+    expect(html).toContain('data-shopify="yes" aria-pressed="false">Yes</button>');
+    expect(html).toContain('data-shopify="no" aria-pressed="false">No</button>');
+    expect(html).toContain('<label class="cal-h" for="sales">How much does your store sell each month?</label>');
+    // the drop-down's choices are SALES, and only "Under A$5,000" is too small
+    const options = [...html.matchAll(/<option value="([^"]*)"( data-small)?>([^<]*)<\/option>/g)].map((m) => [m[1], !m[2], m[3]]);
+    expect(options).toEqual([["", true, "Pick one"], ...SALES.map((o) => [o.value, o.fit, o.label])]);
+    expect(SALES.filter((o) => !o.fit).map((o) => o.label)).toEqual(["Under A$5,000"]);
+    // the times start hidden; the questions decide
+    expect(html).toContain('<div class="has-times" hidden>');
+    expect(html).toContain("var fit = shopify === 'yes' && !!salesEl.value && !small;");
+    expect(html).toContain("on.querySelector('.has-times').hidden = !fit || !order.length;");
+    // a kind note for anyone else
+    expect(html).toContain("Right now we only help Shopify brands. Moving to Shopify soon? Text Ross on");
+    expect(html).toContain("Right now we help stores that sell A$5,000 or more a month.");
+    expect(html).toContain('<a class="btn btn-sec btn-sm" href="/tools/ai-visibility-checker">Try the free check</a>');
+    // the answers go with the booking
+    expect(html).toContain("body.set('shopify', shopify);");
+    expect(html).toContain("body.set('sales', salesEl.value);");
+  });
+
   it("lists Ross's free times once his calendar is connected", async () => {
     const html = await (await call()).text();
     const json = /<script type="application\/json" id="slots">([^<]*)<\/script>/.exec(html)?.[1];
@@ -202,7 +225,22 @@ describe("the page", () => {
 });
 
 describe("booking a call", () => {
-  const good = { start: "2026-11-04T01:00:00.000Z", name: "Jane Smith", email: "Jane@ShopJane.com.au", store: "shopjane.com.au", ip: "203.0.113.1" };
+  const good = { start: "2026-11-04T01:00:00.000Z", name: "Jane Smith", email: "Jane@ShopJane.com.au", store: "shopjane.com.au", shopify: "yes", sales: "20k-50k", ip: "203.0.113.1" };
+
+  it("only books a Shopify brand selling A$5,000 or more a month", async () => {
+    expect(fitSales("yes", "5k-20k")).toBe("A$5,000 to A$20,000");
+    expect(fitSales("yes", "over-100k")).toBe("Over A$100,000");
+    expect(fitSales("yes", "under-5k")).toBeNull();
+    expect(fitSales("no", "50k-100k")).toBeNull();
+    expect(fitSales(null, null)).toBeNull();
+    expect(fitSales("yes", "a lot")).toBeNull();
+    for (const answers of [{ shopify: "no" }, { sales: "under-5k" }, { shopify: undefined }, { sales: undefined }]) {
+      const out = await bookCall({ ...good, ...answers, ip: "203.0.113.70" }, NOW);
+      expect(out.status).toBe(400);
+      expect(out.result).toMatchObject({ ok: false, error: expect.stringContaining("two questions") });
+    }
+    expect(h.events).toHaveLength(0);
+  });
 
   it("adds it to Ross's calendar with a Meet link, invites the person and emails Ross", async () => {
     const out = await bookCall({ ...good, from: { utm_source: "facebook", utm_campaign: "waitlist" } }, NOW);
@@ -217,7 +255,7 @@ describe("booking a call", () => {
       attendees: [{ email: "jane@shopjane.com.au", displayName: "Jane Smith" }],
       conferenceData: { createRequest: { conferenceSolutionKey: { type: "hangoutsMeet" } } },
     });
-    expect(String(body.description)).toContain("Store: shopjane.com.au");
+    expect(String(body.description)).toContain("Store: shopjane.com.au\nShopify brand: Yes\nSells a month: A$20,000 to A$50,000");
     // the ad tags go to Ross only, not into the invite the person sees
     expect(String(body.description)).not.toContain("facebook");
     expect(h.emails).toHaveLength(1);
@@ -225,6 +263,7 @@ describe("booking a call", () => {
     expect(to).toEqual(["ross@geo.test"]);
     expect(subject).toBe("New call booked: Jane Smith, Wednesday 4 November, 9:00 am");
     expect(html).toContain("utm_source=facebook, utm_campaign=waitlist");
+    expect(html).toContain("<b>Shopify brand:</b> Yes<br><b>Sells a month:</b> A$20,000 to A$50,000");
   });
 
   it("counts a booked call for the ad chart, with the ad's tags and no name or email", async () => {

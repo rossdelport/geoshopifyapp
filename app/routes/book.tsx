@@ -1,7 +1,7 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { serveHome } from "../lib/home-page.server";
 import { bookCall, freeSlots, type BookResult } from "../lib/booking.server";
-import { BOOK_ERRORS } from "../lib/booking";
+import { BOOK_ERRORS, SALES } from "../lib/booking";
 import { readAdTags } from "../lib/book-stats";
 import { saveBookView, visitorId } from "../lib/book-stats.server";
 import { clientIp, fromAnotherSite, readSmallForm } from "../lib/public-form.server";
@@ -14,14 +14,17 @@ import raw from "../home/book.html?raw";
 
 // firstpicked.com.au/book: book a call with Ross (Ross, 3 Nov 2026). Every "Get started" button on the home page opens it.
 // GET: the page (app/home/book.html) with Ross's free times from his Google Calendar, or "Text Ross" when his
-// calendar isn't connected yet. POST: urlencoded `start` (one of those times), `name`, `email`, `store`, `website`
-// (honeypot) and the utm_* tags; JSON reply BookResult. The call goes into Ross's calendar with a Meet link.
+// calendar isn't connected yet. Above the times, two questions (Ross, 6 Nov 2026): a Shopify brand? and sales a month;
+// the times only show for a Shopify brand selling A$5,000 or more a month. POST: urlencoded `start` (one of those
+// times), `name`, `email`, `store`, `shopify` ("yes"), `sales` (a value from SALES), `website` (honeypot) and the utm_*
+// tags; JSON reply BookResult. The call goes into Ross's calendar with a Meet link.
 // POST `seen=1` (sent by the page once it is on screen, with the same tags): counts the visit for the ad chart on the
 // admin Overview (lib/book-stats.server.ts), reply 204.
 
 const page = raw
   .replaceAll("__FONT_URL__", () => font)
   .replace("__ROSS_PHOTO__", () => rossPhoto)
+  .replace("<!-- SALES_OPTIONS -->", () => SALES.map((s) => `<option value="${s.value}"${s.fit ? "" : " data-small"}>${s.label}</option>`).join(""))
   .replace("<!-- META_PIXEL -->", () => `<script>\n${pixelHead.trim()}\n</script>`)
   .replace("<!-- COOKIE_SCRIPT -->", () => `<script>\n${cookieScript.trim()}\n</script>`);
 
@@ -51,6 +54,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       name: form.get("name"),
       email: form.get("email"),
       store: form.get("store"),
+      shopify: form.get("shopify"),
+      sales: form.get("sales"),
       honeypot: form.get("website"),
       from: Object.fromEntries(["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"].map((k) => [k, form.get(k)])),
       ad,
