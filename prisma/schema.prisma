@@ -718,10 +718,30 @@ model BookEvent {
   utmTerm     String?
   fbclid      Boolean  @default(false) // Facebook's click id was in the link (it came from a Facebook or Instagram ad or post)
   referrer    String? // the site that sent them, host only (m.facebook.com, firstpicked.com.au)
+  shopify     String? // answered and booked rows: "yes" or "no" to "Do you have a Shopify brand?"
+  sales       String? // answered and booked rows: how much the store sells a month, a value from SALES (lib/booking.ts)
   createdAt   DateTime @default(now())
 
   @@index([createdAt])
   @@index([visitor, createdAt])
+}
+
+// Each call booked on firstpicked.com.au/book, with the person's answers (Ross, 6 Nov 2026: "please store that
+// information too"). Listed in Admin > Calls; deleted 24 months after booking (retention.server.ts).
+model CallBooking {
+  id          String   @id @default(cuid())
+  startsAt    DateTime // when the call is
+  name        String
+  email       String // lowercased
+  store       String // the store's website, as typed and tidied
+  sales       String // how much the store sells a month, a value from SALES (lib/booking.ts); they said yes to Shopify
+  utmSource   String?
+  utmCampaign String?
+  utmContent  String?
+  referrer    String? // the site that sent them, host only
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
 }
 
 // Ross's done-for-you clients (the agency hub at firstpicked.com.au/dash, Ross 5 Nov 2026: "the dash to be the hub for me

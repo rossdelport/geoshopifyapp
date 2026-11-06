@@ -20,6 +20,7 @@ const h = vi.hoisted(() => {
     events: [] as { url: string; body: Record<string, unknown> }[],
     emails: [] as unknown[][],
     counted: [] as Record<string, unknown>[],
+    calls: [] as Record<string, unknown>[],
   };
 });
 
@@ -31,6 +32,9 @@ vi.mock("../app/db.server", () => ({
     },
     bookEvent: {
       create: vi.fn(async ({ data }: { data: Record<string, unknown> }) => h.counted.push(data)),
+    },
+    callBooking: {
+      create: vi.fn(async ({ data }: { data: Record<string, unknown> }) => h.calls.push(data)),
     },
   },
 }));
@@ -77,6 +81,7 @@ beforeEach(() => {
   h.events = [];
   h.emails = [];
   h.counted = [];
+  h.calls = [];
   env.googleClientId = "client-id";
 });
 
@@ -203,8 +208,9 @@ describe("the page", () => {
     expect(html).toContain("Right now we help stores that sell A$5,000 or more a month.");
     expect(html).toContain('<a class="btn btn-sec btn-sm" href="/tools/ai-visibility-checker">Try the free check</a>');
     // the answers go with the booking
-    expect(html).toContain("body.set('shopify', shopify);");
-    expect(html).toContain("body.set('sales', salesEl.value);");
+    expect(html).toContain("var body = withAd({ start: chosen, shopify: shopify, sales: salesEl.value });");
+    // and everyone's answers are counted, even if they don't book (once a person a day, no name)
+    expect(html).toContain("navigator.sendBeacon('/book', withAd({ answered: '1', shopify: shopify, sales: noShop ? '' : salesEl.value }))");
   });
 
   it("lists Ross's free times once his calendar is connected", async () => {
@@ -266,10 +272,32 @@ describe("booking a call", () => {
     expect(html).toContain("<b>Shopify brand:</b> Yes<br><b>Sells a month:</b> A$20,000 to A$50,000");
   });
 
+  it("keeps the call and the answers for Admin > Calls (Ross, 6 Nov 2026)", async () => {
+    const ad = { utmSource: "facebook", utmMedium: "paid", utmCampaign: "FP - leads", utmContent: "peacelily_video", utmTerm: null, fbclid: true, referrer: "m.facebook.com" };
+    expect((await bookCall({ ...good, ip: "203.0.113.80", ad }, NOW)).status).toBe(200);
+    expect(h.calls).toEqual([
+      {
+        startsAt: new Date(good.start),
+        name: "Jane Smith",
+        email: "jane@shopjane.com.au",
+        store: "shopjane.com.au",
+        sales: "20k-50k",
+        utmSource: "facebook",
+        utmCampaign: "FP - leads",
+        utmContent: "peacelily_video",
+        referrer: "m.facebook.com",
+      },
+    ]);
+    // nothing is kept for a refused booking or a bot
+    await bookCall({ ...good, sales: "under-5k", ip: "203.0.113.81" }, NOW);
+    await bookCall({ ...good, honeypot: "spam.com", ip: "203.0.113.82" }, NOW);
+    expect(h.calls).toHaveLength(1);
+  });
+
   it("counts a booked call for the ad chart, with the ad's tags and no name or email", async () => {
     const ad = { utmSource: "facebook", utmMedium: null, utmCampaign: null, utmContent: "50_million", utmTerm: null, fbclid: true, referrer: "m.facebook.com" };
     expect((await bookCall({ ...good, ip: "203.0.113.60", ad }, NOW)).status).toBe(200);
-    expect(h.counted).toEqual([{ kind: "booked", ...ad }]);
+    expect(h.counted).toEqual([{ kind: "booked", ...ad, shopify: "yes", sales: "20k-50k", createdAt: expect.any(Date) }]);
     // a bot that filled the hidden field isn't counted
     await bookCall({ ...good, ip: "203.0.113.61", honeypot: "spam.com", ad }, NOW);
     expect(h.counted).toHaveLength(1);

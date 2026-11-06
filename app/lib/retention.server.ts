@@ -24,6 +24,8 @@ export const RETENTION = {
   giveawayMonths: 24,
   /** The scrambled id on a booking page visit only stops a person counting twice in a day, so it goes after 2 days. */
   bookVisitorDays: 2,
+  /** Calls booked on the booking page (name, email, store, answers, where they came from): deleted this long after booking. */
+  callMonths: 24,
 };
 
 /**
@@ -99,6 +101,10 @@ export async function purgeOldData(now = new Date()) {
     where: { visitor: { not: null }, createdAt: { lt: new Date(now.getTime() - RETENTION.bookVisitorDays * DAY) } },
     data: { visitor: null },
   });
+  // Calls booked: 24 months after booking.
+  const calls = await db.callBooking.deleteMany({
+    where: { createdAt: { lt: new Date(now.getTime() - RETENTION.callMonths * 30.44 * DAY) } },
+  });
   if (visits.count || shops.count || checks.count || reportEmails.count || subscribers.count) {
     console.log(
       `[retention] cleared ${visits.count} old visit ids, deleted ${shops.count} uninstalled shops, ${checks.count} free checks, ${reportEmails.count} report emails and ${subscribers.count} unsubscribed or inactive addresses`,
@@ -114,5 +120,6 @@ export async function purgeOldData(now = new Date()) {
     subscribers: subscribers.count,
     waitlist: waitlist.count,
     giveaway: giveaway.count,
+    calls: calls.count,
   };
 }

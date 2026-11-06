@@ -6,7 +6,7 @@
 import { execSync } from "node:child_process";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { NO_NAME, adName, bookedRate, hostOf, readAdTags, summarise } from "../app/lib/book-stats";
+import { NOT_SHOPIFY, NO_NAME, adName, answerLabel, bookedRate, hostOf, readAdTags, summarise } from "../app/lib/book-stats";
 
 const base = process.env.TEST_DATABASE_URL;
 const SCHEMA = "geo_book_stats_test";
@@ -68,6 +68,36 @@ describe("the numbers", () => {
       { name: "90_more", people: 1, booked: 1 },
     ]);
     expect(out.totals).toEqual({ people: 4, booked: 1 });
+  });
+
+  it("counts what people answered (Ross, 6 Nov 2026), without counting the answers as more people", () => {
+    const row = (kind: string, shopify: string | null, sales: string | null) => ({ ...none, kind, day: "2026-11-06", shopify, sales });
+    const out = summarise(
+      [
+        row("view", null, null),
+        row("view", null, null),
+        row("view", null, null),
+        row("answered", "no", null),
+        row("answered", "yes", "under-5k"),
+        row("answered", null, "under-5k"), // picked the drop-down before Yes or No: still too small
+        row("answered", "yes", "20k-50k"),
+        row("booked", "yes", "20k-50k"),
+        row("booked", null, null), // booked before the questions: no answer
+        row("answered", "yes", "a lot"), // not one of the choices: left out
+      ],
+      ["2026-11-06"],
+    );
+    expect(out.totals).toEqual({ people: 3, booked: 2 });
+    expect(out.answers).toEqual([
+      { label: NOT_SHOPIFY, people: 1, booked: 0 },
+      { label: "Under A$5,000", people: 2, booked: 0 },
+      { label: "A$5,000 to A$20,000", people: 0, booked: 0 },
+      { label: "A$20,000 to A$50,000", people: 1, booked: 1 },
+      { label: "A$50,000 to A$100,000", people: 0, booked: 0 },
+      { label: "Over A$100,000", people: 0, booked: 0 },
+    ]);
+    expect(answerLabel("no", "over-100k")).toBe(NOT_SHOPIFY);
+    expect(answerLabel("yes", null)).toBeNull();
   });
 
   it("shows the share who booked as a whole percent, or nothing when nobody came", () => {
@@ -155,13 +185,48 @@ describe.skipIf(!url)("saving and counting (needs TEST_DATABASE_URL)", () => {
     expect(await stats.saveBookView(tags, "a", new Date(am.getTime() + 3_600_000))).toBe(false);
     expect(await stats.saveBookView(tags, "b", new Date(am.getTime() + 3_600_000))).toBe(true);
     expect(await stats.saveBookView(tags, "a", new Date("2026-11-04T14:00:00Z"))).toBe(true); // 1 am on the 5th in Sydney
-    await stats.saveBooking(tags);
+    await stats.saveBooking(tags, "20k-50k", am);
     const out = await stats.bookStats("2026-11-04", "2026-11-05");
     expect(out.days.map((d) => [d.day, d.people])).toEqual([
       ["2026-11-04", 2],
       ["2026-11-05", 1],
     ]);
     expect(out.ads).toEqual([{ name: "50_million", people: 3, booked: 1 }]);
+  });
+
+  it("keeps each person's answers once a day, changed if they change them, and counts them with the calls booked", async () => {
+    const res = (await book.action({ request: post("/book", { answered: "1", shopify: "yes", sales: "under-5k", utm_content: "50_million" }), params: {}, context: {} } as unknown as ActionFunctionArgs)) as Response;
+    expect(res.status).toBe(204);
+    // they change their mind: the same row changes
+    await book.action({ request: post("/book", { answered: "1", shopify: "yes", sales: "20k-50k", utm_content: "50_million" }), params: {}, context: {} } as unknown as ActionFunctionArgs);
+    let rows = await db.bookEvent.findMany();
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({ kind: "answered", shopify: "yes", sales: "20k-50k", utmContent: "50_million" });
+    expect(JSON.stringify(rows[0])).not.toContain("203.0.113.20");
+    // "No" to Shopify keeps no sales answer; nothing is kept without an answer
+    const tags = readAdTags(new URLSearchParams());
+    expect(await stats.saveAnswers(tags, "c", { shopify: "no", sales: "over-100k" })).toBe(true);
+    expect(await stats.saveAnswers(tags, "d", { shopify: "maybe", sales: "lots" })).toBe(false);
+    rows = await db.bookEvent.findMany({ where: { visitor: "c" } });
+    expect(rows).toMatchObject([{ kind: "answered", shopify: "no", sales: null }]);
+    await stats.saveBooking(tags, "20k-50k");
+    const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Australia/Sydney" }).format(new Date());
+    const out = await stats.bookStats(today, today);
+    expect(out.totals).toEqual({ people: 0, booked: 1 });
+    expect(out.answers.filter((a) => a.people || a.booked)).toEqual([
+      { label: NOT_SHOPIFY, people: 1, booked: 0 },
+      { label: "A$20,000 to A$50,000", people: 1, booked: 1 },
+    ]);
+  });
+
+  it("deletes a booked call's details 24 months after booking", async () => {
+    const { purgeOldData } = await import("../app/lib/retention.server");
+    const now = new Date();
+    const call = { startsAt: now, name: "Jane", email: "jane@shopjane.com.au", store: "shopjane.com.au", sales: "20k-50k" };
+    await db.callBooking.createMany({ data: [{ ...call, createdAt: new Date(now.getTime() - 25 * 30.44 * 86_400_000) }, { ...call, name: "New" }] });
+    expect((await purgeOldData(now)).calls).toBe(1);
+    expect((await db.callBooking.findMany()).map((c) => c.name)).toEqual(["New"]);
+    await db.callBooking.deleteMany({});
   });
 
   it("clears the scrambled ids after 2 days and keeps the counts", async () => {

@@ -6,6 +6,7 @@ import db from "../db.server";
 import { clientIp, hashIp } from "./public-form.server";
 import { daysBetween, sydneyDay } from "./admin.server";
 import { summarise, type AdTags, type BookStats } from "./book-stats";
+import { SALES } from "./booking";
 
 const DAY = 86_400_000;
 
@@ -27,9 +28,28 @@ export async function saveBookView(tags: AdTags, visitor: string, now = new Date
   return true;
 }
 
-/** A call was booked: only which ad it came from. */
-export async function saveBooking(tags: AdTags): Promise<void> {
-  await db.bookEvent.create({ data: { kind: "booked", ...tags } });
+/**
+ * Someone answered the two questions above the times (Ross, 6 Nov 2026). One row a person a day (Sydney days): if
+ * they change their answers, the row is changed, so each person counts once, under their last answers. "No" to
+ * Shopify keeps no sales answer (the drop-down hides). Nothing is saved without an answer.
+ */
+export async function saveAnswers(tags: AdTags, visitor: string, raw: { shopify: unknown; sales: unknown }, now = new Date()): Promise<boolean> {
+  const shopify = raw.shopify === "yes" || raw.shopify === "no" ? raw.shopify : null;
+  const sales = shopify !== "no" && SALES.some((s) => s.value === raw.sales) ? String(raw.sales) : null;
+  if (!shopify && !sales) return false;
+  const last = await db.bookEvent.findFirst({
+    where: { kind: "answered", visitor, createdAt: { gte: new Date(now.getTime() - DAY) } },
+    orderBy: { createdAt: "desc" },
+    select: { id: true, createdAt: true },
+  });
+  if (last && sydneyDay(0, last.createdAt) === sydneyDay(0, now)) await db.bookEvent.update({ where: { id: last.id }, data: { shopify, sales } });
+  else await db.bookEvent.create({ data: { kind: "answered", visitor, ...tags, shopify, sales, createdAt: now } });
+  return true;
+}
+
+/** A call was booked: which ad it came from and how much the store sells a month (they said yes to Shopify). */
+export async function saveBooking(tags: AdTags, sales: string, now = new Date()): Promise<void> {
+  await db.bookEvent.create({ data: { kind: "booked", ...tags, shopify: "yes", sales, createdAt: now } });
 }
 
 /** The chart's numbers for these Sydney days (YYYY-MM-DD, from and to included). */
@@ -37,7 +57,7 @@ export async function bookStats(from: string, to: string): Promise<BookStats> {
   // A day either side (in UTC) covers every Sydney day asked for; summarise leaves out the rest.
   const rows = await db.bookEvent.findMany({
     where: { createdAt: { gte: new Date(Date.parse(from) - DAY), lt: new Date(Date.parse(to) + 2 * DAY) } },
-    select: { kind: true, utmSource: true, utmCampaign: true, utmContent: true, fbclid: true, referrer: true, createdAt: true },
+    select: { kind: true, utmSource: true, utmCampaign: true, utmContent: true, fbclid: true, referrer: true, shopify: true, sales: true, createdAt: true },
     orderBy: { createdAt: "asc" },
     take: 200_000,
   });
