@@ -175,6 +175,9 @@ describe("the page", () => {
     expect(html).toContain('<div class="ck" id="ck" role="region" aria-label="Cookies" hidden>');
     expect(html).toContain(readFileSync(join(ROOT, "design", "overview", "parts", "47-cookies.js"), "utf8").trim());
     expect(html).toContain("window.fbq('track', 'Lead', { content_name: 'book a call' });");
+    // a fit (Shopify brand, A$5,000 or more) tells Meta once a visit, so the ads can learn who books (Ross, 7 Nov 2026)
+    expect(html).toContain("if (fit && !toldMeta && typeof window.fbq === 'function') {");
+    expect(html).toContain("window.fbq('track', 'SubmitApplication', { content_name: 'fits' });");
     expect(html).not.toContain("facebook.com/tr?");
   });
 
