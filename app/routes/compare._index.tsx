@@ -5,8 +5,10 @@ import { BLOG_HUB } from "../lib/blog/pages";
 import { formatUpdated } from "../lib/tools/format";
 import { pageMeta } from "../lib/tools/seo";
 import { toolHeaders } from "../lib/tools/http";
+import { LANDING_PAGES, landingPath } from "../lib/landing/pages";
 
-// The hub at /compare: every comparison page as a card, in COMPARE_PAGES order.
+// The hub at /compare: every comparison page as a card, in COMPARE_PAGES order, then the service pages and guides
+// (app/lib/landing/pages.ts) so each one has a link from here.
 
 export const meta: MetaFunction = () =>
   pageMeta({
@@ -39,6 +41,18 @@ export default function CompareHub() {
             <li key={p.slug}>
               <a className="bl-card" href={comparePath(p.slug)}>
                 <span className="bl-tag">Compare</span>
+                <h2 className="bl-card-title">{p.h1}</h2>
+                <p className="bl-card-desc">{p.short}</p>
+                <p className="bl-card-meta">
+                  Checked <time dateTime={p.checked}>{formatUpdated(p.checked)}</time>
+                </p>
+              </a>
+            </li>
+          ))}
+          {LANDING_PAGES.map((p) => (
+            <li key={p.slug}>
+              <a className="bl-card" href={landingPath(p.slug)}>
+                <span className="bl-tag">{p.tag}</span>
                 <h2 className="bl-card-title">{p.h1}</h2>
                 <p className="bl-card-desc">{p.short}</p>
                 <p className="bl-card-meta">

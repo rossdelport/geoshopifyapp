@@ -67,23 +67,44 @@ export const COMPARE_LAUNCHED = "2026-10-23";
 export const comparePath = (slug: string) => `${COMPARE_HUB.path}/${slug}`;
 
 
-const OPTIMISING = { title: "Optimising: How much does GEO cost? (June 2025)", url: "https://www.optimising.com.au/blog/geo-cost" };
+export const OPTIMISING = { title: "Optimising: How much does GEO cost? (June 2025)", url: "https://www.optimising.com.au/blog/geo-cost" };
 const DEBUTIFY = { title: "Debutify: The best Shopify GEO agencies, ranked (July 2026)", url: "https://debutify.com/blog/best-shopify-geo-agencies-ranked" };
 const FIRSTINDEX = { title: "FirstIndex home page and pricing", url: "https://firstindex.com" };
-const PROFOUND = { title: "Profound pricing page", url: "https://www.tryprofound.com/pricing" };
-const SHOPIFY_15X = {
+export const PROFOUND = { title: "Profound pricing page", url: "https://www.tryprofound.com/pricing" };
+export const SHOPIFY_15X = {
   title: "The Canadian Press: Shopify reports Q4 profit (February 2026)",
   url: "https://www.cp24.com/news/canada/2026/02/11/shopify-reports-us743m-q4-profit-revenue-up-31-per-cent-from-year-ago/",
 };
-const GOOGLE_IO = { title: "Google: Sundar Pichai's I/O 2026 keynote (May 2026)", url: "https://blog.google/innovation-and-ai/sundar-pichai-io-2026/" };
+export const GOOGLE_IO = { title: "Google: Sundar Pichai's I/O 2026 keynote (May 2026)", url: "https://blog.google/innovation-and-ai/sundar-pichai-io-2026/" };
 
 // The Perth agencies' own home pages, read on 8 November 2026 (only what each says about itself).
 const CONCISE = { title: "Concise Digital home page", url: "https://www.concise.digital/" };
 const MUSEPROJECT = { title: "Museproject home page", url: "https://museproject.com.au/" };
-const DIGITAL_HITMEN = { title: "Digital Hitmen home page", url: "https://www.digitalhitmen.com.au/" };
+export const DIGITAL_HITMEN = { title: "Digital Hitmen home page", url: "https://www.digitalhitmen.com.au/" };
 export const SEO_ROOM = { title: "The SEO Room home page and prices", url: "https://seoroom.com.au/" };
 const LOADED = { title: "Loaded Communications home page", url: "https://loadedcommunications.com.au/" };
 const DAISY = { title: "Daisy Digital home page", url: "https://daisydigital.com.au/" };
+
+// Australian agencies' own AI or GEO pages, read on 8 November 2026 (only what each says about itself).
+const PROSPERITY = { title: "Prosperity Media: Generative AI SEO services", url: "https://prosperitymedia.com.au/generative-ai-seo-services/" };
+const DILATE = { title: "Dilate Digital: GEO services", url: "https://www.dilate.com.au/geo-services/" };
+const OPTIMISING_HOME = { title: "Optimising home page", url: "https://www.optimising.com.au/" };
+const RANK_MY_BUSINESS = { title: "Rank My Business: AI SEO", url: "https://rankmybusiness.com.au/seo-services/ai-seo/" };
+const PLANET_MEDIA = { title: "Planet Media: GEO agency Melbourne", url: "https://www.planetmedia.com.au/geo-agency-melbourne" };
+const MYOHO = { title: "Myoho Marketing: Generative engine optimisation", url: "https://myohomarketing.com.au/generative-engine-optimisation/" };
+
+// AI visibility tools' own pricing pages, read on 8 November 2026.
+const PEEC = { title: "Peec AI pricing page", url: "https://peec.ai/pricing" };
+const OTTERLY = { title: "Otterly pricing page", url: "https://otterly.ai/pricing" };
+
+// Shared with the service pages and guides (app/lib/landing/pages.ts). Read on 8 November 2026.
+export const OPENAI_SHOPPING = { title: "OpenAI Help Center: Shopping with ChatGPT Search", url: "https://help.openai.com/en/articles/11128490-shopping-with-chatgpt-search" };
+export const OPENAI_MERCHANTS = { title: "OpenAI: Product discovery in ChatGPT, for stores", url: "https://chatgpt.com/merchants/" };
+export const OPENAI_DEVDAY = { title: "OpenAI: DevDay 2026 recap (September 2026)", url: "https://openai.com/index/devday-2026-recap/" };
+export const SHOPIFY_SEO = { title: "Shopify Help Center: SEO overview", url: "https://help.shopify.com/en/manual/promoting-marketing/seo/seo-overview" };
+export const SHOPIFY_AI = { title: "Shopify Help Center: Optimizing your store for AI", url: "https://help.shopify.com/en/manual/promoting-marketing/seo/optimizing-store-for-ai" };
+export const GOOGLE_SPAM = { title: "Google Search Central: Spam policies (link spam)", url: "https://developers.google.com/search/docs/essentials/spam-policies" };
+export const GEO_PAPER = { title: "Aggarwal and others: GEO: Generative Engine Optimization (2023, KDD 2024)", url: "https://arxiv.org/abs/2311.09735" };
 
 export const COMPARE_PAGES: ComparePage[] = [
   {
@@ -208,6 +229,230 @@ export const COMPARE_PAGES: ComparePage[] = [
     ],
     sources: [CONCISE, MUSEPROJECT, DIGITAL_HITMEN, SEO_ROOM, LOADED, DAISY],
     related: ["/seo-agency-perth", "geo-vs-seo-agency", "geo-cost-australia"],
+  },
+  {
+    slug: "best-ai-seo-agencies-australia",
+    title: "Best AI SEO agencies in Australia (2026) | FirstPicked",
+    description:
+      "Eight Australian AI SEO and GEO agencies, from their own websites: where they're based, what they do for AI search and who each suits. Checked Nov 2026.",
+    short: "Eight Australian AI SEO and GEO agencies: what each does and who each suits.",
+    h1: "The best AI SEO agencies in Australia, and who each one suits",
+    intro: [
+      "Short answer: big brands that want SEO, digital PR and AI work from one team should look at Prosperity Media or Dilate. Rank My Business and Planet Media both offer a free AI audit, so you can see where you stand first. FirstPicked suits Shopify brands that want to be picked by AI for one set monthly price.",
+      "We're FirstPicked, so we're on this list and we're biased. To keep it fair, we only used what each agency says on its own website, read on 8 November 2026.",
+    ],
+    checked: "2026-11-08",
+    published: "2026-11-08",
+    sections: [
+      {
+        heading: "Eight agencies side by side",
+        table: {
+          head: ["Agency", "Based in", "Best for", "Price on their site"],
+          rows: [
+            ["Prosperity Media", "Sydney and Melbourne", "Bigger brands that want SEO, digital PR and AI together", "Not shown"],
+            ["Dilate Digital", "Fremantle, WA", "Brands that want AI work built into an SEO retainer", "Not shown"],
+            ["Optimising", "Richmond, Melbourne", "SEO and GEO in one campaign", "Not shown. They publish a GEO price guide"],
+            ["Rank My Business", "Melbourne", "AI SEO, with a Shopify SEO service too", "Not shown"],
+            ["Planet Media", "Canberra", "Businesses that want press and mentions AI trusts", "Not shown"],
+            ["Myoho Marketing", "Melbourne", "Content written for AI answers", "Not shown"],
+            ["Digital Hitmen", "Perth", "Ecommerce SEO, AI search, web design and ads", "Not shown"],
+            ["FirstPicked", "Perth", "Shopify brands that want to be picked by AI and Google", "A$945 a month"],
+          ],
+        },
+        paragraphs: ["\"Not shown\" means we couldn't find a price on the page we read on 8 November 2026. Ask them. Most agencies quote each business on its own."],
+      },
+      {
+        heading: "Prosperity Media",
+        paragraphs: [
+          "Offices in Sydney and Melbourne. Their AI page sets out four steps: a brand audit, technical work, digital PR to build trust, and tracking how often AI names you.",
+          "They say results usually take 3 to 6 months, and they suggest doing SEO and GEO together. Their site offers a free GEO audit.",
+        ],
+      },
+      {
+        heading: "Dilate Digital",
+        paragraphs: [
+          "Based in Fremantle. Their site says AI work is already in your retainer: it's built into their SEO and content work from day one. They've done SEO for over a decade.",
+          "They also build websites, including Shopify stores, and run ads. A good fit if you want one team for search, content and ads.",
+        ],
+      },
+      {
+        heading: "Optimising",
+        paragraphs: [
+          "Based in Richmond, Melbourne. They're a B Corp, and they host Shopify Plus partner meetups. Their view is that GEO and SEO belong in one campaign.",
+          "They wrote the Australian GEO price guide we quote on our cost page. It puts agency GEO at about A$2,000 to A$20,000 or more a month.",
+        ],
+      },
+      {
+        heading: "Rank My Business",
+        paragraphs: [
+          "A Melbourne agency with an AI SEO service, a separate Shopify SEO service, and Shopify store builds. They offer a free AI visibility audit across ChatGPT, Gemini, Google AI Overviews and Perplexity.",
+          "Their site says the first AI wins usually show within 60 days.",
+        ],
+      },
+      {
+        heading: "Planet Media",
+        paragraphs: [
+          "A Canberra agency with a GEO page for Melbourne businesses. Their free GEO audit tests the questions your customers ask, and logs which rivals AI names instead of you.",
+          "They work on press coverage and mentions, in places like The Age and Broadsheet. They also build websites, including Shopify stores.",
+        ],
+      },
+      {
+        heading: "Myoho Marketing",
+        paragraphs: [
+          "Based on Exhibition Street in Melbourne. Their GEO service reworks your content so ChatGPT, Perplexity, Gemini, Copilot and Google AI Overviews can use it, with structured data and fact-based writing. Their site says it suits online stores as well as blogs and company sites.",
+        ],
+      },
+      {
+        heading: "Digital Hitmen",
+        paragraphs: [
+          "A Perth agency, started in 2016. They do SEO, ecommerce SEO, AI search, web design and ads. Work starts with a 6-month sprint, then goes month to month. Our list of the best SEO agencies in Perth has more on them.",
+        ],
+      },
+      {
+        heading: "FirstPicked",
+        paragraphs: [
+          "That's us. FirstPicked is run from Perth by its founder, Ross Delport. One plan for Shopify brands: A$945 a month, done for you, with no lock-in. If you're not happy after the first month, you get a full refund and keep the work.",
+          "Each day we check up to 100 buying questions in ChatGPT, Gemini, Perplexity and Google AI Overviews. Each month we make 50+ fixes to your pages, write up to 12 buying guides, and show you the sales AI sends you. We don't do digital PR, ads or websites. If you need those, an agency above is the better pick.",
+        ],
+      },
+      {
+        heading: "What ChatGPT says",
+        paragraphs: [
+          "On 8 November 2026 we asked ChatGPT, from Australia, to suggest AI SEO agencies. It named Shout Digital, Impressive Digital, Optimising, Megantic, Remarkable Digital, Prosperity Media and Red Search. It didn't name FirstPicked. We haven't read the other agencies' sites yet, so they're not on this list.",
+          "ChatGPT built its answers from list articles on other websites, not from the agencies' own pages. AI answers change from one run to the next, so treat this as one snapshot.",
+        ],
+      },
+      {
+        heading: "How to choose",
+        bullets: [
+          "Ask which AI apps they check, how often, and if they ask each question more than once. AI answers change from one run to the next.",
+          "Ask how they'll show you sales from AI, not only mentions.",
+          "Ask to see work for another online store, not only local services.",
+          "Get the monthly price in writing, and ask about lock-in.",
+          "Ask if they buy links or paid spots in list articles. Google's spam rules say buying links to rank is link spam.",
+          "If anyone promises you a spot in ChatGPT, walk away. Nobody can promise that.",
+        ],
+      },
+      {
+        heading: "How we checked",
+        paragraphs: [
+          "We read each agency's AI or GEO page on 8 November 2026 (for Optimising and Digital Hitmen, their home page). Nobody paid to be on this page. We left out star ratings because they change every day.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "How much does an AI SEO agency cost in Australia?",
+        a: "Most don't show a price. Optimising's guide puts Australian GEO agencies at about A$2,000 to A$20,000 or more a month. FirstPicked is A$945 a month. Always get the monthly price in writing.",
+      },
+      {
+        q: "Is AI SEO the same as GEO?",
+        a: "Yes, near enough. AI SEO, GEO (generative engine optimisation) and AEO (answer engine optimisation) are names for the same goal: getting your brand named in AI answers.",
+      },
+      {
+        q: "Which AI SEO agency is best for a Shopify store?",
+        a: "If the store itself needs building or fixing, pick one that builds Shopify stores, like Dilate, Rank My Business or Planet Media. For SEO, PR and AI from one big team, Prosperity Media. To be picked by AI and Google for one set monthly price, FirstPicked.",
+      },
+      {
+        q: "Can an agency promise that ChatGPT will name me?",
+        a: "No. AI answers change from person to person and from one run to the next. Nobody controls them, so walk away from anyone who promises a spot.",
+      },
+    ],
+    sources: [PROSPERITY, DILATE, OPTIMISING_HOME, OPTIMISING, RANK_MY_BUSINESS, PLANET_MEDIA, MYOHO, DIGITAL_HITMEN, GOOGLE_SPAM],
+    related: ["/ai-seo-agency", "best-seo-agencies-perth", "geo-cost-australia"],
+  },
+  {
+    slug: "peec-ai-vs-otterly-vs-profound",
+    title: "Peec AI vs Otterly vs Profound (2026 prices) | FirstPicked",
+    description:
+      "Peec AI, Otterly and Profound compared: prices, questions tracked and AI apps covered. Plus when a done-for-you service beats a tool. Checked Nov 2026.",
+    short: "Three AI visibility tools: prices, what they track, and when done for you is better.",
+    h1: "Peec AI vs Otterly vs Profound: pick a tool, or have it done for you?",
+    intro: [
+      "Short answer: Otterly is the cheapest way to start, from US$29 a month. Peec AI suits teams who want more questions tracked every day, from US$95 a month. Profound is for big companies, with a free trial and then a custom price. All three show where AI names you. None of them make the changes for you.",
+      "That's the real choice: a tool you run yourself, or a service that does the work. We're FirstPicked, a done-for-you service, so we're biased. Prices are from each company's own pricing page on 8 November 2026, in US dollars.",
+    ],
+    checked: "2026-11-08",
+    published: "2026-11-08",
+    sections: [
+      {
+        heading: "The three tools side by side",
+        table: {
+          head: ["", "Price a month", "Questions tracked", "AI apps", "Who does the work"],
+          rows: [
+            ["Otterly", "US$29, US$189 or US$489", "15, 100 or 400", "ChatGPT, Google AI Overviews, Perplexity and Copilot. Claude, Gemini and Google AI Mode cost extra", "You"],
+            ["Peec AI", "US$95, US$245 or US$495 (15% off yearly)", "50, 150 or 350", "Pick 3 AI apps. More cost extra", "You"],
+            ["Profound", "Free 7-day trial, then a custom price", "50 a day on the trial", "ChatGPT, Gemini and Google AI Overviews on the trial", "You"],
+            ["FirstPicked", "A$945 (Australian dollars)", "Up to 100, every day", "ChatGPT, Gemini, Perplexity and Google AI Overviews daily, Claude weekly", "We do"],
+          ],
+        },
+        paragraphs: [
+          "A \"question\" (the tools call it a prompt) is one thing a shopper might ask, like \"best beard oil for dry skin\". Each tool asks AI your questions and reports who gets named.",
+        ],
+      },
+      {
+        heading: "What a tool gives you",
+        bullets: [
+          "Which of your questions name your brand, in each AI app.",
+          "Who AI names instead of you.",
+          "Which sites AI reads and links to for each question.",
+          "How that changes over time.",
+        ],
+      },
+      {
+        heading: "What a tool doesn't do",
+        paragraphs: [
+          "A tool won't rewrite your product pages or write your buying guides. Someone on your team has to read the reports and turn them into changes, every week. That's the part that gets you named, and it takes real hours.",
+        ],
+      },
+      {
+        heading: "When a tool is the better pick",
+        bullets: [
+          "You have a marketer with a few spare hours each week.",
+          "You want to track many brands, or many countries.",
+          "You sell software or services, not products on Shopify.",
+          "Your budget is small. Otterly starts at US$29 a month.",
+        ],
+      },
+      {
+        heading: "When done for you is the better pick",
+        bullets: [
+          "Nobody on your team has the time to act on a report each week.",
+          "You want your product pages fixed and your buying guides written for you.",
+          "You want to see the visits, orders and sales that came from AI, in Shopify.",
+          "You're an Australian Shopify brand selling A$5,000 a month or more.",
+        ],
+      },
+      {
+        heading: "Tips before you pick a tool",
+        bullets: [
+          "Track the questions shoppers really ask, like \"best X for Y\", not only your brand name.",
+          "Make sure each question gets asked more than once. AI answers change from one run to the next.",
+          "Check the tool covers the AI apps your shoppers use, in your country.",
+          "Start monthly. Go yearly once you know you'll use it.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "Which AI visibility tool is cheapest?",
+        a: "Otterly, from US$29 a month for 15 questions. Peec AI starts at US$95 a month for 50 questions. Profound has a free 7-day trial, then a custom price. Prices checked 8 November 2026.",
+      },
+      {
+        q: "Do these tools change my store for me?",
+        a: "No. They show where AI names you and who it names instead. You or your team make the changes.",
+      },
+      {
+        q: "Is FirstPicked a tool?",
+        a: "No, it's a service. Our team and AI do the checks and the work for you, for A$945 a month with no lock-in. You get a weekly report and a monthly call.",
+      },
+      {
+        q: "Are these prices in Australian dollars?",
+        a: "No. Peec AI, Otterly and Profound show US dollar prices. FirstPicked's price is in Australian dollars.",
+      },
+    ],
+    sources: [OTTERLY, PEEC, PROFOUND],
+    related: ["geo-cost-australia", "best-ai-seo-agencies-australia", "/what-is-geo"],
   },
   {
     slug: "geo-vs-seo-agency",
@@ -362,7 +607,7 @@ export const COMPARE_PAGES: ComparePage[] = [
       { q: "Which one should a small store start with?", a: "Check first. Ask ChatGPT the questions your shoppers ask, or use our free AI Visibility Checker. If AI never names you, GEO is the gap." },
     ],
     sources: [GOOGLE_IO, SHOPIFY_15X],
-    related: ["geo-vs-seo-agency", "geo-cost-australia"],
+    related: ["/what-is-geo", "geo-vs-seo-agency", "geo-cost-australia"],
   },
   {
     slug: "geo-cost-australia",
@@ -430,7 +675,7 @@ export const COMPARE_PAGES: ComparePage[] = [
       { q: "Can I try it for free first?", a: "Yes. Our free AI Visibility Checker shows if ChatGPT and other AI apps name your products. No sign-up needed." },
     ],
     sources: [OPTIMISING, DEBUTIFY, FIRSTINDEX, PROFOUND, SHOPIFY_15X],
-    related: ["geo-vs-seo-agency", "geo-vs-seo-vs-aeo"],
+    related: ["peec-ai-vs-otterly-vs-profound", "best-ai-seo-agencies-australia", "geo-vs-seo-agency"],
   },
 ];
 

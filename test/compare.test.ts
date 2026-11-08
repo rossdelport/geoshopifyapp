@@ -1,4 +1,4 @@
-// The /compare pages and the service pages (like /seo-agency-perth): the content follows the site's copy rules, the
+// The /compare pages, the service pages (like /seo-agency-perth) and the guides (like /what-is-geo): the content follows the site's copy rules, the
 // links between pages work, every service page has its own route, and the pages render with their table, the Get
 // started link to /book, the FAQ and the sources.
 import { readFileSync } from "node:fs";
@@ -56,7 +56,7 @@ describe("compare and service page content", () => {
       const ours = allText(p).match(/A\$9\d\d a month/g) ?? [];
       for (const m of ours) expect(m, p.slug).toBe(OFFER.price);
     }
-    for (const p of LANDING_PAGES) expect(allText(p)).toContain(OFFER.price);
+    for (const p of LANDING_PAGES.filter((l) => l.kind !== "guide")) expect(allText(p), p.slug).toContain(OFFER.price);
   });
 
   it("puts the FAQ in the JSON-LD, and tags the Get started link with the page", () => {
@@ -68,6 +68,12 @@ describe("compare and service page content", () => {
     expect(graph).toContain('"FAQPage"');
     expect(graph).toContain('"Service"');
     expect(graph).toContain(`"https://firstpicked.com.au/${l.slug}"`);
+    const guide = LANDING_PAGES.find((g) => g.kind === "guide");
+    expect(guide).toBeTruthy();
+    const guideGraph = JSON.stringify(landingJsonLd(guide!));
+    expect(guideGraph).toContain('"Article"');
+    expect(guideGraph).not.toContain('"Service"');
+    expect(guideGraph).toContain('"FAQPage"');
   });
 });
 
@@ -103,6 +109,15 @@ describe("service page routes", () => {
     expect(html).toContain("Questions people ask");
     expect(html).toContain('href="/compare/best-seo-agencies-perth"');
   });
+
+  it("renders a guide with the Guide tag and a Get started link tagged as a guide", () => {
+    const loaderData = landing.loader({ request: new Request("https://firstpicked.com.au/what-is-geo"), params: {}, context: {} } as never);
+    const Stub = createRoutesStub([{ id: "geo", path: "/what-is-geo", Component: landing.default as ComponentType, loader: () => loaderData }]);
+    const html = renderToStaticMarkup(createElement(Stub, { initialEntries: ["/what-is-geo"], hydrationData: { loaderData: { geo: loaderData } } }));
+    expect(html).toContain("What is GEO? Generative engine optimisation, in plain words");
+    expect(html).toContain('<span class="bl-tag">Guide</span>');
+    expect(html).toContain('href="/book?utm_source=firstpicked&amp;utm_medium=guide&amp;utm_campaign=what-is-geo"');
+  });
 });
 
 describe("compare pages render", () => {
@@ -110,6 +125,7 @@ describe("compare pages render", () => {
     const Stub = createRoutesStub([{ path: "/compare", Component: hub.default as ComponentType }]);
     const html = renderToStaticMarkup(createElement(Stub, { initialEntries: ["/compare"] }));
     for (const p of COMPARE_PAGES) expect(html).toContain(`/compare/${p.slug}`);
+    for (const p of LANDING_PAGES) expect(html).toContain(`href="/${p.slug}"`);
   });
 
   it("the loader 404s an unknown slug and returns a known page with its related pages", () => {
