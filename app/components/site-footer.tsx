@@ -13,6 +13,8 @@ const SITE_LINKS: [string, string][] = [
   ["Pricing", "/#pricing"],
   ["Stories", "/stories"],
   ["Blog", "/blog"],
+  ["Compare", "/compare"],
+  ["SEO in Perth", "/seo-agency-perth"],
   ["Privacy", "/privacy"],
   ["Terms", "/terms"],
 ];

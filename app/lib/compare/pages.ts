@@ -38,9 +38,12 @@ export interface ComparePage {
   intro: string[];
   /** The day every outside price and fact on the page was last checked (YYYY-MM-DD). */
   checked: string;
+  /** The day the page went live (YYYY-MM-DD). Default: COMPARE_LAUNCHED. */
+  published?: string;
   sections: CompareSection[];
   faqs: Faq[];
   sources: CompareSource[];
+  /** Other compare pages (their slug) or service pages (their path, like "/seo-agency-perth"). */
   related: string[];
 }
 
@@ -55,13 +58,14 @@ export const COMPARE_HUB = {
     "Simple comparisons for store owners choosing between an agency, a tool they run themselves, or FirstPicked. Each page says when the other option is the better pick. Every price from another company shows the day we checked it.",
   ogImage: "/og/home.png",
   ogAlt: "A small clay shop with a star in a speech bubble above it",
-  updated: "2026-10-23",
+  updated: "2026-11-08",
 } as const;
+
+/** The day the first comparison pages went live. */
+export const COMPARE_LAUNCHED = "2026-10-23";
 
 export const comparePath = (slug: string) => `${COMPARE_HUB.path}/${slug}`;
 
-/** The waitlist on the home page, tagged so a sign-up shows which page it came from. */
-export const waitlistHref = (slug: string) => `/?utm_source=firstpicked&utm_medium=compare&utm_campaign=${slug}#waitlist`;
 
 const OPTIMISING = { title: "Optimising: How much does GEO cost? (June 2025)", url: "https://www.optimising.com.au/blog/geo-cost" };
 const DEBUTIFY = { title: "Debutify: The best Shopify GEO agencies, ranked (July 2026)", url: "https://debutify.com/blog/best-shopify-geo-agencies-ranked" };
@@ -73,7 +77,138 @@ const SHOPIFY_15X = {
 };
 const GOOGLE_IO = { title: "Google: Sundar Pichai's I/O 2026 keynote (May 2026)", url: "https://blog.google/innovation-and-ai/sundar-pichai-io-2026/" };
 
+// The Perth agencies' own home pages, read on 8 November 2026 (only what each says about itself).
+const CONCISE = { title: "Concise Digital home page", url: "https://www.concise.digital/" };
+const MUSEPROJECT = { title: "Museproject home page", url: "https://museproject.com.au/" };
+const DIGITAL_HITMEN = { title: "Digital Hitmen home page", url: "https://www.digitalhitmen.com.au/" };
+export const SEO_ROOM = { title: "The SEO Room home page and prices", url: "https://seoroom.com.au/" };
+const LOADED = { title: "Loaded Communications home page", url: "https://loadedcommunications.com.au/" };
+const DAISY = { title: "Daisy Digital home page", url: "https://daisydigital.com.au/" };
+
 export const COMPARE_PAGES: ComparePage[] = [
+  {
+    slug: "best-seo-agencies-perth",
+    title: "Best SEO agencies in Perth for online stores | FirstPicked",
+    description:
+      "Seven Perth SEO agencies for online stores, from their own websites: who each one suits, prices where shown, and lock-in. Checked November 2026.",
+    short: "Seven Perth agencies for online stores: who each suits, prices and lock-in.",
+    h1: "The best SEO agencies in Perth for online stores, and who each one suits",
+    intro: [
+      "Short answer: if your Shopify store also needs building or fixing, look at Concise Digital. For SEO across a whole store, look at Museproject or Digital Hitmen. The SEO Room suits local service businesses best. FirstPicked suits Shopify brands that want to be picked by AI and Google for one set price.",
+      "We're FirstPicked, a Perth service, so we're on this list and we're biased. To keep it fair, we only used what each agency says on its own website.",
+    ],
+    checked: "2026-11-08",
+    published: "2026-11-08",
+    sections: [
+      {
+        heading: "Seven Perth agencies side by side",
+        table: {
+          head: ["Agency", "Where", "Best for", "Price on their site", "Lock-in"],
+          rows: [
+            ["Concise Digital", "Perth and Sydney", "Building and fixing Shopify stores, plus SEO and ads", "Not shown", "None, cancel any time"],
+            ["Museproject", "Perth", "Specialist SEO for online stores", "Not shown", "Not shown"],
+            ["Digital Hitmen", "Perth", "Ecommerce SEO, AI search, web design and ads", "Not shown", "A 6-month start, then month to month"],
+            ["The SEO Room", "Canning Vale", "Local service businesses, like tradies and real estate", "A$1,500 to A$5,000 + GST a month", "None"],
+            ["Loaded Communications", "Perth, since 2001", "Brand, WordPress websites and SEO", "Not shown", "Not shown"],
+            ["Daisy Digital", "Leederville", "Social media, ads, websites and SEO", "Not shown", "Not shown"],
+            ["FirstPicked", "Perth", "Shopify brands that want to be picked by AI and Google", "A$945 a month", "None, and a full refund after month 1"],
+          ],
+        },
+        paragraphs: ["\"Not shown\" means we couldn't find it on their home page on 8 November 2026. Ask them. Many agencies quote each store on its own."],
+      },
+      {
+        heading: "Concise Digital",
+        paragraphs: [
+          "A big team. Their site says they have 50+ specialists, with teams in Perth and Sydney. They are a Shopify partner that builds and fixes Shopify stores, and they also do SEO, Google Ads and social media.",
+          "Pick them if your store itself needs work. Their site says there are no locked-in contracts and you can cancel any time.",
+        ],
+      },
+      {
+        heading: "Museproject",
+        paragraphs: [
+          "Their site calls them a specialist SEO and ecommerce agency that doesn't try to be a jack of all trades. It shows results for an online activewear store.",
+          "ChatGPT named them first when we asked for the best Perth SEO agency for a Shopify store. Their home page shows no price or contract terms, so ask.",
+        ],
+      },
+      {
+        heading: "Digital Hitmen",
+        paragraphs: [
+          "Started in 2016. They do SEO, ecommerce SEO, AI search, web design and ads, and their site lists search awards. One case study is an online flooring store.",
+          "Work starts with a 6-month sprint, then goes month to month. A good fit for a bigger brand that wants one team for everything.",
+        ],
+      },
+      {
+        heading: "The SEO Room",
+        paragraphs: [
+          "Based in Canning Vale, with clear prices: A$1,500 to A$5,000 + GST a month, and no lock-in. They work on Google, Google Maps and AI answers together.",
+          "Most of their clients are tradies, builders, solar, real estate and other service businesses. Great if you're a local service. Less of a fit for an online store.",
+        ],
+      },
+      {
+        heading: "Loaded Communications",
+        paragraphs: [
+          "In Perth since 2001. They do branding, WordPress websites, SEO and AI search. A good pick if you want a new brand and website along with your SEO. Their site leads with WordPress, not Shopify.",
+        ],
+      },
+      {
+        heading: "Daisy Digital",
+        paragraphs: [
+          "A Leederville team for social media, content, websites and ads. Reviews on their site mention a Shopify store build, SEO and Google Ads. A good local all-rounder.",
+        ],
+      },
+      {
+        heading: "FirstPicked",
+        paragraphs: [
+          "That's us. FirstPicked is run from Perth by its founder, Ross Delport. One plan for Shopify brands: A$945 a month, done for you. Each day we check up to 100 buying questions in ChatGPT, Gemini, Perplexity and Google AI Overviews. Each month we make 50+ fixes to your pages, write up to 12 buying guides, and show you the sales AI sends you.",
+          "We don't build stores, run ads or do Google Maps. If you need those, one of the agencies above is the better pick.",
+        ],
+      },
+      {
+        heading: "What ChatGPT says",
+        paragraphs: [
+          "On 8 November 2026 we asked ChatGPT for the \"best seo agency in perth for a shopify store\". It named Museproject, Perceptiv Digital, Concise Digital, The SEO Room and Digital Hitmen.",
+          "It built that answer from lists on other sites, like Semrush's agency list and Local Digital's blog, not from the agencies' own pages. AI answers change from one run to the next, so treat this as one snapshot.",
+        ],
+      },
+      {
+        heading: "How to choose",
+        bullets: [
+          "Does your store need building or fixing? Start with a Shopify developer, like a Shopify partner.",
+          "Ask to see work for another online store, not only local services.",
+          "Get the monthly price in writing, and ask about lock-in.",
+          "Ask how they'll show you sales, not only rankings.",
+          "Ask which sites ChatGPT reads for your buying questions, and how they'll get you onto them.",
+          "If anyone promises you the top spot on Google or ChatGPT, walk away. Nobody can promise that.",
+        ],
+      },
+      {
+        heading: "How we checked",
+        paragraphs: [
+          "We read each agency's own home page on 8 November 2026. Nobody paid to be on this page. We left out star ratings because they change every day.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "How much does SEO cost in Perth?",
+        a: "Most Perth agencies don't show a price on their website. The SEO Room shows A$1,500 to A$5,000 + GST a month. FirstPicked is A$945 a month. Always get the monthly price in writing.",
+      },
+      {
+        q: "Do I need an agency in Perth?",
+        a: "No. SEO work is done online, so a good agency anywhere can help. A Perth team is handy if you like to share a time zone or meet in person.",
+      },
+      {
+        q: "Which Perth agency is best for a Shopify store?",
+        a: "It depends on the job. To build or fix the store, a Shopify partner like Concise Digital. For SEO across the whole store, a specialist like Museproject or Digital Hitmen. To be picked by AI and Google for one set monthly price, FirstPicked.",
+      },
+      {
+        q: "Is FirstPicked an SEO agency?",
+        a: "Not a full-service one. We don't build stores, run ads or do Google Maps. We get Shopify brands found on Google and picked by AI, and show the sales that come from it.",
+      },
+    ],
+    sources: [CONCISE, MUSEPROJECT, DIGITAL_HITMEN, SEO_ROOM, LOADED, DAISY],
+    related: ["/seo-agency-perth", "geo-vs-seo-agency", "geo-cost-australia"],
+  },
   {
     slug: "geo-vs-seo-agency",
     title: "GEO vs an SEO agency: which one do you need? | FirstPicked",
@@ -93,7 +228,7 @@ export const COMPARE_PAGES: ComparePage[] = [
           head: ["", "SEO agency", "FirstPicked (done for you)"],
           rows: [
             ["The goal", "Rank higher in Google's results and Maps", "Get named when shoppers ask ChatGPT, Gemini, Perplexity or Google AI Overviews what to buy"],
-            ["What they change", "Site speed, technical fixes, keywords, blog posts, links", "Product details AI reads, buying guides, pitches to the sites AI quotes, honest Reddit replies"],
+            ["What they change", "Site speed, technical fixes, keywords, blog posts, links", "Product details AI reads, buying guides, and finding the sites AI quotes"],
             ["What they report", "Rankings and Google traffic", "Which buying questions name you, which sites AI quotes, and orders and sales from AI"],
             ["Price in Australia", "Quoted per store", "GEO agencies: about A$2,000 to A$20,000+ a month. FirstPicked: A$945 a month"],
           ],
@@ -138,8 +273,8 @@ export const COMPARE_PAGES: ComparePage[] = [
       {
         heading: "Where FirstPicked fits",
         paragraphs: [
-          "FirstPicked is a done-for-you service for Shopify brands. It's A$945 a month, with no lock-in and a full refund if you're not happy after the first month. Our team and AI check 100 buying questions every day and fix your product pages. We write 12 buying guides a month, send up to 40 emails to websites, and show you the sales AI sends you.",
-          "We are not an SEO agency. We don't do site speed, ads or full technical SEO. If you need those, keep your SEO agency and use us alongside it.",
+          "FirstPicked is a done-for-you service for Shopify brands. It's A$945 a month, with no lock-in and a full refund if you're not happy after the first month. Our team and AI check 100 buying questions every day and fix your product pages. We write 12 buying guides a month and show you the sales AI sends you.",
+          "We are not a full-service SEO agency. We don't do site speed, ads or full technical SEO. If you need those, keep your SEO agency and use us alongside it.",
         ],
       },
     ],
@@ -162,7 +297,7 @@ export const COMPARE_PAGES: ComparePage[] = [
       },
     ],
     sources: [OPTIMISING, GOOGLE_IO],
-    related: ["geo-cost-australia", "geo-vs-seo-vs-aeo"],
+    related: ["geo-cost-australia", "geo-vs-seo-vs-aeo", "best-seo-agencies-perth"],
   },
   {
     slug: "geo-vs-seo-vs-aeo",
@@ -253,7 +388,7 @@ export const COMPARE_PAGES: ComparePage[] = [
             ["Australian agency, full", "Various", "A$10,000 to A$20,000+ a month", "All of the above plus SEO, structured data and ongoing content"],
             ["Shopify GEO agency (overseas)", "Netalico (US)", "About US$3,000 a month", "Product data, schema and feed work for Shopify Plus stores"],
             ["Done for you, software only", "FirstIndex", "US$2,000 a month after a 3-month start, or US$1,500 a month on 12 months", "Daily site changes, up to 12 articles and 50+ page fixes a month"],
-            ["Done for you, Shopify brands", "FirstPicked", "A$945 a month, no lock-in", "100 questions checked daily, fixes, 12 guides, up to 40 pitches, Reddit replies, sales from AI, a monthly call"],
+            ["Done for you, Shopify brands", "FirstPicked", "A$945 a month, no lock-in", "100 questions checked daily, 50+ page fixes, 12 guides, sales from AI, weekly reports, a monthly call"],
           ],
         },
         paragraphs: [
@@ -321,7 +456,7 @@ export function compareJsonLd(p: ComparePage): Record<string, unknown> {
         mainEntityOfPage: url,
         headline: p.h1,
         description: p.description,
-        datePublished: COMPARE_HUB.updated,
+        datePublished: p.published ?? COMPARE_LAUNCHED,
         dateModified: p.checked,
         inLanguage: "en-AU",
         image: abs(COMPARE_HUB.ogImage),

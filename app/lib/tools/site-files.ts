@@ -5,11 +5,13 @@
 
 import { BLOG_HUB } from "../blog/pages";
 import { COMPARE_HUB, COMPARE_PAGES, comparePath } from "../compare/pages";
+import { LANDING_PAGES, landingPath } from "../landing/pages";
 import { OFFER } from "../plans";
 import { STORIES } from "../stories";
 import { STORIES_HUB, STORIES_UPDATED, storyPath } from "../stories/pages";
 import { HOME_LANGS, HOME_LANGS_UPDATED, HOME_UPDATED, PRIVACY_UPDATED, SITE, TERMS_UPDATED, abs } from "./site";
 import { HUB, TOOLS } from "./registry";
+import { stripBrand } from "./seo";
 
 /**
  * Every public page is open to search engines and AI assistants. Only the app and private paths are
@@ -57,6 +59,7 @@ export function sitemapPages(posts: { path: string; updated: string }[] = []): {
     ...posts,
     { path: COMPARE_HUB.path, updated: COMPARE_HUB.updated },
     ...COMPARE_PAGES.map((p) => ({ path: comparePath(p.slug), updated: p.checked })),
+    ...LANDING_PAGES.map((p) => ({ path: landingPath(p.slug), updated: p.checked })),
     { path: "/privacy", updated: PRIVACY_UPDATED },
     { path: "/terms", updated: TERMS_UPDATED },
   ];
@@ -102,6 +105,7 @@ export function siteLlmsTxt(): string {
     `- [Stories](${abs(STORIES_HUB.path)}): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are FirstPicked customers)`,
     `- [Blog](${abs(BLOG_HUB.path)}): plain-English articles for Shopify stores on getting recommended by AI assistants, new ones three times a week`,
     `- [Compare](${abs(COMPARE_HUB.path)}): honest comparisons of FirstPicked with agencies, tracking tools and prices in Australia`,
+    ...LANDING_PAGES.map((p) => `- [${stripBrand(p.title)}](${abs(landingPath(p.slug))}): ${p.short}`),
     `- [Privacy policy](${abs("/privacy")}): what data FirstPicked collects and why`,
     `- [Terms of service](${abs("/terms")}): the rules for using FirstPicked, the refund after month one and stopping any time`,
     "",
