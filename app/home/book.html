@@ -81,8 +81,7 @@ ul{padding:0;list-style:none}
 .who b{display:block;font-size:15px;font-weight:600;color:var(--ink)}
 /* Ross (3 Nov 2026): "Want to txt Ross instead?" next to his name, the number in purple. Two lines beside the name
    (after a thin line) when the column has room, one line under it when it doesn't. */
-.book-tx{container-type:inline-size}
-.who{flex-wrap:wrap}
+.who{flex-wrap:wrap;container-type:inline-size}
 .who-txt{flex-basis:100%;color:var(--text)}
 .who-txt a{color:var(--accent-ink);font-weight:600;white-space:nowrap;text-decoration:none}
 .who-txt a:hover{text-decoration:underline}
@@ -91,6 +90,19 @@ ul{padding:0;list-style:none}
 .ticks{display:grid;gap:12px;margin-top:26px}
 .ticks li{display:flex;align-items:center;gap:10px;font-size:15.5px;font-weight:500;color:var(--head)}
 .ticks svg{flex:none;width:22px;height:22px;padding:4px;border-radius:50%;background:var(--accent-50);color:var(--accent-ink)}
+/* Ross (8 Nov 2026): on phones the first question sat below the first screen, under the cookie notice, so people from
+   the ads saw no way to book. Phones now show the photo, the heading, then the calendar, with the ticks under it. */
+@media (max-width:999px){
+  .book{gap:0;padding-top:4px}
+  .book-tx{display:contents}
+  .who{order:1;margin-bottom:16px}
+  .book .h1{order:2}
+  .stage{order:3;margin-top:20px}
+  .pills{gap:6px;margin-bottom:16px}
+  .pill{padding:4px 10px;font-size:12.5px}
+  .book .lead{display:none}
+  .ticks{order:4;margin-top:28px}
+}
 
 /* The calendar: a white card on the purple panel the home page's pictures use */
 .stage{border-radius:22px;padding:clamp(8px,3vw,32px);background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,0) 16%),radial-gradient(62% 48% at 50% 112%,rgba(255,255,255,.95),rgba(255,255,255,0) 72%),linear-gradient(180deg,var(--t1),var(--t2) 64%,var(--t3))}
@@ -166,7 +178,8 @@ ul{padding:0;list-style:none}
 .ck-tx{font-size:14px;line-height:1.45;color:var(--ink)}
 .ck-tx a{color:var(--text);text-decoration:underline;text-underline-offset:2px}
 .ck-btns{display:flex;gap:8px;flex:none}
-@media (max-width:600px){.ck{left:12px;right:12px;bottom:12px;max-width:none;flex-direction:column;align-items:stretch;gap:10px;padding:14px}.ck-btns>*{flex:1}}
+/* On phones a slim bar, so it doesn't cover the first question (8 Nov 2026) */
+@media (max-width:600px){.ck{left:12px;right:12px;bottom:12px;max-width:none;gap:10px;padding:8px 8px 8px 14px}.ck-tx{font-size:13px;line-height:1.4}.ck-btns{gap:6px}.ck-btns .btn-sm{height:36px;padding:0 12px;font-size:13.5px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
 </style>
 <!-- META_PIXEL -->
@@ -346,7 +359,8 @@ ul{padding:0;list-style:none}
     var small = !noShop && !!opt && opt.hasAttribute('data-small');
     var fit = shopify === 'yes' && !!salesEl.value && !small;
     // Ross (6 Nov 2026): keep everyone's answers, even if they don't book (counted once a person a day, no name).
-    var answers = noShop ? 'no|' : small || fit ? shopify + '|' + salesEl.value : '';
+    // A Yes on its own counts too (8 Nov 2026), so the admin Overview shows people who stop after the first question.
+    var answers = noShop ? 'no|' : small || fit || shopify ? shopify + '|' + salesEl.value : '';
     if (answers && answers !== sent && navigator.sendBeacon) {
       sent = answers;
       try { navigator.sendBeacon('/book', withAd({ answered: '1', shopify: shopify, sales: noShop ? '' : salesEl.value })); } catch (e) { /* not counted */ }

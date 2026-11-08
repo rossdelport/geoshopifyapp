@@ -6,7 +6,7 @@
 import { execSync } from "node:child_process";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { NOT_SHOPIFY, NO_NAME, adName, answerLabel, bookedRate, hostOf, readAdTags, summarise } from "../app/lib/book-stats";
+import { NOT_SHOPIFY, NO_NAME, YES_ONLY, adName, answerLabel, bookedRate, hostOf, readAdTags, summarise } from "../app/lib/book-stats";
 
 const base = process.env.TEST_DATABASE_URL;
 const SCHEMA = "geo_book_stats_test";
@@ -83,13 +83,16 @@ describe("the numbers", () => {
         row("answered", "yes", "20k-50k"),
         row("booked", "yes", "20k-50k"),
         row("booked", null, null), // booked before the questions: no answer
-        row("answered", "yes", "a lot"), // not one of the choices: left out
+        row("answered", "yes", "a lot"), // not one of the choices: counts as a Yes on its own
+        row("answered", "yes", null), // said Yes, then stopped (Ross, 8 Nov 2026)
+        row("answered", null, "a lot"), // no answer we know: left out
       ],
       ["2026-11-06"],
     );
     expect(out.totals).toEqual({ people: 3, booked: 2 });
     expect(out.answers).toEqual([
       { label: NOT_SHOPIFY, people: 1, booked: 0 },
+      { label: YES_ONLY, people: 2, booked: 0 },
       { label: "Under A$5,000", people: 2, booked: 0 },
       { label: "A$5,000 to A$20,000", people: 0, booked: 0 },
       { label: "A$20,000 to A$50,000", people: 1, booked: 1 },
@@ -97,7 +100,8 @@ describe("the numbers", () => {
       { label: "Over A$100,000", people: 0, booked: 0 },
     ]);
     expect(answerLabel("no", "over-100k")).toBe(NOT_SHOPIFY);
-    expect(answerLabel("yes", null)).toBeNull();
+    expect(answerLabel("yes", null)).toBe(YES_ONLY);
+    expect(answerLabel(null, null)).toBeNull();
   });
 
   it("shows the share who booked as a whole percent, or nothing when nobody came", () => {
