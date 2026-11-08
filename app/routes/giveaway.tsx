@@ -2,21 +2,25 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { serveHome } from "../lib/home-page.server";
 import { enterGiveaway, type GiveawayResult } from "../lib/giveaway.server";
 import { GIVEAWAY, GIVEAWAY_ERRORS } from "../lib/giveaway";
+import { SALES } from "../lib/booking";
 import { clientIp, fromAnotherSite, readSmallForm } from "../lib/public-form.server";
 import font from "../fonts/inter-geo.woff2?url";
 import rossPhoto from "../home/ross.webp?url";
 
 // firstpicked.com.au/giveaway (Ross, 3 Nov 2026): one Australian Shopify brand wins 3 months of FirstPicked Done for you, drawn
-// on Saturday 7 November. Facebook ads send people here. One HTML file in the home page's style, with the entry
+// on Saturday 14 November (round 2, Ross 8 Nov 2026). Facebook ads send people here. One HTML file in the home page's style, with the entry
 // form at the top and the rules at the bottom (app/home/giveaway.html). The dates live in app/lib/giveaway.ts.
-// POST /giveaway: the form's fields `store`, `name`, `email`, `phone`, `website` (honeypot), the utm_* fields,
+// POST /giveaway: the form's fields `store`, `name`, `email`, `phone` (optional), `sales` (a value from SALES),
+// `website` (honeypot), the utm_* fields,
 // `fbclid` and `referrer`; JSON reply GiveawayResult. Entries are in Admin > Giveaway.
 import raw from "../home/giveaway.html?raw";
 
 const page = raw
   .replaceAll("__FONT_URL__", () => font)
   .replaceAll("__ROSS_PHOTO__", () => rossPhoto)
-  .replace("__CLOSES_AT__", () => GIVEAWAY.closesAt.toISOString());
+  .replace("__CLOSES_AT__", () => GIVEAWAY.closesAt.toISOString())
+  // The same sales bands as the booking page. Every band can enter; the answer never changes the draw.
+  .replace("<!-- SALES_OPTIONS -->", () => SALES.map((s) => `<option value="${s.value}">${s.label}</option>`).join(""));
 
 export const loader = async ({ request }: LoaderFunctionArgs) => serveHome(request, page);
 
@@ -33,6 +37,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       name: form.get("name"),
       email: form.get("email"),
       phone: form.get("phone"),
+      sales: form.get("sales"),
       honeypot: form.get("website"),
       utmSource: form.get("utm_source"),
       utmMedium: form.get("utm_medium"),

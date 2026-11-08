@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Win 3 months of FirstPicked, free · FirstPicked giveaway</title>
-<meta name="description" content="One Australian Shopify brand wins 3 months of FirstPicked, worth A$2,835. Our team does the work to get your store picked when shoppers ask AI what to buy. Free to enter. Winner drawn Saturday 7 November 2026.">
+<meta name="description" content="One Australian Shopify brand wins 3 months of FirstPicked, worth A$2,835. Our team does the work to get your store picked when shoppers ask AI what to buy. Free to enter. Winner drawn Saturday 14 November 2026.">
 <!-- firstpicked.com.au/giveaway (served by app/routes/giveaway.tsx, Ross 3 Nov 2026): the page Ross's Facebook ads send people
      to. The home page's look (app/home/new-home.html: the same tokens, type, cards and form styles, copied here so the
      two pages can change apart), with the entry form at the top and the rules at the bottom. The dates are in
@@ -15,7 +15,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="FirstPicked">
 <meta property="og:title" content="Win 3 months of FirstPicked, free">
-<meta property="og:description" content="One Australian Shopify brand wins 3 months of FirstPicked, worth A$2,835. Free to enter. Winner drawn Saturday 7 November.">
+<meta property="og:description" content="One Australian Shopify brand wins 3 months of FirstPicked, worth A$2,835. Free to enter. Winner drawn Saturday 14 November.">
 <meta property="og:url" content="https://firstpicked.com.au/giveaway">
 <meta property="og:image" content="https://firstpicked.com.au/og/home.png">
 <meta property="og:image:width" content="1200">
@@ -217,6 +217,10 @@ ul,ol{padding:0;list-style:none}
 .wl-input::placeholder{color:#a5a7b0}
 .wl-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-ring)}
 .wl-input[aria-invalid="true"]{border-color:#dc2626}
+.wl-sel{appearance:none;-webkit-appearance:none;padding-right:44px;cursor:pointer;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2353565f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center/18px}
+.wl-sel:invalid{color:#a5a7b0}
+.wl-sel option{color:var(--ink)}
+.wl-opt{font-weight:400;color:#8a8d96}
 .wl-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .wl-err{margin-top:12px;font-size:14px;color:#b91c1c}
 .wl-btn{width:100%;margin-top:20px;height:48px}
@@ -390,7 +394,7 @@ ul,ol{padding:0;list-style:none}
   <div class="wrap">
     <div class="hero-in">
       <div class="hero-tx">
-        <p class="eyebrow"><b>Giveaway</b>Winner drawn Saturday 7 November</p>
+        <p class="eyebrow"><b>Giveaway</b>Winner drawn Saturday 14 November</p>
         <h1 class="h1" id="hero-h">One Australian brand wins <b>3 months of FirstPicked, free.</b></h1>
         <p class="lead">Shoppers now ask ChatGPT what to buy. For 3 months, our team does the work to get your store picked. It’s worth A$2,835, and it’s free to enter.</p>
       </div>
@@ -406,14 +410,18 @@ ul,ol{padding:0;list-style:none}
       <!-- The entry form. The words under it are saved with each entry (GIVEAWAY_CONSENT_TEXT in app/lib/giveaway.ts):
            change both together. Once entries close (data-closes), the script shows the closed note instead. -->
       <div class="enter" id="enter" data-closes="__CLOSES_AT__">
-        <p class="clock" data-clock><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Entries close Friday 6 November</span></p>
+        <p class="clock" data-clock><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Entries close Friday 13 November</span></p>
         <form class="gw-form" method="post" action="/giveaway" novalidate>
           <h2 class="enter-h">Enter the draw</h2>
           <p class="enter-sub">For Australian brands that sell on Shopify. One store wins.</p>
           <label class="wl-field"><span class="wl-label">Your store’s website</span><input class="wl-input" type="text" name="store" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" maxlength="300" required placeholder="amazingproduct.com.au"></label>
           <label class="wl-field"><span class="wl-label">Your name</span><input class="wl-input" type="text" name="name" autocomplete="name" maxlength="80" required placeholder="Your name"></label>
           <label class="wl-field"><span class="wl-label">Email</span><input class="wl-input" type="email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" maxlength="254" required placeholder="you@amazingproduct.com.au"></label>
-          <label class="wl-field"><span class="wl-label">Phone</span><input class="wl-input" type="tel" name="phone" autocomplete="tel" inputmode="tel" maxlength="30" required placeholder="0400 000 000"></label>
+          <label class="wl-field"><span class="wl-label">How much does your store sell each month?</span><select class="wl-input wl-sel" name="sales" required>
+            <option value="">Pick one</option>
+            <!-- SALES_OPTIONS -->
+          </select></label>
+          <label class="wl-field"><span class="wl-label">Phone <span class="wl-opt">(optional)</span></span><input class="wl-input" type="tel" name="phone" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="0400 000 000"></label>
           <div class="wl-hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
           <p class="wl-err" id="gw-err" role="alert" hidden></p>
           <button class="btn btn-pri wl-btn" type="submit">Enter the draw</button>
@@ -422,12 +430,12 @@ ul,ol{padding:0;list-style:none}
         <div class="enter-done" data-done hidden>
           <span class="wl-tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
           <h2 class="enter-h" tabindex="-1">You’re in the draw!</h2>
-          <p class="wl-p">We draw the winner at 12pm on Saturday 7 November (Perth time). We’ll email and call the winner that day.</p>
+          <p class="wl-p">We draw the winner at 12pm on Saturday 14 November (Perth time), and contact them that day.</p>
           <a class="btn btn-sec" href="/">See how FirstPicked works <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
         </div>
         <div class="enter-done" data-closed hidden>
           <h2 class="enter-h">Entries are closed</h2>
-          <p class="wl-p">Thanks to everyone who entered. We draw the winner on Saturday 7 November and contact them by email and phone.</p>
+          <p class="wl-p">Thanks to everyone who entered. We draw the winner on Saturday 14 November and contact them that day.</p>
           <a class="btn btn-sec" href="/">See how FirstPicked works <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
         </div>
       </div>
@@ -547,19 +555,19 @@ ul,ol{padding:0;list-style:none}
     </div>
     <ol class="month">
       <li class="mo">
-        <div class="mo-top"><span class="mo-when">Step 1</span><span class="mo-when">By Fri 6 Nov</span></div>
+        <div class="mo-top"><span class="mo-when">Step 1</span><span class="mo-when">By Fri 13 Nov</span></div>
         <h3>Enter</h3>
-        <p>Give us your store’s website, your name, email and phone. Entries close at 11:59pm on Friday 6 November, Perth time.</p>
+        <p>Give us your store’s website, your name, email and what your store sells each month. Entries close at 11:59pm on Friday 13 November, Perth time.</p>
       </li>
       <li class="mo">
-        <div class="mo-top"><span class="mo-when">Step 2</span><span class="mo-when">Sat 7 Nov</span></div>
+        <div class="mo-top"><span class="mo-when">Step 2</span><span class="mo-when">Sat 14 Nov</span></div>
         <h3>We draw a winner</h3>
-        <p>We pick one store at random from every entry, at 12pm on Saturday 7 November, Perth time.</p>
+        <p>We pick one store at random from every entry, at 12pm on Saturday 14 November, Perth time.</p>
       </li>
       <li class="mo is-key">
         <div class="mo-top"><span class="mo-when">Step 3</span><span class="mo-when">Then</span></div>
         <h3>We get to work</h3>
-        <p>We email and call the winner that day. After a short onboarding, our team does the work for 3 months.</p>
+        <p>We contact the winner that day, and After a short onboarding, our team does the work for 3 months.</p>
       </li>
     </ol>
   </div>
@@ -594,7 +602,11 @@ ul,ol{padding:0;list-style:none}
       </details>
       <details>
         <summary>How do you pick the winner?</summary>
-        <p>At random, from every entry. We draw it at 12pm on Saturday 7 November, Perth time. We email and call the winner that day.</p>
+        <p>At random, from every entry. We draw it at 12pm on Saturday 14 November, Perth time. We contact the winner that day.</p>
+      </details>
+      <details>
+        <summary>Why do you ask what my store sells?</summary>
+        <p>So we know which stores we can help most. It doesn’t change your chance of winning. Every entry has the same chance.</p>
       </details>
       <details>
         <summary>Does it cost anything?</summary>
@@ -628,12 +640,12 @@ ul,ol{padding:0;list-style:none}
     <ol class="rules">
       <li><b>Who runs it.</b> FirstPicked (firstpicked.com.au), run by Ross Delport in Perth, Western Australia.</li>
       <li><b>Who can enter.</b> Australian businesses with an online store on Shopify. The person entering must be 18 or over and own or run the store, or have the owner’s OK. One entry per store. People who work for FirstPicked, and their families, can’t enter.</li>
-      <li><b>How to enter.</b> Fill in the form on this page with your store’s website, your name, email and phone number. It’s free. You don’t need to buy anything.</li>
-      <li><b>When.</b> Entries open on Tuesday 3 November 2026 and close at 11:59pm on Friday 6 November 2026, Perth time (AWST). Late entries don’t count.</li>
+      <li><b>How to enter.</b> Fill in the form on this page with your store’s website, your name, email and how much your store sells each month. Your phone number is optional. It’s free. You don’t need to buy anything.</li>
+      <li><b>When.</b> Entries open on Sunday 8 November 2026 and close at 11:59pm on Friday 13 November 2026, Perth time (AWST). Late entries don’t count.</li>
       <li><b>The prize.</b> One prize: 3 months of FirstPicked Done for you, worth A$2,835 including GST (A$945 a month). It’s the work listed on this page. There’s no cash instead, and it can’t be swapped or given to another store. The 3 months start on a date we agree with the winner.</li>
-      <li><b>The draw.</b> We draw one winner at random from all entries at 12pm on Saturday 7 November 2026, Perth time, in Perth, Western Australia. We keep a record of the draw.</li>
-      <li><b>Telling the winner.</b> We email and call the winner on the day of the draw. We name the winning store on this page by Saturday 14 November 2026.</li>
-      <li><b>If the winner doesn’t reply.</b> If we can’t reach the winner, they don’t accept the prize by 5pm on Friday 13 November 2026 (Perth time), or their entry doesn’t meet these rules, we draw again at 12pm on Monday 16 November 2026, in the same way.</li>
+      <li><b>The draw.</b> We draw one winner at random from all entries at 12pm on Saturday 14 November 2026, Perth time, in Perth, Western Australia. Every entry has the same chance, whatever the store sells. We keep a record of the draw.</li>
+      <li><b>Telling the winner.</b> We email the winner on the day of the draw, and call them if they gave us a phone number. We name the winning store on this page by Saturday 21 November 2026.</li>
+      <li><b>If the winner doesn’t reply.</b> If we can’t reach the winner, they don’t accept the prize by 5pm on Friday 20 November 2026 (Perth time), or their entry doesn’t meet these rules, we draw again at 12pm on Monday 23 November 2026, in the same way.</li>
       <li><b>After the 3 months.</b> There’s nothing to pay and no contract. Keep going at A$945 a month only if you want to.</li>
       <li><b>Your details.</b> We use them to run the giveaway and to contact you about FirstPicked. We never sell them. See our <a href="/privacy">privacy policy</a>.</li>
       <li><b>Sharing results.</b> With the winner’s OK, we may share how it went. Never without asking.</li>
@@ -646,7 +658,7 @@ ul,ol{padding:0;list-style:none}
 <section class="sec last" aria-labelledby="last-h">
   <div class="wrap">
     <h2 class="h2" id="last-h">It takes one minute. <b>Enter the draw.</b></h2>
-    <p class="lead">One Australian Shopify brand wins 3 months of FirstPicked, worth A$2,835. The winner is drawn on Saturday 7 November.</p>
+    <p class="lead">One Australian Shopify brand wins 3 months of FirstPicked, worth A$2,835. The winner is drawn on Saturday 14 November.</p>
     <a class="btn btn-pri" href="#enter">Enter the draw <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
   </div>
 </section>
@@ -709,7 +721,7 @@ ul,ol{padding:0;list-style:none}
 })();
 </script>
 <script>
-// The giveaway form. Shows how long is left until entries close (and the closed note after), sends the four boxes
+// The giveaway form. Shows how long is left until entries close (and the closed note after), sends the five boxes
 // and where the visit came from (utm_*, fbclid, the referring site) to /giveaway, then shows "You're in the draw"
 // with confetti and tells Meta "Lead" (no name, email or phone) for a new store.
 (function () {
@@ -765,7 +777,7 @@ ul,ol{padding:0;list-style:none}
   if (!from.referrer && document.referrer && document.referrer.indexOf(location.origin) !== 0) from.referrer = document.referrer.slice(0, 500);
   try { sessionStorage.setItem('geo-gw-from', JSON.stringify(from)); } catch (e) { /* private mode */ }
 
-  var fields = ['store', 'name', 'email', 'phone'];
+  var fields = ['store', 'name', 'email', 'sales', 'phone'];
   function clearInvalid() {
     fields.forEach(function (f) { form.elements[f].removeAttribute('aria-invalid'); form.elements[f].removeAttribute('aria-describedby'); });
   }
@@ -788,7 +800,8 @@ ul,ol{padding:0;list-style:none}
     if (!/[a-z0-9-]\.[a-z]{2,}/i.test(v.store)) return fail('Please type your store’s website, like amazingproduct.com.au.', 'store');
     if (!v.name) return fail('Please enter your name.', 'name');
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email)) return fail('Please enter a valid email address.', 'email');
-    if (v.phone.replace(/\D/g, '').length < 8) return fail('Please enter your phone number, like 0400 000 000.', 'phone');
+    if (!v.sales) return fail('Please pick how much your store sells each month.', 'sales');
+    if (v.phone && v.phone.replace(/\D/g, '').length < 8) return fail('Please check your phone number, like 0400 000 000, or leave it empty.', 'phone');
 
     var body = new URLSearchParams();
     fields.forEach(function (f) { body.set(f, v[f]); });
@@ -814,7 +827,7 @@ ul,ol{padding:0;list-style:none}
 
   function entered(name, isNew) {
     $('.enter-h', done).textContent = isNew ? 'You’re in the draw!' : 'Your store is in the draw';
-    $('.wl-p', done).textContent = 'Good luck, ' + name.split(' ')[0] + '. We draw the winner at 12pm on Saturday 7 November (Perth time). We’ll email and call the winner that day.';
+    $('.wl-p', done).textContent = 'Good luck, ' + name.split(' ')[0] + '. We draw the winner at 12pm on Saturday 14 November (Perth time), and contact them that day.';
     form.hidden = true;
     done.hidden = false;
     $('.enter-h', done).focus();

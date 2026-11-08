@@ -669,7 +669,8 @@ model GiveawayEntry {
   store       String    @unique // the store's address, lowercased, without www.
   name        String
   email       String // lowercased
-  phone       String // as typed, tidied
+  phone       String? // as typed, tidied; optional since round 2 (Ross, 8 Nov 2026)
+  sales       String? // what the store sells a month, in words ("A$5,000 to A$20,000"; SALES in lib/booking.ts)
   utmSource   String?
   utmMedium   String?
   utmCampaign String?

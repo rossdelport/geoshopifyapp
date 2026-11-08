@@ -16,7 +16,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     orderBy: { createdAt: "asc" },
   });
   const lines = [
-    ["#", "Store", "Name", "Email", "Phone", "UTM source", "UTM campaign", "UTM content", "Came from", "Entered (UTC)", "Drawn (UTC)"]
+    ["#", "Store", "Name", "Email", "Phone", "Sells a month", "UTM source", "UTM campaign", "UTM content", "Came from", "Entered (UTC)", "Drawn (UTC)"]
       .map(cell)
       .join(","),
     ...rows.map((r, i) =>
@@ -26,6 +26,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         r.name,
         r.email,
         r.phone,
+        r.sales,
         r.utmSource,
         r.utmCampaign,
         r.utmContent,

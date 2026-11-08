@@ -305,7 +305,9 @@ ul{padding:0;list-style:none}
 // The calendar. First two questions: a Shopify brand? and sales a month. Only a Shopify brand selling A$5,000 or more
 // a month sees Ross's free times; anyone else gets a kind note. The times are shown in the visitor's own time zone:
 // pick a day, a time, then name, email and store. It posts to /book, which adds the call to Ross's Google Calendar, and Google emails the invite.
-// A booked call tells Meta "Lead" (no name or email), like joining the waitlist does.
+// A booked call tells Meta "Lead" (no name or email), like joining the waitlist does. A fit (a Shopify brand selling
+// A$5,000 or more a month) tells Meta "SubmitApplication" once a visit, so the ads can learn who the real store owners are
+// before anyone books (Ross, 7 Nov 2026: about 300 ad visits, 0 bookings, so Meta only ever saw page views).
 (function () {
   var slots = null;
   try { slots = JSON.parse(document.getElementById('slots').textContent); } catch (e) { slots = null; }
@@ -326,7 +328,7 @@ ul{padding:0;list-style:none}
   var wd = fmt({ weekday: 'short' }), dn = fmt({ day: 'numeric' }), mo = fmt({ month: 'short' });
   var longDay = fmt({ weekday: 'long', day: 'numeric', month: 'long' }), clock = fmt({ hour: 'numeric', minute: '2-digit' });
   var byDay = {}, order = [], current = null, chosen = null, busy = false;
-  var shopify = '', salesEl = document.getElementById('sales'), yesNo = on.querySelectorAll('[data-shopify]'), sent = '';
+  var shopify = '', salesEl = document.getElementById('sales'), yesNo = on.querySelectorAll('[data-shopify]'), sent = '', toldMeta = false;
 
   // What the page sends with a booking and with the answers: the ad's tags and the site that sent them.
   function withAd(fields) {
@@ -348,6 +350,10 @@ ul{padding:0;list-style:none}
     if (answers && answers !== sent && navigator.sendBeacon) {
       sent = answers;
       try { navigator.sendBeacon('/book', withAd({ answered: '1', shopify: shopify, sales: noShop ? '' : salesEl.value })); } catch (e) { /* not counted */ }
+    }
+    if (fit && !toldMeta && typeof window.fbq === 'function') {
+      toldMeta = true;
+      window.fbq('track', 'SubmitApplication', { content_name: 'fits' });
     }
     on.querySelector('[data-sales-q]').hidden = noShop;
     on.querySelector('[data-hint]').hidden = fit || noShop || small;

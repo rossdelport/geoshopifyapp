@@ -198,8 +198,8 @@ function PrivacyText() {
 
       <h2 style={h2}>Giveaway</h2>
       <p>
-        If you enter our giveaway, we keep your store&apos;s website, your name, email address and phone number, the
-        words shown with the form and when you entered. If you came from an ad or another website, we keep the ad&apos;s
+        If you enter our giveaway, we keep your store&apos;s website, your name, email address, what your store sells
+        each month, your phone number if you give it, the words shown with the form and when you entered. If you came from an ad or another website, we keep the ad&apos;s
         tracking tags in the page address and the name of that website. To stop abuse, we keep a scrambled (hashed) copy
         of your IP address for a day.
       </p>
@@ -214,8 +214,9 @@ function PrivacyText() {
       <p>
         Our home page, giveaway page and booking page use Meta&apos;s pixel (Meta runs Facebook and Instagram). It lets us
         see which of our ads work and show our ads to people who visited. It tells Meta that a browser looked at the page.
-        If you join the waitlist, enter the giveaway or book a call, it tells Meta that someone did. It never sends your
-        name, email address or phone number. Meta may set cookies, and it gets your
+        If you join the waitlist, enter the giveaway or book a call, it tells Meta that someone did. If you tell our
+        booking page you have a Shopify brand that sells A$5,000 or more a month, it tells Meta you&apos;re a good fit, but
+        not your exact answers. It never sends your name, email address or phone number. Meta may set cookies, and it gets your
         browser&apos;s details and IP address, as Meta&apos;s own privacy policy says.
       </p>
       <p>

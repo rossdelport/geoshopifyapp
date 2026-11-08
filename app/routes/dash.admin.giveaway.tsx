@@ -35,6 +35,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         name: r.name,
         email: r.email,
         phone: r.phone,
+        sales: r.sales,
         from: [r.utmSource, r.utmCampaign, r.utmContent].filter(Boolean).join(" · ") || r.referrer || "Direct",
         entered: r.createdAt.toISOString(),
         drawnAt: r.drawnAt?.toISOString() ?? null,
@@ -128,6 +129,7 @@ export default function AdminGiveaway() {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
+                <th>Sells a month</th>
                 <th>Came from</th>
                 <th>Entered</th>
                 <th />
@@ -152,9 +154,8 @@ export default function AdminGiveaway() {
                   </td>
                   <td>{r.name}</td>
                   <td>{r.email}</td>
-                  <td>
-                    <a href={`tel:${r.phone.replace(/[^\d+]/g, "")}`}>{r.phone}</a>
-                  </td>
+                  <td>{r.phone ? <a href={`tel:${r.phone.replace(/[^\d+]/g, "")}`}>{r.phone}</a> : "Not given"}</td>
+                  <td>{r.sales ?? "Not asked"}</td>
                   <td>{r.from}</td>
                   <td className="num">{perth(r.entered)}</td>
                   <td>
