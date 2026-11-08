@@ -104,6 +104,16 @@ describe("home page", () => {
     }
   });
 
+  it("never promises a number of emails to sites (Ross, 8 Nov 2026: he won't send them for clients)", async () => {
+    const pages = ["new-home.html", "giveaway.html", "home.html", ...HOME_LANGS.map((l) => `home-${l}.html`)];
+    for (const f of pages) {
+      const page = readFileSync(join(ROOT, "app/home", f), "utf8");
+      expect(page, f).not.toContain("Emails to those sites");
+      expect(page, f).not.toMatch(/\b40 (pitches|Pitches|propuestas|propositions|proposte)\b/);
+    }
+    expect(await home()).toContain("<li><h3>Weekly reports</h3>");
+  });
+
   it("shows the first three months, one card each, with the full refund (Ross, 3 Nov 2026)", async () => {
     const html = await home();
     const start = html.indexOf('<section class="sec sec-soft" id="months"');

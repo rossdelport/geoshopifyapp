@@ -150,10 +150,9 @@ early access.
   - 12 guide pages a month (three a week) on the Guide calendar, written and OK'd for you (email ross@firstpicked.com.au if
     you'd rather OK each one yourself), rotating through how-to-choose guides, comparisons, use-case pages, buying
     advice and single question deep dives.
-  - Sites AI trusts: 20 writer lookups and up to 40 pitches a month, sent and followed up for you by our team
-    (including directories and roundups).
+  - Sites AI trusts: we find the sites AI quotes most for your products, and the people who write for them.
   - Reddit threads: new threads every week, each with a reply written for you to post.
-  - Sales from AI dashboard and a 30-minute call with our team.
+  - Sales from AI dashboard, a weekly report and a monthly call with our team.
 - Allowances reset on the 1st of each month.
 
 Coming soon (not in the app yet, don't promise dates): paying for a plan in the app, product fixes you can copy
