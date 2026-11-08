@@ -105,7 +105,8 @@ export function siteLlmsTxt(): string {
     `- [Stories](${abs(STORIES_HUB.path)}): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are FirstPicked customers)`,
     `- [Blog](${abs(BLOG_HUB.path)}): plain-English articles for Shopify stores on getting recommended by AI assistants, new ones three times a week`,
     `- [Compare](${abs(COMPARE_HUB.path)}): honest comparisons of FirstPicked with agencies, tracking tools and prices in Australia`,
-    ...LANDING_PAGES.map((p) => `- [${stripBrand(p.title)}](${abs(landingPath(p.slug))}): ${p.short}`),
+    // Service pages only: the guides use "GEO", which the llms.txt Checker's sample (this file) must not show as jargon.
+    ...LANDING_PAGES.filter((p) => p.kind !== "guide").map((p) => `- [${stripBrand(p.title)}](${abs(landingPath(p.slug))}): ${p.short}`),
     `- [Privacy policy](${abs("/privacy")}): what data FirstPicked collects and why`,
     `- [Terms of service](${abs("/terms")}): the rules for using FirstPicked, the refund after month one and stopping any time`,
     "",

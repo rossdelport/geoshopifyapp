@@ -8,8 +8,9 @@ import { publicHostRedirect } from "../lib/tools/host.server";
 import { toolHeaders } from "../lib/tools/http";
 import { pageMeta, stripBrand } from "../lib/tools/seo";
 
-// One service page, like firstpicked.com.au/seo-agency-perth: the answer first, what we do, who it's for and not for,
-// the price, the Get started box (opens /book), the questions people ask, the sources and related pages. Content in
+// One service page, like firstpicked.com.au/seo-agency-perth, or guide, like /what-is-geo: the answer first, the
+// sections, the Get started box (opens /book, tagged utm_medium=landing, or guide for a guide), the questions people
+// ask, the sources and related pages. Content in
 // app/lib/landing/pages.ts; app/routes.ts gives each slug in app/lib/landing/paths.ts its own route to this file
 // (route id "landing-<slug>"), so the loader finds the page from the address.
 
@@ -40,9 +41,10 @@ export const meta: MetaFunction<typeof loader> = ({ data: d, error }) =>
 
 export default function LandingPageView() {
   const { page, related } = useLoaderData<typeof loader>();
+  const book = bookHref(page.kind === "guide" ? "guide" : "landing", page.slug);
   return (
-    <StoryShell pill={{ label: "Book a call", href: bookHref("landing", page.slug) }} crumbs={[{ name: stripBrand(page.title) }]} hero={<ArticleHero page={page} tag={page.tag} />}>
-      <PageArticle page={page} book={bookHref("landing", page.slug)} related={related} relatedHeading="Read next" />
+    <StoryShell pill={{ label: "Book a call", href: book }} crumbs={[{ name: stripBrand(page.title) }]} hero={<ArticleHero page={page} tag={page.tag} />}>
+      <PageArticle page={page} book={book} related={related} relatedHeading="Read next" />
     </StoryShell>
   );
 }
