@@ -886,7 +886,7 @@ describe("the site footer", () => {
     const positions = TOOLS.map((t) => footer.indexOf(`<a href="${t.path}">${t.name}</a>`));
     for (const p of positions) expect(p).toBeGreaterThan(-1);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
-    for (const [label, href] of [["Home", "/"], ["How it works", "/#how"], ["Pricing", "/#pricing"], ["Stories", "/stories"], ["Blog", "/blog"], ["Privacy", "/privacy"], ["Terms", "/terms"]]) {
+    for (const [label, href] of [["Home", "/"], ["How it works", "/#how"], ["Pricing", "/#pricing"], ["Stories", "/stories"], ["Blog", "/blog"], ["Compare", "/compare"], ["SEO in Perth", "/seo-agency-perth"], ["Privacy", "/privacy"], ["Terms", "/terms"]]) {
       expect(footer).toContain(`<a href="${href}">${label}</a>`);
     }
     expect(footer).toContain("FirstPicked · Helps ChatGPT &amp; co recommend your products");

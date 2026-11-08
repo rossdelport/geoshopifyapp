@@ -1,20 +1,14 @@
-import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { Outlet, isRouteErrorResponse, useRouteError } from "react-router";
-import { CHECK_FONT_LINKS } from "../components/check-ui";
+import { ARTICLE_LINKS } from "../components/page-article";
 import { StoryShell } from "../components/story-ui";
 import { COMPARE_HUB } from "../lib/compare/pages";
 import { publicHostRedirect } from "../lib/tools/host.server";
 import { toolHeaders } from "../lib/tools/http";
-import checkCss from "../styles/check.css?url";
-import toolsCss from "../styles/tools.css?url";
-import storyCardCss from "../styles/story-card.css?url";
-import storiesCss from "../styles/stories.css?url";
-import blogCss from "../styles/blog.css?url";
-import compareCss from "../styles/compare.css?url";
 
 // Layout for the comparison pages: /compare (the hub) and every /compare/<slug> page. Same frame as the blog
 // (fonts, the free tools' stylesheets, the reading column and blog.css for the FAQ and sources) plus compare.css
-// for the tables and the waitlist box, the canonical host, the default headers and an error page in the site's frame.
+// for the tables and the Get started box, the canonical host, the default headers and an error page in the site's frame.
 
 export const loader = ({ request }: LoaderFunctionArgs) => {
   const moved = publicHostRedirect(request);
@@ -22,15 +16,7 @@ export const loader = ({ request }: LoaderFunctionArgs) => {
   return null;
 };
 
-export const links: LinksFunction = () => [
-  ...CHECK_FONT_LINKS,
-  { rel: "stylesheet", href: checkCss },
-  { rel: "stylesheet", href: toolsCss },
-  { rel: "stylesheet", href: storyCardCss },
-  { rel: "stylesheet", href: storiesCss },
-  { rel: "stylesheet", href: blogCss },
-  { rel: "stylesheet", href: compareCss },
-];
+export const links = ARTICLE_LINKS;
 
 export const headers = toolHeaders;
 

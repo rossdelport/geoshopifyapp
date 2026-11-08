@@ -14,6 +14,7 @@ import { HUB, TOOLS } from "../app/lib/tools/registry";
 import { STORIES } from "../app/lib/stories";
 import { STORIES_UPDATED } from "../app/lib/stories/pages";
 import { COMPARE_HUB, COMPARE_PAGES } from "../app/lib/compare/pages";
+import { LANDING_PAGES } from "../app/lib/landing/pages";
 import { HOME_LANGS_UPDATED, HOME_UPDATED, PRIVACY_UPDATED, TERMS_UPDATED } from "../app/lib/tools/site";
 import { BLOG_LAUNCHED, siteLlmsTxt, siteRobotsTxt, sitemapPages, sitemapXml } from "../app/lib/tools/site-files";
 import { loader as robotsLoader } from "../app/routes/robots[.]txt";
@@ -91,9 +92,9 @@ describe("sitemap.xml", () => {
   it("is a well-formed sitemaps.org file", () => {
     expect(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')).toBe(true);
     expect(xml.trimEnd().endsWith("</urlset>")).toBe(true);
-    // home and 5 languages, tools hub, 7 tools, stories hub, 15 stories, blog, compare hub and pages, privacy, terms
-    expect(xml.match(/<url>/g)).toHaveLength(19 + STORIES.length + COMPARE_PAGES.length);
-    expect(xml.match(/<\/url>/g)).toHaveLength(19 + STORIES.length + COMPARE_PAGES.length);
+    // home and 5 languages, tools hub, 7 tools, stories hub, 15 stories, blog, compare hub and pages, service pages, privacy, terms
+    expect(xml.match(/<url>/g)).toHaveLength(19 + STORIES.length + COMPARE_PAGES.length + LANDING_PAGES.length);
+    expect(xml.match(/<\/url>/g)).toHaveLength(19 + STORIES.length + COMPARE_PAGES.length + LANDING_PAGES.length);
     expect(xml).not.toMatch(/priority|changefreq/);
     expect(xml).not.toMatch(/&(?!amp;|lt;|gt;|quot;|apos;)/);
   });
@@ -109,6 +110,7 @@ describe("sitemap.xml", () => {
       "https://firstpicked.com.au/blog",
       "https://firstpicked.com.au/compare",
       ...COMPARE_PAGES.map((p) => `https://firstpicked.com.au/compare/${p.slug}`),
+      ...LANDING_PAGES.map((p) => `https://firstpicked.com.au/${p.slug}`),
       "https://firstpicked.com.au/privacy",
       "https://firstpicked.com.au/terms",
     ]);
@@ -124,6 +126,7 @@ describe("sitemap.xml", () => {
       BLOG_LAUNCHED,
       COMPARE_HUB.updated,
       ...COMPARE_PAGES.map((p) => p.checked),
+      ...LANDING_PAGES.map((p) => p.checked),
       PRIVACY_UPDATED,
       TERMS_UPDATED,
     ]);
@@ -172,6 +175,7 @@ describe("llms.txt for firstpicked.com.au", () => {
     expect(txt).toContain(
       "- [Stories](https://firstpicked.com.au/stories): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are FirstPicked customers)",
     );
+    expect(txt).toContain("- [Perth SEO agency for Shopify brands](https://firstpicked.com.au/seo-agency-perth): Get your Shopify store found on Google and picked by AI, from a Perth team.");
     expect(txt).toContain("- [Privacy policy](https://firstpicked.com.au/privacy): what data FirstPicked collects and why");
     expect(txt).toContain("- [Terms of service](https://firstpicked.com.au/terms): the rules for using FirstPicked, the refund after month one and stopping any time");
   });
