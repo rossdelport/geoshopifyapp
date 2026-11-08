@@ -3,7 +3,10 @@ import { Form, useLoaderData, useNavigation } from "react-router";
 import db from "../db.server";
 import { requireAdmin } from "../lib/admin.server";
 import { drawWinner } from "../lib/giveaway.server";
-import { GIVEAWAY, isOpen } from "../lib/giveaway";
+import { GIVEAWAY, RUNNER_UP_OFFER, isOpen } from "../lib/giveaway";
+
+const o = RUNNER_UP_OFFER;
+const runnerUpNote = `The page promises everyone who doesn’t win ${o.percentOff}% off their first ${o.months} months (${o.monthly} a month) if they start by ${o.startBy}, and an email with that offer after the draw. Their emails are in the download.`;
 
 // Admin giveaway (firstpicked.com.au/giveaway, Nov 2026): every entry, numbered in the order they came in, where they came
 // from, a download for following up, and the random draw once entries close.
@@ -35,6 +38,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         name: r.name,
         email: r.email,
         phone: r.phone,
+        sales: r.sales,
         from: [r.utmSource, r.utmCampaign, r.utmContent].filter(Boolean).join(" · ") || r.referrer || "Direct",
         entered: r.createdAt.toISOString(),
         drawnAt: r.drawnAt?.toISOString() ?? null,
@@ -74,6 +78,7 @@ export default function AdminGiveaway() {
               Open the page
             </a>
           </p>
+          <p>{runnerUpNote}</p>
         </div>
         <div
           className="w-box"
@@ -128,6 +133,7 @@ export default function AdminGiveaway() {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
+                <th>Sells a month</th>
                 <th>Came from</th>
                 <th>Entered</th>
                 <th />
@@ -152,9 +158,8 @@ export default function AdminGiveaway() {
                   </td>
                   <td>{r.name}</td>
                   <td>{r.email}</td>
-                  <td>
-                    <a href={`tel:${r.phone.replace(/[^\d+]/g, "")}`}>{r.phone}</a>
-                  </td>
+                  <td>{r.phone ? <a href={`tel:${r.phone.replace(/[^\d+]/g, "")}`}>{r.phone}</a> : "Not given"}</td>
+                  <td>{r.sales ?? "Not asked"}</td>
                   <td>{r.from}</td>
                   <td className="num">{perth(r.entered)}</td>
                   <td>

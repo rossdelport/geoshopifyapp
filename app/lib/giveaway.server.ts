@@ -12,19 +12,22 @@ import { normalizeEmail } from "./check-lead.server";
 import { hashIp } from "./public-form.server";
 import { storeHost } from "./public-catalog.server";
 import { GIVEAWAY_CONSENT_TEXT, GIVEAWAY_ERRORS, cleanPhone, isOpen } from "./giveaway";
+import { SALES } from "./booking";
 
 const DAY = 86_400_000;
 const MAX_PER_IP = 10; // entries per IP per 24 h
 const MAX_PER_DAY = 3_000; // all entries per 24 h, so a bot can't fill the table
 
 /** isNew: a store not in the draw yet. The page only tells Meta "Lead" for a new one. */
-export type GiveawayResult = { ok: true; isNew?: boolean } | { ok: false; error: string; field?: "store" | "name" | "email" | "phone" };
+export type GiveawayResult = { ok: true; isNew?: boolean } | { ok: false; error: string; field?: "store" | "name" | "email" | "phone" | "sales" };
 
 export interface EntryInput {
   store: unknown;
   name: unknown;
   email: unknown;
   phone: unknown;
+  /** A value from SALES ("5k-20k"); saved as its words ("A$5,000 to A$20,000"). */
+  sales: unknown;
   honeypot?: unknown;
   utmSource?: unknown;
   utmMedium?: unknown;
@@ -85,11 +88,19 @@ export async function enterGiveaway(input: EntryInput, now = new Date()): Promis
       status: 400,
       result: { ok: false, error: GIVEAWAY_ERRORS.email, field: "email" },
     };
-  const phone = cleanPhone(input.phone);
-  if (!phone)
+  // Phone is optional (Ross, 8 Nov 2026), but a number that was typed has to look like one.
+  const typedPhone = String(input.phone ?? "").trim();
+  const phone = typedPhone ? cleanPhone(typedPhone) : null;
+  if (typedPhone && !phone)
     return {
       status: 400,
       result: { ok: false, error: GIVEAWAY_ERRORS.phone, field: "phone" },
+    };
+  const sales = SALES.find((s) => s.value === input.sales)?.label;
+  if (!sales)
+    return {
+      status: 400,
+      result: { ok: false, error: GIVEAWAY_ERRORS.sales, field: "sales" },
     };
 
   const ipHash = hashIp(input.ip);
@@ -103,13 +114,13 @@ export async function enterGiveaway(input: EntryInput, now = new Date()): Promis
     }),
   ]);
 
-  // One entry per store. The same person entering again can fix their name or phone; anyone else is told they're
-  // in (the store already is) without changing the first entry.
+  // One entry per store. The same person entering again can fix their name, phone or sales; anyone else is told
+  // they're in (the store already is) without changing the first entry.
   if (before) {
     if (before.email === email)
       await db.giveawayEntry.update({
         where: { id: before.id },
-        data: { name, phone },
+        data: { name, phone, sales },
       });
     return { status: 200, result: { ok: true, isNew: false } };
   }
@@ -124,6 +135,7 @@ export async function enterGiveaway(input: EntryInput, now = new Date()): Promis
         name,
         email,
         phone,
+        sales,
         utmSource: clean(input.utmSource, 200),
         utmMedium: clean(input.utmMedium, 200),
         utmCampaign: clean(input.utmCampaign, 200),
@@ -173,7 +185,8 @@ export function giveawayNoticeEmail(r: {
   store: string;
   name: string;
   email: string;
-  phone: string;
+  phone: string | null;
+  sales: string | null;
   utmSource: string | null;
   utmCampaign: string | null;
   referrer: string | null;
@@ -182,7 +195,8 @@ export function giveawayNoticeEmail(r: {
     `<b>Store:</b> <a href="https://${esc(r.store)}">${esc(r.store)}</a>`,
     `<b>Name:</b> ${esc(r.name)}`,
     `<b>Email:</b> ${esc(r.email)}`,
-    `<b>Phone:</b> ${esc(r.phone)}`,
+    `<b>Phone:</b> ${r.phone ? esc(r.phone) : "not given"}`,
+    `<b>Sells a month:</b> ${r.sales ? esc(r.sales) : "not given"}`,
   ];
   if (r.utmSource || r.utmCampaign) lines.push(`<b>Ad:</b> ${esc([r.utmSource, r.utmCampaign].filter(Boolean).join(" / "))}`);
   if (r.referrer) lines.push(`<b>Came from:</b> ${esc(r.referrer)}`);

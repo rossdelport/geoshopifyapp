@@ -251,7 +251,7 @@ describe("/privacy after the free tools", () => {
     expect(text).toContain("Crawl4AI, or AnyAPI as a backup");
     expect(text).toContain("We hold it in memory and clear it within a day.");
     expect(text).toContain("We record what each search cost us, without your IP address or your search.");
-    expect(text).toContain("Last updated 7 November 2026");
+    expect(text).toContain("Last updated 8 November 2026");
     // the two questions on the booking page (Ross, 6 Nov 2026): answers kept with a booked call, and counted without a name
     expect(text).toContain("We count your answers to the two questions the same way, even if you don't book.");
     expect(text).toContain("We delete a booked call's details 24 months after you booked, or sooner if you ask.");
@@ -264,7 +264,7 @@ describe("/privacy after the free tools", () => {
     expect(text).toContain("we add it to Ross's Google Calendar with your name, your email address, your store's website and your answers.");
     expect(text).toContain("Google: Google Calendar and Google Meet, for calls booked on our website.");
     // the giveaway entries (firstpicked.com.au/giveaway): what we keep, why, and for how long
-    expect(text).toContain("If you enter our giveaway, we keep your store's website, your name, email address and phone number");
+    expect(text).toContain("If you enter our giveaway, we keep your store's website, your name, email address, what your store sells each month, your phone number if you give it");
     expect(text).toContain("We delete it 24 months after you entered, or sooner if you ask.");
     expect(text).toContain("In Europe and the UK, the pixel only starts after you click OK on the cookie notice.");
     expect(DASHES.test(text)).toBe(false);

@@ -1,4 +1,4 @@
-// The 3-month giveaway at firstpicked.com.au/giveaway (Ross, 3 Nov 2026). The page (no database needed) and, against a
+// The 3-month giveaway at firstpicked.com.au/giveaway (Ross, 3 Nov 2026; round 2 from 8 Nov). The page (no database needed) and, against a
 // real Postgres (set TEST_DATABASE_URL), entries in their own schema: saving one with where it came from, the
 // checks on each box, one entry per store, the hidden bot field, the per-IP limit, closing on time, the random draw,
 // the founder email and the clean-up after 24 months.
@@ -9,7 +9,8 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { GIVEAWAY, GIVEAWAY_CONSENT_TEXT, cleanPhone, isOpen } from "../app/lib/giveaway";
+import { GIVEAWAY, GIVEAWAY_CONSENT_TEXT, RUNNER_UP_OFFER, cleanPhone, isOpen } from "../app/lib/giveaway";
+import { SALES } from "../app/lib/booking";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const base = process.env.TEST_DATABASE_URL;
@@ -38,8 +39,10 @@ vi.mock("../app/lib/email.server", async (importOriginal) => ({
   emailConfigured: () => state.email,
 }));
 
-const OPEN = new Date("2026-11-04T02:00:00Z"); // Wednesday, while entries are open
-const AFTER = new Date("2026-11-07T04:00:00Z"); // the draw, 12pm Saturday in Perth
+// While entries are open (Sunday 10am in Perth). Kept before the real date the tests run on, because entries are saved
+// with the real time and the per-connection limit counts the 24 hours before OPEN.
+const OPEN = new Date("2026-11-08T02:00:00Z");
+const AFTER = new Date("2026-11-14T04:00:00Z"); // the draw, 12pm Saturday in Perth
 
 describe("giveaway page", () => {
   const page = async () => {
@@ -61,7 +64,12 @@ describe("giveaway page", () => {
     expect(html).not.toMatch(/__[A-Z_]+__/);
     expect(html).toContain(`data-closes="${GIVEAWAY.closesAt.toISOString()}"`);
     // the four boxes the server reads, the bot trap, and the words saved with each entry
-    for (const name of ["store", "name", "email", "phone", "website"]) expect(html).toContain(`name="${name}"`);
+    for (const name of ["store", "name", "email", "sales", "phone", "website"]) expect(html).toContain(`name="${name}"`);
+    // what the store sells: the booking page's bands, all of them allowed; phone is optional (Ross, 8 Nov 2026)
+    for (const s of SALES) expect(html).toContain(`<option value="${s.value}">${s.label}</option>`);
+    expect(html).not.toContain("<!-- SALES_OPTIONS -->");
+    expect(html).toMatch(/<select class="wl-input wl-sel" name="sales" required>/);
+    expect(html).toMatch(/name="phone"(?![^>]*required)[^>]*>/);
     expect(html).toContain('placeholder="amazingproduct.com.au"');
     expect(html).toContain(GIVEAWAY_CONSENT_TEXT);
     expect(html).toContain("fetch('/giveaway'");
@@ -78,11 +86,19 @@ describe("giveaway page", () => {
     const { html } = await page();
     const perth = (d: Date, o: Intl.DateTimeFormatOptions) => d.toLocaleString("en-AU", { ...o, timeZone: "Australia/Perth" });
     expect(perth(GIVEAWAY.closesAt, { weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" })).toBe(
-      "Friday 6 November at 11:59 pm",
+      "Friday 13 November at 11:59 pm",
     );
-    expect(perth(GIVEAWAY.drawAt, { weekday: "long", day: "numeric", month: "long", hour: "numeric" })).toBe("Saturday 7 November at 12 pm");
-    expect(html).toContain("close at 11:59pm on Friday 6 November 2026, Perth time (AWST)");
-    expect(html).toContain("at 12pm on Saturday 7 November 2026, Perth time, in Perth, Western Australia");
+    expect(perth(GIVEAWAY.drawAt, { weekday: "long", day: "numeric", month: "long", hour: "numeric" })).toBe("Saturday 14 November at 12 pm");
+    expect(html).toContain("close at 11:59pm on Friday 13 November 2026, Perth time (AWST)");
+    expect(html).toContain("at 12pm on Saturday 14 November 2026, Perth time, in Perth, Western Australia");
+    expect(html).not.toMatch(/Saturday 7 November|Friday 6 November|Sat 7 Nov|Fri 6 Nov/);
+    // everyone who doesn't win: half price for 3 months (Ross, 8 Nov 2026), from RUNNER_UP_OFFER, in the rules and the FAQ
+    const o = RUNNER_UP_OFFER;
+    expect(html).toContain(
+      `can have ${o.percentOff}% off their first ${o.months} months of FirstPicked Done for you: ${o.monthly} a month instead of A$945, including GST, if they start by ${o.startBy}.`,
+    );
+    expect(html).toContain(`so ${o.monthly} a month instead of A$945, if you start by Monday 30 November.`);
+    expect(html).toContain("Every entry has the same chance, whatever the store sells.");
     expect(html).toContain("worth A$2,835 including GST (A$945 a month)");
     expect(html).toContain("isn’t run, backed or linked with Facebook, Instagram, Meta or Shopify");
   });
@@ -99,11 +115,12 @@ describe("giveaway page", () => {
 });
 
 describe("giveaway rules in code", () => {
-  it("is open until 11:59:59pm Friday 6 November, Perth time", () => {
+  it("is open until 11:59:59pm Friday 13 November, Perth time", () => {
     expect(isOpen(OPEN)).toBe(true);
-    expect(isOpen(new Date("2026-11-06T15:59:59Z"))).toBe(true);
-    expect(isOpen(new Date("2026-11-06T16:00:00Z"))).toBe(false);
-    expect(GIVEAWAY.drawAt.toISOString()).toBe("2026-11-07T04:00:00.000Z");
+    expect(isOpen(new Date("2026-11-13T15:59:59Z"))).toBe(true);
+    expect(isOpen(new Date("2026-11-13T16:00:00Z"))).toBe(false);
+    expect(GIVEAWAY.drawAt.toISOString()).toBe("2026-11-14T04:00:00.000Z");
+    expect(RUNNER_UP_OFFER).toEqual({ percentOff: 50, months: 3, monthly: "A$472.50", startBy: "Monday 30 November 2026" });
   });
 
   it("tidies phone numbers and refuses ones that are too short or too long", () => {
@@ -130,6 +147,7 @@ describe.skipIf(!url)("giveaway entries (needs TEST_DATABASE_URL)", () => {
         name: fields.name,
         email: fields.email,
         phone: fields.phone,
+        sales: fields.sales,
         honeypot: fields.website,
         utmSource: fields.utm_source,
         utmCampaign: fields.utm_campaign,
@@ -139,7 +157,7 @@ describe.skipIf(!url)("giveaway entries (needs TEST_DATABASE_URL)", () => {
       },
       now,
     );
-  const ok = { store: "amazingproduct.com.au", name: "Sam Lee", email: "sam@amazingproduct.com.au", phone: "0400 369 865" };
+  const ok = { store: "amazingproduct.com.au", name: "Sam Lee", email: "sam@amazingproduct.com.au", sales: "5k-20k", phone: "0400 369 865" };
   const post = (fields: Record<string, string>, headers: Record<string, string> = {}) =>
     route.action({
       request: new Request("https://geo.test/giveaway", {
@@ -186,6 +204,7 @@ describe.skipIf(!url)("giveaway entries (needs TEST_DATABASE_URL)", () => {
       name: "Sam Lee",
       email: "sam@amazingproduct.com.au",
       phone: "0400 369 865",
+      sales: "A$5,000 to A$20,000", // saved in words, for Ross
       utmSource: "facebook",
       utmCampaign: "giveaway-nov",
       fbclid: "IwAR123",
@@ -197,12 +216,24 @@ describe.skipIf(!url)("giveaway entries (needs TEST_DATABASE_URL)", () => {
     expect(enqueue).toHaveBeenCalledWith("giveaway.notice", { id: row.id });
   });
 
+  it("lets people leave the phone empty (Ross, 8 Nov 2026), and takes any sales band", async () => {
+    expect((await enter({ ...ok, phone: "  " })).result).toEqual({ ok: true, isNew: true });
+    expect((await enter({ ...ok, store: "small.com.au", sales: "under-5k", phone: "" })).result).toEqual({ ok: true, isNew: true });
+    const rows = await db.giveawayEntry.findMany({ orderBy: { store: "asc" } });
+    expect(rows.map((r) => [r.store, r.phone, r.sales])).toEqual([
+      ["amazingproduct.com.au", null, "A$5,000 to A$20,000"],
+      ["small.com.au", null, "Under A$5,000"],
+    ]);
+  });
+
   it("checks each box and says which one is wrong", async () => {
     const cases: [Record<string, string>, string][] = [
       [{ ...ok, store: "not a website" }, "store"],
       [{ ...ok, name: "  " }, "name"],
       [{ ...ok, email: "nope" }, "email"],
       [{ ...ok, phone: "123" }, "phone"],
+      [{ ...ok, sales: "" }, "sales"],
+      [{ ...ok, sales: "a lot" }, "sales"],
     ];
     for (const [fields, field] of cases) {
       const out = await enter(fields);
@@ -241,7 +272,7 @@ describe.skipIf(!url)("giveaway entries (needs TEST_DATABASE_URL)", () => {
   });
 
   it("refuses entries once entries close", async () => {
-    const out = await enter(ok, new Date("2026-11-06T16:00:00Z"));
+    const out = await enter(ok, new Date("2026-11-13T16:00:00Z"));
     expect(out.status).toBe(403);
     expect(out.result).toMatchObject({ ok: false });
     expect(await db.giveawayEntry.count()).toBe(0);
@@ -272,20 +303,24 @@ describe.skipIf(!url)("giveaway entries (needs TEST_DATABASE_URL)", () => {
   });
 
   it("writes the founder email with the store and the ad, escaped", () => {
-    const { subject, html } = gw.giveawayNoticeEmail({
+    const row = {
       store: "amazingproduct.com.au",
       name: "Sam <Lee>",
       email: "sam@example.com",
       phone: "0400 369 865",
+      sales: "A$5,000 to A$20,000",
       utmSource: "facebook",
       utmCampaign: "nov",
       referrer: "l.facebook.com",
-    });
+    };
+    const { subject, html } = gw.giveawayNoticeEmail(row);
     expect(subject).toBe("New giveaway entry: amazingproduct.com.au");
     expect(html).toContain('<a href="https://amazingproduct.com.au">amazingproduct.com.au</a>');
     expect(html).toContain("Sam &lt;Lee&gt;");
     expect(html).toContain("0400 369 865");
     expect(html).toContain("facebook / nov");
+    expect(html).toContain("<b>Sells a month:</b> A$5,000 to A$20,000");
+    expect(gw.giveawayNoticeEmail({ ...row, phone: null }).html).toContain("<b>Phone:</b> not given");
     expect(html).not.toContain("—");
   });
 

@@ -198,8 +198,8 @@ function PrivacyText() {
 
       <h2 style={h2}>Giveaway</h2>
       <p>
-        If you enter our giveaway, we keep your store&apos;s website, your name, email address and phone number, the
-        words shown with the form and when you entered. If you came from an ad or another website, we keep the ad&apos;s
+        If you enter our giveaway, we keep your store&apos;s website, your name, email address, what your store sells
+        each month, your phone number if you give it, the words shown with the form and when you entered. If you came from an ad or another website, we keep the ad&apos;s
         tracking tags in the page address and the name of that website. To stop abuse, we keep a scrambled (hashed) copy
         of your IP address for a day.
       </p>
