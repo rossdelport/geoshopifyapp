@@ -3,10 +3,7 @@ import { Form, useLoaderData, useNavigation } from "react-router";
 import db from "../db.server";
 import { requireAdmin } from "../lib/admin.server";
 import { drawWinner } from "../lib/giveaway.server";
-import { GIVEAWAY, RUNNER_UP_OFFER, isOpen } from "../lib/giveaway";
-
-const o = RUNNER_UP_OFFER;
-const runnerUpNote = `The page promises everyone who doesn’t win ${o.percentOff}% off their first ${o.months} months (${o.monthly} a month) if they start by ${o.startBy}, and an email with that offer after the draw. Their emails are in the download.`;
+import { GIVEAWAY, isOpen } from "../lib/giveaway";
 
 // Admin giveaway (firstpicked.com.au/giveaway, Nov 2026): every entry, numbered in the order they came in, where they came
 // from, a download for following up, and the random draw once entries close.
@@ -78,7 +75,6 @@ export default function AdminGiveaway() {
               Open the page
             </a>
           </p>
-          <p>{runnerUpNote}</p>
         </div>
         <div
           className="w-box"

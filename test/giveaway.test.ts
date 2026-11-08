@@ -9,7 +9,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { GIVEAWAY, GIVEAWAY_CONSENT_TEXT, RUNNER_UP_OFFER, cleanPhone, isOpen } from "../app/lib/giveaway";
+import { GIVEAWAY, GIVEAWAY_CONSENT_TEXT, cleanPhone, isOpen } from "../app/lib/giveaway";
 import { SALES } from "../app/lib/booking";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
@@ -92,12 +92,8 @@ describe("giveaway page", () => {
     expect(html).toContain("close at 11:59pm on Friday 13 November 2026, Perth time (AWST)");
     expect(html).toContain("at 12pm on Saturday 14 November 2026, Perth time, in Perth, Western Australia");
     expect(html).not.toMatch(/Saturday 7 November|Friday 6 November|Sat 7 Nov|Fri 6 Nov/);
-    // everyone who doesn't win: half price for 3 months (Ross, 8 Nov 2026), from RUNNER_UP_OFFER, in the rules and the FAQ
-    const o = RUNNER_UP_OFFER;
-    expect(html).toContain(
-      `can have ${o.percentOff}% off their first ${o.months} months of FirstPicked Done for you: ${o.monthly} a month instead of A$945, including GST, if they start by ${o.startBy}.`,
-    );
-    expect(html).toContain(`so ${o.monthly} a month instead of A$945, if you start by Monday 30 November.`);
+    // no offer for people who don't win (Ross, 8 Nov 2026: he contacts them himself)
+    expect(html).not.toMatch(/50% off|half price|A\$472/);
     expect(html).toContain("Every entry has the same chance, whatever the store sells.");
     expect(html).toContain("worth A$2,835 including GST (A$945 a month)");
     expect(html).toContain("isn’t run, backed or linked with Facebook, Instagram, Meta or Shopify");
@@ -120,7 +116,6 @@ describe("giveaway rules in code", () => {
     expect(isOpen(new Date("2026-11-13T15:59:59Z"))).toBe(true);
     expect(isOpen(new Date("2026-11-13T16:00:00Z"))).toBe(false);
     expect(GIVEAWAY.drawAt.toISOString()).toBe("2026-11-14T04:00:00.000Z");
-    expect(RUNNER_UP_OFFER).toEqual({ percentOff: 50, months: 3, monthly: "A$472.50", startBy: "Monday 30 November 2026" });
   });
 
   it("tidies phone numbers and refuses ones that are too short or too long", () => {

@@ -1,8 +1,8 @@
 // The 3-month giveaway at firstpicked.com.au/giveaway (Ross, 3 Nov 2026): one Australian Shopify brand wins 3 months of
 // FirstPicked Done for you, drawn at random. Facebook ads send people to the page.
 // Round 2 (Ross, 8 Nov 2026): cold ad visitors wouldn't book a call (about 300 visits to /book, no bookings), so the
-// ads send people here instead. The entry asks what the store sells a month, phone is optional, and everyone who
-// enters and doesn't win can have 50% off their first 3 months (RUNNER_UP_OFFER). Round 1 (3 to 6 Nov) had no entries.
+// ads send people here instead. The entry asks what the store sells a month and phone is optional. Round 1 (3 to 6 Nov)
+// had no entries. Ross follows up everyone who doesn't win himself (8 Nov: no offer promised on the page).
 // The dates here are the rules' dates: the page (app/home/giveaway.html), the server and the admin page all use
 // them. A test checks the page says the same.
 
@@ -12,15 +12,6 @@ export const GIVEAWAY = {
   closesAt: new Date("2026-11-13T23:59:59+08:00"),
   /** The draw: 12pm Saturday 14 November 2026, Perth time. */
   drawAt: new Date("2026-11-14T12:00:00+08:00"),
-};
-
-/** For everyone who enters and doesn't win: half price for the first 3 months, if they start by 30 November 2026. */
-export const RUNNER_UP_OFFER = {
-  percentOff: 50,
-  months: 3,
-  /** A$945 a month (OFFER in plans.ts) at half price. */
-  monthly: "A$472.50",
-  startBy: "Monday 30 November 2026",
 };
 
 /** The words under the form, saved with each entry. app/home/giveaway.html shows the same. */
