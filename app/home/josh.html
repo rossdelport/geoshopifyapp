@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rentec Direct: Search and AI report (sample)</title>
+<meta name="description" content="A sample Search and AI report on Rentec Direct, made by Ross Delport for Josh Pigford.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0000EE">
+<link rel="preload" href="__FONT_URL__" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:Inter;src:url(__FONT_URL__) format("woff2");font-weight:400 700;font-style:normal;font-display:swap}
+:root{--ink:#0a0a0a;--soft:#52525b;--faint:#a1a1aa;--line:#e4e4e7;--wash:#f6f6f7;--blue:#0000ee;--bad:#c2410c;--good:#15803d}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff;color:var(--ink);font:400 17px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--blue)}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+.note{background:var(--wash);border-bottom:1px solid var(--line);font-size:13px;color:var(--soft);text-align:center;padding:9px 16px}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{font-weight:700;font-size:21px;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
+.logo span{color:var(--blue)}
+.tag{font-size:14px;color:var(--soft)}
+section{padding:72px 0;border-top:1px solid var(--line)}
+section.hero{border-top:0;padding:56px 0 72px}
+.eyebrow{font-size:14px;font-weight:600;color:var(--blue);margin:0 0 14px}
+h1{font-size:clamp(40px,7vw,76px);line-height:1.02;letter-spacing:-.035em;font-weight:700;margin:0 0 22px}
+h2{font-size:clamp(30px,4.6vw,48px);line-height:1.06;letter-spacing:-.03em;font-weight:700;margin:0 0 14px}
+h3{font-size:19px;letter-spacing:-.01em;margin:0 0 6px}
+.lede{font-size:20px;color:var(--soft);max-width:680px;margin:0}
+.sub{color:var(--soft);max-width:680px;margin:0 0 32px}
+.grey{color:var(--faint)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:44px}
+.stat{border:1px solid var(--line);border-radius:14px;padding:20px}
+.stat b{display:block;font-size:34px;letter-spacing:-.03em;line-height:1.1;margin-bottom:6px}
+.stat p{margin:0;font-size:14px;color:var(--soft)}
+.stat.bad b{color:var(--bad)}
+.stat.good b{color:var(--good)}
+.answers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{border:1px solid var(--line);border-radius:14px;padding:22px;background:#fff}
+.card .who{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--soft);margin-bottom:12px}
+.card .price{font-size:30px;font-weight:700;letter-spacing:-.02em;color:var(--bad);margin-bottom:8px}
+.card q{display:block;font-size:15px;color:var(--ink)}
+.card .src{font-size:13px;color:var(--soft);margin-top:12px}
+.ask{background:var(--wash);border-radius:14px;padding:16px 20px;margin-bottom:18px;font-size:16px}
+.ask span{color:var(--soft)}
+.truth{display:flex;gap:16px;align-items:baseline;border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin-top:14px}
+.truth b{font-size:30px;color:var(--good);letter-spacing:-.02em;white-space:nowrap}
+.truth p{margin:0;color:var(--soft);font-size:15px}
+.causes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.causes .num{display:inline-flex;width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;font-size:14px;font-weight:600;align-items:center;justify-content:center;margin-bottom:14px}
+blockquote{margin:12px 0 0;padding:12px 16px;border-left:3px solid var(--bad);background:#fff7ed;font-size:15px;border-radius:0 8px 8px 0}
+.small{font-size:14px;color:var(--soft);margin:12px 0 0}
+.bars{max-width:720px}
+.bar{display:grid;grid-template-columns:160px 1fr 52px;gap:12px;align-items:center;padding:7px 0;font-size:15px}
+.bar i{display:block;height:12px;border-radius:6px;background:#d4d4d8}
+.bar.you i{background:var(--blue)}
+.bar.you{font-weight:600}
+.bar em{font-style:normal;text-align:right;color:var(--soft)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:28px}
+th,td{text-align:left;vertical-align:top;padding:12px 10px;border-top:1px solid var(--line)}
+th{font-weight:600;color:var(--soft);font-size:13px}
+td mark{background:none;color:var(--blue);font-weight:600}
+.tablebox{overflow-x:auto}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;counter-reset:s}
+.steps .card{position:relative}
+.steps .when{font-size:13px;color:var(--soft);margin-bottom:10px}
+.how{display:grid;grid-template-columns:1fr 1fr;gap:28px;font-size:15px;color:var(--soft)}
+.how ol{margin:0;padding-left:20px}
+.how li{margin-bottom:6px}
+footer{border-top:1px solid var(--line);padding:36px 0 48px;font-size:14px;color:var(--soft)}
+footer p{margin:0 0 6px}
+@media (max-width:860px){
+  .stats{grid-template-columns:1fr 1fr}
+  .answers,.causes,.steps,.how{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  body{font-size:16px}
+  section{padding:52px 0}
+  .lede{font-size:18px}
+  .stat b{font-size:28px}
+  .bar{grid-template-columns:118px 1fr 44px;font-size:14px}
+  .truth{flex-direction:column;gap:4px}
+}
+</style>
+</head>
+<body>
+<div class="note">A sample report made by Ross Delport for Josh Pigford, as part of a sales role application. Not made or approved by FirstIndex.</div>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="#top">First<span>Index</span></a>
+    <span class="tag">Search and AI report</span>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Rentec Direct · rentecdirect.com · 9 November 2026</p>
+      <h1>AI tells small landlords<br>you cost more<br>than you do.</h1>
+      <p class="lede">We asked ChatGPT, Gemini and Perplexity the questions small landlords ask before they buy. All three named Rentec for accounting. None gave the price those landlords would pay.</p>
+
+      <div class="stats">
+        <div class="stat good"><b>$25</b><p>a month. Rentec Starter, up to 10 properties. Your real price.</p></div>
+        <div class="stat bad"><b>$35 to $55</b><p>a month. What the three AIs quoted instead.</p></div>
+        <div class="stat bad"><b>0 of 3</b><p>accounting answers that mentioned Starter.</p></div>
+        <div class="stat"><b>4 of 12</b><p>answers to small landlord questions that named Rentec at all.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Three AIs.<br>Three wrong prices.</h2>
+      <p class="sub">One question, asked once in each AI from the US. Each named Rentec, then priced it above $25.</p>
+      <div class="ask"><span>Question:</span> What's the best property management software for small landlords that also does the accounting?</div>
+      <div class="answers">
+        <div class="card">
+          <div class="who">ChatGPT</div>
+          <div class="price">$45 to $50</div>
+          <q>Starts around $45–$50/month depending on plan and current pricing</q>
+          <div class="src">Named Rentec 3rd of 5.</div>
+        </div>
+        <div class="card">
+          <div class="who">Gemini</div>
+          <div class="price">$35 to $40</div>
+          <q>Pricing: Around $35–$40/month.</q>
+          <div class="src">Named Rentec 2nd of 5. Sources include Avail's roundup (below).</div>
+        </div>
+        <div class="card">
+          <div class="who">Perplexity</div>
+          <div class="price">$45 to $55</div>
+          <q>pricing is roughly $45–$55/month depending on plan.</q>
+          <div class="src">Named Rentec 3rd of 5.</div>
+        </div>
+      </div>
+      <div class="truth"><b>$25</b><p>Your pricing page: “Rentec Starter $25/mo. Flat monthly rate. Up to 10 Properties &amp; Tenants.” Pro and PM start at $50.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Where the wrong<br>prices come from.</h2>
+      <p class="sub">Two pages say something different from your pricing page. AI reads both.</p>
+      <div class="causes">
+        <div class="card">
+          <span class="num">1</span>
+          <h3>Your own Tenant Portal page</h3>
+          <p class="small">rentecdirect.com/details/tenant-portal says $45, twice: in the Quick Answer at the top and in the FAQ.</p>
+          <blockquote>“…included with all Rentec Direct plans starting at $45/month.”</blockquote>
+          <blockquote>“The Tenant Portal is included at no additional cost with all Rentec Direct plans, starting at $45/month.”</blockquote>
+        </div>
+        <div class="card">
+          <span class="num">2</span>
+          <h3>Avail's accounting roundup</h3>
+          <p class="small">“The 10 Best Accounting Software Platforms for Landlords in 2026”, last updated June 23, 2026. Avail is part of Realtor.com. Gemini lists it as a source for its answer.</p>
+          <blockquote>“Rentec Pro is $35/month, while Rentec PM is $40/month.”</blockquote>
+        </div>
+      </div>
+      <p class="small">ChatGPT's and Perplexity's answers don't show where their figures came from, so we don't claim to know.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Asked straight out,<br>they get it right.</h2>
+      <p class="sub">“How much does Rentec Direct cost for a landlord with 8 rental properties?” ChatGPT said $25 Starter in 2 of 2 runs. So did Perplexity. Both read your pricing page.</p>
+      <p class="sub">So the facts are there. The problem shows up when a landlord asks which software to buy, and AI compares you with others using older or wrong numbers. That's the moment that decides the sale.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Who AI names<br>for small landlords.</h2>
+      <p class="sub">Times each brand was named in 12 answers: 4 questions, asked once in ChatGPT, Gemini and Perplexity.</p>
+      <div class="bars">
+        <div class="bar"><span>TurboTenant</span><i style="width:100%"></i><em>8</em></div>
+        <div class="bar"><span>Avail</span><i style="width:87.5%"></i><em>7</em></div>
+        <div class="bar"><span>Stessa</span><i style="width:87.5%"></i><em>7</em></div>
+        <div class="bar"><span>Baselane</span><i style="width:87.5%"></i><em>7</em></div>
+        <div class="bar"><span>Buildium</span><i style="width:87.5%"></i><em>7</em></div>
+        <div class="bar"><span>RentRedi</span><i style="width:75%"></i><em>6</em></div>
+        <div class="bar"><span>Innago</span><i style="width:62.5%"></i><em>5</em></div>
+        <div class="bar"><span>TenantCloud</span><i style="width:62.5%"></i><em>5</em></div>
+        <div class="bar"><span>Landlord Studio</span><i style="width:50%"></i><em>4</em></div>
+        <div class="bar you"><span>Rentec Direct</span><i style="width:50%"></i><em>4</em></div>
+        <div class="bar"><span>DoorLoop</span><i style="width:25%"></i><em>2</em></div>
+      </div>
+
+      <div class="tablebox">
+        <table>
+          <thead><tr><th>Question</th><th>ChatGPT</th><th>Gemini</th><th>Perplexity</th></tr></thead>
+          <tbody>
+            <tr><td>What's the best property management software for a landlord with 10 rentals?</td><td>DoorLoop, Avail, RentRedi, TurboTenant, Innago, Buildium, Stessa</td><td>Buildium, Landlord Studio, RentRedi, Avail, TurboTenant, Baselane</td><td>Buildium, <mark>Rentec Direct ($25, right)</mark>, TurboTenant, Landlord Studio, RentRedi</td></tr>
+            <tr><td>What's the best app to collect rent online from my tenants?</td><td>Apartments.com Rental Manager, RentRedi, Baselane, Zillow Rental Manager</td><td>TurboTenant, Avail, Innago, Stessa, Baselane, RentRedi</td><td>Avail, RentRedi, Zillow Rental Manager, TurboTenant, Buildium, RentSpree</td></tr>
+            <tr><td>What software should a DIY landlord use to manage a few rental properties?</td><td>Stessa, Baselane, TurboTenant, Avail, Innago</td><td>TurboTenant, Innago, Avail, Stessa, Baselane, TenantCloud</td><td>TurboTenant, Avail, Innago, Landlord Studio, Baselane, TenantCloud</td></tr>
+            <tr><td>What's the best property management software for small landlords that also does the accounting?</td><td>Stessa, TenantCloud, <mark>Rentec Direct ($45 to $50)</mark>, Baselane, Buildium</td><td>DoorLoop, <mark>Rentec Direct ($35 to $40)</mark>, Buildium, Stessa, TenantCloud</td><td>Landlord Studio, Buildium, <mark>Rentec Direct ($45 to $55)</mark>, TenantCloud, Stessa</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small">On “a landlord with 10 rentals”, the buyer Starter is built for, ChatGPT and Gemini didn't name Rentec.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Fix it<br>this week.</h2>
+      <p class="sub">Small changes, in the order we'd make them.</p>
+      <div class="steps">
+        <div class="card">
+          <div class="when">Today · 5 minutes</div>
+          <h3>Change the two $45 lines</h3>
+          <p class="small">On the Tenant Portal page, make the Quick Answer and the FAQ match your pricing page: Starter $25 for up to 10 properties, Pro and PM from $50.</p>
+        </div>
+        <div class="card">
+          <div class="when">This week · one email</div>
+          <h3>Send Avail the current prices</h3>
+          <p class="small">Their roundup still says $35 and $40. A short, polite note with a link to your pricing page may be all it takes.</p>
+        </div>
+        <div class="card">
+          <div class="when">In a month</div>
+          <h3>Ask the same questions again</h3>
+          <p class="small">Same 4 questions, same 3 AIs, twice each. Check the price they quote and how often they name Rentec.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>How this<br>was made.</h2>
+      <div class="how">
+        <div>
+          <ol>
+            <li>Asked ChatGPT, Gemini and Perplexity 4 questions small US landlords ask, once each, on 9 November 2026 (US time).</li>
+            <li>Asked ChatGPT and Perplexity “How much does Rentec Direct cost for a landlord with 8 rental properties?”, twice each.</li>
+            <li>Checked every price against rentecdirect.com/pricing, /pricing-starter and /details/tenant-portal, and Avail's article, the same day.</li>
+          </ol>
+        </div>
+        <div>
+          <p style="margin-top:0">AI answers change from run to run, so the counts are a snapshot. The prices are quoted word for word from the answers and the live pages.</p>
+          <p>Data cost: about US$0.07. Rentec Direct isn't a client and hasn't seen this.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Made by Ross Delport, Perth, Australia · <a href="mailto:ross@firstpicked.com.au">ross@firstpicked.com.au</a></p>
+    <p>A sample of the report and first message Ross would send as a FirstIndex sales rep. FirstIndex is Josh Pigford's company and hasn't approved this page.</p>
+  </div>
+</footer>
+</body>
+</html>
