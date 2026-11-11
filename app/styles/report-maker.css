@@ -1,6 +1,6 @@
 /* The report maker, firstpicked.com.au/report-maker (app/routes/report-maker.tsx): one column, big tap targets, on top of web.css. */
 body { background: #fafafa; }
-.rm { max-width: 560px; min-height: 100vh; margin: 0 auto; padding: 18px 16px 48px; background: #fafafa; }
+.rm { max-width: 560px; min-height: 100vh; margin: 0 auto; padding: 18px 26px 48px; background: #fafafa; }
 .rm-head { display: flex; align-items: center; gap: 9px; margin-bottom: 18px; font-size: 19px; font-weight: 650; letter-spacing: -0.02em; color: var(--ink); }
 .rm-head em { margin-left: auto; font-style: normal; font-size: 13px; font-weight: 500; letter-spacing: 0; color: var(--muted); }
 .rm-mark { position: relative; width: 22px; height: 20px; flex: none; }
