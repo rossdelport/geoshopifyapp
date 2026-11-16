@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -91,6 +91,34 @@ describe("home page", () => {
     expect(cta).toMatch(/<img src="[^"]*ross[^"]*\.webp" alt="" width="46" height="46"/);
     expect(cta).toContain("Not sure if FirstPicked suits your store?");
     expect(cta).toContain('Text Ross, the founder: <a href="sms:+61400369865">0400 369 865</a>');
+  });
+
+  it("shows Eduardo's video review second, loading nothing until it is played (Ross, 12 Nov 2026)", async () => {
+    const html = await home();
+    // right after the hero, so people see it
+    const ids = [...html.matchAll(/<section class="([^"]*)"(?: id="([^"]*)")?/g)].map((m) => m[2] ?? m[1]);
+    expect(ids.slice(0, 3)).toEqual(["hero", "review", "what"]);
+    const start = html.indexOf('id="review"');
+    const sec = html.slice(start, html.indexOf("</section>", start));
+    // fast: no video bytes before play, a small cover picture, plays in the page on phones, captions
+    expect(sec).toMatch(/<video [^>]*src="[^"]*eduardo-review[^"]*\.mp4"/);
+    expect(sec).toMatch(/<video [^>]*poster="[^"]*eduardo-review[^"]*\.webp"/);
+    expect(sec).toMatch(/<video [^>]*preload="none"/);
+    expect(sec).toMatch(/<video [^>]*playsinline/);
+    expect(sec).toMatch(/<track kind="captions" src="[^"]*eduardo-review[^"]*\.vtt"/);
+    expect(html).not.toContain("__REVIEW_");
+    const mp4 = join(ROOT, "app", "home", "eduardo-review.mp4");
+    const poster = join(ROOT, "app", "home", "eduardo-review.webp");
+    expect(statSync(mp4).size).toBeLessThan(1_500_000);
+    expect(statSync(poster).size).toBeLessThan(60_000);
+    // his words on the page are word for word from the video (the captions hold everything he says)
+    const words = (s: string) => s.toLowerCase().replace(/[’']/g, "'").replace(/[^a-z' ]+/g, " ").replace(/\s+/g, " ").trim();
+    const said = words(readFileSync(join(ROOT, "app", "home", "eduardo-review.vtt"), "utf8").split("\n").filter((l) => /[a-z]/i.test(l) && !l.includes("-->") && l !== "WEBVTT").join(" "));
+    const quotes = [...sec.matchAll(/<p>“([^”]+)”<\/p>/g)].map((m) => m[1]);
+    expect(quotes).toHaveLength(2);
+    for (const q of quotes) expect(said, q).toContain(words(q));
+    expect(sec).toContain('<a href="https://terratanks.com.au/" target="_blank" rel="noopener">Terra Tanks</a>');
+    expect(sec).toContain("A real client, in his own words. Results are different for every store.");
   });
 
   it("has no 'Example' pills on its pictures, nor do the language pages (Ross, 2 Nov 2026)", async () => {

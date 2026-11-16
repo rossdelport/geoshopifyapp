@@ -208,6 +208,38 @@ ul,ol{padding:0;list-style:none}
 .works svg{width:19px;height:19px;color:#111}
 @media (min-width:900px){.works-l{flex-basis:auto}}
 
+/* ---------- Client review: Eduardo from Terra Tanks on video (Ross, 12 Nov 2026), right under the hero ----------
+   The video sits on a purple picture panel like the other pictures. Phones: heading, video, then his words.
+   Wider screens: the video on the left, the heading and his words beside it, centred on the video. */
+.rv-sec{padding-top:0}
+.rv{display:grid;gap:28px}
+.rv-card{justify-self:center;width:100%;max-width:400px}
+.art.rv-art{display:grid;place-items:center;height:auto;padding:28px 20px}
+.rv-frame{position:relative;width:min(100%,240px);aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:#d8d4cc;box-shadow:0 0 0 1px rgba(255,255,255,.55),0 22px 40px -18px rgba(40,25,130,.6)}
+.rv-video{display:block;width:100%;height:100%;object-fit:cover}
+.rv-play{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding:18px 12px;-webkit-tap-highlight-color:transparent}
+.rv-pill{display:inline-flex;align-items:center;gap:10px;padding:6px 16px 6px 6px;border-radius:999px;background:rgba(255,255,255,.95);box-shadow:0 0 0 5px rgba(255,255,255,.28),0 10px 24px -6px rgba(20,10,80,.5);font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--head);white-space:nowrap;transition:transform .2s ease}
+.rv-play:hover .rv-pill{transform:scale(1.04)}
+.rv-play-i{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;color:#fff;background:linear-gradient(180deg,#7262f4,#5f4feb);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.rv-play-i svg{width:18px;height:18px;margin-left:2px}
+.rv-len{font-weight:500;color:var(--soft);font-variant-numeric:tabular-nums}
+.rv-q{margin:0}
+.rv-q p{font-size:clamp(1.15rem,1.05rem + .4vw,1.4rem);line-height:1.45;letter-spacing:-.02em;font-weight:500;color:var(--ink);text-wrap:pretty}
+.rv-q p+p{margin-top:14px}
+.rv-who{margin-top:22px;font-size:15px;color:var(--text)}
+.rv-who b{font-weight:600;color:var(--head)}
+.rv-who a{color:var(--accent-ink);text-decoration:underline;text-decoration-color:var(--accent-100);text-underline-offset:3px}
+.rv-who a:hover{text-decoration-color:currentColor}
+.rv-note{margin-top:6px;font-size:13px;color:var(--soft)}
+@media (min-width:900px){
+  .rv{grid-template-columns:400px minmax(0,1fr);grid-template-rows:1fr auto auto 1fr;grid-template-areas:"v ." "v h" "v t" "v .";gap:0 64px}
+  .rv-card{grid-area:v}
+  .rv-h{grid-area:h;margin-bottom:28px}
+  .rv-tx{grid-area:t}
+  .art.rv-art{padding:36px 20px}
+  .rv-frame{width:280px}
+}
+
 /* ---------- What you get (bento) ---------- */
 .bento{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
 .bento>.card{grid-column:span 4}
@@ -830,6 +862,36 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
       <span><svg aria-hidden="true"><use href="#i-google"/></svg>Google AI Overviews</span>
       <span><svg aria-hidden="true"><use href="#i-claude"/></svg>Claude</span>
     </p>
+  </div>
+</section>
+
+<!-- FirstPicked's first client review (Ross, 12 Nov 2026): Eduardo from Terra Tanks (terratanks.com.au), filmed by himself.
+     Second on the page so people see it. The video loads nothing until someone presses play (preload="none"); before
+     that only the small cover picture loads. His words below are word for word from the video, and the captions
+     (eduardo-review.vtt) are everything he says. -->
+<section class="sec rv-sec" id="review" aria-labelledby="review-h">
+  <div class="wrap rv">
+    <h2 class="h2 rv-h" id="review-h">Don’t take our word for it. <b>Hear it from Eduardo.</b></h2>
+    <div class="card rv-card">
+      <div class="art rv-art">
+        <div class="rv-frame">
+          <video class="rv-video" data-review src="__REVIEW_VIDEO__" poster="__REVIEW_POSTER__" width="540" height="960" preload="none" playsinline controls tabindex="-1" aria-label="Eduardo from Terra Tanks talks about working with FirstPicked">
+            <track kind="captions" src="__REVIEW_CAPTIONS__" srclang="en" label="English" default>
+          </video>
+          <button class="rv-play" type="button" data-review-play aria-label="Watch Eduardo’s review, 33 seconds" hidden>
+            <span class="rv-pill"><span class="rv-play-i"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.9l10.4-6.5a1 1 0 0 0 0-1.8L9.5 4.6A1 1 0 0 0 8 5.5z"/></svg></span>Watch Eduardo <span class="rv-len">0:33</span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="rv-tx">
+      <blockquote class="rv-q">
+        <p>“We met Ross and he was able to help us understand what we needed to do to rank highly in AI and Google AI.”</p>
+        <p>“It’s really helped our brand. We highly recommend it.”</p>
+      </blockquote>
+      <p class="rv-who"><b>Eduardo</b>, <a href="https://terratanks.com.au/" target="_blank" rel="noopener">Terra Tanks</a>. Stock tank pools in Australia.</p>
+      <p class="rv-note">A real client, in his own words. Results are different for every store.</p>
+    </div>
   </div>
 </section>
 
@@ -1605,6 +1667,21 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
       if (!keyboard) return;
       if (!view.classList.contains('is-manual')) { view.classList.add('is-manual'); tg.hidden = true; }
       if (e.target.scrollIntoView) e.target.scrollIntoView({ block: 'nearest', inline: 'start' });
+    });
+  }
+
+  // Eduardo's review: a big play button over the cover picture. The video only starts loading when it is pressed;
+  // then the browser's own controls take over. Without this script the browser's controls show from the start.
+  var review = $('[data-review]');
+  var reviewPlay = $('[data-review-play]');
+  if (review && reviewPlay) {
+    review.controls = false;
+    reviewPlay.hidden = false;
+    reviewPlay.addEventListener('click', function () {
+      reviewPlay.hidden = true;
+      review.controls = true;
+      review.play();
+      review.focus();
     });
   }
 

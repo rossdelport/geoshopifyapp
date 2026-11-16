@@ -5,6 +5,11 @@ import { logoSrc, storyPath } from "../../lib/stories/pages";
 import font from "../../fonts/inter-geo.woff2?url";
 // Ross's photo beside the main hero button (Ross, 3 Nov 2026): a square head-and-shoulders crop, 168px for a 46px box (as tall as the button).
 import rossPhoto from "../../home/ross.webp?url";
+// Eduardo's video review (Ross, 12 Nov 2026): a small mp4 (540 x 960, about 1.2 MB, loads only when played), its cover
+// picture and captions. Imported as URLs so they get the same long cache as the font.
+import reviewVideo from "../../home/eduardo-review.mp4?url";
+import reviewPoster from "../../home/eduardo-review.webp?url";
+import reviewCaptions from "../../home/eduardo-review.vtt?url";
 
 // The public home page, firstpicked.com.au (Ross, 2 Nov 2026: the new design from /newhomepage, which now sends people here).
 // One HTML file with its styles and scripts inline. The font is Inter (with its Display cut for big text),
@@ -32,7 +37,13 @@ const storyGroup = (copy: boolean) =>
   "</ul>";
 
 // Functions as replacements, so a "$" in a headline is never read as a replace pattern.
-const page = raw.replaceAll("__FONT_URL__", () => font).replaceAll("__ROSS_PHOTO__", () => rossPhoto).replace("<!-- STORY_CARDS -->", () => storyGroup(false) + storyGroup(true));
+const page = raw
+  .replaceAll("__FONT_URL__", () => font)
+  .replaceAll("__ROSS_PHOTO__", () => rossPhoto)
+  .replace("__REVIEW_VIDEO__", () => reviewVideo)
+  .replace("__REVIEW_POSTER__", () => reviewPoster)
+  .replace("__REVIEW_CAPTIONS__", () => reviewCaptions)
+  .replace("<!-- STORY_CARDS -->", () => storyGroup(false) + storyGroup(true));
 
 // No component: this route sends the finished HTML page as-is.
 export const loader = async ({ request }: LoaderFunctionArgs) => serveHome(request, page);
