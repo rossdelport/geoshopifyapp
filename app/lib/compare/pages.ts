@@ -132,7 +132,7 @@ export const COMPARE_PAGES: ComparePage[] = [
             ["The SEO Room", "Canning Vale", "Local service businesses, like tradies and real estate", "A$1,500 to A$5,000 + GST a month", "None"],
             ["Loaded Communications", "Perth, since 2001", "Brand, WordPress websites and SEO", "Not shown", "Not shown"],
             ["Daisy Digital", "Leederville", "Social media, ads, websites and SEO", "Not shown", "Not shown"],
-            ["FirstPicked", "Perth", "Shopify brands that want to be picked by AI and Google", "A$945 a month", "None, and a full refund after month 1"],
+            ["FirstPicked", "Perth", "Shopify brands that want to be picked by AI and Google", "A$297 a month", "None, and a full refund after month 1"],
           ],
         },
         paragraphs: ["\"Not shown\" means we couldn't find it on their home page on 8 November 2026. Ask them. Many agencies quote each store on its own."],
@@ -180,7 +180,7 @@ export const COMPARE_PAGES: ComparePage[] = [
       {
         heading: "FirstPicked",
         paragraphs: [
-          "That's us. FirstPicked is run from Perth by its founder, Ross Delport. One plan for Shopify brands: A$945 a month, done for you. Each day we check up to 100 buying questions in ChatGPT, Gemini, Perplexity and Google AI Overviews. Each month we make 50+ fixes to your pages, write up to 12 buying guides, and show you the sales AI sends you.",
+          "That's us. FirstPicked is run from Perth by its founder, Ross Delport. One plan for Shopify brands: A$297 a month, done for you. Each day we check up to 100 buying questions in ChatGPT, Gemini, Perplexity and Google AI Overviews. Each month we make 50+ fixes to your pages, write up to 12 buying guides, and show you the sales AI sends you.",
           "We don't build stores, run ads or do Google Maps. If you need those, one of the agencies above is the better pick.",
         ],
       },
@@ -212,7 +212,7 @@ export const COMPARE_PAGES: ComparePage[] = [
     faqs: [
       {
         q: "How much does SEO cost in Perth?",
-        a: "Most Perth agencies don't show a price on their website. The SEO Room shows A$1,500 to A$5,000 + GST a month. FirstPicked is A$945 a month. Always get the monthly price in writing.",
+        a: "Most Perth agencies don't show a price on their website. The SEO Room shows A$1,500 to A$5,000 + GST a month. FirstPicked is A$297 a month. Always get the monthly price in writing.",
       },
       {
         q: "Do I need an agency in Perth?",
@@ -256,7 +256,7 @@ export const COMPARE_PAGES: ComparePage[] = [
             ["Planet Media", "Canberra", "Businesses that want press and mentions AI trusts", "Not shown"],
             ["Myoho Marketing", "Melbourne", "Content written for AI answers", "Not shown"],
             ["Digital Hitmen", "Perth", "Ecommerce SEO, AI search, web design and ads", "Not shown"],
-            ["FirstPicked", "Perth", "Shopify brands that want to be picked by AI and Google", "A$945 a month"],
+            ["FirstPicked", "Perth", "Shopify brands that want to be picked by AI and Google", "A$297 a month"],
           ],
         },
         paragraphs: ["\"Not shown\" means we couldn't find a price on the page we read on 8 November 2026. Ask them. Most agencies quote each business on its own."],
@@ -311,7 +311,7 @@ export const COMPARE_PAGES: ComparePage[] = [
       {
         heading: "FirstPicked",
         paragraphs: [
-          "That's us. FirstPicked is run from Perth by its founder, Ross Delport. One plan for Shopify brands: A$945 a month, done for you, with no lock-in. If you're not happy after the first month, you get a full refund and keep the work.",
+          "That's us. FirstPicked is run from Perth by its founder, Ross Delport. One plan for Shopify brands: A$297 a month, done for you, with no lock-in. If you're not happy after the first month, you get a full refund and keep the work.",
           "Each day we check up to 100 buying questions in ChatGPT, Gemini, Perplexity and Google AI Overviews. Each month we make 50+ fixes to your pages, write up to 12 buying guides, and show you the sales AI sends you. We don't do digital PR, ads or websites. If you need those, an agency above is the better pick.",
         ],
       },
@@ -343,7 +343,7 @@ export const COMPARE_PAGES: ComparePage[] = [
     faqs: [
       {
         q: "How much does an AI SEO agency cost in Australia?",
-        a: "Most don't show a price. Optimising's guide puts Australian GEO agencies at about A$2,000 to A$20,000 or more a month. FirstPicked is A$945 a month. Always get the monthly price in writing.",
+        a: "Most don't show a price. Optimising's guide puts Australian GEO agencies at about A$2,000 to A$20,000 or more a month. FirstPicked is A$297 a month. Always get the monthly price in writing.",
       },
       {
         q: "Is AI SEO the same as GEO?",
@@ -383,7 +383,7 @@ export const COMPARE_PAGES: ComparePage[] = [
             ["Otterly", "US$29, US$189 or US$489", "15, 100 or 400", "ChatGPT, Google AI Overviews, Perplexity and Copilot. Claude, Gemini and Google AI Mode cost extra", "You"],
             ["Peec AI", "US$95, US$245 or US$495 (15% off yearly)", "50, 150 or 350", "Pick 3 AI apps. More cost extra", "You"],
             ["Profound", "Free 7-day trial, then a custom price", "50 a day on the trial", "ChatGPT, Gemini and Google AI Overviews on the trial", "You"],
-            ["FirstPicked", "A$945 (Australian dollars)", "Up to 100, every day", "ChatGPT, Gemini, Perplexity and Google AI Overviews daily, Claude weekly", "We do"],
+            ["FirstPicked", "A$297 (Australian dollars)", "Up to 100, every day", "ChatGPT, Gemini, Perplexity and Google AI Overviews daily, Claude weekly", "We do"],
           ],
         },
         paragraphs: [
@@ -444,7 +444,7 @@ export const COMPARE_PAGES: ComparePage[] = [
       },
       {
         q: "Is FirstPicked a tool?",
-        a: "No, it's a service. Our team and AI do the checks and the work for you, for A$945 a month with no lock-in. You get a weekly report and a monthly call.",
+        a: "No, it's a service. Our team and AI do the checks and the work for you, for A$297 a month with no lock-in. You get a report every week.",
       },
       {
         q: "Are these prices in Australian dollars?",
@@ -475,7 +475,7 @@ export const COMPARE_PAGES: ComparePage[] = [
             ["The goal", "Rank higher in Google's results and Maps", "Get named when shoppers ask ChatGPT, Gemini, Perplexity or Google AI Overviews what to buy"],
             ["What they change", "Site speed, technical fixes, keywords, blog posts, links", "Product details AI reads, buying guides, and finding the sites AI quotes"],
             ["What they report", "Rankings and Google traffic", "Which buying questions name you, which sites AI quotes, and orders and sales from AI"],
-            ["Price in Australia", "Quoted per store", "GEO agencies: about A$2,000 to A$20,000+ a month. FirstPicked: A$945 a month"],
+            ["Price in Australia", "Quoted per store", "GEO agencies: about A$2,000 to A$20,000+ a month. FirstPicked: A$297 a month"],
           ],
         },
         paragraphs: ["Agency GEO prices are from Optimising's Australian price guide. SEO prices vary too much to quote fairly, so ask for a fixed monthly price."],
@@ -518,7 +518,7 @@ export const COMPARE_PAGES: ComparePage[] = [
       {
         heading: "Where FirstPicked fits",
         paragraphs: [
-          "FirstPicked is a done-for-you service for Shopify brands. It's A$945 a month, with no lock-in and a full refund if you're not happy after the first month. Our team and AI check 100 buying questions every day and fix your product pages. We write 12 buying guides a month and show you the sales AI sends you.",
+          "FirstPicked is a done-for-you service for Shopify brands. It's A$297 a month, with no lock-in and a full refund if you're not happy after the first month. Our team and AI check 100 buying questions every day and fix your product pages. We write 12 buying guides a month and show you the sales AI sends you.",
           "We are not a full-service SEO agency. We don't do site speed, ads or full technical SEO. If you need those, keep your SEO agency and use us alongside it.",
         ],
       },
@@ -618,7 +618,7 @@ export const COMPARE_PAGES: ComparePage[] = [
     h1: "How much does GEO cost in Australia? Agency, tool and done-for-you prices compared",
     intro: [
       "Australian agencies charge about A$2,000 to A$20,000 or more a month for GEO, according to Optimising's price guide. Tracking tools cost far less, about A$50 to A$500 a month, but you do the work yourself.",
-      "FirstPicked is A$945 a month, done for you, with no lock-in contract.",
+      "FirstPicked is A$297 a month, done for you, with no lock-in contract.",
     ],
     checked: "2026-10-23",
     sections: [
@@ -633,7 +633,7 @@ export const COMPARE_PAGES: ComparePage[] = [
             ["Australian agency, full", "Various", "A$10,000 to A$20,000+ a month", "All of the above plus SEO, structured data and ongoing content"],
             ["Shopify GEO agency (overseas)", "Netalico (US)", "About US$3,000 a month", "Product data, schema and feed work for Shopify Plus stores"],
             ["Done for you, software only", "FirstIndex", "US$2,000 a month after a 3-month start, or US$1,500 a month on 12 months", "Daily site changes, up to 12 articles and 50+ page fixes a month"],
-            ["Done for you, Shopify brands", "FirstPicked", "A$945 a month, no lock-in", "100 questions checked daily, 50+ page fixes, 12 guides, sales from AI, weekly reports, a monthly call"],
+            ["Done for you, Shopify brands", "FirstPicked", "A$297 a month, no lock-in", "100 questions checked daily, 50+ page fixes, 12 guides, sales from AI, weekly reports"],
           ],
         },
         paragraphs: [
@@ -660,7 +660,7 @@ export const COMPARE_PAGES: ComparePage[] = [
       {
         heading: "A quick sum before you spend",
         paragraphs: [
-          "Work out how many extra orders cover the cost. Say your average order is A$100 and you keep A$40 of it after costs. Then you need 24 extra orders a month from AI to cover A$945.",
+          "Work out how many extra orders cover the cost. Say your average order is A$100 and you keep A$40 of it after costs. Then you need 8 extra orders a month from AI to cover A$297.",
           "Shopify's president said in February 2026 that orders from AI search were 15 times higher than a year earlier. Whether that reaches your store depends on whether AI names you, which is what to check first.",
         ],
       },

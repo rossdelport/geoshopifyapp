@@ -55,7 +55,7 @@ export async function clientCards(opts: { shopId?: string } = {}, now = new Date
   const firstStart = clients.map((c) => c.startedOn).sort()[0];
   const scoresFrom = dayStartsAt(addDays(firstStart < today ? firstStart : today, -45));
 
-  const [snaps, sales, visits, written, live, checks, reddit, changes, onboardJobs, latestScans, slots, upcoming, reports, calls] = await Promise.all([
+  const [snaps, sales, visits, written, live, checks, reddit, changes, onboardJobs, latestScans, slots, upcoming, reports] = await Promise.all([
     db.visibilitySnapshot.findMany({ where: { shopId, date: { gte: scoresFrom } }, select: { shopId: true, score: true, date: true }, orderBy: { date: "asc" } }),
     db.aiOrder.groupBy({ by: ["shopId"], where: { shopId, orderedAt: { gte: monthStart } }, _sum: { revenue: true }, _count: true }),
     db.aiSession.groupBy({ by: ["shopId"], where: { shopId, occurredAt: { gte: monthStart }, engine: { not: "ours" } }, _count: true }),
@@ -74,7 +74,6 @@ export async function clientCards(opts: { shopId?: string } = {}, now = new Date
       orderBy: { day: "asc" },
     }),
     db.clientReport.groupBy({ by: ["shopId"], where: { shopId }, _max: { createdAt: true } }),
-    db.workNote.groupBy({ by: ["shopId"], where: { shopId, kind: "call" }, _max: { doneAt: true } }),
   ]);
 
   // A check that's queued or running only finishes if its job is still waiting or working.
@@ -88,7 +87,6 @@ export async function clientCards(opts: { shopId?: string } = {}, now = new Date
   const [writtenBy, liveBy, checksBy, redditBy, changesBy, visitsBy] = [written, live, checks, reddit, changes, visits].map(count);
   const salesBy = new Map(sales.map((s) => [s.shopId, { revenue: s._sum.revenue ?? 0, orders: s._count }]));
   const reportBy = new Map(reports.map((r) => [r.shopId, r._max.createdAt]));
-  const callBy = new Map(calls.map((r) => [r.shopId, r._max.doneAt]));
   const scanBy = new Map(latestScans.map((s) => [s.shopId, s]));
   const monthKey = now.toISOString().slice(0, 7); // the cost cap's month (UTC, like lib/cost.server.ts)
 
@@ -125,7 +123,6 @@ export async function clientCards(opts: { shopId?: string } = {}, now = new Date
       guidesFailed: failed.length,
       firstFailed: failed[0]?.id ?? null,
       lastReportAt: reportBy.get(c.shopId)?.toISOString() ?? null,
-      lastCallAt: callBy.get(c.shopId)?.toISOString() ?? null,
       costCapHit: shop.costMonth === monthKey && shop.costThisMonth >= getPlan(shop.plan).costCapUsd,
     };
     const alerts = clientAlerts(facts, today, now);
