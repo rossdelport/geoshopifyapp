@@ -5,7 +5,7 @@
 // the 3 steps and the price, the questions and the sources. Pure: app/routes/for.$niche.tsx passes in the file
 // addresses. Every piece of text is escaped here, so pages.ts stays plain text. The drawings are our own.
 
-import { AGENCY_PRICE, VSL_PRICE, vslBookHref, type Drawing, type VslPage, type VslRow } from "./pages";
+import { AGENCY_PRICE, VIDEO_NOTE, VIDEO_SOURCES, VSL_PRICE, vslBookHref, type Drawing, type VslPage, type VslRow } from "./pages";
 
 export interface VslAssets {
   /** Ross's face, small and square. */
@@ -14,6 +14,9 @@ export interface VslAssets {
   cover: string;
   /** Ross's video for this page, once he has filmed it. Without one, the frame says it's coming. */
   video?: { src: string; poster: string; captions?: string; width: number; height: number; seconds: number };
+  /** Ross's video on Loom, played in Loom's own player (Ross, 17 Nov 2026: "dont touch the video"). Loom loads only
+   *  when someone presses play; until then the frame shows the cover photo. */
+  loom?: { id: string; seconds: number };
   /** Eduardo's review (every page has it since 17 Nov 2026; left out, the page has no review). */
   review?: { src: string; poster: string; captions: string };
 }
@@ -99,8 +102,21 @@ function clock(seconds: number): string {
 }
 
 /** The video frame: Ross's video (loads nothing until played), or his photo with a note that the video is coming. */
+/** Loom's player for Ross's video: no Loom title bar, avatar or share button, and it starts when it opens. */
+export function loomEmbed(id: string): string {
+  return `https://www.loom.com/embed/${id}?hideEmbedTopBar=true&hide_owner=true&hide_share=true&hide_title=true&autoplay=1`;
+}
+
 function videoFrame(page: VslPage, a: VslAssets): string {
   const v = a.video;
+  if (!v && a.loom) {
+    // a link to the video on Loom, which the page's script swaps for Loom's player when pressed
+    const l = a.loom;
+    return `<div class="vsl" data-loom="${esc(loomEmbed(l.id))}">
+      <img class="vsl-cover" src="${esc(a.cover)}" alt="" width="1280" height="720" decoding="async" fetchpriority="high">
+      <a class="vsl-btn" href="https://www.loom.com/share/${esc(l.id)}" target="_blank" rel="noopener" data-loom-play aria-label="Watch Ross’s video, ${clock(l.seconds)}"><span class="vsl-pill"><span class="vsl-play">${PLAY}</span><span><b>Hi, I’m Ross. Watch this first.</b><small>${clock(l.seconds)}</small></span></span></a>
+    </div>`;
+  }
   if (!v) {
     return `<div class="vsl vsl-soon">
       <img class="vsl-cover" src="${esc(a.cover)}" alt="Ross Delport, founder of Rank with Ross" width="1280" height="720" decoding="async" fetchpriority="high">
@@ -175,7 +191,7 @@ export function renderVsl(page: VslPage, a: VslAssets): string {
   const book = vslBookHref(page);
   const store = Boolean(page.shopify);
   const faq = page.faq.map((f, n) => `<details class="qa"${n === 0 ? " open" : ""}><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join("");
-  const sources = page.sources.map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join("");
+  const sources = [...page.sources, ...(a.video || a.loom ? VIDEO_SOURCES : [])].map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join("");
 
   return `${ROUGH}
 <header class="top">
@@ -273,7 +289,7 @@ ${pullQuote(a)}
       <p>Perth, Western Australia · Text me: ${SMS}</p>
     </div>
     <div class="src">
-      <p><b>Where these numbers come from.</b> Google click prices and searches: Google Ads figures from DataForSEO, Australia, November 2025 to October 2026, changed at $1.42 per US$1. All prices on this page are in Australian dollars. ChatGPT answers: asked once each on 17 November 2026, in Australia. Answers change from one ask to the next.</p>
+      <p><b>Where these numbers come from.</b> Google click prices and searches: Google Ads figures from DataForSEO, Australia, November 2025 to October 2026, changed at $1.42 per US$1. All prices on this page are in Australian dollars. ChatGPT answers: asked once each on 17 November 2026, in Australia. Answers change from one ask to the next.</p>${a.video || a.loom ? `\n      <p>${esc(VIDEO_NOTE)}</p>` : ""}
       <ul>${sources}</ul>
       <p>Rank with Ross is not part of OpenAI, Google or any business named on this page. Nobody can promise what AI says, and I don’t.</p>
     </div>

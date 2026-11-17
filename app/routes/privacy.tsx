@@ -224,6 +224,11 @@ function PrivacyText() {
         unless you click No thanks. To change your choice, clear this site&apos;s cookies and data in your browser, and the
         notice shows again. The pixel is not part of the Rank with Ross app and never sees your store&apos;s data.
       </p>
+      <p>
+        Our video pages (rankwithross.com.au/for/...) use the same pixel and cookie notice. Ross&apos;s video on them plays
+        from Loom. Nothing loads from Loom until you press play. After that, Loom may set its own cookies, as Loom&apos;s own
+        privacy policy says.
+      </p>
 
       <h2 style={h2}>Why we use it</h2>
       <p>
@@ -273,6 +278,7 @@ function PrivacyText() {
         <li>Railway (Singapore): runs the app.</li>
         <li>Meta (Facebook and Instagram): our own ads, and the pixel on our home page, giveaway page and booking page described above.</li>
         <li>Google: Google Calendar and Google Meet, for calls booked on our website.</li>
+        <li>Loom: plays Ross&apos;s video on our video pages, only after you press play.</li>
         <li>Supabase (Tokyo): stores the data.</li>
         <li>Treg: gets public AI answers to buying questions. It gets the questions only, never customer data.</li>
         <li>Anthropic (Claude): reads AI answers and writes draft fixes from your product details. It never gets customer data.</li>

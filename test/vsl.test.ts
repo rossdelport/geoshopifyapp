@@ -9,8 +9,8 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import type { LoaderFunctionArgs } from "react-router";
 import { OFFER } from "../app/lib/plans";
-import { AGENCY_PRICE, VSL_PAGES, VSL_PRICE, VSL_SLUGS, bookingNiche, vslBookHref, vslBySlug } from "../app/lib/vsl/pages";
-import { renderVsl } from "../app/lib/vsl/render";
+import { AGENCY_PRICE, VIDEO_NOTE, VIDEO_SOURCES, VSL_PAGES, VSL_PRICE, VSL_SLUGS, bookingNiche, vslBookHref, vslBySlug } from "../app/lib/vsl/pages";
+import { loomEmbed, renderVsl } from "../app/lib/vsl/render";
 import { loader } from "../app/routes/for.$niche";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
@@ -133,7 +133,7 @@ describe("the page at /for/<niche>", () => {
       expect(html.match(/<h1[\s>]/g), slug).toHaveLength(1);
       // the route filled everything in
       expect(html, slug).not.toMatch(/__[A-Z_]+__|<!-- (META_PIXEL|COOKIE_SCRIPT|VSL_BODY) -->/);
-      // the video frame (coming soon until Ross films it) comes before the first big button, which opens /book
+      // Ross's video comes before the first big button, which opens /book
       const video = html.indexOf('class="vsl');
       const button = html.indexOf('class="btn btn-pri btn-lg"');
       expect(video, slug).toBeGreaterThan(html.indexOf("<h1"));
@@ -144,13 +144,33 @@ describe("the page at /for/<niche>", () => {
       expect(html, slug).toContain(p.big.line);
       // the only links: /book, home, privacy, terms, texting Ross and the sources
       const links = new Set([...html.matchAll(/<a [^>]*href="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, "&")));
-      const allowed = new Set([vslBookHref(p), "/", "/privacy", "/privacy#cookies", "/terms", "sms:+61400369865", "https://terratanks.com.au/", ...p.sources.map((s) => s.url)]);
+      const allowed = new Set([vslBookHref(p), "/", "/privacy", "/privacy#cookies", "/terms", "sms:+61400369865", "https://terratanks.com.au/", "https://www.loom.com/share/3fef7fa99b224d459f02d072445e2213", ...p.sources.map((s) => s.url), ...VIDEO_SOURCES.map((s) => s.url)]);
       for (const l of links) expect(allowed.has(l), `${slug}: ${l}`).toBe(true);
       expect(html, slug).not.toContain("A$");
       expect(html, slug).toContain("All prices on this page are in Australian dollars.");
       expect(html, slug).not.toContain("—");
       expect(html, slug).not.toMatch(/ – /);
     }
+  });
+
+  it("plays Ross's Loom video on every page, loading nothing from Loom until play, and says where its numbers come from", async () => {
+    const embed = loomEmbed("3fef7fa99b224d459f02d072445e2213");
+    expect(embed).toBe("https://www.loom.com/embed/3fef7fa99b224d459f02d072445e2213?hideEmbedTopBar=true&hide_owner=true&hide_share=true&hide_title=true&autoplay=1");
+    for (const slug of VSL_SLUGS) {
+      const html = await (await open(slug)).text();
+      expect(html, slug).not.toContain("coming soon");
+      // his photo with a play button; the script swaps in Loom's player on press, without it the button opens Loom
+      expect(html, slug).toContain(`<div class="vsl" data-loom="${embed.replace(/&/g, "&amp;")}">`);
+      expect(html, slug).toContain('href="https://www.loom.com/share/3fef7fa99b224d459f02d072445e2213" target="_blank" rel="noopener" data-loom-play');
+      expect(html, slug).toContain("<b>Hi, I’m Ross. Watch this first.</b><small>4:52</small>");
+      expect(html, slug).not.toMatch(/<iframe/);
+      expect(html, slug).toContain("f.src = box.getAttribute('data-loom');");
+      expect(html, slug).toContain(VIDEO_NOTE);
+      for (const s of VIDEO_SOURCES) expect(html, slug).toContain(`href="${s.url}"`);
+    }
+    // the bonus is OpenAI's own offer, for businesses new to ChatGPT ads, and ends 31 December 2026
+    expect(VIDEO_NOTE).toContain("new to ChatGPT ads, until 31 December 2026");
+    expect(VIDEO_NOTE).not.toMatch(/[—–]/);
   });
 
   it("has the home page's Meta pixel and cookie notice", async () => {

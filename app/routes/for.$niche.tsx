@@ -22,10 +22,11 @@ import raw from "../home/vsl.html?raw";
 // "Book a call" button under it. The words are in app/lib/vsl/pages.ts; app/lib/vsl/render.ts draws them into
 // app/home/vsl.html. An address that isn't one of the pages gets Not found.
 //
-// Ross's videos: put the file (H.264 .mp4, small, no location data) and a cover image (.webp) in app/home/vsl/, import
-// both here with ?url (1-year cache) and add them to VIDEOS under the page's slug. Until then the frame says the video
-// is coming, over a photo of Ross (app/home/vsl/ross-cover.webp).
-const VIDEOS: Record<string, VslAssets["video"]> = {};
+// Ross's video, one for all 5 pages (Ross, 17 Nov 2026: filmed start to finish on Loom, slides with his face in the
+// corner, 4:52). It plays from Loom, untouched ("dont touch the video"), in Loom's own player with its captions. The
+// page shows his photo with a play button and loads nothing from Loom until someone presses it. A new video: change
+// the Loom id and the length. Without one, the frame says the video is coming.
+const ROSS_LOOM: VslAssets["loom"] = { id: "3fef7fa99b224d459f02d072445e2213", seconds: 292 };
 
 const shell = raw
   .replaceAll("__FONT_URL__", () => font)
@@ -45,7 +46,7 @@ export const loader = ({ params, request }: LoaderFunctionArgs) => {
   const body = renderVsl(page, {
     rossPhoto,
     cover: rossCover,
-    video: VIDEOS[page.slug],
+    loom: ROSS_LOOM,
     // Eduardo's review on every page (Ross, 17 Nov 2026: "make sure that the eduardo video is on all pages")
     review: { src: reviewVideo, poster: reviewPoster, captions: reviewCaptions },
   });
