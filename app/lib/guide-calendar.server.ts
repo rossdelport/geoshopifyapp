@@ -14,7 +14,7 @@ import { applyFix, clearForAutopilot, rejectFix, storeUrl, writeGuide, type Lost
 import { adminFor } from "./onboard-job.server";
 import { questionRows } from "./question-stats.server";
 import { countGuidePagesThisMonth } from "./usage.server";
-import { isLocal } from "./business";
+import { guidesPerMonth, isLocal } from "./business";
 import {
   PUBLISH_FROM_HOUR,
   WRITE_DAYS_AHEAD,
@@ -74,6 +74,7 @@ export async function autofillCalendar(shopId: string, now = new Date()): Promis
   const shop = await db.shop.findUniqueOrThrow({ where: { id: shopId } });
   const plan = getPlan(shop.plan);
   if (!calendarOn(shop, plan)) return 0;
+  const perMonth = guidesPerMonth(shop, plan); // 4 for a local business (lib/business.ts)
   const today = localDay(now, shop.country);
   const earliest = addDays(today, WRITE_DAYS_AHEAD);
   const [slots, guideFixes, rows, writtenThisMonth] = await Promise.all([
@@ -94,10 +95,20 @@ export async function autofillCalendar(shopId: string, now = new Date()): Promis
     // The month's allowance: the guides already written this month (a skipped guide that was written still used its
     // allowance) plus the days still to be written.
     const have = (month === monthOf(today) ? writtenThisMonth : 0) + active.filter((s) => !s.fixId).length;
-    const room = plan.guidePagesPerMonth - have;
+    const room = perMonth - have;
+    if (room < 0) {
+      // More days planned than the month now allows (a local business gets 4, or the plan went down): drop the latest
+      // days not written yet, so the writer isn't asked for guides past the allowance.
+      const extra = active
+        .filter((s) => s.status === "planned" && !s.fixId && s.day >= earliest)
+        .map((s) => s.day)
+        .sort()
+        .slice(room);
+      if (extra.length) await db.guideSlot.deleteMany({ where: { shopId, day: { in: extra }, status: "planned", fixId: null } });
+    }
     if (room <= 0) continue;
     // The plan's own days first; a day skipped before it was written earns one replacement from the denser list.
-    const primary = slotDaysForMonth(month, plan.guidePagesPerMonth).filter((d) => d >= earliest && !taken.has(d));
+    const primary = slotDaysForMonth(month, perMonth).filter((d) => d >= earliest && !taken.has(d));
     const replacements = inMonth.filter((s) => s.status === "skipped" && !s.fixId).length;
     const makeup = replacements
       ? slotDaysForMonth(month, 12)

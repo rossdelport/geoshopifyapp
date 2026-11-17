@@ -11,7 +11,7 @@ import { outreachUsedThisMonth } from "../lib/outreach.server";
 import { writersUsedThisMonth } from "../lib/trusted-sites.server";
 import { countGuidePagesThisMonth } from "../lib/usage.server";
 import { localMonthStart } from "../lib/guide-calendar";
-import { isLocal } from "../lib/business";
+import { guidesPerMonth, isLocal } from "../lib/business";
 import styles from "../styles/web.css?url";
 import hubStyles from "../styles/hub.css?url";
 
@@ -56,7 +56,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     country: shop.country,
     plan: plan.name,
     left: plan.writersPerMonth
-      ? { writers: Math.max(0, plan.writersPerMonth - writersUsed), pitches: Math.max(0, plan.outreachPerMonth - pitchesUsed), guides: Math.max(0, plan.guidePagesPerMonth - guidesUsed) }
+      ? { writers: Math.max(0, plan.writersPerMonth - writersUsed), pitches: Math.max(0, plan.outreachPerMonth - pitchesUsed), guides: Math.max(0, guidesPerMonth(shop, plan) - guidesUsed) }
       : null,
   };
 };

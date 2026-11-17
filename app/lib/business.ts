@@ -17,6 +17,16 @@ export function cleanArea(raw: unknown): string | null {
   return s ? s.slice(0, 60) : null;
 }
 
+/**
+ * Guides a month for a local business: 4, about one a week (Ross, 17 Nov 2026), because each one needs a real fact from
+ * the client (a price, a job photo) before Ross adds it to their website. Online stores keep their plan's number.
+ */
+export const LOCAL_GUIDES_PER_MONTH = 4;
+
+/** The guide pages a month this shop gets: its plan's number, and at most LOCAL_GUIDES_PER_MONTH for a local business. */
+export const guidesPerMonth = (shop: { kind?: string | null }, plan: { guidePagesPerMonth: number }) =>
+  isLocal(shop) ? Math.min(plan.guidePagesPerMonth, LOCAL_GUIDES_PER_MONTH) : plan.guidePagesPerMonth;
+
 /** Where a local business's questions are asked: their town or city when we know it, else the country. */
 export const placeFor = (shop: { kind?: string | null; area?: string | null }, countryName: string) => (isLocal(shop) && shop.area ? shop.area : countryName);
 

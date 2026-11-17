@@ -8,7 +8,7 @@ import { GUIDE_KIND_LABELS, type GuideKind } from "../lib/guide";
 import { formatNumber } from "../lib/format";
 import { PageHead } from "../components/web";
 import { storeBase } from "../lib/hub-paths";
-import { isLocal } from "../lib/business";
+import { guidesPerMonth, isLocal } from "../lib/business";
 
 // firstpicked.com.au/dash/guides: the guide calendar. One guide page per day slot, each answering a buying question AI
 // doesn't name the store for, written two days before its day and live on the day (lib/guide-calendar.server.ts).
@@ -22,7 +22,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const month = isMonth(asked) && Math.abs(monthsApart(asked, monthOf(today))) <= 12 ? asked : monthOf(today);
   const view = plan.guidePagesPerMonth ? await monthView(shop, month) : null;
   return {
-    plan: { name: plan.name, perMonth: plan.guidePagesPerMonth, doneForYou: plan.doneForYou },
+    plan: { name: plan.name, perMonth: guidesPerMonth(shop, plan), doneForYou: plan.doneForYou },
     today,
     month,
     offset: monthsApart(month, monthOf(today)), // the arrows stop a year either side of today
