@@ -10,10 +10,8 @@ export interface SimpleProfile {
 }
 
 /** Used when Claude is unavailable: a plain profile from the catalog alone. */
-export function simpleProfile(
-  name: string,
-  products: { productType: string | null; vendor: string | null }[],
-): SimpleProfile {
+export function simpleProfile(name: string, products: { productType: string | null; vendor: string | null }[], local = false): SimpleProfile {
+  if (local) return { brand_name: name, aliases: [], summary: `${name} is a local business.`, category: "local business", audience: "local customers", price_point: "mid" };
   const ranked = (vals: (string | null)[]) => {
     const m = new Map<string, number>();
     for (const v of vals) if (v) m.set(v, (m.get(v) ?? 0) + 1);
@@ -41,4 +39,21 @@ export function templateQuestions(topics: (string | null)[], where: string) {
     { question: `${t} gift ideas`, keyword: `${t} gift` },
     { question: `best natural ${t} brands`, keyword: `natural ${t}` },
   ]);
+}
+
+/**
+ * Questions for a local business (a broker, an installer, a tradie) when Claude is unavailable: its kind of
+ * business in its town or city. None if we don't know what kind of business it is.
+ */
+export function localTemplateQuestions(kind: string | null, where: string) {
+  const t = kind?.trim().toLowerCase();
+  if (!t || t === "local business") return [];
+  const place = where.toLowerCase();
+  return [
+    { question: `best ${t} in ${where}`, keyword: `${t} ${place}` },
+    { question: `who is the most trusted ${t} in ${where}`, keyword: `best ${t} ${place}` },
+    { question: `how do I choose a good ${t} in ${where}`, keyword: `${t} near me` },
+    { question: `how much does a ${t} cost in ${where}`, keyword: `${t} cost` },
+    { question: `is it worth using a ${t}`, keyword: t },
+  ];
 }

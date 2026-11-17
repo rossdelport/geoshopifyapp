@@ -8,6 +8,7 @@ import { GUIDE_KIND_LABELS, type GuideKind } from "../lib/guide";
 import { formatNumber } from "../lib/format";
 import { PageHead } from "../components/web";
 import { storeBase } from "../lib/hub-paths";
+import { isLocal } from "../lib/business";
 
 // firstpicked.com.au/dash/guides: the guide calendar. One guide page per day slot, each answering a buying question AI
 // doesn't name the store for, written two days before its day and live on the day (lib/guide-calendar.server.ts).
@@ -28,6 +29,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     weeks: calendarWeeks(month),
     slots: view?.slots ?? [],
     connected: view?.connected ?? false,
+    local: isLocal(shop), // a business that isn't an online store: its guides have no products (lib/business.ts)
   };
 };
 
@@ -41,7 +43,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 const kindLabel = (kind: string | null) => (kind && kind in GUIDE_KIND_LABELS ? GUIDE_KIND_LABELS[kind as GuideKind] : "Guide page");
 
 export default function Guides() {
-  const { plan, today, month, offset, weeks, slots, connected } = useLoaderData<typeof loader>();
+  const { plan, today, month, offset, weeks, slots, connected, local } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const base = storeBase(useLocation().pathname);
   const filling = fetcher.state !== "idle";
@@ -166,7 +168,11 @@ export default function Guides() {
           <div className="w-sec-head">
             <h2>How a page gets onto your site</h2>
           </div>
-          {connected ? (
+          {local ? (
+            <p>
+              On its day, a guide shows two-minute steps: copy the title, copy the content, add them as a new page on your website and click “I’ve added it”.
+            </p>
+          ) : connected ? (
             <p>Your store is connected to Shopify, so each guide goes live by itself on its day, as a page on your Online Store.</p>
           ) : (
             <p>
@@ -174,15 +180,17 @@ export default function Guides() {
               publishing is coming.
             </p>
           )}
-          <p className="w-note">Every guide links to your own products with tracking, so sales from it show up on your dashboard.</p>
+          {local ? null : <p className="w-note">Every guide links to your own products with tracking, so sales from it show up on your dashboard.</p>}
         </section>
         <section className="w-box w-box-pad w-sec">
           <div className="w-sec-head">
             <h2>What each guide is</h2>
           </div>
           <p>
-            A buying guide in question-and-answer form, built around one question shoppers ask AI: a short answer, four to six answered questions and the products of yours
-            that fit. The kind rotates: how to choose, comparison, use case, buying advice, one question in depth.
+            {local
+              ? "A guide in question-and-answer form, built around one question customers ask AI: a short answer and four to six answered questions."
+              : "A buying guide in question-and-answer form, built around one question shoppers ask AI: a short answer, four to six answered questions and the products of yours that fit."}{" "}
+            The kind rotates: how to choose, comparison, use case, buying advice, one question in depth.
           </p>
           <p className="w-note">
             Each guide is planned from your <Link to={`${base}/questions`}>buying questions</Link>, starting with the ones AI never names you for. Searches a month shows how many

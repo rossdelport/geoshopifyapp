@@ -61,6 +61,10 @@ describe("guide structure", () => {
     const { blocking } = guideProblems(thin);
     expect(blocking).toHaveLength(3);
     expect(blocking.join(" ")).toMatch(/short answer.*3 question sections.*products/);
+    // A business that isn't an online store has no products, so its guides don't need any (lib/business.ts).
+    const noPicks = tidyGuide(draft({ picks: [] }), 0);
+    expect(guideProblems(noPicks).blocking).toEqual(["The guide doesn't feature any of the store's products."]);
+    expect(guideProblems(noPicks, true).blocking).toEqual([]);
 
     const leaning = tidyGuide(
       draft({ shortAnswer: "Pick a light oil.", sections: draft().sections.map((s, i) => (i === 1 ? { ...s, answer: "As mentioned above, light oils win." } : s)) }),

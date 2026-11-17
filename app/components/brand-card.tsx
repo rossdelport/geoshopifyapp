@@ -9,7 +9,7 @@ import { formatMoney } from "../lib/format";
 import { cardAlert, nextGuideLine, salesLine, setupStep, termLine, weekLine } from "../lib/hub-pages";
 
 function SettingUp({ card }: { card: ClientCard }) {
-  const { step, of, label } = setupStep(card.onboarding);
+  const { step, of, label } = setupStep(card.onboarding, card.local);
   // Setup that stopped shows its red line at the bottom of the card; here it stops spinning.
   const stopped = card.alerts.some((a) => a.key === "setup" && a.tone === "no");
   return (
@@ -58,7 +58,7 @@ function Numbers({ card }: { card: ClientCard }) {
         <span className="hp-num-label">Sales from AI</span>
         {counted ? <span className="hp-num-big">{formatMoney(card.sales.revenue, card.currency)}</span> : <span className="hp-num-none">Not counted yet</span>}
         {counted ? <span className="hp-num-sub">{salesLine(card.sales, card.tracking)}</span> : null}
-        {card.tracking ? null : <span className="hp-num-warn">Tracking code not on yet</span>}
+        {card.tracking || card.local ? null : <span className="hp-num-warn">Tracking code not on yet</span>}
       </div>
     </div>
   );

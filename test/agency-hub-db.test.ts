@@ -1,5 +1,6 @@
 // The agency hub against a real Postgres (set TEST_DATABASE_URL), in its own schema, with reading stores from the web
-// faked. Covers: adding a client (a new store, a store already on FirstPicked, twice, a wrong address), pausing and
+// faked. Covers: adding a client (a new store, a store already on FirstPicked, any other business from its website,
+// twice, a wrong address, a website that won't open or looks like a Shopify store we couldn't read), pausing and
 // starting the work again (the plan follows), changing details, Ross's own work log entries, the work log built from
 // the work itself, the brand cards and their alerts, the hub's own buttons, and deleting a client.
 
@@ -30,6 +31,19 @@ vi.mock("../app/lib/public-catalog.server", async (original) => ({
   ...(await original<typeof import("../app/lib/public-catalog.server")>()),
   findShopifyStore: vi.fn(async (host: string) => web.stores[host.replace(/^www\./, "")] ?? null), // like following the store's redirect
 }));
+// Any other business's home page (lib/business.ts): a broker's website that moves to www, and a Shopify-looking one.
+const pages = vi.hoisted(() => ({
+  "leefinance.com.au": { url: "https://www.leefinance.com.au/", text: "<html><head><title>Lee Finance | Mortgage Broker Perth</title></head><body><h1>Home loans</h1></body></html>" },
+  "lookslikeshopify.com.au": { url: "https://lookslikeshopify.com.au/", text: '<html><head><link href="//cdn.shopify.com/s/files/x.css"></head></html>' },
+} as Record<string, { url: string; text: string }>));
+vi.mock("../app/lib/check.server", async (original) => ({
+  ...(await original<typeof import("../app/lib/check.server")>()),
+  safeFetch: vi.fn(async (url: string) => {
+    const page = pages[new URL(url).hostname.replace(/^www\./, "")];
+    if (!page) throw new Error("getaddrinfo ENOTFOUND");
+    return { status: 200, ...page };
+  }),
+}));
 
 const BY = "rossdelport1998@gmail.com";
 const input = (over: Record<string, unknown> = {}) => ({
@@ -41,6 +55,7 @@ const input = (over: Record<string, unknown> = {}) => ({
   startedOn: "2026-11-05",
   status: "active" as const,
   notes: "Likes email",
+  area: null,
   ...over,
 });
 
@@ -49,7 +64,6 @@ describe.skipIf(!url)("the agency hub (needs TEST_DATABASE_URL)", () => {
   let clients: typeof import("../app/lib/clients.server");
   let hub: typeof import("../app/lib/hub.server");
   let log: typeof import("../app/lib/work-log.server");
-  let STORE_ERRORS: typeof import("../app/lib/public-catalog.server").STORE_ERRORS;
   let peaceId = "";
   let selfId = "";
 
@@ -64,7 +78,6 @@ describe.skipIf(!url)("the agency hub (needs TEST_DATABASE_URL)", () => {
     clients = await import("../app/lib/clients.server");
     hub = await import("../app/lib/hub.server");
     log = await import("../app/lib/work-log.server");
-    STORE_ERRORS = (await import("../app/lib/public-catalog.server")).STORE_ERRORS;
   });
   afterAll(async () => {
     await db?.$disconnect();
@@ -82,11 +95,33 @@ describe.skipIf(!url)("the agency hub (needs TEST_DATABASE_URL)", () => {
     expect(await db.job.count({ where: { type: "founder.notice" } })).toBe(0);
   });
 
-  it("won't add the same client twice, or a store it can't read", async () => {
-    expect(await clients.addClient("peacelily.com.au", input(), BY)).toEqual({ ok: false, error: "That store is already one of your clients." });
-    expect(await clients.addClient("not a web address", input(), BY)).toEqual({ ok: false, error: "Please type their store’s website, like theirstore.com.au." });
-    expect(await clients.addClient("unknown.com.au", input(), BY)).toEqual({ ok: false, error: STORE_ERRORS.notShopify });
+  it("won't add the same client twice, or a website it can't open", async () => {
+    expect(await clients.addClient("peacelily.com.au", input(), BY)).toEqual({ ok: false, error: "That business is already one of your clients." });
+    expect(await clients.addClient("not a web address", input(), BY)).toEqual({ ok: false, error: clients.ADD_ERRORS.address });
+    expect(await clients.addClient("unknown.com.au", input(), BY)).toEqual({ ok: false, error: clients.ADD_ERRORS.cantOpen });
+    // A Shopify store we couldn't read just now isn't added as a business by mistake.
+    expect(await clients.addClient("lookslikeshopify.com.au", input(), BY)).toEqual({ ok: false, error: clients.ADD_ERRORS.shopifyUnread });
     expect(await db.client.count()).toBe(1);
+  });
+
+  it("adds any other business from its website, with its town or city", async () => {
+    const added = await clients.addClient("leefinance.com.au/contact", input({ area: "Perth", email: "lee@leefinance.com.au" }), BY);
+    expect(added.ok).toBe(true);
+    const id = added.ok ? added.shopId : "";
+    const shop = await db.shop.findUniqueOrThrow({ where: { id }, include: { client: true } });
+    expect(shop).toMatchObject({ domain: "leefinance.com.au", primaryDomain: "www.leefinance.com.au", name: "Lee Finance", kind: "local", area: "Perth", country: "AU", currency: "AUD", userId: null, plan: "pro" });
+    expect(shop.client).toMatchObject({ status: "active", email: "lee@leefinance.com.au" });
+    expect(await db.job.count({ where: { shopId: id, type: "onboard", status: "queued" } })).toBe(1);
+    expect(await clients.addClient("https://www.leefinance.com.au", input(), BY)).toEqual({ ok: false, error: "That business is already one of your clients." });
+    // A business has no product list to read again, and its town can be changed in Details.
+    expect(await clients.syncClientCatalog(id)).toEqual({ ok: false, error: "This business has no product list to read." });
+    await clients.updateClient(id, input({ area: "Fremantle", email: "lee@leefinance.com.au" }), BY);
+    expect((await db.shop.findUniqueOrThrow({ where: { id } })).area).toBe("Fremantle");
+    const [card] = await hub.clientCards({ shopId: id });
+    expect(card).toMatchObject({ local: true, tracking: false });
+    expect(card.alerts.map((a) => a.key)).not.toContain("tracking");
+    expect(await clients.deleteClient(id, "www.leefinance.com.au")).toEqual({ ok: true, removed: "store" });
+    expect(await db.shop.count({ where: { id } })).toBe(0);
   });
 
   it("makes a store already on FirstPicked a client as it is, keeping its owner", async () => {

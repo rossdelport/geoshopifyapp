@@ -9,9 +9,10 @@ import { spotsLine } from "../lib/hub-pages";
 import { fromAnotherSite } from "../lib/public-form.server";
 import styles from "../styles/hub-pages.css?url";
 
-// firstpicked.com.au/dash/clients/new: add a client brand to the agency hub (Ross, 5 Nov 2026). Their store is read
-// from its own website (like /start), added to FirstPicked and set up on Done for you, then the client's page opens.
-// Nothing is sent to the client.
+// firstpicked.com.au/dash/clients/new: add a client to the agency hub (Ross, 5 Nov 2026). A Shopify store is read from
+// its own website (like /start); any other business (Ross, 17 Nov 2026: "so i can add any business") is added from its
+// website with the town or city it works in (lib/business.ts). Then it's set up on Done for you and the client's page
+// opens. Nothing is sent to the client.
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
@@ -27,7 +28,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 /** The form's fields, in the order they show (the first one with a problem gets the focus). */
-const FIELDS: ClientField[] = ["store", "name", "contactName", "email", "phone", "feeAud", "startedOn", "status", "notes"];
+const FIELDS: ClientField[] = ["store", "name", "area", "contactName", "email", "phone", "feeAud", "startedOn", "status", "notes"];
 
 type Result = { values: Partial<Record<ClientField, string>>; errors: ClientErrors; error?: string };
 
@@ -40,21 +41,21 @@ export const action = async ({ request }: ActionFunctionArgs): Promise<Result> =
   const parsed = readClientForm(form, hubDay());
   const noStore = !values.store.trim();
   if (!parsed.ok || noStore) {
-    return { values, errors: { ...(parsed.ok ? {} : parsed.errors), ...(noStore ? { store: "Please type their store’s website." } : {}) } };
+    return { values, errors: { ...(parsed.ok ? {} : parsed.errors), ...(noStore ? { store: "Please type their website." } : {}) } };
   }
   const added = await addClient(form.get("store"), parsed.value, user.email);
   if (!added.ok) return { values, errors: { store: added.error } };
   throw redirect(`/dash/clients/${added.shopId}`);
 };
 
-/** While the store is checked and added (a few seconds): three steps that tick off, so the page never looks frozen. */
+/** While the website is checked and added (a few seconds): three steps that tick off, so the page never looks frozen. */
 function Adding({ address, paused }: { address: string; paused: boolean }) {
   const [at, setAt] = useState(0);
   useEffect(() => {
     const t = setInterval(() => setAt((n) => Math.min(n + 1, 2)), 1600);
     return () => clearInterval(t);
   }, []);
-  const steps = [`Looking up ${address || "their store"}`, "Checking it’s a Shopify store", paused ? "Adding them as a paused client" : "Setting it up on Done for you"];
+  const steps = [`Looking up ${address || "their website"}`, "Reading their website", paused ? "Adding them as a paused client" : "Setting it up on Done for you"];
   return (
     <div className="w-checking" aria-live="polite">
       <div className="w-progress w-progress-run">
@@ -122,12 +123,16 @@ export default function AddClient() {
 
   return (
     <>
-      <PageHead title="Add a client" intro="Type their store’s website and how to reach them. You can change any of this later." right={<span className="w-chip">{spotsLine(active)}</span>} />
+      <PageHead
+        title="Add a client"
+        intro="Type their website and how to reach them. It can be a Shopify store or any other business. You can change any of this later."
+        right={<span className="w-chip">{spotsLine(active)}</span>}
+      />
       <Form method="post" className="w-box hp-form">
         <fieldset disabled={busy}>
           <section className="hp-form-sec" aria-labelledby="store-h">
-            <h2 id="store-h">Their store</h2>
-            <Field id="store" label="Store website" error={err.store}>
+            <h2 id="store-h">Their business</h2>
+            <Field id="store" label="Website" error={err.store}>
               <input
                 className="w-input"
                 id="store"
@@ -136,13 +141,31 @@ export default function AddClient() {
                 inputMode="url"
                 autoComplete="off"
                 spellCheck={false}
-                placeholder="theirstore.com.au"
+                placeholder="theirbusiness.com.au"
                 defaultValue={v.store ?? store}
                 {...aria("store")}
               />
             </Field>
-            <Field id="name" label="Brand name" optional hint="Leave empty to use the name on their store." error={err.name}>
+            <Field id="name" label="Business name" optional hint="Leave empty to use the name on their website." error={err.name}>
               <input className="w-input" id="name" name="name" maxLength={80} autoComplete="off" defaultValue={v.name} {...aria("name", true)} />
+            </Field>
+            <Field
+              id="area"
+              label="Town or city"
+              optional
+              hint="Only for a business that isn’t an online store, like a broker or a plumber. Their buying questions ask for a business there."
+              error={err.area}
+            >
+              <input
+                className="w-input"
+                id="area"
+                name="area"
+                maxLength={60}
+                autoComplete="off"
+                placeholder="Perth"
+                defaultValue={v.area}
+                {...aria("area", true)}
+              />
             </Field>
           </section>
 
@@ -218,7 +241,9 @@ export default function AddClient() {
               </Link>
             </div>
           )}
-          <p className="w-note">We read their store, write their buying questions and run the first AI check. It takes a few minutes. Nothing is sent to the client.</p>
+          <p className="w-note">
+            We read their website, write their buying questions and run the first AI check. It takes a few minutes. Nothing is sent to the client.
+          </p>
         </div>
       </Form>
     </>

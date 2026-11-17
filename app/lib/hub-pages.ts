@@ -23,10 +23,10 @@ export function weekLine(week: ClientCard["week"], empty = "Nothing yet this wee
 
 const SETUP_STEPS = ["Reading their products", "Writing buying questions", "Checking what AI says"];
 
-/** Where a new client's setup is: step 1 to 3 and what it's doing. */
-export function setupStep(onboarding: string): { step: number; of: number; label: string } {
+/** Where a new client's setup is: step 1 to 3 and what it's doing. `local`: a business with no products (lib/business.ts). */
+export function setupStep(onboarding: string, local = false): { step: number; of: number; label: string } {
   const at = onboarding === "scanning" ? 2 : onboarding === "questions" ? 1 : 0; // new and profiling: reading products
-  return { step: at + 1, of: SETUP_STEPS.length, label: SETUP_STEPS[at] };
+  return { step: at + 1, of: SETUP_STEPS.length, label: at === 0 && local ? "Reading their website" : SETUP_STEPS[at] };
 }
 
 /** "Thu 12 Nov", with the year when it isn't this year's. */

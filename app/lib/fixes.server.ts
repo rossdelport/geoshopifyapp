@@ -42,6 +42,7 @@ import {
 
 export { FIX_TYPE_LABELS } from "./fix-labels";
 import type { FaqItem, FixAfter, FixBefore } from "./fix-labels";
+import { isLocal, placeFor } from "./business";
 
 /** What a refresh keeps for undo: the live page body (guides) or FAQ (products), and the last refresh date. */
 type RefreshBefore = FixBefore & { bodyHtml?: string; refreshedAt?: string | null };
@@ -474,7 +475,15 @@ export function guideSourceUrls(shop: { primaryDomain: string | null; domain: st
 }
 
 export async function writeGuide(
-  shop: { id: string; domain: string; primaryDomain: string | null; country: string; profile: { brandName: string; summary: string } | null },
+  shop: {
+    id: string;
+    domain: string;
+    primaryDomain: string | null;
+    country: string;
+    kind?: string | null;
+    area?: string | null;
+    profile: { brandName: string; summary: string } | null;
+  },
   products: Product[],
   questions: LostQuestion[],
   reason: string,
@@ -487,7 +496,10 @@ export async function writeGuide(
   if (!questions.length) return null;
   // The month's allowance counts every guide written since the 1st (UTC, or the store's own month when given), whatever happened to it.
   if ((await countGuidePagesThisMonth(shop.id, monthStart)) >= plan.guidePagesPerMonth) return null;
-  const where = countryName(shop.country);
+  // A business that isn't an online store (lib/business.ts): no products to feature, questions about its town or city.
+  const local = isLocal(shop);
+  if (local) products = [];
+  const where = placeFor(shop, countryName(shop.country));
   // Topic clusters: the first guide on a topic is its hub (an overview); later ones are specific guides
   // that link back to it. Links are added when pages go live (applyFix), never in the draft.
   const hub = cluster
@@ -519,8 +531,29 @@ export async function writeGuide(
     label: "fix-guide",
     shopId: shop.id,
     maxTokens: 8000,
-    system: `You write helpful, honest buying guides for a store's own website, in strict question-and-answer form, so AI assistants can quote any part on its own. It must be genuinely useful even to someone who doesn't buy.\n${guardrails(shop.country)}\n- Plain text only: no HTML, no markdown, no links or URLs in any answer.\n- Never use an em dash or a spaced en dash.`,
-    prompt: `Store: ${shop.profile?.brandName} (${where}). ${shop.profile?.summary}
+    ...(local
+      ? {
+          system: `You write helpful, honest guides for a local business's own website, in strict question-and-answer form, so AI assistants can quote any part on its own. It must be genuinely useful even to someone who doesn't become a customer.\n${guardrails(shop.country)}\n- Never invent licences, fees, rates, prices, timeframes or reviews. For costs, explain what changes the price unless the business info gives one.\n- Plain text only: no HTML, no markdown, no links or URLs in any answer.\n- Never use an em dash or a spaced en dash.`,
+          prompt: `Business: ${shop.profile?.brandName} (${where}). ${shop.profile?.summary}
+
+Write one guide page (400-700 words) that answers these customer questions:
+${questions.map((q) => `- ${q.text}`).join("\n")}
+${roleNote}
+Kind of guide: ${GUIDE_KIND_NOTES[kind]}
+
+Structure:
+- question: the main customer question, worded the way someone asks an AI assistant. It becomes the page title.
+- short_answer: 2 to 3 sentences that answer it directly and make sense on their own.
+- sections: 4 to 6 real questions people ask before choosing (how to choose, what to ask, what it costs and why, how long it takes, what to watch out for) each answered in one self-contained paragraph. One may say how ${shop.profile?.brandName} helps, using only facts from the business info above. Never refer to other sections ("as mentioned above", "see below").
+- picks: leave empty (this business has no products to list).
+- source_urls: only URLs copied exactly from "Allowed sources" whose facts you used. Never any other URL.
+
+Allowed sources (the only URLs you may list):
+${allowed.map((a) => `- ${a.url}`).join("\n")}`,
+        }
+      : {
+          system: `You write helpful, honest buying guides for a store's own website, in strict question-and-answer form, so AI assistants can quote any part on its own. It must be genuinely useful even to someone who doesn't buy.\n${guardrails(shop.country)}\n- Plain text only: no HTML, no markdown, no links or URLs in any answer.\n- Never use an em dash or a spaced en dash.`,
+          prompt: `Store: ${shop.profile?.brandName} (${where}). ${shop.profile?.summary}
 
 Write one guide page (400-700 words) that answers these shopper questions:
 ${questions.map((q) => `- ${q.text}`).join("\n")}
@@ -540,6 +573,7 @@ ${shortlist.map((p, i) => `${i}. ${p.title}: ${(p.description ?? "").slice(0, 20
 
 Allowed sources (the only URLs you may list):
 ${allowed.map((a) => `- ${a.url}`).join("\n")}`,
+        }),
   });
 
   let draft = tidyGuide(
@@ -552,7 +586,7 @@ ${allowed.map((a) => `- ${a.url}`).join("\n")}`,
     },
     shortlist.length,
   );
-  const problems = guideProblems(draft);
+  const problems = guideProblems(draft, local);
   if (problems.blocking.length) {
     console.warn(`[fixes] guide skipped: ${problems.blocking.join(" ")}`);
     return null;

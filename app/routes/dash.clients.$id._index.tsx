@@ -14,6 +14,7 @@ import { type ClientStatus, STATUS_LABEL, formatFee, hubDay, isClientStatus, mon
 import { ENGINE_LABELS, type Engine, getPlan } from "../lib/plans";
 import { formatMoney, formatPct } from "../lib/format";
 import { shareOf } from "../lib/store-stats";
+import { isLocal } from "../lib/business";
 import { ICONS, PageHead, Stat } from "../components/web";
 import { AlertList, ClientActionButton, Delta, LogDays, Sparkline } from "../components/hub";
 import styles from "../styles/client-pages.css?url";
@@ -55,6 +56,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       host,
       contact,
       onboarding: shop.onboarding,
+      local: isLocal(shop),
       setupFailed: job?.status === "failed" || stuck,
       scan: scan ? { done: scan.done, total: scan.total } : null,
       scanLabel: `Asking ${listNames(plan.engines.map((e) => ENGINE_LABELS[e as Engine] ?? "AI"))} (${plan.runsPerScan === 1 ? "once each" : "twice each"})`,
@@ -233,13 +235,16 @@ export default function ClientOverview() {
     const pct = data.scan && data.scan.total ? Math.round((data.scan.done / data.scan.total) * 100) : 0;
     return (
       <>
-        <PageHead title="Overview" intro="Their store is being set up. This takes a few minutes. You can leave this page and come back." />
+        <PageHead
+          title="Overview"
+          intro={`Their ${data.local ? "business" : "store"} is being set up. This takes a few minutes. You can leave this page and come back.`}
+        />
         <section className="w-panel" aria-live="polite" aria-labelledby="setup-h">
           <h2 id="setup-h">Setting up {data.name}</h2>
           <ol className="w-steps">
             {STEPS.map((s, i) => (
               <li key={s.key} className={i < at ? "done" : i === at && !data.setupFailed ? "now" : undefined}>
-                {s.key === "scanning" ? data.scanLabel : s.label}
+                {s.key === "scanning" ? data.scanLabel : s.key === "profiling" && data.local ? "Reading their website" : s.label}
               </li>
             ))}
           </ol>
@@ -268,7 +273,10 @@ export default function ClientOverview() {
   const { card, contact } = data;
   const topShare = Math.max(...data.competitors.map((c) => c.share), 0.01); // the bars are against the most named brand
   const tracking = card.tracking || card.sales.orders > 0;
-  const notYet = (
+  // A business that isn't an online store has no tracking code yet (lib/business.ts), so there is nothing to put on.
+  const notYet = card.local ? (
+    "Not counted for this business yet."
+  ) : (
     <Link to={`${base}/tracking`} prefetch="intent">
       Tracking code not on yet
     </Link>

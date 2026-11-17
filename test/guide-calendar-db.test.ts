@@ -338,4 +338,38 @@ describe.skipIf(!url)("guide calendar (needs TEST_DATABASE_URL)", () => {
     await cal.queueGuideWork(shop, plans.getPlan("pro"), new Date("2026-10-14T00:00:00Z"), { force: true });
     expect(await db.job.findUnique({ where: { dedupeKey: `guide-write:${fresh.id}` } })).toBeNull();
   });
+
+  it("writes guides for a business that isn't an online store, with no products, about its town (lib/business.ts)", async () => {
+    const { askJson } = await import("../app/lib/ai.server");
+    const local = await db.shop.create({
+      data: {
+        domain: "leefinance.com.au",
+        primaryDomain: "www.leefinance.com.au",
+        name: "Lee Finance",
+        kind: "local",
+        area: "Perth",
+        plan: "core",
+        source: "web",
+        onboarding: "done",
+        country: "AU",
+        profile: { create: { brandName: "Lee Finance", summary: "A mortgage broker for first home buyers.", category: "mortgage broker", audience: "first home buyers", pricePoint: "mid" } },
+        questions: { create: [{ text: "best mortgage broker in perth", volume: 480, cluster: "mortgage broker" }] },
+      },
+    });
+    await cal.queueGuideWork(local, plans.getPlan("core"), NOW, { force: true });
+    const day = await db.guideSlot.findFirstOrThrow({ where: { shopId: local.id, day: "2026-10-12" } });
+    ai.draft = { ...GUIDE, question: "Who is the best mortgage broker in Perth", handle: "best-mortgage-broker-perth", picks: [] };
+    vi.mocked(askJson).mockClear();
+    await runJob("guide.write", day.id);
+    const slot = await db.guideSlot.findUniqueOrThrow({ where: { id: day.id }, include: { fix: true } });
+    expect(slot.status).toBe("ready"); // no products, and that's fine for a business
+    const call = vi.mocked(askJson).mock.calls.find(([o]) => o.label === "fix-guide")![0] as { system: string; prompt: string };
+    expect(call.system).toContain("local business");
+    expect(call.prompt).toContain("Business: Lee Finance (Perth)");
+    expect(call.prompt).not.toContain("Products (index");
+    expect((slot.fix!.after as { bodyHtml: string }).bodyHtml).not.toContain("utm_medium=ai-guide");
+    await cal.approveSlot(local.id, day.id);
+    await cal.markAdded(local.id, day.id, null);
+    expect((await db.fix.findUniqueOrThrow({ where: { id: slot.fixId! } })).resultUrl).toBe("https://www.leefinance.com.au/best-mortgage-broker-perth"); // not /pages/: it isn't a Shopify site
+  });
 });

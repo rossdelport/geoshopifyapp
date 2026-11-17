@@ -13,6 +13,7 @@ import { questionRows } from "./question-stats.server";
 import { SITE } from "./tools/site";
 import { workLog } from "./work-log.server";
 import { clientMonth, dayStartsAt, daysWindow, hubDay } from "./clients";
+import { isLocal } from "./business";
 import {
   type ClientReportData,
   type ReportKind,
@@ -52,7 +53,10 @@ export async function makeClientReport(
   const note = readReportNote(opts.note);
   if (!note.ok) return note;
   const [shop, client] = await Promise.all([
-    db.shop.findUnique({ where: { id: shopId }, select: { name: true, primaryDomain: true, domain: true, currency: true, country: true, pixelId: true } }),
+    db.shop.findUnique({
+      where: { id: shopId },
+      select: { name: true, primaryDomain: true, domain: true, currency: true, country: true, pixelId: true, kind: true },
+    }),
     db.client.findUnique({ where: { shopId }, select: { startedOn: true, status: true } }),
   ]);
   if (!shop) return { ok: false, error: "That store isn’t on FirstPicked any more." };
@@ -77,7 +81,7 @@ async function collect(
   shopId: string,
   kind: ReportKind,
   now: Date,
-  shop: { name: string | null; primaryDomain: string | null; domain: string; currency: string; country: string; pixelId: string | null },
+  shop: { name: string | null; primaryDomain: string | null; domain: string; currency: string; country: string; pixelId: string | null; kind?: string | null },
   client: { startedOn: string; status: string },
   note: string | null,
 ): Promise<ClientReportData> {
@@ -132,6 +136,7 @@ async function collect(
     month: clientMonth(client.startedOn, period.to),
     note,
     tracking,
+    ...(isLocal(shop) ? { local: true } : {}),
     sales: { revenue: aiRevenue, orders: sales._count, visits },
     salesBefore: { revenue: salesBefore._sum.revenue ?? 0, orders: salesBefore._count, visits: visitsBefore },
     store: tracking ? { revenue: storeRevenue, orders: store._sum.orders ?? 0 } : null,

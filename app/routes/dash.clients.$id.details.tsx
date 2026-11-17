@@ -5,13 +5,15 @@ import db from "../db.server";
 import { deleteClient, requireClient, updateClient } from "../lib/clients.server";
 import { CLIENT_STATUSES, type ClientErrors, type ClientField, type ClientStatus, STATUS_LABEL, hubDay, isClientStatus, readClientForm } from "../lib/clients";
 import { getPlan } from "../lib/plans";
+import { isLocal } from "../lib/business";
 import { fromAnotherSite } from "../lib/public-form.server";
 import { PageHead } from "../components/web";
 import { ClientActionButton, flagOf } from "../components/hub";
 import styles from "../styles/client-pages.css?url";
 
 // One client's details in the agency hub (Ross, 5 Nov 2026: "add / update / delete clients"): their contact, fee,
-// start day, status and Ross's notes; the facts about their store; and deleting the client.
+// start day, status and Ross's notes; the facts about their store (or, for a business that isn't an online store, their
+// website and town); and deleting the client.
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
@@ -28,14 +30,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { shop, client } = await requireClient(request);
   const host = shop.primaryDomain || shop.domain;
   if (!client) return { view: "none" as const, shopId: shop.id, host };
-  const products = await db.product.count({ where: { shopId: shop.id } });
+  const local = isLocal(shop);
+  const products = local ? 0 : await db.product.count({ where: { shopId: shop.id } });
   return {
     view: "client" as const,
     shopId: shop.id,
     host,
+    local,
     savedAt: client.updatedAt.toISOString(),
     form: {
       name: shop.name ?? "",
+      area: shop.area ?? "",
       contactName: client.contactName ?? "",
       email: client.email ?? "",
       phone: client.phone ?? "",
@@ -146,6 +151,8 @@ export default function ClientDetails() {
   const s = data.store;
   const flag = flagOf(s.country);
   const notesProps = inputProps("notes", errors, true);
+  const what = data.local ? "business" : "store";
+  const statusLine = (st: ClientStatus) => (data.local && st === "active" ? "The work runs: AI checks and guides." : STATUS_LINE[st]);
 
   return (
     <>
@@ -155,9 +162,14 @@ export default function ClientDetails() {
       <Form method="post" className="w-box w-box-pad cp-form" key={data.savedAt} aria-label="Client details">
         <input type="hidden" name="intent" value="save" />
         <div className="cp-form-grid">
-          <Field name="name" label="Brand name" error={errors.name}>
+          <Field name="name" label={data.local ? "Business name" : "Brand name"} error={errors.name}>
             <input {...inputProps("name", errors)} defaultValue={f.name} autoComplete="organization" maxLength={80} />
           </Field>
+          {data.local ? (
+            <Field name="area" label="Town or city" hint="Their buying questions ask for a business there." error={errors.area}>
+              <input {...inputProps("area", errors, true)} defaultValue={f.area} autoComplete="off" maxLength={60} placeholder="Perth" />
+            </Field>
+          ) : null}
           <Field name="contactName" label="Contact name" error={errors.contactName}>
             <input {...inputProps("contactName", errors)} defaultValue={f.contactName} autoComplete="name" maxLength={80} />
           </Field>
@@ -182,7 +194,7 @@ export default function ClientDetails() {
               <label key={st} className="cp-option">
                 <input type="radio" name="status" value={st} defaultChecked={f.status === st} />
                 <b>{STATUS_LABEL[st]}</b>
-                <span className="w-note">{STATUS_LINE[st]}</span>
+                <span className="w-note">{statusLine(st)}</span>
               </label>
             ))}
           </div>
@@ -222,7 +234,7 @@ export default function ClientDetails() {
 
       <section className="w-sec" aria-labelledby="store-h">
         <div className="w-sec-head">
-          <h2 id="store-h">Their store</h2>
+          <h2 id="store-h">Their {what}</h2>
         </div>
         <div className="w-box w-box-pad">
           <dl className="w-facts cp-facts">
@@ -232,8 +244,12 @@ export default function ClientDetails() {
                 {data.host} ↗
               </a>
             </dd>
-            <dt>Shopify address</dt>
-            <dd>{s.myshopify}</dd>
+            {data.local ? null : (
+              <>
+                <dt>Shopify address</dt>
+                <dd>{s.myshopify}</dd>
+              </>
+            )}
             <dt>Country</dt>
             <dd>
               {flag ? `${flag} ` : ""}
@@ -243,17 +259,28 @@ export default function ClientDetails() {
             <dd>{s.currency}</dd>
             <dt>Plan</dt>
             <dd>{s.plan}</dd>
-            <dt>Products</dt>
-            <dd>{s.products ? `${s.products.toLocaleString("en-US")} read from their store` : "None read yet"}</dd>
-            <dt>Tracking code</dt>
-            <dd>{s.tracking ? <span className="w-dot ok">Sending</span> : <span className="w-dot warn">Not sending yet</span>}</dd>
+            {data.local ? (
+              <>
+                <dt>Kind</dt>
+                <dd>A business, not an online store: no products to read and no tracking code yet</dd>
+              </>
+            ) : (
+              <>
+                <dt>Products</dt>
+                <dd>{s.products ? `${s.products.toLocaleString("en-US")} read from their store` : "None read yet"}</dd>
+                <dt>Tracking code</dt>
+                <dd>{s.tracking ? <span className="w-dot ok">Sending</span> : <span className="w-dot warn">Not sending yet</span>}</dd>
+              </>
+            )}
           </dl>
-          <div className="cp-store-btns">
-            <Link to={`${base}/tracking`} className="w-btn w-btn-ghost w-btn-sm" prefetch="intent">
-              Tracking code
-            </Link>
-            <ClientActionButton shopId={data.shopId} intent="catalog-sync" label="Read their products again" />
-          </div>
+          {data.local ? null : (
+            <div className="cp-store-btns">
+              <Link to={`${base}/tracking`} className="w-btn w-btn-ghost w-btn-sm" prefetch="intent">
+                Tracking code
+              </Link>
+              <ClientActionButton shopId={data.shopId} intent="catalog-sync" label="Read their products again" />
+            </div>
+          )}
         </div>
       </section>
 
@@ -262,7 +289,7 @@ export default function ClientDetails() {
           <h2 id="delete-h">Delete this client</h2>
           <p className="cp-danger-text">
             {data.removesStore
-              ? "This deletes the store from FirstPicked with everything made for it: guides, AI checks, notes and reports. It can’t be undone. Pages already on their store stay there."
+              ? `This deletes the ${what} from FirstPicked with everything made for it: guides, AI checks, notes and reports. It can’t be undone. Pages already on their website stay there.`
               : "They have their own FirstPicked login, so their store stays with them. Only the client record goes, and the Done for you work stops."}
           </p>
         </div>

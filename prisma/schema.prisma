@@ -65,6 +65,8 @@ model Shop {
   costThisMonth     Float          @default(0)
   costAlertedAt     DateTime?
   source            String         @default("shopify") // shopify: installed from Shopify | web: added on the GEO web app
+  kind              String         @default("store") // store: an online store (Shopify) | local: any other business (a broker, an installer, a tradie), added in the hub (Ross, 17 Nov 2026)
+  area              String? // local: the town or city they work in ("Perth"), for their buying questions
   userId            String? // web: the GEO account that added it
   trackKey          String?        @unique // web: the key in the store's tracking code (custom pixel), so only its own code can send orders
   shopifyConnectedAt DateTime? // web: when this account connected the store's Shopify (set only by a connect flow started from the signed-in session; never from an app install alone)

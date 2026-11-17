@@ -5,6 +5,7 @@
 
 import { OFFER } from "./plans";
 import { addDays, dayLabel, isDay } from "./guide-calendar";
+import { cleanArea } from "./business";
 
 /** Ross's own calendar: Perth, UTC+8 all year (no daylight saving), so a day's start is a fixed offset. */
 export const HUB_TZ = "Australia/Perth";
@@ -90,6 +91,7 @@ export interface ClientInput {
   startedOn: string;
   status: ClientStatus;
   notes: string | null;
+  area: string | null; // a business that isn't an online store: the town or city they work in ("Perth")
 }
 
 export type ClientField = keyof ClientInput | "store";
@@ -166,6 +168,7 @@ export function readClientForm(form: FormLike, today: string): { ok: true; value
       startedOn,
       status: statusRaw as ClientStatus,
       notes: cleanNotes(form.get("notes")),
+      area: cleanArea(form.get("area")),
     },
   };
 }
@@ -208,6 +211,7 @@ export interface ClientFacts {
   setupFailed: boolean; // setup stopped partway (its job gave up, or the first AI check has nothing running it)
   setupSince: string; // when setup started (ISO)
   tracking: boolean; // the tracking code has sent a visit
+  local: boolean; // a business that isn't an online store: no tracking code for it yet (lib/business.ts)
   startedOn: string | null;
   lastScanAt: string | null; // the last AI check that read answers (ISO)
   lastScanFailed: boolean; // the newest AI check failed
@@ -271,13 +275,13 @@ export function clientAlerts(f: ClientFacts, today: string, now = new Date()): A
     out.push({
       key: "guides-add",
       tone: "warn",
-      text: `${plural(f.guidesToAdd, "guide is", "guides are")} ready to add to their store`,
+      text: `${plural(f.guidesToAdd, "guide is", "guides are")} ready to add to their ${f.local ? "website" : "store"}`,
       label: "Add now",
       to: f.firstToAdd ? `${base}/guides/${f.firstToAdd}` : `${base}/guides`,
     });
   }
   if (f.guidesNeedOk) out.push({ key: "guides-ok", tone: "warn", text: `${plural(f.guidesNeedOk, "guide waits", "guides wait")} for your OK`, label: "Open", to: `${base}/guides` });
-  if (!f.tracking) out.push({ key: "tracking", tone: "warn", text: "Tracking code isn’t sending yet, so sales from AI can’t be counted", label: "Tracking code", to: `${base}/tracking` });
+  if (!f.tracking && !f.local) out.push({ key: "tracking", tone: "warn", text: "Tracking code isn’t sending yet, so sales from AI can’t be counted", label: "Tracking code", to: `${base}/tracking` });
   if (f.costCapHit) out.push({ key: "cost", tone: "warn", text: "Hit this month’s cost cap, so AI checks are paused", label: "Usage", to: "/dash/admin/usage" });
 
   if (f.startedOn) {
@@ -324,6 +328,7 @@ export interface ClientCard {
   phone: string | null;
   onboarding: string;
   tracking: boolean;
+  local: boolean; // a business that isn't an online store (lib/business.ts)
   score: number | null; // the latest AI score (0 to 100)
   scoreStart: number | null; // the score when the work started
   trend: number[]; // the last 14 scores, oldest first

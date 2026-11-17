@@ -37,6 +37,8 @@ describe("a brand card", () => {
     expect(setupStep("profiling")).toEqual({ step: 1, of: 3, label: "Reading their products" });
     expect(setupStep("questions")).toEqual({ step: 2, of: 3, label: "Writing buying questions" });
     expect(setupStep("scanning")).toEqual({ step: 3, of: 3, label: "Checking what AI says" });
+    expect(setupStep("profiling", true)).toEqual({ step: 1, of: 3, label: "Reading their website" }); // a business: no products
+    expect(setupStep("questions", true)).toEqual({ step: 2, of: 3, label: "Writing buying questions" });
   });
 
   it("shows the month of the work and the fee, the start day before it starts, and no fee once ended", () => {
