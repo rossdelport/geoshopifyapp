@@ -170,7 +170,7 @@ ${maths}
 <footer class="foot">
   <div class="wrap">
     <div class="src">
-      <p><b>Where these numbers come from.</b> Google click prices and searches: Google Ads figures from DataForSEO, Australia, November 2025 to October 2026, changed at A$1.42 per US$1. ChatGPT answers: asked once each on 17 November 2026, in Australia. Answers change from one ask to the next.</p>
+      <p><b>Where these numbers come from.</b> Google click prices and searches: Google Ads figures from DataForSEO, Australia, November 2025 to October 2026, changed at $1.42 per US$1. All prices on this page are in Australian dollars. ChatGPT answers: asked once each on 17 November 2026, in Australia. Answers change from one ask to the next.</p>
       <ul>${sources}</ul>
       <p>FirstPicked is not part of OpenAI, Google or any business named on this page. Nobody can promise what AI says, and we don’t.</p>
     </div>
