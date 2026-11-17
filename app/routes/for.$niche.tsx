@@ -10,6 +10,7 @@ import serif400 from "../fonts/rr-serif-400.woff2?url";
 import hand from "../fonts/rr-hand-700.woff2?url";
 import rossPhoto from "../home/ross.webp?url";
 import rossCover from "../home/vsl/ross-cover.webp?url";
+import rossVideoCover from "../home/vsl/ross-video-cover.webp?url";
 import reviewVideo from "../home/eduardo-review.mp4?url";
 import reviewPoster from "../home/eduardo-review.webp?url";
 import reviewCaptions from "../home/eduardo-review.vtt?url";
@@ -18,14 +19,16 @@ import pixelHead from "../../design/overview/pixel-head.js?raw";
 import cookieScript from "../../design/overview/parts/47-cookies.js?raw";
 import raw from "../home/vsl.html?raw";
 
-// rankwithross.com.au/for/<niche> (Ross, 17 Nov 2026): one page per niche for his video ads, with his video first and the
-// "Book a call" button under it. The words are in app/lib/vsl/pages.ts; app/lib/vsl/render.ts draws them into
+// rankwithross.com.au/for/<niche> (Ross, 17 Nov 2026): one page per niche for his video ads, with his video first and his
+// booking calendar under it. The words are in app/lib/vsl/pages.ts; app/lib/vsl/render.ts draws them into
 // app/home/vsl.html. An address that isn't one of the pages gets Not found.
 //
-// Ross's videos: put the file (H.264 .mp4, small, no location data) and a cover image (.webp) in app/home/vsl/, import
-// both here with ?url (1-year cache) and add them to VIDEOS under the page's slug. Until then the frame says the video
-// is coming, over a photo of Ross (app/home/vsl/ross-cover.webp).
-const VIDEOS: Record<string, VslAssets["video"]> = {};
+// Ross's video, one for all 5 pages (Ross, 17 Nov 2026: filmed start to finish on Loom, slides with his face in the
+// corner, 4:52). It plays from Loom, untouched ("dont touch the video"), in Loom's own player with its captions. The
+// page shows a frame from the video (its first slide, Ross: "change the thumbnail to a random screenshot in the loom
+// video") with a play button and loads nothing from Loom until someone presses it. A new video: change the Loom id, the
+// length and the cover. Without one, the frame shows his photo (ross-cover.webp) and says the video is coming.
+const ROSS_LOOM: VslAssets["loom"] = { id: "3fef7fa99b224d459f02d072445e2213", seconds: 292, poster: rossVideoCover };
 
 const shell = raw
   .replaceAll("__FONT_URL__", () => font)
@@ -45,7 +48,7 @@ export const loader = ({ params, request }: LoaderFunctionArgs) => {
   const body = renderVsl(page, {
     rossPhoto,
     cover: rossCover,
-    video: VIDEOS[page.slug],
+    loom: ROSS_LOOM,
     // Eduardo's review on every page (Ross, 17 Nov 2026: "make sure that the eduardo video is on all pages")
     review: { src: reviewVideo, poster: reviewPoster, captions: reviewCaptions },
   });

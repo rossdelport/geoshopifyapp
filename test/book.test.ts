@@ -174,10 +174,10 @@ describe("the page", () => {
     expect(head).toContain(readFileSync(join(ROOT, "design", "overview", "pixel-head.js"), "utf8").trim());
     expect(html).toContain('<div class="ck" id="ck" role="region" aria-label="Cookies" hidden>');
     expect(html).toContain(readFileSync(join(ROOT, "design", "overview", "parts", "47-cookies.js"), "utf8").trim());
-    expect(html).toContain("window.fbq('track', 'Lead', { content_name: 'book a call' });");
+    expect(html).toContain("if (meta()) meta()('track', 'Lead', { content_name: 'book a call' });");
     // a fit (Shopify brand, A$5,000 or more) tells Meta once a visit, so the ads can learn who books (Ross, 7 Nov 2026)
-    expect(html).toContain("if (fit && !toldMeta && typeof window.fbq === 'function') {");
-    expect(html).toContain("window.fbq('track', 'SubmitApplication', { content_name: 'fits' });");
+    expect(html).toContain("if (fit && !toldMeta && meta()) {");
+    expect(html).toContain("meta()('track', 'SubmitApplication', { content_name: 'fits' });");
     expect(html).not.toContain("facebook.com/tr?");
   });
 
@@ -365,8 +365,45 @@ describe("connecting Ross's Google Calendar", () => {
   });
 });
 
-// The niche pages for Ross's video ads (Ross, 17 Nov 2026: rankwithross.com.au/for/<niche>): their "Book a call" buttons
-// open /book?for=<slug>. Brokers, installers, agents and tradies aren't online stores, so they skip the store questions.
+// The calendar alone, in a frame under the video on the niche pages (Ross, 17 Nov 2026: "put the actual booking calender
+// here instead of the button that takes them to the calendar").
+describe("the calendar inside a niche page (/book?embed=1)", () => {
+  const call = (url: string) => loader({ request: new Request(url), params: {}, context: {} } as unknown as LoaderFunctionArgs) as Promise<Response>;
+
+  it("is the same calendar without the page around it, its own pixel or its own cookie notice", async () => {
+    const res = await call("https://geo.test/book?for=mortgage-brokers&utm_medium=vsl&utm_campaign=mortgage-brokers&embed=1");
+    expect(res.headers.get("cache-control")).toBe("no-store");
+    const html = await res.text();
+    expect(html).toContain('<html lang="en" data-embed>');
+    expect(html).toContain('<body data-for="mortgage-brokers">');
+    expect(html).toContain('<script type="application/json" id="slots">');
+    expect(html).toContain("[data-embed] .top,[data-embed] .book-tx,[data-embed] .intro,[data-embed] .foot{display:none!important}");
+    // the niche page around it has the pixel and the cookie notice; the calendar tells Meta through that page's pixel
+    expect(html).not.toContain(readFileSync(join(ROOT, "design", "overview", "pixel-head.js"), "utf8").trim());
+    expect(html).not.toContain(readFileSync(join(ROOT, "design", "overview", "parts", "47-cookies.js"), "utf8").trim());
+    expect(html).toContain("try { if (!f && window.parent !== window) f = window.parent.fbq; }");
+    // it tells the page around it how tall it is, and counts for the ad chart once the calendar is on screen
+    expect(html).toContain("window.parent.postMessage({ bookHeight: Math.ceil(main.getBoundingClientRect().height) }, location.origin);");
+    expect(html).toContain("io.observe(cal);");
+    // the Shopify store page's calendar keeps the two questions
+    const store = await (await call("https://geo.test/book?utm_medium=vsl&utm_campaign=pool-spa-sauna-stores&embed=1")).text();
+    expect(store).toContain('<html lang="en" data-embed>');
+    expect(store).toContain("<body>\n");
+    expect(store).toContain("Do you have a Shopify brand?");
+  });
+
+  it("is the normal page without embed=1, and only this site may show /book in a frame", async () => {
+    for (const url of ["https://geo.test/book", "https://geo.test/book?embed=1"]) {
+      expect((await call(url)).headers.get("content-security-policy")).toBe("frame-ancestors 'self'");
+    }
+    const html = await (await call("https://geo.test/book?embed=0")).text();
+    expect(html).toContain('<html lang="en">');
+    expect(html).toContain(readFileSync(join(ROOT, "design", "overview", "pixel-head.js"), "utf8").trim());
+  });
+});
+
+// The niche pages for Ross's video ads (Ross, 17 Nov 2026: rankwithross.com.au/for/<niche>): their calendar is
+// /book?for=<slug>&embed=1 (no-JavaScript visitors get a button to /book?for=<slug>). Brokers, installers, agents and tradies aren't online stores, so they skip the store questions.
 describe("booking from a niche page", () => {
   const page = (url: string) => loader({ request: new Request(url), params: {}, context: {} } as unknown as LoaderFunctionArgs) as Promise<Response>;
   const broker = { start: "2026-11-04T01:00:00.000Z", name: "Sam Lee", email: "sam@leefinance.com.au", store: "leefinance.com.au", niche: "mortgage-brokers" };

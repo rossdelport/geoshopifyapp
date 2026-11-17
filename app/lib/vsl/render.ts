@@ -1,11 +1,11 @@
 // Draws one niche page (./pages.ts) as the inside of app/home/vsl.html. The flow (Ross, 17 Nov 2026, from the sketch
 // inspired by forgoodprofits.com): a dark top with Ross's hello and the heading, Ross's video overlapping onto the white
-// page with the "Book a call" button right under it, Eduardo's review (every page), "Sound familiar?" (3 problems
+// page with his booking calendar right under it, Eduardo's review (every page), "Sound familiar?" (3 problems
 // with line drawings), the honest table against agencies, one big line on a dark band,
 // the 3 steps and the price, the questions and the sources. Pure: app/routes/for.$niche.tsx passes in the file
 // addresses. Every piece of text is escaped here, so pages.ts stays plain text. The drawings are our own.
 
-import { AGENCY_PRICE, VSL_PRICE, vslBookHref, type Drawing, type VslPage, type VslRow } from "./pages";
+import { AGENCY_PRICE, VIDEO_NOTE, VIDEO_SOURCES, VSL_PRICE, vslBookHref, type Drawing, type VslPage, type VslRow } from "./pages";
 
 export interface VslAssets {
   /** Ross's face, small and square. */
@@ -14,6 +14,9 @@ export interface VslAssets {
   cover: string;
   /** Ross's video for this page, once he has filmed it. Without one, the frame says it's coming. */
   video?: { src: string; poster: string; captions?: string; width: number; height: number; seconds: number };
+  /** Ross's video on Loom, played in Loom's own player (Ross, 17 Nov 2026: "dont touch the video"). Loom loads only
+   *  when someone presses play; until then the frame shows the poster, a frame from the video. */
+  loom?: { id: string; seconds: number; poster: string };
   /** Eduardo's review (every page has it since 17 Nov 2026; left out, the page has no review). */
   review?: { src: string; poster: string; captions: string };
 }
@@ -99,8 +102,21 @@ function clock(seconds: number): string {
 }
 
 /** The video frame: Ross's video (loads nothing until played), or his photo with a note that the video is coming. */
+/** Loom's player for Ross's video: no Loom title bar, avatar or share button, and it starts when it opens. */
+export function loomEmbed(id: string): string {
+  return `https://www.loom.com/embed/${id}?hideEmbedTopBar=true&hide_owner=true&hide_share=true&hide_title=true&autoplay=1`;
+}
+
 function videoFrame(page: VslPage, a: VslAssets): string {
   const v = a.video;
+  if (!v && a.loom) {
+    // a link to the video on Loom, which the page's script swaps for Loom's player when pressed
+    const l = a.loom;
+    return `<div class="vsl" data-loom="${esc(loomEmbed(l.id))}">
+      <img class="vsl-cover" src="${esc(l.poster)}" alt="" width="1280" height="720" decoding="async" fetchpriority="high">
+      <a class="vsl-btn" href="https://www.loom.com/share/${esc(l.id)}" target="_blank" rel="noopener" data-loom-play aria-label="Watch Ross’s video, ${clock(l.seconds)}"><span class="vsl-pill"><span class="vsl-play">${PLAY}</span><span><b>Hi, I’m Ross. Watch this first.</b><small>${clock(l.seconds)}</small></span></span></a>
+    </div>`;
+  }
   if (!v) {
     return `<div class="vsl vsl-soon">
       <img class="vsl-cover" src="${esc(a.cover)}" alt="Ross Delport, founder of Rank with Ross" width="1280" height="720" decoding="async" fetchpriority="high">
@@ -114,11 +130,18 @@ function videoFrame(page: VslPage, a: VslAssets): string {
     </div>`;
 }
 
-/** The "Book a call" button with Ross's number under it. */
-function cta(book: string): string {
-  return `<div class="cta">
-      <a class="btn btn-pri btn-lg" href="${esc(book)}" data-book>Book a free 15 minute call</a>
-      <p class="cta-sub">15 minutes with me. No obligation. Or text me: ${SMS}</p>
+/**
+ * Ross's booking calendar right under the video (Ross, 17 Nov 2026: "put the actual booking calender here instead of
+ * the button that takes them to the calendar"): /book?embed=1 in a frame (app/routes/book.tsx), so it books the same
+ * way /book does. The page's script sets the frame's address (with the ad's tags) and grows it to fit; without the
+ * script, the old button to /book.
+ */
+function calendar(book: string): string {
+  return `<div class="cal-box" id="book">
+      <h2 class="cal-title">Book a free 15 minute call</h2>
+      <iframe class="cal-frame" data-cal data-src="${esc(`${book}&embed=1`)}" title="Book a call with Ross" loading="lazy"></iframe>
+      <noscript><a class="btn btn-pri btn-lg" href="${esc(book)}">Book a free 15 minute call</a></noscript>
+      <p class="cta-sub">No obligation. Or text me: ${SMS}</p>
     </div>`;
 }
 
@@ -175,13 +198,13 @@ export function renderVsl(page: VslPage, a: VslAssets): string {
   const book = vslBookHref(page);
   const store = Boolean(page.shopify);
   const faq = page.faq.map((f, n) => `<details class="qa"${n === 0 ? " open" : ""}><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join("");
-  const sources = page.sources.map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join("");
+  const sources = [...page.sources, ...(a.video || a.loom ? VIDEO_SOURCES : [])].map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join("");
 
   return `${ROUGH}
 <header class="top">
   <div class="wrap top-in">
     <a class="logo" href="/" aria-label="Rank with Ross home page"><span class="mark" aria-hidden="true"></span>Rank with Ross</a>
-    <div class="top-r"><span class="top-txt">Text me: ${SMS}</span><a class="btn btn-pri btn-sm" href="${esc(book)}" data-book>Book a call</a></div>
+    <div class="top-r"><span class="top-txt">Text me: ${SMS}</span><a class="btn btn-pri btn-sm" href="#book">Book a call</a></div>
   </div>
 </header>
 <main>
@@ -198,7 +221,7 @@ export function renderVsl(page: VslPage, a: VslAssets): string {
       ${videoFrame(page, a)}
       <p class="side-note" aria-hidden="true">Watch this<br>first!${ARROW}</p>
     </div>
-    ${cta(book)}
+    ${calendar(book)}
   </div>
 </section>
 
@@ -253,7 +276,7 @@ ${pullQuote(a)}
         <li>${TICK}Full refund if you’re not happy after month 1</li>
         <li>${TICK}No lock-in contract. Stop any time</li>
       </ul>
-      <a class="btn btn-pri btn-lg" href="${esc(book)}" data-book>Book a free 15 minute call</a>
+      <a class="btn btn-pri btn-lg" href="#book">Book a free 15 minute call</a>
       <p class="price-me"><img src="${esc(a.rossPhoto)}" alt="" width="44" height="44" loading="lazy" decoding="async"><span>Or text me: ${SMS}</span></p>
     </div>
   </div>
@@ -273,7 +296,7 @@ ${pullQuote(a)}
       <p>Perth, Western Australia · Text me: ${SMS}</p>
     </div>
     <div class="src">
-      <p><b>Where these numbers come from.</b> Google click prices and searches: Google Ads figures from DataForSEO, Australia, November 2025 to October 2026, changed at $1.42 per US$1. All prices on this page are in Australian dollars. ChatGPT answers: asked once each on 17 November 2026, in Australia. Answers change from one ask to the next.</p>
+      <p><b>Where these numbers come from.</b> Google click prices and searches: Google Ads figures from DataForSEO, Australia, November 2025 to October 2026, changed at $1.42 per US$1. All prices on this page are in Australian dollars. ChatGPT answers: asked once each on 17 November 2026, in Australia. Answers change from one ask to the next.</p>${a.video || a.loom ? `\n      <p>${esc(VIDEO_NOTE)}</p>` : ""}
       <ul>${sources}</ul>
       <p>Rank with Ross is not part of OpenAI, Google or any business named on this page. Nobody can promise what AI says, and I don’t.</p>
     </div>

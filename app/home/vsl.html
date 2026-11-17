@@ -99,6 +99,7 @@ ul,ol{padding:0;list-style:none}
   .side-note svg{width:70px;height:70px;margin:8px 0 0 -26px;color:var(--lilac)}
 }
 .vsl-video,.vsl-cover{display:block;width:100%;height:100%;object-fit:cover;background:#2a2930}
+.vsl-frame{position:absolute;inset:0;width:100%;height:100%;border:0}
 .vsl-btn{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:flex-start;padding:0 0 26px 28px;background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(10,8,20,.35));text-align:left}
 .vsl-pill{display:inline-flex;align-items:center;gap:14px;padding:8px 22px 8px 8px;border-radius:999px;background:rgba(20,18,30,.84);color:#fff;font-size:16px;line-height:1.3;text-align:left;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .vsl-soon .vsl-pill{position:absolute;left:28px;bottom:26px}
@@ -108,10 +109,17 @@ ul,ol{padding:0;list-style:none}
 .vsl-play svg{width:22px;height:22px;margin-left:3px}
 .vsl-clock svg{margin:0}
 
-.cta{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:34px;text-align:center}
 .cta-sub{font-size:15px;color:var(--text);text-wrap:balance}
 .cta-sub a,.price-me a,.foot a[href^="sms"]{color:var(--accent-ink);font-weight:600;white-space:nowrap}
 .cta-sub a:hover,.price-me a:hover{text-decoration:underline}
+/* Ross's booking calendar under the video: /book?embed=1 in a frame, grown to fit by the script at the bottom */
+.cal-box{max-width:640px;margin:clamp(40px,5vw,56px) auto 0;text-align:center;scroll-margin-top:16px}
+.cal-title{font-family:var(--serif);font-weight:700;font-size:clamp(25px,3vw,32px);line-height:1.2;letter-spacing:-.01em;color:var(--ink);text-wrap:balance}
+.cal-frame{display:block;width:100%;height:620px;margin-top:20px;border:0;background:transparent;color-scheme:normal}
+html:not(.js) .cal-frame{display:none}
+.cal-box noscript .btn{margin-top:20px}
+.cal-box .cta-sub{margin-top:16px}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 
 /* Eduardo's review */
 .proof{padding:clamp(64px,8vw,90px) 0 0}
@@ -227,10 +235,12 @@ ul,ol{padding:0;list-style:none}
   .hero-note{margin-left:90px;font-size:22px}
   .hero-note svg{width:50px;height:50px}
   .vsl{border-radius:16px;box-shadow:0 0 0 5px #fff,0 30px 60px -30px rgba(20,18,30,.55)}
-  .vsl-btn{align-items:flex-start;padding:10px 0 0 10px;background:none}
+  .vsl-btn{align-items:flex-end;padding:0 0 10px 10px;background:none}
   .vsl-soon .vsl-pill{left:10px;top:10px;bottom:auto}
   .vsl-pill{gap:10px;padding:6px 14px 6px 6px;font-size:13px}
   .vsl-pill small{display:none}
+  .vsl-btn .vsl-pill{padding:6px}
+  .vsl-btn .vsl-pill>span:last-child{display:none}
   .vsl-play{width:38px;height:38px;box-shadow:0 0 0 5px rgba(108,92,242,.3)}
   .vsl-play svg{width:16px;height:16px}
   .rv-btn{align-items:flex-end;justify-content:center;padding:0 0 14px}
@@ -261,19 +271,28 @@ ul,ol{padding:0;list-style:none}
 </div>
 <!-- COOKIE_SCRIPT -->
 <script>
-// Every "Book a call" button opens /book. An ad's utm_* tags replace the page's own (utm_medium=vsl,
-// utm_campaign=<niche>), so Ross's email about the call and the admin chart say which ad it came from.
+// Ross's booking calendar under the video is /book?embed=1 in a frame. An ad's utm_* tags replace the page's own
+// (utm_medium=vsl, utm_campaign=<niche>), so Ross's email about the call and the admin chart say which ad it came from.
+// The calendar says how tall it is, and the frame grows to fit it. The other "Book a call" buttons jump to it.
 (function () {
+  var f = document.querySelector('iframe[data-cal]');
+  if (!f) return;
   var q = new URLSearchParams(location.search), ad = new URLSearchParams();
   ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) { if (q.get(k)) ad.set(k, q.get(k).slice(0, 200)); });
   if (q.get('fbclid')) ad.set('fbclid', q.get('fbclid').slice(0, 300));
-  if (!ad.toString()) return;
-  Array.prototype.forEach.call(document.querySelectorAll('a[data-book]'), function (a) {
-    var url = new URL(a.getAttribute('href'), location.href), keep = new URLSearchParams();
+  var url = new URL(f.getAttribute('data-src'), location.href);
+  if (ad.toString()) {
+    var keep = new URLSearchParams();
     if (url.searchParams.get('for')) keep.set('for', url.searchParams.get('for'));
     ad.forEach(function (v, k) { keep.set(k, v); });
-    a.setAttribute('href', '/book?' + keep);
+    keep.set('embed', '1');
+    url.search = '?' + keep;
+  }
+  window.addEventListener('message', function (e) {
+    if (e.origin !== location.origin || e.source !== f.contentWindow || !e.data || typeof e.data.bookHeight !== 'number') return;
+    f.style.height = Math.min(Math.max(e.data.bookHeight, 300), 2000) + 'px';
   });
+  f.src = url.pathname + url.search;
 })();
 // The words beside each drawing fade in as they reach the middle of the screen (all shown at once without it).
 (function () {
@@ -301,6 +320,25 @@ ul,ol{padding:0;list-style:none}
       var p = video.play();
       if (p && p.catch) p.catch(function () { /* the person can press play on the video itself */ });
       video.focus();
+    });
+  });
+})();
+// Ross's video on Loom: Loom's player loads only when someone presses play (no Loom cookies or weight before that).
+// Without the script the button opens the video on Loom.
+(function () {
+  Array.prototype.forEach.call(document.querySelectorAll('[data-loom-play]'), function (btn) {
+    var box = btn.parentNode;
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      var f = document.createElement('iframe');
+      f.className = 'vsl-frame';
+      f.src = box.getAttribute('data-loom');
+      f.title = 'Ross’s video';
+      f.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+      f.setAttribute('allowfullscreen', '');
+      box.appendChild(f);
+      btn.remove();
+      f.focus();
     });
   });
 })();

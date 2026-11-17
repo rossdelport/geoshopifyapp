@@ -66,6 +66,19 @@ export const VSL_PRICE = "$297";
 /** What Australian agencies charge a month (Optimising's price guide), for the third problem and the table. */
 export const AGENCY_PRICE = "$2,000 to $20,000+";
 
+// Where the numbers in Ross's video come from (his video, 17 Nov 2026), shown in the page's small print with the video.
+// He says "700 million questions a week", the slide and this note say people. The bonus is OpenAI's own offer: cut it
+// from the video and from here after 31 December 2026.
+export const VIDEO_NOTE =
+  "In my video: people using ChatGPT each week, from OpenAI (700 million in July 2025, 1.2 billion in September 2026). Shoppers who came from AI bought 60% more often than other shoppers: Adobe, US online stores, July 2026. The ChatGPT ad credit is OpenAI’s offer for businesses new to ChatGPT ads, until 31 December 2026, and OpenAI’s terms apply.";
+export const VIDEO_SOURCES = [
+  { title: "OpenAI: how people use ChatGPT (July 2025 study)", url: "https://cdn.openai.com/pdf/a253471f-8260-40c6-a2cc-aa93fe9f142e/economic-research-chatgpt-usage-paper.pdf" },
+  { title: "OpenAI: DevDay 2026 recap (September 2026)", url: "https://openai.com/index/devday-2026-recap/" },
+  { title: "Adobe: AI traffic trends report (August 2026)", url: "https://business.adobe.com/assets/pdfs/resources/sdk/ai-traffic-trends-report-august-2026/ai-traffic-trends-report-2026-08-19.pdf" },
+  { title: "OpenAI: the $500 ChatGPT ad credit offer", url: "https://ads.openai.com/holiday" },
+  { title: "OpenAI: ad credit terms", url: "https://openai.com/policies/ad-credit-terms/" },
+];
+
 const AGENCIES: VslRow = {
   h: `Agencies charge ${AGENCY_PRICE} a month.`,
   p: "That’s what agencies in Australia charge for this kind of work.",
