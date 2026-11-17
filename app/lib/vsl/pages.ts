@@ -21,7 +21,7 @@
 export type Heading = [plain: string, accent: string];
 
 /** The simple line drawings render.ts puts next to a problem or a job, one per row, matching its words. */
-export type Drawing = "chat" | "click" | "lead" | "bill" | "search" | "check" | "list" | "write" | "sales";
+export type Drawing = "chat" | "click" | "lead" | "bill" | "search";
 
 export interface VslRow {
   h: string;
@@ -54,8 +54,6 @@ export interface VslPage {
   lead: string;
   /** "Sound familiar?": what AI says now and what they pay now. */
   problems: [VslRow, VslRow, VslRow];
-  /** "So here's what I do." */
-  help: [VslRow, VslRow, VslRow];
   /** One big line after the table: what one new customer is worth next to our price. */
   big: { line: string; note: string };
   faq: { q: string; a: string }[];
@@ -89,39 +87,55 @@ const SRC = {
   hipages: { title: "What’s The Damage: hipages plan prices, checked against hipages’ own pages (Oct 2026, a lead seller)", url: "https://whatsthedamage.com.au/tradies/hipages-cost/" },
 };
 
-/** The three jobs for a local business (brokers, installers, agents, tradies), worded for each trade. */
-function localHelp(t: { asks: string; picked: string; page: string }): VslPage["help"] {
-  return [
-    {
-      h: "Every week, I check what AI says about you.",
-      p: `I ask ChatGPT, Gemini, Perplexity and Google what your customers ask, like “${t.asks}”.`,
-      note: "You see who gets named",
-      draw: "check",
-    },
-    {
-      h: "I fix your Google profile and get you on the lists AI reads.",
-      p: `${t.picked} I make sure you show up in the right places.`,
-      note: "Real facts only. Nothing fake.",
-      draw: "list",
-    },
-    {
-      h: "I write pages that answer your customers.",
-      p: `AI reads pages like “${t.page}” before it picks a name.`,
-      note: "Plus a short report every week",
-      draw: "write",
-    },
-  ];
-}
-
 const NO_PROMISE = "No. Nobody can promise what AI says, and I won’t. I do the work that gives you the best chance, and show you what changed every week.";
 const NO_LOCK_IN = "No lock-in. Pay monthly and stop any time. Not happy after month 1? Full refund, and you keep the work.";
 
-/** The questions every local page answers. */
-function localFaq(): VslPage["faq"] {
+// The questions every page answers (Ross, 17 Nov 2026: "really beef out the FAQ section for each page"). Only true
+// answers: the refund is the terms page's (asked within 14 days after month 1 ends), local clients get up to 4 pages a
+// month and stores up to 12.
+const REFUND = {
+  q: "How does the refund work?",
+  a: "If you’re not happy after month 1, tell me within 14 days after it ends. I refund that month in full, and you keep the work. After that, stop any time. There are no refunds for part months.",
+};
+const FAKE = {
+  q: "Will you post fake reviews?",
+  a: "Never. Fake reviews break Australian law and Google’s rules, and they can be taken down. I only use real facts about your business.",
+};
+const PRICE = {
+  q: "Why only $297 when agencies charge so much more?",
+  a: "I use software for the checking and the first drafts, and I do the rest myself. No big office and no sales team. So it costs a lot less to run.",
+};
+const WHO = { q: "Who will I talk to?", a: "Me, Ross. I’m in Perth. Text me any time on 0400 369 865." };
+const ADS = {
+  q: "Is this the same as Google Ads?",
+  a: "No. Google Ads charge you for every click. This work helps AI and Google name you on their own, with no charge per click.",
+};
+
+/** The questions every local page answers. `who` is one of the trade, like "a mortgage broker"; `extra` are its own. */
+function localFaq(who: string, extra: VslPage["faq"]): VslPage["faq"] {
   return [
+    {
+      q: "What do you actually do each month?",
+      a: `Every week I check what ChatGPT, Gemini, Perplexity and Google’s AI say when people ask for ${who} in Perth. I fix your Google profile and website, work on getting you onto the lists AI reads, and write up to 4 pages a month that answer your customers.`,
+    },
     { q: "What do I have to do?", a: "One short call at the start, and access to your Google profile and website. Then I do the work." },
+    {
+      q: "How soon will I see a change?",
+      a: "In month 1, I set things up and fix the basics. AI and Google can take weeks to notice changes, so think in months, not days. I can’t promise when AI will name you.",
+    },
     { q: "Can you promise ChatGPT will name me?", a: NO_PROMISE },
+    { q: "What will I see each week?", a: "A short report: what AI said about you, who it named, and the work I did that week." },
     { q: "Is there a contract?", a: NO_LOCK_IN },
+    REFUND,
+    FAKE,
+    {
+      q: "Do I need a new website?",
+      a: "No. I work with the website you have. I add the new pages myself, or send them ready to paste if you’d rather do it.",
+    },
+    ...extra,
+    ADS,
+    PRICE,
+    WHO,
   ];
 }
 
@@ -150,16 +164,16 @@ export const VSL_PAGES: VslPage[] = [
       },
       AGENCIES,
     ],
-    help: localHelp({
-      asks: "best mortgage broker in Perth for first home buyers",
-      picked: "ChatGPT picked from Google reviews, “best broker” lists and awards.",
-      page: "Do I pay a mortgage broker in Perth?",
-    }),
     big: {
       line: "One extra loan pays for about 11 months of this.",
       note: "On a $500,000 loan, the lender pays the broker about $3,250 to $3,500 upfront.",
     },
-    faq: localFaq(),
+    faq: localFaq("a mortgage broker", [
+      {
+        q: "Will you write about interest rates or loan approvals?",
+        a: "No. Rates change, and loan advice has strict rules. I write about how you work, who you help and the questions home buyers ask, using facts from you.",
+      },
+    ]),
     sources: [SRC.hunterGalloway, SRC.calsoBrokers, SRC.optimising],
   },
   {
@@ -186,16 +200,14 @@ export const VSL_PAGES: VslPage[] = [
       },
       AGENCIES,
     ],
-    help: localHelp({
-      asks: "best battery installer in Perth",
-      picked: "ChatGPT picked from SolarQuotes awards and “best installer” lists.",
-      page: "How much is a home battery in Perth after the rebate?",
-    }),
     big: {
       line: "One battery job is a sale about 38 times our monthly fee.",
       note: "A 24 kWh battery costs about $11,260 installed in Perth after rebates.",
     },
-    faq: localFaq(),
+    faq: localFaq("a battery or solar installer", [
+      { q: "Do I need to stop buying leads?", a: "No. Keep what works. This adds a way to get named that doesn’t charge you per lead." },
+      { q: "Will you write about rebates?", a: "Only with a link to the official page and the date I checked it. Rebates change, so I never guess." },
+    ]),
     sources: [SRC.whySolar, SRC.solarQuotes, SRC.optimising],
   },
   {
@@ -223,35 +235,37 @@ export const VSL_PAGES: VslPage[] = [
       },
       AGENCIES,
     ],
-    help: [
-      {
-        h: "Every day, I check 100 buying questions.",
-        p: "In ChatGPT, Gemini, Perplexity and Google’s AI Overviews, like “best plunge pool for a small backyard”.",
-        note: "You see who gets picked",
-        draw: "check",
-      },
-      {
-        h: "I fix your product pages and write your buying guides.",
-        p: "50+ page fixes and up to 12 guides a month. The kind of guide ChatGPT reads before it picks.",
-        note: "Real facts only. Nothing fake.",
-        draw: "write",
-      },
-      {
-        h: "I show you the sales that came from AI.",
-        p: "The visits, orders and sales from AI and from Google, in a short report every week.",
-        note: "Every week, in your inbox",
-        draw: "sales",
-      },
-    ],
     big: {
       line: "One extra sale can pay for many months of this.",
       note: "ChatGPT said entry-level plunge pool packages cost $15,000 to $25,000.",
     },
     faq: [
+      {
+        q: "What do you actually do each month?",
+        a: "Every day I check up to 100 buying questions in ChatGPT, Gemini, Perplexity and Google’s AI Overviews. I make 50+ fixes to your product pages and write up to 12 buying guides a month.",
+      },
       { q: "What do I have to do?", a: "One short call, and I help you add a small code to your store. Then I do the work." },
       { q: "Do you only work with Shopify stores?", a: "Yes. Right now I only work with stores on Shopify." },
+      {
+        q: "How do you show the sales from AI?",
+        a: "The small code in your store counts the visits and orders that came from AI, like ChatGPT. Google’s AI answers can’t be told apart from normal Google, so those count as Google.",
+      },
+      {
+        q: "How soon will I see a change?",
+        a: "In month 1, I set things up and fix the basics. AI and Google can take weeks to notice changes, so think in months, not days. I can’t promise when AI will pick your store.",
+      },
       { q: "Can you promise ChatGPT will pick my store?", a: NO_PROMISE },
+      {
+        q: "What will I see each week?",
+        a: "A short report: what AI said, who it picked, the work I did, and the visits, orders and sales that came from AI.",
+      },
       { q: "Is there a contract?", a: NO_LOCK_IN },
+      REFUND,
+      FAKE,
+      { q: "Do I need a new website?", a: "No. I work with your Shopify store as it is." },
+      ADS,
+      PRICE,
+      WHO,
     ],
     sources: [SRC.optimising],
   },
@@ -279,16 +293,16 @@ export const VSL_PAGES: VslPage[] = [
       },
       AGENCIES,
     ],
-    help: localHelp({
-      asks: "best buyers agent in Perth for investors",
-      picked: "ChatGPT picked from PropertyGo and a REIWA award.",
-      page: "Is a buyers agent worth it in Perth?",
-    }),
     big: {
       line: "One new client pays for about 20 months of this.",
       note: "Perth buyers agents charge about $6,000 to $18,000 for a full search on a home under about $1 million.",
     },
-    faq: localFaq(),
+    faq: localFaq("a buyers agent", [
+      {
+        q: "Will you write about property prices or market tips?",
+        a: "I don’t make market predictions. I write about how you work, the areas you know and the questions buyers ask, using facts from you.",
+      },
+    ]),
     sources: [SRC.buyersAgentCost, SRC.optimising],
   },
   {
@@ -315,16 +329,14 @@ export const VSL_PAGES: VslPage[] = [
       },
       AGENCIES,
     ],
-    help: localHelp({
-      asks: "best emergency plumber in Perth",
-      picked: "ChatGPT read a directory and showed each pick’s Google reviews.",
-      page: "Why is my hot water system leaking?",
-    }),
     big: {
       line: "$297 a month is less than 4 clicks on “emergency plumber”.",
       note: "When ChatGPT names you, nobody charges you for the call.",
     },
-    faq: localFaq(),
+    faq: localFaq("a plumber or electrician", [
+      { q: "Do you work with electricians too?", a: "Yes. This page is for plumbers and electricians in Perth." },
+      { q: "Do I need to stop using hipages or Google Ads?", a: "No. Keep what works. This adds a way to get named that doesn’t charge you per lead or per click." },
+    ]),
     sources: [SRC.hipages, SRC.calsoPlumbers, SRC.calsoSparkies, SRC.optimising],
   },
 ];
