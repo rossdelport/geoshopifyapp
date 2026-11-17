@@ -11,6 +11,7 @@ import { outreachUsedThisMonth } from "../lib/outreach.server";
 import { writersUsedThisMonth } from "../lib/trusted-sites.server";
 import { countGuidePagesThisMonth } from "../lib/usage.server";
 import { localMonthStart } from "../lib/guide-calendar";
+import { isLocal } from "../lib/business";
 import styles from "../styles/web.css?url";
 import hubStyles from "../styles/hub.css?url";
 
@@ -49,6 +50,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     base: storeBase(pathname),
     shopId: shop.id,
     clientStatus: client?.status ?? null,
+    local: isLocal(shop), // a business that isn't an online store: no Reddit or tracking code yet (lib/business.ts)
     store: shop.name || shop.primaryDomain || shop.domain,
     host: shop.primaryDomain || shop.domain,
     country: shop.country,
@@ -190,12 +192,16 @@ export default function Dash() {
           items={[
             { to: b, label: "Overview", d: ICONS.home, end: true },
             { to: `${b}/log`, label: "Work log", d: ICONS.check },
-            { to: `${b}/stats`, label: "Store stats", d: ICONS.money },
+            { to: `${b}/stats`, label: data.local ? "Stats" : "Store stats", d: ICONS.money },
             { to: `${b}/reports`, label: "Reports", d: ICONS.mail },
             { to: `${b}/details`, label: "Details", d: ICONS.user },
           ]}
         />
-        <NavGroup label="Their store" navClass={navClass} items={[...storeTools(b), { to: `${b}/tracking`, label: "Tracking code", d: ICONS.code }]} />
+        {data.local ? (
+          <NavGroup label="Their business" navClass={navClass} items={storeTools(b).filter((n) => !n.to.endsWith("/reddit"))} />
+        ) : (
+          <NavGroup label="Their store" navClass={navClass} items={[...storeTools(b), { to: `${b}/tracking`, label: "Tracking code", d: ICONS.code }]} />
+        )}
       </>
     );
     foot = (

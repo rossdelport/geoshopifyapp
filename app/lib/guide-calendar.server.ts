@@ -14,6 +14,7 @@ import { applyFix, clearForAutopilot, rejectFix, storeUrl, writeGuide, type Lost
 import { adminFor } from "./onboard-job.server";
 import { questionRows } from "./question-stats.server";
 import { countGuidePagesThisMonth } from "./usage.server";
+import { isLocal } from "./business";
 import {
   PUBLISH_FROM_HOUR,
   WRITE_DAYS_AHEAD,
@@ -170,6 +171,8 @@ type SlotForWriting = GuideSlot & { shop: Shop & { profile: BrandProfile | null 
 
 const NOT_PASSED =
   "The draft didn’t pass our checks (a guide needs a clear question, a short answer, at least four answered questions and one of your products), or this month’s guide pages are used up. We’ll try again later.";
+const NOT_PASSED_LOCAL =
+  "The draft didn’t pass our checks (a guide needs a clear question, a short answer and at least four answered questions), or this month’s guide pages are used up. We’ll try again later.";
 
 async function writeSlot(slot: SlotForWriting, plan: Plan): Promise<{ ok: true; fix: Fix } | { ok: false; reason: string }> {
   const { shop, question } = slot;
@@ -180,7 +183,8 @@ async function writeSlot(slot: SlotForWriting, plan: Plan): Promise<{ ok: true; 
     questionRows(shop.id, { activeOnly: true }),
     usedQuestionIds(shop.id, slot.id),
   ]);
-  if (!products.length) return { ok: false, reason: "We couldn’t find any products in your store’s catalog to feature." };
+  // A business that isn't an online store has no products: its guides answer the questions without any.
+  if (!products.length && !isLocal(shop)) return { ok: false, reason: "We couldn’t find any products in your store’s catalog to feature." };
   const main = rows.questions.find((q) => q.id === question.id);
   // The guide answers its question and, when the topic has them, up to two more questions on it that AI loses and
   // that no other day or guide covers (so two guides on one topic never answer the same things).
@@ -207,7 +211,7 @@ async function writeSlot(slot: SlotForWriting, plan: Plan): Promise<{ ok: true; 
   const reason = `On your guide calendar for ${dayLabel(slot.day)}: ${why}.`;
   const impact = (question.volume ?? 0) >= 500 || (main?.rate ?? 0) === 0 ? "high" : "medium";
   const fix = await writeGuide(shop, rankProductsForQuestion(products, question.text), lost, reason, impact, plan, false, question.cluster, localMonthStart(new Date(), shop.country));
-  if (!fix) return { ok: false, reason: NOT_PASSED };
+  if (!fix) return { ok: false, reason: isLocal(shop) ? NOT_PASSED_LOCAL : NOT_PASSED };
   // Done-for-you: written and published for you, under autopilot's own rules: never a guide that needs a fact from
   // the store, and always the claims check first; anything softened waits for the store's OK.
   let auto = plan.doneForYou && !shop.autopilotOptOut && !fix.missingInfo;
@@ -327,7 +331,7 @@ export async function markAdded(shopId: string, slotId: string, url: string | nu
   const slot = await ownSlot(shopId, slotId);
   if (slot.status !== "ready" || !slot.fix) throw new Error("This guide isn’t ready yet.");
   const after = slot.fix.after as GuideAfter;
-  const pageUrl = ownPageUrl(url, slot.shop) ?? `${storeUrl(slot.shop)}/pages/${after.handle ?? ""}`;
+  const pageUrl = ownPageUrl(url, slot.shop) ?? `${storeUrl(slot.shop)}/${isLocal(slot.shop) ? "" : "pages/"}${after.handle ?? ""}`; // a business's website isn't on Shopify
   const now = new Date();
   await db.$transaction([
     db.fix.update({ where: { id: slot.fix.id }, data: { status: "applied", appliedAt: now, revertedAt: null, error: null, resultUrl: pageUrl } }),

@@ -98,6 +98,7 @@ export interface ClientReportData {
   month: number; // month N of the work on the report's last day (0 before it starts)
   note: string | null; // Ross's note for the top of the report
   tracking: boolean; // the tracking code is on, so sales from AI can be counted
+  local?: boolean; // a business that isn't an online store (lib/business.ts): no sales to count, so the report leaves them out
   sales: Money; // from AI, in the period
   salesBefore: Money; // from AI, in the period before (same length)
   store: { revenue: number; orders: number } | null; // all the store's sales in the period (null without tracking)
@@ -312,11 +313,12 @@ export function firstName(contactName: string | null | undefined): string | null
 /** The two or three numbers at the top of the email: sales from AI, the AI score, guides written. */
 export function headlines(d: ClientReportData): { label: string; value: string; sub: string }[] {
   const out: { label: string; value: string; sub: string }[] = [];
-  out.push(
-    d.tracking
-      ? { label: "Sales from AI", value: formatMoney(d.sales.revenue, d.currency), sub: plural(d.sales.orders, "order", "orders") }
-      : { label: "Sales from AI", value: "Not counted yet", sub: "The tracking code isn’t on your store yet" },
-  );
+  if (!d.local)
+    out.push(
+      d.tracking
+        ? { label: "Sales from AI", value: formatMoney(d.sales.revenue, d.currency), sub: plural(d.sales.orders, "order", "orders") }
+        : { label: "Sales from AI", value: "Not counted yet", sub: "The tracking code isn’t on your store yet" },
+    );
   if (d.score.now !== null) {
     const change = pointsChange(d.score.now, d.score.periodStart, thisPeriod(d.kind));
     out.push({ label: "Your AI score", value: `${d.score.now} out of 100`, sub: change?.text ?? "" });

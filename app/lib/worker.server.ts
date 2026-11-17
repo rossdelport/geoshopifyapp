@@ -29,6 +29,7 @@ import { purgeOldData } from "./retention.server";
 import { queueStrandedReportEmails } from "./check-lead.server";
 import { queueBlogIfDue } from "./blog.server";
 import { queueGuideWork } from "./guide-calendar.server";
+import { isLocal } from "./business";
 
 const MAX_RUNNING = 4; // store jobs: onboarding, scans, orders, fixes...
 // Free checks from the public website get their own small share, so a rush of them never holds up
@@ -118,8 +119,9 @@ export async function scheduleDueWork(now = new Date()) {
     // Guide calendar (web app stores): plan the month, write guides two days ahead, publish on the day (hourly per store).
     await queueGuideWork(shop, plan, now).catch((err) => console.error(`[guides] ${shop.domain}: ${(err as Error).message}`));
 
-    // Reddit finder: the first look for every store, then weekly on paid plans.
-    if (redditDue(shop, now)) await enqueue("reddit.find", {}, { shopId: shop.id, dedupeKey: `reddit:${shop.id}`, ifFailedWaitMs: RETRY_FAILED_MS });
+    // Reddit finder: the first look for every store, then weekly on paid plans. Not for a business that isn't an online
+    // store yet (lib/business.ts): its threads and replies are written for products.
+    if (!isLocal(shop) && redditDue(shop, now)) await enqueue("reddit.find", {}, { shopId: shop.id, dedupeKey: `reddit:${shop.id}`, ifFailedWaitMs: RETRY_FAILED_MS });
 
     // Recurring scans, timed from the last scheduled one (a manual "check AI now" doesn't push the weekly scan back).
     if (plan.scanEveryDays) {

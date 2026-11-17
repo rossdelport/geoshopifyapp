@@ -137,6 +137,7 @@ function Change({ tone, text }: { tone: Tone; text: string }) {
 
 function Sales({ r }: { r: ClientReportData }) {
   const when = thisPeriod(r.kind);
+  if (r.local) return null; // a business that isn't an online store: no sales to count yet
   if (!r.tracking) {
     return (
       <Section id="cr-sales" title="Sales from AI">
@@ -432,12 +433,14 @@ function HowWeCount({ r }: { r: ClientReportData }) {
   return (
     <section className="cr-how" aria-labelledby="cr-how">
       <h2 id="cr-how">How we count</h2>
-      <p>
-        Sales from AI are orders where the shopper came to your store from an AI assistant, like ChatGPT, Gemini or Perplexity. The small
-        tracking code on your store sees where each visit came from. Google’s AI Overviews send shoppers the same way Google search does, so we
-        can’t tell them apart, and they aren’t counted here. Some of these shoppers might have found you anyway, so not every sale is down to
-        our work.
-      </p>
+      {r.local ? null : (
+        <p>
+          Sales from AI are orders where the shopper came to your store from an AI assistant, like ChatGPT, Gemini or Perplexity. The small
+          tracking code on your store sees where each visit came from. Google’s AI Overviews send shoppers the same way Google search does, so we
+          can’t tell them apart, and they aren’t counted here. Some of these shoppers might have found you anyway, so not every sale is down to
+          our work.
+        </p>
+      )}
       <p>
         AI answers change from day to day, so your score moves a little on its own. These numbers are from {shortDay(dayOf(r.madeAt), true)}, when
         this report was made.

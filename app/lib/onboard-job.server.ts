@@ -6,6 +6,7 @@ import { enqueue, registerJob } from "./jobs.server";
 import { buildBrandProfile, generateQuestions, syncCatalog } from "./onboarding.server";
 import { startScan } from "./scan.server";
 import { syncPublicCatalog } from "./public-catalog.server";
+import { isLocal } from "./business";
 
 export async function adminFor(shopDomain: string) {
   const { admin } = await unauthenticated.admin(shopDomain);
@@ -14,11 +15,14 @@ export async function adminFor(shopDomain: string) {
 
 registerJob("onboard", async (job) => {
   const shop = await db.shop.findUniqueOrThrow({ where: { id: job.shopId! } });
-  // Web app stores have no Shopify connection: their public catalog, and no orders to read.
+  // Web app stores have no Shopify connection: their public catalog, and no orders to read. A business that isn't an
+  // online store (lib/business.ts) has no catalog at all: its profile is read from its website.
   const web = shop.source === "web";
 
   await db.shop.update({ where: { id: shop.id }, data: { onboarding: "profiling" } });
-  if (web) await syncPublicCatalog(shop.id, 250);
+  if (isLocal(shop)) {
+    // nothing to read before the profile
+  } else if (web) await syncPublicCatalog(shop.id, 250);
   else await syncCatalog(shop.id, await adminFor(shop.domain), 250);
   await buildBrandProfile(shop.id);
 
@@ -33,6 +37,7 @@ registerJob("onboard", async (job) => {
 
 registerJob("catalog.sync", async (job) => {
   const shop = await db.shop.findUniqueOrThrow({ where: { id: job.shopId! } });
+  if (isLocal(shop)) return; // no product list
   if (shop.source === "web") await syncPublicCatalog(shop.id, 1000);
   else await syncCatalog(shop.id, await adminFor(shop.domain), 1000);
 });

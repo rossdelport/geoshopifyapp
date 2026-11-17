@@ -112,7 +112,8 @@ export function tidyGuide(d: GuideDraft, productCount: number): GuideDraft {
  * What's wrong with a (tidied) draft. `blocking` problems mean we don't use it at all; `notes` go to
  * the store with the fix ("please check").
  */
-export function guideProblems(d: GuideDraft): { blocking: string[]; notes: string[] } {
+/** `local`: a business with no products (lib/business.ts), whose guides answer the questions without picks. */
+export function guideProblems(d: GuideDraft, local = false): { blocking: string[]; notes: string[] } {
   const blocking: string[] = [];
   const notes: string[] = [];
   if (d.question.length < 8) blocking.push("The guide has no shopper question as its title.");
@@ -120,7 +121,7 @@ export function guideProblems(d: GuideDraft): { blocking: string[]; notes: strin
   if (!n) blocking.push("The guide has no short answer at the top.");
   else if (n < 2) notes.push("The short answer at the top is only one sentence. You may want to add a second.");
   if (d.sections.length < MIN_SECTIONS) blocking.push(`The guide has ${d.sections.length} question sections; it needs at least ${MIN_SECTIONS}.`);
-  if (!d.picks.length) blocking.push("The guide doesn't feature any of the store's products.");
+  if (!d.picks.length && !local) blocking.push("The guide doesn't feature any of the store's products.");
   const leaning = [d.shortAnswer, ...d.sections.map((s) => s.answer)].filter((t) => BACK_REFERENCE.test(t)).length;
   if (leaning) notes.push("Some answers point to other parts of the page (like “as mentioned above”). Each answer should make sense on its own.");
   return { blocking, notes };

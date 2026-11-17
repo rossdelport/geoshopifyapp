@@ -13,6 +13,7 @@ import { registerJob } from "./jobs.server";
 import { countryName } from "./onboarding.server";
 import { bestProductIndex } from "./outreach.server";
 import { tidyDashes } from "./guide";
+import { isLocal } from "./business";
 
 const DAY = 86_400_000;
 const PHRASES_PER_RUN = 6; // searches a week (about US$0.002 each)
@@ -222,6 +223,7 @@ export function redditDue(shop: { plan: string; redditCheckedAt: Date | null }, 
 /** Find this week's threads for a store, keep the ones worth replying to, and draft a reply for each. */
 export async function findThreads(shopId: string, now = new Date()): Promise<number> {
   const shop = await db.shop.findUniqueOrThrow({ where: { id: shopId }, include: { profile: true } });
+  if (isLocal(shop)) return 0; // not for a business that isn't an online store yet (lib/business.ts)
   const free = getPlan(shop.plan).id === "free";
   const questions = await db.question.findMany({ where: { shopId, active: true }, select: { text: true, volume: true } });
   const phrases = searchPhrases(questions, shop.country);

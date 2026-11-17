@@ -9,9 +9,10 @@ import { gql, type AdminClient } from "./shopify-gql.server";
 import { PLANS, getPlan } from "./plans";
 import { registerJob } from "./jobs.server";
 import { startUpgradeScan } from "./billing.server";
-import { simpleProfile, templateQuestions } from "./fallbacks";
+import { localTemplateQuestions, simpleProfile, templateQuestions } from "./fallbacks";
 import { LONG_TAIL_SHARE, MAX_CLUSTERS, looksLongTail, pickActive, tidyClusters } from "./clusters";
 import { shopperCountryName } from "./countries";
+import { isLocal, placeFor } from "./business";
 
 const PRODUCTS_QUERY = `#graphql
   query Products($cursor: String) {
@@ -92,8 +93,11 @@ export async function syncCatalog(shopId: string, admin: AdminClient, max = 250)
   return count;
 }
 
-/** Read the store's homepage text (title, meta description, headings). Best effort. */
-export async function readHomepage(domain: string | null): Promise<string> {
+/**
+ * Read the store's homepage text (title, meta description, headings). Best effort. `more` also takes smaller
+ * headings and paragraphs, for a business with no product list to read (its website is all we have).
+ */
+export async function readHomepage(domain: string | null, more = false): Promise<string> {
   if (!domain) return "";
   try {
     const res = await fetch(`https://${domain}`, {
@@ -107,10 +111,11 @@ export async function readHomepage(domain: string | null): Promise<string> {
       ...pick(/<title[^>]*>([\s\S]*?)<\/title>/gi),
       ...pick(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)/gi),
       ...pick(/<h[12][^>]*>([\s\S]*?)<\/h[12]>/gi),
+      ...(more ? [...pick(/<h3[^>]*>([\s\S]*?)<\/h3>/gi), ...pick(/<(?:p|li)[^>]*>([\s\S]*?)<\/(?:p|li)>/gi)] : []),
     ]
       .map((t) => t.replace(/\s+/g, " "))
       .filter((t) => t.length > 2);
-    return [...new Set(parts)].join("\n").slice(0, 3000);
+    return [...new Set(parts)].join("\n").slice(0, more ? 6000 : 3000);
   } catch {
     return "";
   }
@@ -138,19 +143,38 @@ export const ProfileSchema = z.object({
 
 export async function buildBrandProfile(shopId: string) {
   const shop = await db.shop.findUniqueOrThrow({ where: { id: shopId } });
-  const products = await db.product.findMany({ where: { shopId, status: "ACTIVE" }, orderBy: { syncedAt: "desc" }, take: 60 });
-  const homepage = await readHomepage(shop.primaryDomain);
+  const local = isLocal(shop);
+  const products = local ? [] : await db.product.findMany({ where: { shopId, status: "ACTIVE" }, orderBy: { syncedAt: "desc" }, take: 60 });
+  const homepage = await readHomepage(shop.primaryDomain, local);
   const vendors = [...new Set(products.map((p) => p.vendor).filter(Boolean))].slice(0, 5);
 
-  const profile = await askJson({
-    schema: ProfileSchema,
-    tier: "smart",
-    label: "brand-profile",
-    shopId,
-    maxTokens: 4000,
-    system:
-      "You describe online stores in plain, factual English. Only use what the store data shows. Never invent awards, certifications or claims.",
-    prompt: `Store name: ${shop.name ?? shop.domain}
+  const profile = await (
+    local
+      ? askJson({
+          schema: ProfileSchema,
+          tier: "smart",
+          label: "brand-profile",
+          shopId,
+          maxTokens: 4000,
+          system:
+            "You describe local businesses (brokers, installers, agents, tradies and the like) in plain, factual English. Only use what their website shows. Never invent awards, licences, reviews or claims.",
+          prompt: `Business name: ${shop.name ?? shop.domain}
+Website: ${shop.primaryDomain ?? shop.domain}
+Where they work: ${shop.area ?? countryName(shop.country)}
+
+Website text:
+${homepage || "(not available)"}
+
+Write the business profile. summary: what they do and who for. category: the kind of business, the words a customer would search (like "mortgage broker" or "solar installer"). audience: who their customers are. price_point: how their prices compare with others like them ("mid" if the website doesn't say).`,
+        })
+      : askJson({
+          schema: ProfileSchema,
+          tier: "smart",
+          label: "brand-profile",
+          shopId,
+          maxTokens: 4000,
+          system: "You describe online stores in plain, factual English. Only use what the store data shows. Never invent awards, certifications or claims.",
+          prompt: `Store name: ${shop.name ?? shop.domain}
 Website: ${shop.primaryDomain ?? shop.domain}
 Country: ${shop.country}
 Product vendors: ${vendors.join(", ") || "unknown"}
@@ -162,9 +186,10 @@ Products:
 ${catalogDigest(products) || "(no products yet)"}
 
 Write the brand profile.`,
-  }).catch((err: Error) => {
+        })
+  ).catch((err: Error) => {
     console.error(`[profile] Claude unavailable, using a simple profile: ${err.message.slice(0, 200)}`);
-    return simpleProfile(shop.name ?? shop.domain, products);
+    return simpleProfile(shop.name ?? shop.domain, products, local);
   });
 
   return db.brandProfile.upsert({
@@ -243,6 +268,7 @@ type ShopWithProfile = Awaited<ReturnType<typeof loadShop>>;
  * comparisons), and each has a topic cluster (at most 8). Returns them with search volume, best first.
  */
 async function writeQuestionList(shop: ShopWithProfile, count: number, avoid: string[] = [], topics: string[] = []): Promise<ScoredQuestion[]> {
+  if (isLocal(shop)) return scoreQuestions(shop, await writeLocalQuestions(shop, count, avoid, topics), count, avoid, topics);
   const profile = shop.profile;
   const products = await db.product.findMany({ where: { shopId: shop.id, status: "ACTIVE" }, take: 40 });
   const where = countryName(shop.country);
@@ -284,7 +310,59 @@ About half should mention ${where}. Write them the way a shopper in ${where} typ
       })),
     };
   });
+  return scoreQuestions(shop, result, count, avoid, topics);
+}
 
+/**
+ * Buying questions for a business that isn't an online store (lib/business.ts): how people ask AI to pick a
+ * broker, an installer or a tradie in their town or city. Templates if Claude is unavailable.
+ */
+async function writeLocalQuestions(shop: ShopWithProfile, count: number, avoid: string[], topics: string[]): Promise<z.infer<typeof QuestionsSchema>> {
+  const profile = shop.profile;
+  const where = placeFor(shop, countryName(shop.country));
+  return askJson({
+    schema: QuestionsSchema,
+    tier: "smart",
+    label: "questions",
+    shopId: shop.id,
+    maxTokens: Math.max(6000, count * 80 + 4000),
+    system:
+      "You know how people ask ChatGPT, Gemini and Perplexity to recommend a local business or service. Write natural questions, the way people actually type them. Never include the business's own name: these are unbranded questions where the business wants to be recommended.",
+    prompt: `Business: ${profile?.brandName ?? shop.name}
+What they do: ${profile?.summary ?? ""}
+Kind of business: ${profile?.category ?? ""}
+Customers: ${profile?.audience ?? ""}
+Where they work: ${where}${where === countryName(shop.country) ? "" : `, ${countryName(shop.country)}`}
+${avoid.length ? `\nAlready tracked (write different ones):\n${avoid.map((q) => `- ${q}`).join("\n")}\n` : ""}
+Write ${count} different questions a customer could ask AI before choosing a business like this one. Mix:
+- "best X in ${where}" and "who is the most trusted X in ${where}" questions
+- problem questions ("how do I ...", "what should I do if ...")
+- comparison questions (like "broker or bank", "which is better ...")
+- price questions ("how much does ... cost in ${where}")
+About 40% should be long-tail (long_tail: true): a particular need, situation, kind of customer, suburb or budget. Only use services the business description above shows, never invented ones. Word them the way people really ask, not stuffed with keywords.
+For keyword, write the short Google search for the same need (2 to 5 words). Include the town or city when people would type it (like "mortgage broker perth").
+Give each question a cluster: a short lowercase topic label (2 to 5 words). Use at most ${MAX_CLUSTERS} clusters in total and reuse the same label for questions on the same topic.${topics.length ? ` Topics the business already has (use these exact labels where a question fits; a new label only for a clearly different topic): ${topics.join(", ")}.` : ""}
+Most should name ${where} or a suburb in it. Write them the way someone there types, with their spelling. Keep each under 15 words.`,
+  }).catch((err: Error) => {
+    console.error(`[questions] Claude unavailable, using templates: ${err.message.slice(0, 200)}`);
+    return {
+      questions: localTemplateQuestions(profile?.category ?? null, where).map((q) => ({
+        ...q,
+        cluster: profile?.category?.toLowerCase() || q.keyword,
+        long_tail: looksLongTail(q.question),
+      })),
+    };
+  });
+}
+
+/** Drop repeats and questions already tracked, tidy the topics, look up search volumes, best first. */
+async function scoreQuestions(
+  shop: ShopWithProfile,
+  result: z.infer<typeof QuestionsSchema>,
+  count: number,
+  avoid: string[],
+  topics: string[],
+): Promise<ScoredQuestion[]> {
   const seen = new Set(avoid.map((q) => q.trim().toLowerCase()));
   const unique = new Map<string, { question: string; keyword: string; cluster: string; longTail: boolean }>();
   for (const q of result.questions) {

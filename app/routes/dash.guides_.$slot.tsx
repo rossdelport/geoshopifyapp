@@ -9,6 +9,7 @@ import { sanitizeHtml } from "../lib/sanitize";
 import { formatNumber } from "../lib/format";
 import { CopyButton, PageHead } from "../components/web";
 import { storeBase } from "../lib/hub-paths";
+import { isLocal } from "../lib/business";
 
 // firstpicked.com.au/dash/guides/<day> (the file's underscore keeps it out of the calendar's layout): one guide page from the calendar, as it will look on the store's site, with what it
 // is at and what the store can do: OK it, skip it, try again, or add it to the store (copy and paste) when the store
@@ -18,7 +19,13 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { shop } = await requireWebShop(request);
   const view = await slotView(shop, params.slot ?? "");
   if (!view) throw new Response("Not found", { status: 404 });
-  return { ...view, doneForYou: getPlan(shop.plan).doneForYou, storeHandle: shop.domain.replace(/\.myshopify\.com$/, ""), store: shop.primaryDomain ?? shop.domain };
+  return {
+    ...view,
+    doneForYou: getPlan(shop.plan).doneForYou,
+    storeHandle: shop.domain.replace(/\.myshopify\.com$/, ""),
+    store: shop.primaryDomain ?? shop.domain,
+    local: isLocal(shop), // a business that isn't an online store: its website isn't on Shopify (lib/business.ts)
+  };
 };
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
@@ -150,8 +157,10 @@ export default function GuideDay() {
           {(d.state === "add" || (d.state === "scheduled" && d.error && d.day <= d.today)) && d.bodyHtml ? (
             <section className="w-box w-box-pad w-sec">
               <div className="w-sec-head">
-                <h2>Add it to your store (about two minutes)</h2>
-                <p>Until your store is connected to Shopify, you paste the page in yourself.</p>
+                <h2>Add it to your {d.local ? "website" : "store"} (about two minutes)</h2>
+                <p>
+                  {d.local ? "You paste the page into your website yourself." : "Until your store is connected to Shopify, you paste the page in yourself."}
+                </p>
               </div>
               <ol className="w-ol">
                 <li>
@@ -160,19 +169,27 @@ export default function GuideDay() {
                 <li>
                   Copy the page content. <CopyButton text={d.bodyHtml} label="Copy content" />
                 </li>
-                <li>
-                  Open{" "}
-                  <a href={addUrl} target="_blank" rel="noreferrer">
-                    Add page in Shopify
-                  </a>
-                  . Paste the title. In the content box click the <b>&lt;&gt;</b> button (show HTML) and paste the content. Under Visibility choose Visible, then Save.
-                </li>
+                {d.local ? (
+                  <li>
+                    Add a new page on your website and paste the title. Paste the content where the page takes HTML (in WordPress, a Custom HTML block), then
+                    publish it.
+                  </li>
+                ) : (
+                  <li>
+                    Open{" "}
+                    <a href={addUrl} target="_blank" rel="noreferrer">
+                      Add page in Shopify
+                    </a>
+                    . Paste the title. In the content box click the <b>&lt;&gt;</b> button (show HTML) and paste the content. Under Visibility choose Visible,
+                    then Save.
+                  </li>
+                )}
                 <li>Come back here and press the button below.</li>
               </ol>
               <fetcher.Form method="post" className="w-form">
                 <label className="w-field">
                   <span className="w-label">The page’s address (optional)</span>
-                  <input className="w-input" type="url" name="url" placeholder={`https://${d.store}/pages/${d.handle ?? ""}`} />
+                  <input className="w-input" type="url" name="url" placeholder={`https://${d.store}/${d.local ? "" : "pages/"}${d.handle ?? ""}`} />
                 </label>
                 <div>{act("added", "I’ve added it")}</div>
               </fetcher.Form>

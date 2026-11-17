@@ -5,6 +5,7 @@
 import db from "../db.server";
 import { getPlan } from "./plans";
 import { addDays, localDay } from "./guide-calendar";
+import { isLocal } from "./business";
 import {
   type ClientCard,
   type ClientFacts,
@@ -36,6 +37,7 @@ export async function clientCards(opts: { shopId?: string } = {}, now = new Date
           currency: true,
           onboarding: true,
           pixelId: true,
+          kind: true,
           plan: true,
           createdAt: true,
           costMonth: true,
@@ -113,6 +115,7 @@ export async function clientCards(opts: { shopId?: string } = {}, now = new Date
       setupFailed: onboard?.status === "failed" || (shop.onboarding === "scanning" && onboard?.status === "done" && !scanRunning),
       setupSince: (onboard?.createdAt ?? shop.createdAt).toISOString(),
       tracking: Boolean(shop.pixelId),
+      local: isLocal(shop),
       startedOn: c.startedOn,
       lastScanAt: lastDone ? lastDone.date.toISOString() : null,
       lastScanFailed: scan?.status === "failed",
@@ -141,6 +144,7 @@ export async function clientCards(opts: { shopId?: string } = {}, now = new Date
       phone: c.phone,
       onboarding: shop.onboarding,
       tracking: facts.tracking,
+      local: facts.local,
       score: lastDone ? Math.round(lastDone.score) : null,
       scoreStart: startScore(scores, c.startedOn),
       trend: scores.slice(-14).map((s) => Math.round(s.score)),

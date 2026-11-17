@@ -138,8 +138,16 @@ describe("the client form", () => {
         startedOn: "2026-11-05",
         status: "active",
         notes: null,
+        area: null,
       },
     });
+  });
+
+  it("keeps a business's town or city as one short line", () => {
+    const r = readClientForm(form({ area: "  West   Perth <WA> " }), "2026-11-05");
+    expect(r.ok && r.value.area).toBe("West Perth WA");
+    const long = readClientForm(form({ area: "x".repeat(80) }), "2026-11-05");
+    expect(long.ok && long.value.area).toBe("x".repeat(60));
   });
 
   it("keeps notes' line breaks and strips tags", () => {
@@ -182,6 +190,7 @@ const facts = (over: Partial<ClientFacts> = {}): ClientFacts => ({
   setupFailed: false,
   setupSince: ago(24 * 20),
   tracking: true,
+  local: false,
   startedOn: "2026-11-02",
   lastScanAt: ago(5),
   lastScanFailed: false,
@@ -228,6 +237,12 @@ describe("what needs Ross", () => {
     expect(keys(alerts)).toEqual(["guides-failed", "check", "guides-add", "tracking", "report", "month-one"]);
     expect(alerts[0].to).toBe("/dash/clients/s1/guides/g9");
     expect(alerts[2]).toMatchObject({ text: "2 guides are ready to add to their store", to: "/dash/clients/s1/guides/g1" });
+  });
+
+  it("doesn't ask a business that isn't an online store for the tracking code", () => {
+    const local = clientAlerts(facts({ startedOn: "2026-11-02", tracking: false, local: true, guidesToAdd: 1, firstToAdd: "g1" }), "2026-11-28", new Date("2026-11-28T02:00:00Z"));
+    expect(keys(local)).not.toContain("tracking");
+    expect(local.find((a) => a.key === "guides-add")?.text).toBe("1 guide is ready to add to their website");
   });
 
   it("asks for an AI check after 3 days without one, but not while one runs", () => {
@@ -282,6 +297,7 @@ const card = (over: Partial<ClientCard> = {}): ClientCard => ({
   phone: null,
   onboarding: "done",
   tracking: true,
+  local: false,
   score: 40,
   scoreStart: 30,
   trend: [30, 40],

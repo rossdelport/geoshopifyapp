@@ -190,7 +190,7 @@ describe("FAQ parsing", () => {
 });
 
 describe("fallbacks when Claude is unavailable", async () => {
-  const { simpleProfile, templateQuestions } = await import("../app/lib/fallbacks");
+  const { localTemplateQuestions, simpleProfile, templateQuestions } = await import("../app/lib/fallbacks");
   it("builds a plain profile from the catalog", () => {
     const p = simpleProfile("Jericho", [
       { productType: "Beard Oil", vendor: "Jericho Australia" },
@@ -206,5 +206,13 @@ describe("fallbacks when Claude is unavailable", async () => {
     const qs = templateQuestions(["Beard Oil", "beard oil", null, "Beard Balm"], "Australia");
     expect(qs).toHaveLength(10);
     expect(qs[0]).toEqual({ question: "best beard oil in Australia", keyword: "best beard oil" });
+  });
+  it("gives a business that isn't an online store its own profile and questions", () => {
+    expect(simpleProfile("Lee Finance", [], true)).toMatchObject({ brand_name: "Lee Finance", category: "local business", audience: "local customers" });
+    const qs = localTemplateQuestions("Mortgage Broker", "Perth");
+    expect(qs[0]).toEqual({ question: "best mortgage broker in Perth", keyword: "mortgage broker perth" });
+    expect(qs.every((q) => !/products?|brands?/i.test(q.question))).toBe(true);
+    expect(localTemplateQuestions("local business", "Perth")).toEqual([]); // we don't know what kind of business it is
+    expect(localTemplateQuestions(null, "Perth")).toEqual([]);
   });
 });

@@ -10,7 +10,9 @@ import { activeScan, retrySetup } from "./dashboard.server";
 import { enqueue } from "./jobs.server";
 import { canRunScan } from "./limits";
 import { getPlan } from "./plans";
-import { STORE_ERRORS, findShopifyStore, storeHost } from "./public-catalog.server";
+import { findShopifyStore, storeHost } from "./public-catalog.server";
+import { safeFetch } from "./check.server";
+import { isLocal, looksLikeShopify, siteName } from "./business";
 import { startScan } from "./scan.server";
 import { getUsageFor } from "./usage.server";
 import { requireWebShop } from "./web-auth.server";
@@ -37,10 +39,36 @@ const fields = (input: ClientInput) => ({
   notes: input.notes,
 });
 
+export const ADD_ERRORS = {
+  address: "Please type their website, like theirbusiness.com.au.", // STORE_ERRORS says "your store"
+  cantOpen: "We couldn’t open that website. Please check the address and try again.",
+  shopifyUnread: "That looks like a Shopify store, but we couldn’t read it just now. Please try again in a minute.",
+};
+
 /**
- * Add a client from their store's address: the store is read from its own address (like /start), added to FirstPicked
- * if it's new (with no login of its own: only the hub opens it) and set up on Done for you straight away. A store
- * already on FirstPicked (someone signed up, or the old Shopify app) becomes a client as it is.
+ * A website that isn't a Shopify store (Ross, 17 Nov 2026: "so i can add any business"): its home page must open, and
+ * must not look like a Shopify store (one whose store details we just couldn't read is added as a store later, not as
+ * a business by mistake). Gives the address it really lives at (after redirects) and the name on the page.
+ */
+export async function readBusinessSite(host: string): Promise<{ ok: true; host: string; name: string | null } | { ok: false; error: string }> {
+  try {
+    const res = await safeFetch(`https://${host}/`, "text/html,application/xhtml+xml", { timeoutMs: 15_000, maxRedirects: 4, maxBytes: 600_000 });
+    if (res.status !== 200) return { ok: false, error: ADD_ERRORS.cantOpen };
+    if (looksLikeShopify(res.text)) return { ok: false, error: ADD_ERRORS.shopifyUnread };
+    return { ok: true, host: new URL(res.url).hostname.toLowerCase().replace(/\.$/, ""), name: siteName(res.text) };
+  } catch {
+    return { ok: false, error: ADD_ERRORS.cantOpen };
+  }
+}
+
+const ADDED = { id: true, status: true, onboarding: true, client: { select: { id: true } } } as const;
+
+/**
+ * Add a client from their website. A Shopify store is read from its own address (like /start); any other business
+ * (a broker, an installer, a tradie) is added from its home page as a "local" business (lib/business.ts), with the town
+ * or city they work in. Either is added to FirstPicked if it's new (with no login of its own: only the hub opens it)
+ * and set up on Done for you straight away. A store already on FirstPicked (someone signed up, or the old Shopify app)
+ * becomes a client as it is.
  */
 export async function addClient(
   rawStore: unknown,
@@ -48,13 +76,11 @@ export async function addClient(
   by: string,
 ): Promise<{ ok: true; shopId: string } | { ok: false; error: string }> {
   const host = storeHost(rawStore);
-  if (!host) return { ok: false, error: "Please type their store’s website, like theirstore.com.au." }; // STORE_ERRORS says "your store"
+  if (!host) return { ok: false, error: ADD_ERRORS.address };
   const found = await findShopifyStore(host);
-  if (!found) return { ok: false, error: STORE_ERRORS.notShopify };
+  if (!found) return addBusiness(host, input, by);
 
-  let shop = await db.shop.findUnique({ where: { domain: found.myshopifyDomain }, select: { id: true, status: true, onboarding: true, client: { select: { id: true } } } });
-  if (shop?.client) return { ok: false, error: "That store is already one of your clients." };
-  if (shop && shop.status !== "installed") return { ok: false, error: "That store was removed from FirstPicked. Please ask Claude to bring it back." };
+  let shop = await db.shop.findUnique({ where: { domain: found.myshopifyDomain }, select: ADDED });
   if (!shop) {
     try {
       shop = await db.shop.create({
@@ -67,19 +93,54 @@ export async function addClient(
           ...(found.country ? { country: found.country } : {}),
           ...(found.currency ? { currency: found.currency } : {}),
         },
-        select: { id: true, status: true, onboarding: true, client: { select: { id: true } } },
+        select: ADDED,
       });
     } catch {
       return { ok: false, error: "That store was added a moment ago. Please refresh the page." }; // two adds at once
     }
-  } else if (input.name) {
+  } else if (input.name && !shop.client && shop.status === "installed") {
     await db.shop.update({ where: { id: shop.id }, data: { name: input.name } });
   }
+  return startClient(shop, input, by);
+}
 
+/** A business that isn't an online store, from its home page: kept by the address it lives at, in Australia. */
+async function addBusiness(host: string, input: ClientInput, by: string): Promise<{ ok: true; shopId: string } | { ok: false; error: string }> {
+  const site = await readBusinessSite(host);
+  if (!site.ok) return site;
+  const bare = (h: string) => h.replace(/^www\./, "");
+  let shop = await db.shop.findFirst({
+    where: { OR: [site.host, bare(site.host), `www.${bare(site.host)}`].flatMap((h) => [{ domain: h }, { primaryDomain: h }]) },
+    select: { ...ADDED, kind: true },
+  });
+  if (shop && !isLocal(shop)) shop = null; // a Shopify store's own address is its myshopify one, so this is someone else
+  if (!shop) {
+    try {
+      shop = await db.shop.create({
+        data: { domain: bare(site.host), primaryDomain: site.host, name: input.name ?? site.name ?? bare(site.host), source: "web", status: "installed", kind: "local", area: input.area, country: "AU", currency: "AUD" },
+        select: { ...ADDED, kind: true },
+      });
+    } catch {
+      return { ok: false, error: "That website was added a moment ago. Please refresh the page." }; // two adds at once
+    }
+  } else if (!shop.client && shop.status === "installed" && (input.name || input.area)) {
+    await db.shop.update({ where: { id: shop.id }, data: { ...(input.name ? { name: input.name } : {}), ...(input.area ? { area: input.area } : {}) } });
+  }
+  return startClient(shop, input, by);
+}
+
+/** Make the store a client and start the work: Done for you (or paused), then setup when it's new. */
+async function startClient(
+  shop: { id: string; status: string; onboarding: string; client: { id: string } | null },
+  input: ClientInput,
+  by: string,
+): Promise<{ ok: true; shopId: string } | { ok: false; error: string }> {
+  if (shop.client) return { ok: false, error: "That business is already one of your clients." };
+  if (shop.status !== "installed") return { ok: false, error: "That business was removed from FirstPicked. Please ask Claude to bring it back." };
   try {
     await db.client.create({ data: { shopId: shop.id, status: input.status, ...fields(input) } });
   } catch (err) {
-    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") return { ok: false, error: "That store is already one of your clients." };
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") return { ok: false, error: "That business is already one of your clients." };
     throw err;
   }
   // The plan first, so setup writes as many buying questions as Done for you checks and starts with its full first check.
@@ -91,10 +152,14 @@ export async function addClient(
 
 /** Change a client's details (and their status, when it changed). */
 export async function updateClient(shopId: string, input: ClientInput, by: string) {
-  const before = await db.client.findUniqueOrThrow({ where: { shopId } });
+  const [before, shop] = await Promise.all([
+    db.client.findUniqueOrThrow({ where: { shopId } }),
+    db.shop.findUniqueOrThrow({ where: { id: shopId }, select: { kind: true } }),
+  ]);
+  const shopData = { ...(input.name ? { name: input.name } : {}), ...(isLocal(shop) ? { area: input.area } : {}) };
   await db.$transaction([
     db.client.update({ where: { shopId }, data: fields(input) }),
-    ...(input.name ? [db.shop.update({ where: { id: shopId }, data: { name: input.name } })] : []),
+    ...(Object.keys(shopData).length ? [db.shop.update({ where: { id: shopId }, data: shopData })] : []),
   ]);
   if (before.status !== input.status) await setClientStatus(shopId, input.status, by);
 }
@@ -175,6 +240,8 @@ export async function checkClientNow(shopId: string): Promise<{ ok: true; messag
 
 /** Read the store's products again (after the client adds or changes products). */
 export async function syncClientCatalog(shopId: string) {
+  const shop = await db.shop.findUniqueOrThrow({ where: { id: shopId }, select: { kind: true } });
+  if (isLocal(shop)) return { ok: false as const, error: "This business has no product list to read." };
   await enqueue("catalog.sync", {}, { shopId, dedupeKey: `catalog-sync:${shopId}:${hubDay()}` });
   return { ok: true as const, message: "Reading their products again. It takes a minute." };
 }
