@@ -87,6 +87,7 @@ export const BOOK_ERRORS = {
   name: "Please enter your name.",
   email: "Please enter a real email address, like you@yourstore.com.",
   store: "Please enter your store’s website, like yourstore.com.au.",
+  site: "Please enter your website, like yourbusiness.com.au.",
   questions: "Please answer the two questions above the times. If you can’t see them, reload the page.",
   taken: "Sorry, that time was just taken. Please pick another one.",
   tooMany: "You’ve booked a lot today. Please text Ross on 0400 369 865.",

@@ -11,6 +11,7 @@ import { normalizeEmail } from "./check-lead.server";
 import { hashIp } from "./public-form.server";
 import { SITE } from "./tools/site";
 import { BOOK_ERRORS, CALL, fitSales, openSlots, rossTime, type Busy } from "./booking";
+import { bookingNiche, vslPath } from "./vsl/pages";
 import { saveBooking } from "./book-stats.server";
 import type { AdTags } from "./book-stats";
 
@@ -132,6 +133,7 @@ export interface BookInput {
   store: unknown;
   shopify?: unknown; // "yes" or "no": do they have a Shopify brand?
   sales?: unknown; // how much the store sells a month, a value from SALES
+  niche?: unknown; // a niche page's slug (/book?for=<slug>, app/lib/vsl/pages.ts): books without the store questions
   honeypot?: unknown;
   from?: Record<string, unknown>; // the ad's utm_* tags, for Ross's email
   ad?: AdTags; // the same tags, for the ad chart on the admin Overview
@@ -146,10 +148,14 @@ export async function bookCall(input: BookInput, now = new Date()): Promise<{ st
   const start = String(input.start ?? "");
   if (!name) return fail(400, BOOK_ERRORS.name);
   if (!email) return fail(400, BOOK_ERRORS.email);
-  if (!/\w\.\w/.test(store)) return fail(400, BOOK_ERRORS.store);
-  // The page only shows the times to a Shopify brand selling A$5,000 or more a month, so anything else is refused.
-  const sales = fitSales(input.shopify, input.sales);
-  if (!sales) return fail(400, BOOK_ERRORS.questions);
+  // A niche page's visitors (brokers, installers, agents, tradies: Ross, 17 Nov 2026) aren't online stores, so /book
+  // skips the store questions for them and the booking says which page they came from.
+  const niche = bookingNiche(input.niche);
+  if (!/\w\.\w/.test(store)) return fail(400, niche ? BOOK_ERRORS.site : BOOK_ERRORS.store);
+  // Everyone else only sees the times as a Shopify brand selling A$5,000 or more a month, so anything else is refused.
+  const sales = niche ? null : fitSales(input.shopify, input.sales);
+  if (!niche && !sales) return fail(400, BOOK_ERRORS.questions);
+  const about = niche ? [`Website: ${store}`, `Business: ${niche.label}`, `From the page: ${SITE}${vslPath(niche.slug)}`] : [`Store: ${store}`, "Shopify brand: Yes", `Sells a month: ${sales}`];
   // A bot filled the hidden field: say yes and book nothing.
   if (String(input.honeypot ?? "").trim()) return { status: 200, result: { ok: true, start, email } };
 
@@ -166,7 +172,7 @@ export async function bookCall(input: BookInput, now = new Date()): Promise<{ st
   const end = new Date(Date.parse(start) + CALL.minutes * 60_000).toISOString();
   await google(token, "calendars/primary/events?conferenceDataVersion=1&sendUpdates=all", {
     summary: `FirstPicked call: Ross and ${name}`,
-    description: `Booked at ${SITE}/book\n\nName: ${name}\nEmail: ${email}\nStore: ${store}\nShopify brand: Yes\nSells a month: ${sales}`,
+    description: `Booked at ${SITE}/book\n\nName: ${name}\nEmail: ${email}\n${about.join("\n")}`,
     start: { dateTime: start },
     end: { dateTime: end },
     attendees: [{ email, displayName: name }],
@@ -175,10 +181,11 @@ export async function bookCall(input: BookInput, now = new Date()): Promise<{ st
   recent.set(ip, [...mine, now.getTime()]);
   // Keep the call and the answers for Admin > Calls (Ross, 6 Nov 2026: "please store that information too").
   const ad = input.ad;
-  const call = { startsAt: new Date(start), name, email, store, sales: String(input.sales) };
+  // A niche page's booking keeps the page in place of a sales answer, which Admin > Calls shows as it is.
+  const call = { startsAt: new Date(start), name, email, store, sales: niche ? `${niche.label} page` : String(input.sales) };
   const from = { utmSource: ad?.utmSource ?? null, utmCampaign: ad?.utmCampaign ?? null, utmContent: ad?.utmContent ?? null, referrer: ad?.referrer ?? null };
   await db.callBooking.create({ data: { ...call, ...from } }).catch((err) => console.error("[book] booked, but could not save it for Admin > Calls", err));
-  if (ad) await saveBooking(ad, String(input.sales), now).catch((err) => console.error("[book] booked, but could not count it for the ad chart", err));
+  if (ad) await saveBooking(ad, niche ? null : String(input.sales), now).catch((err) => console.error("[book] booked, but could not count it for the ad chart", err));
 
   // Tell Ross (Google doesn't email you about events added to your own calendar).
   if (env.alertEmail && emailConfigured()) {
@@ -188,7 +195,10 @@ export async function bookCall(input: BookInput, now = new Date()): Promise<{ st
       .map(([k, v]) => `${k}=${v}`)
       .join(", ");
     const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
-    const lines = [`<b>When:</b> ${rossTime(start)} (your time)`, `<b>Name:</b> ${esc(name)}`, `<b>Email:</b> ${esc(email)}`, `<b>Store:</b> ${esc(store)}`, `<b>Shopify brand:</b> Yes`, `<b>Sells a month:</b> ${sales}`];
+    const lines = [`<b>When:</b> ${rossTime(start)} (your time)`, `<b>Name:</b> ${esc(name)}`, `<b>Email:</b> ${esc(email)}`, ...about.map((l) => {
+      const [key, ...rest] = l.split(": ");
+      return `<b>${key}:</b> ${esc(rest.join(": "))}`;
+    })];
     if (ad) lines.push(`<b>Came from:</b> ${esc(ad)}`);
     await sendEmail([env.alertEmail], `New call booked: ${name}, ${rossTime(start)}`, `<p>Someone booked a call on firstpicked.com.au/book. It's in your Google Calendar with a Meet link.</p><p>${lines.join("<br>")}</p>`).catch((err) =>
       console.error("[book] booked, but the email to Ross failed", err),

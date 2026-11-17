@@ -211,7 +211,7 @@ describe("the page", () => {
     expect(html).toContain("Right now we help stores that sell A$5,000 or more a month.");
     expect(html).toContain('<a class="btn btn-sec btn-sm" href="/tools/ai-visibility-checker">Try the free check</a>');
     // the answers go with the booking
-    expect(html).toContain("var body = withAd({ start: chosen, shopify: shopify, sales: salesEl.value });");
+    expect(html).toContain("var body = withAd(niche ? { start: chosen, for: niche } : { start: chosen, shopify: shopify, sales: salesEl.value });");
     // and everyone's answers are counted, even if they don't book (once a person a day, no name)
     expect(html).toContain("navigator.sendBeacon('/book', withAd({ answered: '1', shopify: shopify, sales: noShop ? '' : salesEl.value }))");
   });
@@ -362,5 +362,60 @@ describe("connecting Ross's Google Calendar", () => {
     h.link = null;
     expect(await connectCalendar("code-from-google")).toBe("ross@gmail.test");
     expect(h.link).toMatchObject({ id: "booking", email: "ross@gmail.test", refreshToken: "rt-new" });
+  });
+});
+
+// The niche pages for Ross's video ads (Ross, 17 Nov 2026: firstpicked.com.au/for/<niche>): their "Book a call" buttons
+// open /book?for=<slug>. Brokers, installers, agents and tradies aren't online stores, so they skip the store questions.
+describe("booking from a niche page", () => {
+  const page = (url: string) => loader({ request: new Request(url), params: {}, context: {} } as unknown as LoaderFunctionArgs) as Promise<Response>;
+  const broker = { start: "2026-11-04T01:00:00.000Z", name: "Sam Lee", email: "sam@leefinance.com.au", store: "leefinance.com.au", niche: "mortgage-brokers" };
+
+  it("drops the store questions and talks about a business, only for the local niche pages", async () => {
+    const html = await (await page("https://geo.test/book?for=mortgage-brokers&utm_medium=vsl")).text();
+    expect(html).toContain('<body data-for="mortgage-brokers">');
+    expect(html).toContain("We’ll chat about your business and see if FirstPicked is a good fit.");
+    expect(html).not.toContain("chat about your store");
+    expect(html).toContain('<span class="f-l">Your website</span>');
+    expect(html).toContain('placeholder="yourbusiness.com.au"');
+    // the page's script skips the questions and sends the slug with the booking
+    expect(html).toContain("var niche = document.body.getAttribute('data-for') || '';");
+    expect(html).toContain("withAd(niche ? { start: chosen, for: niche }");
+    // the Shopify store page and unknown slugs get the normal page with the questions
+    for (const slug of ["pool-spa-sauna-stores", "nope", "%22%3E%3Cscript%3E"]) {
+      const normal = await (await page(`https://geo.test/book?for=${slug}`)).text();
+      expect(normal).toContain("<body>\n");
+      expect(normal).toContain("We’ll chat about your store and see");
+    }
+  });
+
+  it("books a broker without the store questions, and tells Ross which page they came from", async () => {
+    const ad = { utmSource: "facebook", utmMedium: "paid", utmCampaign: "niche test", utmContent: "brokers", utmTerm: null, fbclid: true, referrer: null };
+    const out = await bookCall({ ...broker, ip: "203.0.113.90", ad }, NOW);
+    expect(out).toEqual({ status: 200, result: { ok: true, start: broker.start, email: "sam@leefinance.com.au" } });
+    expect(String(h.events[0].body.description)).toContain(
+      "Website: leefinance.com.au\nBusiness: Mortgage broker\nFrom the page: https://firstpicked.com.au/for/mortgage-brokers",
+    );
+    expect(String(h.events[0].body.description)).not.toContain("Shopify");
+    expect(h.calls[0]).toMatchObject({ store: "leefinance.com.au", sales: "Mortgage broker page", utmContent: "brokers" });
+    expect(h.counted).toEqual([expect.objectContaining({ kind: "booked", shopify: null, sales: null, utmContent: "brokers" })]);
+    const html = String(h.emails[0][2]);
+    expect(html).toContain("<b>Website:</b> leefinance.com.au<br><b>Business:</b> Mortgage broker<br><b>From the page:</b> https://firstpicked.com.au/for/mortgage-brokers");
+  });
+
+  it("still asks the questions for the Shopify store page or a slug that isn't a page", async () => {
+    for (const niche of ["pool-spa-sauna-stores", "plumbers", undefined]) {
+      const out = await bookCall({ ...broker, niche, ip: "203.0.113.91" }, NOW);
+      expect(out.result).toMatchObject({ ok: false, error: expect.stringContaining("two questions") });
+    }
+    expect((await bookCall({ ...broker, store: "lee finance", ip: "203.0.113.92" }, NOW)).result).toMatchObject({ ok: false, error: "Please enter your website, like yourbusiness.com.au." });
+    expect(h.events).toHaveLength(0);
+  });
+
+  it("takes the slug from the form", async () => {
+    const body = new URLSearchParams({ start: openSlots(new Date(), [])[0], name: "Sam Lee", email: "sam@leefinance.com.au", store: "leefinance.com.au", for: "solar-installers" });
+    const res = await action({ request: new Request("https://geo.test/book", { method: "POST", body, headers: { Origin: "https://geo.test", "Content-Type": "application/x-www-form-urlencoded" } }), params: {}, context: {} } as unknown as ActionFunctionArgs);
+    expect(await (res as Response).json()).toMatchObject({ ok: true });
+    expect(String(h.events[0].body.description)).toContain("Business: Solar and battery installer");
   });
 });
