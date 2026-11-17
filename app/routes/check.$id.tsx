@@ -27,7 +27,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 export const headers: HeadersFunction = () => ({ "Cache-Control": "private, no-store", Vary: "Cookie" });
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => [
-  { title: data?.view.product ? `Free product check: ${data.view.product.title} · FirstPicked` : "Free product check · FirstPicked" },
+  { title: data?.view.product ? `Free product check: ${data.view.product.title} · Rank with Ross` : "Free product check · Rank with Ross" },
   { name: "description", content: "Does AI recommend this product? A free check across ChatGPT, Gemini and Perplexity." },
   { name: "robots", content: "noindex" },
 ];

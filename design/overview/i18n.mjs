@@ -1,5 +1,5 @@
 /* eslint-env node */
-// The home page in other languages (firstpicked.com.au/de, /fr, /nl, /es, /it). assemble.mjs builds the English page, then
+// The home page in other languages (rankwithross.com.au/de, /fr, /nl, /es, /it). assemble.mjs builds the English page, then
 // this turns a copy of it into each language from design/overview/i18n/<lang>.json, so the English parts stay the
 // one source. The build stops if any English text is left untranslated, so a new English line can't slip through.
 //
@@ -27,9 +27,9 @@ export function languages(dir) {
 /** The <link rel="alternate"> tags that tell search engines which page is which language. */
 export function hreflangTags(langs) {
   return [
-    '<link rel="alternate" hreflang="en" href="https://firstpicked.com.au/">',
-    ...langs.map((l) => `<link rel="alternate" hreflang="${l.meta.lang}" href="https://firstpicked.com.au/${l.meta.path}">`),
-    '<link rel="alternate" hreflang="x-default" href="https://firstpicked.com.au/">',
+    '<link rel="alternate" hreflang="en" href="https://rankwithross.com.au/">',
+    ...langs.map((l) => `<link rel="alternate" hreflang="${l.meta.lang}" href="https://rankwithross.com.au/${l.meta.path}">`),
+    '<link rel="alternate" hreflang="x-default" href="https://rankwithross.com.au/">',
   ].join('\n');
 }
 
@@ -61,8 +61,8 @@ export function translatePage(site, l) {
     .replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${desc}">`)
     .replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${desc}">`)
     .replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${esc(meta.title)}">`)
-    .replace('<link rel="canonical" href="https://firstpicked.com.au/">', `<link rel="canonical" href="https://firstpicked.com.au/${meta.path}">`)
-    .replace('<meta property="og:url" content="https://firstpicked.com.au/">', `<meta property="og:url" content="https://firstpicked.com.au/${meta.path}">\n<meta property="og:locale" content="${meta.locale}">`)
+    .replace('<link rel="canonical" href="https://rankwithross.com.au/">', `<link rel="canonical" href="https://rankwithross.com.au/${meta.path}">`)
+    .replace('<meta property="og:url" content="https://rankwithross.com.au/">', `<meta property="og:url" content="https://rankwithross.com.au/${meta.path}">\n<meta property="og:locale" content="${meta.locale}">`)
     .replace('<script>window.GEO_LIVE=true</script>', `<script>window.GEO_LIVE=true;window.GEO_LANG="${meta.lang}"</script>`);
 
   // 4. Body text and attributes, outside scripts and styles.
@@ -93,7 +93,7 @@ export function translatePage(site, l) {
   page = head + body;
 
   // 4b. The company details line under the copyright (an Impressum / mentions légales / aviso legal).
-  const copy = `<p>${text['© 2026 FirstPicked · Made for Shopify stores worldwide']}</p>`;
+  const copy = `<p>${text['© 2026 Rank with Ross · Made for Shopify stores worldwide']}</p>`;
   if (!page.includes(copy)) throw new Error(`i18n ${meta.lang}: footer copyright line not found`);
   page = page.replace(copy, `${copy}\n      <p class="foot-legal">${esc(meta.legal.label)}: ${esc(meta.legal.details)} · <a href="mailto:${meta.legal.email}">${meta.legal.email}</a></p>`);
 

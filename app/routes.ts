@@ -31,7 +31,7 @@ function addClientStorePages(entries: RouteConfigEntry[]): boolean {
   return false;
 }
 
-// The service pages (firstpicked.com.au/seo-agency-perth...): one route each, all served by landing/route.tsx, which
+// The service pages (rankwithross.com.au/seo-agency-perth...): one route each, all served by landing/route.tsx, which
 // finds its page in app/lib/landing/pages.ts from the address.
 const LANDING_FILE = "landing/route.tsx";
 

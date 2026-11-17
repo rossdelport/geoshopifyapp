@@ -1,4 +1,4 @@
-// The admin area (firstpicked.com.au/dash/admin), for Ross only (Ross, 2026-10-15). Who can open it: GEO_ADMIN_EMAILS
+// The admin area (rankwithross.com.au/dash/admin), for Ross only (Ross, 2026-10-15). Who can open it: GEO_ADMIN_EMAILS
 // (comma separated), else Ross's email. Everyone else gets "Not found", so the pages don't show they exist.
 // Days are Sydney days (Ross is in Australia).
 
@@ -20,7 +20,7 @@ export async function requireAdmin(request: Request) {
   return user;
 }
 
-// The admin password (Ross, 4 Nov 2026: "password protected not link protected"): firstpicked.com.au/admin asks for
+// The admin password (Ross, 4 Nov 2026: "password protected not link protected"): rankwithross.com.au/admin asks for
 // GEO_ADMIN_PASSWORD (a Railway variable, never in the code) and signs the browser in as the first admin email for 30
 // days. With no password set, the page says to use an email link. Wrong tries are limited (kept in memory: a deploy
 // starts again): 5 per visitor in 15 minutes, 50 an hour from everyone together.

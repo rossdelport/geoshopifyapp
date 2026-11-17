@@ -12,7 +12,7 @@ import { addDays, dayLabel } from "../lib/guide-calendar";
 import { pickDay } from "../lib/hub-pages";
 import styles from "../styles/hub-pages.css?url";
 
-// firstpicked.com.au/dash/log: the agency hub's daily log (Ross, 5 Nov 2026: "see what was updated or created on the
+// rankwithross.com.au/dash/log: the agency hub's daily log (Ross, 5 Nov 2026: "see what was updated or created on the
 // daily basis"). One day at a time (Perth), every client's entries under their name: guides written and live, AI
 // checks, Reddit threads, sales from AI, reports, and what Ross logged himself, which he can add here too.
 

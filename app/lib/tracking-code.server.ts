@@ -1,4 +1,4 @@
-// The FirstPicked tracking code for web app stores: a Shopify "custom pixel" the store pastes into Shopify admin ->
+// The Rank with Ross tracking code for web app stores: a Shopify "custom pixel" the store pastes into Shopify admin ->
 // Settings -> Customer events. It sends the first page of each visit (where the shopper came from) and each order
 // (total, products, and the shopper's first and latest visit), never names, emails or addresses. Each store's code
 // carries its own key, so only that store's code can send its orders.
@@ -20,16 +20,16 @@ export async function trackKeyFor(shopId: string): Promise<string> {
 
 /** The code to paste into Shopify. Plain JavaScript: Shopify runs it in its own sandbox. */
 export function trackingCode(key: string): string {
-  return `// FirstPicked tracking code: counts visits from AI assistants (ChatGPT and co) and the orders they lead to.
+  return `// Rank with Ross tracking code: counts visits from AI assistants (ChatGPT and co) and the orders they lead to.
 // It sends no names, emails or addresses. Made for your store only: please don't share it.
-const FIRSTPICKED = { key: "${key}", endpoint: "${SITE}/api/pixel" };
+const RANK_WITH_ROSS = { key: "${key}", endpoint: "${SITE}/api/pixel" };
 
 function geoSend(body) {
-  fetch(FIRSTPICKED.endpoint, {
+  fetch(RANK_WITH_ROSS.endpoint, {
     method: "POST",
     keepalive: true,
     headers: { "content-type": "text/plain" },
-    body: JSON.stringify(Object.assign({ k: FIRSTPICKED.key }, body)),
+    body: JSON.stringify(Object.assign({ k: RANK_WITH_ROSS.key }, body)),
   }).catch(function () {});
 }
 

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- reads meta descriptors and JSON-LD of many shapes */
-// FirstPicked's own blog. Pure parts: the schedule (first six half an hour apart, then Monday, Wednesday and Friday from 9am
+// Rank with Ross's own blog. Pure parts: the schedule (first six half an hour apart, then Monday, Wednesday and Friday from 9am
 // Sydney, one a day, a pause after a failed write), the topic list (comparisons first, each once), the knowledge pack
 // and allowed sources, and `finishPost` (dashes tidied, sources only from the pack, real related links, refused when
-// thin or when it says a brand uses FirstPicked). Pages: /blog and /blog/<slug> rendered with createRoutesStub and a faked
+// thin or when it says a brand uses Rank with Ross). Pages: /blog and /blog/<slug> rendered with createRoutesStub and a faked
 // database: H1, cards, byline, sources, the AI note, JSON-LD, no em dash, and a 404 with noindex for unknown slugs.
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -118,14 +118,14 @@ describe("the knowledge pack", () => {
     expect(pack).toContain(TECHCRUNCH);
     for (const s of STORIES) expect(pack).toContain(`Story slug: ${s.slug}`);
     for (const t of TOOLS) expect(pack).toContain(`tool slug: ${t.slug}`);
-    expect(pack).toContain("none are FirstPicked customers");
+    expect(pack).toContain("none are Rank with Ross customers");
   });
 
   it("allows only outside pages as sources", () => {
     const allowed = blog.allowedSourceUrls();
     expect(allowed.get(TECHCRUNCH.replace(/\/$/, ""))).toBe(TECHCRUNCH);
     for (const s of STORIES) expect(allowed.get(s.source.url.replace(/\/$/, "").toLowerCase())).toBe(s.source.url);
-    for (const u of allowed.keys()) expect(u).not.toContain("firstpicked.com.au");
+    for (const u of allowed.keys()) expect(u).not.toContain("rankwithross.com.au");
   });
 });
 
@@ -158,14 +158,14 @@ describe("finishPost", () => {
     expect(() => blog.finishPost(draft({ intro: [] }), TOPIC, allowed)).toThrow(/intro/);
   });
 
-  it("refuses any line that makes a story's brand a FirstPicked customer", () => {
+  it("refuses any line that makes a story's brand a Rank with Ross customer", () => {
     const brand = STORIES[0].brand;
-    expect(blog.customerClaim(`${brand} got sales from ChatGPT. FirstPicked shows you the same numbers for your store.`)).toBeNull();
+    expect(blog.customerClaim(`${brand} got sales from ChatGPT. Rank with Ross shows you the same numbers for your store.`)).toBeNull();
     expect(blog.customerClaim("Stores on any plan see this on the dashboard.")).toBeNull();
-    expect(blog.customerClaim(`${brand} uses FirstPicked to track this.`)).toMatch(/uses FirstPicked/);
-    expect(blog.customerClaim(`With FirstPicked, ${brand} doubled its sales.`)).toContain(brand);
-    expect(blog.customerClaim("Thanks to FirstPicked, the brand doubled its sales.")).toMatch(/Thanks to FirstPicked/);
-    expect(() => blog.finishPost(draft({ intro: [`${brand} uses FirstPicked to track this.`, para(2)] }), TOPIC, allowed)).toThrow(/uses FirstPicked/);
+    expect(blog.customerClaim(`${brand} uses Rank with Ross to track this.`)).toMatch(/uses Rank with Ross/);
+    expect(blog.customerClaim(`With Rank with Ross, ${brand} doubled its sales.`)).toContain(brand);
+    expect(blog.customerClaim("Thanks to Rank with Ross, the brand doubled its sales.")).toMatch(/Thanks to Rank with Ross/);
+    expect(() => blog.finishPost(draft({ intro: [`${brand} uses Rank with Ross to track this.`, para(2)] }), TOPIC, allowed)).toThrow(/uses Rank with Ross/);
   });
 
   it("fits a description under 160 characters by whole sentences, or at a word", () => {
@@ -200,11 +200,11 @@ describe("the pure page helpers", () => {
     const types = (ld["@graph"] as any[]).map((n) => n["@type"]);
     expect(types).toEqual(["Organization", "BlogPosting", "BreadcrumbList", "FAQPage"]);
     const posting = (ld["@graph"] as any[])[1];
-    expect(posting.url).toBe("https://firstpicked.com.au/blog/a-post");
+    expect(posting.url).toBe("https://rankwithross.com.au/blog/a-post");
     expect(posting.datePublished).toBe("2026-10-15");
     expect(posting.citation).toHaveLength(1);
     const hubLd = pages.blogHubJsonLd([pages.toPostCard({ ...post, slug: "a-post", publishedAt: new Date("2026-10-15T00:00:00Z") })]);
-    expect((hubLd["@graph"] as any[])[1].blogPost[0].url).toBe("https://firstpicked.com.au/blog/a-post");
+    expect((hubLd["@graph"] as any[])[1].blogPost[0].url).toBe("https://rankwithross.com.au/blog/a-post");
   });
 });
 
@@ -213,7 +213,7 @@ describe("the pages", () => {
     const post = blog.finishPost(draft({ title }), { key: slug, kind: "comparison" }, blog.allowedSourceUrls());
     return { id: slug, slug, ...post, status: "published", publishedAt: new Date("2026-10-15T00:00:00Z"), createdAt: new Date("2026-10-15T00:00:00Z"), updatedAt: new Date("2026-10-15T00:00:00Z"), ...over };
   };
-  const args = (slug: string) => ({ request: new Request(`https://firstpicked.com.au/blog/${slug}`), params: { slug }, context: {} }) as unknown as LoaderFunctionArgs;
+  const args = (slug: string) => ({ request: new Request(`https://rankwithross.com.au/blog/${slug}`), params: { slug }, context: {} }) as unknown as LoaderFunctionArgs;
   const dataOf = async (p: Promise<unknown>) => (await p) as { data: any; init?: ResponseInit };
 
   beforeEach(() => {
@@ -242,7 +242,7 @@ describe("the pages", () => {
     expect(html).toContain('href="/stories"');
     expect(html).not.toMatch(EM_DASH);
     const meta = hub.meta({ data } as any) as any[];
-    expect(meta.find((m) => m.tagName === "link" && m.rel === "canonical")?.href).toBe("https://firstpicked.com.au/blog");
+    expect(meta.find((m) => m.tagName === "link" && m.rel === "canonical")?.href).toBe("https://rankwithross.com.au/blog");
   });
 
   it("an empty hub says the first articles are on their way", async () => {
@@ -262,7 +262,7 @@ describe("the pages", () => {
     const html = render("/blog/first-post", data, page.default as ComponentType, "post");
     const plain = text(html);
     expect(html).toContain('<h1 class="ck-h1 st-h1" id="post-h1">ChatGPT vs Google AI Overviews: where product questions get answered</h1>');
-    expect(plain).toContain("The FirstPicked team · 15 October 2026 · ");
+    expect(plain).toContain("Rank with Ross · 15 October 2026 · ");
     expect(plain).toMatch(/\d+ minute read/);
     for (const s of post.body.sections) expect(html).toContain(`>${s.heading}</h2>`);
     expect(html).toContain("<li>One, two</li>");
@@ -270,7 +270,7 @@ describe("the pages", () => {
     expect(plain).toContain("Questions people ask");
     expect(html).toContain("<summary>Does it change?</summary>");
     expect(html).toContain(`<a href="${TECHCRUNCH}" target="_blank" rel="noopener noreferrer">TechCrunch`);
-    expect(plain).toContain("Written by the FirstPicked team with help from AI");
+    expect(plain).toContain("Written by Rank with Ross with help from AI");
     expect(plain).toContain("Stories worth reading");
     expect(html).toContain(`href="/stories/${STORIES[0].slug}"`);
     expect(plain).toContain("Free tools that help");
@@ -280,7 +280,7 @@ describe("the pages", () => {
     expect(html).toContain('class="ck-pill tl-pill" href="/blog">All posts</a>');
     expect(html).not.toMatch(EM_DASH);
     const meta = page.meta({ data } as any) as any[];
-    expect(meta.find((m) => m.tagName === "link" && m.rel === "canonical")?.href).toBe("https://firstpicked.com.au/blog/first-post");
+    expect(meta.find((m) => m.tagName === "link" && m.rel === "canonical")?.href).toBe("https://rankwithross.com.au/blog/first-post");
     const ld = JSON.stringify(meta.find((m) => m["script:ld+json"])?.["script:ld+json"]);
     expect(ld).toContain('"BlogPosting"');
     expect(ld).toContain('"FAQPage"');

@@ -6,7 +6,7 @@ import { clientIp, fromAnotherSite } from "../lib/public-form.server";
 import webStyles from "../styles/web.css?url";
 import styles from "../styles/report-maker.css?url";
 
-// firstpicked.com.au/report-maker (Ross, 4 Nov 2026: "go to that on my phone, type in a store and it will run the entire
+// rankwithross.com.au/report-maker (Ross, 4 Nov 2026: "go to that on my phone, type in a store and it will run the entire
 // thing and i can record it"). No sign-in, no key. Type a store's website, the report runs (about 3 minutes),
 // then the report itself opens, ready to film. Same createReports and 40-a-day cap as Admin > Reports. The page
 // only ever shows the report it started (followed by its id in the address), never anyone else's, and never the
@@ -41,7 +41,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  if (fromAnotherSite(request)) return { error: "Please make reports from firstpicked.com.au/report-maker." };
+  if (fromAnotherSite(request)) return { error: "Please make reports from rankwithross.com.au/report-maker." };
   const form = await request.formData();
   // One store at a time: the first address typed.
   const store = String(form.get("store") ?? "").trim().split(/[\s,;]+/)[0] ?? "";
@@ -60,7 +60,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export const headers: HeadersFunction = () => new Headers({ "Cache-Control": "no-store", "X-Robots-Tag": "noindex" });
 
-export const meta: MetaFunction = () => [{ title: "Report maker | FirstPicked" }, { name: "robots", content: "noindex" }];
+export const meta: MetaFunction = () => [{ title: "Report maker | Rank with Ross" }, { name: "robots", content: "noindex" }];
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: webStyles },
@@ -152,7 +152,7 @@ export default function ReportMaker() {
           <i />
           <i />
         </span>
-        <span>FirstPicked</span>
+        <span>Rank with Ross</span>
         <em>Report maker</em>
       </header>
 

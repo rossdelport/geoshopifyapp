@@ -1,5 +1,5 @@
 // The agency hub against a real Postgres (set TEST_DATABASE_URL), in its own schema, with reading stores from the web
-// faked. Covers: adding a client (a new store, a store already on FirstPicked, any other business from its website,
+// faked. Covers: adding a client (a new store, a store already on Rank with Ross, any other business from its website,
 // twice, a wrong address, a website that won't open or looks like a Shopify store we couldn't read), pausing and
 // starting the work again (the plan follows), changing details, Ross's own work log entries, the work log built from
 // the work itself, the brand cards and their alerts, the hub's own buttons, and deleting a client.
@@ -124,7 +124,7 @@ describe.skipIf(!url)("the agency hub (needs TEST_DATABASE_URL)", () => {
     expect(await db.shop.count({ where: { id } })).toBe(0);
   });
 
-  it("makes a store already on FirstPicked a client as it is, keeping its owner", async () => {
+  it("makes a store already on Rank with Ross a client as it is, keeping its owner", async () => {
     const owner = await db.user.create({ data: { email: "owner@selfserve.com.au" } });
     const shop = await db.shop.create({ data: { domain: "self-serve.myshopify.com", primaryDomain: "selfserve.com.au", name: "Self Serve", source: "web", userId: owner.id, onboarding: "done" } });
     selfId = shop.id;

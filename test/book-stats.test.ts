@@ -1,4 +1,4 @@
-// Ross's morning chart (4 Nov 2026): people who opened firstpicked.com.au/book and the calls they booked, by ad, on
+// Ross's morning chart (4 Nov 2026): people who opened rankwithross.com.au/book and the calls they booked, by ad, on
 // the admin Overview; and the admin area's password page. The rules (no database) and, against a real Postgres (set
 // TEST_DATABASE_URL), saving visits once per person per day, counting by Sydney day, the page's beacon, signing in
 // with the password and clearing the scrambled ids after 2 days.
@@ -36,7 +36,7 @@ describe("which ad a visit came from", () => {
     expect(adName({ ...none, fbclid: true })).toBe(NO_NAME.meta);
     expect(adName({ ...none, referrer: "m.facebook.com" })).toBe(NO_NAME.meta);
     expect(adName({ ...none, referrer: "l.instagram.com" })).toBe(NO_NAME.meta);
-    expect(adName({ ...none, referrer: "firstpicked.com.au" })).toBe(NO_NAME.home);
+    expect(adName({ ...none, referrer: "rankwithross.com.au" })).toBe(NO_NAME.home);
     expect(adName({ ...none, referrer: "google.com" })).toBe(NO_NAME.none);
     expect(adName(none)).toBe(NO_NAME.none);
     expect(adName({ ...none, referrer: "notfacebook.com" })).toBe(NO_NAME.none);
@@ -48,7 +48,7 @@ describe("which ad a visit came from", () => {
     expect(readAdTags(new URLSearchParams({ utm_term: "x".repeat(300) })).utmTerm).toHaveLength(100);
     expect(hostOf("javascript:alert(1)")).toBeNull();
     expect(hostOf("not a url")).toBeNull();
-    expect(hostOf("https://www.firstpicked.com.au/")).toBe("firstpicked.com.au");
+    expect(hostOf("https://www.rankwithross.com.au/")).toBe("rankwithross.com.au");
   });
 });
 

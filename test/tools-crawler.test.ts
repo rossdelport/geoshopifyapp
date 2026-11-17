@@ -631,7 +631,7 @@ describe("checkSite reads the store's real address", () => {
 // ---------- the action ----------
 
 function post(fields: Record<string, string>, headers: Record<string, string> = {}, body?: string) {
-  const request = new Request("https://firstpicked.com.au/tools/ai-crawler-checker", {
+  const request = new Request("https://rankwithross.com.au/tools/ai-crawler-checker", {
     method: "POST",
     body: body ?? new URLSearchParams(fields),
     headers: { "content-type": "application/x-www-form-urlencoded", "x-real-ip": "203.0.113.9", ...headers },
@@ -742,14 +742,14 @@ describe("the page head", () => {
   const find = (k: string, v: string) => list.find((m) => (m as Record<string, unknown>)[k] === v) as Record<string, string> | undefined;
 
   it("has the registry title and description, one canonical, Open Graph and Twitter tags, no robots meta", () => {
-    expect(list.filter((m) => "title" in m)).toEqual([{ title: "AI Crawler Checker: Can AI Read Your Site? | FirstPicked" }]);
+    expect(list.filter((m) => "title" in m)).toEqual([{ title: "AI Crawler Checker: Can AI Read Your Site? | Rank with Ross" }]);
     expect(TOOL.title.length).toBeLessThan(60);
     expect(find("name", "description")?.content).toBe(TOOL.description);
     expect(TOOL.description.length).toBeLessThan(155);
     const canonicals = list.filter((m) => (m as { rel?: string }).rel === "canonical") as { href: string }[];
-    expect(canonicals.map((c) => c.href)).toEqual(["https://firstpicked.com.au/tools/ai-crawler-checker"]);
-    expect(find("property", "og:url")?.content).toBe("https://firstpicked.com.au/tools/ai-crawler-checker");
-    expect(find("property", "og:image")?.content).toBe("https://firstpicked.com.au/og/ai-crawler-checker.png");
+    expect(canonicals.map((c) => c.href)).toEqual(["https://rankwithross.com.au/tools/ai-crawler-checker"]);
+    expect(find("property", "og:url")?.content).toBe("https://rankwithross.com.au/tools/ai-crawler-checker");
+    expect(find("property", "og:image")?.content).toBe("https://rankwithross.com.au/og/ai-crawler-checker.png");
     expect(find("property", "og:image:width")?.content).toBe("1200");
     expect(find("property", "og:image:height")?.content).toBe("630");
     expect(find("name", "twitter:card")?.content).toBe("summary_large_image");
@@ -767,7 +767,7 @@ describe("the page head", () => {
     expect(byType("WebApplication").offers.price).toBe("0");
     expect(byType("WebPage").dateModified).toBe(TOOL.updated);
     expect(byType("BreadcrumbList").itemListElement).toHaveLength(3);
-    expect(byType("Organization").name).toBe("FirstPicked");
+    expect(byType("Organization").name).toBe("Rank with Ross");
     expect(byType("FAQPage").mainEntity.map((q: any) => [q.name, q.acceptedAnswer.text])).toEqual(copy.FAQS.map((f) => [f.q, f.a]));
   });
 
@@ -830,7 +830,7 @@ describe("the page (server render, no JavaScript)", () => {
 
   it("has exactly one button under the result, with the spec's words and link", () => {
     expect(out.match(/tl-cta"/g)).toHaveLength(1);
-    expect(out).toMatch(/<a class="ck-btn ck-btn-dark tl-cta" href="\/\?ref=tool-ai-crawler-checker#how">Let FirstPicked check this for you every week/);
+    expect(out).toMatch(/<a class="ck-btn ck-btn-dark tl-cta" href="\/\?ref=tool-ai-crawler-checker#how">Let Rank with Ross check this for you every week/);
     expect(out.indexOf('id="result"')).toBeLessThan(out.indexOf("tl-cta-card"));
     expect(out.indexOf("tl-cta-card")).toBeLessThan(out.indexOf('id="what-it-checks"'));
   });
@@ -853,7 +853,7 @@ describe("the page (server render, no JavaScript)", () => {
     }
     expect(out).not.toMatch(/<details|\shidden[\s>=]/);
     for (const s of TOOL.related) expect(out).toContain(`<a href="${toolBySlug(s).path}">${toolBySlug(s).name}</a>`);
-    expect(plain).toContain("Updated 11 October 2026 · Made by FirstPicked");
+    expect(plain).toContain("Updated 11 October 2026 · Made by Rank with Ross");
     expect(out).toContain('class="tl-foot"');
     expect(out).toContain('href="/tools"');
     for (const t of TOOLS) expect(out).toContain(`href="${t.path}"`);
@@ -925,8 +925,8 @@ describe("copy rules", () => {
     const shown = text(renderPage());
     expect(shown).not.toMatch(/\u2014|\s\u2013\s/);
     expect(shown).not.toMatch(/\bAEO\b| LLM|generative engine optimization/);
-    // "FirstPicked" only as the brand name.
-    expect(shown.match(/\bFirstPicked\b/g)?.length).toBeGreaterThan(0);
+    // "Rank with Ross" only as the brand name.
+    expect(shown.match(/\bRank with Ross\b/g)?.length).toBeGreaterThan(0);
     expect(shown).not.toMatch(/\bGEO\b/);
   });
 

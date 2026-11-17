@@ -43,7 +43,7 @@ const html = files
   .join('\n\n')
   .replace('<!-- STORY_CARDS -->', `${storyGroup(false)}\n${storyGroup(true)}`);
 const js = files.filter((f) => f.endsWith('.js')).map((f) => `// ${f}\n${read(f)}`).join('\n\n');
-const out = `<title>FirstPicked Overview</title>
+const out = `<title>Rank with Ross Overview</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap">
@@ -67,12 +67,12 @@ if (!only && outName === 'index.html') {
   const head = out.slice(0, out.indexOf('<div class="page">')).trim();
   const body = out.slice(out.indexOf('<div class="page">'));
   // The page head for search engines, link previews and AI assistants: one canonical address (www and the
-  // Railway address also serve this page), Open Graph tags, and who FirstPicked is as JSON-LD. The Organization node is
+  // Railway address also serve this page), Open Graph tags, and who Rank with Ross is as JSON-LD. The Organization node is
   // the same as ORG_NODE in app/lib/tools/seo.ts (test/tools-foundation.test.ts checks they match).
-  const title = 'FirstPicked · Get your products recommended by AI';
-  const description = 'Shoppers ask ChatGPT, Gemini and Perplexity what to buy. FirstPicked helps your Shopify products get recommended in those AI answers, then counts the orders it can trace back to AI.';
-  const org = { '@type': 'Organization', '@id': 'https://firstpicked.com.au/#org', name: 'FirstPicked', alternateName: 'First Picked', url: 'https://firstpicked.com.au/', logo: 'https://firstpicked.com.au/apple-touch-icon.png' };
-  const website = { '@type': 'WebSite', '@id': 'https://firstpicked.com.au/#website', name: 'FirstPicked', alternateName: 'First Picked', url: 'https://firstpicked.com.au/', publisher: { '@id': 'https://firstpicked.com.au/#org' } };
+  const title = 'Rank with Ross · Get your products recommended by AI';
+  const description = 'Shoppers ask ChatGPT, Gemini and Perplexity what to buy. Rank with Ross helps your Shopify products get recommended in those AI answers, then counts the orders it can trace back to AI.';
+  const org = { '@type': 'Organization', '@id': 'https://rankwithross.com.au/#org', name: 'Rank with Ross', alternateName: 'RankWithRoss', url: 'https://rankwithross.com.au/', logo: 'https://rankwithross.com.au/apple-touch-icon.png' };
+  const website = { '@type': 'WebSite', '@id': 'https://rankwithross.com.au/#website', name: 'Rank with Ross', alternateName: 'RankWithRoss', url: 'https://rankwithross.com.au/', publisher: { '@id': 'https://rankwithross.com.au/#org' } };
   const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': [org, website] }).replaceAll('<', '\\u003c');
   // The same page in German, French, Dutch, Spanish and Italian (design/overview/i18n.mjs).
   const langs = languages(dir);
@@ -82,14 +82,14 @@ if (!only && outName === 'index.html') {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="${description}">
-<link rel="canonical" href="https://firstpicked.com.au/">
+<link rel="canonical" href="https://rankwithross.com.au/">
 ${hreflangTags(langs)}
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="FirstPicked">
+<meta property="og:site_name" content="Rank with Ross">
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${description}">
-<meta property="og:url" content="https://firstpicked.com.au/">
-<meta property="og:image" content="https://firstpicked.com.au/og/home.png">
+<meta property="og:url" content="https://rankwithross.com.au/">
+<meta property="og:image" content="https://rankwithross.com.au/og/home.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="A small clay shop with a star in a speech bubble above it">
@@ -100,8 +100,8 @@ ${hreflangTags(langs)}
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>[hidden]:not([hidden="until-found"]){display:none!important}</style>
 <script>window.GEO_LIVE=true</script>
-${head.replace('<title>FirstPicked Overview</title>', `<title>${title}</title>`)}
-<!-- Meta Pixel Code (FirstPicked's own; asks first in Europe and the UK, see design/overview/pixel-head.js) -->
+${head.replace('<title>Rank with Ross Overview</title>', `<title>${title}</title>`)}
+<!-- Meta Pixel Code (Rank with Ross's own; asks first in Europe and the UK, see design/overview/pixel-head.js) -->
 <script>
 ${fs.readFileSync(path.join(dir, 'pixel-head.js'), 'utf8').trim()}
 </script>
@@ -113,13 +113,13 @@ ${body}</body>
 `
     .replaceAll('src="img/', 'src="/home/img/')
     .replaceAll('poster="img/', 'poster="/home/img/')
-    .replace('href="https://firstpicked.com.au/privacy" target="_blank" rel="noopener"', 'href="/privacy"');
+    .replace('href="https://rankwithross.com.au/privacy" target="_blank" rel="noopener"', 'href="/privacy"');
   fs.mkdirSync(path.join(root, 'app', 'home'), { recursive: true });
   fs.writeFileSync(path.join(root, 'app', 'home', 'home.html'), site);
   for (const l of langs) {
     const page = translatePage(site, l);
     fs.writeFileSync(path.join(root, 'app', 'home', `home-${l.meta.lang}.html`), page);
-    console.log(`app/home/home-${l.meta.lang}.html: ${(page.length / 1024).toFixed(0)} KB (firstpicked.com.au/${l.meta.path})`);
+    console.log(`app/home/home-${l.meta.lang}.html: ${(page.length / 1024).toFixed(0)} KB (rankwithross.com.au/${l.meta.path})`);
   }
 
   const imgOut = path.join(root, 'public', 'home', 'img');

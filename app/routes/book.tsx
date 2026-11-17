@@ -13,7 +13,7 @@ import pixelHead from "../../design/overview/pixel-head.js?raw";
 import cookieScript from "../../design/overview/parts/47-cookies.js?raw";
 import raw from "../home/book.html?raw";
 
-// firstpicked.com.au/book: book a call with Ross (Ross, 3 Nov 2026). Every "Get started" button on the home page opens it.
+// rankwithross.com.au/book: book a call with Ross (Ross, 3 Nov 2026). Every "Get started" button on the home page opens it.
 // GET: the page (app/home/book.html) with Ross's free times from his Google Calendar, or "Text Ross" when his
 // calendar isn't connected yet. Above the times, two questions (Ross, 6 Nov 2026): a Shopify brand? and sales a month;
 // the times only show for a Shopify brand selling A$5,000 or more a month. POST: urlencoded `start` (one of those

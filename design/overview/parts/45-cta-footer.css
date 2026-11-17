@@ -53,22 +53,18 @@
 }
 @keyframes foot-twinkle { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
 
-/* the arrow on the button nudges forward on hover; the footer logo's circles ease apart */
+/* the arrow on the button nudges forward on hover; the footer logo's face grows a touch */
 .foot-btn svg { transition: transform .3s cubic-bezier(.34, 1.56, .64, 1); }
 .foot-btn:hover svg { transform: translateX(3px); }
-.foot-mark i { transition: transform .5s cubic-bezier(.34, 1.56, .64, 1); }
-.foot-logo:hover .foot-mark-a { transform: translate(-2px, -2px); }
-.foot-logo:hover .foot-mark-b { transform: translate(2px, 2px); }
+.foot-mark { transition: transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+.foot-logo:hover .foot-mark { transform: scale(1.06); }
 
 .foot-main {
   margin-top: 72px;
   display: flex; align-items: center; justify-content: space-between; gap: 32px;
 }
 .foot-logo { display: inline-flex; align-items: center; gap: 10px; }
-.foot-mark { position: relative; width: 36px; height: 36px; flex: none; }
-.foot-mark i { position: absolute; width: 24px; height: 24px; border-radius: 50%; display: block; }
-.foot-mark-b { right: 0; bottom: 0; background: var(--cobalt); }
-.foot-mark-a { left: 0; top: 0; background: var(--peri-300); opacity: .88; mix-blend-mode: multiply; }
+.foot-mark { width: 36px; height: 36px; flex: none; border-radius: 50%; background: #6c5cf2 url(/brand/ross-mark.webp) center / cover; }
 .foot-word { font-family: var(--font-head); font-weight: 600; font-size: 25px; letter-spacing: -0.9px; line-height: 1; color: var(--navy); }
 .foot-line { margin-top: 16px; max-width: 400px; font-size: 14px; line-height: 1.6; color: var(--text); text-wrap: balance; }
 

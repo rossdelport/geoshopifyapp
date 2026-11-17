@@ -15,8 +15,8 @@ import { guidesPerMonth, isLocal } from "../lib/business";
 import styles from "../styles/web.css?url";
 import hubStyles from "../styles/hub.css?url";
 
-// The FirstPicked web app's frame: the menu on the left (a top bar on phones) and the page on the right. Like RankPill's
-// layout (Ross, 2026-10-14) in FirstPicked's colours: menu sections, this month's allowance, the store and the account at
+// The Rank with Ross web app's frame: the menu on the left (a top bar on phones) and the page on the right. Like RankPill's
+// layout (Ross, 2026-10-14) in Rank with Ross's colours: menu sections, this month's allowance, the store and the account at
 // the bottom.
 //
 // Three menus (Ross, 5 Nov 2026: "i want the dash to be the hub for me"):
@@ -28,7 +28,7 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
   { rel: "stylesheet", href: hubStyles },
 ];
-export const meta: MetaFunction = () => [{ title: "FirstPicked" }, { name: "robots", content: "noindex" }];
+export const meta: MetaFunction = () => [{ title: "Rank with Ross" }, { name: "robots", content: "noindex" }];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const pathname = new URL(request.url).pathname;
@@ -191,6 +191,7 @@ export default function Dash() {
           navClass={navClass}
           items={[
             { to: b, label: "Overview", d: ICONS.home, end: true },
+            { to: `${b}/checklist`, label: "Checklist", d: ICONS.list },
             { to: `${b}/log`, label: "Work log", d: ICONS.check },
             { to: `${b}/stats`, label: data.local ? "Stats" : "Store stats", d: ICONS.money },
             { to: `${b}/reports`, label: "Reports", d: ICONS.mail },
@@ -219,9 +220,9 @@ export default function Dash() {
           <span className="w-nav-label">Support</span>
           <NavLink to="/dash/ask" prefetch="intent" className={navClass}>
             <Icon d={ICONS.spark} />
-            Ask FirstPicked
+            Ask AI
           </NavLink>
-          <a href="mailto:ross@firstpicked.com.au">
+          <a href="mailto:ross@rankwithross.com.au">
             <Icon d={ICONS.mail} />
             Email us
           </a>

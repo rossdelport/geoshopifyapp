@@ -48,7 +48,7 @@ type ReportsResult =
 
 export const action = async ({ request }: ActionFunctionArgs): Promise<ReportsResult> => {
   const { user, shop, client } = await requireClient(request);
-  if (fromAnotherSite(request)) return { ok: false, error: "Please use the buttons on FirstPicked." };
+  if (fromAnotherSite(request)) return { ok: false, error: "Please use the buttons on Rank with Ross." };
   if (!client) return { ok: false, error: "Make them a client first." };
   const form = await request.formData();
   const id = String(form.get("id") ?? "");

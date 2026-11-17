@@ -1,4 +1,4 @@
-// firstpicked.com.au/book: people pick a time for a call with Ross, and it goes straight into Ross's Google Calendar
+// rankwithross.com.au/book: people pick a time for a call with Ross, and it goes straight into Ross's Google Calendar
 // (Ross, 3 Nov 2026: every home page button says "Get started" and opens this page). Pure helpers, used by the page
 // and by booking.server.ts.
 
@@ -91,6 +91,6 @@ export const BOOK_ERRORS = {
   questions: "Please answer the two questions above the times. If you can’t see them, reload the page.",
   taken: "Sorry, that time was just taken. Please pick another one.",
   tooMany: "You’ve booked a lot today. Please text Ross on 0400 369 865.",
-  crossSite: "Please use the form on the FirstPicked website.",
+  crossSite: "Please use the form on the Rank with Ross website.",
   closed: "Online booking isn’t open right now. Please text Ross on 0400 369 865.",
 };

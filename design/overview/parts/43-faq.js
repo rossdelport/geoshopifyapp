@@ -33,7 +33,7 @@
   var typing = document.createElement('div');
   typing.className = 'faq-msg faq-msg-a faq-typing';
   typing.setAttribute('aria-hidden', 'true');
-  typing.innerHTML = '<span class="faq-av"><i></i><i></i></span><div class="faq-bub"><span></span><span></span><span></span></div>';
+  typing.innerHTML = '<span class="faq-av"></span><div class="faq-bub"><span></span><span></span><span></span></div>';
 
   function questionText(pair) {
     var q = pair.querySelector('.faq-q');

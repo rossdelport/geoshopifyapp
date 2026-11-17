@@ -53,7 +53,7 @@ export default function AdminOverview() {
   const [today, yesterday] = [day(o.today), day(o.yesterday)];
   const attention = [
     o.failed ? { text: `${o.failed} background job${o.failed === 1 ? "" : "s"} failed in the last 24 hours`, to: "/dash/admin/system" } : null,
-    o.flags ? { text: `${o.flags} Ask FirstPicked question${o.flags === 1 ? "" : "s"} passed to you, still open`, to: "/dash/admin/support" } : null,
+    o.flags ? { text: `${o.flags} Ask AI question${o.flags === 1 ? "" : "s"} passed to you, still open`, to: "/dash/admin/support" } : null,
     ...o.stuck.map((s) => ({ text: `${s.store} has been stuck at "${s.stage}" since ${timeAgo(s.since)}`, to: "/dash/admin/users" })),
     ...o.overCap.map((s) => ({ text: `${s.store} hit its monthly cost cap (${usd(s.usd)})`, to: "/dash/admin/usage" })),
   ].filter((x): x is { text: string; to: string } => Boolean(x));
@@ -63,7 +63,7 @@ export default function AdminOverview() {
         <div className="w-row w-range">
           <div className="w-sec-head">
             <h2 id="book-h">Your booking page</h2>
-            <p>People who opened firstpicked.com.au/book, and the calls they booked. Each person counts once a day.</p>
+            <p>People who opened rankwithross.com.au/book, and the calls they booked. Each person counts once a day.</p>
           </div>
           <div className="w-range-presets">
             {SPANS.map((n) => (

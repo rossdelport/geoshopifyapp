@@ -4,7 +4,7 @@ import db from "../db.server";
 import { requireAdmin } from "../lib/admin.server";
 import { SALES } from "../lib/booking";
 
-// Admin > Calls (Ross, 6 Nov 2026: "please store that information too"): every call booked on firstpicked.com.au/book,
+// Admin > Calls (Ross, 6 Nov 2026: "please store that information too"): every call booked on rankwithross.com.au/book,
 // newest first, with the person's answers to the two questions (they said yes to Shopify, so only sales a month shows)
 // and the ad they came from. The same details are in Ross's Google Calendar and his "New call booked" email.
 
@@ -49,7 +49,7 @@ export default function AdminCalls() {
         <p>
           {coming} still to come. Everyone booked on{" "}
           <a href="/book" target="_blank" rel="noreferrer">
-            firstpicked.com.au/book
+            rankwithross.com.au/book
           </a>
           , with what they said their store sells a month. Times are Perth time.
         </p>

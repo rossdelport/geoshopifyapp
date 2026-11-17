@@ -1,6 +1,6 @@
-// The niche pages for Ross's video ads, firstpicked.com.au/for/<niche> (Ross, 17 Nov 2026): one page per niche in the
-// niche test, Ross's video first with the "Book a call" button under it, then what they pay now, what ChatGPT said,
-// what we do and the price. Checks the house rules (no dashes, real sourced numbers, nothing promised that we
+// The niche pages for Ross's video ads, rankwithross.com.au/for/<niche> (Ross, 17 Nov 2026): one page per niche in the
+// niche test, Ross's video first with the "Book a call" button under it, then Eduardo's review, "Sound familiar?"
+// (3 problems), the honest table against agencies, the 3 steps, the price and the questions (the look from 17 Nov 2026). Checks the house rules (no dashes, real sourced numbers, nothing promised that we
 // don't do), the booking links and the page frame (noindex, Meta pixel, cookie notice).
 
 import { readFileSync } from "node:fs";
@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import type { LoaderFunctionArgs } from "react-router";
 import { OFFER } from "../app/lib/plans";
-import { VSL_PAGES, VSL_PRICE, VSL_SLUGS, bookingNiche, vslBookHref, vslBySlug } from "../app/lib/vsl/pages";
+import { AGENCY_PRICE, VSL_PAGES, VSL_PRICE, VSL_SLUGS, bookingNiche, vslBookHref, vslBySlug } from "../app/lib/vsl/pages";
 import { renderVsl } from "../app/lib/vsl/render";
 import { loader } from "../app/routes/for.$niche";
 
@@ -17,7 +17,7 @@ const ROOT = fileURLToPath(new URL("..", import.meta.url));
 
 const open = async (slug: string) => {
   try {
-    return (await loader({ request: new Request(`https://firstpicked.com.au/for/${slug}`), params: { niche: slug }, context: {} } as unknown as LoaderFunctionArgs)) as Response;
+    return (await loader({ request: new Request(`https://rankwithross.com.au/for/${slug}`), params: { niche: slug }, context: {} } as unknown as LoaderFunctionArgs)) as Response;
   } catch (thrown) {
     return thrown as Response;
   }
@@ -28,20 +28,13 @@ const words = (p: (typeof VSL_PAGES)[number]) =>
   [
     p.title,
     p.description,
-    p.eyebrow,
+    p.hi,
     ...p.h1,
     p.lead,
-    ...p.spend.h,
-    ...p.spend.costs.flatMap((c) => [c.value, c.text]),
-    p.spend.line,
-    ...p.ai.h,
-    p.ai.question,
-    ...p.ai.points,
-    ...p.help.h,
-    ...p.help.items.flatMap((i) => [i.h, i.p]),
-    ...(p.maths ? [...p.maths.h, ...p.maths.points] : []),
+    ...p.problems.flatMap((r) => [r.h, r.p, r.note ?? ""]),
+    p.big.line,
+    p.big.note,
     ...p.faq.flatMap((f) => [f.q, f.a]),
-    ...p.close,
   ].join("\n");
 
 describe("the five niche pages", () => {
@@ -67,7 +60,7 @@ describe("the five niche pages", () => {
       expect(text, p.slug).not.toMatch(/email(s)? (to|the) (sites|websites)|pitch/i);
       expect(text, p.slug).not.toMatch(/guarantee|worth A\$/i);
       expect(p.title.length, p.slug).toBeLessThanOrEqual(60);
-      expect(p.title, p.slug).toMatch(/ \| FirstPicked$/);
+      expect(p.title, p.slug).toMatch(/ \| Rank with Ross$/);
       expect(p.description.length, p.slug).toBeLessThanOrEqual(160);
       for (const s of p.sources) expect(s.url, p.slug).toMatch(/^https:\/\//);
       // every page says nobody can promise what AI says
@@ -84,13 +77,44 @@ describe("the five niche pages", () => {
     expect(bookingNiche(null)).toBeNull();
   });
 
-  it("only show Eduardo's review where it fits (he sells stock tank pools)", () => {
-    expect(VSL_PAGES.filter((p) => p.review).map((p) => p.slug)).toEqual(["pool-spa-sauna-stores"]);
+  it("keep the words short (Ross, 17 Nov 2026: \"simplify the text\")", () => {
+    for (const p of VSL_PAGES) {
+      expect(p.problems, p.slug).toHaveLength(3);
+      expect(p.lead.length, p.slug).toBeLessThanOrEqual(170);
+      for (const r of p.problems) {
+        expect(r.h.length, `${p.slug}: ${r.h}`).toBeLessThanOrEqual(90);
+        expect(r.p.length, `${p.slug}: ${r.p}`).toBeLessThanOrEqual(150);
+      }
+      // a full set of questions (Ross, 17 Nov 2026: "really beef out the FAQ section"), each answer short
+      expect(p.faq.length, p.slug).toBeGreaterThanOrEqual(10);
+      expect(new Set(p.faq.map((f) => f.q)).size, p.slug).toBe(p.faq.length);
+      for (const f of p.faq) expect(f.a.length, `${p.slug}: ${f.q}`).toBeLessThanOrEqual(300);
+      // the agency prices on every page are the ones in the table and its source
+      expect(p.problems.some((r) => r.h.includes(AGENCY_PRICE)), p.slug).toBe(true);
+      expect(p.sources.some((s) => /optimising/i.test(s.url)), p.slug).toBe(true);
+    }
   });
+
+  it("draw what the words say (Ross, 17 Nov 2026: \"simple illustrations to match the text\")", () => {
+    for (const p of VSL_PAGES) {
+      for (const r of p.problems) {
+        // the chat answer shows as many names as the words say AI gave
+        if (r.draw === "chat") expect(r.h, p.slug).toContain(`It named ${r.names}`);
+        // a price tag only carries a number from its own words
+        if (r.tag) expect(`${r.h} ${r.p}`, `${p.slug}: ${r.tag}`).toContain(r.tag.replace(/\+$/, ""));
+        if (["click", "lead", "bill", "search"].includes(r.draw)) expect(r.tag, `${p.slug}: ${r.h}`).toBeTruthy();
+      }
+    }
+    const html = renderVsl(vslBySlug("plumbers-electricians")!, { rossPhoto: "/ross.webp", cover: "/cover.webp" });
+    expect(html).toContain('<filter id="rr-rough"');
+    expect(html).toContain(">$139+</text>");
+    expect(html.match(/class="step-pic"/g)).toHaveLength(3);
+  });
+
 
   it("escape everything they draw", () => {
     const p = { ...vslBySlug("buyers-agents")!, lead: 'Fish & <chips> "now"' };
-    const html = renderVsl(p, { rossPhoto: "/ross.webp" });
+    const html = renderVsl(p, { rossPhoto: "/ross.webp", cover: "/cover.webp" });
     expect(html).toContain("Fish &amp; &lt;chips&gt; &quot;now&quot;");
     expect(html).not.toContain("<chips>");
   });
@@ -103,7 +127,7 @@ describe("the page at /for/<niche>", () => {
       expect(res.status, slug).toBe(200);
       const html = await res.text();
       const p = vslBySlug(slug)!;
-      expect(html).toContain(`<link rel="canonical" href="https://firstpicked.com.au/for/${slug}">`);
+      expect(html).toContain(`<link rel="canonical" href="https://rankwithross.com.au/for/${slug}">`);
       expect(html).toContain('<meta name="robots" content="noindex">');
       expect(html.match(/<h1[\s>]/g), slug).toHaveLength(1);
       // the route filled everything in
@@ -114,6 +138,9 @@ describe("the page at /for/<niche>", () => {
       expect(video, slug).toBeGreaterThan(html.indexOf("<h1"));
       expect(button, slug).toBeGreaterThan(video);
       expect(html).toContain(`href="${vslBookHref(p).replace(/&/g, "&amp;")}" data-book>Book a free 15 minute call</a>`);
+      // the honest table: our price against Australian agencies' prices
+      expect(html, slug).toContain(`<td class="me">${VSL_PRICE}</td><td>${AGENCY_PRICE}</td>`);
+      expect(html, slug).toContain(p.big.line);
       // the only links: /book, home, privacy, terms, texting Ross and the sources
       const links = new Set([...html.matchAll(/<a [^>]*href="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, "&")));
       const allowed = new Set([vslBookHref(p), "/", "/privacy", "/privacy#cookies", "/terms", "sms:+61400369865", "https://terratanks.com.au/", ...p.sources.map((s) => s.url)]);
@@ -139,7 +166,7 @@ describe("the page at /for/<niche>", () => {
     expect(html).toContain("a.setAttribute('href', '/book?' + keep);");
   });
 
-  it("shows Eduardo word for word on the store page, with the note that results differ", async () => {
+  it("shows Eduardo word for word on every page, with the note that results differ", async () => {
     const html = await (await open("pool-spa-sauna-stores")).text();
     // his words on the page are word for word from the video (the captions hold everything he says)
     const words = (s: string) => s.toLowerCase().replace(/[’']/g, "'").replace(/[^a-z' ]+/g, " ").replace(/\s+/g, " ").trim();
@@ -149,7 +176,13 @@ describe("the page at /for/<niche>", () => {
     for (const q of quotes) expect(said, q).toContain(words(q));
     expect(html).toContain("A real client, in his own words. Results are different for every store.");
     expect(html).toContain('preload="none"');
-    expect(await (await open("mortgage-brokers")).text()).not.toContain("Hear it from Eduardo");
+    // on every page (Ross, 17 Nov 2026), and the local pages say "business"
+    for (const slug of VSL_SLUGS) {
+      const page = await (await open(slug)).text();
+      expect(page, slug).toContain("Hear it from Eduardo");
+      expect([...page.matchAll(/<p>“([^”]+)”<\/p>/g)].map((m) => m[1]), slug).toEqual(quotes);
+    }
+    expect(await (await open("mortgage-brokers")).text()).toContain("A real client, in his own words. Results are different for every business.");
   });
 
   it("is Not found for anything else", async () => {

@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, ShouldRevalidateFunction } from "react-router";
-import { Form, Link, redirect, useLoaderData, useNavigation, useRevalidator, useSearchParams } from "react-router";
+import { Form, Link, redirect, useLoaderData, useNavigate, useNavigation, useRevalidator, useSearchParams } from "react-router";
 import db from "../db.server";
 import { isAdmin, requireSession, requireWebShop } from "../lib/web-auth.server";
 import { activeScan, latestVisibility, moneyThisMonth, retrySetup, topCompetitors } from "../lib/dashboard.server";
@@ -15,15 +15,20 @@ import { needsYou, onlyTabChanged, pickTab, plural, salesCaption, spotsLine } fr
 import { ICONS, PageHead, Stat, Tabs } from "../components/web";
 import { AlertList } from "../components/hub";
 import { BrandCard } from "../components/brand-card";
+import { ClientPlanDialog } from "../components/client-plan";
 import hubPagesStyles from "../styles/hub-pages.css?url";
+import planStyles from "../styles/client-plan.css?url";
 
-// firstpicked.com.au/dash: the web app's home. While setting up: the steps and the scan's progress. Then, sales from AI
+// rankwithross.com.au/dash: the web app's home. While setting up: the steps and the scan's progress. Then, sales from AI
 // first (Ross's #1 rule), the visibility score, who AI names instead, and the questions where the store is missing.
 //
 // For admins it is the agency hub's front page instead (Ross, 5 Nov 2026: "i want the dash to be the hub for me"):
 // the headline numbers, what needs Ross across all clients, and a card for each client brand.
 
-export const links: LinksFunction = () => [{ rel: "stylesheet", href: hubPagesStyles }];
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: hubPagesStyles },
+  { rel: "stylesheet", href: planStyles },
+];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { user, shop } = await requireSession(request); // the frame asks too: one round trip shared
@@ -150,7 +155,7 @@ function StoreHome({ data }: { data: Exclude<Data, { view: "hub" }> }) {
           ) : null}
           {data.setupFailed ? (
             <div className="w-err" role="alert" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
-              <span>Setup stopped partway. Try again, and if it keeps stopping, email ross@firstpicked.com.au.</span>
+              <span>Setup stopped partway. Try again, and if it keeps stopping, email ross@rankwithross.com.au.</span>
               <Form method="post">
                 <button className="w-btn w-btn-sm" type="submit" name="intent" value="retry" disabled={nav.state !== "idle"}>
                   Try again
@@ -375,6 +380,20 @@ function ClientsHub({ data }: { data: Extract<Data, { view: "hub" }> }) {
   const { cards, totals, alerts, today } = data;
   const [params] = useSearchParams();
   const revalidator = useRevalidator();
+  const navigate = useNavigate();
+  // The client whose pop-up is open (Ross, 17 Nov 2026): a brand card opens it; ?client=<id> opens it on arrival,
+  // which is where Add a client lands, so a new client's first 24 hours are right there.
+  const [openId, setOpenId] = useState<string | null>(() => params.get("client"));
+  const openCard = openId ? cards.find((c) => c.shopId === openId) ?? null : null;
+  const closePlan = () => {
+    setOpenId(null);
+    if (params.has("client")) {
+      const rest = new URLSearchParams(params);
+      rest.delete("client");
+      const query = rest.toString();
+      navigate(query ? `/dash?${query}` : "/dash", { replace: true, preventScrollReset: true });
+    }
+  };
   const tab = pickTab(params.get("show"), totals);
   const settingUp = cards.some((c) => c.onboarding !== "done" && !c.alerts.some((a) => a.key === "setup" && a.tone === "no"));
 
@@ -471,14 +490,14 @@ function ClientsHub({ data }: { data: Extract<Data, { view: "hub" }> }) {
         <div className="w-row">
           <div className="w-sec-head">
             <h2 id="clients-h">Your clients</h2>
-            <p>Open a brand to see everything about them.</p>
+            <p>Open a brand to see their checklist and what runs for them today.</p>
           </div>
           {tabs.length > 1 ? <Tabs items={tabs} label="Which clients" /> : null}
         </div>
         {shown.length ? (
           <div className="hp-cards">
             {shown.map((c) => (
-              <BrandCard key={c.shopId} card={c} today={today} />
+              <BrandCard key={c.shopId} card={c} today={today} onOpen={(card) => setOpenId(card.shopId)} />
             ))}
           </div>
         ) : (
@@ -490,6 +509,7 @@ function ClientsHub({ data }: { data: Extract<Data, { view: "hub" }> }) {
           </div>
         )}
       </section>
+      {openCard ? <ClientPlanDialog key={openCard.shopId} card={openCard} onClose={closePlan} /> : null}
     </>
   );
 }

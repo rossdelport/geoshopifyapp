@@ -1,4 +1,4 @@
-// The site files for firstpicked.com.au (robots.txt, sitemap.xml, llms.txt) and their routes, plus the head and
+// The site files for rankwithross.com.au (robots.txt, sitemap.xml, llms.txt) and their routes, plus the head and
 // host changes on /check and /privacy that came with the free tools.
 
 import { existsSync } from "node:fs";
@@ -36,7 +36,7 @@ const call = async (fn: (a: LoaderFunctionArgs) => unknown, url: string, init?: 
 const callMeta = (m: unknown) => (m as (a: unknown) => MetaDescriptor[])({ params: {}, location: {}, matches: [], data: undefined, error: undefined });
 const DASHES = /\u2014|\s\u2013\s/;
 
-describe("robots.txt for firstpicked.com.au", () => {
+describe("robots.txt for rankwithross.com.au", () => {
   const body = siteRobotsTxt();
   const groups = parseRobots(body);
   const BOTS = ["Googlebot", "OAI-SearchBot", "GPTBot", "PerplexityBot", "ClaudeBot", "Claude-SearchBot", "Bingbot"];
@@ -58,10 +58,10 @@ describe("robots.txt for firstpicked.com.au", () => {
   });
 
   it("names the sitemap, has only the * group, and no dashes in the comment", () => {
-    expect(body).toContain("\nSitemap: https://firstpicked.com.au/sitemap.xml\n");
+    expect(body).toContain("\nSitemap: https://rankwithross.com.au/sitemap.xml\n");
     expect(groups).toHaveLength(1);
     expect(groups[0].agents).toEqual(["*"]);
-    expect(body.startsWith("# firstpicked.com.au: search engines and AI assistants are welcome on every public page.\nUser-agent: *\n")).toBe(true);
+    expect(body.startsWith("# rankwithross.com.au: search engines and AI assistants are welcome on every public page.\nUser-agent: *\n")).toBe(true);
     expect(body).not.toMatch(/Disallow: \/app\n|Disallow: \/check/);
     expect(DASHES.test(body)).toBe(false);
   });
@@ -70,14 +70,14 @@ describe("robots.txt for firstpicked.com.au", () => {
     const env = process.env.NODE_ENV;
     process.env.NODE_ENV = "production";
     try {
-      for (const url of ["https://firstpicked.com.au/robots.txt", "https://www.firstpicked.com.au/robots.txt", "https://geo-shopify-app-production.up.railway.app/robots.txt"]) {
+      for (const url of ["https://rankwithross.com.au/robots.txt", "https://www.rankwithross.com.au/robots.txt", "https://geo-shopify-app-production.up.railway.app/robots.txt"]) {
         const res = await call(robotsLoader, url);
         expect(res.status, url).toBe(200);
         expect(res.headers.get("content-type")).toBe("text/plain; charset=utf-8");
         expect(res.headers.get("cache-control")).toBe("public, max-age=3600");
         expect(await res.text()).toBe(body);
       }
-      expect((await call(robotsLoader, "https://firstpicked.com.au/robots.txt", { method: "HEAD" })).status).toBe(200);
+      expect((await call(robotsLoader, "https://rankwithross.com.au/robots.txt", { method: "HEAD" })).status).toBe(200);
     } finally {
       process.env.NODE_ENV = env;
     }
@@ -101,21 +101,21 @@ describe("sitemap.xml", () => {
 
   it("lists exactly the home page (and its 5 languages), the hub, the 7 tools, the stories, the blog and the privacy page, with their dates", () => {
     expect(locs).toEqual([
-      "https://firstpicked.com.au/",
-      ...["de", "fr", "nl", "es", "it"].map((l) => `https://firstpicked.com.au/${l}`),
-      "https://firstpicked.com.au/tools",
-      ...TOOLS.map((t) => `https://firstpicked.com.au${t.path}`),
-      "https://firstpicked.com.au/stories",
-      ...STORIES.map((s) => `https://firstpicked.com.au/stories/${s.slug}`),
-      "https://firstpicked.com.au/blog",
-      "https://firstpicked.com.au/compare",
-      ...COMPARE_PAGES.map((p) => `https://firstpicked.com.au/compare/${p.slug}`),
-      ...LANDING_PAGES.map((p) => `https://firstpicked.com.au/${p.slug}`),
-      "https://firstpicked.com.au/privacy",
-      "https://firstpicked.com.au/terms",
+      "https://rankwithross.com.au/",
+      ...["de", "fr", "nl", "es", "it"].map((l) => `https://rankwithross.com.au/${l}`),
+      "https://rankwithross.com.au/tools",
+      ...TOOLS.map((t) => `https://rankwithross.com.au${t.path}`),
+      "https://rankwithross.com.au/stories",
+      ...STORIES.map((s) => `https://rankwithross.com.au/stories/${s.slug}`),
+      "https://rankwithross.com.au/blog",
+      "https://rankwithross.com.au/compare",
+      ...COMPARE_PAGES.map((p) => `https://rankwithross.com.au/compare/${p.slug}`),
+      ...LANDING_PAGES.map((p) => `https://rankwithross.com.au/${p.slug}`),
+      "https://rankwithross.com.au/privacy",
+      "https://rankwithross.com.au/terms",
     ]);
     expect(STORIES).toHaveLength(15);
-    for (const l of locs) expect(l.startsWith("https://firstpicked.com.au/")).toBe(true);
+    for (const l of locs) expect(l.startsWith("https://rankwithross.com.au/")).toBe(true);
     expect(lastmods).toEqual([
       HOME_UPDATED,
       ...Array(5).fill(HOME_LANGS_UPDATED),
@@ -134,8 +134,8 @@ describe("sitemap.xml", () => {
     expect(sitemapPages().map((p) => p.path)).not.toContain("/check");
   });
 
-  it("is served as XML, and www sends it to firstpicked.com.au", async () => {
-    const res = await call(sitemapLoader, "https://firstpicked.com.au/sitemap.xml");
+  it("is served as XML, and www sends it to rankwithross.com.au", async () => {
+    const res = await call(sitemapLoader, "https://rankwithross.com.au/sitemap.xml");
     expect(res.status).toBe(200);
     expect(res.headers.get("content-type")).toBe("application/xml; charset=utf-8");
     expect(res.headers.get("cache-control")).toBe("public, max-age=3600");
@@ -143,50 +143,50 @@ describe("sitemap.xml", () => {
     const env = process.env.NODE_ENV;
     process.env.NODE_ENV = "production";
     try {
-      const moved = await call(sitemapLoader, "https://www.firstpicked.com.au/sitemap.xml");
+      const moved = await call(sitemapLoader, "https://www.rankwithross.com.au/sitemap.xml");
       expect(moved.status).toBe(301);
-      expect(moved.headers.get("location")).toBe("https://firstpicked.com.au/sitemap.xml");
+      expect(moved.headers.get("location")).toBe("https://rankwithross.com.au/sitemap.xml");
     } finally {
       process.env.NODE_ENV = env;
     }
   });
 });
 
-describe("llms.txt for firstpicked.com.au", () => {
+describe("llms.txt for rankwithross.com.au", () => {
   const txt = siteLlmsTxt();
   const lines = txt.split("\n");
 
   it("follows the llmstxt.org shape: H1, a summary quote, detail, then H2 link lists", () => {
-    expect(lines[0]).toBe("# FirstPicked");
-    expect(lines[2].startsWith("> FirstPicked is a Shopify app that helps stores get their products recommended by AI assistants")).toBe(true);
+    expect(lines[0]).toBe("# Rank with Ross");
+    expect(lines[2].startsWith("> Rank with Ross is a Shopify app that helps stores get their products recommended by AI assistants")).toBe(true);
     expect(txt.match(/^# /gm)).toHaveLength(1);
-    expect(txt.match(/^## .*/gm)).toEqual(["## Free tools", "## About FirstPicked"]);
+    expect(txt.match(/^## .*/gm)).toEqual(["## Free tools", "## About Rank with Ross"]);
     expect(txt).toContain("\n## Free tools\n\n");
-    expect(txt).toContain("\n## About FirstPicked\n\n");
+    expect(txt).toContain("\n## About Rank with Ross\n\n");
     expect(txt.endsWith("\n")).toBe(true);
     expect(DASHES.test(txt)).toBe(false);
   });
 
   it("links every tool in registry order with its one line, and the main pages", () => {
     const toolLines = lines.filter((l) => l.startsWith("- [") && l.includes("/tools/"));
-    expect(toolLines).toEqual(TOOLS.map((t) => `- [${t.name}](https://firstpicked.com.au${t.path}): ${t.short}`));
-    expect(txt).toContain("- [Home](https://firstpicked.com.au/): what FirstPicked does, how it works and pricing");
-    expect(txt).toContain("- [All free tools](https://firstpicked.com.au/tools): the full list of free tools");
+    expect(toolLines).toEqual(TOOLS.map((t) => `- [${t.name}](https://rankwithross.com.au${t.path}): ${t.short}`));
+    expect(txt).toContain("- [Home](https://rankwithross.com.au/): what Rank with Ross does, how it works and pricing");
+    expect(txt).toContain("- [All free tools](https://rankwithross.com.au/tools): the full list of free tools");
     expect(txt).toContain(
-      "- [Stories](https://firstpicked.com.au/stories): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are FirstPicked customers)",
+      "- [Stories](https://rankwithross.com.au/stories): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are Rank with Ross customers)",
     );
-    expect(txt).toContain("- [Perth SEO agency for Shopify brands](https://firstpicked.com.au/seo-agency-perth): Get your Shopify store found on Google and picked by AI, from a Perth team.");
-    expect(txt).toContain("- [Privacy policy](https://firstpicked.com.au/privacy): what data FirstPicked collects and why");
-    expect(txt).toContain("- [Terms of service](https://firstpicked.com.au/terms): the rules for using FirstPicked, the refund after month one and stopping any time");
+    expect(txt).toContain("- [Perth SEO agency for Shopify brands](https://rankwithross.com.au/seo-agency-perth): Get your Shopify store found on Google and picked by AI, from a Perth team.");
+    expect(txt).toContain("- [Privacy policy](https://rankwithross.com.au/privacy): what data Rank with Ross collects and why");
+    expect(txt).toContain("- [Terms of service](https://rankwithross.com.au/terms): the rules for using Rank with Ross, the refund after month one and stopping any time");
   });
 
   it("takes the price from the offer in plans.ts, never typed in, and says new stores join through the waitlist", () => {
-    expect(txt).toContain(`${OFFER.line} New stores start by booking a call with the founder at https://firstpicked.com.au/book.`);
+    expect(txt).toContain(`${OFFER.line} New stores start by booking a call with the founder at https://rankwithross.com.au/book.`);
     expect(txt).not.toMatch(/free trial/i);
   });
 
   it("is served as plain text", async () => {
-    const res = await call(llmsLoader, "https://firstpicked.com.au/llms.txt");
+    const res = await call(llmsLoader, "https://rankwithross.com.au/llms.txt");
     expect(res.status).toBe(200);
     expect(res.headers.get("content-type")).toBe("text/plain; charset=utf-8");
     expect(await res.text()).toBe(txt);
@@ -203,18 +203,18 @@ describe("/check after the free tools", () => {
   it("points search engines at the AI Visibility Checker page and keeps its own title", () => {
     const meta = callMeta(checkStart.meta);
     const canonicals = meta.filter((m) => (m as { rel?: string }).rel === "canonical");
-    expect(canonicals).toEqual([{ tagName: "link", rel: "canonical", href: "https://firstpicked.com.au/tools/ai-visibility-checker" }]);
-    expect(meta[0]).toEqual({ title: "Free product check: does AI recommend your product? · FirstPicked" });
+    expect(canonicals).toEqual([{ tagName: "link", rel: "canonical", href: "https://rankwithross.com.au/tools/ai-visibility-checker" }]);
+    expect(meta[0]).toEqual({ title: "Free product check: does AI recommend your product? · Rank with Ross" });
   });
 
-  it("sends www to firstpicked.com.au on GET, and stays put otherwise", async () => {
+  it("sends www to rankwithross.com.au on GET, and stays put otherwise", async () => {
     const env = process.env.NODE_ENV;
     process.env.NODE_ENV = "production";
     try {
-      const moved = await call(checkStart.loader, "https://www.firstpicked.com.au/check");
+      const moved = await call(checkStart.loader, "https://www.rankwithross.com.au/check");
       expect(moved.status).toBe(301);
-      expect(moved.headers.get("location")).toBe("https://firstpicked.com.au/check");
-      expect(await call(checkStart.loader, "https://firstpicked.com.au/check")).toBeNull();
+      expect(moved.headers.get("location")).toBe("https://rankwithross.com.au/check");
+      expect(await call(checkStart.loader, "https://rankwithross.com.au/check")).toBeNull();
     } finally {
       process.env.NODE_ENV = env;
     }
@@ -232,23 +232,23 @@ describe("/privacy after the free tools", () => {
 
   it("has a description, a canonical and share tags", () => {
     const meta = callMeta(privacy.meta);
-    expect(meta[0]).toEqual({ title: "FirstPicked privacy policy" });
+    expect(meta[0]).toEqual({ title: "Rank with Ross privacy policy" });
     const desc = meta.find((m) => (m as { name?: string }).name === "description") as { content: string };
     expect(desc.content.length).toBeGreaterThan(40);
     expect(desc.content.length).toBeLessThan(155);
-    expect(meta.filter((m) => (m as { rel?: string }).rel === "canonical")).toEqual([{ tagName: "link", rel: "canonical", href: "https://firstpicked.com.au/privacy" }]);
-    expect(meta).toContainEqual({ property: "og:image", content: "https://firstpicked.com.au/og/home.png" });
+    expect(meta.filter((m) => (m as { rel?: string }).rel === "canonical")).toEqual([{ tagName: "link", rel: "canonical", href: "https://rankwithross.com.au/privacy" }]);
+    expect(meta).toContainEqual({ property: "og:image", content: "https://rankwithross.com.au/og/home.png" });
   });
 
   it("explains the free tools, with the date it last changed", async () => {
-    const data = await call(privacy.loader, "https://firstpicked.com.au/privacy");
+    const data = await call(privacy.loader, "https://rankwithross.com.au/privacy");
     expect(data).toBeTruthy();
     const Stub = createRoutesStub([{ id: "privacy", path: "/privacy", Component: privacy.default as ComponentType, loader: () => data }]);
     const html = renderToStaticMarkup(createElement(Stub, { initialEntries: ["/privacy"], hydrationData: { loaderData: { privacy: data } } }));
     const text = html.replace(/<[^>]+>/g, "").replace(/&#x27;/g, "'");
     expect(html).toContain('<h2 style="font-size:20px;margin:36px 0 8px;color:#0b0c2b">Free tools</h2>');
-    expect(text).toContain("Our free tools at firstpicked.com.au/tools work without an account.");
-    expect(html).toContain('<a href="/tools">firstpicked.com.au/tools</a>');
+    expect(text).toContain("Our free tools at rankwithross.com.au/tools work without an account.");
+    expect(html).toContain('<a href="/tools">rankwithross.com.au/tools</a>');
     expect(text).toContain("don't send what you type to us");
     expect(text).toContain("We don't keep the files.");
     expect(text).toContain("The AI Overview Checker sends your search to our data provider, Treg.");
@@ -264,20 +264,20 @@ describe("/privacy after the free tools", () => {
     expect(text).toContain("If you join the waitlist, enter the giveaway or book a call, it tells Meta that someone did.");
     expect(text).toContain("If you tell our booking page you have a Shopify brand that sells A$5,000 or more a month, it tells Meta you're a good fit, but not your exact answers.");
     expect(text).toContain("It never sends your name, email address or phone number.");
-    // booking a call puts the person's details in Ross's Google Calendar (firstpicked.com.au/book)
+    // booking a call puts the person's details in Ross's Google Calendar (rankwithross.com.au/book)
     expect(text).toContain("we add it to Ross's Google Calendar with your name, your email address, your store's website and your answers.");
     expect(text).toContain("Google: Google Calendar and Google Meet, for calls booked on our website.");
-    // the giveaway entries (firstpicked.com.au/giveaway): what we keep, why, and for how long
+    // the giveaway entries (rankwithross.com.au/giveaway): what we keep, why, and for how long
     expect(text).toContain("If you enter our giveaway, we keep your store's website, your name, email address, what your store sells each month, your phone number if you give it");
     expect(text).toContain("We delete it 24 months after you entered, or sooner if you ask.");
     expect(text).toContain("In Europe and the UK, the pixel only starts after you click OK on the cookie notice.");
     expect(DASHES.test(text)).toBe(false);
   });
 
-  it("sends www to firstpicked.com.au", async () => {
-    const moved = await call(privacy.loader, "https://www.firstpicked.com.au/privacy");
+  it("sends www to rankwithross.com.au", async () => {
+    const moved = await call(privacy.loader, "https://www.rankwithross.com.au/privacy");
     expect(moved.status).toBe(301);
-    expect(moved.headers.get("location")).toBe("https://firstpicked.com.au/privacy");
+    expect(moved.headers.get("location")).toBe("https://rankwithross.com.au/privacy");
   });
 });
 
@@ -292,16 +292,16 @@ describe("/terms (Ross, 3 Nov 2026: the same layout as the privacy page)", () =>
 
   it("has a description, a canonical and share tags", () => {
     const meta = callMeta(terms.meta);
-    expect(meta[0]).toEqual({ title: "FirstPicked terms of service" });
+    expect(meta[0]).toEqual({ title: "Rank with Ross terms of service" });
     const desc = meta.find((m) => (m as { name?: string }).name === "description") as { content: string };
     expect(desc.content.length).toBeGreaterThan(40);
     expect(desc.content.length).toBeLessThan(155);
-    expect(meta.filter((m) => (m as { rel?: string }).rel === "canonical")).toEqual([{ tagName: "link", rel: "canonical", href: "https://firstpicked.com.au/terms" }]);
-    expect(meta).toContainEqual({ property: "og:image", content: "https://firstpicked.com.au/og/home.png" });
+    expect(meta.filter((m) => (m as { rel?: string }).rel === "canonical")).toEqual([{ tagName: "link", rel: "canonical", href: "https://rankwithross.com.au/terms" }]);
+    expect(meta).toContainEqual({ property: "og:image", content: "https://rankwithross.com.au/og/home.png" });
   });
 
   it("uses the privacy page's layout and makes the home page's promises", async () => {
-    const data = await call(terms.loader, "https://firstpicked.com.au/terms");
+    const data = await call(terms.loader, "https://rankwithross.com.au/terms");
     const Stub = createRoutesStub([{ id: "terms", path: "/terms", Component: terms.default as ComponentType, loader: () => data }]);
     const html = renderToStaticMarkup(createElement(Stub, { initialEntries: ["/terms"], hydrationData: { loaderData: { terms: data } } }));
     const text = html.replace(/<[^>]+>/g, "").replace(/&#x27;/g, "'");
@@ -321,9 +321,9 @@ describe("/terms (Ross, 3 Nov 2026: the same layout as the privacy page)", () =>
     expect(DASHES.test(text)).toBe(false);
   });
 
-  it("sends www to firstpicked.com.au", async () => {
-    const moved = await call(terms.loader, "https://www.firstpicked.com.au/terms");
+  it("sends www to rankwithross.com.au", async () => {
+    const moved = await call(terms.loader, "https://www.rankwithross.com.au/terms");
     expect(moved.status).toBe(301);
-    expect(moved.headers.get("location")).toBe("https://firstpicked.com.au/terms");
+    expect(moved.headers.get("location")).toBe("https://rankwithross.com.au/terms");
   });
 });

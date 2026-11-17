@@ -1,5 +1,5 @@
 // Reports for Ross's clients (Ross, 5 Nov 2026): a weekly or monthly report as a private link the client opens without
-// logging in (firstpicked.com.au/results/<token>), and the email that sends it. The price card promises "Weekly reports"
+// logging in (rankwithross.com.au/results/<token>), and the email that sends it. The price card promises "Weekly reports"
 // (the monthly call went with the A$297 price, 16 Nov 2026; a call Ross logs still shows), so these are what the client
 // sees of the work.
 // Pure rules here, tested in test/client-report.test.ts. lib/client-report.server.ts reads the numbers, saves them with
@@ -8,6 +8,7 @@
 import { addMonths, dayOf, startScore } from "./clients";
 import { addDays } from "./guide-calendar";
 import { formatMoney } from "./format";
+import { EMAIL_LOGO } from "./tools/site";
 import { ENGINE_LABELS } from "./plans";
 import { AI_ENGINE_LABELS } from "./attribution";
 import { CLIENT_SEES, type LogEntry, type LogKind, isExternal } from "./work-log";
@@ -331,9 +332,8 @@ export function headlines(d: ClientReportData): { label: string; value: string; 
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
-/** The home page's purple (white text on it passes 4.7:1) and the logo's light circle, as in the sign-in email. */
+/** The home page's purple (white text on it passes 4.7:1), as in the sign-in email. */
 const PURPLE = "#6c5cf2";
-const LILAC = "#cdc6fc";
 
 /**
  * The email that sends a report: a hello, the period, two or three numbers, one purple button to the report and
@@ -362,7 +362,7 @@ export function reportEmail(d: ClientReportData, url: string, contactName: strin
 <tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
 <tr><td align="center" style="padding:0 0 20px;font-size:21px;font-weight:700;letter-spacing:-0.02em;color:#0e0e13;">
-<span style="display:inline-block;width:15px;height:15px;border-radius:50%;background:${LILAC};vertical-align:middle;"></span><span style="display:inline-block;width:15px;height:15px;border-radius:50%;background:${PURPLE};margin-left:-6px;margin-right:9px;vertical-align:middle;"></span>FirstPicked
+${EMAIL_LOGO}Rank with Ross
 </td></tr>
 <tr><td style="background:#ffffff;border:1px solid #e8e8ec;border-radius:20px;padding:32px 28px;">
 <p style="margin:0 0 6px;font-size:13px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#6e717a;">${esc(KIND_LABEL[d.kind])} report</p>
@@ -377,13 +377,13 @@ ${rows ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0
 <p style="margin:0;font-size:15px;line-height:1.6;color:#53565f;text-align:center;">Questions? Just reply to this email.</p>
 </td></tr>
 <tr><td align="center" style="padding:20px 12px 0;font-size:12px;line-height:1.6;color:#6e717a;">
-Made by FirstPicked for ${esc(d.brand)}.<br>
+Made by Rank with Ross for ${esc(d.brand)}.<br>
 Button not working? Copy this link: <a href="${esc(url)}" style="color:#6e717a;word-break:break-all;">${esc(url)}</a>
 </td></tr>
 </table>
 </td></tr></table>
 </body></html>`;
   const lines = nums.map((n) => `${n.label}: ${n.value}${n.sub ? ` (${n.sub})` : ""}`);
-  const text = [hello, "", intro, "", ...lines, ...(lines.length ? [""] : []), `Open your report: ${url}`, "", "Questions? Just reply to this email.", "", `Made by FirstPicked for ${d.brand}.`].join("\n");
+  const text = [hello, "", intro, "", ...lines, ...(lines.length ? [""] : []), `Open your report: ${url}`, "", "Questions? Just reply to this email.", "", `Made by Rank with Ross for ${d.brand}.`].join("\n");
   return { subject: `Your ${kind} report: ${d.brand}`, html, text };
 }

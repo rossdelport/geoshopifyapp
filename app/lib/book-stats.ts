@@ -1,4 +1,4 @@
-// How many people opened firstpicked.com.au/book, and booked a call, by ad (Ross, 4 Nov 2026: "track how many people
+// How many people opened rankwithross.com.au/book, and booked a call, by ad (Ross, 4 Nov 2026: "track how many people
 // are clicking thru on my ad to the /book page and i want you to visualise that so i can wake up in the morning and
 // see"). Pure helpers: the database side is book-stats.server.ts, the chart is on the admin Overview.
 // Since 6 Nov 2026 the page asks two questions before the times (a Shopify brand? sales a month?), and everyone's
@@ -66,7 +66,7 @@ export function adName(t: Pick<AdTags, "utmSource" | "utmCampaign" | "utmContent
   const named = t.utmContent || t.utmCampaign || t.utmSource;
   if (named) return named;
   if (t.fbclid || /(^|\.)(facebook|instagram)\.com$/.test(t.referrer ?? "")) return NO_NAME.meta;
-  if (/(^|\.)(firstpicked\.com\.au|usegeo\.app)$/.test(t.referrer ?? "")) return NO_NAME.home;
+  if (/(^|\.)(rankwithross\.com\.au|firstpicked\.com\.au|usegeo\.app)$/.test(t.referrer ?? "")) return NO_NAME.home; // older visits came from the old addresses
   return NO_NAME.none;
 }
 

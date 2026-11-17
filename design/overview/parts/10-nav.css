@@ -24,10 +24,7 @@
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 0 1px rgba(11, 12, 43, 0.08), 0 14px 32px -16px rgba(17, 17, 26, 0.22);
 }
 .nav-logo { display: inline-flex; align-items: center; gap: 10px; flex: none; }
-.nav-mark { position: relative; width: 40px; height: 40px; flex: none; }
-.nav-mark i { position: absolute; width: 27px; height: 27px; border-radius: 50%; display: block; }
-.nav-mark-b { right: 0; bottom: 0; background: var(--cobalt); }
-.nav-mark-a { left: 0; top: 0; background: var(--peri-300); opacity: .92; mix-blend-mode: multiply; }
+.nav-mark { width: 38px; height: 38px; flex: none; border-radius: 50%; background: #6c5cf2 url(/brand/ross-mark.webp) center / cover; } /* Ross's face on purple */
 .nav-word {
   font-family: var(--font-head);
   font-weight: 600;
@@ -71,7 +68,6 @@
 @media (max-width: 760px) {
   .nav-bar { height: 60px; padding: 0 10px 0 12px; border-radius: 14px; }
   .nav-mark { width: 32px; height: 32px; }
-  .nav-mark i { width: 21px; height: 21px; }
   .nav-word { font-size: 24px; }
   .nav-cta { height: 38px; padding: 0 13px; font-size: 13px; border-radius: 9px; }
 }
@@ -80,13 +76,9 @@
   .nav-cta-short { display: inline; }
 }
 
-/* The logo's two circles: the lilac one slides out from behind the cobalt one as the page opens,
-   and they ease apart a touch on hover. */
-.nav-mark i { transition: transform .5s cubic-bezier(.34, 1.56, .64, 1); }
-.nav-mark-a { animation: nav-mark-in .9s cubic-bezier(.22, 1.2, .36, 1) .15s backwards; }
-.nav-logo:hover .nav-mark-a { transform: translate(-2px, -2px); }
-.nav-logo:hover .nav-mark-b { transform: translate(2px, 2px); }
-@keyframes nav-mark-in { from { opacity: 0; transform: translate(6px, 6px) scale(.8); } to { opacity: .92; transform: none; } }
+/* The logo's face grows a touch on hover. */
+.nav-mark { transition: transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+.nav-logo:hover .nav-mark { transform: scale(1.06); }
 
 /* Smooth scrolling for in-page links lives in 10-nav.js, so other scrolls (and page captures) stay instant. */
 html { scroll-behavior: auto; }
