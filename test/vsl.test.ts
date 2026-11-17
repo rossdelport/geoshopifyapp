@@ -1,6 +1,6 @@
 // The niche pages for Ross's video ads, rankwithross.com.au/for/<niche> (Ross, 17 Nov 2026): one page per niche in the
-// niche test, Ross's video first with the "Book a call" button under it, then what they pay now, what ChatGPT said,
-// what we do and the price. Checks the house rules (no dashes, real sourced numbers, nothing promised that we
+// niche test, Ross's video first with the "Book a call" button under it, then "Sound familiar?" (3 problems), "So here's
+// what I do" (3 jobs), the honest table against agencies, the 3 steps and the price (the look from 17 Nov 2026). Checks the house rules (no dashes, real sourced numbers, nothing promised that we
 // don't do), the booking links and the page frame (noindex, Meta pixel, cookie notice).
 
 import { readFileSync } from "node:fs";
@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import type { LoaderFunctionArgs } from "react-router";
 import { OFFER } from "../app/lib/plans";
-import { VSL_PAGES, VSL_PRICE, VSL_SLUGS, bookingNiche, vslBookHref, vslBySlug } from "../app/lib/vsl/pages";
+import { AGENCY_PRICE, VSL_PAGES, VSL_PRICE, VSL_SLUGS, bookingNiche, vslBookHref, vslBySlug } from "../app/lib/vsl/pages";
 import { renderVsl } from "../app/lib/vsl/render";
 import { loader } from "../app/routes/for.$niche";
 
@@ -28,20 +28,13 @@ const words = (p: (typeof VSL_PAGES)[number]) =>
   [
     p.title,
     p.description,
-    p.eyebrow,
+    p.hi,
     ...p.h1,
     p.lead,
-    ...p.spend.h,
-    ...p.spend.costs.flatMap((c) => [c.value, c.text]),
-    p.spend.line,
-    ...p.ai.h,
-    p.ai.question,
-    ...p.ai.points,
-    ...p.help.h,
-    ...p.help.items.flatMap((i) => [i.h, i.p]),
-    ...(p.maths ? [...p.maths.h, ...p.maths.points] : []),
+    ...[...p.problems, ...p.help].flatMap((r) => [r.h, r.p, r.note ?? ""]),
+    p.big.line,
+    p.big.note,
     ...p.faq.flatMap((f) => [f.q, f.a]),
-    ...p.close,
   ].join("\n");
 
 describe("the five niche pages", () => {
@@ -84,13 +77,45 @@ describe("the five niche pages", () => {
     expect(bookingNiche(null)).toBeNull();
   });
 
+  it("keep the words short (Ross, 17 Nov 2026: \"simplify the text\")", () => {
+    for (const p of VSL_PAGES) {
+      expect(p.problems, p.slug).toHaveLength(3);
+      expect(p.help, p.slug).toHaveLength(3);
+      expect(p.lead.length, p.slug).toBeLessThanOrEqual(170);
+      for (const r of [...p.problems, ...p.help]) {
+        expect(r.h.length, `${p.slug}: ${r.h}`).toBeLessThanOrEqual(90);
+        expect(r.p.length, `${p.slug}: ${r.p}`).toBeLessThanOrEqual(150);
+      }
+      expect(p.faq.length, p.slug).toBeLessThanOrEqual(4);
+      // the agency prices on every page are the ones in the table and its source
+      expect(p.problems.some((r) => r.h.includes(AGENCY_PRICE)), p.slug).toBe(true);
+      expect(p.sources.some((s) => /optimising/i.test(s.url)), p.slug).toBe(true);
+    }
+  });
+
+  it("draw what the words say (Ross, 17 Nov 2026: \"simple illustrations to match the text\")", () => {
+    for (const p of VSL_PAGES) {
+      for (const r of [...p.problems, ...p.help]) {
+        // the chat answer shows as many names as the words say AI gave
+        if (r.draw === "chat") expect(r.h, p.slug).toContain(`It named ${r.names}`);
+        // a price tag only carries a number from its own words
+        if (r.tag) expect(`${r.h} ${r.p}`, `${p.slug}: ${r.tag}`).toContain(r.tag.replace(/\+$/, ""));
+        if (["click", "lead", "bill", "search"].includes(r.draw)) expect(r.tag, `${p.slug}: ${r.h}`).toBeTruthy();
+      }
+    }
+    const html = renderVsl(vslBySlug("plumbers-electricians")!, { rossPhoto: "/ross.webp", cover: "/cover.webp" });
+    expect(html).toContain('<filter id="rr-rough"');
+    expect(html).toContain(">$139+</text>");
+    expect(html.match(/class="step-pic"/g)).toHaveLength(3);
+  });
+
   it("only show Eduardo's review where it fits (he sells stock tank pools)", () => {
     expect(VSL_PAGES.filter((p) => p.review).map((p) => p.slug)).toEqual(["pool-spa-sauna-stores"]);
   });
 
   it("escape everything they draw", () => {
     const p = { ...vslBySlug("buyers-agents")!, lead: 'Fish & <chips> "now"' };
-    const html = renderVsl(p, { rossPhoto: "/ross.webp" });
+    const html = renderVsl(p, { rossPhoto: "/ross.webp", cover: "/cover.webp" });
     expect(html).toContain("Fish &amp; &lt;chips&gt; &quot;now&quot;");
     expect(html).not.toContain("<chips>");
   });
@@ -114,6 +139,9 @@ describe("the page at /for/<niche>", () => {
       expect(video, slug).toBeGreaterThan(html.indexOf("<h1"));
       expect(button, slug).toBeGreaterThan(video);
       expect(html).toContain(`href="${vslBookHref(p).replace(/&/g, "&amp;")}" data-book>Book a free 15 minute call</a>`);
+      // the honest table: our price against Australian agencies' prices
+      expect(html, slug).toContain(`<td class="me">${VSL_PRICE}</td><td>${AGENCY_PRICE}</td>`);
+      expect(html, slug).toContain(p.big.line);
       // the only links: /book, home, privacy, terms, texting Ross and the sources
       const links = new Set([...html.matchAll(/<a [^>]*href="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, "&")));
       const allowed = new Set([vslBookHref(p), "/", "/privacy", "/privacy#cookies", "/terms", "sms:+61400369865", "https://terratanks.com.au/", ...p.sources.map((s) => s.url)]);
