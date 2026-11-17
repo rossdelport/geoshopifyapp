@@ -1,7 +1,8 @@
 // Any business in the agency hub (Ross, 17 Nov 2026: "so i can add any business"): the pure rules in lib/business.ts.
 
 import { describe, expect, it } from "vitest";
-import { cleanArea, isLocal, looksLikeShopify, placeFor, siteName } from "../app/lib/business";
+import { cleanArea, guidesPerMonth, isLocal, LOCAL_GUIDES_PER_MONTH, looksLikeShopify, placeFor, siteName } from "../app/lib/business";
+import { PLANS } from "../app/lib/plans";
 
 describe("a business that isn't an online store", () => {
   it("is a shop of kind local", () => {
@@ -9,6 +10,15 @@ describe("a business that isn't an online store", () => {
     expect(isLocal({ kind: "store" })).toBe(false);
     expect(isLocal({})).toBe(false);
     expect(isLocal(null)).toBe(false);
+  });
+
+  it("gets 4 guides a month, about one a week (Ross, 17 Nov 2026), while online stores keep their plan's number", () => {
+    expect(LOCAL_GUIDES_PER_MONTH).toBe(4);
+    expect(guidesPerMonth({ kind: "local" }, PLANS.pro)).toBe(4);
+    expect(guidesPerMonth({ kind: "store" }, PLANS.pro)).toBe(PLANS.pro.guidePagesPerMonth);
+    expect(guidesPerMonth({}, PLANS.pro)).toBe(PLANS.pro.guidePagesPerMonth);
+    // Never more than the plan allows: a paused (free) business gets none.
+    expect(guidesPerMonth({ kind: "local" }, PLANS.free)).toBe(0);
   });
 
   it("keeps the town or city as one short line", () => {

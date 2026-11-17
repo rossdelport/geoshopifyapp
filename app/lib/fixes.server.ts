@@ -42,7 +42,7 @@ import {
 
 export { FIX_TYPE_LABELS } from "./fix-labels";
 import type { FaqItem, FixAfter, FixBefore } from "./fix-labels";
-import { isLocal, placeFor } from "./business";
+import { guidesPerMonth, isLocal, placeFor } from "./business";
 
 /** What a refresh keeps for undo: the live page body (guides) or FAQ (products), and the last refresh date. */
 type RefreshBefore = FixBefore & { bodyHtml?: string; refreshedAt?: string | null };
@@ -495,7 +495,7 @@ export async function writeGuide(
 ): Promise<Fix | null> {
   if (!questions.length) return null;
   // The month's allowance counts every guide written since the 1st (UTC, or the store's own month when given), whatever happened to it.
-  if ((await countGuidePagesThisMonth(shop.id, monthStart)) >= plan.guidePagesPerMonth) return null;
+  if ((await countGuidePagesThisMonth(shop.id, monthStart)) >= guidesPerMonth(shop, plan)) return null;
   // A business that isn't an online store (lib/business.ts): no products to feature, questions about its town or city.
   const local = isLocal(shop);
   if (local) products = [];
