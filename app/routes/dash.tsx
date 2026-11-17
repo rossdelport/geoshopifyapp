@@ -191,6 +191,7 @@ export default function Dash() {
           navClass={navClass}
           items={[
             { to: b, label: "Overview", d: ICONS.home, end: true },
+            { to: `${b}/checklist`, label: "Checklist", d: ICONS.list },
             { to: `${b}/log`, label: "Work log", d: ICONS.check },
             { to: `${b}/stats`, label: data.local ? "Stats" : "Store stats", d: ICONS.money },
             { to: `${b}/reports`, label: "Reports", d: ICONS.mail },

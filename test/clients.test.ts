@@ -304,6 +304,7 @@ const card = (over: Partial<ClientCard> = {}): ClientCard => ({
   sales: { revenue: 100, orders: 1, visits: 10 },
   week: { guidesWritten: 1, guidesLive: 1, checks: 7, reddit: 3, changes: 0 },
   next: null,
+  checklist: { done: 3, total: 19, firstDone: 3, firstTotal: 9 },
   alerts: [],
   health: "ok",
   ...over,

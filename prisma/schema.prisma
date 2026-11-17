@@ -78,6 +78,7 @@ model Shop {
   client            Client? // an agency client of Ross's done-for-you service (the hub at /dash)
   workNotes         WorkNote[]
   clientReports     ClientReport[]
+  checklistTicks    ChecklistTick[]
   redditCheckedAt   DateTime? // last weekly look for Reddit threads (lib/reddit.server.ts)
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
@@ -781,6 +782,21 @@ model WorkNote {
 
   @@index([shopId, doneAt])
   @@index([doneAt])
+}
+
+// A line Ross ticked on a client's checklist in the agency hub (Ross, 17 Nov 2026: "when i click it it will scribe thru
+// the text and put a green tick at the start"). Unticking deletes the row. The lines themselves are in
+// lib/client-plan.ts; the ones the dashboard can see for itself (setup, the first AI check...) tick themselves and are
+// never stored here.
+model ChecklistTick {
+  id     String   @id @default(cuid())
+  shopId String
+  shop   Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  key    String // the line's key in lib/client-plan.ts
+  doneAt DateTime @default(now())
+  doneBy String? // the admin's email
+
+  @@unique([shopId, key])
 }
 
 // A report made for a client in the hub (a week or a month): a snapshot of the numbers and the work when it was made, at a

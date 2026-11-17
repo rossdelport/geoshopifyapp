@@ -45,7 +45,8 @@ export const action = async ({ request }: ActionFunctionArgs): Promise<Result> =
   }
   const added = await addClient(form.get("store"), parsed.value, user.email);
   if (!added.ok) return { values, errors: { store: added.error } };
-  throw redirect(`/dash/clients/${added.shopId}`);
+  // Back to the hub with the new client's pop-up open: their first 24 hours, and their setup running beside it.
+  throw redirect(`/dash?client=${added.shopId}`);
 };
 
 /** While the website is checked and added (a few seconds): three steps that tick off, so the page never looks frozen. */
