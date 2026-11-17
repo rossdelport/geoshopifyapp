@@ -51,8 +51,12 @@ describe("the five niche pages", () => {
   });
 
   it("show the live price", () => {
-    expect(OFFER.price.startsWith(VSL_PRICE)).toBe(true);
-    for (const p of VSL_PAGES) expect(words(p)).toContain("A$297 a month");
+    // the same price as the rest of the site, with a plain "$" (Ross, 17 Nov 2026: his ads only target Australia)
+    expect(OFFER.price.startsWith(`A${VSL_PRICE}`)).toBe(true);
+    for (const p of VSL_PAGES) {
+      expect(words(p)).toContain("$297 a month");
+      expect(words(p), p.slug).not.toContain("A$");
+    }
   });
 
   it("follow the copy rules: no dashes, short titles, no jargon, no promise of emails to websites, no promised results", () => {
@@ -114,6 +118,8 @@ describe("the page at /for/<niche>", () => {
       const links = new Set([...html.matchAll(/<a [^>]*href="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, "&")));
       const allowed = new Set([vslBookHref(p), "/", "/privacy", "/privacy#cookies", "/terms", "sms:+61400369865", "https://terratanks.com.au/", ...p.sources.map((s) => s.url)]);
       for (const l of links) expect(allowed.has(l), `${slug}: ${l}`).toBe(true);
+      expect(html, slug).not.toContain("A$");
+      expect(html, slug).toContain("All prices on this page are in Australian dollars.");
       expect(html, slug).not.toContain("—");
       expect(html, slug).not.toMatch(/ – /);
     }

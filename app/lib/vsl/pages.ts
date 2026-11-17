@@ -45,9 +45,11 @@ export interface VslPage {
   sources: { title: string; url: string }[];
 }
 
-export const VSL_PRICE = "A$297";
+// Plain "$" on these pages (Ross, 17 Nov 2026: "drop the A from the $ on every page. i will only be targeting
+// australia anyway"). The rest of the site keeps "A$" from OFFER in app/lib/plans.ts.
+export const VSL_PRICE = "$297";
 
-const AGENCIES = { value: "A$2,000 to A$20,000+", text: "What agencies in Australia charge a month for this kind of work" };
+const AGENCIES = { value: "$2,000 to $20,000+", text: "What agencies in Australia charge a month for this kind of work" };
 
 const BRIGHTLOCAL_LINE = "In the US, 45% of people used ChatGPT or another AI to find a local business in 2026. A year before, it was 6%.";
 const GOOGLE_STARS = "Next to each pick, it showed their Google star rating and how many reviews they have.";
@@ -107,18 +109,18 @@ export const VSL_PAGES: VslPage[] = [
     label: "Mortgage broker",
     title: "Perth mortgage brokers: get picked by ChatGPT | FirstPicked",
     description:
-      "ChatGPT named 5 mortgage brokers in Perth. We help you be one of them. A$297 a month, done for you, no lock-in. Book a free 15 minute call.",
+      "ChatGPT named 5 mortgage brokers in Perth. We help you be one of them. $297 a month, done for you, no lock-in. Book a free 15 minute call.",
     eyebrow: "For Perth mortgage brokers",
     h1: ["ChatGPT named 5 brokers in Perth.", "Let’s make it name you."],
-    lead: "Home buyers now ask ChatGPT and Google which broker to use. We do the work to get your name in the answer. A$297 a month, done for you.",
+    lead: "Home buyers now ask ChatGPT and Google which broker to use. We do the work to get your name in the answer. $297 a month, done for you.",
     spend: {
       h: ["You already pay a lot", "for every new client."],
       costs: [
-        { value: "A$34", text: "Google’s price for one click on “mortgage broker perth”" },
-        { value: "A$42", text: "Google’s price for one click on “home loan broker”" },
+        { value: "$34", text: "Google’s price for one click on “mortgage broker perth”" },
+        { value: "$42", text: "Google’s price for one click on “home loan broker”" },
         AGENCIES,
       ],
-      line: "A$297 a month is less than 9 Google clicks on “mortgage broker perth”. When ChatGPT names you, nobody charges you for the click.",
+      line: "$297 a month is less than 9 Google clicks on “mortgage broker perth”. When ChatGPT names you, nobody charges you for the click.",
     },
     ai: {
       h: ["We asked ChatGPT for the best broker in Perth.", "It named 5."],
@@ -139,8 +141,8 @@ export const VSL_PAGES: VslPage[] = [
     maths: {
       h: ["One extra loan", "pays for almost a year."],
       points: [
-        "On a A$500,000 loan, the lender pays the broker about A$3,250 to A$3,500 upfront. Then about A$750 to A$1,000 a year while the loan runs.",
-        "FirstPicked is A$297 a month. So one extra loan pays for about 11 months.",
+        "On a $500,000 loan, the lender pays the broker about $3,250 to $3,500 upfront. Then about $750 to $1,000 a year while the loan runs.",
+        "FirstPicked is $297 a month. So one extra loan pays for about 11 months.",
       ],
     },
     faq: localFaq(),
@@ -152,18 +154,18 @@ export const VSL_PAGES: VslPage[] = [
     label: "Solar and battery installer",
     title: "Perth solar installers: get picked by ChatGPT | FirstPicked",
     description:
-      "ChatGPT named 5 battery installers in Perth. We help you be one of them. A$297 a month, done for you, no lock-in. Book a free 15 minute call.",
+      "ChatGPT named 5 battery installers in Perth. We help you be one of them. $297 a month, done for you, no lock-in. Book a free 15 minute call.",
     eyebrow: "For Perth solar and battery installers",
     h1: ["Perth homeowners ask ChatGPT who to buy a battery from.", "Does it say your name?"],
-    lead: "We asked. It named 5 installers. We do the work to make you one of them, so you buy fewer leads. A$297 a month, done for you.",
+    lead: "We asked. It named 5 installers. We do the work to make you one of them, so you buy fewer leads. $297 a month, done for you.",
     spend: {
       h: ["Leads and clicks", "cost you a lot."],
       costs: [
-        { value: "A$35 to A$100+", text: "What lead sellers charge for one solar lead" },
-        { value: "A$34", text: "Google’s price for one click on “solar companies”" },
+        { value: "$35 to $100+", text: "What lead sellers charge for one solar lead" },
+        { value: "$34", text: "Google’s price for one click on “solar companies”" },
         AGENCIES,
       ],
-      line: "A$297 a month is the price of about 3 bought leads at A$100 each. When ChatGPT names you, nobody charges you for the lead.",
+      line: "$297 a month is the price of about 3 bought leads at $100 each. When ChatGPT names you, nobody charges you for the lead.",
     },
     ai: {
       h: ["We asked ChatGPT for the best battery installer in Perth.", "It named 5."],
@@ -182,9 +184,9 @@ export const VSL_PAGES: VslPage[] = [
       page: "How much is a home battery in Perth after the rebate?",
     }),
     maths: {
-      h: ["One battery job is a big sale.", "We’re A$297 a month."],
+      h: ["One battery job is a big sale.", "We’re $297 a month."],
       points: [
-        "A 24 kWh battery costs about A$18,000 installed in Perth before rebates, and about A$11,260 after.",
+        "A 24 kWh battery costs about $18,000 installed in Perth before rebates, and about $11,260 after.",
         "So one extra battery job is a sale about 38 times bigger than our monthly fee.",
       ],
     },
@@ -198,10 +200,10 @@ export const VSL_PAGES: VslPage[] = [
     shopify: true,
     title: "Pool, spa and sauna stores: get picked by AI | FirstPicked",
     description:
-      "Shoppers ask ChatGPT which plunge pool, spa or sauna to buy. We help your Shopify store get picked. A$297 a month, done for you, no lock-in.",
+      "Shoppers ask ChatGPT which plunge pool, spa or sauna to buy. We help your Shopify store get picked. $297 a month, done for you, no lock-in.",
     eyebrow: "For Shopify stores that sell plunge pools, spas and saunas",
     h1: ["Shoppers ask ChatGPT which plunge pool to buy.", "Make it pick yours."],
-    lead: "We asked. It named 5 brands. We do the work to get your store in the answer. A$297 a month, done for you.",
+    lead: "We asked. It named 5 brands. We do the work to get your store in the answer. $297 a month, done for you.",
     spend: {
       h: ["Big searches.", "A small monthly fee."],
       costs: [
@@ -209,7 +211,7 @@ export const VSL_PAGES: VslPage[] = [
         { value: "14,800", text: "Searches a month for “plunge pool”. Last January it was 33,100." },
         AGENCIES,
       ],
-      line: "Google also charges about A$7 for one click on “fibreglass pools” or “infrared sauna”. When ChatGPT picks your store, nobody charges you for the click.",
+      line: "Google also charges about $7 for one click on “fibreglass pools” or “infrared sauna”. When ChatGPT picks your store, nobody charges you for the click.",
     },
     ai: {
       h: ["We asked ChatGPT for the best plunge pool in Australia.", "It named 5 brands."],
@@ -217,7 +219,7 @@ export const VSL_PAGES: VslPage[] = [
       points: [
         "It named 5 brands, with sizes and prices for each.",
         "To choose, it read buying guides. One was a guide on another store’s own blog. That’s the kind of guide we write for your store.",
-        "In the same answer, it said entry-level plunge pool packages cost A$15,000 to A$25,000. When one order is that big, one extra sale from AI pays for many months of FirstPicked.",
+        "In the same answer, it said entry-level plunge pool packages cost $15,000 to $25,000. When one order is that big, one extra sale from AI pays for many months of FirstPicked.",
       ],
     },
     review: true,
@@ -252,18 +254,18 @@ export const VSL_PAGES: VslPage[] = [
     label: "Buyers agent",
     title: "Perth buyers agents: get picked by ChatGPT | FirstPicked",
     description:
-      "ChatGPT named 5 buyers agents in Perth. We help you be one of them. A$297 a month, done for you, no lock-in. Book a free 15 minute call.",
+      "ChatGPT named 5 buyers agents in Perth. We help you be one of them. $297 a month, done for you, no lock-in. Book a free 15 minute call.",
     eyebrow: "For Perth buyers agents",
     h1: ["Perth home buyers ask ChatGPT which buyers agent to use.", "It named 5. Are you one?"],
-    lead: "We do the work to get your name in the answer. A$297 a month, done for you.",
+    lead: "We do the work to get your name in the answer. $297 a month, done for you.",
     spend: {
       h: ["Every new client", "costs a lot to find."],
       costs: [
-        { value: "A$40", text: "Google’s price for one click on “buyers agent perth”" },
-        { value: "A$19", text: "Google’s price for one click on “buyers agent”" },
+        { value: "$40", text: "Google’s price for one click on “buyers agent perth”" },
+        { value: "$19", text: "Google’s price for one click on “buyers agent”" },
         AGENCIES,
       ],
-      line: "A$297 a month is about 7 Google clicks on “buyers agent perth”. When ChatGPT names you, nobody charges you for the click.",
+      line: "$297 a month is about 7 Google clicks on “buyers agent perth”. When ChatGPT names you, nobody charges you for the click.",
     },
     ai: {
       h: ["We asked ChatGPT for the best buyers agent in Perth.", "It named 5."],
@@ -279,8 +281,8 @@ export const VSL_PAGES: VslPage[] = [
     maths: {
       h: ["One new client", "pays for 20 months or more."],
       points: [
-        "Perth buyers agents charge about A$6,000 to A$18,000 for a full search on a home under about A$1 million.",
-        "FirstPicked is A$297 a month. One new client at A$6,000 pays for about 20 months.",
+        "Perth buyers agents charge about $6,000 to $18,000 for a full search on a home under about $1 million.",
+        "FirstPicked is $297 a month. One new client at $6,000 pays for about 20 months.",
       ],
     },
     faq: localFaq(),
@@ -292,18 +294,18 @@ export const VSL_PAGES: VslPage[] = [
     label: "Plumber or electrician",
     title: "Perth plumbers and sparkies: get picked by AI | FirstPicked",
     description:
-      "One Google click on “emergency plumber” costs about A$79. We help ChatGPT name your business instead. A$297 a month, done for you, no lock-in.",
+      "One Google click on “emergency plumber” costs about $79. We help ChatGPT name your business instead. $297 a month, done for you, no lock-in.",
     eyebrow: "For Perth plumbers and electricians",
-    h1: ["One Google click on “emergency plumber” costs about A$79.", "ChatGPT names plumbers for free."],
-    lead: "We asked ChatGPT for the best plumber and the best electrician in Perth. We help you be the one it names. A$297 a month, done for you.",
+    h1: ["One Google click on “emergency plumber” costs about $79.", "ChatGPT names plumbers for free."],
+    lead: "We asked ChatGPT for the best plumber and the best electrician in Perth. We help you be the one it names. $297 a month, done for you.",
     spend: {
       h: ["You pay for every click", "and every lead."],
       costs: [
-        { value: "A$79", text: "Google’s price for one click on “emergency plumber”" },
-        { value: "A$35", text: "Google’s price for one click on “electrician near me”" },
-        { value: "A$139 to A$649", text: "What hipages plans cost a month, plus GST. Each lead costs credits on top." },
+        { value: "$79", text: "Google’s price for one click on “emergency plumber”" },
+        { value: "$35", text: "Google’s price for one click on “electrician near me”" },
+        { value: "$139 to $649", text: "What hipages plans cost a month, plus GST. Each lead costs credits on top." },
       ],
-      line: "A$297 a month is less than 4 Google clicks on “emergency plumber”. When ChatGPT names you, nobody charges you for the call.",
+      line: "$297 a month is less than 4 Google clicks on “emergency plumber”. When ChatGPT names you, nobody charges you for the call.",
     },
     ai: {
       h: ["We asked ChatGPT for the best tradies in Perth.", "It named 4 plumbers and 5 electricians."],
