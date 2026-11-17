@@ -30,7 +30,6 @@ const words = (p: (typeof VSL_PAGES)[number]) =>
     p.description,
     p.hi,
     ...p.h1,
-    p.lead,
     ...p.problems.flatMap((r) => [r.h, r.p, r.note ?? ""]),
     p.big.line,
     p.big.note,
@@ -80,7 +79,6 @@ describe("the five niche pages", () => {
   it("keep the words short (Ross, 17 Nov 2026: \"simplify the text\")", () => {
     for (const p of VSL_PAGES) {
       expect(p.problems, p.slug).toHaveLength(3);
-      expect(p.lead.length, p.slug).toBeLessThanOrEqual(170);
       for (const r of p.problems) {
         expect(r.h.length, `${p.slug}: ${r.h}`).toBeLessThanOrEqual(90);
         expect(r.p.length, `${p.slug}: ${r.p}`).toBeLessThanOrEqual(150);
@@ -109,11 +107,14 @@ describe("the five niche pages", () => {
     expect(html).toContain('<filter id="rr-rough"');
     expect(html).toContain(">$139+</text>");
     expect(html.match(/class="step-pic"/g)).toHaveLength(3);
+    // no line under the heading, and "Watch this first!" beside the video on wide screens (Ross, 17 Nov 2026)
+    expect(html).not.toContain('class="lead"');
+    expect(html).toMatch(/<div class="vsl-box">\s*<div class="vsl[^]*?<p class="side-note" aria-hidden="true">Watch this<br>first!/);
   });
 
 
   it("escape everything they draw", () => {
-    const p = { ...vslBySlug("buyers-agents")!, lead: 'Fish & <chips> "now"' };
+    const p = { ...vslBySlug("buyers-agents")!, hi: 'Fish & <chips> "now"' };
     const html = renderVsl(p, { rossPhoto: "/ross.webp", cover: "/cover.webp" });
     expect(html).toContain("Fish &amp; &lt;chips&gt; &quot;now&quot;");
     expect(html).not.toContain("<chips>");

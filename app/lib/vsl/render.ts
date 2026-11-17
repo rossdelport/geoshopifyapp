@@ -23,7 +23,7 @@ const TICK = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4
 const PLAY = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.9l10.4-6.5a1 1 0 0 0 0-1.8L9.5 4.6A1 1 0 0 0 8 5.5z"/></svg>`;
 const SMS = `<a href="sms:+61400369865">0400 369 865</a>`;
 const CLOCK = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>`;
-// The hand-drawn arrow from "Watch this first!" down to the video
+// The hand-drawn arrow from "Watch this first!" to the video: above it on small screens, beside it on wide ones
 const ARROW = `<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M70 6C92 30 70 64 22 82" stroke-dasharray="6 7"/><path d="M34 70L20 83l17 7"/></svg>`;
 
 // Our own simple line drawings (Ross, 17 Nov 2026: "super simple illustrations to match the text"), one per row, in ink
@@ -189,13 +189,15 @@ export function renderVsl(page: VslPage, a: VslAssets): string {
   <div class="wrap hero-in">
     <p class="hi">${esc(page.hi)}</p>
     <h1 class="h1" id="hero-h">${esc(page.h1[0])} <em>${esc(page.h1[1])}</em></h1>
-    <p class="lead">${esc(page.lead)}</p>
     <p class="hero-note" aria-hidden="true">Watch this first!${ARROW}</p>
   </div>
 </section>
 <section class="video" aria-label="Ross’s video">
   <div class="wrap">
-    ${videoFrame(page, a)}
+    <div class="vsl-box">
+      ${videoFrame(page, a)}
+      <p class="side-note" aria-hidden="true">Watch this<br>first!${ARROW}</p>
+    </div>
     ${cta(book)}
   </div>
 </section>
