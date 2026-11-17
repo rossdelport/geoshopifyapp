@@ -164,6 +164,8 @@ describe("the page at /for/<niche>", () => {
       expect(html, slug).toContain('href="https://www.loom.com/share/3fef7fa99b224d459f02d072445e2213" target="_blank" rel="noopener" data-loom-play');
       expect(html, slug).toContain("<b>Hi, I’m Ross. Watch this first.</b><small>4:52</small>");
       expect(html, slug).not.toMatch(/<iframe/);
+      // the cover is a frame from the video (Ross, 17 Nov 2026), not his photo
+      expect(html, slug).toMatch(/<img class="vsl-cover" src="[^"]*ross-video-cover\.webp" alt="" width="1280" height="720"/);
       expect(html, slug).toContain("f.src = box.getAttribute('data-loom');");
       expect(html, slug).toContain(VIDEO_NOTE);
       for (const s of VIDEO_SOURCES) expect(html, slug).toContain(`href="${s.url}"`);

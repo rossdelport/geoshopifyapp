@@ -15,8 +15,8 @@ export interface VslAssets {
   /** Ross's video for this page, once he has filmed it. Without one, the frame says it's coming. */
   video?: { src: string; poster: string; captions?: string; width: number; height: number; seconds: number };
   /** Ross's video on Loom, played in Loom's own player (Ross, 17 Nov 2026: "dont touch the video"). Loom loads only
-   *  when someone presses play; until then the frame shows the cover photo. */
-  loom?: { id: string; seconds: number };
+   *  when someone presses play; until then the frame shows the poster, a frame from the video. */
+  loom?: { id: string; seconds: number; poster: string };
   /** Eduardo's review (every page has it since 17 Nov 2026; left out, the page has no review). */
   review?: { src: string; poster: string; captions: string };
 }
@@ -113,7 +113,7 @@ function videoFrame(page: VslPage, a: VslAssets): string {
     // a link to the video on Loom, which the page's script swaps for Loom's player when pressed
     const l = a.loom;
     return `<div class="vsl" data-loom="${esc(loomEmbed(l.id))}">
-      <img class="vsl-cover" src="${esc(a.cover)}" alt="" width="1280" height="720" decoding="async" fetchpriority="high">
+      <img class="vsl-cover" src="${esc(l.poster)}" alt="" width="1280" height="720" decoding="async" fetchpriority="high">
       <a class="vsl-btn" href="https://www.loom.com/share/${esc(l.id)}" target="_blank" rel="noopener" data-loom-play aria-label="Watch Ross’s video, ${clock(l.seconds)}"><span class="vsl-pill"><span class="vsl-play">${PLAY}</span><span><b>Hi, I’m Ross. Watch this first.</b><small>${clock(l.seconds)}</small></span></span></a>
     </div>`;
   }

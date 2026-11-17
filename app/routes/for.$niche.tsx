@@ -10,6 +10,7 @@ import serif400 from "../fonts/rr-serif-400.woff2?url";
 import hand from "../fonts/rr-hand-700.woff2?url";
 import rossPhoto from "../home/ross.webp?url";
 import rossCover from "../home/vsl/ross-cover.webp?url";
+import rossVideoCover from "../home/vsl/ross-video-cover.webp?url";
 import reviewVideo from "../home/eduardo-review.mp4?url";
 import reviewPoster from "../home/eduardo-review.webp?url";
 import reviewCaptions from "../home/eduardo-review.vtt?url";
@@ -24,9 +25,10 @@ import raw from "../home/vsl.html?raw";
 //
 // Ross's video, one for all 5 pages (Ross, 17 Nov 2026: filmed start to finish on Loom, slides with his face in the
 // corner, 4:52). It plays from Loom, untouched ("dont touch the video"), in Loom's own player with its captions. The
-// page shows his photo with a play button and loads nothing from Loom until someone presses it. A new video: change
-// the Loom id and the length. Without one, the frame says the video is coming.
-const ROSS_LOOM: VslAssets["loom"] = { id: "3fef7fa99b224d459f02d072445e2213", seconds: 292 };
+// page shows a frame from the video (its first slide, Ross: "change the thumbnail to a random screenshot in the loom
+// video") with a play button and loads nothing from Loom until someone presses it. A new video: change the Loom id, the
+// length and the cover. Without one, the frame shows his photo (ross-cover.webp) and says the video is coming.
+const ROSS_LOOM: VslAssets["loom"] = { id: "3fef7fa99b224d459f02d072445e2213", seconds: 292, poster: rossVideoCover };
 
 const shell = raw
   .replaceAll("__FONT_URL__", () => font)
