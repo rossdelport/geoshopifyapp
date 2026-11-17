@@ -51,7 +51,6 @@ export interface VslPage {
   /** Ross's handwritten hello above the heading, naming who the page is for. */
   hi: string;
   h1: Heading;
-  lead: string;
   /** "Sound familiar?": what AI says now and what they pay now. */
   problems: [VslRow, VslRow, VslRow];
   /** One big line after the table: what one new customer is worth next to our price. */
@@ -148,7 +147,6 @@ export const VSL_PAGES: VslPage[] = [
       "ChatGPT named 5 mortgage brokers in Perth. I help you be one of them. $297 a month, done for you, no lock-in. Book a free 15 minute call.",
     hi: "G’day, Perth mortgage brokers.",
     h1: ["Home buyers ask ChatGPT which broker to use.", "Make it name you."],
-    lead: "I do the work to get your name in the answer. $297 a month, done for you.",
     problems: [
       {
         h: "We asked ChatGPT for the best broker in Perth. It named 5.",
@@ -184,7 +182,6 @@ export const VSL_PAGES: VslPage[] = [
       "ChatGPT named 5 battery installers in Perth. I help you be one of them. $297 a month, done for you, no lock-in. Book a free 15 minute call.",
     hi: "G’day, Perth solar installers.",
     h1: ["Perth homeowners ask ChatGPT who to buy a battery from.", "Make it name you."],
-    lead: "I do the work to make you one of the names, so you buy fewer leads. $297 a month, done for you.",
     problems: [
       {
         h: "We asked ChatGPT for the best battery installer in Perth. It named 5.",
@@ -219,7 +216,6 @@ export const VSL_PAGES: VslPage[] = [
       "Shoppers ask ChatGPT which plunge pool, spa or sauna to buy. I help your Shopify store get picked. $297 a month, done for you, no lock-in.",
     hi: "G’day, pool, spa and sauna stores.",
     h1: ["Shoppers ask ChatGPT which plunge pool to buy.", "Make it pick yours."],
-    lead: "I do the work to get your store in the answer. $297 a month, done for you.",
     problems: [
       {
         h: "We asked ChatGPT for the best plunge pool in Australia. It named 5 brands.",
@@ -277,7 +273,6 @@ export const VSL_PAGES: VslPage[] = [
       "ChatGPT named 5 buyers agents in Perth. I help you be one of them. $297 a month, done for you, no lock-in. Book a free 15 minute call.",
     hi: "G’day, Perth buyers agents.",
     h1: ["Perth home buyers ask ChatGPT which buyers agent to use.", "Make it name you."],
-    lead: "I do the work to get your name in the answer. $297 a month, done for you.",
     problems: [
       {
         h: "We asked ChatGPT for the best buyers agent in Perth. It named 5.",
@@ -313,7 +308,6 @@ export const VSL_PAGES: VslPage[] = [
       "One Google click on “emergency plumber” costs about $79. I help ChatGPT name your business instead. $297 a month, done for you, no lock-in.",
     hi: "G’day, Perth plumbers and sparkies.",
     h1: ["One Google click on “emergency plumber” costs about $79.", "ChatGPT names plumbers for free."],
-    lead: "I help you be the one it names. $297 a month, done for you.",
     problems: [
       {
         h: "We asked ChatGPT for the best plumber in Perth. It named 4.",
