@@ -48,7 +48,7 @@ const C = {
   lav: "#f6f4fe",
   line: "#e4e0f8",
   peri: "#bfc9fa",
-  logo: "#9faaf2",
+  logo: "#6c5cf2",
   cobalt: "#4050b0",
   mid: "#6878d8",
   green: "#167a43",
@@ -84,6 +84,19 @@ function loadFonts() {
   }
   if (!fontFiles) console.warn("[check-pdf] Geist fonts not found, using Helvetica");
   return fontFiles;
+}
+
+// The logo mark: Ross's face on purple (public/brand/ross-mark.jpg, a JPEG so every build of the PDF has the same bytes),
+// cut to a circle. Without the file, a plain purple dot.
+let logoFile: Buffer | null | undefined;
+function loadLogo() {
+  if (logoFile !== undefined) return logoFile;
+  try {
+    logoFile = readFileSync(path.join(process.cwd(), "public", "brand", "ross-mark.jpg"));
+  } catch {
+    logoFile = null;
+  }
+  return logoFile;
 }
 
 // ---------- Text ----------
@@ -214,11 +227,14 @@ class Pdf {
   }
 
   logo(x: number, y: number, size: number) {
-    const k = size / 40;
-    this.doc.save();
-    this.doc.circle(x + 13.5 * k, y + 13.5 * k, 13.5 * k).fill(C.logo);
-    this.doc.circle(x + 26.5 * k, y + 26.5 * k, 13.5 * k).fill(C.cobalt);
-    this.doc.restore();
+    const file = loadLogo();
+    if (file) {
+      this.doc.save().circle(x + size / 2, y + size / 2, size / 2).clip();
+      this.doc.image(file, x, y, { width: size, height: size });
+      this.doc.restore();
+      return;
+    }
+    this.doc.save().circle(x + size / 2, y + size / 2, size / 2).fill(C.logo).restore();
   }
 
   private drawRunningHeader() {

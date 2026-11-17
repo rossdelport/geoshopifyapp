@@ -48,10 +48,7 @@ export function EmailPage({ children }: { children: ReactNode }) {
     <main style={emailPage.page}>
       <div style={emailPage.card}>
         <a href="/" style={emailPage.logo} aria-label="Rank with Ross home">
-          <svg width="22" height="22" viewBox="0 0 40 40" aria-hidden="true">
-            <circle cx="13.5" cy="13.5" r="13.5" fill="#9faaf2" />
-            <circle cx="26.5" cy="26.5" r="13.5" fill="#4050b0" />
-          </svg>
+          <img src="/brand/ross-mark.webp" width="26" height="26" alt="" style={{ borderRadius: "50%" }} />
           Rank with Ross
         </a>
         {children}

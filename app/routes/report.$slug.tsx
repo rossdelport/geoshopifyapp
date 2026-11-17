@@ -130,10 +130,7 @@ const upperFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 function Logo() {
   return (
     <span className="rp-logo">
-      <span className="mark" aria-hidden="true">
-        <i></i>
-        <i></i>
-      </span>
+      <span className="mark" aria-hidden="true" />
       Rank with Ross
     </span>
   );

@@ -18,6 +18,7 @@ import { buildActionPlan, type ActionPlan } from "./check-plan";
 import { buildCheckPdf, noDashes, reportFileName } from "./check-pdf.server";
 import { PUBLIC_KEY, hashIp } from "./public-form.server";
 import { OFFER } from "./plans";
+import { EMAIL_LOGO } from "./tools/site";
 import {
   isCheckCountry,
   type CheckAnswer,
@@ -402,7 +403,7 @@ export function reportEmailContent(i: ReportEmailInput): { subject: string; html
 <tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
 <tr><td style="padding:0 6px 16px;font-size:20px;font-weight:700;color:#0b0c2b;letter-spacing:-0.01em;">
-<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#9faaf2;vertical-align:middle;"></span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#4050b0;margin-left:-4px;margin-right:8px;vertical-align:middle;"></span>Rank with Ross
+${EMAIL_LOGO}Rank with Ross
 </td></tr>
 <tr><td style="background:#ffffff;border-radius:18px;padding:28px 26px;border:1px solid #e4e0f8;">
 <p style="margin:0 0 6px;font-size:13px;color:#4050b0;font-weight:600;">Your free product check</p>

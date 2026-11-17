@@ -102,10 +102,8 @@ ul,ol{padding:0;list-style:none}
 .nav.is-scrolled{border-bottom-color:var(--line)}
 .nav-in{display:flex;align-items:center;gap:24px;height:64px}
 .logo{display:inline-flex;align-items:center;gap:9px;font-size:21px;font-weight:650;letter-spacing:-.03em;color:var(--ink)}
-.mark{position:relative;flex:none;width:25px;height:23px}
-.mark i{position:absolute;width:16px;height:16px;border-radius:50%}
-.mark i:first-child{left:0;top:0;background:#cdc6fc}
-.mark i:last-child{right:0;bottom:0;background:var(--accent)}
+/* The logo mark: Ross's face on purple (public/brand/ross-mark.webp). */
+.mark{flex:none;width:28px;height:28px;border-radius:50%;background:#6c5cf2 url(/brand/ross-mark.webp) center/cover}
 .nav-in>nav{margin-left:auto}
 .nav-links{display:flex;gap:2px}
 .nav-links a{display:block;padding:8px 12px;border-radius:8px;font-size:14.5px;font-weight:500;color:#4c4f58;transition:background .2s,color .2s}
@@ -307,8 +305,7 @@ ul,ol{padding:0;list-style:none}
 .h-sat{width:50px;height:50px;border-radius:15px;animation:h-back 12s cubic-bezier(.65,0,.35,1) infinite}
 .h-sat svg{width:24px;height:24px;color:#111}
 .h-core{position:absolute;left:50%;top:50%;z-index:2;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:27px}
-.h-core .mark{width:46px;height:42px}
-.h-core .mark i{width:30px;height:30px}
+.h-core .mark{width:64px;height:64px}
 @keyframes h-turn{0%,18%{transform:rotate(0)}25%,43%{transform:rotate(90deg)}50%,68%{transform:rotate(180deg)}75%,93%{transform:rotate(270deg)}100%{transform:rotate(360deg)}}
 @keyframes h-back{0%,18%{transform:rotate(0)}25%,43%{transform:rotate(-90deg)}50%,68%{transform:rotate(-180deg)}75%,93%{transform:rotate(-270deg)}100%{transform:rotate(-360deg)}}
 @media (max-width:639px){.h-ring{--r:84px}}
@@ -534,8 +531,7 @@ ul,ol{padding:0;list-style:none}
 @keyframes p-sweep{0%,62%{transform:translateX(-160%) skewX(-14deg)}88%,100%{transform:translateX(330%) skewX(-14deg)}}
 .plan-l::after{content:"";position:absolute;right:-70px;bottom:-90px;z-index:-1;width:240px;height:240px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.18),transparent);pointer-events:none}
 .plan-tag{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:6px 13px 6px 8px;border-radius:999px;background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);font-size:13px;font-weight:600;letter-spacing:-.01em}
-.plan-tag .mark{width:19px;height:17px}.plan-tag .mark i{width:12px;height:12px}
-.plan-tag .mark i:first-child{background:#e4e0fd}.plan-tag .mark i:last-child{background:#fff}
+.plan-tag .mark{width:24px;height:24px;box-shadow:0 0 0 2px #fff}
 .price{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-top:26px}
 .price b{font-size:clamp(3.4rem,2.4rem + 3vw,4.6rem);line-height:.95;font-weight:650;letter-spacing:-.055em;font-variant-numeric:tabular-nums;text-shadow:0 10px 30px rgba(30,12,140,.35)}
 .price>span{font-size:16px;font-weight:500;color:rgba(255,255,255,.82);white-space:nowrap}
@@ -610,7 +606,7 @@ html.still .plan-glow,html.still .btn-glow{display:none}
 .fq-chat{position:relative;z-index:2;max-width:760px;margin:0 auto;overflow:hidden;border-radius:20px;background:#fff;box-shadow:0 0 0 6px rgba(255,255,255,.3),0 30px 60px -24px rgba(45,30,140,.55)}
 .fq-bar{position:relative;z-index:3;display:flex;align-items:center;gap:12px;height:69px;padding:0 18px;border-bottom:1px solid #efeff4;background:#fff}
 .fq-bar .tile{flex:none;width:40px;height:40px;border-radius:12px;box-shadow:0 0 0 3px var(--accent-50),0 6px 14px -6px rgba(50,30,150,.4),inset 0 -3px 6px rgba(120,100,230,.13),inset 0 2px 2px #fff}
-.fq-bar .mark{width:21px;height:19px}.fq-bar .mark i{width:13px;height:13px}
+.fq-bar .mark{width:30px;height:30px}
 .fq-name{font-size:15px;line-height:1.25;font-weight:650;letter-spacing:-.015em;color:var(--ink)}
 .fq-by{display:flex;align-items:center;gap:6px;margin-top:2px;font-size:12.5px;line-height:1.3;color:var(--soft)}
 .fq-by svg{flex:none;width:13px;height:13px}
@@ -627,7 +623,7 @@ html.still .plan-glow,html.still .btn-glow{display:none}
 .fq-q{margin:0;padding:10px 15px;border-radius:18px 18px 5px 18px;background:#efedfd;box-shadow:inset 0 0 0 1px rgba(108,92,242,.1);color:var(--head);font-size:15px;line-height:1.5;font-weight:500;letter-spacing:-.01em;text-wrap:pretty}
 .fq-a{display:flex;align-items:flex-start;gap:10px;max-width:min(94%,640px)}
 .fq-av{flex:none;width:30px;height:30px;border-radius:10px;box-shadow:0 0 0 1px #ececf3,0 6px 12px -8px rgba(50,30,150,.45),inset 0 -2px 4px rgba(120,100,230,.12),inset 0 2px 2px #fff}
-.fq-av .mark{width:16px;height:15px}.fq-av .mark i{width:10px;height:10px}
+.fq-av .mark{width:22px;height:22px}
 .fq-bub{min-width:0;padding:12px 16px 14px;border-radius:5px 18px 18px 18px;background:#fff;border:1px solid #ececf3;box-shadow:0 10px 22px -18px rgba(40,25,130,.4)}
 .fq-bub p{font-size:15px;line-height:1.65;color:#3d4049;text-wrap:pretty}
 .fq-bub p+p{margin-top:10px}
@@ -691,7 +687,7 @@ html.still .plan-glow,html.still .btn-glow{display:none}
 .cta-tx .btn{align-self:flex-start;margin-top:26px}
 .cta .art{height:auto;min-height:300px;border-radius:16px}
 .cta-core{position:absolute;left:50%;top:50%;width:112px;height:112px;margin:-56px 0 0 -56px;border-radius:32px}
-.cta-core .mark{width:54px;height:50px}.cta-core .mark i{width:35px;height:35px}
+.cta-core .mark{width:76px;height:76px}
 .cta-orb{position:absolute;left:50%;top:50%;width:250px;height:250px;margin:-125px 0 0 -125px;border-radius:50%;border:1px dashed rgba(255,255,255,.6);animation:spin 40s linear infinite}
 .cta-orb .tile{position:absolute;width:42px;height:42px;border-radius:13px}
 .cta-orb .tile{animation:spin 40s linear infinite reverse}
@@ -826,7 +822,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
 </svg>
 <header class="nav" id="top">
   <div class="wrap nav-in">
-    <a class="logo" href="#top" aria-label="Rank with Ross, back to top"><span class="mark" aria-hidden="true"><i></i><i></i></span>Rank with Ross</a>
+    <a class="logo" href="#top" aria-label="Rank with Ross, back to top"><span class="mark" aria-hidden="true"></span>Rank with Ross</a>
     <nav aria-label="Main">
       <ul class="nav-links">
         <li><a href="#how">How it works</a></li>
@@ -1001,7 +997,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
             <span class="h-pos" style="--n:2"><span class="tile h-sat"><svg><use href="#i-perplexity"/></svg></span></span>
             <span class="h-pos" style="--n:3"><span class="tile h-sat"><svg><use href="#i-google"/></svg></span></span>
           </div>
-          <span class="tile h-core" aria-hidden="true"><span class="mark"><i></i><i></i></span></span>
+          <span class="tile h-core" aria-hidden="true"><span class="mark"></span></span>
         </div>
         <div class="card-tx">
           <h3>The AI your shoppers ask</h3>
@@ -1247,7 +1243,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
     <article class="plan" data-anim>
       <div class="plan-l">
         <span class="plan-glow" aria-hidden="true"></span>
-        <h3 class="plan-tag"><span class="mark" aria-hidden="true"><i></i><i></i></span>Done for you</h3>
+        <h3 class="plan-tag"><span class="mark" aria-hidden="true"></span>Done for you</h3>
         <p class="price"><b>A$297</b><span>a month</span></p>
         <p class="price-alt">Not happy after the first month? Full refund, and you keep all the work.</p>
         <ul class="plan-ok">
@@ -1291,7 +1287,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
         <span class="tile fq-tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
         <div class="fq-chat" data-faq>
           <div class="fq-bar">
-            <span class="tile" aria-hidden="true"><span class="mark"><i></i><i></i></span></span>
+            <span class="tile" aria-hidden="true"><span class="mark"></span></span>
             <div>
               <p class="fq-name">Rank with Ross</p>
               <p class="fq-by"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.4 3.6a1 1 0 0 1 3 3L7.4 18.6a2 2 0 0 1-.9.5l-2.9.8a.5.5 0 0 1-.6-.6l.8-2.9a2 2 0 0 1 .5-.9z"/></svg>Answers to common questions</p>
@@ -1306,44 +1302,44 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
             <div class="fq-thread" role="log" aria-label="Conversation">
               <div class="fq-pair" id="fq-p1">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">What does Rank with Ross actually do?</h3></div>
-                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
+                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"></span></span><div class="fq-bub">
                   <p>We check if ChatGPT, Gemini and Perplexity pick your products, and who they pick instead. Then our team does the work for you. We write buying guides, fix your product pages and email the sites AI quotes most. You see the sales that came from AI.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p2">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">How do you know a sale came from AI?</h3></div>
-                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
+                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"></span></span><div class="fq-bub">
                   <p>At onboarding, we help you add a small code to Shopify. It takes about 2 minutes. The code spots shoppers who come from ChatGPT, Gemini, Perplexity and other AI apps. Some AI apps hide where a shopper came from, so the real number is often a bit higher. We can’t tell Google AI Overviews apart from normal Google, so we count them as search.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p3">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">Can I pay to appear in AI answers?</h3></div>
-                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
+                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"></span></span><div class="fq-bub">
                   <p>Not inside ChatGPT’s answers. ChatGPT shows some ads under its answers, marked as ads. But OpenAI says ads can’t change what the answer says. Google sells ads in AI Overviews in many countries. Rank with Ross helps you get picked without paying for ads.</p>
                   <p class="fq-src">Sources: <a href="https://help.openai.com/en/articles/20001047-ads-in-chatgpt" target="_blank" rel="noopener">OpenAI</a> and <a href="https://support.google.com/google-ads/answer/16297775?hl=en" target="_blank" rel="noopener">Google Ads Help</a>.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p4">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">Will Rank with Ross change my store without asking?</h3></div>
-                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
+                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"></span></span><div class="fq-bub">
                   <p>No. At the start, we agree with you on what we can change. Then we do the work, and you can see everything we did.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p5">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">Do I need to install an app?</h3></div>
-                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
+                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"></span></span><div class="fq-bub">
                   <p>No. At onboarding, you give us your store’s address and we help you add one small code to Shopify. That code counts sales from AI.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p6">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">How long does setup take?</h3></div>
-                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
+                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"></span></span><div class="fq-bub">
                   <p>Not long. Onboarding is the only part you do. You tell us about your store and add one small code. After that, we do all the work.</p>
                 </div></div>
               </div>
               <div class="fq-pair" id="fq-p7">
                 <div class="fq-msg fq-qw"><h3 class="fq-q">What’s free?</h3></div>
-                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"><i></i><i></i></span></span><div class="fq-bub">
+                <div class="fq-msg fq-a"><span class="tile fq-av" aria-hidden="true"><span class="mark"></span></span><div class="fq-bub">
                   <p>A call with Ross, our <a href="/tools">free tools</a> and a first check of your store. The check asks ChatGPT, Gemini and Perplexity 10 buying questions. Rank with Ross itself costs A$297 a month. We do the work, and there’s no lock-in contract.</p>
                 </div></div>
               </div>
@@ -1378,7 +1374,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
           <span class="tile"><svg><use href="#i-perplexity"/></svg></span>
           <span class="tile"><svg><use href="#i-google"/></svg></span>
         </div>
-        <span class="tile cta-core"><span class="mark"><i></i><i></i></span></span>
+        <span class="tile cta-core"><span class="mark"></span></span>
         <p class="chip cta-chip"><b><svg><use href="#i-check"/></svg></b>Recommended</p>
       </div>
     </div>
@@ -1390,7 +1386,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
   <div class="wrap">
     <div class="foot-top">
       <div>
-        <a class="logo" href="#top" aria-label="Rank with Ross, back to top"><span class="mark" aria-hidden="true"><i></i><i></i></span>Rank with Ross</a>
+        <a class="logo" href="#top" aria-label="Rank with Ross, back to top"><span class="mark" aria-hidden="true"></span>Rank with Ross</a>
         <p class="foot-tag">Shoppers ask. AI recommends. You get the sale.</p>
       </div>
       <nav aria-label="Footer">
@@ -1784,7 +1780,7 @@ html.still *,html.still *::before,html.still *::after{animation:none!important;t
   var typing = document.createElement('div');
   typing.className = 'fq-msg fq-a fq-typing';
   typing.setAttribute('aria-hidden', 'true');
-  typing.innerHTML = '<span class="tile fq-av"><span class="mark"><i></i><i></i></span></span><div class="fq-bub"><span></span><span></span><span></span></div>';
+  typing.innerHTML = '<span class="tile fq-av"><span class="mark"></span></span><div class="fq-bub"><span></span><span></span><span></span></div>';
 
   function scrollLog(top) {
     var y = Math.max(0, Math.min(top, log.scrollHeight - log.clientHeight));

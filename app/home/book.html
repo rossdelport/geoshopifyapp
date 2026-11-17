@@ -68,10 +68,8 @@ ul{padding:0;list-style:none}
 
 .top{display:flex;align-items:center;height:64px}
 .logo{display:inline-flex;align-items:center;gap:9px;font-size:21px;font-weight:650;letter-spacing:-.03em;color:var(--ink)}
-.mark{position:relative;flex:none;width:25px;height:23px}
-.mark i{position:absolute;width:16px;height:16px;border-radius:50%}
-.mark i:first-child{left:0;top:0;background:#cdc6fc}
-.mark i:last-child{right:0;bottom:0;background:var(--accent)}
+/* The logo mark: Ross's face on purple (public/brand/ross-mark.webp). */
+.mark{flex:none;width:28px;height:28px;border-radius:50%;background:#6c5cf2 url(/brand/ross-mark.webp) center/cover}
 
 /* Words on the left, the calendar on the right; stacked on phones */
 .book{display:grid;gap:32px;padding-top:clamp(12px,4vw,48px);padding-bottom:clamp(56px,8vw,96px)}
@@ -173,7 +171,7 @@ ul{padding:0;list-style:none}
 </head>
 <body>
 <header class="wrap top">
-  <a class="logo" href="/" aria-label="Rank with Ross home page"><span class="mark" aria-hidden="true"><i></i><i></i></span>Rank with Ross</a>
+  <a class="logo" href="/" aria-label="Rank with Ross home page"><span class="mark" aria-hidden="true"></span>Rank with Ross</a>
 </header>
 
 <main class="wrap book">

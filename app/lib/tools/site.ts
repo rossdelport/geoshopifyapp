@@ -3,6 +3,8 @@
 // so the origin is a constant, never read from env or request.url.
 
 export const SITE = "https://rankwithross.com.au"; // canonical origin, never from env
+/** The logo mark for emails: Ross's face on purple, round, as a PNG (inboxes don't all show WebP). */
+export const EMAIL_LOGO = `<img src="${SITE}/brand/ross-mark.png" width="26" height="26" alt="" style="display:inline-block;width:26px;height:26px;border:0;border-radius:50%;margin-right:9px;vertical-align:middle;">`;
 export const SITE_HOST = "rankwithross.com.au";
 export const BRAND = "Rank with Ross";
 export const BRAND_ALT = "RankWithRoss";

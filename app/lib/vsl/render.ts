@@ -94,7 +94,7 @@ export function renderVsl(page: VslPage, a: VslAssets): string {
     : "";
 
   return `<header class="wrap top">
-  <a class="logo" href="/" aria-label="Rank with Ross home page"><span class="mark" aria-hidden="true"><i></i><i></i></span>Rank with Ross</a>
+  <a class="logo" href="/" aria-label="Rank with Ross home page"><span class="mark" aria-hidden="true"></span>Rank with Ross</a>
   <a class="btn btn-pri btn-sm" href="${esc(book)}" data-book>Book a call</a>
 </header>
 <main>

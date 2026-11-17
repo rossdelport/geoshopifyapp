@@ -99,28 +99,13 @@ body {
   letter-spacing: -0.03em;
   color: var(--ink);
 }
-/* The home page's mark: two overlapping circles. */
+/* The home page's mark: Ross's face on purple. */
 .rp .mark {
-  position: relative;
   flex: none;
-  width: 25px;
-  height: 23px;
-}
-.rp .mark i {
-  position: absolute;
-  width: 16px;
-  height: 16px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-}
-.rp .mark i:first-child {
-  left: 0;
-  top: 0;
-  background: #cdc6fc;
-}
-.rp .mark i:last-child {
-  right: 0;
-  bottom: 0;
-  background: var(--accent);
+  background: #6c5cf2 url(/brand/ross-mark.webp) center / cover;
 }
 .rp-share {
   display: inline-flex;

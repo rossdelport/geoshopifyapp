@@ -31,6 +31,7 @@ import {
   workStartScore,
 } from "../app/lib/client-report";
 import { type LogEntry, CLIENT_SEES } from "../app/lib/work-log";
+import { EMAIL_LOGO } from "../app/lib/tools/site";
 
 const sample = (over: Partial<ClientReportData> = {}): ClientReportData => ({
   v: 1,
@@ -385,7 +386,8 @@ describe("the report email", () => {
   it("escapes everything that came from the store or a person", () => {
     const mail = reportEmail(sample({ brand: `<script>alert("x")</script> & Sons` }), url, `<img src=x onerror=alert(1)>`);
     expect(mail.html).not.toContain("<script>");
-    expect(mail.html).not.toContain("<img");
+    // our own logo is the only image; the person's <img> arrives as text
+    expect(mail.html.replace(EMAIL_LOGO, "")).not.toContain("<img");
     expect(mail.html).toContain("&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt; &amp; Sons");
   });
 

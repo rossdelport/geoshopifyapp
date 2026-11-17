@@ -86,8 +86,10 @@ export default function Ask() {
           </div>
         ) : (
           <div className="w-ask-empty">
-            <span className="w-logo" aria-hidden="true">
-              <i />
+            <span className="w-ask-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2.5c.6 5 4.5 8.9 9.5 9.5-5 .6-8.9 4.5-9.5 9.5-.6-5-4.5-8.9-9.5-9.5 5-.6 8.9-4.5 9.5-9.5Z" />
+              </svg>
             </span>
             <h2>Ask AI</h2>
             <p>Ask anything about Rank with Ross or getting your store recommended by AI. Straight answers, no fluff.</p>

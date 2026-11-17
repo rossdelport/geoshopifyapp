@@ -8,7 +8,7 @@ import { createCookieSessionStorage, redirect } from "react-router";
 import type { Shop, User } from "@prisma/client";
 import db from "../db.server";
 import { isProd } from "./env.server";
-import { SITE } from "./tools/site";
+import { EMAIL_LOGO, SITE } from "./tools/site";
 import { emailConfigured, sendEmailMessage } from "./email.server";
 import { normalizeEmail } from "./check-lead.server";
 import { clientIdFromPath } from "./hub-paths";
@@ -73,9 +73,8 @@ export async function sendLoginLink(rawEmail: unknown, next?: unknown): Promise<
   return { ok: true, email };
 }
 
-/** The home page's purple (white text on it passes 4.7:1) and its logo's two circles. */
+/** The home page's purple (white text on it passes 4.7:1). */
 const PURPLE = "#6c5cf2";
-const LILAC = "#cdc6fc";
 
 /** The sign-in email (exported for tests): the logo, a white card and one purple button, in tables so every inbox shows it. */
 export function loginEmail(url: string): { subject: string; html: string; text: string } {
@@ -86,7 +85,7 @@ export function loginEmail(url: string): { subject: string; html: string; text: 
 <tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;">
 <tr><td align="center" style="padding:0 0 20px;font-size:21px;font-weight:700;letter-spacing:-0.02em;color:#0e0e13;">
-<span style="display:inline-block;width:15px;height:15px;border-radius:50%;background:${LILAC};vertical-align:middle;"></span><span style="display:inline-block;width:15px;height:15px;border-radius:50%;background:${PURPLE};margin-left:-6px;margin-right:9px;vertical-align:middle;"></span>Rank with Ross
+${EMAIL_LOGO}Rank with Ross
 </td></tr>
 <tr><td style="background:#ffffff;border:1px solid #e9e7f3;border-radius:20px;padding:36px 32px;text-align:center;">
 <h1 style="margin:0 0 10px;font-size:23px;line-height:1.3;font-weight:700;letter-spacing:-0.01em;color:#0e0e13;">Sign in to Rank with Ross</h1>

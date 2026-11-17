@@ -82,7 +82,7 @@ body:has(> .cr) {
   font-weight: 650;
 }
 
-/* The logo, as in the web app (.w-logo): two overlapping circles and the name. */
+/* The logo, as in the web app (.w-logo): Ross's face on purple and the name. */
 .cr-top {
   display: flex;
   align-items: center;
@@ -98,28 +98,11 @@ body:has(> .cr) {
   letter-spacing: -0.02em;
 }
 .cr-logo i {
-  position: relative;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   flex: none;
-}
-.cr-logo i::before,
-.cr-logo i::after {
-  content: "";
-  position: absolute;
-  width: 15px;
-  height: 15px;
   border-radius: 50%;
-}
-.cr-logo i::before {
-  left: 0;
-  top: 0;
-  background: #c7cdf6;
-}
-.cr-logo i::after {
-  right: 0;
-  bottom: 0;
-  background: #4050b0;
+  background: #6c5cf2 url(/brand/ross-mark.webp) center / cover;
 }
 
 .cr-main {

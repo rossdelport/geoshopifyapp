@@ -104,10 +104,7 @@ export function ToolShell({
           <div className="ck-band-grid" aria-hidden="true" />
           <header className="ck-top">
             <a className="ck-logo" href="/" aria-label="Rank with Ross home">
-              <span className="ck-mark" aria-hidden="true">
-                <i />
-                <i />
-              </span>
+              <span className="ck-mark" aria-hidden="true" />
               <span className="ck-word">Rank with Ross</span>
             </a>
             <a className="ck-pill tl-pill" href={HUB.path}>

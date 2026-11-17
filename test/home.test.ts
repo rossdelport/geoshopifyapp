@@ -61,9 +61,12 @@ describe("home page", () => {
     expect(html).toContain('<link rel="icon" href="/favicon.svg" type="image/svg+xml">');
     expect(html).toContain('<link rel="icon" href="/favicon.ico" sizes="any">');
     expect(html).toContain('<link rel="apple-touch-icon" href="/apple-touch-icon.png">');
-    for (const f of ["favicon.svg", "favicon.ico", "apple-touch-icon.png"]) {
+    for (const f of ["favicon.svg", "favicon.ico", "apple-touch-icon.png", "brand/ross-mark.webp", "brand/ross-mark.png"]) {
       expect(existsSync(join(ROOT, "public", f)), `public/${f} is missing`).toBe(true);
     }
+    // The logo is Ross's face on purple (Ross, 17 Nov 2026), not the old two circles.
+    expect(html).toContain("url(/brand/ross-mark.webp)");
+    expect(html).not.toContain("<i></i><i></i></span>Rank with Ross");
   });
 
   it("opens with words on the left and, on the right, AI answers that take turns (Ross, 2 Nov 2026)", async () => {

@@ -8,6 +8,7 @@
 import { addMonths, dayOf, startScore } from "./clients";
 import { addDays } from "./guide-calendar";
 import { formatMoney } from "./format";
+import { EMAIL_LOGO } from "./tools/site";
 import { ENGINE_LABELS } from "./plans";
 import { AI_ENGINE_LABELS } from "./attribution";
 import { CLIENT_SEES, type LogEntry, type LogKind, isExternal } from "./work-log";
@@ -331,9 +332,8 @@ export function headlines(d: ClientReportData): { label: string; value: string; 
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
-/** The home page's purple (white text on it passes 4.7:1) and the logo's light circle, as in the sign-in email. */
+/** The home page's purple (white text on it passes 4.7:1), as in the sign-in email. */
 const PURPLE = "#6c5cf2";
-const LILAC = "#cdc6fc";
 
 /**
  * The email that sends a report: a hello, the period, two or three numbers, one purple button to the report and
@@ -362,7 +362,7 @@ export function reportEmail(d: ClientReportData, url: string, contactName: strin
 <tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
 <tr><td align="center" style="padding:0 0 20px;font-size:21px;font-weight:700;letter-spacing:-0.02em;color:#0e0e13;">
-<span style="display:inline-block;width:15px;height:15px;border-radius:50%;background:${LILAC};vertical-align:middle;"></span><span style="display:inline-block;width:15px;height:15px;border-radius:50%;background:${PURPLE};margin-left:-6px;margin-right:9px;vertical-align:middle;"></span>Rank with Ross
+${EMAIL_LOGO}Rank with Ross
 </td></tr>
 <tr><td style="background:#ffffff;border:1px solid #e8e8ec;border-radius:20px;padding:32px 28px;">
 <p style="margin:0 0 6px;font-size:13px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#6e717a;">${esc(KIND_LABEL[d.kind])} report</p>
