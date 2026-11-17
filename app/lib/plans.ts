@@ -41,12 +41,13 @@ export interface Plan {
 
 /**
  * What the website sells (Ross, 2026-10-23): one done-for-you plan for Australian brands, with the Done-for-you
- * ("pro") limits. Billing below still holds the old Standard and Done-for-you plans until it is rebuilt.
+ * ("pro") limits. A$297 a month since 2026-11-16 (Ross: the full suite, no monthly call; was A$945 with a call).
+ * Billing below still holds the old Standard and Done-for-you plans until it is rebuilt.
  */
 export const OFFER = {
   name: "Done for you",
-  price: "A$945 a month",
-  line: "FirstPicked is A$945 a month, done for you, with no lock-in contract.",
+  price: "A$297 a month",
+  line: "FirstPicked is A$297 a month, done for you, with no lock-in contract.",
 } as const;
 
 export const PLANS: Record<PlanId, Plan> = {

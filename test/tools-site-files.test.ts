@@ -309,7 +309,7 @@ describe("/terms (Ross, 3 Nov 2026: the same layout as the privacy page)", () =>
     expect(html).toContain('<main style="max-width:720px;margin:0 auto;padding:48px 20px 80px;font-family:Inter, system-ui, sans-serif;color:#30313d;line-height:1.7">');
     expect(html).toContain('<h2 style="font-size:20px;margin:36px 0 8px;color:#0b0c2b">Full refund after month one</h2>');
     expect(html).toContain('<footer class="tl-foot">');
-    expect(text).toContain("Last updated 3 November 2026");
+    expect(text).toContain("Last updated 16 November 2026");
     expect(text).toContain(`It costs ${OFFER.price}, including GST.`);
     expect(text).toContain("We'll refund that month in full, and you keep all the work we did.");
     expect(text).toContain("You can stop any time.");

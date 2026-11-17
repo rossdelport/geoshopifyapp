@@ -143,7 +143,7 @@ early access.
 
 - **Free:** one check of 10 buying questions on ChatGPT, Gemini and Perplexity, your visibility score and top
   competitors, and one look for Reddit threads.
-- **Done for you:** A$945 a month (Australian dollars). No lock-in contract, cancel any time. Only 5 spots. Not
+- **Done for you:** A$297 a month (Australian dollars). No lock-in contract, cancel any time. Only 5 spots. Not
   happy after the first month? Full refund, and you keep all the work (ask ross@firstpicked.com.au). No free trial.
   - 100 buying questions, checked every day on ChatGPT, Gemini, Perplexity and Google AI Overviews, plus Claude in a
     full check every week.
@@ -152,7 +152,8 @@ early access.
     advice and single question deep dives.
   - Sites AI trusts: we find the sites AI quotes most for your products, and the people who write for them.
   - Reddit threads: new threads every week, each with a reply written for you to post.
-  - Sales from AI dashboard, a weekly report and a monthly call with our team.
+  - Sales from AI dashboard and a weekly report. There's no monthly call on this plan (since 16 Nov 2026), but
+    you can always email ross@firstpicked.com.au.
 - Allowances reset on the 1st of each month.
 
 Coming soon (not in the app yet, don't promise dates): paying for a plan in the app, product fixes you can copy

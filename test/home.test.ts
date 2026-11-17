@@ -36,8 +36,18 @@ describe("home page", () => {
     expect(html).not.toContain("__FONT_URL__");
     expect(html).not.toContain("<!-- STORY_CARDS -->");
     // the one offer, and every button books a call with Ross (no free trial, no install from the website)
-    expect(html).toContain('<p class="price"><b>A$945</b><span>a month</span></p>');
-    expect(html).not.toContain("A$1,000"); // the old price (Ross, 2026-11-05: A$945 a month)
+    expect(html).toContain('<p class="price"><b>A$297</b><span>a month</span></p>');
+    // the old prices (Ross, 2026-11-16: A$297 a month, the full suite without the monthly call; was A$945, A$1,000)
+    for (const old of ["A$945", "A$1,000"]) expect(html).not.toContain(old);
+    expect(html).not.toMatch(/monthly call|30-minute call/i);
+    // how the price compares (Ross, 2026-11-16: "give away 10x value so it's a no brainer"): real agency prices from
+    // Optimising's guide (A$2,000 to A$20,000+, checked 16 Nov 2026) with the source, and the orders that cover A$297
+    expect(html).toContain('<h2 class="h2" id="pricing-h">Agency work. <b>Not agency prices.</b></h2>');
+    expect(html).toContain('<b class="vs-v">A$2,000 to A$20,000+</b>');
+    expect(html).toContain('href="https://www.optimising.com.au/blog/geo-cost"');
+    expect(html).toContain('<b class="vs-v">8 extra orders</b><span class="vs-u">a month. Say your average order is A$100 and you keep A$40 of it.</span>');
+    expect(Math.ceil(297 / 40)).toBe(8);
+    expect(html).not.toMatch(/worth A\$|valued at/i); // never a made-up value (Australian Consumer Law)
     expect(html).toContain('<a class="btn btn-pri" href="/book">Get started</a>');
     expect(html).not.toMatch(/free trial/i);
     expect(html).not.toContain("/auth/login");
@@ -173,7 +183,6 @@ describe("home page", () => {
       "Fixes to your pages",
       "ChatGPT, Gemini, Perplexity and Google AI Overviews, plus Claude every week",
       "See the sales AI sends you",
-      "Monthly call about updates and future plans",
       "Weekly reports",
     ]);
     expect(price).toContain('<span data-roll>50</span>+</b><span class="sr">50+</span>');

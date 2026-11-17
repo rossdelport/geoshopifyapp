@@ -1,6 +1,7 @@
 // Reports for Ross's clients (Ross, 5 Nov 2026): a weekly or monthly report as a private link the client opens without
 // logging in (firstpicked.com.au/results/<token>), and the email that sends it. The price card promises "Weekly reports"
-// and a "Monthly call about updates and future plans", so these are what the client sees of the work.
+// (the monthly call went with the A$297 price, 16 Nov 2026; a call Ross logs still shows), so these are what the client
+// sees of the work.
 // Pure rules here, tested in test/client-report.test.ts. lib/client-report.server.ts reads the numbers, saves them with
 // the report and sends the email; routes/results.$token.tsx shows a report; routes/dash.clients.$id.reports.tsx makes them.
 

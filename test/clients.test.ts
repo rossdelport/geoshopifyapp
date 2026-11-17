@@ -192,7 +192,6 @@ const facts = (over: Partial<ClientFacts> = {}): ClientFacts => ({
   guidesFailed: 0,
   firstFailed: null,
   lastReportAt: ago(24 * 2),
-  lastCallAt: ago(24 * 10),
   costCapHit: false,
   ...over,
 });
@@ -245,18 +244,16 @@ describe("what needs Ross", () => {
     expect(clientAlerts(facts({ lastReportAt: ago(24 * 7) }), TODAY, NOW)[0]).toMatchObject({ key: "report", intent: { name: "report", kind: "week" } });
   });
 
-  it("says when the monthly call is due", () => {
-    expect(keys(clientAlerts(facts({ startedOn: "2026-10-20", lastCallAt: null }), TODAY, NOW))).toEqual(["call"]);
-    expect(keys(clientAlerts(facts({ startedOn: "2026-10-20", lastCallAt: ago(24 * 29) }), TODAY, NOW))).toEqual([]);
-    expect(keys(clientAlerts(facts({ startedOn: "2026-11-10", lastCallAt: null }), TODAY, NOW))).toEqual([]);
+  it("never asks for a monthly call (the A$297 plan has none, 16 Nov 2026)", () => {
+    expect(keys(clientAlerts(facts({ startedOn: "2026-10-20" }), TODAY, NOW))).toEqual([]);
   });
 
   it("flags the end of the first month in its last week", () => {
-    const end = clientAlerts(facts({ startedOn: "2026-10-26", lastCallAt: ago(1) }), TODAY, NOW);
+    const end = clientAlerts(facts({ startedOn: "2026-10-26" }), TODAY, NOW);
     expect(end).toEqual([
       { key: "month-one", tone: "info", text: "First month ends Wed 25 Nov. A good time to show them the results.", label: "Reports", to: "/dash/clients/s1/reports" },
     ]);
-    expect(clientAlerts(facts({ startedOn: "2026-10-21", lastCallAt: ago(1) }), TODAY, NOW)[0].text).toBe("First month ends today. A good time to show them the results.");
+    expect(clientAlerts(facts({ startedOn: "2026-10-21" }), TODAY, NOW)[0].text).toBe("First month ends today. A good time to show them the results.");
     expect(clientAlerts(facts({ startedOn: "2026-11-02" }), TODAY, NOW)).toEqual([]);
   });
 

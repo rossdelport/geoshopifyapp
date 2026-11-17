@@ -20,7 +20,7 @@ ChatGPT, Gemini, Perplexity, Google AI Overviews and Claude.
 
 ## Current offer (changed 23 Oct 2026, now live on the home page in all 6 languages)
 
-- An agency-style "Done for you" plan: A$945 a month (A$1,000 until 5 Nov 2026), only 5 spots, for Australian ecommerce brands.
+- An agency-style "Done for you" plan: A$297 a month (A$945 with a monthly call until 16 Nov 2026, A$1,000 until 5 Nov), only 5 spots, for Australian ecommerce brands. No monthly call.
 - Full refund if not happy after the first month (handled by hand, and the client keeps the work). No lock-in contract.
 - The old Standard (US$49) and Done-for-you (US$349) plans are removed from the website. The app's own plans page,
   billing, the free check and llms.txt still show the old plans.
