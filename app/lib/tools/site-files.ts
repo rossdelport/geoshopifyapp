@@ -1,4 +1,4 @@
-// The site files for firstpicked.com.au: robots.txt, sitemap.xml and llms.txt, built from the tool registry, the
+// The site files for rankwithross.com.au: robots.txt, sitemap.xml and llms.txt, built from the tool registry, the
 // stories, the blog and the plans, so they never drift from the pages. Pure. Served by routes/robots[.]txt.ts,
 // sitemap[.]xml.ts and llms[.]txt.ts. Never add public/robots.txt, public/sitemap.xml or public/llms.txt:
 // static files are served before routes and would hide these.
@@ -22,7 +22,7 @@ import { stripBrand } from "./seo";
  */
 export function siteRobotsTxt(): string {
   return [
-    "# firstpicked.com.au: search engines and AI assistants are welcome on every public page.",
+    "# rankwithross.com.au: search engines and AI assistants are welcome on every public page.",
     "User-agent: *",
     "Allow: /",
     "Disallow: /app$",
@@ -88,9 +88,9 @@ function plansLine(): string {
  */
 export function siteLlmsTxt(): string {
   return [
-    "# FirstPicked",
+    "# Rank with Ross",
     "",
-    "> FirstPicked is a Shopify app that helps stores get their products recommended by AI assistants like ChatGPT, Gemini and Perplexity, and shows the sales that come from AI.",
+    "> Rank with Ross is a Shopify app that helps stores get their products recommended by AI assistants like ChatGPT, Gemini and Perplexity, and shows the sales that come from AI.",
     "",
     plansLine(),
     "",
@@ -98,17 +98,17 @@ export function siteLlmsTxt(): string {
     "",
     ...TOOLS.map((t) => `- [${t.name}](${abs(t.path)}): ${t.short}`),
     "",
-    "## About FirstPicked",
+    "## About Rank with Ross",
     "",
-    `- [Home](${abs("/")}): what FirstPicked does, how it works and pricing`,
+    `- [Home](${abs("/")}): what Rank with Ross does, how it works and pricing`,
     `- [All free tools](${abs(HUB.path)}): the full list of free tools`,
-    `- [Stories](${abs(STORIES_HUB.path)}): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are FirstPicked customers)`,
+    `- [Stories](${abs(STORIES_HUB.path)}): other brands' sales and sign-ups from AI assistants, as their sources reported them (none are Rank with Ross customers)`,
     `- [Blog](${abs(BLOG_HUB.path)}): plain-English articles for Shopify stores on getting recommended by AI assistants, new ones three times a week`,
-    `- [Compare](${abs(COMPARE_HUB.path)}): honest comparisons of FirstPicked with agencies, tracking tools and prices in Australia`,
+    `- [Compare](${abs(COMPARE_HUB.path)}): honest comparisons of Rank with Ross with agencies, tracking tools and prices in Australia`,
     // Service pages only: the guides use "GEO", which the llms.txt Checker's sample (this file) must not show as jargon.
     ...LANDING_PAGES.filter((p) => p.kind !== "guide").map((p) => `- [${stripBrand(p.title)}](${abs(landingPath(p.slug))}): ${p.short}`),
-    `- [Privacy policy](${abs("/privacy")}): what data FirstPicked collects and why`,
-    `- [Terms of service](${abs("/terms")}): the rules for using FirstPicked, the refund after month one and stopping any time`,
+    `- [Privacy policy](${abs("/privacy")}): what data Rank with Ross collects and why`,
+    `- [Terms of service](${abs("/terms")}): the rules for using Rank with Ross, the refund after month one and stopping any time`,
     "",
   ].join("\n");
 }

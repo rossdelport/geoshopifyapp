@@ -1,5 +1,5 @@
 // The service pages and guides at the top level of the site: one page per thing a store owner searches for, like
-// firstpicked.com.au/seo-agency-perth for "seo agency perth" (Ross, 8 Nov 2026: "go after all the buying ones in perth
+// rankwithross.com.au/seo-agency-perth for "seo agency perth" (Ross, 8 Nov 2026: "go after all the buying ones in perth
 // first", then "build them all"). Built from the searches in /mnt/project-files/keywords/ (DataForSEO through Treg).
 // One page per search group, never near-copies for other cities or wordings (Google's doorway page rules). Same honesty
 // rules as the compare pages: say who we're not for, date every outside price and fact, never promise results.
@@ -67,13 +67,13 @@ export const LANDING_PAGES: LandingPage[] = [
     slug: "seo-agency-perth",
     tag: "Perth",
     city: "Perth",
-    title: "Perth SEO agency for Shopify brands | FirstPicked",
+    title: "Perth SEO agency for Shopify brands | Rank with Ross",
     description:
       "A Perth team that gets Shopify brands found on Google and picked by ChatGPT. A$297 a month, done for you, no lock-in. Free 15 minute call.",
     short: "Get your Shopify store found on Google and picked by AI, from a Perth team.",
     h1: "A Perth SEO agency for Shopify brands. Get found on Google and picked by AI.",
     intro: [
-      "FirstPicked is run from Perth by its founder, Ross Delport. We help Shopify brands sell more from Google and from AI apps like ChatGPT. We only work with online stores.",
+      "Rank with Ross is run from Perth by its founder, Ross Delport. We help Shopify brands sell more from Google and from AI apps like ChatGPT. We only work with online stores.",
       "It's A$297 a month, done for you, with no lock-in contract. If you're not happy after the first month, you get a full refund and keep all the work.",
     ],
     checked: "2026-11-08",
@@ -88,7 +88,7 @@ export const LANDING_PAGES: LandingPage[] = [
         table: {
           head: ["If you...", "Then"],
           rows: [
-            ["Sell on Shopify, A$5,000 a month or more", "Yes. This is who we built FirstPicked for."],
+            ["Sell on Shopify, A$5,000 a month or more", "Yes. This is who we built Rank with Ross for."],
             ["Want Google and ChatGPT to name your products", "Yes. That's all we work on."],
             ["Run a local service, like a plumber or a clinic", "No. A local SEO agency that does Google Maps will suit you better."],
             ["Need a new store built, or moved to Shopify", "No. Start with a Shopify developer, and come back once your store is live."],
@@ -141,7 +141,7 @@ export const LANDING_PAGES: LandingPage[] = [
     faqs: [
       {
         q: "Are you based in Perth?",
-        a: "Yes. FirstPicked is run from Perth, Western Australia, by its founder, Ross Delport. Calls are on Google Meet, so we work with Shopify brands all over Australia.",
+        a: "Yes. Rank with Ross is run from Perth, Western Australia, by its founder, Ross Delport. Calls are on Google Meet, so we work with Shopify brands all over Australia.",
       },
       {
         q: "Do you do local SEO or Google Maps?",
@@ -161,13 +161,13 @@ export const LANDING_PAGES: LandingPage[] = [
   {
     slug: "ai-seo-agency",
     tag: "AI SEO",
-    title: "AI SEO agency for Shopify brands in Australia | FirstPicked",
+    title: "AI SEO agency for Australian Shopify brands | Rank with Ross",
     description:
       "AI SEO for Australian Shopify brands: get named by ChatGPT, Gemini and Google's AI, and see the sales. A$297 a month, done for you, no lock-in.",
     short: "AI SEO for Shopify brands: get picked by ChatGPT and Google's AI, and see the sales.",
     h1: "An AI SEO agency for Australian Shopify brands. Get picked by ChatGPT, and see the sales.",
     intro: [
-      "FirstPicked is an AI SEO agency for Shopify brands. Some people call it GEO or AEO. It's all the same goal: when a shopper asks ChatGPT, Gemini, Perplexity or Google's AI what to buy, your products get named.",
+      "Rank with Ross is an AI SEO agency for Shopify brands. Some people call it GEO or AEO. It's all the same goal: when a shopper asks ChatGPT, Gemini, Perplexity or Google's AI what to buy, your products get named.",
       "It's A$297 a month, done for you, with no lock-in contract. If you're not happy after the first month, you get a full refund and keep all the work.",
     ],
     checked: "2026-11-08",
@@ -195,7 +195,7 @@ export const LANDING_PAGES: LandingPage[] = [
         table: {
           head: ["If you...", "Then"],
           rows: [
-            ["Sell on Shopify, A$5,000 a month or more", "Yes. This is who we built FirstPicked for."],
+            ["Sell on Shopify, A$5,000 a month or more", "Yes. This is who we built Rank with Ross for."],
             ["Want ChatGPT and Google's AI to name your products", "Yes. That's all we work on."],
             ["Sell software or services, not products", "No. An agency that works with your kind of business will suit you better."],
             ["Need digital PR or press coverage", "No. A bigger agency with a PR team is the better pick."],
@@ -214,7 +214,7 @@ export const LANDING_PAGES: LandingPage[] = [
         heading: "What AI SEO costs in Australia",
         paragraphs: [
           "Optimising's Australian price guide puts agency GEO at about A$2,000 to A$20,000 or more a month. Tools that only track AI answers cost less, but you do the work.",
-          "FirstPicked is A$297 a month, done for you. There's no lock-in, and you can stop any time.",
+          "Rank with Ross is A$297 a month, done for you. There's no lock-in, and you can stop any time.",
         ],
       },
       {
@@ -255,13 +255,13 @@ export const LANDING_PAGES: LandingPage[] = [
   {
     slug: "shopify-seo-agency",
     tag: "Shopify SEO",
-    title: "Shopify SEO agency for Google and AI search | FirstPicked",
+    title: "Shopify SEO agency for Google and AI search | Rank with Ross",
     description:
       "Shopify SEO, done for you: product page fixes, buying guides and sales tracking, so Google and ChatGPT find your products. A$297 a month, no lock-in.",
     short: "Shopify SEO done for you: found on Google, named by AI, with the sales tracked.",
     h1: "Shopify SEO, done for you. Get your products found on Google and named by AI.",
     intro: [
-      "FirstPicked is an SEO agency that only works with Shopify stores. We fix your product pages, write buying guides and track your sales, so Google and AI apps like ChatGPT can find your products and suggest them.",
+      "Rank with Ross is an SEO agency that only works with Shopify stores. We fix your product pages, write buying guides and track your sales, so Google and AI apps like ChatGPT can find your products and suggest them.",
       "It's A$297 a month, with no lock-in contract. If you're not happy after the first month, you get a full refund and keep all the work.",
     ],
     checked: "2026-11-08",
@@ -298,7 +298,7 @@ export const LANDING_PAGES: LandingPage[] = [
         table: {
           head: ["If you...", "Then"],
           rows: [
-            ["Sell on Shopify, A$5,000 a month or more", "Yes. This is who we built FirstPicked for."],
+            ["Sell on Shopify, A$5,000 a month or more", "Yes. This is who we built Rank with Ross for."],
             ["Sell on another platform, like WooCommerce", "Not right now. We only work with Shopify stores."],
             ["Need a theme built, or a store moved to Shopify", "No. Start with a Shopify developer from Shopify's Partner Directory."],
             ["Want Google or Facebook ads run for you", "No. We don't run ads."],
@@ -348,7 +348,7 @@ export const LANDING_PAGES: LandingPage[] = [
     slug: "chatgpt-shopping",
     kind: "guide",
     tag: "Guide",
-    title: "How to get your products on ChatGPT shopping | FirstPicked",
+    title: "How to get products on ChatGPT shopping | Rank with Ross",
     description:
       "How ChatGPT shopping picks products, if it's live in Australia, and what a Shopify store can do to get recommended. From OpenAI's own pages, Nov 2026.",
     short: "How ChatGPT picks products to show, and what a Shopify store can do about it.",
@@ -421,7 +421,7 @@ export const LANDING_PAGES: LandingPage[] = [
       {
         heading: "How to see your sales from ChatGPT",
         paragraphs: [
-          "ChatGPT adds utm_source=chatgpt.com to the links it shows, so you can find those visits and orders in Shopify. FirstPicked's small tracking code does it for you, and counts visits from other AI apps too.",
+          "ChatGPT adds utm_source=chatgpt.com to the links it shows, so you can find those visits and orders in Shopify. Rank with Ross's small tracking code does it for you, and counts visits from other AI apps too.",
         ],
       },
     ],
@@ -454,7 +454,7 @@ export const LANDING_PAGES: LandingPage[] = [
     slug: "what-is-geo",
     kind: "guide",
     tag: "Guide",
-    title: "What is GEO (generative engine optimisation)? | FirstPicked",
+    title: "What is GEO? Generative engine optimisation | Rank with Ross",
     description:
       "GEO in plain words: what generative engine optimisation is, where the name comes from, how it differs from SEO and AEO, and what a store can do.",
     short: "GEO in plain words: what it is, where the name comes from, and what a store can do.",

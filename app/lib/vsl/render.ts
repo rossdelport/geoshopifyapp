@@ -55,7 +55,7 @@ function reviewBlock(a: VslAssets): string {
     <h2 class="h2" id="review-h">Don’t take our word for it. <b>Hear it from Eduardo.</b></h2>
     <div class="rv">
       <div class="rv-frame">
-        <video class="rv-video" data-video src="${esc(r.src)}" poster="${esc(r.poster)}" width="540" height="960" preload="none" playsinline controls tabindex="-1" aria-label="Eduardo from Terra Tanks talks about working with FirstPicked">
+        <video class="rv-video" data-video src="${esc(r.src)}" poster="${esc(r.poster)}" width="540" height="960" preload="none" playsinline controls tabindex="-1" aria-label="Eduardo from Terra Tanks talks about working with Rank with Ross">
           <track kind="captions" src="${esc(r.captions)}" srclang="en" label="English" default>
         </video>
         <button class="vsl-btn" type="button" data-video-play aria-label="Watch Eduardo’s review, 33 seconds" hidden><span class="vsl-pill"><span class="vsl-play">${PLAY}</span>Watch Eduardo <span class="vsl-len">0:33</span></span></button>
@@ -79,7 +79,7 @@ export function renderVsl(page: VslPage, a: VslAssets): string {
   const costs = page.spend.costs
     .map((c) => `<li class="cost"><b class="cost-v">${esc(c.value)}</b><span class="cost-t">${esc(c.text)}</span></li>`)
     .join("");
-  const ours = `<li class="cost cost-ours"><b class="cost-v">${VSL_PRICE}</b><span class="cost-t">FirstPicked, a month. Done for you.</span></li>`;
+  const ours = `<li class="cost cost-ours"><b class="cost-v">${VSL_PRICE}</b><span class="cost-t">Rank with Ross, a month. Done for you.</span></li>`;
   const points = (list: string[]) => list.map((p) => `<li>${TICK}<span>${esc(p)}</span></li>`).join("");
   const help = page.help.items.map((i) => `<li class="hp-it"><i aria-hidden="true"></i><h3>${esc(i.h)}</h3><p>${esc(i.p)}</p></li>`).join("");
   const faq = page.faq.map((f, n) => `<details class="qa"${n === 0 ? " open" : ""}><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join("");
@@ -94,7 +94,7 @@ export function renderVsl(page: VslPage, a: VslAssets): string {
     : "";
 
   return `<header class="wrap top">
-  <a class="logo" href="/" aria-label="FirstPicked home page"><span class="mark" aria-hidden="true"><i></i><i></i></span>FirstPicked</a>
+  <a class="logo" href="/" aria-label="Rank with Ross home page"><span class="mark" aria-hidden="true"></span>Rank with Ross</a>
   <a class="btn btn-pri btn-sm" href="${esc(book)}" data-book>Book a call</a>
 </header>
 <main>
@@ -161,7 +161,7 @@ ${maths}
 
 <section class="sec close" aria-labelledby="close-h">
   <div class="wrap narrow">
-    <img class="close-ross" src="${esc(a.rossPhoto)}" alt="Ross Delport, founder of FirstPicked" width="84" height="84" decoding="async">
+    <img class="close-ross" src="${esc(a.rossPhoto)}" alt="Ross Delport, founder of Rank with Ross" width="84" height="84" decoding="async">
     <h2 class="h2" id="close-h">${heading(page.close)}</h2>
     ${cta(book)}
   </div>
@@ -172,9 +172,9 @@ ${maths}
     <div class="src">
       <p><b>Where these numbers come from.</b> Google click prices and searches: Google Ads figures from DataForSEO, Australia, November 2025 to October 2026, changed at $1.42 per US$1. All prices on this page are in Australian dollars. ChatGPT answers: asked once each on 17 November 2026, in Australia. Answers change from one ask to the next.</p>
       <ul>${sources}</ul>
-      <p>FirstPicked is not part of OpenAI, Google or any business named on this page. Nobody can promise what AI says, and we don’t.</p>
+      <p>Rank with Ross is not part of OpenAI, Google or any business named on this page. Nobody can promise what AI says, and we don’t.</p>
     </div>
-    <p class="foot-links"><span>© 2026 FirstPicked</span><a href="/">Home</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></p>
+    <p class="foot-links"><span>© 2026 Rank with Ross</span><a href="/">Home</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></p>
   </div>
 </footer>`;
 }

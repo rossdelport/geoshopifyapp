@@ -1,6 +1,6 @@
-// FirstPicked web app against a real Postgres (set TEST_DATABASE_URL), in its own schema. Covers: email-link sign-in (a
+// Rank with Ross web app against a real Postgres (set TEST_DATABASE_URL), in its own schema. Covers: email-link sign-in (a
 // link works once, for 30 minutes, at most 5 an hour, and opening it doesn't use it), only safe "next" pages, adding
-// a store (real Shopify stores only, never one already on FirstPicked), reading the public catalog, and the pages that need
+// a store (real Shopify stores only, never one already on Rank with Ross), reading the public catalog, and the pages that need
 // a signed-in account.
 
 import { execSync } from "node:child_process";
@@ -106,9 +106,9 @@ describe.skipIf(!url)("web app (needs TEST_DATABASE_URL)", () => {
 
   const args = (req: Request, params: Record<string, string> = {}) => ({ request: req, params, context: {} }) as unknown as LoaderFunctionArgs & ActionFunctionArgs;
   const post = (path: string, fields: Record<string, string>, cookie = "") =>
-    new Request(`https://firstpicked.com.au${path}`, {
+    new Request(`https://rankwithross.com.au${path}`, {
       method: "POST",
-      headers: { "content-type": "application/x-www-form-urlencoded", origin: "https://firstpicked.com.au", ...(cookie ? { cookie } : {}) },
+      headers: { "content-type": "application/x-www-form-urlencoded", origin: "https://rankwithross.com.au", ...(cookie ? { cookie } : {}) },
       body: new URLSearchParams(fields).toString(),
     });
   const tokenFrom = (text: string) => text.match(/\/login\/([\w-]+)/)![1];
@@ -157,14 +157,14 @@ describe.skipIf(!url)("web app (needs TEST_DATABASE_URL)", () => {
     expect(out).toEqual({ ok: true, email: "ross@beard.com" });
     expect(sent.mails).toHaveLength(1);
     expect(sent.mails[0].to).toEqual(["ross@beard.com"]);
-    expect(sent.mails[0].text).toContain("https://firstpicked.com.au/login/");
+    expect(sent.mails[0].text).toContain("https://rankwithross.com.au/login/");
     const token = tokenFrom(sent.mails[0].text!);
     // only a hash is stored
     expect(JSON.stringify(await db.loginLink.findMany())).not.toContain(token);
 
     // An email scanner opening the link twice changes nothing.
-    expect(await link.loader(args(new Request(`https://firstpicked.com.au/login/${token}`), { token }))).toEqual({ usable: true });
-    expect(await link.loader(args(new Request(`https://firstpicked.com.au/login/${token}`), { token }))).toEqual({ usable: true });
+    expect(await link.loader(args(new Request(`https://rankwithross.com.au/login/${token}`), { token }))).toEqual({ usable: true });
+    expect(await link.loader(args(new Request(`https://rankwithross.com.au/login/${token}`), { token }))).toEqual({ usable: true });
 
     const res = await caught(link.action(args(post(`/login/${token}`, {}), { token })));
     expect(res.status).toBe(302);
@@ -174,7 +174,7 @@ describe.skipIf(!url)("web app (needs TEST_DATABASE_URL)", () => {
 
     // used: no second sign-in
     expect(await link.action(args(post(`/login/${token}`, {}), { token }))).toEqual({ usable: false });
-    expect(await link.loader(args(new Request(`https://firstpicked.com.au/login/${token}`), { token }))).toEqual({ usable: false });
+    expect(await link.loader(args(new Request(`https://rankwithross.com.au/login/${token}`), { token }))).toEqual({ usable: false });
   });
 
   it("refuses old links, bad emails, more than 5 links an hour, and unsafe next pages", async () => {
@@ -196,11 +196,11 @@ describe.skipIf(!url)("web app (needs TEST_DATABASE_URL)", () => {
   });
 
   it("sends signed-out visitors to sign in, then to add a store, then to the dashboard", async () => {
-    const out = await caught(dash.loader(args(new Request("https://firstpicked.com.au/dash"))));
+    const out = await caught(dash.loader(args(new Request("https://rankwithross.com.au/dash"))));
     expect(out.headers.get("Location")).toBe("/login?next=%2Fdash");
 
     const cookie = await signIn();
-    const noStore = await caught(dash.loader(args(new Request("https://firstpicked.com.au/dash", { headers: { cookie } }))));
+    const noStore = await caught(dash.loader(args(new Request("https://rankwithross.com.au/dash", { headers: { cookie } }))));
     expect(noStore.headers.get("Location")).toBe("/start");
 
     fetched.pages["https://beard.com/meta.json"] = {
@@ -216,11 +216,11 @@ describe.skipIf(!url)("web app (needs TEST_DATABASE_URL)", () => {
     const { enqueue } = await import("../app/lib/jobs.server");
     expect(enqueue).toHaveBeenCalledWith("onboard", {}, { shopId: shop.id, dedupeKey: `onboard:${shop.id}` });
 
-    const data = await dash.loader(args(new Request("https://firstpicked.com.au/dash", { headers: { cookie } })));
+    const data = await dash.loader(args(new Request("https://rankwithross.com.au/dash", { headers: { cookie } })));
     expect(data).toEqual({ admin: false, email: "ross@beard.com", store: "Beard Co", host: "beard.com", country: "AU", plan: "Free scan", left: null });
   });
 
-  it("only adds real Shopify stores, and never one already on FirstPicked", async () => {
+  it("only adds real Shopify stores, and never one already on Rank with Ross", async () => {
     const cookie = await signIn();
     fetched.pages["https://notshop.com/meta.json"] = { status: 404, text: "" };
     expect(await start.action(args(post("/start", { store: "notshop.com" }, cookie)))).toEqual({ error: pc.STORE_ERRORS.notShopify });
@@ -296,7 +296,7 @@ describe.skipIf(!url)("web app (needs TEST_DATABASE_URL)", () => {
     const pixel = await import("../app/routes/api.pixel");
     const shop = await db.shop.create({ data: { domain: "px.myshopify.com", primaryDomain: "px.com", currency: "AUD", source: "web", trackKey: "geo_pxkey1234567890ab" } });
     const send = (body: Record<string, unknown>) =>
-      pixel.action(args(new Request("https://firstpicked.com.au/api/pixel", { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify(body) })));
+      pixel.action(args(new Request("https://rankwithross.com.au/api/pixel", { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify(body) })));
 
     expect((await send({ k: "geo_pxkey1234567890ab", ref: "https://chatgpt.com/", url: "https://px.com/", cid: "c" })).status).toBe(204);
     expect((await db.shop.findUniqueOrThrow({ where: { id: shop.id } })).pixelId).toBe("custom-pixel");

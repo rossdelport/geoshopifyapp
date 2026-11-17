@@ -43,7 +43,7 @@ export interface ArticleContent {
  * The booking page, tagged so Admin can see which page a visit or a booked call came from
  * (/book keeps the utm tags; Ross, 3 Nov 2026: every button says "Get started" and opens /book).
  */
-export const bookHref = (medium: string, campaign: string) => `/book?utm_source=firstpicked&utm_medium=${medium}&utm_campaign=${campaign}`;
+export const bookHref = (medium: string, campaign: string) => `/book?utm_source=rankwithross&utm_medium=${medium}&utm_campaign=${campaign}`;
 
 /** The band: a tag, the H1, the answer-first intro and the day it was checked. */
 export function ArticleHero({ page, tag }: { page: ArticleContent; tag: string }) {
@@ -59,7 +59,7 @@ export function ArticleHero({ page, tag }: { page: ArticleContent; tag: string }
         </p>
       ))}
       <p className="st-byline">
-        By the FirstPicked team · Checked <time dateTime={page.checked}>{formatUpdated(page.checked)}</time>
+        By Rank with Ross · Checked <time dateTime={page.checked}>{formatUpdated(page.checked)}</time>
       </p>
     </header>
   );
@@ -107,7 +107,7 @@ export function PageArticle({
             Want us to do it for you?
           </h2>
           <p>
-            FirstPicked is {OFFER.price}, done for you, for 5 Australian Shopify brands. No lock-in, and a full refund if you&apos;re not happy after the
+            Rank with Ross is {OFFER.price}, done for you, for 5 Australian Shopify brands. No lock-in, and a full refund if you&apos;re not happy after the
             first month.
           </p>
           <a className="ck-btn ck-btn-dark" href={book}>
@@ -144,7 +144,7 @@ export function PageArticle({
           </ul>
           <p className="bl-sources-note">
             Other companies&apos; prices and features were checked on {formatUpdated(page.checked)} and can change. Tell us if something is out of date
-            and we&apos;ll fix it. FirstPicked is not linked to any company named here.
+            and we&apos;ll fix it. Rank with Ross is not linked to any company named here.
           </p>
         </section>
       </article>

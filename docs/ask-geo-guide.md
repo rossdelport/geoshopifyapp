@@ -1,31 +1,31 @@
-# Ask FirstPicked: what the assistant knows
+# Ask AI: what the assistant knows
 
-This file is the knowledge behind "Ask FirstPicked", the help chat inside the FirstPicked web app (firstpicked.com.au/dash/ask). It is
-written from this repository: what the app does today, the plans, and the FirstPicked research notes
+This file is the knowledge behind "Ask AI", the help chat inside the Rank with Ross web app (rankwithross.com.au/dash/ask). It is
+written from this repository: what the app does today, the plans, and the Rank with Ross research notes
 (docs/geo-research.md). Keep it true: when a feature ships or changes, update this file in the same commit.
 Everything here may be said to customers. Internal plans, costs, suppliers and other customers never belong here.
 
 ---
 
-## About FirstPicked
+## About Rank with Ross
 
-FirstPicked helps Shopify stores get recommended by AI assistants: ChatGPT, Gemini, Perplexity, Google AI Overviews
+Rank with Ross helps Shopify stores get recommended by AI assistants: ChatGPT, Gemini, Perplexity, Google AI Overviews
 (and Claude on the paid plan). Shoppers now ask AI things like "best beard oil for dry skin in Australia" and buy
-what it names. FirstPicked shows which brands AI recommends for the questions shoppers ask about the store's kind of
+what it names. Rank with Ross shows which brands AI recommends for the questions shoppers ask about the store's kind of
 product, why, and what to do about it, and it shows the clicks, orders and money that come from AI.
 
-- Website: firstpicked.com.au. Support email: ross@firstpicked.com.au. Ross is FirstPicked's founder.
-- FirstPicked's blog is at firstpicked.com.au/blog: plain-English articles on getting recommended by AI, three new ones a week
+- Website: rankwithross.com.au. Support email: ross@rankwithross.com.au. Ross is Rank with Ross's founder.
+- Rank with Ross's blog is at rankwithross.com.au/blog: plain-English articles on getting recommended by AI, three new ones a week
   (Monday, Wednesday and Friday). Free, no sign-in.
-- FirstPicked works for Shopify stores only, worldwide, in English.
-- FirstPicked reads only what anyone can see on the store (its public product pages). Nothing in the store's Shopify
-  admin changes. FirstPicked can't edit the store for them yet.
-- Sign-in is by email link only: type your email at firstpicked.com.au/login, open the link we email (it works once,
+- Rank with Ross works for Shopify stores only, worldwide, in English.
+- Rank with Ross reads only what anyone can see on the store (its public product pages). Nothing in the store's Shopify
+  admin changes. Rank with Ross can't edit the store for them yet.
+- Sign-in is by email link only: type your email at rankwithross.com.au/login, open the link we email (it works once,
   for 30 minutes), and tap Continue. You stay signed in for 30 days. There are no passwords.
 
 ## Getting started
 
-1. Sign in at firstpicked.com.au/login.
+1. Sign in at rankwithross.com.au/login.
 2. Type your store's address (for example yourstore.com). It must be a Shopify store. We check it in a few
    seconds.
 3. Setup runs by itself and takes a few minutes. You can leave the page and come back:
@@ -36,8 +36,8 @@ product, why, and what to do about it, and it shows the clicks, orders and money
 4. Your dashboard appears with your results.
 5. Add the tracking code (Tracking code tab) so the dashboard can show sales from AI.
 
-One email account has one store. A store already on FirstPicked under another email can't be added again; email
-ross@firstpicked.com.au if that's your store.
+One email account has one store. A store already on Rank with Ross under another email can't be added again; email
+ross@rankwithross.com.au if that's your store.
 
 ## The tabs in the app
 
@@ -78,7 +78,7 @@ setup). Left: every thread (All, To reply, Replied). Right: the post and a reply
 - The reply is written as you, the owner, and always says who you are, for example "(I run Brand, so I'm
   biased.)". Keep that line: Reddit asks for it, and people trust an honest reply more.
 - Edit the reply if you like, tap **Copy and open thread**, paste it into the thread on Reddit and post it
-  yourself. FirstPicked never posts for you.
+  yourself. Rank with Ross never posts for you.
 - **Mark as replied** keeps track. **Not relevant** removes a thread.
 - Tips: reply to a few good threads a week rather than many; check the subreddit's rules on self-promotion first;
   answer the question properly before naming your product; never pretend to be a customer and never ask friends
@@ -86,7 +86,7 @@ setup). Left: every thread (All, To reply, Replied). Right: the post and a reply
 
 ### Guide calendar
 
-A month view of the guide pages FirstPicked writes for your website: one guide per day slot, each answering one buying
+A month view of the guide pages Rank with Ross writes for your website: one guide per day slot, each answering one buying
 question AI doesn't name you for (the ones it never names you for come first, then bigger searches first). Each
 day shows the question, how many people search it a month, the kind of guide and where it is at. Click a day to
 read the whole page as it will look. The paid plan gets 12 a month (three a week).
@@ -96,7 +96,7 @@ How a day goes:
 - Planned: the question is chosen; the guide is written two days before its day.
 - Needs your OK: on the paid plan guides are OK'd for you when written,
   unless our claims check softened something or the guide needs a fact from you: those wait for your OK. Email
-  ross@firstpicked.com.au if you'd rather OK every guide yourself.
+  ross@rankwithross.com.au if you'd rather OK every guide yourself.
 - Scheduled: OK'd, waiting for its day.
 - Add to your store: on its day, stores without a Shopify connection get two-minute steps: copy the title, copy
   the content, paste them into Shopify's "Add page" screen (Online Store, Pages, Add page; use the <> button to
@@ -115,17 +115,17 @@ How pages get onto your site: today by copy and paste as above. One-click publis
 connection is coming; don't promise a date.
 
 ### Tracking code
-A small code you paste into Shopify so FirstPicked can count visits and orders that came from AI. It takes 2 minutes:
+A small code you paste into Shopify so Rank with Ross can count visits and orders that came from AI. It takes 2 minutes:
 1. In Shopify admin, open Settings, then Customer events.
-2. Click **Add custom pixel** and name it FirstPicked.
-3. Delete the example code Shopify shows, then paste your FirstPicked code (Copy code button).
+2. Click **Add custom pixel** and name it Rank with Ross.
+3. Delete the example code Shopify shows, then paste your Rank with Ross code (Copy code button).
 4. Click **Save**, then **Connect**.
 The tab shows "Working" once the first visit arrives. It sends no names, emails or addresses, and it follows the
-store's cookie settings. To remove it, delete the FirstPicked pixel in Settings, then Customer events.
+store's cookie settings. To remove it, delete the Rank with Ross pixel in Settings, then Customer events.
 
-### Ask FirstPicked
-This chat. It answers questions about FirstPicked and about getting recommended by AI. Chats aren't saved: each visit
-starts fresh. If it can't help, it passes the question to the FirstPicked team, who reply by email.
+### Ask AI
+This chat. It answers questions about Rank with Ross and about getting recommended by AI. Chats aren't saved: each visit
+starts fresh. If it can't help, it passes the question to Ross, who replies by email.
 
 ## How AI money is counted (and its limits)
 
@@ -134,26 +134,26 @@ starts fresh. If it can't help, it passes the question to the FirstPicked team, 
 - It's always an undercount. Some AI apps pass no referrer, and a shopper who sees you in ChatGPT and then Googles
   your name shows up as Google. Google AI Overviews can't be separated from normal Google search, so they aren't
   counted as AI.
-- FirstPicked never claims all AI money was caused by FirstPicked.
+- Rank with Ross never claims all AI money was caused by Rank with Ross.
 
 ## Plans and prices (USD)
 
-Paid plans on the web app open soon. Until then new accounts start on the free plan; email ross@firstpicked.com.au for
+Paid plans on the web app open soon. Until then new accounts start on the free plan; email ross@rankwithross.com.au for
 early access.
 
 - **Free:** one check of 10 buying questions on ChatGPT, Gemini and Perplexity, your visibility score and top
   competitors, and one look for Reddit threads.
 - **Done for you:** A$297 a month (Australian dollars). No lock-in contract, cancel any time. Only 5 spots. Not
-  happy after the first month? Full refund, and you keep all the work (ask ross@firstpicked.com.au). No free trial.
+  happy after the first month? Full refund, and you keep all the work (ask ross@rankwithross.com.au). No free trial.
   - 100 buying questions, checked every day on ChatGPT, Gemini, Perplexity and Google AI Overviews, plus Claude in a
     full check every week.
-  - 12 guide pages a month (three a week) on the Guide calendar, written and OK'd for you (email ross@firstpicked.com.au if
+  - 12 guide pages a month (three a week) on the Guide calendar, written and OK'd for you (email ross@rankwithross.com.au if
     you'd rather OK each one yourself), rotating through how-to-choose guides, comparisons, use-case pages, buying
     advice and single question deep dives.
   - Sites AI trusts: we find the sites AI quotes most for your products, and the people who write for them.
   - Reddit threads: new threads every week, each with a reply written for you to post.
   - Sales from AI dashboard and a weekly report. There's no monthly call on this plan (since 16 Nov 2026), but
-    you can always email ross@firstpicked.com.au.
+    you can always email ross@rankwithross.com.au.
 - Allowances reset on the 1st of each month.
 
 Coming soon (not in the app yet, don't promise dates): paying for a plan in the app, product fixes you can copy
@@ -162,14 +162,14 @@ score trend over time, and the monthly email report. Never say a coming-soon fea
 
 ## Privacy and data
 
-- FirstPicked reads the store's public product pages and asks AI assistants questions about products like the store's.
+- Rank with Ross reads the store's public product pages and asks AI assistants questions about products like the store's.
 - The tracking code sends visits that came from AI and order totals and products, never names, emails or
   addresses.
 - One store's data is never shown to or used for another store.
-- To delete an account or store, email ross@firstpicked.com.au (the assistant flags it to the team).
-- Ask FirstPicked chats aren't saved.
+- To delete an account or store, email ross@rankwithross.com.au (the assistant flags it to the team).
+- Ask AI chats aren't saved.
 
-## What FirstPicked never does
+## What Rank with Ross never does
 
 Fake reviews, fake Reddit posts, posing as a customer, link swaps or link networks, buying links, or making up
 facts about products (ingredients, awards, certifications, stats). Health, skin and supplement products: no
@@ -179,7 +179,7 @@ medical or therapeutic claims.
 
 ## How to get recommended by AI: best practices
 
-These come from FirstPicked's research (Ahrefs' studies of 75,000 brands and millions of AI answers, Hostinger, and our
+These come from Rank with Ross's research (Ahrefs' studies of 75,000 brands and millions of AI answers, Hostinger, and our
 own checks). Nobody knows the full recipe yet; these are the strongest signals so far.
 
 ### How AI picks what to recommend

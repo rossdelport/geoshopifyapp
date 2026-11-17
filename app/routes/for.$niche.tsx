@@ -13,7 +13,7 @@ import pixelHead from "../../design/overview/pixel-head.js?raw";
 import cookieScript from "../../design/overview/parts/47-cookies.js?raw";
 import raw from "../home/vsl.html?raw";
 
-// firstpicked.com.au/for/<niche> (Ross, 17 Nov 2026): one page per niche for his video ads, with his video first and the
+// rankwithross.com.au/for/<niche> (Ross, 17 Nov 2026): one page per niche for his video ads, with his video first and the
 // "Book a call" button under it. The words are in app/lib/vsl/pages.ts; app/lib/vsl/render.ts draws them into
 // app/home/vsl.html. An address that isn't one of the pages gets Not found.
 //

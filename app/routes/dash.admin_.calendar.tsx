@@ -4,7 +4,7 @@ import { randomBytes, timingSafeEqual } from "node:crypto";
 import { requireAdmin } from "../lib/admin.server";
 import { connectCalendar, consentUrl, googleReady } from "../lib/booking.server";
 
-// firstpicked.com.au/dash/admin/calendar: connects Ross's Google Calendar to the book-a-call page (firstpicked.com.au/book).
+// rankwithross.com.au/dash/admin/calendar: connects Ross's Google Calendar to the book-a-call page (rankwithross.com.au/book).
 // The "Connect Google Calendar" button in Admin > System comes here, we send Ross to Google's sign-in, and Google
 // sends him back here with a code, which becomes the saved refresh token. Admin only. This exact address is the
 // "Authorised redirect URI" on the Google Cloud OAuth client.

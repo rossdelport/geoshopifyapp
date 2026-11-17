@@ -420,13 +420,13 @@ describe("copy module", () => {
     expect(all).not.toContain("AEO");
     expect(all).not.toContain(" LLM");
     expect(all).not.toMatch(/generative engine optimization/i);
-    expect(all).not.toMatch(/\bGEO\b(?! gets you)/); // FirstPicked only as the brand, in the button
+    expect(all).not.toMatch(/\bGEO\b(?! gets you)/); // Rank with Ross only as the brand, in the button
     expect(all).not.toMatch(/rich result/i);
   });
 
   it("uses the spec's intro (in simpler words since 2 Nov 2026), button and example searches", () => {
     expect(copy.INTRO.startsWith("The AI Overview Checker is a free tool. It searches Google")).toBe(true);
-    expect(copy.CTA).toEqual({ text: "See how FirstPicked gets you into AI answers", href: "/?ref=tool-ai-overview-checker#how" });
+    expect(copy.CTA).toEqual({ text: "See how Rank with Ross gets you into AI answers", href: "/?ref=tool-ai-overview-checker#how" });
     expect(copy.EXAMPLES[0]).toBe(AIO_SAMPLE.query);
     expect(copy.WHAT_IT_CHECKS.length).toBeGreaterThanOrEqual(3);
     expect(copy.WHAT_IT_CHECKS.length).toBeLessThanOrEqual(5);
@@ -448,9 +448,9 @@ describe("meta", () => {
     expect(name("description")).toBe(tool.description);
     expect(tool.description.length).toBeLessThan(155);
     const canonicals = list.filter((m) => (m as any).tagName === "link" && (m as any).rel === "canonical") as any[];
-    expect(canonicals.map((c) => c.href)).toEqual(["https://firstpicked.com.au/tools/ai-overview-checker"]);
-    expect(prop("og:url")).toBe("https://firstpicked.com.au/tools/ai-overview-checker");
-    expect(prop("og:image")).toBe("https://firstpicked.com.au/og/ai-overview-checker.png");
+    expect(canonicals.map((c) => c.href)).toEqual(["https://rankwithross.com.au/tools/ai-overview-checker"]);
+    expect(prop("og:url")).toBe("https://rankwithross.com.au/tools/ai-overview-checker");
+    expect(prop("og:image")).toBe("https://rankwithross.com.au/og/ai-overview-checker.png");
     expect(prop("og:image:width")).toBe("1200");
     expect(prop("og:image:height")).toBe("630");
     expect(name("twitter:card")).toBe("summary_large_image");
@@ -468,7 +468,7 @@ describe("meta", () => {
     expect(of("WebApplication")).toMatchObject({ name: "AI Overview Checker", offers: { price: "0", priceCurrency: "USD" }, isAccessibleForFree: true });
     expect(of("WebPage").dateModified).toBe(tool.updated);
     expect(of("BreadcrumbList").itemListElement).toHaveLength(3);
-    expect(of("Organization").name).toBe("FirstPicked");
+    expect(of("Organization").name).toBe("Rank with Ross");
     expect(of("FAQPage").mainEntity.map((q: any) => ({ q: q.name, a: q.acceptedAnswer.text }))).toEqual(copy.FAQS.map((f) => ({ q: f.q, a: f.a })));
   });
 });
@@ -528,7 +528,7 @@ describe("the page (server-rendered, no JavaScript)", () => {
     const ctas = out.match(/<a class="ck-btn ck-btn-dark tl-cta"[^>]*>/g) ?? [];
     expect(ctas).toHaveLength(1);
     expect(ctas[0]).toContain('href="/?ref=tool-ai-overview-checker#how"');
-    expect(out).toContain("See how FirstPicked gets you into AI answers");
+    expect(out).toContain("See how Rank with Ross gets you into AI answers");
     expect(out.indexOf("tl-cta")).toBeGreaterThan(out.indexOf("Sites the overview cites"));
     expect(out.indexOf("tl-cta")).toBeLessThan(out.indexOf("What this tool checks"));
   });
@@ -545,7 +545,7 @@ describe("the page (server-rendered, no JavaScript)", () => {
     expect(out).not.toMatch(/<details|\shidden[\s=>]/);
     const related = out.slice(out.indexOf('id="more-tools"'));
     for (const s of tool.related) expect(related).toContain(`href="${toolBySlug(s).path}"`);
-    expect(text(out)).toContain("Updated 11 October 2026 · Made by FirstPicked");
+    expect(text(out)).toContain("Updated 11 October 2026 · Made by Rank with Ross");
     const foot = out.slice(out.indexOf('class="tl-foot"'));
     for (const t of TOOLS) expect(foot).toContain(`href="${t.path}"`);
     expect(foot).toContain(`href="${HUB.path}"`);
@@ -602,7 +602,7 @@ describe("the page (server-rendered, no JavaScript)", () => {
 
 const IP = "203.0.113.7";
 function post(fields: Record<string, string>, headers: Record<string, string> = {}, body?: string) {
-  return new Request("https://firstpicked.com.au/tools/ai-overview-checker", {
+  return new Request("https://rankwithross.com.au/tools/ai-overview-checker", {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded", "sec-fetch-site": "same-origin", "x-real-ip": IP, ...headers },
     body: body ?? new URLSearchParams(fields).toString(),

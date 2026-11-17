@@ -1,4 +1,4 @@
-// FirstPicked web app sign-in: email link only (Ross, 2026-10-14; the admin area also takes a password, Ross 2026-11-04,
+// Rank with Ross web app sign-in: email link only (Ross, 2026-10-14; the admin area also takes a password, Ross 2026-11-04,
 // see admin.server.ts and routes/admin.tsx). /login sends a link; the link signs the browser in
 // with a signed cookie that holds the account id for 30 days. Only a hash of each link's token is stored, and a
 // link works once, for 30 minutes.
@@ -8,7 +8,7 @@ import { createCookieSessionStorage, redirect } from "react-router";
 import type { Shop, User } from "@prisma/client";
 import db from "../db.server";
 import { isProd } from "./env.server";
-import { SITE } from "./tools/site";
+import { EMAIL_LOGO, SITE } from "./tools/site";
 import { emailConfigured, sendEmailMessage } from "./email.server";
 import { normalizeEmail } from "./check-lead.server";
 import { clientIdFromPath } from "./hub-paths";
@@ -58,7 +58,7 @@ export async function sendLoginLink(rawEmail: unknown, next?: unknown): Promise<
   if ((await db.loginLink.count({ where: { email, createdAt: { gte: hourAgo } } })) >= MAX_LINKS_PER_HOUR) {
     return { ok: false, error: LOGIN_ERRORS.tooMany };
   }
-  // Across everyone: a script feeding the form a list of addresses can't turn FirstPicked into a spam sender.
+  // Across everyone: a script feeding the form a list of addresses can't turn Rank with Ross into a spam sender.
   if ((await db.loginLink.count({ where: { createdAt: { gte: hourAgo } } })) >= MAX_LINKS_PER_HOUR_ALL) {
     return { ok: false, error: LOGIN_ERRORS.tooMany };
   }
@@ -73,9 +73,8 @@ export async function sendLoginLink(rawEmail: unknown, next?: unknown): Promise<
   return { ok: true, email };
 }
 
-/** The home page's purple (white text on it passes 4.7:1) and its logo's two circles. */
+/** The home page's purple (white text on it passes 4.7:1). */
 const PURPLE = "#6c5cf2";
-const LILAC = "#cdc6fc";
 
 /** The sign-in email (exported for tests): the logo, a white card and one purple button, in tables so every inbox shows it. */
 export function loginEmail(url: string): { subject: string; html: string; text: string } {
@@ -86,29 +85,29 @@ export function loginEmail(url: string): { subject: string; html: string; text: 
 <tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;">
 <tr><td align="center" style="padding:0 0 20px;font-size:21px;font-weight:700;letter-spacing:-0.02em;color:#0e0e13;">
-<span style="display:inline-block;width:15px;height:15px;border-radius:50%;background:${LILAC};vertical-align:middle;"></span><span style="display:inline-block;width:15px;height:15px;border-radius:50%;background:${PURPLE};margin-left:-6px;margin-right:9px;vertical-align:middle;"></span>FirstPicked
+${EMAIL_LOGO}Rank with Ross
 </td></tr>
 <tr><td style="background:#ffffff;border:1px solid #e9e7f3;border-radius:20px;padding:36px 32px;text-align:center;">
-<h1 style="margin:0 0 10px;font-size:23px;line-height:1.3;font-weight:700;letter-spacing:-0.01em;color:#0e0e13;">Sign in to FirstPicked</h1>
+<h1 style="margin:0 0 10px;font-size:23px;line-height:1.3;font-weight:700;letter-spacing:-0.01em;color:#0e0e13;">Sign in to Rank with Ross</h1>
 <p style="margin:0 0 26px;font-size:15px;line-height:1.6;color:#53565f;">Press the button to sign in. The link works once, for ${LINK_MINUTES} minutes.</p>
 <table role="presentation" cellpadding="0" cellspacing="0" align="center" style="margin:0 auto 26px;"><tr>
 <td bgcolor="${PURPLE}" style="background:${PURPLE};border-radius:12px;">
-<a href="${url}" style="display:inline-block;padding:14px 30px;font-size:16px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:12px;">Sign in to FirstPicked</a>
+<a href="${url}" style="display:inline-block;padding:14px 30px;font-size:16px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:12px;">Sign in to Rank with Ross</a>
 </td></tr></table>
 <p style="margin:0 0 6px;font-size:13px;line-height:1.5;color:#6e717a;">Button not working? Copy this link into your browser:</p>
 <p style="margin:0;font-size:12px;line-height:1.5;word-break:break-all;"><a href="${url}" style="color:${PURPLE};text-decoration:none;">${url}</a></p>
 </td></tr>
 <tr><td align="center" style="padding:20px 12px 0;font-size:12px;line-height:1.6;color:#6e717a;">
 If you didn’t ask for this, you can ignore this email.<br>
-<a href="${SITE}" style="color:#6e717a;text-decoration:underline;">firstpicked.com.au</a>
+<a href="${SITE}" style="color:#6e717a;text-decoration:underline;">rankwithross.com.au</a>
 </td></tr>
 </table>
 </td></tr></table>
 </body></html>`;
   return {
-    subject: "Your FirstPicked sign-in link",
+    subject: "Your Rank with Ross sign-in link",
     html,
-    text: `Sign in to FirstPicked: ${url}\n\nThe link works once, for ${LINK_MINUTES} minutes. If you didn't ask for this, ignore this email.\n\nFirstPicked, firstpicked.com.au`,
+    text: `Sign in to Rank with Ross: ${url}\n\nThe link works once, for ${LINK_MINUTES} minutes. If you didn't ask for this, ignore this email.\n\nRank with Ross, rankwithross.com.au`,
   };
 }
 

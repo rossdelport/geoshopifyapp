@@ -2,7 +2,7 @@
 // their language, referencing exactly how much they are spending and how i can help them for a much better price.
 // its going to be a VSL landing page with context and info underneath with a book a call button under the VSL").
 // One page per niche in the niche test (doc "Niches to test the A$297 offer", 17 Nov 2026), at
-// firstpicked.com.au/for/<slug>, drawn by ./render.ts into app/home/vsl.html and served by app/routes/for.$niche.tsx.
+// rankwithross.com.au/for/<slug>, drawn by ./render.ts into app/home/vsl.html and served by app/routes/for.$niche.tsx.
 // Pure and browser-safe.
 //
 // Honesty rules: every number is real and its source is listed on the page. Click prices and searches are Google's
@@ -24,7 +24,7 @@ export interface VslPage {
    * pages open /book?for=<slug>, which skips the store questions (those businesses aren't online stores).
    */
   shopify?: boolean;
-  /** The <title>, ending " | FirstPicked", 60 characters at most. */
+  /** The <title>, ending " | Rank with Ross", 60 characters at most. */
   title: string;
   description: string;
   /** The small line above the main heading: who the page is for. */
@@ -107,7 +107,7 @@ export const VSL_PAGES: VslPage[] = [
   {
     slug: "mortgage-brokers",
     label: "Mortgage broker",
-    title: "Perth mortgage brokers: get picked by ChatGPT | FirstPicked",
+    title: "Perth mortgage brokers: get picked by AI | Rank with Ross",
     description:
       "ChatGPT named 5 mortgage brokers in Perth. We help you be one of them. $297 a month, done for you, no lock-in. Book a free 15 minute call.",
     eyebrow: "For Perth mortgage brokers",
@@ -142,7 +142,7 @@ export const VSL_PAGES: VslPage[] = [
       h: ["One extra loan", "pays for almost a year."],
       points: [
         "On a $500,000 loan, the lender pays the broker about $3,250 to $3,500 upfront. Then about $750 to $1,000 a year while the loan runs.",
-        "FirstPicked is $297 a month. So one extra loan pays for about 11 months.",
+        "Rank with Ross is $297 a month. So one extra loan pays for about 11 months.",
       ],
     },
     faq: localFaq(),
@@ -152,7 +152,7 @@ export const VSL_PAGES: VslPage[] = [
   {
     slug: "solar-installers",
     label: "Solar and battery installer",
-    title: "Perth solar installers: get picked by ChatGPT | FirstPicked",
+    title: "Perth solar installers: get picked by AI | Rank with Ross",
     description:
       "ChatGPT named 5 battery installers in Perth. We help you be one of them. $297 a month, done for you, no lock-in. Book a free 15 minute call.",
     eyebrow: "For Perth solar and battery installers",
@@ -198,7 +198,7 @@ export const VSL_PAGES: VslPage[] = [
     slug: "pool-spa-sauna-stores",
     label: "Pool, spa or sauna store",
     shopify: true,
-    title: "Pool, spa and sauna stores: get picked by AI | FirstPicked",
+    title: "Pool, spa and sauna stores: be picked by AI | Rank with Ross",
     description:
       "Shoppers ask ChatGPT which plunge pool, spa or sauna to buy. We help your Shopify store get picked. $297 a month, done for you, no lock-in.",
     eyebrow: "For Shopify stores that sell plunge pools, spas and saunas",
@@ -219,7 +219,7 @@ export const VSL_PAGES: VslPage[] = [
       points: [
         "It named 5 brands, with sizes and prices for each.",
         "To choose, it read buying guides. One was a guide on another store’s own blog. That’s the kind of guide we write for your store.",
-        "In the same answer, it said entry-level plunge pool packages cost $15,000 to $25,000. When one order is that big, one extra sale from AI pays for many months of FirstPicked.",
+        "In the same answer, it said entry-level plunge pool packages cost $15,000 to $25,000. When one order is that big, one extra sale from AI pays for many months of Rank with Ross.",
       ],
     },
     review: true,
@@ -252,7 +252,7 @@ export const VSL_PAGES: VslPage[] = [
   {
     slug: "buyers-agents",
     label: "Buyers agent",
-    title: "Perth buyers agents: get picked by ChatGPT | FirstPicked",
+    title: "Perth buyers agents: get picked by ChatGPT | Rank with Ross",
     description:
       "ChatGPT named 5 buyers agents in Perth. We help you be one of them. $297 a month, done for you, no lock-in. Book a free 15 minute call.",
     eyebrow: "For Perth buyers agents",
@@ -282,7 +282,7 @@ export const VSL_PAGES: VslPage[] = [
       h: ["One new client", "pays for 20 months or more."],
       points: [
         "Perth buyers agents charge about $6,000 to $18,000 for a full search on a home under about $1 million.",
-        "FirstPicked is $297 a month. One new client at $6,000 pays for about 20 months.",
+        "Rank with Ross is $297 a month. One new client at $6,000 pays for about 20 months.",
       ],
     },
     faq: localFaq(),
@@ -292,7 +292,7 @@ export const VSL_PAGES: VslPage[] = [
   {
     slug: "plumbers-electricians",
     label: "Plumber or electrician",
-    title: "Perth plumbers and sparkies: get picked by AI | FirstPicked",
+    title: "Perth plumbers and sparkies: get on ChatGPT | Rank with Ross",
     description:
       "One Google click on “emergency plumber” costs about $79. We help ChatGPT name your business instead. $297 a month, done for you, no lock-in.",
     eyebrow: "For Perth plumbers and electricians",

@@ -66,8 +66,8 @@ const ADDED = { id: true, status: true, onboarding: true, client: { select: { id
 /**
  * Add a client from their website. A Shopify store is read from its own address (like /start); any other business
  * (a broker, an installer, a tradie) is added from its home page as a "local" business (lib/business.ts), with the town
- * or city they work in. Either is added to FirstPicked if it's new (with no login of its own: only the hub opens it)
- * and set up on Done for you straight away. A store already on FirstPicked (someone signed up, or the old Shopify app)
+ * or city they work in. Either is added to Rank with Ross if it's new (with no login of its own: only the hub opens it)
+ * and set up on Done for you straight away. A store already on Rank with Ross (someone signed up, or the old Shopify app)
  * becomes a client as it is.
  */
 export async function addClient(
@@ -136,7 +136,7 @@ async function startClient(
   by: string,
 ): Promise<{ ok: true; shopId: string } | { ok: false; error: string }> {
   if (shop.client) return { ok: false, error: "That business is already one of your clients." };
-  if (shop.status !== "installed") return { ok: false, error: "That business was removed from FirstPicked. Please ask Claude to bring it back." };
+  if (shop.status !== "installed") return { ok: false, error: "That business was removed from Rank with Ross. Please ask Claude to bring it back." };
   try {
     await db.client.create({ data: { shopId: shop.id, status: input.status, ...fields(input) } });
   } catch (err) {

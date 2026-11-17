@@ -8,7 +8,7 @@ import { publicHostRedirect } from "../lib/tools/host.server";
 import { SECURITY_HEADERS } from "../lib/tools/http";
 import styles from "../styles/report.css?url";
 
-// A store's report for Ross's teardown videos (Ross, 3 Nov 2026): firstpicked.com.au/report/<slug>. Ross films it on his
+// A store's report for Ross's teardown videos (Ross, 3 Nov 2026): rankwithross.com.au/report/<slug>. Ross films it on his
 // phone with himself green-screened on top, tags the brand and DMs them the link, so it is phone first, every
 // number on it is one we found, and the tone stays kind. It stands alone like the OpenSEO report it copies: no
 // site menu, no price, no booking link and no call-to-action button (Ross does the ask out loud). The script,
@@ -71,9 +71,9 @@ export const meta: MetaFunction<typeof loader> = ({ data, error }) => {
   const brand = data?.report.store.brand;
   if (!brand) {
     const missing = !error || (isRouteErrorResponse(error) && error.status === 404);
-    return [{ title: missing ? "Report not found | FirstPicked" : "Something went wrong | FirstPicked" }, { name: "robots", content: "noindex" }];
+    return [{ title: missing ? "Report not found | Rank with Ross" : "Something went wrong | Rank with Ross" }, { name: "robots", content: "noindex" }];
   }
-  const title = `${brand}: how to get picked by AI | FirstPicked`;
+  const title = `${brand}: how to get picked by AI | Rank with Ross`;
   const description = `What shoppers search, who AI picks today, and the next moves for ${brand}.`;
   return [
     { title },
@@ -83,7 +83,7 @@ export const meta: MetaFunction<typeof loader> = ({ data, error }) => {
     { property: "og:title", content: title },
     { property: "og:description", content: description },
     { property: "og:type", content: "website" },
-    { property: "og:site_name", content: "FirstPicked" },
+    { property: "og:site_name", content: "Rank with Ross" },
   ];
 };
 
@@ -130,11 +130,8 @@ const upperFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 function Logo() {
   return (
     <span className="rp-logo">
-      <span className="mark" aria-hidden="true">
-        <i></i>
-        <i></i>
-      </span>
-      FirstPicked
+      <span className="mark" aria-hidden="true" />
+      Rank with Ross
     </span>
   );
 }
@@ -147,7 +144,7 @@ function TopBar({ brand, checked }: { brand: string; checked: string }) {
         <ShareButton title={`${brand}: how to get picked by AI`} />
       </div>
       <p className="rp-made">
-        Made with FirstPicked{checked ? ` · Checked ${checked}` : ""}
+        Made with Rank with Ross{checked ? ` · Checked ${checked}` : ""}
       </p>
     </header>
   );
@@ -482,11 +479,11 @@ function SmallPrint({ report, checked }: { report: PageReport; checked: string }
       <p>
         {checked ? `Checked on ${checked}. ` : ""}We asked ChatGPT, Gemini and Perplexity {fmt(questions.length)} buying questions, as a
         shopper in {store.countryName}, twice each. AI answers change from day to day, so this is a snapshot. Every store is different,
-        so we can&apos;t promise exact results. FirstPicked isn&apos;t linked to {store.brand}. Want this report taken down? Email{" "}
-        <a href="mailto:ross@firstpicked.com.au">ross@firstpicked.com.au</a>.
+        so we can&apos;t promise exact results. Rank with Ross isn&apos;t linked to {store.brand}. Want this report taken down? Email{" "}
+        <a href="mailto:ross@rankwithross.com.au">ross@rankwithross.com.au</a>.
       </p>
       <p className="rp-site-link">
-        <a href="https://firstpicked.com.au/">firstpicked.com.au</a>
+        <a href="https://rankwithross.com.au/">rankwithross.com.au</a>
       </p>
     </footer>
   );
@@ -510,7 +507,7 @@ export function ErrorBoundary() {
           {missing ? "The link may be wrong, or the report was taken down." : "Please try again in a minute."}
         </p>
         <p className="rp-site-link">
-          <a href="https://firstpicked.com.au/">firstpicked.com.au</a>
+          <a href="https://rankwithross.com.au/">rankwithross.com.au</a>
         </p>
       </main>
     </div>

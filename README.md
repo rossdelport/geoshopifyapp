@@ -1,4 +1,4 @@
-# FirstPicked: get recommended by AI shopping assistants
+# Rank with Ross: get recommended by AI shopping assistants
 
 A Shopify app that checks whether ChatGPT, Gemini, Perplexity, Google AI Overviews and Claude
 recommend a store, shows who they recommend instead, writes fixes the merchant approves in one
@@ -49,7 +49,7 @@ Postgres (Supabase, "geo" schema only)  ◄──  background worker (same proce
 | `RESEND_API_KEY`, `GEO_EMAIL_FROM` | Monthly report emails. |
 | `GEO_ALERT_EMAIL` | Who is emailed when a store starts or leaves Done-for-you (hand outreach and the monthly call). Must be set at launch. |
 | `SHOPIFY_BILLING_TEST` | `true` = test charges (use for development stores). Not set = test charges too: set `false` at launch. |
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google Cloud OAuth client for the book-a-call page (firstpicked.com.au/book). Redirect URI `https://firstpicked.com.au/dash/admin/calendar`; then Admin > System > Connect Google Calendar. |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google Cloud OAuth client for the book-a-call page (rankwithross.com.au/book). Redirect URI `https://rankwithross.com.au/dash/admin/calendar`; then Admin > System > Connect Google Calendar. |
 | `RUN_WORKER` | `false` to run a web-only process. |
 | `GEO_SELFTEST` | `1` = run a live end-to-end check at start-up and print it to the logs. |
 

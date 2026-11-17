@@ -1,4 +1,4 @@
-// The /compare pages: honest buying pages for store owners choosing between FirstPicked, an agency, a tool or an app
+// The /compare pages: honest buying pages for store owners choosing between Rank with Ross, an agency, a tool or an app
 // (Ross, 2026-10-23: write for people who are choosing, not learning; naming other companies is OK). Every page
 // says where the other option wins, and every price of another company carries the day we checked it: re-check
 // them monthly (docs/ads/ad-rules.md) and move `checked`. Written by hand, never by the blog job (whose rule of
@@ -27,7 +27,7 @@ export interface CompareSource {
 
 export interface ComparePage {
   slug: string;
-  /** Under 60 characters, ends in " | FirstPicked". */
+  /** Under 60 characters, ends in " | Rank with Ross". */
   title: string;
   /** Under 155 characters. */
   description: string;
@@ -50,12 +50,12 @@ export interface ComparePage {
 export const COMPARE_HUB = {
   name: "Compare",
   path: "/compare",
-  title: "Compare FirstPicked with agencies and tools | FirstPicked",
+  title: "Compare Rank with Ross with agencies and tools | Rank with Ross",
   description:
     "Honest comparisons for Shopify brands choosing how to get recommended by ChatGPT and other AI assistants: agencies, tools, apps and prices.",
   h1: "Choosing how to get recommended by AI",
   intro:
-    "Simple comparisons for store owners choosing between an agency, a tool they run themselves, or FirstPicked. Each page says when the other option is the better pick. Every price from another company shows the day we checked it.",
+    "Simple comparisons for store owners choosing between an agency, a tool they run themselves, or Rank with Ross. Each page says when the other option is the better pick. Every price from another company shows the day we checked it.",
   ogImage: "/og/home.png",
   ogAlt: "A small clay shop with a star in a speech bubble above it",
   updated: "2026-11-08",
@@ -109,14 +109,14 @@ export const GEO_PAPER = { title: "Aggarwal and others: GEO: Generative Engine O
 export const COMPARE_PAGES: ComparePage[] = [
   {
     slug: "best-seo-agencies-perth",
-    title: "Best SEO agencies in Perth for online stores | FirstPicked",
+    title: "Best Perth SEO agencies for online stores | Rank with Ross",
     description:
       "Seven Perth SEO agencies for online stores, from their own websites: who each one suits, prices where shown, and lock-in. Checked November 2026.",
     short: "Seven Perth agencies for online stores: who each suits, prices and lock-in.",
     h1: "The best SEO agencies in Perth for online stores, and who each one suits",
     intro: [
-      "Short answer: if your Shopify store also needs building or fixing, look at Concise Digital. For SEO across a whole store, look at Museproject or Digital Hitmen. The SEO Room suits local service businesses best. FirstPicked suits Shopify brands that want to be picked by AI and Google for one set price.",
-      "We're FirstPicked, a Perth service, so we're on this list and we're biased. To keep it fair, we only used what each agency says on its own website.",
+      "Short answer: if your Shopify store also needs building or fixing, look at Concise Digital. For SEO across a whole store, look at Museproject or Digital Hitmen. The SEO Room suits local service businesses best. Rank with Ross suits Shopify brands that want to be picked by AI and Google for one set price.",
+      "We're Rank with Ross, a Perth service, so we're on this list and we're biased. To keep it fair, we only used what each agency says on its own website.",
     ],
     checked: "2026-11-08",
     published: "2026-11-08",
@@ -132,7 +132,7 @@ export const COMPARE_PAGES: ComparePage[] = [
             ["The SEO Room", "Canning Vale", "Local service businesses, like tradies and real estate", "A$1,500 to A$5,000 + GST a month", "None"],
             ["Loaded Communications", "Perth, since 2001", "Brand, WordPress websites and SEO", "Not shown", "Not shown"],
             ["Daisy Digital", "Leederville", "Social media, ads, websites and SEO", "Not shown", "Not shown"],
-            ["FirstPicked", "Perth", "Shopify brands that want to be picked by AI and Google", "A$297 a month", "None, and a full refund after month 1"],
+            ["Rank with Ross", "Perth", "Shopify brands that want to be picked by AI and Google", "A$297 a month", "None, and a full refund after month 1"],
           ],
         },
         paragraphs: ["\"Not shown\" means we couldn't find it on their home page on 8 November 2026. Ask them. Many agencies quote each store on its own."],
@@ -178,9 +178,9 @@ export const COMPARE_PAGES: ComparePage[] = [
         ],
       },
       {
-        heading: "FirstPicked",
+        heading: "Rank with Ross",
         paragraphs: [
-          "That's us. FirstPicked is run from Perth by its founder, Ross Delport. One plan for Shopify brands: A$297 a month, done for you. Each day we check up to 100 buying questions in ChatGPT, Gemini, Perplexity and Google AI Overviews. Each month we make 50+ fixes to your pages, write up to 12 buying guides, and show you the sales AI sends you.",
+          "That's us. Rank with Ross is run from Perth by its founder, Ross Delport. One plan for Shopify brands: A$297 a month, done for you. Each day we check up to 100 buying questions in ChatGPT, Gemini, Perplexity and Google AI Overviews. Each month we make 50+ fixes to your pages, write up to 12 buying guides, and show you the sales AI sends you.",
           "We don't build stores, run ads or do Google Maps. If you need those, one of the agencies above is the better pick.",
         ],
       },
@@ -212,7 +212,7 @@ export const COMPARE_PAGES: ComparePage[] = [
     faqs: [
       {
         q: "How much does SEO cost in Perth?",
-        a: "Most Perth agencies don't show a price on their website. The SEO Room shows A$1,500 to A$5,000 + GST a month. FirstPicked is A$297 a month. Always get the monthly price in writing.",
+        a: "Most Perth agencies don't show a price on their website. The SEO Room shows A$1,500 to A$5,000 + GST a month. Rank with Ross is A$297 a month. Always get the monthly price in writing.",
       },
       {
         q: "Do I need an agency in Perth?",
@@ -220,10 +220,10 @@ export const COMPARE_PAGES: ComparePage[] = [
       },
       {
         q: "Which Perth agency is best for a Shopify store?",
-        a: "It depends on the job. To build or fix the store, a Shopify partner like Concise Digital. For SEO across the whole store, a specialist like Museproject or Digital Hitmen. To be picked by AI and Google for one set monthly price, FirstPicked.",
+        a: "It depends on the job. To build or fix the store, a Shopify partner like Concise Digital. For SEO across the whole store, a specialist like Museproject or Digital Hitmen. To be picked by AI and Google for one set monthly price, Rank with Ross.",
       },
       {
-        q: "Is FirstPicked an SEO agency?",
+        q: "Is Rank with Ross an SEO agency?",
         a: "Not a full-service one. We don't build stores, run ads or do Google Maps. We get Shopify brands found on Google and picked by AI, and show the sales that come from it.",
       },
     ],
@@ -232,14 +232,14 @@ export const COMPARE_PAGES: ComparePage[] = [
   },
   {
     slug: "best-ai-seo-agencies-australia",
-    title: "Best AI SEO agencies in Australia (2026) | FirstPicked",
+    title: "Best AI SEO agencies in Australia (2026) | Rank with Ross",
     description:
       "Eight Australian AI SEO and GEO agencies, from their own websites: where they're based, what they do for AI search and who each suits. Checked Nov 2026.",
     short: "Eight Australian AI SEO and GEO agencies: what each does and who each suits.",
     h1: "The best AI SEO agencies in Australia, and who each one suits",
     intro: [
-      "Short answer: big brands that want SEO, digital PR and AI work from one team should look at Prosperity Media or Dilate. Rank My Business and Planet Media both offer a free AI audit, so you can see where you stand first. FirstPicked suits Shopify brands that want to be picked by AI for one set monthly price.",
-      "We're FirstPicked, so we're on this list and we're biased. To keep it fair, we only used what each agency says on its own website, read on 8 November 2026.",
+      "Short answer: big brands that want SEO, digital PR and AI work from one team should look at Prosperity Media or Dilate. Rank My Business and Planet Media both offer a free AI audit, so you can see where you stand first. Rank with Ross suits Shopify brands that want to be picked by AI for one set monthly price.",
+      "We're Rank with Ross, so we're on this list and we're biased. To keep it fair, we only used what each agency says on its own website, read on 8 November 2026.",
     ],
     checked: "2026-11-08",
     published: "2026-11-08",
@@ -256,7 +256,7 @@ export const COMPARE_PAGES: ComparePage[] = [
             ["Planet Media", "Canberra", "Businesses that want press and mentions AI trusts", "Not shown"],
             ["Myoho Marketing", "Melbourne", "Content written for AI answers", "Not shown"],
             ["Digital Hitmen", "Perth", "Ecommerce SEO, AI search, web design and ads", "Not shown"],
-            ["FirstPicked", "Perth", "Shopify brands that want to be picked by AI and Google", "A$297 a month"],
+            ["Rank with Ross", "Perth", "Shopify brands that want to be picked by AI and Google", "A$297 a month"],
           ],
         },
         paragraphs: ["\"Not shown\" means we couldn't find a price on the page we read on 8 November 2026. Ask them. Most agencies quote each business on its own."],
@@ -309,16 +309,16 @@ export const COMPARE_PAGES: ComparePage[] = [
         ],
       },
       {
-        heading: "FirstPicked",
+        heading: "Rank with Ross",
         paragraphs: [
-          "That's us. FirstPicked is run from Perth by its founder, Ross Delport. One plan for Shopify brands: A$297 a month, done for you, with no lock-in. If you're not happy after the first month, you get a full refund and keep the work.",
+          "That's us. Rank with Ross is run from Perth by its founder, Ross Delport. One plan for Shopify brands: A$297 a month, done for you, with no lock-in. If you're not happy after the first month, you get a full refund and keep the work.",
           "Each day we check up to 100 buying questions in ChatGPT, Gemini, Perplexity and Google AI Overviews. Each month we make 50+ fixes to your pages, write up to 12 buying guides, and show you the sales AI sends you. We don't do digital PR, ads or websites. If you need those, an agency above is the better pick.",
         ],
       },
       {
         heading: "What ChatGPT says",
         paragraphs: [
-          "On 8 November 2026 we asked ChatGPT, from Australia, to suggest AI SEO agencies. It named Shout Digital, Impressive Digital, Optimising, Megantic, Remarkable Digital, Prosperity Media and Red Search. It didn't name FirstPicked. We haven't read the other agencies' sites yet, so they're not on this list.",
+          "On 8 November 2026 we asked ChatGPT, from Australia, to suggest AI SEO agencies. It named Shout Digital, Impressive Digital, Optimising, Megantic, Remarkable Digital, Prosperity Media and Red Search. It didn't name Rank with Ross. We haven't read the other agencies' sites yet, so they're not on this list.",
           "ChatGPT built its answers from list articles on other websites, not from the agencies' own pages. AI answers change from one run to the next, so treat this as one snapshot.",
         ],
       },
@@ -343,7 +343,7 @@ export const COMPARE_PAGES: ComparePage[] = [
     faqs: [
       {
         q: "How much does an AI SEO agency cost in Australia?",
-        a: "Most don't show a price. Optimising's guide puts Australian GEO agencies at about A$2,000 to A$20,000 or more a month. FirstPicked is A$297 a month. Always get the monthly price in writing.",
+        a: "Most don't show a price. Optimising's guide puts Australian GEO agencies at about A$2,000 to A$20,000 or more a month. Rank with Ross is A$297 a month. Always get the monthly price in writing.",
       },
       {
         q: "Is AI SEO the same as GEO?",
@@ -351,7 +351,7 @@ export const COMPARE_PAGES: ComparePage[] = [
       },
       {
         q: "Which AI SEO agency is best for a Shopify store?",
-        a: "If the store itself needs building or fixing, pick one that builds Shopify stores, like Dilate, Rank My Business or Planet Media. For SEO, PR and AI from one big team, Prosperity Media. To be picked by AI and Google for one set monthly price, FirstPicked.",
+        a: "If the store itself needs building or fixing, pick one that builds Shopify stores, like Dilate, Rank My Business or Planet Media. For SEO, PR and AI from one big team, Prosperity Media. To be picked by AI and Google for one set monthly price, Rank with Ross.",
       },
       {
         q: "Can an agency promise that ChatGPT will name me?",
@@ -363,14 +363,14 @@ export const COMPARE_PAGES: ComparePage[] = [
   },
   {
     slug: "peec-ai-vs-otterly-vs-profound",
-    title: "Peec AI vs Otterly vs Profound (2026 prices) | FirstPicked",
+    title: "Peec AI vs Otterly vs Profound: 2026 prices | Rank with Ross",
     description:
       "Peec AI, Otterly and Profound compared: prices, questions tracked and AI apps covered. Plus when a done-for-you service beats a tool. Checked Nov 2026.",
     short: "Three AI visibility tools: prices, what they track, and when done for you is better.",
     h1: "Peec AI vs Otterly vs Profound: pick a tool, or have it done for you?",
     intro: [
       "Short answer: Otterly is the cheapest way to start, from US$29 a month. Peec AI suits teams who want more questions tracked every day, from US$95 a month. Profound is for big companies, with a free trial and then a custom price. All three show where AI names you. None of them make the changes for you.",
-      "That's the real choice: a tool you run yourself, or a service that does the work. We're FirstPicked, a done-for-you service, so we're biased. Prices are from each company's own pricing page on 8 November 2026, in US dollars.",
+      "That's the real choice: a tool you run yourself, or a service that does the work. We're Rank with Ross, a done-for-you service, so we're biased. Prices are from each company's own pricing page on 8 November 2026, in US dollars.",
     ],
     checked: "2026-11-08",
     published: "2026-11-08",
@@ -383,7 +383,7 @@ export const COMPARE_PAGES: ComparePage[] = [
             ["Otterly", "US$29, US$189 or US$489", "15, 100 or 400", "ChatGPT, Google AI Overviews, Perplexity and Copilot. Claude, Gemini and Google AI Mode cost extra", "You"],
             ["Peec AI", "US$95, US$245 or US$495 (15% off yearly)", "50, 150 or 350", "Pick 3 AI apps. More cost extra", "You"],
             ["Profound", "Free 7-day trial, then a custom price", "50 a day on the trial", "ChatGPT, Gemini and Google AI Overviews on the trial", "You"],
-            ["FirstPicked", "A$297 (Australian dollars)", "Up to 100, every day", "ChatGPT, Gemini, Perplexity and Google AI Overviews daily, Claude weekly", "We do"],
+            ["Rank with Ross", "A$297 (Australian dollars)", "Up to 100, every day", "ChatGPT, Gemini, Perplexity and Google AI Overviews daily, Claude weekly", "We do"],
           ],
         },
         paragraphs: [
@@ -443,12 +443,12 @@ export const COMPARE_PAGES: ComparePage[] = [
         a: "No. They show where AI names you and who it names instead. You or your team make the changes.",
       },
       {
-        q: "Is FirstPicked a tool?",
+        q: "Is Rank with Ross a tool?",
         a: "No, it's a service. Our team and AI do the checks and the work for you, for A$297 a month with no lock-in. You get a report every week.",
       },
       {
         q: "Are these prices in Australian dollars?",
-        a: "No. Peec AI, Otterly and Profound show US dollar prices. FirstPicked's price is in Australian dollars.",
+        a: "No. Peec AI, Otterly and Profound show US dollar prices. Rank with Ross's price is in Australian dollars.",
       },
     ],
     sources: [OTTERLY, PEEC, PROFOUND],
@@ -456,7 +456,7 @@ export const COMPARE_PAGES: ComparePage[] = [
   },
   {
     slug: "geo-vs-seo-agency",
-    title: "GEO vs an SEO agency: which one do you need? | FirstPicked",
+    title: "GEO vs an SEO agency: which do you need? | Rank with Ross",
     description:
       "SEO agency or GEO? What each does in a month, where each one wins, and the questions to ask before you sign. For Australian Shopify brands.",
     short: "What each one does in a month, where each wins, and what to ask before you sign.",
@@ -470,12 +470,12 @@ export const COMPARE_PAGES: ComparePage[] = [
       {
         heading: "What each one does in a month",
         table: {
-          head: ["", "SEO agency", "FirstPicked (done for you)"],
+          head: ["", "SEO agency", "Rank with Ross (done for you)"],
           rows: [
             ["The goal", "Rank higher in Google's results and Maps", "Get named when shoppers ask ChatGPT, Gemini, Perplexity or Google AI Overviews what to buy"],
             ["What they change", "Site speed, technical fixes, keywords, blog posts, links", "Product details AI reads, buying guides, and finding the sites AI quotes"],
             ["What they report", "Rankings and Google traffic", "Which buying questions name you, which sites AI quotes, and orders and sales from AI"],
-            ["Price in Australia", "Quoted per store", "GEO agencies: about A$2,000 to A$20,000+ a month. FirstPicked: A$297 a month"],
+            ["Price in Australia", "Quoted per store", "GEO agencies: about A$2,000 to A$20,000+ a month. Rank with Ross: A$297 a month"],
           ],
         },
         paragraphs: ["Agency GEO prices are from Optimising's Australian price guide. SEO prices vary too much to quote fairly, so ask for a fixed monthly price."],
@@ -516,9 +516,9 @@ export const COMPARE_PAGES: ComparePage[] = [
         ],
       },
       {
-        heading: "Where FirstPicked fits",
+        heading: "Where Rank with Ross fits",
         paragraphs: [
-          "FirstPicked is a done-for-you service for Shopify brands. It's A$297 a month, with no lock-in and a full refund if you're not happy after the first month. Our team and AI check 100 buying questions every day and fix your product pages. We write 12 buying guides a month and show you the sales AI sends you.",
+          "Rank with Ross is a done-for-you service for Shopify brands. It's A$297 a month, with no lock-in and a full refund if you're not happy after the first month. Our team and AI check 100 buying questions every day and fix your product pages. We write 12 buying guides a month and show you the sales AI sends you.",
           "We are not a full-service SEO agency. We don't do site speed, ads or full technical SEO. If you need those, keep your SEO agency and use us alongside it.",
         ],
       },
@@ -546,7 +546,7 @@ export const COMPARE_PAGES: ComparePage[] = [
   },
   {
     slug: "geo-vs-seo-vs-aeo",
-    title: "GEO vs SEO vs AEO: what's the difference? | FirstPicked",
+    title: "GEO vs SEO vs AEO: what's the difference? | Rank with Ross",
     description:
       "SEO, AEO and GEO in plain words: where each shows up, what helps, and how a Shopify store sees the money from each. Plus which one to start with.",
     short: "The three in plain words, where they overlap, and which to start with.",
@@ -589,7 +589,7 @@ export const COMPARE_PAGES: ComparePage[] = [
           "ChatGPT adds utm_source=chatgpt.com to the links it shows, so those visits and orders can be counted.",
           "Perplexity, Gemini, Copilot and Claude show up as the site the visitor came from.",
           "Google AI Overviews and AI Mode can't be separated from normal Google traffic. Anyone who says otherwise is guessing.",
-          "FirstPicked shows visits, orders and sales from AI and from search engines side by side. It uses a small code you paste into Shopify.",
+          "Rank with Ross shows visits, orders and sales from AI and from search engines side by side. It uses a small code you paste into Shopify.",
         ],
       },
       {
@@ -611,14 +611,14 @@ export const COMPARE_PAGES: ComparePage[] = [
   },
   {
     slug: "geo-cost-australia",
-    title: "How much does GEO cost in Australia? (2026) | FirstPicked",
+    title: "How much does GEO cost in Australia? (2026) | Rank with Ross",
     description:
       "GEO prices in Australia compared: agencies, tracking tools and done-for-you services, with what you get at each price and the costs people miss.",
     short: "Agency, tool and done-for-you prices side by side, with the costs people miss.",
     h1: "How much does GEO cost in Australia? Agency, tool and done-for-you prices compared",
     intro: [
       "Australian agencies charge about A$2,000 to A$20,000 or more a month for GEO, according to Optimising's price guide. Tracking tools cost far less, about A$50 to A$500 a month, but you do the work yourself.",
-      "FirstPicked is A$297 a month, done for you, with no lock-in contract.",
+      "Rank with Ross is A$297 a month, done for you, with no lock-in contract.",
     ],
     checked: "2026-10-23",
     sections: [
@@ -633,7 +633,7 @@ export const COMPARE_PAGES: ComparePage[] = [
             ["Australian agency, full", "Various", "A$10,000 to A$20,000+ a month", "All of the above plus SEO, structured data and ongoing content"],
             ["Shopify GEO agency (overseas)", "Netalico (US)", "About US$3,000 a month", "Product data, schema and feed work for Shopify Plus stores"],
             ["Done for you, software only", "FirstIndex", "US$2,000 a month after a 3-month start, or US$1,500 a month on 12 months", "Daily site changes, up to 12 articles and 50+ page fixes a month"],
-            ["Done for you, Shopify brands", "FirstPicked", "A$297 a month, no lock-in", "100 questions checked daily, 50+ page fixes, 12 guides, sales from AI, weekly reports"],
+            ["Done for you, Shopify brands", "Rank with Ross", "A$297 a month, no lock-in", "100 questions checked daily, 50+ page fixes, 12 guides, sales from AI, weekly reports"],
           ],
         },
         paragraphs: [
@@ -667,7 +667,7 @@ export const COMPARE_PAGES: ComparePage[] = [
     ],
     faqs: [
       {
-        q: "Why is FirstPicked cheaper than most agencies?",
+        q: "Why is Rank with Ross cheaper than most agencies?",
         a: "We only work with Shopify brands and offer one plan. AI does most of the research and first drafts, and our team checks and sends everything. That keeps the cost down without cutting the work.",
       },
       { q: "Is there a contract?", a: "No lock-in. You pay monthly and can cancel any time." },

@@ -22,7 +22,7 @@ import { publicHostRedirect } from "../lib/tools/host.server";
 import { SECURITY_HEADERS } from "../lib/tools/http";
 import styles from "../styles/client-report.css?url";
 
-// A client's report (Ross, 5 Nov 2026): firstpicked.com.au/results/<token>, a private link the client opens without
+// A client's report (Ross, 5 Nov 2026): rankwithross.com.au/results/<token>, a private link the client opens without
 // logging in, from the email or a message from Ross. Phone first and calm: what AI sold, the AI score, what we did,
 // where AI names them, who it names instead and what comes next. Every number was read when Ross made the report and
 // saved with it (lib/client-report.server.ts). No site menu, no price, no upsell, no booking link: it's their report.
@@ -47,15 +47,15 @@ export const headers: HeadersFunction = ({ errorHeaders }) =>
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const r = data?.r;
-  if (!r) return [{ title: "Report not found | FirstPicked" }, { name: "robots", content: "noindex, nofollow" }];
-  const title = `${r.brand}: ${KIND_LABEL[r.kind].toLowerCase()} report | FirstPicked`;
+  if (!r) return [{ title: "Report not found | Rank with Ross" }, { name: "robots", content: "noindex, nofollow" }];
+  const title = `${r.brand}: ${KIND_LABEL[r.kind].toLowerCase()} report | Rank with Ross`;
   return [
     { title },
     { name: "robots", content: "noindex, nofollow" },
     // The preview when Ross sends the link in a message: the brand and the days, no numbers.
     { property: "og:title", content: `${r.brand}: ${KIND_LABEL[r.kind].toLowerCase()} report` },
     { property: "og:description", content: periodLabel(r.fromDay, r.toDay) },
-    { property: "og:site_name", content: "FirstPicked" },
+    { property: "og:site_name", content: "Rank with Ross" },
   ];
 };
 
@@ -97,7 +97,7 @@ export default function ResultsPage() {
       </main>
       <footer className="cr-foot">
         <p>
-          Made by FirstPicked for {r.brand}. Questions? Reply to the email or text Ross on <a href="sms:+61400369865">0400 369 865</a>.
+          Made by Rank with Ross for {r.brand}. Questions? Reply to the email or text Ross on <a href="sms:+61400369865">0400 369 865</a>.
         </p>
       </footer>
     </div>
@@ -108,7 +108,7 @@ function Logo() {
   return (
     <span className="cr-logo">
       <i aria-hidden="true" />
-      FirstPicked
+      Rank with Ross
     </span>
   );
 }

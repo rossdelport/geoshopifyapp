@@ -101,7 +101,7 @@ export async function readHomepage(domain: string | null, more = false): Promise
   if (!domain) return "";
   try {
     const res = await fetch(`https://${domain}`, {
-      headers: { "user-agent": "Mozilla/5.0 (compatible; FirstPicked/1.0)" },
+      headers: { "user-agent": "Mozilla/5.0 (compatible; RankWithRoss/1.0)" },
       signal: AbortSignal.timeout(10_000),
     });
     if (!res.ok) return "";

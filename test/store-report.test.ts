@@ -197,9 +197,9 @@ describe("parseHosts", () => {
   });
 
   it("lists the bits that aren't addresses", () => {
-    const { hosts, bad } = parseHosts("bondiwash.com hello ross@firstpicked.com.au localhost nope.");
+    const { hosts, bad } = parseHosts("bondiwash.com hello ross@rankwithross.com.au localhost nope.");
     expect(hosts).toEqual(["bondiwash.com"]);
-    expect(bad).toEqual(["hello", "ross@firstpicked.com.au", "localhost", "nope."]);
+    expect(bad).toEqual(["hello", "ross@rankwithross.com.au", "localhost", "nope."]);
   });
 
   it("ignores list markers and brackets", () => {
@@ -869,8 +869,8 @@ describe("buildMonths", () => {
       [3, "Get named on other sites"],
     ]);
     const all = months.flatMap((m) => m.steps.map((x) => `${x.title} ${x.how}`)).join(" ");
-    // Never how FirstPicked works (Ross, 4 Nov 2026), and never the plan's limits.
-    expect(all).not.toMatch(/\bwe (will|do|write|email|send|fix|start|ask ChatGPT)\b|\bour team\b|\bup to\b|FirstPicked|done for you/i);
+    // Never how Rank with Ross works (Ross, 4 Nov 2026), and never the plan's limits.
+    expect(all).not.toMatch(/\bwe (will|do|write|email|send|fix|start|ask ChatGPT)\b|\bour team\b|\bup to\b|Rank with Ross|done for you/i);
   });
 
   it("fills month 1 with this store's address, product count, search words and a real question", () => {

@@ -1,5 +1,5 @@
-// The 3-month giveaway at firstpicked.com.au/giveaway (Ross, 3 Nov 2026): one Australian Shopify brand wins 3 months of
-// FirstPicked Done for you, drawn at random. Facebook ads send people to the page.
+// The 3-month giveaway at rankwithross.com.au/giveaway (Ross, 3 Nov 2026): one Australian Shopify brand wins 3 months of
+// Rank with Ross Done for you, drawn at random. Facebook ads send people to the page.
 // Round 2 (Ross, 8 Nov 2026): cold ad visitors wouldn't book a call (about 300 visits to /book, no bookings), so the
 // ads send people here instead. The entry asks what the store sells a month and phone is optional. Round 1 (3 to 6 Nov)
 // had no entries. Ross follows up everyone who doesn't win himself (8 Nov: no offer promised on the page).
@@ -15,7 +15,7 @@ export const GIVEAWAY = {
 };
 
 /** The words under the form, saved with each entry. app/home/giveaway.html shows the same. */
-export const GIVEAWAY_CONSENT_TEXT = "We’ll use this to run the draw and to contact you about FirstPicked.";
+export const GIVEAWAY_CONSENT_TEXT = "We’ll use this to run the draw and to contact you about Rank with Ross.";
 
 export const GIVEAWAY_ERRORS = {
   generic: "Something went wrong. Please try again.",
@@ -27,7 +27,7 @@ export const GIVEAWAY_ERRORS = {
   closed: "Sorry, entries are closed. The winner is drawn on Saturday 14 November.",
   perIp: "You’ve entered a lot today. Please try again tomorrow.",
   busy: "We’re very busy right now. Please try again later today.",
-  crossSite: "Please use the form on the FirstPicked website.",
+  crossSite: "Please use the form on the Rank with Ross website.",
   tooBig: "That was too much to send. Please fill in just the five boxes.",
 };
 

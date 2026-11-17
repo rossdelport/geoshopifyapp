@@ -1,4 +1,4 @@
-// The niche pages for Ross's video ads, firstpicked.com.au/for/<niche> (Ross, 17 Nov 2026): one page per niche in the
+// The niche pages for Ross's video ads, rankwithross.com.au/for/<niche> (Ross, 17 Nov 2026): one page per niche in the
 // niche test, Ross's video first with the "Book a call" button under it, then what they pay now, what ChatGPT said,
 // what we do and the price. Checks the house rules (no dashes, real sourced numbers, nothing promised that we
 // don't do), the booking links and the page frame (noindex, Meta pixel, cookie notice).
@@ -17,7 +17,7 @@ const ROOT = fileURLToPath(new URL("..", import.meta.url));
 
 const open = async (slug: string) => {
   try {
-    return (await loader({ request: new Request(`https://firstpicked.com.au/for/${slug}`), params: { niche: slug }, context: {} } as unknown as LoaderFunctionArgs)) as Response;
+    return (await loader({ request: new Request(`https://rankwithross.com.au/for/${slug}`), params: { niche: slug }, context: {} } as unknown as LoaderFunctionArgs)) as Response;
   } catch (thrown) {
     return thrown as Response;
   }
@@ -67,7 +67,7 @@ describe("the five niche pages", () => {
       expect(text, p.slug).not.toMatch(/email(s)? (to|the) (sites|websites)|pitch/i);
       expect(text, p.slug).not.toMatch(/guarantee|worth A\$/i);
       expect(p.title.length, p.slug).toBeLessThanOrEqual(60);
-      expect(p.title, p.slug).toMatch(/ \| FirstPicked$/);
+      expect(p.title, p.slug).toMatch(/ \| Rank with Ross$/);
       expect(p.description.length, p.slug).toBeLessThanOrEqual(160);
       for (const s of p.sources) expect(s.url, p.slug).toMatch(/^https:\/\//);
       // every page says nobody can promise what AI says
@@ -103,7 +103,7 @@ describe("the page at /for/<niche>", () => {
       expect(res.status, slug).toBe(200);
       const html = await res.text();
       const p = vslBySlug(slug)!;
-      expect(html).toContain(`<link rel="canonical" href="https://firstpicked.com.au/for/${slug}">`);
+      expect(html).toContain(`<link rel="canonical" href="https://rankwithross.com.au/for/${slug}">`);
       expect(html).toContain('<meta name="robots" content="noindex">');
       expect(html.match(/<h1[\s>]/g), slug).toHaveLength(1);
       // the route filled everything in

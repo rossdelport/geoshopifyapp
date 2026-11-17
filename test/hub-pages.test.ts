@@ -118,7 +118,7 @@ describe("the tabs", () => {
   });
 
   it("needs no reload when only the tab changed", () => {
-    const u = (s: string) => new URL(s, "https://firstpicked.com.au");
+    const u = (s: string) => new URL(s, "https://rankwithross.com.au");
     expect(onlyTabChanged(u("/dash"), u("/dash?show=paused"))).toBe(true);
     expect(onlyTabChanged(u("/dash?show=ended"), u("/dash"))).toBe(true);
     expect(onlyTabChanged(u("/dash"), u("/dash"))).toBe(false); // a refresh

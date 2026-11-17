@@ -9,11 +9,11 @@ import { STORE_ERRORS, addWebStore, findShopifyStore, storeHost } from "../lib/p
 import { fromAnotherSite } from "../lib/public-form.server";
 import styles from "../styles/web.css?url";
 
-// firstpicked.com.au/start: after the first sign-in, type the Shopify store's address. We read its public pages (no
+// rankwithross.com.au/start: after the first sign-in, type the Shopify store's address. We read its public pages (no
 // Shopify app needed), then set it up: catalog, brand profile, buying questions and the first AI scan.
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
-export const meta: MetaFunction = () => [{ title: "Add your store · FirstPicked" }, { name: "robots", content: "noindex" }];
+export const meta: MetaFunction = () => [{ title: "Add your store · Rank with Ross" }, { name: "robots", content: "noindex" }];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await requireUser(request);
@@ -23,7 +23,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const user = await requireUser(request);
-  if (fromAnotherSite(request)) return { error: "Please use the form on the FirstPicked website." };
+  if (fromAnotherSite(request)) return { error: "Please use the form on the Rank with Ross website." };
   // One store per account (a second tab, or a replayed form, would set up another store nobody can see).
   if (await db.shop.findFirst({ where: { userId: user.id }, select: { id: true } })) throw redirect("/dash");
   const host = storeHost((await request.formData()).get("store"));

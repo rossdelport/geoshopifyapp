@@ -3,20 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Book a call with Ross · FirstPicked</title>
-<meta name="description" content="Pick a time for a free call with Ross, the founder of FirstPicked. We’ll chat about your store and see if FirstPicked is a good fit.">
-<!-- firstpicked.com.au/book (served by app/routes/book.tsx): every "Get started" button on the home page opens it (Ross,
+<title>Book a call with Ross · Rank with Ross</title>
+<meta name="description" content="Pick a time for a free call with Ross. We’ll chat about your store and see if it’s a good fit.">
+<!-- rankwithross.com.au/book (served by app/routes/book.tsx): every "Get started" button on the home page opens it (Ross,
      3 Nov 2026). Its one job is booking a call with Ross. The free times come from his Google Calendar
      (app/lib/booking.server.ts) and a booked call goes straight into it. Kept out of search results. -->
 <meta name="robots" content="noindex">
-<link rel="canonical" href="https://firstpicked.com.au/book">
+<link rel="canonical" href="https://rankwithross.com.au/book">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="FirstPicked">
-<meta property="og:title" content="Book a call with Ross · FirstPicked">
-<meta property="og:description" content="Pick a time for a free call. We’ll chat about your store and see if FirstPicked is a good fit.">
-<meta property="og:url" content="https://firstpicked.com.au/book">
-<meta property="og:image" content="https://firstpicked.com.au/og/home.png">
+<meta property="og:site_name" content="Rank with Ross">
+<meta property="og:title" content="Book a call with Ross · Rank with Ross">
+<meta property="og:description" content="Pick a time for a free call. We’ll chat about your store and see if Rank with Ross is a good fit.">
+<meta property="og:url" content="https://rankwithross.com.au/book">
+<meta property="og:image" content="https://rankwithross.com.au/og/home.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -68,10 +68,8 @@ ul{padding:0;list-style:none}
 
 .top{display:flex;align-items:center;height:64px}
 .logo{display:inline-flex;align-items:center;gap:9px;font-size:21px;font-weight:650;letter-spacing:-.03em;color:var(--ink)}
-.mark{position:relative;flex:none;width:25px;height:23px}
-.mark i{position:absolute;width:16px;height:16px;border-radius:50%}
-.mark i:first-child{left:0;top:0;background:#cdc6fc}
-.mark i:last-child{right:0;bottom:0;background:var(--accent)}
+/* The logo mark: Ross's face on purple (public/brand/ross-mark.webp). */
+.mark{flex:none;width:28px;height:28px;border-radius:50%;background:#6c5cf2 url(/brand/ross-mark.webp) center/cover}
 
 /* Words on the left, the calendar on the right; stacked on phones */
 .book{display:grid;gap:32px;padding-top:clamp(12px,4vw,48px);padding-bottom:clamp(56px,8vw,96px)}
@@ -173,14 +171,14 @@ ul{padding:0;list-style:none}
 </head>
 <body>
 <header class="wrap top">
-  <a class="logo" href="/" aria-label="FirstPicked home page"><span class="mark" aria-hidden="true"><i></i><i></i></span>FirstPicked</a>
+  <a class="logo" href="/" aria-label="Rank with Ross home page"><span class="mark" aria-hidden="true"></span>Rank with Ross</a>
 </header>
 
 <main class="wrap book">
   <div class="book-tx">
-    <p class="who"><img src="__ROSS_PHOTO__" alt="" width="52" height="52" decoding="async"><span><b>Ross</b>Founder of FirstPicked</span><span class="who-txt">Want to txt Ross instead? <a href="sms:+61400369865">0400 369 865</a></span></p>
+    <p class="who"><img src="__ROSS_PHOTO__" alt="" width="52" height="52" decoding="async"><span><b>Ross</b>Founder of Rank with Ross</span><span class="who-txt">Want to txt Ross instead? <a href="sms:+61400369865">0400 369 865</a></span></p>
     <h1 class="h1">Book a call <b>with Ross.</b></h1>
-    <p class="lead">Pick a time that suits you. We’ll chat about your store and see if FirstPicked is a good fit.</p>
+    <p class="lead">Pick a time that suits you. We’ll chat about your store and see if Rank with Ross is a good fit.</p>
     <ul class="ticks">
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>The call is free</li>
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>A$297 a month, and we do the work</li>
@@ -253,7 +251,7 @@ ul{padding:0;list-style:none}
           <label class="f"><span class="f-l">Your store’s website</span><input class="f-i" name="store" autocomplete="url" inputmode="url" required maxlength="200" placeholder="yourstore.com.au"></label>
           <label class="hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
           <button class="btn btn-pri go" type="submit">Book my call</button>
-          <p class="small">We’ll only use this to talk with you about FirstPicked.</p>
+          <p class="small">We’ll only use this to talk with you about Rank with Ross.</p>
         </form>
 
         <div class="done" hidden>
@@ -269,7 +267,7 @@ ul{padding:0;list-style:none}
 </main>
 
 <footer class="foot">
-  <div class="wrap"><span>© 2026 FirstPicked</span><a href="/">Home</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
+  <div class="wrap"><span>© 2026 Rank with Ross</span><a href="/">Home</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
 </footer>
 
 <!-- Cookie notice for the Meta pixel in the head (the same as the home page's) -->

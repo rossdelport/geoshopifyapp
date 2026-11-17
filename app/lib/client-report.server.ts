@@ -59,7 +59,7 @@ export async function makeClientReport(
     }),
     db.client.findUnique({ where: { shopId }, select: { startedOn: true, status: true } }),
   ]);
-  if (!shop) return { ok: false, error: "That store isn’t on FirstPicked any more." };
+  if (!shop) return { ok: false, error: "That store isn’t on Rank with Ross any more." };
   if (!client) return { ok: false, error: "Make them a client first." };
 
   try {

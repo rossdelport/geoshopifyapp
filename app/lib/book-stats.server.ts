@@ -1,4 +1,4 @@
-// Saving and counting visits to firstpicked.com.au/book and calls booked there, by ad (the chart on the admin Overview).
+// Saving and counting visits to rankwithross.com.au/book and calls booked there, by ad (the chart on the admin Overview).
 // The rules (ad names, per day, per ad) are in book-stats.ts. No names, emails or IP addresses are kept.
 
 import { createHash } from "node:crypto";

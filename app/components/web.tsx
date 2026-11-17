@@ -1,4 +1,4 @@
-// Small shared pieces for the FirstPicked web app pages (firstpicked.com.au/login, /start, /dash).
+// Small shared pieces for the Rank with Ross web app pages (rankwithross.com.au/login, /start, /dash).
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { Link, useLocation, useNavigation } from "react-router";
 
@@ -10,12 +10,12 @@ export function Logo({ to }: { to?: string }) {
   return to ? (
     <Link className="w-logo" to={to} prefetch="intent">
       <i aria-hidden="true" />
-      FirstPicked
+      Rank with Ross
     </Link>
   ) : (
     <a className="w-logo" href="/">
       <i aria-hidden="true" />
-      FirstPicked
+      Rank with Ross
     </a>
   );
 }
