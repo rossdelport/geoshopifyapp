@@ -1,8 +1,13 @@
 // One client's card on the agency hub's front page (Ross, 5 Nov 2026): who they are, how the work is going (AI score
-// and sales from AI, or how far setup is), what was done this week, the next guide and the first thing that needs Ross.
-// The whole card is one link to the client, so nothing inside it is a link or a button. Styles: app/styles/hub-pages.css.
+// and sales from AI, or how far setup is), how far their checklist is, what was done this week, the next guide and the
+// first thing that needs Ross. The whole card is one link to the client, so nothing inside it is a link or a button.
+// A click opens the client's pop-up (Ross, 17 Nov 2026: "i click into the card and it will show them in the pop up"),
+// loaded on hover so it opens full; a click with Ctrl or Cmd still opens their page. Styles: app/styles/hub-pages.css.
 
-import { Link } from "react-router";
+import type { MouseEvent } from "react";
+import { Link, useFetcher } from "react-router";
+import { planKey, planUrl } from "./client-plan";
+import { checklistLine } from "../lib/client-plan";
 import { BrandMark, Delta, HealthDot, Sparkline, StatusChip } from "./hub";
 import type { ClientCard } from "../lib/clients";
 import { formatMoney } from "../lib/format";
@@ -64,11 +69,46 @@ function Numbers({ card }: { card: ClientCard }) {
   );
 }
 
-export function BrandCard({ card, today }: { card: ClientCard; today: string }) {
+/** "First 24 hours  ▬▬▬▭▭  4/10": a thin green bar for how far their checklist is. */
+function ChecklistBar({ card }: { card: ClientCard }) {
+  const c = checklistLine(card.checklist);
+  return (
+    <div className="hp-card-check">
+      <span>{c.label}</span>
+      <span className="hp-check-bar" aria-hidden="true">
+        <i style={{ width: `${c.total ? Math.round((c.done / c.total) * 100) : 0}%` }} />
+      </span>
+      <b>
+        {c.done}/{c.total}
+        <span className="h-sr"> done</span>
+      </b>
+    </div>
+  );
+}
+
+export function BrandCard({ card, today, onOpen }: { card: ClientCard; today: string; onOpen?: (card: ClientCard) => void }) {
   const alert = cardAlert(card.alerts);
   const active = card.status === "active";
+  const plan = useFetcher({ key: planKey(card.shopId) });
+  // Load the pop-up's data as the pointer comes near, so it opens with everything in it.
+  const warm = () => {
+    if (onOpen && plan.state === "idle" && !plan.data) plan.load(planUrl(card.shopId));
+  };
+  const open = (e: MouseEvent<HTMLAnchorElement>) => {
+    if (!onOpen || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    onOpen(card);
+  };
   return (
-    <Link to={`/dash/clients/${card.shopId}`} prefetch="intent" className="hp-card">
+    <Link
+      to={`/dash/clients/${card.shopId}`}
+      prefetch={onOpen ? "none" : "intent"}
+      className="hp-card"
+      onClick={open}
+      onPointerEnter={warm}
+      onFocus={warm}
+      aria-haspopup={onOpen ? "dialog" : undefined}
+    >
       <div className="hp-card-top">
         <BrandMark name={card.name} size={40} />
         <span className="hp-card-name">
@@ -80,6 +120,8 @@ export function BrandCard({ card, today }: { card: ClientCard; today: string }) 
       <p className="hp-card-term">{termLine(card, today)}</p>
 
       {card.onboarding !== "done" ? <SettingUp card={card} /> : <Numbers card={card} />}
+
+      {card.status === "ended" ? null : <ChecklistBar card={card} />}
 
       <dl className="hp-card-facts">
         <div>

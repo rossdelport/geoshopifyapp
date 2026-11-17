@@ -335,6 +335,7 @@ export interface ClientCard {
   sales: { revenue: number; orders: number; visits: number }; // from AI, this month (Perth)
   week: { guidesWritten: number; guidesLive: number; checks: number; reddit: number; changes: number }; // the last 7 days
   next: { day: string; title: string; id: string } | null; // the next guide on their calendar
+  checklist: { done: number; total: number; firstDone: number; firstTotal: number }; // their checklist (lib/client-plan.ts)
   alerts: Alert[];
   health: Health;
 }

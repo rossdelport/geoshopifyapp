@@ -1,0 +1,208 @@
+/* Each client's plan in the agency hub (Ross, 17 Nov 2026: "make it super nice UI and make it look and feel premium"):
+   the pop-up over the brand cards, and the client's Checklist page. The web app's look (web.css): white, near-black
+   text, greys, purple only for things to act on, green / amber / red only for good / needs a look / bad. Movement only
+   with transform, opacity and small strokes; all of it off for people who ask for less motion. */
+
+/* ---------- The pop-up ---------- */
+html:has(.pl-dialog[open]) { overflow: hidden; }
+.pl-dialog {
+  width: min(1140px, calc(100vw - 48px)); max-width: none; max-height: min(900px, calc(100dvh - 48px));
+  margin: auto; padding: 0; border: 0; border-radius: 20px; overflow: hidden;
+  background: var(--bg); color: var(--text); font-size: 15px;
+  box-shadow: 0 0 0 1px rgba(10, 10, 11, 0.06), 0 40px 90px -30px rgba(10, 10, 11, 0.42), 0 14px 28px -14px rgba(10, 10, 11, 0.14);
+  transition: opacity var(--duration-fast) var(--ease-smooth-out), transform var(--duration-fast) var(--ease-smooth-out);
+}
+.pl-dialog[open] { display: flex; flex-direction: column; }
+.pl-dialog::backdrop { background: rgba(10, 10, 11, 0.42); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); transition: opacity var(--duration-fast) ease-out; }
+@starting-style {
+  .pl-dialog[open] { opacity: 0; transform: translateY(12px) scale(0.985); }
+  .pl-dialog[open]::backdrop { opacity: 0; }
+}
+.pl-dialog.closing { opacity: 0; transform: translateY(8px) scale(0.99); transition-duration: var(--duration-quick); }
+.pl-dialog.closing::backdrop { opacity: 0; transition-duration: var(--duration-quick); }
+
+.pl-sheet { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.pl-head { display: flex; align-items: center; gap: 14px; padding: 18px 22px; border-bottom: 1px solid var(--line); background: var(--bg); }
+.pl-head-name { flex: 1; display: grid; gap: 5px; min-width: 0; }
+.pl-head-name h2 { font-size: 20px; line-height: 1.2; letter-spacing: -0.02em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pl-head-name p { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 13px; color: var(--muted); }
+:where(.pl-dialog) .pl-head-name a { color: var(--muted); text-decoration: none; }
+:where(.pl-dialog) .pl-head-name a:hover { color: var(--ink); }
+.pl-head-month { font-variant-numeric: tabular-nums; }
+.pl-head-month + .pl-head-month::before, .w-chip + .pl-head-month::before { content: "·"; margin-right: 10px; color: var(--faint); }
+.pl-head-acts { display: flex; align-items: center; gap: 6px; flex: none; }
+.pl-x {
+  display: grid; place-items: center; width: 38px; height: 38px; border: 0; border-radius: 10px;
+  background: transparent; color: var(--muted); cursor: pointer;
+  transition: background-color var(--duration-quick) ease-out, color var(--duration-quick) ease-out, transform var(--duration-quick) var(--ease-smooth-out);
+}
+.pl-x:hover { background: var(--hover); color: var(--ink); }
+.pl-x:active { transform: scale(0.94); }
+.pl-x svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.pl-scroll { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; }
+
+/* ---------- Checklist on the left, the work on the right ---------- */
+.pl-grid { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); align-items: stretch; }
+/* On the client's own Checklist page the two sit in one framed box. */
+:not(.pl-scroll) > .pl-grid { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: var(--bg); box-shadow: var(--shadow-sm); }
+.pl-check { display: grid; gap: 20px; align-content: start; min-width: 0; padding: 24px 24px 30px; }
+.pl-flow { display: grid; gap: 26px; align-content: start; min-width: 0; padding: 24px 24px 30px; border-left: 1px solid var(--line); background: var(--bg-2); }
+
+.pl-check-head { display: flex; align-items: center; gap: 14px; }
+.pl-check-head h3 { font-size: 17px; letter-spacing: -0.015em; }
+.pl-check-head p { margin-top: 2px; font-size: 13px; color: var(--muted); }
+.pl-ring { position: relative; display: grid; place-items: center; flex: none; width: 54px; height: 54px; }
+.pl-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.pl-ring circle { fill: none; stroke-width: 4; }
+.pl-ring-track { stroke: var(--hover); }
+.pl-ring-fill { stroke: var(--green); stroke-linecap: round; transition: stroke-dashoffset var(--duration-slow) var(--ease-smooth-out); }
+.pl-ring b { font: 650 12.5px/1 var(--font-head); color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.pl-ring.full b { color: var(--green-ink); }
+
+.pl-group { display: grid; gap: 8px; }
+.pl-group-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 0 2px; }
+.pl-group-head h4 { margin: 0; font: 650 11.5px/1.2 var(--font-body); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.pl-group-head span { margin-left: auto; font-size: 12px; font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pl-group-toggle { padding: 2px 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); color: var(--ink-3); font: inherit; font-size: 12px; font-weight: 500; cursor: pointer; }
+.pl-group-toggle:hover { background: var(--hover); color: var(--ink); }
+.pl-group-toggle:focus-visible { outline: 2px solid var(--accent-ring); outline-offset: 2px; }
+.pl-group-head span.all { color: var(--green-ink); }
+
+.pl-lines { list-style: none; margin: 0; padding: 0; display: grid; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); box-shadow: var(--shadow-sm); }
+.pl-row { position: relative; border-bottom: 1px solid var(--line); }
+.pl-row:last-child { border-bottom: 0; }
+.pl-line {
+  display: flex; align-items: flex-start; gap: 12px; width: 100%; padding: 13px 16px;
+  border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--duration-quick) ease-out;
+}
+:where(.w, .pl-dialog) a.pl-line, :where(.w, .pl-dialog) a.pl-line:hover { color: inherit; text-decoration: none; }
+.pl-line:hover { background: var(--bg-2); }
+div.pl-line { cursor: default; }
+div.pl-line:hover { background: transparent; }
+.pl-line:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 12px; }
+.pl-row:has(.pl-open) .pl-line { padding-right: 72px; }
+.pl-open { position: absolute; top: 11px; right: 12px; padding: 3px 9px; border-radius: 7px; font-size: 12.5px; font-weight: 500; text-decoration: none; }
+.pl-open:hover { background: var(--hover); }
+
+/* The tick: an empty ring that fills green, and a check that draws itself in. */
+.pl-tick {
+  display: grid; place-items: center; flex: none; width: 21px; height: 21px; margin-top: 1px;
+  border: 1.5px solid var(--line-3); border-radius: 50%; background: var(--bg);
+  transition: background-color var(--duration-fast) var(--ease-smooth-out), border-color var(--duration-fast) ease-out, transform var(--duration-quick) var(--ease-smooth-out);
+}
+.pl-tick svg { width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 15; stroke-dashoffset: 15; transition: stroke-dashoffset var(--duration-fast) var(--ease-smooth-out) 70ms; }
+.pl-line:hover .pl-tick { border-color: var(--green); }
+button.pl-line:active .pl-tick { transform: scale(0.88); }
+.pl-tick.on { border-color: var(--green); background: var(--green); box-shadow: 0 1px 2px rgba(22, 163, 74, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.22); }
+.pl-tick.on svg { stroke-dashoffset: 0; }
+.auto .pl-tick:not(.on) { border-style: dashed; }
+div.pl-line:hover .pl-tick:not(.on) { border-color: var(--line-3); }
+
+.pl-line-body { flex: 1; display: grid; gap: 5px; min-width: 0; }
+.pl-line-text { color: var(--ink-2); font-size: 14px; font-weight: 500; line-height: 1.45; transition: color var(--duration-fast) ease-out; }
+/* The strike: a line drawn across the words, left to right, line by line. */
+.pl-line-text > span {
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 58% / 0 1.5px;
+  transition: background-size var(--duration-slow) var(--ease-smooth-out);
+}
+.pl-line.on .pl-line-text { color: var(--muted); }
+.pl-line.on .pl-line-text > span { background-size: 100% 1.5px; }
+.pl-line-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pl-line-meta .late { color: var(--amber-ink); font-weight: 500; }
+.pl-line-why { display: grid; grid-template-rows: 1fr; font-size: 12.5px; line-height: 1.5; color: var(--muted); transition: grid-template-rows var(--duration-fast) var(--ease-smooth-out), opacity var(--duration-fast) ease-out; }
+.pl-line-why > span { overflow: hidden; }
+.pl-line.on .pl-line-why { grid-template-rows: 0fr; opacity: 0; margin-top: -5px; }
+.pl-line-err { font-size: 12.5px; color: var(--red-ink); }
+
+/* Who does it: you (dark), the client (outline), or the dashboard by itself (grey). */
+.pl-who { display: inline-flex; align-items: center; height: 19px; padding: 0 7px; border-radius: 6px; font-size: 11px; font-weight: 600; letter-spacing: 0.01em; line-height: 1; white-space: nowrap; }
+.pl-who.you { background: var(--ink-2); color: #fff; }
+.pl-who.client { background: var(--bg); color: var(--ink-3); box-shadow: inset 0 0 0 1px var(--line-3); }
+.pl-who.auto { background: var(--hover); color: var(--muted); }
+.pl-line.on .pl-who { opacity: 0.6; }
+
+/* ---------- Doing today, up next, in the pipeline ---------- */
+.pl-note { padding: 11px 14px; border-radius: 12px; background: var(--hover); color: var(--ink-3); font-size: 13px; }
+.pl-flow-sec { display: grid; gap: 12px; }
+.pl-flow-head { display: flex; align-items: baseline; gap: 8px; }
+.pl-flow-head h3 { font-size: 15.5px; letter-spacing: -0.01em; }
+.pl-flow-head span { font-size: 12px; color: var(--muted); }
+.pl-flow-head .pl-count {
+  display: inline-grid; place-items: center; min-width: 22px; height: 20px; margin-left: auto; padding: 0 7px;
+  border-radius: 999px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line-2);
+  font-size: 11.5px; font-weight: 600; color: var(--ink-3); font-variant-numeric: tabular-nums;
+}
+.pl-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.pl-step { position: relative; display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 12px; }
+/* The line from one step's dot to the next. */
+.pl-step::before { content: ""; position: absolute; top: 34px; bottom: -12px; left: 9.5px; width: 1px; background: var(--line-2); }
+.pl-step:last-child::before { display: none; }
+.pl-dot { position: relative; z-index: 1; display: grid; place-items: center; width: 20px; height: 20px; margin-top: 12px; border-radius: 50%; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line-3); }
+.pl-dot svg { width: 13px; height: 13px; fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.pl-step.done .pl-dot { background: var(--green); box-shadow: none; }
+.pl-step.today .pl-dot { box-shadow: inset 0 0 0 1.5px var(--ink-3); }
+.pl-step.now .pl-dot, .pl-step.you .pl-dot { box-shadow: inset 0 0 0 1.5px var(--green); }
+.pl-step.you .pl-dot { box-shadow: inset 0 0 0 1.5px var(--amber); }
+.pl-step.now .pl-dot::after, .pl-step.you .pl-dot::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+.pl-step.you .pl-dot::after { background: var(--amber); }
+.pl-step.now .pl-dot::after { animation: pl-ping 1.6s ease-out infinite; }
+@keyframes pl-ping {
+  0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.5); }
+  80%, 100% { box-shadow: 0 0 0 7px rgba(22, 163, 74, 0); }
+}
+
+.pl-step-body { display: grid; gap: 3px; min-width: 0; padding: 11px 14px 13px; border: 1px solid var(--line); border-radius: 13px; background: var(--bg); box-shadow: var(--shadow-sm); }
+.pl-step.now .pl-step-body { border-color: rgba(22, 163, 74, 0.35); box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.07), var(--shadow-sm); }
+.pl-step.you .pl-step-body { border-color: rgba(245, 158, 11, 0.4); }
+.pl-step.done .pl-step-body { background: transparent; box-shadow: none; }
+.pl-step-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.pl-step-top b { color: var(--ink); font-size: 14px; font-weight: 600; line-height: 1.4; }
+.pl-step.done .pl-step-top b { color: var(--ink-3); }
+.pl-step-detail { color: var(--ink-3); font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; }
+.pl-step-when { color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.pl-step.now .pl-step-when { color: var(--green-ink); font-weight: 500; }
+.pl-step.you .pl-step-when { color: var(--amber-ink); font-weight: 500; }
+.pl-step-why { margin-top: 5px; padding-top: 7px; border-top: 1px dashed var(--line-2); color: var(--text); font-size: 12.5px; line-height: 1.5; }
+.pl-step-why > span { margin-right: 7px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.pl-step.done .pl-step-why { color: var(--muted); }
+.pl-step-open { justify-self: start; display: inline-flex; align-items: center; gap: 5px; margin-top: 6px; color: var(--accent); font-size: 12.5px; font-weight: 600; text-decoration: none; }
+.pl-step-open::after { content: "→"; transition: transform 160ms ease; }
+.pl-step-open:hover::after { transform: translateX(2px); }
+.pl-step.you .pl-step-open { padding: 5px 11px; border-radius: 8px; background: var(--accent); color: #fff; box-shadow: 0 1px 2px rgba(91, 71, 224, 0.25); }
+.pl-step.you .pl-step-open:hover { background: var(--accent-hover); }
+.pl-empty { color: var(--muted); font-size: 13px; }
+
+/* ---------- While it loads ---------- */
+.pl-sk-ring { width: 54px; height: 54px; border-radius: 50%; flex: none; }
+.pl-sk-col { display: grid; gap: 8px; align-content: start; }
+.pl-sk-line { display: flex; align-items: center; gap: 12px; padding: 8px 4px; }
+.pl-sk-tick { width: 21px; height: 21px; border-radius: 50%; flex: none; }
+
+/* ---------- Smaller screens ---------- */
+@media (max-width: 880px) {
+  .pl-grid { grid-template-columns: minmax(0, 1fr); }
+  .pl-flow { border-left: 0; border-top: 1px solid var(--line); }
+}
+@media (max-width: 640px) {
+  .pl-dialog { width: 100vw; max-height: 100dvh; height: 100dvh; margin: 0; border-radius: 0; }
+  @starting-style {
+    .pl-dialog[open] { opacity: 0; transform: translateY(24px); }
+  }
+  .pl-head { flex-wrap: wrap; gap: 12px; padding: 14px 16px; }
+  .pl-head-name h2 { font-size: 18px; white-space: normal; }
+  .pl-head-acts { order: 3; width: 100%; justify-content: space-between; }
+  .pl-head-acts .pl-x { position: absolute; top: 12px; right: 10px; }
+  .pl-head { position: relative; padding-right: 56px; gap: 10px; }
+  .pl-head .h-mark { display: none; }
+  .pl-head-name p { gap: 6px 8px; font-size: 12.5px; }
+  .pl-head-name .pl-head-month::before { display: none; }
+  .pl-check, .pl-flow { padding: 20px 16px 26px; }
+  .pl-line { padding: 13px 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-dialog, .pl-dialog::backdrop, .pl-tick, .pl-tick svg, .pl-line-text, .pl-line-text > span, .pl-line-why, .pl-ring-fill, .pl-x, .pl-step-open::after { transition: none !important; }
+  .pl-step.now .pl-dot::after { animation: none; }
+}
