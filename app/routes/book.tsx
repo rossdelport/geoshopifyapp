@@ -3,6 +3,7 @@ import { serveHome } from "../lib/home-page.server";
 import { bookCall, freeSlots, type BookResult } from "../lib/booking.server";
 import { BOOK_ERRORS, SALES } from "../lib/booking";
 import { readAdTags } from "../lib/book-stats";
+import { bookingNiche } from "../lib/vsl/pages";
 import { saveAnswers, saveBookView, visitorId } from "../lib/book-stats.server";
 import { clientIp, fromAnotherSite, readSmallForm } from "../lib/public-form.server";
 import font from "../fonts/inter-geo.woff2?url";
@@ -17,7 +18,7 @@ import raw from "../home/book.html?raw";
 // calendar isn't connected yet. Above the times, two questions (Ross, 6 Nov 2026): a Shopify brand? and sales a month;
 // the times only show for a Shopify brand selling A$5,000 or more a month. POST: urlencoded `start` (one of those
 // times), `name`, `email`, `store`, `shopify` ("yes"), `sales` (a value from SALES), `website` (honeypot) and the utm_*
-// tags; JSON reply BookResult. The call goes into Ross's calendar with a Meet link.
+// tags, or `for` (a niche page's slug) in place of `shopify` and `sales`; JSON reply BookResult. The call goes into Ross's calendar with a Meet link.
 // POST `seen=1` (sent by the page once it is on screen, with the same tags): counts the visit for the ad chart on the
 // admin Overview (lib/book-stats.server.ts), reply 204. POST `answered=1` with `shopify` and `sales` (sent when someone
 // answers the two questions, with the same tags): counts their answers, once a person a day, even if they don't book.
@@ -29,9 +30,23 @@ const page = raw
   .replace("<!-- META_PIXEL -->", () => `<script>\n${pixelHead.trim()}\n</script>`)
   .replace("<!-- COOKIE_SCRIPT -->", () => `<script>\n${cookieScript.trim()}\n</script>`);
 
+// /book?for=<slug>, from a niche page (Ross, 17 Nov 2026: mortgage brokers, solar installers, buyers agents, tradies):
+// they aren't online stores, so the store questions go (the page's script sees data-for and shows the times at once)
+// and the words say "business" instead of "store". The booking carries the slug, so Ross sees which page it came from.
+function forNiche(html: string, slug: string): string {
+  return html
+    .replace("<body>", () => `<body data-for="${slug}">`)
+    .replaceAll("We’ll chat about your store and see", "We’ll chat about your business and see")
+    .replaceAll("Your store’s website", "Your website")
+    .replace('placeholder="you@yourstore.com"', 'placeholder="you@yourbusiness.com.au"')
+    .replace('placeholder="yourstore.com.au"', 'placeholder="yourbusiness.com.au"');
+}
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const slots = await freeSlots();
-  const res = serveHome(request, page.replace("__SLOTS__", () => JSON.stringify(slots).replace(/</g, "\\u003c")));
+  const niche = bookingNiche(new URL(request.url).searchParams.get("for"));
+  const html = niche ? forNiche(page, niche.slug) : page;
+  const res = serveHome(request, html.replace("__SLOTS__", () => JSON.stringify(slots).replace(/</g, "\\u003c")));
   // The free times change as calls are booked, so the page is never kept in a cache.
   res.headers.set("Cache-Control", "no-store");
   return res;
@@ -61,6 +76,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       store: form.get("store"),
       shopify: form.get("shopify"),
       sales: form.get("sales"),
+      niche: form.get("for"),
       honeypot: form.get("website"),
       from: Object.fromEntries(["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"].map((k) => [k, form.get(k)])),
       ad,

@@ -47,9 +47,12 @@ export async function saveAnswers(tags: AdTags, visitor: string, raw: { shopify:
   return true;
 }
 
-/** A call was booked: which ad it came from and how much the store sells a month (they said yes to Shopify). */
-export async function saveBooking(tags: AdTags, sales: string, now = new Date()): Promise<void> {
-  await db.bookEvent.create({ data: { kind: "booked", ...tags, shopify: "yes", sales, createdAt: now } });
+/**
+ * A call was booked: which ad it came from and how much the store sells a month (they said yes to Shopify). A call
+ * booked from a niche page (/book?for=<slug>, no store questions) passes null: it counts as booked, with no answers.
+ */
+export async function saveBooking(tags: AdTags, sales: string | null, now = new Date()): Promise<void> {
+  await db.bookEvent.create({ data: { kind: "booked", ...tags, shopify: sales ? "yes" : null, sales, createdAt: now } });
 }
 
 /** The chart's numbers for these Sydney days (YYYY-MM-DD, from and to included). */

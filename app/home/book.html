@@ -209,6 +209,8 @@ ul{padding:0;list-style:none}
           </p>
           <!-- Ross (6 Nov 2026): two questions first. The times only show for a Shopify brand selling A$5,000 or more a
                month (SALES in app/lib/booking.ts, which the route turns into the drop-down's choices). -->
+          <!-- A niche page's visitors (/book?for=<slug>, body data-for) skip these two questions: they aren't online stores. -->
+          <div data-qs>
           <h2 class="cal-h" id="q-shop">Do you have a Shopify brand?</h2>
           <div class="yn" role="group" aria-labelledby="q-shop">
             <button class="ans" type="button" data-shopify="yes" aria-pressed="false">Yes</button>
@@ -221,7 +223,7 @@ ul{padding:0;list-style:none}
               <!-- SALES_OPTIONS -->
             </select>
           </div>
-
+          </div>
           <div class="after">
             <p class="hint" data-hint>Answer both questions to see Ross’s free times.</p>
             <div class="nofit" data-nofit="shopify" hidden>
@@ -329,6 +331,8 @@ ul{padding:0;list-style:none}
   var longDay = fmt({ weekday: 'long', day: 'numeric', month: 'long' }), clock = fmt({ hour: 'numeric', minute: '2-digit' });
   var byDay = {}, order = [], current = null, chosen = null, busy = false;
   var shopify = '', salesEl = document.getElementById('sales'), yesNo = on.querySelectorAll('[data-shopify]'), sent = '', toldMeta = false;
+  // From a niche page (Ross, 17 Nov 2026): no store questions, the times show at once.
+  var niche = document.body.getAttribute('data-for') || '';
 
   // What the page sends with a booking and with the answers: the ad's tags and the site that sent them.
   function withAd(fields) {
@@ -341,6 +345,14 @@ ul{padding:0;list-style:none}
 
   // Shows the times only to a fit: a Shopify brand selling A$5,000 or more a month.
   function gate() {
+    if (niche) {
+      on.querySelector('[data-qs]').hidden = true;
+      on.querySelector('[data-hint]').hidden = true;
+      on.querySelector('.after').style.cssText = 'margin-top:0;padding-top:0;border-top:0';
+      on.querySelector('.has-times').hidden = !order.length;
+      on.querySelector('.none').hidden = !!order.length;
+      return;
+    }
     var opt = salesEl.options[salesEl.selectedIndex];
     var noShop = shopify === 'no';
     var small = !noShop && !!opt && opt.hasAttribute('data-small');
@@ -440,7 +452,7 @@ ul{padding:0;list-style:none}
     busy = true;
     btn.setAttribute('aria-disabled', 'true');
     btn.textContent = 'Booking your call…';
-    var body = withAd({ start: chosen, shopify: shopify, sales: salesEl.value });
+    var body = withAd(niche ? { start: chosen, for: niche } : { start: chosen, shopify: shopify, sales: salesEl.value });
     ['name', 'email', 'store', 'website'].forEach(function (k) { body.set(k, form.elements[k].value); });
     fetch('/book', { method: 'POST', body: body, headers: { Accept: 'application/json' }, credentials: 'same-origin' })
       .then(function (r) { return r.json(); })
