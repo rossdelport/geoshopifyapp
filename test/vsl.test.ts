@@ -1,6 +1,6 @@
 // The niche pages for Ross's video ads, rankwithross.com.au/for/<niche> (Ross, 17 Nov 2026): one page per niche in the
-// niche test, Ross's video first with the "Book a call" button under it, then "Sound familiar?" (3 problems), "So here's
-// what I do" (3 jobs), the honest table against agencies, the 3 steps and the price (the look from 17 Nov 2026). Checks the house rules (no dashes, real sourced numbers, nothing promised that we
+// niche test, Ross's video first with the "Book a call" button under it, then Eduardo's review, "Sound familiar?"
+// (3 problems), the honest table against agencies, the 3 steps, the price and the questions (the look from 17 Nov 2026). Checks the house rules (no dashes, real sourced numbers, nothing promised that we
 // don't do), the booking links and the page frame (noindex, Meta pixel, cookie notice).
 
 import { readFileSync } from "node:fs";
@@ -31,7 +31,7 @@ const words = (p: (typeof VSL_PAGES)[number]) =>
     p.hi,
     ...p.h1,
     p.lead,
-    ...[...p.problems, ...p.help].flatMap((r) => [r.h, r.p, r.note ?? ""]),
+    ...p.problems.flatMap((r) => [r.h, r.p, r.note ?? ""]),
     p.big.line,
     p.big.note,
     ...p.faq.flatMap((f) => [f.q, f.a]),
@@ -80,13 +80,15 @@ describe("the five niche pages", () => {
   it("keep the words short (Ross, 17 Nov 2026: \"simplify the text\")", () => {
     for (const p of VSL_PAGES) {
       expect(p.problems, p.slug).toHaveLength(3);
-      expect(p.help, p.slug).toHaveLength(3);
       expect(p.lead.length, p.slug).toBeLessThanOrEqual(170);
-      for (const r of [...p.problems, ...p.help]) {
+      for (const r of p.problems) {
         expect(r.h.length, `${p.slug}: ${r.h}`).toBeLessThanOrEqual(90);
         expect(r.p.length, `${p.slug}: ${r.p}`).toBeLessThanOrEqual(150);
       }
-      expect(p.faq.length, p.slug).toBeLessThanOrEqual(4);
+      // a full set of questions (Ross, 17 Nov 2026: "really beef out the FAQ section"), each answer short
+      expect(p.faq.length, p.slug).toBeGreaterThanOrEqual(10);
+      expect(new Set(p.faq.map((f) => f.q)).size, p.slug).toBe(p.faq.length);
+      for (const f of p.faq) expect(f.a.length, `${p.slug}: ${f.q}`).toBeLessThanOrEqual(300);
       // the agency prices on every page are the ones in the table and its source
       expect(p.problems.some((r) => r.h.includes(AGENCY_PRICE)), p.slug).toBe(true);
       expect(p.sources.some((s) => /optimising/i.test(s.url)), p.slug).toBe(true);
@@ -95,7 +97,7 @@ describe("the five niche pages", () => {
 
   it("draw what the words say (Ross, 17 Nov 2026: \"simple illustrations to match the text\")", () => {
     for (const p of VSL_PAGES) {
-      for (const r of [...p.problems, ...p.help]) {
+      for (const r of p.problems) {
         // the chat answer shows as many names as the words say AI gave
         if (r.draw === "chat") expect(r.h, p.slug).toContain(`It named ${r.names}`);
         // a price tag only carries a number from its own words

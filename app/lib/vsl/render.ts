@@ -1,8 +1,8 @@
 // Draws one niche page (./pages.ts) as the inside of app/home/vsl.html. The flow (Ross, 17 Nov 2026, from the sketch
 // inspired by forgoodprofits.com): a dark top with Ross's hello and the heading, Ross's video overlapping onto the white
 // page with the "Book a call" button right under it, Eduardo's review (every page), "Sound familiar?" (3 problems
-// with line drawings), "So here's what I do" (3 jobs), the honest table against agencies, one big line on a dark band,
-// the 3 steps and the price, a few questions and the sources. Pure: app/routes/for.$niche.tsx passes in the file
+// with line drawings), the honest table against agencies, one big line on a dark band,
+// the 3 steps and the price, the questions and the sources. Pure: app/routes/for.$niche.tsx passes in the file
 // addresses. Every piece of text is escaped here, so pages.ts stays plain text. The drawings are our own.
 
 import { AGENCY_PRICE, VSL_PRICE, vslBookHref, type Drawing, type VslPage, type VslRow } from "./pages";
@@ -69,27 +69,6 @@ const DRAWINGS: Record<Drawing, (r: VslRow) => [lines: string, clean?: string]> 
   search: (r) => [`<rect x="20" y="22" width="184" height="44" rx="22" fill="#fff"/><path d="M44 44h104"/><circle cx="178" cy="42" r="9"/><path d="M185 49l8 8"/>
     <path d="M24 186h170"/><rect x="34" y="150" width="28" height="36" fill="#fff"/><rect x="76" y="128" width="28" height="58" fill="#fff"/>
     <rect x="118" y="104" width="28" height="82" fill="#fff"/><rect x="160" y="80" width="28" height="106" fill="${SOFT}" stroke="${P}"/>`, priceTag(r.tag ?? "", 258, 112, -6)],
-  // a magnifying glass reading two AI answers, with a tick
-  check: () => [`<path d="M30 26h120v58H72l-20 16V84H30z" fill="#fff"/><path d="M46 46h88M46 64h56"/>
-    <path d="M142 106h124v58h-14v16l-20-16h-90z" fill="#fff"/><path d="M158 126h90M158 144h52"/>
-    <circle cx="216" cy="62" r="32" fill="${SOFT}" stroke="${P}"/><path d="M239 85l30 30" stroke="${P}" stroke-width="7"/>
-    <path d="M202 62l10 10 17-19" stroke="#15803d" stroke-width="4"/>`],
-  // a business profile with stars, and a list with a tick
-  list: () => [`<rect x="30" y="22" width="142" height="156" rx="14" fill="#fff"/><circle cx="62" cy="56" r="16" fill="${SOFT}" stroke="${P}"/>
-    <path d="M88 50h62M88 64h40"/>
-    <path d="M52 100l4 8 9 1-6 6 2 9-9-4-8 4 2-9-7-6 9-1zM88 100l4 8 9 1-6 6 2 9-9-4-8 4 2-9-7-6 9-1zM124 100l4 8 9 1-6 6 2 9-9-4-8 4 2-9-7-6 9-1z" fill="#fde9b8" stroke="#d9982f" stroke-width="2"/>
-    <path d="M50 146h104M50 160h70"/>
-    <rect x="194" y="38" width="98" height="128" rx="10" fill="#fff"/><path d="M210 62h62M210 88h62M210 114h62M210 140h44"/>
-    <path d="M274 106l8 8 16-18" stroke="#15803d" stroke-width="4"/>`],
-  // a page being written, with a pencil
-  write: () => [`<path d="M92 16h104l28 28v148H92z" fill="#fff"/><path d="M196 16v28h28"/>
-    <path d="M112 50h52" stroke-width="5"/><path d="M112 76h92M112 98h80M112 120h92M112 142h86M112 164h50"/>
-    <path d="M236 122l32-32 14 14-32 32-20 6z" fill="${SOFT}" stroke="${P}"/><path d="M260 98l14 14" stroke="${P}"/>`],
-  // sales going up, and a coin
-  sales: () => [`<path d="M36 184h244"/><rect x="58" y="136" width="32" height="48" fill="#fff"/><rect x="106" y="112" width="32" height="72" fill="#fff"/>
-    <rect x="154" y="84" width="32" height="100" fill="#fff"/><rect x="202" y="52" width="32" height="132" fill="${SOFT}" stroke="${P}"/>
-    <path d="M58 114l48-24 48-18 56-40" stroke="#15803d" stroke-dasharray="7 8"/><path d="M196 30h16v16" stroke="#15803d"/>
-    <circle cx="266" cy="120" r="22" fill="#fff6e3" stroke="#d9982f"/>`, `<text x="266" y="128" text-anchor="middle" font-size="20" fill="#d9982f" ${SERIF}>$</text>`],
 };
 
 /** The drawings for the 3 steps: Ross's video, a 15 minute call, and the work with a weekly report. viewBox 160 x 100. */
@@ -230,14 +209,7 @@ ${reviewBlock(a, store)}
   </div>
 </section>
 
-<section class="sec sec-soft" aria-labelledby="help-h">
-  <div class="wrap">
-    ${head("So here’s what I do", store ? "I get AI to pick your store. And I show you the sales." : "I get AI to name you. And I show you what changed.", "help-h")}
-    ${rows(page.help)}
-  </div>
-</section>
-
-<section class="sec" aria-labelledby="table-h">
+<section class="sec sec-soft" aria-labelledby="table-h">
   <div class="wrap">
     ${head("The honest comparison", "Agency work. Not agency prices.", "table-h")}
     <div class="tbl"><table>
