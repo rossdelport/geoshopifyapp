@@ -1,6 +1,6 @@
 // Draws one niche page (./pages.ts) as the inside of app/home/vsl.html. The flow (Ross, 17 Nov 2026, from the sketch
 // inspired by forgoodprofits.com): a dark top with Ross's hello and the heading, Ross's video overlapping onto the white
-// page with the "Book a call" button right under it, Eduardo's review on the store page, "Sound familiar?" (3 problems
+// page with the "Book a call" button right under it, Eduardo's review (every page), "Sound familiar?" (3 problems
 // with line drawings), "So here's what I do" (3 jobs), the honest table against agencies, one big line on a dark band,
 // the 3 steps and the price, a few questions and the sources. Pure: app/routes/for.$niche.tsx passes in the file
 // addresses. Every piece of text is escaped here, so pages.ts stays plain text. The drawings are our own.
@@ -14,7 +14,7 @@ export interface VslAssets {
   cover: string;
   /** Ross's video for this page, once he has filmed it. Without one, the frame says it's coming. */
   video?: { src: string; poster: string; captions?: string; width: number; height: number; seconds: number };
-  /** Eduardo's review (only drawn on a page with `review`). */
+  /** Eduardo's review (every page has it since 17 Nov 2026; left out, the page has no review). */
   review?: { src: string; poster: string; captions: string };
 }
 
@@ -158,7 +158,7 @@ function rows(list: VslRow[]): string {
     .join("")}</div>`;
 }
 
-function reviewBlock(a: VslAssets): string {
+function reviewBlock(a: VslAssets, store: boolean): string {
   if (!a.review) return "";
   const r = a.review;
   return `<section class="proof" aria-labelledby="review-h">
@@ -174,13 +174,13 @@ function reviewBlock(a: VslAssets): string {
       <h2 class="h2" id="review-h">Hear it from Eduardo.</h2>
       <blockquote class="rv-q"><p>“We met Ross and he was able to help us understand what we needed to do to rank highly in AI and Google AI.”</p></blockquote>
       <p class="rv-who"><b>Eduardo</b>, <a href="https://terratanks.com.au/" target="_blank" rel="noopener">Terra Tanks</a>. Stock tank pools in Australia.</p>
-      <p class="rv-note">A real client, in his own words. Results are different for every store.</p>
+      <p class="rv-note">A real client, in his own words. Results are different for every ${store ? "store" : "business"}.</p>
     </div>
   </div>
 </section>`;
 }
 
-/** Eduardo's second line, big, after the table (store page only). */
+/** Eduardo's second line, big, after the table. */
 function pullQuote(a: VslAssets): string {
   if (!a.review) return "";
   return `<section class="pull" aria-label="What Eduardo said">
@@ -221,7 +221,7 @@ export function renderVsl(page: VslPage, a: VslAssets): string {
   </div>
 </section>
 
-${reviewBlock(a)}
+${reviewBlock(a, store)}
 
 <section class="sec" aria-labelledby="problems-h">
   <div class="wrap">

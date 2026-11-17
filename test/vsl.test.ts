@@ -109,9 +109,6 @@ describe("the five niche pages", () => {
     expect(html.match(/class="step-pic"/g)).toHaveLength(3);
   });
 
-  it("only show Eduardo's review where it fits (he sells stock tank pools)", () => {
-    expect(VSL_PAGES.filter((p) => p.review).map((p) => p.slug)).toEqual(["pool-spa-sauna-stores"]);
-  });
 
   it("escape everything they draw", () => {
     const p = { ...vslBySlug("buyers-agents")!, lead: 'Fish & <chips> "now"' };
@@ -167,7 +164,7 @@ describe("the page at /for/<niche>", () => {
     expect(html).toContain("a.setAttribute('href', '/book?' + keep);");
   });
 
-  it("shows Eduardo word for word on the store page, with the note that results differ", async () => {
+  it("shows Eduardo word for word on every page, with the note that results differ", async () => {
     const html = await (await open("pool-spa-sauna-stores")).text();
     // his words on the page are word for word from the video (the captions hold everything he says)
     const words = (s: string) => s.toLowerCase().replace(/[’']/g, "'").replace(/[^a-z' ]+/g, " ").replace(/\s+/g, " ").trim();
@@ -177,7 +174,13 @@ describe("the page at /for/<niche>", () => {
     for (const q of quotes) expect(said, q).toContain(words(q));
     expect(html).toContain("A real client, in his own words. Results are different for every store.");
     expect(html).toContain('preload="none"');
-    expect(await (await open("mortgage-brokers")).text()).not.toContain("Hear it from Eduardo");
+    // on every page (Ross, 17 Nov 2026), and the local pages say "business"
+    for (const slug of VSL_SLUGS) {
+      const page = await (await open(slug)).text();
+      expect(page, slug).toContain("Hear it from Eduardo");
+      expect([...page.matchAll(/<p>“([^”]+)”<\/p>/g)].map((m) => m[1]), slug).toEqual(quotes);
+    }
+    expect(await (await open("mortgage-brokers")).text()).toContain("A real client, in his own words. Results are different for every business.");
   });
 
   it("is Not found for anything else", async () => {

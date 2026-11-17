@@ -58,8 +58,6 @@ export interface VslPage {
   help: [VslRow, VslRow, VslRow];
   /** One big line after the table: what one new customer is worth next to our price. */
   big: { line: string; note: string };
-  /** Show Eduardo's video review from Terra Tanks (only where it fits the niche: he sells stock tank pools). */
-  review?: boolean;
   faq: { q: string; a: string }[];
   sources: { title: string; url: string }[];
 }
@@ -225,7 +223,6 @@ export const VSL_PAGES: VslPage[] = [
       },
       AGENCIES,
     ],
-    review: true,
     help: [
       {
         h: "Every day, I check 100 buying questions.",

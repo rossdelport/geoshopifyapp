@@ -46,7 +46,8 @@ export const loader = ({ params, request }: LoaderFunctionArgs) => {
     rossPhoto,
     cover: rossCover,
     video: VIDEOS[page.slug],
-    review: page.review ? { src: reviewVideo, poster: reviewPoster, captions: reviewCaptions } : undefined,
+    // Eduardo's review on every page (Ross, 17 Nov 2026: "make sure that the eduardo video is on all pages")
+    review: { src: reviewVideo, poster: reviewPoster, captions: reviewCaptions },
   });
   const html = shell
     .replaceAll("__TITLE__", () => attr(page.title))
