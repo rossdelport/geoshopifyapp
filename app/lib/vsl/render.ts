@@ -1,6 +1,6 @@
 // Draws one niche page (./pages.ts) as the inside of app/home/vsl.html. The flow (Ross, 17 Nov 2026, from the sketch
 // inspired by forgoodprofits.com): a dark top with Ross's hello and the heading, Ross's video overlapping onto the white
-// page with the "Book a call" button right under it, Eduardo's review (every page), "Sound familiar?" (3 problems
+// page with his booking calendar right under it, Eduardo's review (every page), "Sound familiar?" (3 problems
 // with line drawings), the honest table against agencies, one big line on a dark band,
 // the 3 steps and the price, the questions and the sources. Pure: app/routes/for.$niche.tsx passes in the file
 // addresses. Every piece of text is escaped here, so pages.ts stays plain text. The drawings are our own.
@@ -130,11 +130,18 @@ function videoFrame(page: VslPage, a: VslAssets): string {
     </div>`;
 }
 
-/** The "Book a call" button with Ross's number under it. */
-function cta(book: string): string {
-  return `<div class="cta">
-      <a class="btn btn-pri btn-lg" href="${esc(book)}" data-book>Book a free 15 minute call</a>
-      <p class="cta-sub">15 minutes with me. No obligation. Or text me: ${SMS}</p>
+/**
+ * Ross's booking calendar right under the video (Ross, 17 Nov 2026: "put the actual booking calender here instead of
+ * the button that takes them to the calendar"): /book?embed=1 in a frame (app/routes/book.tsx), so it books the same
+ * way /book does. The page's script sets the frame's address (with the ad's tags) and grows it to fit; without the
+ * script, the old button to /book.
+ */
+function calendar(book: string): string {
+  return `<div class="cal-box" id="book">
+      <h2 class="cal-title">Book a free 15 minute call</h2>
+      <iframe class="cal-frame" data-cal data-src="${esc(`${book}&embed=1`)}" title="Book a call with Ross" loading="lazy"></iframe>
+      <noscript><a class="btn btn-pri btn-lg" href="${esc(book)}">Book a free 15 minute call</a></noscript>
+      <p class="cta-sub">No obligation. Or text me: ${SMS}</p>
     </div>`;
 }
 
@@ -197,7 +204,7 @@ export function renderVsl(page: VslPage, a: VslAssets): string {
 <header class="top">
   <div class="wrap top-in">
     <a class="logo" href="/" aria-label="Rank with Ross home page"><span class="mark" aria-hidden="true"></span>Rank with Ross</a>
-    <div class="top-r"><span class="top-txt">Text me: ${SMS}</span><a class="btn btn-pri btn-sm" href="${esc(book)}" data-book>Book a call</a></div>
+    <div class="top-r"><span class="top-txt">Text me: ${SMS}</span><a class="btn btn-pri btn-sm" href="#book">Book a call</a></div>
   </div>
 </header>
 <main>
@@ -214,7 +221,7 @@ export function renderVsl(page: VslPage, a: VslAssets): string {
       ${videoFrame(page, a)}
       <p class="side-note" aria-hidden="true">Watch this<br>first!${ARROW}</p>
     </div>
-    ${cta(book)}
+    ${calendar(book)}
   </div>
 </section>
 
@@ -269,7 +276,7 @@ ${pullQuote(a)}
         <li>${TICK}Full refund if you’re not happy after month 1</li>
         <li>${TICK}No lock-in contract. Stop any time</li>
       </ul>
-      <a class="btn btn-pri btn-lg" href="${esc(book)}" data-book>Book a free 15 minute call</a>
+      <a class="btn btn-pri btn-lg" href="#book">Book a free 15 minute call</a>
       <p class="price-me"><img src="${esc(a.rossPhoto)}" alt="" width="44" height="44" loading="lazy" decoding="async"><span>Or text me: ${SMS}</span></p>
     </div>
   </div>

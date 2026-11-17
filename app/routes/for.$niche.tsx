@@ -19,8 +19,8 @@ import pixelHead from "../../design/overview/pixel-head.js?raw";
 import cookieScript from "../../design/overview/parts/47-cookies.js?raw";
 import raw from "../home/vsl.html?raw";
 
-// rankwithross.com.au/for/<niche> (Ross, 17 Nov 2026): one page per niche for his video ads, with his video first and the
-// "Book a call" button under it. The words are in app/lib/vsl/pages.ts; app/lib/vsl/render.ts draws them into
+// rankwithross.com.au/for/<niche> (Ross, 17 Nov 2026): one page per niche for his video ads, with his video first and his
+// booking calendar under it. The words are in app/lib/vsl/pages.ts; app/lib/vsl/render.ts draws them into
 // app/home/vsl.html. An address that isn't one of the pages gets Not found.
 //
 // Ross's video, one for all 5 pages (Ross, 17 Nov 2026: filmed start to finish on Loom, slides with his face in the

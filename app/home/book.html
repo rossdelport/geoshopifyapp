@@ -154,6 +154,11 @@ ul{padding:0;list-style:none}
 /* Ross (3 Nov 2026): the line under the calendar now sells the call (his number is next to his name). */
 .intro{margin-top:22px;text-align:center;font-size:14px}
 .intro b{color:var(--accent-ink);font-weight:650}
+/* /book?embed=1 (Ross, 17 Nov 2026): the calendar alone, in a frame under the video on the niche pages (/for/<niche>).
+   The page around it has the heading, the menu, the footer and the cookie notice. */
+[data-embed] body{background:transparent}
+[data-embed] .top,[data-embed] .book-tx,[data-embed] .intro,[data-embed] .foot{display:none!important}
+[data-embed] .book{display:block;max-width:none;padding:0}
 
 .foot{border-top:1px solid var(--line);padding:22px 0;font-size:13.5px;color:var(--soft)}
 .foot .wrap{display:flex;gap:20px}
@@ -285,11 +290,21 @@ ul{padding:0;list-style:none}
 <script>
 // Counts this visit for Ross's ad chart (admin Overview), once the page is on screen, so link previews and pages
 // loaded early in the background don't count. It sends the ad's tags and the site that sent the visitor, nothing about
-// the person.
+// the person. Inside a niche page (embed) it counts once the calendar itself is on screen, not when the page opens.
 (function () {
-  var sent = false;
+  var sent = false, ready = true, cal = document.querySelector('.cal');
+  if (document.documentElement.hasAttribute('data-embed') && cal && 'IntersectionObserver' in window) {
+    ready = false;
+    var io = new IntersectionObserver(function (list) {
+      if (!list[0].isIntersecting) return;
+      ready = true;
+      io.disconnect();
+      send();
+    }, { threshold: 0.2 });
+    io.observe(cal);
+  }
   function send() {
-    if (sent || document.visibilityState !== 'visible' || !navigator.sendBeacon) return;
+    if (sent || !ready || document.visibilityState !== 'visible' || !navigator.sendBeacon) return;
     sent = true;
     var q = new URLSearchParams(location.search), body = new URLSearchParams({ seen: '1' });
     ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) { if (q.get(k)) body.set(k, q.get(k).slice(0, 200)); });
@@ -331,6 +346,13 @@ ul{padding:0;list-style:none}
   var shopify = '', salesEl = document.getElementById('sales'), yesNo = on.querySelectorAll('[data-shopify]'), sent = '', toldMeta = false;
   // From a niche page (Ross, 17 Nov 2026): no store questions, the times show at once.
   var niche = document.body.getAttribute('data-for') || '';
+  // Meta's pixel: this page's own, or, in a frame on a niche page (embed), the page around it, which has the pixel
+  // and follows the visitor's cookie choice. None when they said No thanks.
+  function meta() {
+    var f = window.fbq;
+    try { if (!f && window.parent !== window) f = window.parent.fbq; } catch (e) { /* framed by another site: none */ }
+    return typeof f === 'function' ? f : null;
+  }
 
   // What the page sends with a booking and with the answers: the ad's tags and the site that sent them.
   function withAd(fields) {
@@ -361,9 +383,9 @@ ul{padding:0;list-style:none}
       sent = answers;
       try { navigator.sendBeacon('/book', withAd({ answered: '1', shopify: shopify, sales: noShop ? '' : salesEl.value })); } catch (e) { /* not counted */ }
     }
-    if (fit && !toldMeta && typeof window.fbq === 'function') {
+    if (fit && !toldMeta && meta()) {
       toldMeta = true;
-      window.fbq('track', 'SubmitApplication', { content_name: 'fits' });
+      meta()('track', 'SubmitApplication', { content_name: 'fits' });
     }
     on.querySelector('[data-sales-q]').hidden = noShop;
     on.querySelector('[data-hint]').hidden = fit || noShop || small;
@@ -462,7 +484,7 @@ ul{padding:0;list-style:none}
           intro.hidden = true;
           done.hidden = false;
           done.querySelector('h2').focus();
-          if (typeof window.fbq === 'function') window.fbq('track', 'Lead', { content_name: 'book a call' });
+          if (meta()) meta()('track', 'Lead', { content_name: 'book a call' });
           return;
         }
         if (out && Array.isArray(out.slots)) { slots = out.slots; drawDays(); back(); }
@@ -477,6 +499,18 @@ ul{padding:0;list-style:none}
   });
 
   drawDays();
+})();
+</script>
+<script>
+// In a frame on a niche page (embed): tells the page around it how tall the calendar is, so the frame fits it with no
+// scroll bar as it moves from the times to the form to "You're booked!".
+(function () {
+  if (!document.documentElement.hasAttribute('data-embed') || window.parent === window) return;
+  var main = document.querySelector('main');
+  function tell() { window.parent.postMessage({ bookHeight: Math.ceil(main.getBoundingClientRect().height) }, location.origin); }
+  if ('ResizeObserver' in window) new ResizeObserver(tell).observe(main);
+  tell();
+  window.addEventListener('load', tell);
 })();
 </script>
 </body>

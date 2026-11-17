@@ -109,10 +109,17 @@ ul,ol{padding:0;list-style:none}
 .vsl-play svg{width:22px;height:22px;margin-left:3px}
 .vsl-clock svg{margin:0}
 
-.cta{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:34px;text-align:center}
 .cta-sub{font-size:15px;color:var(--text);text-wrap:balance}
 .cta-sub a,.price-me a,.foot a[href^="sms"]{color:var(--accent-ink);font-weight:600;white-space:nowrap}
 .cta-sub a:hover,.price-me a:hover{text-decoration:underline}
+/* Ross's booking calendar under the video: /book?embed=1 in a frame, grown to fit by the script at the bottom */
+.cal-box{max-width:640px;margin:clamp(40px,5vw,56px) auto 0;text-align:center;scroll-margin-top:16px}
+.cal-title{font-family:var(--serif);font-weight:700;font-size:clamp(25px,3vw,32px);line-height:1.2;letter-spacing:-.01em;color:var(--ink);text-wrap:balance}
+.cal-frame{display:block;width:100%;height:620px;margin-top:20px;border:0;background:transparent;color-scheme:normal}
+html:not(.js) .cal-frame{display:none}
+.cal-box noscript .btn{margin-top:20px}
+.cal-box .cta-sub{margin-top:16px}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 
 /* Eduardo's review */
 .proof{padding:clamp(64px,8vw,90px) 0 0}
@@ -264,19 +271,28 @@ ul,ol{padding:0;list-style:none}
 </div>
 <!-- COOKIE_SCRIPT -->
 <script>
-// Every "Book a call" button opens /book. An ad's utm_* tags replace the page's own (utm_medium=vsl,
-// utm_campaign=<niche>), so Ross's email about the call and the admin chart say which ad it came from.
+// Ross's booking calendar under the video is /book?embed=1 in a frame. An ad's utm_* tags replace the page's own
+// (utm_medium=vsl, utm_campaign=<niche>), so Ross's email about the call and the admin chart say which ad it came from.
+// The calendar says how tall it is, and the frame grows to fit it. The other "Book a call" buttons jump to it.
 (function () {
+  var f = document.querySelector('iframe[data-cal]');
+  if (!f) return;
   var q = new URLSearchParams(location.search), ad = new URLSearchParams();
   ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) { if (q.get(k)) ad.set(k, q.get(k).slice(0, 200)); });
   if (q.get('fbclid')) ad.set('fbclid', q.get('fbclid').slice(0, 300));
-  if (!ad.toString()) return;
-  Array.prototype.forEach.call(document.querySelectorAll('a[data-book]'), function (a) {
-    var url = new URL(a.getAttribute('href'), location.href), keep = new URLSearchParams();
+  var url = new URL(f.getAttribute('data-src'), location.href);
+  if (ad.toString()) {
+    var keep = new URLSearchParams();
     if (url.searchParams.get('for')) keep.set('for', url.searchParams.get('for'));
     ad.forEach(function (v, k) { keep.set(k, v); });
-    a.setAttribute('href', '/book?' + keep);
+    keep.set('embed', '1');
+    url.search = '?' + keep;
+  }
+  window.addEventListener('message', function (e) {
+    if (e.origin !== location.origin || e.source !== f.contentWindow || !e.data || typeof e.data.bookHeight !== 'number') return;
+    f.style.height = Math.min(Math.max(e.data.bookHeight, 300), 2000) + 'px';
   });
+  f.src = url.pathname + url.search;
 })();
 // The words beside each drawing fade in as they reach the middle of the screen (all shown at once without it).
 (function () {

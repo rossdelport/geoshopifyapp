@@ -23,12 +23,19 @@ import raw from "../home/book.html?raw";
 // admin Overview (lib/book-stats.server.ts), reply 204. POST `answered=1` with `shopify` and `sales` (sent when someone
 // answers the two questions, with the same tags): counts their answers, once a person a day, even if they don't book.
 
-const page = raw
+const base = raw
   .replaceAll("__FONT_URL__", () => font)
   .replace("__ROSS_PHOTO__", () => rossPhoto)
-  .replace("<!-- SALES_OPTIONS -->", () => SALES.map((s) => `<option value="${s.value}"${s.fit ? "" : " data-small"}>${s.label}</option>`).join(""))
+  .replace("<!-- SALES_OPTIONS -->", () => SALES.map((s) => `<option value="${s.value}"${s.fit ? "" : " data-small"}>${s.label}</option>`).join(""));
+const page = base
   .replace("<!-- META_PIXEL -->", () => `<script>\n${pixelHead.trim()}\n</script>`)
   .replace("<!-- COOKIE_SCRIPT -->", () => `<script>\n${cookieScript.trim()}\n</script>`);
+
+// /book?embed=1 (Ross, 17 Nov 2026: "put the actual booking calender here instead of the button"): the calendar alone,
+// in a frame right under the video on the niche pages (/for/<niche>, app/lib/vsl/render.ts). No pixel or cookie notice
+// of its own: the page around it has them, and the calendar tells Meta through that page's pixel. It counts for the ad
+// chart once the calendar is on screen, and only this site may frame it.
+const embedPage = base.replace('<html lang="en">', () => '<html lang="en" data-embed>');
 
 // /book?for=<slug>, from a niche page (Ross, 17 Nov 2026: mortgage brokers, solar installers, buyers agents, tradies):
 // they aren't online stores, so the store questions go (the page's script sees data-for and shows the times at once)
@@ -46,11 +53,15 @@ function forNiche(html: string, slug: string): string {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const slots = await freeSlots();
-  const niche = bookingNiche(new URL(request.url).searchParams.get("for"));
-  const html = niche ? forNiche(page, niche.slug) : page;
+  const url = new URL(request.url);
+  const niche = bookingNiche(url.searchParams.get("for"));
+  const shell = url.searchParams.get("embed") === "1" ? embedPage : page;
+  const html = niche ? forNiche(shell, niche.slug) : shell;
   const res = serveHome(request, html.replace("__SLOTS__", () => JSON.stringify(slots).replace(/</g, "\\u003c")));
   // The free times change as calls are booked, so the page is never kept in a cache.
   res.headers.set("Cache-Control", "no-store");
+  // Only our own pages may show the calendar in a frame (no other site can dress it up as theirs).
+  res.headers.set("Content-Security-Policy", "frame-ancestors 'self'");
   return res;
 };
 

@@ -1,5 +1,5 @@
 // The niche pages for Ross's video ads, rankwithross.com.au/for/<niche> (Ross, 17 Nov 2026): one page per niche in the
-// niche test, Ross's video first with the "Book a call" button under it, then Eduardo's review, "Sound familiar?"
+// niche test, Ross's video first with his booking calendar under it, then Eduardo's review, "Sound familiar?"
 // (3 problems), the honest table against agencies, the 3 steps, the price and the questions (the look from 17 Nov 2026). Checks the house rules (no dashes, real sourced numbers, nothing promised that we
 // don't do), the booking links and the page frame (noindex, Meta pixel, cookie notice).
 
@@ -122,7 +122,7 @@ describe("the five niche pages", () => {
 });
 
 describe("the page at /for/<niche>", () => {
-  it("is Ross's video first, then the Book a call button, then the numbers", async () => {
+  it("is Ross's video first, then his booking calendar, then the numbers", async () => {
     for (const slug of VSL_SLUGS) {
       const res = await open(slug);
       expect(res.status, slug).toBe(200);
@@ -133,18 +133,25 @@ describe("the page at /for/<niche>", () => {
       expect(html.match(/<h1[\s>]/g), slug).toHaveLength(1);
       // the route filled everything in
       expect(html, slug).not.toMatch(/__[A-Z_]+__|<!-- (META_PIXEL|COOKIE_SCRIPT|VSL_BODY) -->/);
-      // Ross's video comes before the first big button, which opens /book
+      // Ross's video, then his booking calendar right under it (Ross, 17 Nov 2026: "put the actual booking calender here
+      // instead of the button"): /book?embed=1 in a frame, the old button only without JavaScript
       const video = html.indexOf('class="vsl');
-      const button = html.indexOf('class="btn btn-pri btn-lg"');
+      const calendar = html.indexOf('<div class="cal-box" id="book">');
       expect(video, slug).toBeGreaterThan(html.indexOf("<h1"));
-      expect(button, slug).toBeGreaterThan(video);
-      expect(html).toContain(`href="${vslBookHref(p).replace(/&/g, "&amp;")}" data-book>Book a free 15 minute call</a>`);
+      expect(calendar, slug).toBeGreaterThan(video);
+      expect(calendar, slug).toBeLessThan(html.indexOf('<section class="proof"'));
+      expect(html, slug).toContain(`<iframe class="cal-frame" data-cal data-src="${`${vslBookHref(p)}&embed=1`.replace(/&/g, "&amp;")}" title="Book a call with Ross" loading="lazy"></iframe>`);
+      expect(html, slug).toContain(`<noscript><a class="btn btn-pri btn-lg" href="${vslBookHref(p).replace(/&/g, "&amp;")}">Book a free 15 minute call</a></noscript>`);
+      expect(html.match(/<iframe/g), slug).toHaveLength(1);
+      // the other buttons jump to it
+      expect(html.match(/href="#book">Book a/g), slug).toHaveLength(2);
+      expect(html, slug).not.toContain("data-book");
       // the honest table: our price against Australian agencies' prices
       expect(html, slug).toContain(`<td class="me">${VSL_PRICE}</td><td>${AGENCY_PRICE}</td>`);
       expect(html, slug).toContain(p.big.line);
-      // the only links: /book, home, privacy, terms, texting Ross and the sources
+      // the only links: the calendar, /book, home, privacy, terms, texting Ross and the sources
       const links = new Set([...html.matchAll(/<a [^>]*href="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, "&")));
-      const allowed = new Set([vslBookHref(p), "/", "/privacy", "/privacy#cookies", "/terms", "sms:+61400369865", "https://terratanks.com.au/", "https://www.loom.com/share/3fef7fa99b224d459f02d072445e2213", ...p.sources.map((s) => s.url), ...VIDEO_SOURCES.map((s) => s.url)]);
+      const allowed = new Set(["#book", vslBookHref(p), "/", "/privacy", "/privacy#cookies", "/terms", "sms:+61400369865", "https://terratanks.com.au/", "https://www.loom.com/share/3fef7fa99b224d459f02d072445e2213", ...p.sources.map((s) => s.url), ...VIDEO_SOURCES.map((s) => s.url)]);
       for (const l of links) expect(allowed.has(l), `${slug}: ${l}`).toBe(true);
       expect(html, slug).not.toContain("A$");
       expect(html, slug).toContain("All prices on this page are in Australian dollars.");
@@ -163,7 +170,7 @@ describe("the page at /for/<niche>", () => {
       expect(html, slug).toContain(`<div class="vsl" data-loom="${embed.replace(/&/g, "&amp;")}">`);
       expect(html, slug).toContain('href="https://www.loom.com/share/3fef7fa99b224d459f02d072445e2213" target="_blank" rel="noopener" data-loom-play');
       expect(html, slug).toContain("<b>Hi, I’m Ross. Watch this first.</b><small>4:52</small>");
-      expect(html, slug).not.toMatch(/<iframe/);
+      expect(html, slug).not.toMatch(/<iframe[^>]*loom/);
       // the cover is a frame from the video (Ross, 17 Nov 2026), not his photo
       expect(html, slug).toMatch(/<img class="vsl-cover" src="[^"]*ross-video-cover\.webp" alt="" width="1280" height="720"/);
       expect(html, slug).toContain("f.src = box.getAttribute('data-loom');");
@@ -183,10 +190,13 @@ describe("the page at /for/<niche>", () => {
     expect(html).toContain(readFileSync(join(ROOT, "design", "overview", "parts", "47-cookies.js"), "utf8").trim());
   });
 
-  it("passes an ad's tags on to /book, keeping the niche", async () => {
+  it("passes an ad's tags on to the calendar, keeping the niche, and grows the frame to fit it", async () => {
     const html = await (await open("buyers-agents")).text();
     expect(html).toContain("if (url.searchParams.get('for')) keep.set('for', url.searchParams.get('for'));");
-    expect(html).toContain("a.setAttribute('href', '/book?' + keep);");
+    expect(html).toContain("keep.set('embed', '1');");
+    expect(html).toContain("f.src = url.pathname + url.search;");
+    // only the calendar's own frame, from this site, may set its height
+    expect(html).toContain("if (e.origin !== location.origin || e.source !== f.contentWindow || !e.data || typeof e.data.bookHeight !== 'number') return;");
   });
 
   it("shows Eduardo word for word on every page, with the note that results differ", async () => {
