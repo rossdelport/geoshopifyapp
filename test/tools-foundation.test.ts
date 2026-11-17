@@ -397,7 +397,7 @@ describe("publicHostRedirect", () => {
   const req = (url: string, init: RequestInit & { host?: string } = {}) =>
     new Request(url, { ...init, headers: { ...(init.host ? { host: init.host } : {}), ...((init.headers as Record<string, string>) ?? {}) } });
 
-  it("sends www, the old firstpicked.com.au and usegeo.app and the Railway address to https://rankwithross.com.au with the same path and query", () => {
+  it("sends www and the Railway address to https://rankwithross.com.au with the same path and query", () => {
     const www = publicHostRedirect(req("http://www.rankwithross.com.au/tools/ai-crawler-checker?utm_source=chatgpt.com", { host: "www.rankwithross.com.au" }));
     expect(www?.status).toBe(301);
     expect(www?.headers.get("location")).toBe("https://rankwithross.com.au/tools/ai-crawler-checker?utm_source=chatgpt.com");
@@ -412,33 +412,26 @@ describe("publicHostRedirect", () => {
     }
     // A store report link Ross shares from the Railway address goes to rankwithross.com.au.
     expect(publicHostRedirect(req("https://geo-shopify-app-production.up.railway.app/report/bondi-wash"))?.headers.get("location")).toBe("https://rankwithross.com.au/report/bondi-wash");
-    // The old brands' addresses (FirstPicked until 17 Nov 2026, GEO until 4 Nov): old links, ads, sign-in emails and
-    // Google land on the new site.
-    for (const host of ["firstpicked.com.au", "www.firstpicked.com.au", "usegeo.app", "www.usegeo.app"]) {
-      expect(publicHostRedirect(req(`https://${host}/blog/some-post?utm_source=x`))?.headers.get("location")).toBe("https://rankwithross.com.au/blog/some-post?utm_source=x");
-      expect(publicHostRedirect(req(`https://${host}/`))?.status).toBe(301);
-    }
-    expect(publicHostRedirect(req("https://usegeo.app/login/abc123"))?.headers.get("location")).toBe("https://rankwithross.com.au/login/abc123");
-    // A store report link Ross DM'd and a Facebook ad link from the FirstPicked days.
-    expect(publicHostRedirect(req("https://firstpicked.com.au/report/bondi-wash"))?.headers.get("location")).toBe("https://rankwithross.com.au/report/bondi-wash");
-    expect(publicHostRedirect(req("https://firstpicked.com.au/giveaway?utm_source=facebook&utm_content=ad1"))?.headers.get("location")).toBe("https://rankwithross.com.au/giveaway?utm_source=facebook&utm_content=ad1");
+    expect(publicHostRedirect(req("https://www.rankwithross.com.au/login/abc123"))?.headers.get("location")).toBe("https://rankwithross.com.au/login/abc123");
+    expect(publicHostRedirect(req("https://www.rankwithross.com.au/giveaway?utm_source=facebook&utm_content=ad1"))?.headers.get("location")).toBe("https://rankwithross.com.au/giveaway?utm_source=facebook&utm_content=ad1");
+    // Addresses that aren't ours to send on stay alone.
+    expect(publicHostRedirect(req("https://example.com/blog/x"))).toBeNull();
   });
 
   it("leaves rankwithross.com.au, POSTs, the app, Shopify admin visits, the tracking code, robots.txt and non-production alone", () => {
     expect(publicHostRedirect(req("https://rankwithross.com.au/tools", { host: "rankwithross.com.au" }))).toBeNull();
     expect(publicHostRedirect(req("https://www.rankwithross.com.au/tools", { method: "POST", body: "a=1" }))).toBeNull();
-    expect(publicHostRedirect(req("https://usegeo.app/check", { method: "POST", body: "a=1" }))).toBeNull();
-    // tracking code pasted before 17 Nov 2026 posts to firstpicked.com.au/api/pixel: it keeps working there
-    for (const host of ["geo-shopify-app-production.up.railway.app", "usegeo.app", "firstpicked.com.au"]) {
+    expect(publicHostRedirect(req("https://x.up.railway.app/check", { method: "POST", body: "a=1" }))).toBeNull();
+    for (const host of ["geo-shopify-app-production.up.railway.app", "www.rankwithross.com.au"]) {
       for (const p of ["/app", "/app/fixes", "/auth/login", "/webhooks/app/uninstalled", "/api/pixel", "/healthz", "/robots.txt", "/tools/x.data", "/stories/x.data", "/report/x.data"]) {
         expect(publicHostRedirect(req(`https://${host}${p}`)), `${host}${p}`).toBeNull();
       }
     }
     expect(publicHostRedirect(req("https://x.up.railway.app/?shop=a.myshopify.com"))).toBeNull();
-    expect(publicHostRedirect(req("https://usegeo.app/?embedded=1&host=abc"))).toBeNull();
+    expect(publicHostRedirect(req("https://www.rankwithross.com.au/?embedded=1&host=abc"))).toBeNull();
     process.env.NODE_ENV = "development";
     expect(publicHostRedirect(req("https://www.rankwithross.com.au/tools"))).toBeNull();
-    expect(publicHostRedirect(req("https://usegeo.app/tools"))).toBeNull();
+    expect(publicHostRedirect(req("https://x.up.railway.app/tools"))).toBeNull();
   });
 
   it("reads the host from x-forwarded-host, then host, then the URL", () => {
@@ -465,7 +458,7 @@ describe("publicHostRedirect", () => {
     // The root loader covers every page, including the ones without their own call (/dash, /book, /giveaway).
     for (const p of ["/dash", "/book", "/giveaway", "/login"]) {
       const moved = await Promise.resolve()
-        .then(() => root.loader({ request: req(`https://usegeo.app${p}`), params: {}, context: {} } as unknown as LoaderFunctionArgs))
+        .then(() => root.loader({ request: req(`https://x.up.railway.app${p}`), params: {}, context: {} } as unknown as LoaderFunctionArgs))
         .catch((r: Response) => r);
       expect((moved as Response).headers.get("location"), p).toBe(`https://rankwithross.com.au${p}`);
     }

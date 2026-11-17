@@ -66,7 +66,7 @@ export function adName(t: Pick<AdTags, "utmSource" | "utmCampaign" | "utmContent
   const named = t.utmContent || t.utmCampaign || t.utmSource;
   if (named) return named;
   if (t.fbclid || /(^|\.)(facebook|instagram)\.com$/.test(t.referrer ?? "")) return NO_NAME.meta;
-  if (/(^|\.)(rankwithross\.com\.au|firstpicked\.com\.au|usegeo\.app)$/.test(t.referrer ?? "")) return NO_NAME.home;
+  if (/(^|\.)(rankwithross\.com\.au|firstpicked\.com\.au|usegeo\.app)$/.test(t.referrer ?? "")) return NO_NAME.home; // older visits came from the old addresses
   return NO_NAME.none;
 }
 
