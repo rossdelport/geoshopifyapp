@@ -4,7 +4,7 @@ import { requireWebShop } from "../lib/web-auth.server";
 import { trackKeyFor, trackingCode } from "../lib/tracking-code.server";
 import { CopyButton, PageHead } from "../components/web";
 
-// firstpicked.com.au/dash/tracking: the store's tracking code and how to paste it into Shopify (Settings -> Customer
+// rankwithross.com.au/dash/tracking: the store's tracking code and how to paste it into Shopify (Settings -> Customer
 // events -> Add custom pixel). Once it sends its first visit, the dashboard shows AI clicks, orders and revenue.
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -36,7 +36,7 @@ export default function Tracking() {
             .
           </li>
           <li>
-            Click <b>Add custom pixel</b> and name it <b>FirstPicked</b>.
+            Click <b>Add custom pixel</b> and name it <b>Rank with Ross</b>.
           </li>
           <li>Delete the example code Shopify shows, then paste the code below.</li>
           <li>
@@ -60,7 +60,7 @@ export default function Tracking() {
           readOnly
           value={code}
           rows={12}
-          aria-label="Your FirstPicked tracking code"
+          aria-label="Your Rank with Ross tracking code"
         />
       </section>
     </>

@@ -337,7 +337,7 @@ describe("saved reports", () => {
 });
 
 describe("the report email", () => {
-  const url = "https://firstpicked.com.au/results/abcDEF123_-abcDEF123_-xy";
+  const url = "https://rankwithross.com.au/results/abcDEF123_-abcDEF123_-xy";
 
   it("says hello by first name, names the days and has one button", () => {
     const mail = reportEmail(sample(), url, "Sarah Jones");

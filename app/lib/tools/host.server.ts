@@ -1,7 +1,8 @@
-// One canonical host for the public website: https://firstpicked.com.au (the rebrand from GEO, Ross 4 Nov 2026).
-// The same Railway service can be reached on other addresses: www.firstpicked.com.au, the old usegeo.app and
+// One canonical host for the public website: https://rankwithross.com.au (Rank with Ross, Ross 17 Nov 2026; it was
+// FirstPicked at firstpicked.com.au from 4 Nov, and GEO at usegeo.app before that). The same Railway service can be
+// reached on other addresses: www.rankwithross.com.au, the old firstpicked.com.au (and its www), usegeo.app and
 // www.usegeo.app, and the *.up.railway.app address. A page viewed on any of them gets a 301 to the same path and
-// query on https://firstpicked.com.au, so old links, bookmarks, sign-in emails and Google all land on the new site.
+// query on https://rankwithross.com.au, so old links, ads, bookmarks, sign-in emails and Google all land on the new site.
 // What must keep working where it is never moves: the Shopify app (/app, /auth), webhooks, the tracking code's
 // endpoint (/api/pixel), /healthz, robots.txt
 // (bots must read it, not be redirected), POSTs, React Router's data requests and any URL carrying Shopify's
@@ -14,8 +15,8 @@ import { SITE, SITE_HOST } from "./site";
 /** Query parameters Shopify adds when the admin opens the app: those visits must stay where they are. */
 const SHOPIFY_PARAMS = ["shop", "host", "embedded", "hmac", "id_token"];
 
-/** The old brand's addresses (GEO, until 4 Nov 2026). */
-export const OLD_HOSTS = ["usegeo.app", "www.usegeo.app"];
+/** The old brands' addresses: FirstPicked (4 to 17 Nov 2026) and GEO (until 4 Nov 2026). */
+export const OLD_HOSTS = ["firstpicked.com.au", "www.firstpicked.com.au", "usegeo.app", "www.usegeo.app"];
 
 /** Paths that stay on whatever host they were asked on. */
 const STAYS = /^\/(app|auth|webhooks|api|healthz)(\/|$)|^\/robots\.txt$|\.data$/;
@@ -37,7 +38,7 @@ export function requestHost(request: Request): string {
 const isOtherHost = (host: string) => host === `www.${SITE_HOST}` || OLD_HOSTS.includes(host) || host.endsWith(".up.railway.app");
 
 /**
- * A 301 to https://firstpicked.com.au with the same path and query, when a page is viewed on another of our
+ * A 301 to https://rankwithross.com.au with the same path and query, when a page is viewed on another of our
  * addresses in production. Otherwise null. Loaders `throw` the response.
  */
 export function publicHostRedirect(request: Request): Response | null {

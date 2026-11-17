@@ -2,11 +2,11 @@ import { describe, expect, it } from "vitest";
 import { loginEmail } from "../app/lib/web-auth.server";
 
 describe("sign-in email", () => {
-  const url = "https://firstpicked.com.au/login/abc123";
+  const url = "https://rankwithross.com.au/login/abc123";
   const mail = loginEmail(url);
 
   it("has the purple button, the link twice and the plain text link", () => {
-    expect(mail.subject).toBe("Your FirstPicked sign-in link");
+    expect(mail.subject).toBe("Your Rank with Ross sign-in link");
     expect(mail.html).toContain('bgcolor="#6c5cf2"');
     expect(mail.html.split(`href="${url}"`)).toHaveLength(3);
     expect(mail.text).toContain(url);

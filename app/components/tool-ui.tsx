@@ -22,11 +22,11 @@ export interface ToolCtaProps {
   text: string;
   /** Where it goes: a home page section with the tool's ref, like "/?ref=tool-ai-crawler-checker#how". */
   href: string;
-  /** The line beside the button. Default: what FirstPicked is, in one sentence. */
+  /** The line beside the button. Default: what Rank with Ross is, in one sentence. */
   note?: string;
 }
 
-export const CTA_NOTE = "FirstPicked helps AI pick your products, then counts the orders AI sends you.";
+export const CTA_NOTE = "Rank with Ross helps AI pick your products, then counts the orders AI sends you.";
 
 const isTool = (p: ShellPage): p is ToolEntry => "slug" in p;
 
@@ -103,12 +103,12 @@ export function ToolShell({
         <div className="ck-band">
           <div className="ck-band-grid" aria-hidden="true" />
           <header className="ck-top">
-            <a className="ck-logo" href="/" aria-label="FirstPicked home">
+            <a className="ck-logo" href="/" aria-label="Rank with Ross home">
               <span className="ck-mark" aria-hidden="true">
                 <i />
                 <i />
               </span>
-              <span className="ck-word">FirstPicked</span>
+              <span className="ck-word">Rank with Ross</span>
             </a>
             <a className="ck-pill tl-pill" href={HUB.path}>
               {HUB.name}
@@ -449,7 +449,7 @@ export function Explainer({ id, question, children }: { id: string; question: st
   );
 }
 
-/** "How this tool works": the method, then "Maintained by FirstPicked. Updated {date}." */
+/** "How this tool works": the method, then "Maintained by Rank with Ross. Updated {date}." */
 export function HowItWorks({ items, updated }: { items: ReactNode[]; updated: string }) {
   return (
     <section className="tl-sec" aria-labelledby="how-it-works">
@@ -462,7 +462,7 @@ export function HowItWorks({ items, updated }: { items: ReactNode[]; updated: st
         ))}
       </ul>
       <p className="tl-maintained">
-        Maintained by FirstPicked. Updated <time dateTime={updated}>{formatUpdated(updated)}</time>.
+        Maintained by Rank with Ross. Updated <time dateTime={updated}>{formatUpdated(updated)}</time>.
       </p>
     </section>
   );
@@ -545,11 +545,11 @@ export function RelatedTools({ slugs }: { slugs: readonly ToolSlug[] }) {
   );
 }
 
-/** "Updated 11 October 2026 · Made by FirstPicked". */
+/** "Updated 11 October 2026 · Made by Rank with Ross". */
 export function UpdatedLine({ date }: { date: string }) {
   return (
     <p className="tl-updated">
-      Updated <time dateTime={date}>{formatUpdated(date)}</time> · Made by <a href="/">FirstPicked</a>
+      Updated <time dateTime={date}>{formatUpdated(date)}</time> · Made by <a href="/">Rank with Ross</a>
     </p>
   );
 }

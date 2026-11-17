@@ -10,9 +10,9 @@ import { PageHead } from "../components/web";
 import { storeBase } from "../lib/hub-paths";
 import { isLocal } from "../lib/business";
 
-// firstpicked.com.au/dash/guides: the guide calendar. One guide page per day slot, each answering a buying question AI
+// rankwithross.com.au/dash/guides: the guide calendar. One guide page per day slot, each answering a buying question AI
 // doesn't name the store for, written two days before its day and live on the day (lib/guide-calendar.server.ts).
-// A month view like RankPill's article calendar (Ross, 2026-10-16), in FirstPicked's style; click a day to read the page.
+// A month view like RankPill's article calendar (Ross, 2026-10-16), in Rank with Ross's style; click a day to read the page.
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { shop } = await requireWebShop(request);

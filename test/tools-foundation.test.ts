@@ -80,7 +80,7 @@ describe("tool registry", () => {
   it("keeps titles, descriptions and short lines within their lengths, ending titles with the brand", () => {
     for (const t of TOOLS) {
       expect(t.title.length, t.title).toBeLessThan(60);
-      expect(t.title.endsWith(" | FirstPicked"), t.title).toBe(true);
+      expect(t.title.endsWith(" | Rank with Ross"), t.title).toBe(true);
       expect(t.description.length, t.description).toBeLessThan(155);
       expect(t.short.length, t.short).toBeLessThan(95);
       expect(t.timing.length).toBeGreaterThan(0);
@@ -158,7 +158,7 @@ describe("house rules in the shared copy", () => {
   it("uses no jargon in the registry copy", () => {
     const words = TOOLS.flatMap((t) => [t.name, t.h1, t.title, t.description, t.short]).join(" ") + HUB.intro + HUB.description;
     expect(words).not.toMatch(/\bAEO\b|\bLLMs?\b|generative engine optimi[sz]ation/);
-    expect(words.replace(/\| FirstPicked/g, "")).not.toMatch(/\bGEO\b/);
+    expect(words.replace(/\| Rank with Ross/g, "")).not.toMatch(/\bGEO\b/);
   });
 });
 
@@ -173,13 +173,13 @@ describe("pageMeta and JSON-LD", () => {
     expect(m.title?.title).toBe(tool.title);
     expect(m.name("description")).toBe(tool.description);
     expect(m.canonicals).toHaveLength(1);
-    expect(m.canonicals[0].href).toBe(`https://firstpicked.com.au${tool.path}`);
+    expect(m.canonicals[0].href).toBe(`https://rankwithross.com.au${tool.path}`);
     expect(m.canonicals[0].href.startsWith(SITE)).toBe(true);
     expect(m.prop("og:url")).toBe(m.canonicals[0].href);
     expect(m.prop("og:type")).toBe("website");
-    expect(m.prop("og:site_name")).toBe("FirstPicked");
+    expect(m.prop("og:site_name")).toBe("Rank with Ross");
     expect(m.prop("og:title")).toBe(tool.title);
-    expect(m.prop("og:image")).toBe(`https://firstpicked.com.au/og/ai-overview-checker.png`);
+    expect(m.prop("og:image")).toBe(`https://rankwithross.com.au/og/ai-overview-checker.png`);
     expect(m.prop("og:image:width")).toBe("1200");
     expect(m.prop("og:image:height")).toBe("630");
     expect(m.prop("og:image:alt")).toBe(tool.ogAlt);
@@ -205,12 +205,12 @@ describe("pageMeta and JSON-LD", () => {
     const page = byType("WebPage");
     expect(page.dateModified).toBe(tool.updated);
     expect(page.name).toBe(stripBrand(tool.title));
-    expect(page.name.endsWith("| FirstPicked")).toBe(false);
-    expect(page.isPartOf["@id"]).toBe("https://firstpicked.com.au/#website");
+    expect(page.name.endsWith("| Rank with Ross")).toBe(false);
+    expect(page.isPartOf["@id"]).toBe("https://rankwithross.com.au/#website");
     const crumbs = byType("BreadcrumbList").itemListElement;
     expect(crumbs.map((c: { name: string }) => c.name)).toEqual(["Home", "Free tools", tool.name]);
-    expect(crumbs[0].item).toBe("https://firstpicked.com.au/");
-    expect(crumbs[1].item).toBe("https://firstpicked.com.au/tools");
+    expect(crumbs[0].item).toBe("https://rankwithross.com.au/");
+    expect(crumbs[1].item).toBe("https://rankwithross.com.au/tools");
     expect(crumbs[2]).not.toHaveProperty("item");
     const faq = byType("FAQPage").mainEntity.map((q: any) => ({ q: q.name, a: q.acceptedAnswer.text }));
     expect(faq).toEqual(FAQS);
@@ -228,7 +228,7 @@ describe("pageMeta and JSON-LD", () => {
     const list = ld["@graph"].find((n) => n["@type"] === "ItemList")!;
     expect(list.itemListElement.map((i: { url: string }) => i.url)).toEqual(TOOLS.map((t) => abs(t.path)));
     const page = ld["@graph"].find((n) => n["@type"] === "CollectionPage")!;
-    expect(page["@id"]).toBe("https://firstpicked.com.au/tools");
+    expect(page["@id"]).toBe("https://rankwithross.com.au/tools");
     expect(page.dateModified).toBe(HUB.updated);
     const crumbs = ld["@graph"].find((n) => n["@type"] === "BreadcrumbList")!.itemListElement;
     expect(crumbs.map((c: { name: string }) => c.name)).toEqual(["Home", "Free tools"]);
@@ -236,17 +236,17 @@ describe("pageMeta and JSON-LD", () => {
   });
 
   it("marks a noindex page without a canonical (the 404 page) and defaults the image to the hub's", () => {
-    const n = metaOf(pageMeta({ path: "/tools", title: "Not found | FirstPicked", description: "x", noindex: true }));
+    const n = metaOf(pageMeta({ path: "/tools", title: "Not found | Rank with Ross", description: "x", noindex: true }));
     expect(n.name("robots")).toBe("noindex");
     expect(n.canonicals).toHaveLength(0);
     expect(n.prop("og:url")).toBeUndefined();
-    expect(n.prop("og:image")).toBe("https://firstpicked.com.au/og/tools.png");
+    expect(n.prop("og:image")).toBe("https://rankwithross.com.au/og/tools.png");
     expect(n.prop("og:image:alt")).toBe(HUB.ogAlt);
   });
 
   it("makes absolute URLs on the canonical origin", () => {
-    expect(abs("/")).toBe("https://firstpicked.com.au/");
-    expect(abs("/tools")).toBe("https://firstpicked.com.au/tools");
+    expect(abs("/")).toBe("https://rankwithross.com.au/");
+    expect(abs("/tools")).toBe("https://rankwithross.com.au/tools");
   });
 });
 
@@ -397,34 +397,39 @@ describe("publicHostRedirect", () => {
   const req = (url: string, init: RequestInit & { host?: string } = {}) =>
     new Request(url, { ...init, headers: { ...(init.host ? { host: init.host } : {}), ...((init.headers as Record<string, string>) ?? {}) } });
 
-  it("sends www, the old usegeo.app and the Railway address to https://firstpicked.com.au with the same path and query", () => {
-    const www = publicHostRedirect(req("http://www.firstpicked.com.au/tools/ai-crawler-checker?utm_source=chatgpt.com", { host: "www.firstpicked.com.au" }));
+  it("sends www, the old firstpicked.com.au and usegeo.app and the Railway address to https://rankwithross.com.au with the same path and query", () => {
+    const www = publicHostRedirect(req("http://www.rankwithross.com.au/tools/ai-crawler-checker?utm_source=chatgpt.com", { host: "www.rankwithross.com.au" }));
     expect(www?.status).toBe(301);
-    expect(www?.headers.get("location")).toBe("https://firstpicked.com.au/tools/ai-crawler-checker?utm_source=chatgpt.com");
+    expect(www?.headers.get("location")).toBe("https://rankwithross.com.au/tools/ai-crawler-checker?utm_source=chatgpt.com");
     const railway = publicHostRedirect(req("http://x.up.railway.app/", { host: "x.up.railway.app" }));
     expect(railway?.status).toBe(301);
-    expect(railway?.headers.get("location")).toBe("https://firstpicked.com.au/");
-    expect(publicHostRedirect(req("https://www.firstpicked.com.au/tools"))?.headers.get("location")).toBe("https://firstpicked.com.au/tools");
+    expect(railway?.headers.get("location")).toBe("https://rankwithross.com.au/");
+    expect(publicHostRedirect(req("https://www.rankwithross.com.au/tools"))?.headers.get("location")).toBe("https://rankwithross.com.au/tools");
     // Railway's proxy says which host the visitor asked for
-    expect(publicHostRedirect(req("http://10.0.0.5:8080/privacy", { headers: { "x-forwarded-host": "www.firstpicked.com.au" } }))?.status).toBe(301);
+    expect(publicHostRedirect(req("http://10.0.0.5:8080/privacy", { headers: { "x-forwarded-host": "www.rankwithross.com.au" } }))?.status).toBe(301);
     for (const p of ["/check", "/tools", "/sitemap.xml", "/llms.txt", "/privacy", "/stories", "/stories/viv-chatgpt-sales", "/report/bondi-wash", "/report-maker", "/blog", "/compare/x", "/book", "/giveaway", "/check/abc123"]) {
-      expect(publicHostRedirect(req(`https://www.firstpicked.com.au${p}`)), p).not.toBeNull();
+      expect(publicHostRedirect(req(`https://www.rankwithross.com.au${p}`)), p).not.toBeNull();
     }
-    // A store report link Ross shares from the Railway address goes to firstpicked.com.au.
-    expect(publicHostRedirect(req("https://geo-shopify-app-production.up.railway.app/report/bondi-wash"))?.headers.get("location")).toBe("https://firstpicked.com.au/report/bondi-wash");
-    // The old brand's address (FirstPicked, until 4 Nov 2026): old links, sign-in emails and Google land on the new site.
-    for (const host of ["usegeo.app", "www.usegeo.app"]) {
-      expect(publicHostRedirect(req(`https://${host}/blog/some-post?utm_source=x`))?.headers.get("location")).toBe("https://firstpicked.com.au/blog/some-post?utm_source=x");
+    // A store report link Ross shares from the Railway address goes to rankwithross.com.au.
+    expect(publicHostRedirect(req("https://geo-shopify-app-production.up.railway.app/report/bondi-wash"))?.headers.get("location")).toBe("https://rankwithross.com.au/report/bondi-wash");
+    // The old brands' addresses (FirstPicked until 17 Nov 2026, GEO until 4 Nov): old links, ads, sign-in emails and
+    // Google land on the new site.
+    for (const host of ["firstpicked.com.au", "www.firstpicked.com.au", "usegeo.app", "www.usegeo.app"]) {
+      expect(publicHostRedirect(req(`https://${host}/blog/some-post?utm_source=x`))?.headers.get("location")).toBe("https://rankwithross.com.au/blog/some-post?utm_source=x");
       expect(publicHostRedirect(req(`https://${host}/`))?.status).toBe(301);
     }
-    expect(publicHostRedirect(req("https://usegeo.app/login/abc123"))?.headers.get("location")).toBe("https://firstpicked.com.au/login/abc123");
+    expect(publicHostRedirect(req("https://usegeo.app/login/abc123"))?.headers.get("location")).toBe("https://rankwithross.com.au/login/abc123");
+    // A store report link Ross DM'd and a Facebook ad link from the FirstPicked days.
+    expect(publicHostRedirect(req("https://firstpicked.com.au/report/bondi-wash"))?.headers.get("location")).toBe("https://rankwithross.com.au/report/bondi-wash");
+    expect(publicHostRedirect(req("https://firstpicked.com.au/giveaway?utm_source=facebook&utm_content=ad1"))?.headers.get("location")).toBe("https://rankwithross.com.au/giveaway?utm_source=facebook&utm_content=ad1");
   });
 
-  it("leaves firstpicked.com.au, POSTs, the app, Shopify admin visits, the tracking code, robots.txt and non-production alone", () => {
-    expect(publicHostRedirect(req("https://firstpicked.com.au/tools", { host: "firstpicked.com.au" }))).toBeNull();
-    expect(publicHostRedirect(req("https://www.firstpicked.com.au/tools", { method: "POST", body: "a=1" }))).toBeNull();
+  it("leaves rankwithross.com.au, POSTs, the app, Shopify admin visits, the tracking code, robots.txt and non-production alone", () => {
+    expect(publicHostRedirect(req("https://rankwithross.com.au/tools", { host: "rankwithross.com.au" }))).toBeNull();
+    expect(publicHostRedirect(req("https://www.rankwithross.com.au/tools", { method: "POST", body: "a=1" }))).toBeNull();
     expect(publicHostRedirect(req("https://usegeo.app/check", { method: "POST", body: "a=1" }))).toBeNull();
-    for (const host of ["geo-shopify-app-production.up.railway.app", "usegeo.app"]) {
+    // tracking code pasted before 17 Nov 2026 posts to firstpicked.com.au/api/pixel: it keeps working there
+    for (const host of ["geo-shopify-app-production.up.railway.app", "usegeo.app", "firstpicked.com.au"]) {
       for (const p of ["/app", "/app/fixes", "/auth/login", "/webhooks/app/uninstalled", "/api/pixel", "/healthz", "/robots.txt", "/tools/x.data", "/stories/x.data", "/report/x.data"]) {
         expect(publicHostRedirect(req(`https://${host}${p}`)), `${host}${p}`).toBeNull();
       }
@@ -432,39 +437,39 @@ describe("publicHostRedirect", () => {
     expect(publicHostRedirect(req("https://x.up.railway.app/?shop=a.myshopify.com"))).toBeNull();
     expect(publicHostRedirect(req("https://usegeo.app/?embedded=1&host=abc"))).toBeNull();
     process.env.NODE_ENV = "development";
-    expect(publicHostRedirect(req("https://www.firstpicked.com.au/tools"))).toBeNull();
+    expect(publicHostRedirect(req("https://www.rankwithross.com.au/tools"))).toBeNull();
     expect(publicHostRedirect(req("https://usegeo.app/tools"))).toBeNull();
   });
 
   it("reads the host from x-forwarded-host, then host, then the URL", () => {
-    expect(requestHost(req("http://a/", { headers: { "x-forwarded-host": "WWW.firstpicked.com.au:443, proxy" }, host: "b" }))).toBe("www.firstpicked.com.au");
-    expect(requestHost(req("http://a/", { host: "FirstPicked.com.au:80" }))).toBe("firstpicked.com.au");
+    expect(requestHost(req("http://a/", { headers: { "x-forwarded-host": "WWW.rankwithross.com.au:443, proxy" }, host: "b" }))).toBe("www.rankwithross.com.au");
+    expect(requestHost(req("http://a/", { host: "RankWithRoss.com.au:80" }))).toBe("rankwithross.com.au");
     expect(requestHost(req("https://c.example/"))).toBe("c.example");
   });
 
   it("runs in the layout, home, /check and privacy loaders", async () => {
     const thrown = await Promise.resolve()
-      .then(() => toolsLayout.loader({ request: req("https://www.firstpicked.com.au/tools"), params: {}, context: {} } as unknown as LoaderFunctionArgs))
+      .then(() => toolsLayout.loader({ request: req("https://www.rankwithross.com.au/tools"), params: {}, context: {} } as unknown as LoaderFunctionArgs))
       .catch((r: Response) => r);
     expect((thrown as Response).status).toBe(301);
-    const homeMoved = await Promise.resolve(home.loader({ request: req("https://www.firstpicked.com.au/"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).catch(
+    const homeMoved = await Promise.resolve(home.loader({ request: req("https://www.rankwithross.com.au/"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).catch(
       (r: Response) => r,
     );
     expect((homeMoved as Response).status).toBe(301);
     // Shopify admin visits still go into the app first
-    const shop = await Promise.resolve(home.loader({ request: req("https://www.firstpicked.com.au/?shop=a.myshopify.com"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).catch(
+    const shop = await Promise.resolve(home.loader({ request: req("https://www.rankwithross.com.au/?shop=a.myshopify.com"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).catch(
       (r: Response) => r,
     );
     expect((shop as Response).headers.get("location")).toBe("/app?shop=a.myshopify.com");
-    expect(toolsLayout.loader({ request: req("https://firstpicked.com.au/tools"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).toBeNull();
+    expect(toolsLayout.loader({ request: req("https://rankwithross.com.au/tools"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).toBeNull();
     // The root loader covers every page, including the ones without their own call (/dash, /book, /giveaway).
     for (const p of ["/dash", "/book", "/giveaway", "/login"]) {
       const moved = await Promise.resolve()
         .then(() => root.loader({ request: req(`https://usegeo.app${p}`), params: {}, context: {} } as unknown as LoaderFunctionArgs))
         .catch((r: Response) => r);
-      expect((moved as Response).headers.get("location"), p).toBe(`https://firstpicked.com.au${p}`);
+      expect((moved as Response).headers.get("location"), p).toBe(`https://rankwithross.com.au${p}`);
     }
-    expect(root.loader({ request: req("https://firstpicked.com.au/dash"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).toBeNull();
+    expect(root.loader({ request: req("https://rankwithross.com.au/dash"), params: {}, context: {} } as unknown as LoaderFunctionArgs)).toBeNull();
   });
 });
 
@@ -472,22 +477,22 @@ describe("publicHostRedirect", () => {
 
 describe("allowedPost and the tool form", () => {
   const post = (headers: Record<string, string>, body: BodyInit = "url=a.com") =>
-    new Request("http://firstpicked.com.au/tools/ai-crawler-checker", { method: "POST", body, headers: { "content-type": "application/x-www-form-urlencoded", ...headers } });
+    new Request("http://rankwithross.com.au/tools/ai-crawler-checker", { method: "POST", body, headers: { "content-type": "application/x-www-form-urlencoded", ...headers } });
 
   it("allows our own pages, www to apex, and requests with no Origin", () => {
     expect(allowedPost(post({ "sec-fetch-site": "same-origin" }))).toBe(true);
-    expect(allowedPost(post({ "sec-fetch-site": "same-site", origin: "https://www.firstpicked.com.au" }))).toBe(true);
-    expect(allowedPost(post({ origin: "https://www.firstpicked.com.au", host: "firstpicked.com.au" }))).toBe(true);
-    expect(allowedPost(post({ origin: "https://firstpicked.com.au", host: "www.firstpicked.com.au" }))).toBe(true);
+    expect(allowedPost(post({ "sec-fetch-site": "same-site", origin: "https://www.rankwithross.com.au" }))).toBe(true);
+    expect(allowedPost(post({ origin: "https://www.rankwithross.com.au", host: "rankwithross.com.au" }))).toBe(true);
+    expect(allowedPost(post({ origin: "https://rankwithross.com.au", host: "www.rankwithross.com.au" }))).toBe(true);
     expect(allowedPost(post({ origin: "https://geo-shopify-app-production.up.railway.app", host: "geo-shopify-app-production.up.railway.app" }))).toBe(true);
     expect(allowedPost(post({ origin: "http://localhost:4100", host: "localhost:4100" }))).toBe(true);
     expect(allowedPost(post({}))).toBe(true);
   });
 
   it("refuses other websites", () => {
-    expect(allowedPost(post({ "sec-fetch-site": "cross-site", origin: "https://firstpicked.com.au" }))).toBe(false);
-    expect(allowedPost(post({ origin: "https://evil.example", host: "firstpicked.com.au" }))).toBe(false);
-    expect(allowedPost(post({ origin: "null", host: "firstpicked.com.au" }))).toBe(false);
+    expect(allowedPost(post({ "sec-fetch-site": "cross-site", origin: "https://rankwithross.com.au" }))).toBe(false);
+    expect(allowedPost(post({ origin: "https://evil.example", host: "rankwithross.com.au" }))).toBe(false);
+    expect(allowedPost(post({ origin: "null", host: "rankwithross.com.au" }))).toBe(false);
   });
 
   it("reads small forms, refuses big ones, and spots the honeypot", async () => {
@@ -788,7 +793,7 @@ describe("the tool page frame and its parts", () => {
         page: tool,
         hero: createElement(ui.ToolHero, { h1: tool.h1, intro: "The AI Crawler Checker is a free tool that reads robots.txt.", timing: tool.timing }),
         result: createElement("div", null, createElement(ui.SampleLabel, null, "A made-up robots.txt"), createElement(ui.ResultHeading, null, "2 bots are blocked")),
-        cta: { text: "See how FirstPicked gets you into AI answers", href: "/?ref=tool-ai-crawler-checker#how" },
+        cta: { text: "See how Rank with Ross gets you into AI answers", href: "/?ref=tool-ai-crawler-checker#how" },
         announce: "Your result is ready",
       },
       createElement(ui.WhatItChecks, { items: ["Which AI bots may read your pages"] }),
@@ -818,8 +823,8 @@ describe("the tool page frame and its parts", () => {
     expect(out).not.toContain('>Example</span>'); // no "Example" pill (Ross, 2 Nov 2026)
     expect(out).toContain('tabindex="-1" data-tl-focus=""');
     expect(out).toContain('<h2 class="ck-h2" id="what-is-gptbot">What is GPTBot?</h2>');
-    expect(text(out)).toContain("Maintained by FirstPicked. Updated 11 October 2026.");
-    expect(text(out)).toContain("Updated 11 October 2026 · Made by FirstPicked");
+    expect(text(out)).toContain("Maintained by Rank with Ross. Updated 11 October 2026.");
+    expect(text(out)).toContain("Updated 11 October 2026 · Made by Rank with Ross");
     expect(out.indexOf("tl-foot")).toBeGreaterThan(out.indexOf("tl-updated"));
   });
 
@@ -881,7 +886,7 @@ describe("the site footer", () => {
 
   it("links the hub, all 7 tools in registry order, and the main pages (with the stories and the blog), as plain links", () => {
     expect(footer).toContain('<nav class="tl-foot-tools" aria-label="Free tools">');
-    expect(footer).toContain('<nav class="tl-foot-site" aria-label="FirstPicked">');
+    expect(footer).toContain('<nav class="tl-foot-site" aria-label="Rank with Ross">');
     expect(footer).toContain('<a href="/tools">All free tools</a>');
     const positions = TOOLS.map((t) => footer.indexOf(`<a href="${t.path}">${t.name}</a>`));
     for (const p of positions) expect(p).toBeGreaterThan(-1);
@@ -889,7 +894,7 @@ describe("the site footer", () => {
     for (const [label, href] of [["Home", "/"], ["How it works", "/#how"], ["Pricing", "/#pricing"], ["Stories", "/stories"], ["Blog", "/blog"], ["Compare", "/compare"], ["SEO in Perth", "/seo-agency-perth"], ["AI SEO agency", "/ai-seo-agency"], ["Shopify SEO", "/shopify-seo-agency"], ["Privacy", "/privacy"], ["Terms", "/terms"]]) {
       expect(footer).toContain(`<a href="${href}">${label}</a>`);
     }
-    expect(footer).toContain("FirstPicked · Helps ChatGPT &amp; co recommend your products");
+    expect(footer).toContain("Rank with Ross · Helps ChatGPT &amp; co recommend your products");
     expect(footer).not.toMatch(/onClick|<button/);
   });
 
@@ -916,10 +921,10 @@ describe("the home page links every tool", () => {
 
   it("has one canonical, share tags and the same organisation as the tool pages", () => {
     expect(page.match(/rel="canonical"/g)).toHaveLength(1);
-    expect(page).toContain('<link rel="canonical" href="https://firstpicked.com.au/">');
-    expect(page).toContain('<meta property="og:url" content="https://firstpicked.com.au/">');
-    expect(page).toContain('<meta property="og:image" content="https://firstpicked.com.au/og/home.png">');
-    expect(page).toContain('<meta property="og:title" content="FirstPicked · Get your products recommended by AI">');
+    expect(page).toContain('<link rel="canonical" href="https://rankwithross.com.au/">');
+    expect(page).toContain('<meta property="og:url" content="https://rankwithross.com.au/">');
+    expect(page).toContain('<meta property="og:image" content="https://rankwithross.com.au/og/home.png">');
+    expect(page).toContain('<meta property="og:title" content="Rank with Ross · Get your products recommended by AI">');
     expect(page).toContain('<meta name="twitter:card" content="summary_large_image">');
     const json = /<script type="application\/ld\+json">([^<]*)<\/script>/.exec(page)?.[1];
     expect(json).toBeTruthy();
@@ -935,10 +940,10 @@ describe("the hub page", () => {
   const m = metaOf(callMeta(hub.meta));
 
   it("has its own head: title, description, canonical /tools and the hub JSON-LD", () => {
-    expect(m.title?.title).toBe("Free AI Search Tools for Shopify Stores | FirstPicked");
+    expect(m.title?.title).toBe("Free AI Search Tools for Shopify Stores | Rank with Ross");
     expect(m.name("description")).toBe(HUB.description);
-    expect(m.canonicals.map((c) => c.href)).toEqual(["https://firstpicked.com.au/tools"]);
-    expect(m.prop("og:image")).toBe("https://firstpicked.com.au/og/tools.png");
+    expect(m.canonicals.map((c) => c.href)).toEqual(["https://rankwithross.com.au/tools"]);
+    expect(m.prop("og:image")).toBe("https://rankwithross.com.au/og/tools.png");
     expect(m.ld).toEqual(hubJsonLd());
     expect(m.name("robots")).toBeUndefined();
   });
@@ -954,9 +959,9 @@ describe("the hub page", () => {
     }
     expect(text(out)).toContain("Not sure? Start with the AI Visibility Checker to see if AI recommends your product today.");
     expect(out.match(/tl-cta"/g)).toHaveLength(1);
-    expect(out).toMatch(/<a class="ck-btn ck-btn-dark tl-cta" href="\/\?ref=tools-hub#how">See how FirstPicked works/);
+    expect(out).toMatch(/<a class="ck-btn ck-btn-dark tl-cta" href="\/\?ref=tools-hub#how">See how Rank with Ross works/);
     expect(out).toContain('<span aria-current="page">Free tools</span>');
-    expect(text(out)).toContain("Updated 11 October 2026 · Made by FirstPicked");
+    expect(text(out)).toContain("Updated 11 October 2026 · Made by Rank with Ross");
     expect(out).not.toContain("Free · No sign-up ·");
     expect(out).toContain('aria-label="Free tools"');
   });

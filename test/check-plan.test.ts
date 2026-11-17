@@ -19,7 +19,7 @@ const EN_DASH = String.fromCharCode(0x2013);
 describe("buildActionPlan", () => {
   const plan = buildActionPlan(input());
 
-  it("orders the steps: page fixes, lost questions, sites, rivals, then FirstPicked", () => {
+  it("orders the steps: page fixes, lost questions, sites, rivals, then Rank with Ross", () => {
     expect(plan.steps.map((s) => s.kind)).toEqual(["page", "questions", "sites", "rivals", "geo"]);
   });
 
@@ -62,10 +62,10 @@ describe("buildActionPlan", () => {
     expect(rivals.items).toEqual(sampleReport.competitors.map((c) => ({ label: c.name, detail: `Named in ${c.count} of ${sampleReport.answerCount} answers.` })));
   });
 
-  it("ends with FirstPicked: the waitlist link and the price", () => {
+  it("ends with Rank with Ross: the waitlist link and the price", () => {
     const geo = plan.steps.at(-1)!;
-    expect(geo.title).toBe("Let FirstPicked do this for you");
-    expect(geo.items[0]).toEqual({ label: "Join the FirstPicked waitlist", detail: "FirstPicked is A$297 a month, done for you, with no lock-in contract. We’ll reach out shortly.", urls: [INSTALL] });
+    expect(geo.title).toBe("Let Rank with Ross do this for you");
+    expect(geo.items[0]).toEqual({ label: "Join the Rank with Ross waitlist", detail: "Rank with Ross is A$297 a month, done for you, with no lock-in contract. We’ll reach out shortly.", urls: [INSTALL] });
   });
 
   it("says what the plan holds, for the page's locked teaser", () => {

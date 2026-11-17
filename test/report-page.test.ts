@@ -27,7 +27,7 @@ const text = (html: string) =>
     .replace(/\s+/g, " ");
 
 const load = (slug = "sample-dish-co") =>
-  route.loader({ request: new Request(`https://firstpicked.com.au/report/${slug}`), params: { slug }, context: {} } as unknown as LoaderFunctionArgs);
+  route.loader({ request: new Request(`https://rankwithross.com.au/report/${slug}`), params: { slug }, context: {} } as unknown as LoaderFunctionArgs);
 
 /** The page's HTML for a report, the way the route renders it from its loader's data. */
 async function render(data: StoreReportData = fixture()): Promise<string> {
@@ -80,7 +80,7 @@ describe("report page headers and meta", () => {
     vi.mocked(getReport).mockResolvedValue({ slug: "sample-dish-co", data: fixture() });
     const data = await load();
     const tags = route.meta({ data } as unknown as Parameters<typeof route.meta>[0]);
-    expect(tags).toContainEqual({ title: "Sample Dish Co: how to get picked by AI | FirstPicked" });
+    expect(tags).toContainEqual({ title: "Sample Dish Co: how to get picked by AI | Rank with Ross" });
     expect(tags).toContainEqual({ name: "robots", content: "noindex" });
   });
 });
@@ -90,7 +90,7 @@ describe("report page", () => {
     const html = await render();
     const words = text(html);
     expect(html).toContain('<h1 class="rp-h1">Sample Dish Co</h1>');
-    expect(words).toContain("Made with FirstPicked · Checked 3 Nov 2026");
+    expect(words).toContain("Made with Rank with Ross · Checked 3 Nov 2026");
     expect(words).toContain("sampledishco.example · Australia");
     expect(words).toContain("Plant based dish soap and refills for home kitchens.");
     expect(words).toContain("They named Sample Dish Co 2 times out of 24.");
@@ -249,11 +249,11 @@ describe("report page", () => {
       }
     }
     expect(html.match(/class="rp-box"/g)).toHaveLength(months.flatMap((m) => m.steps).length);
-    // Never how FirstPicked works, and never the old plan's words.
+    // Never how Rank with Ross works, and never the old plan's words.
     for (const old of ["We start the work", "Up to 12", "Up to 40", "We ask ChatGPT"]) expect(text(html)).not.toContain(old);
-    expect(text(html)).toContain("FirstPicked isn't linked to Sample Dish Co. Want this report taken down? Email ross@firstpicked.com.au .");
-    expect(html).toContain('<a href="mailto:ross@firstpicked.com.au">ross@firstpicked.com.au</a>');
-    expect(html).toContain('<a href="https://firstpicked.com.au/">firstpicked.com.au</a>');
+    expect(text(html)).toContain("Rank with Ross isn't linked to Sample Dish Co. Want this report taken down? Email ross@rankwithross.com.au .");
+    expect(html).toContain('<a href="mailto:ross@rankwithross.com.au">ross@rankwithross.com.au</a>');
+    expect(html).toContain('<a href="https://rankwithross.com.au/">rankwithross.com.au</a>');
     expect(text(html)).toContain("Every store is different, so we can't promise exact results.");
   });
 

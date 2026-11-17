@@ -41,7 +41,7 @@ const STATUS_DONE = { active: "The work is running again.", paused: "Paused. Not
 
 export const action = async ({ request }: ActionFunctionArgs): Promise<ClientActionResult> => {
   const { user, shop, client } = await requireClient(request);
-  if (fromAnotherSite(request)) return { ok: false, error: "Please use the buttons on FirstPicked." };
+  if (fromAnotherSite(request)) return { ok: false, error: "Please use the buttons on Rank with Ross." };
   const form = await request.formData();
   const intent = String(form.get("intent") ?? "");
   switch (intent) {

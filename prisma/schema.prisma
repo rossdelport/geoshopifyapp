@@ -515,7 +515,7 @@ model ReportEmail {
   @@index([createdAt])
 }
 
-// GEO web app accounts (firstpicked.com.au/login). Sign in by email link only: no passwords.
+// GEO web app accounts (rankwithross.com.au/login). Sign in by email link only: no passwords.
 model User {
   id          String    @id @default(cuid())
   email       String    @unique // lowercased
@@ -600,7 +600,7 @@ model SupportFlag {
   @@index([status, createdAt])
 }
 
-// GEO's own blog at firstpicked.com.au/blog (Ross, 2026-10-15: practise what we preach). Written by Claude from the
+// GEO's own blog at rankwithross.com.au/blog (Ross, 2026-10-15: practise what we preach). Written by Claude from the
 // knowledge pack (docs/facts.md, docs/geo-research.md, the stories, docs/ask-geo-guide.md), fact-checked, and
 // published on its own three times a week (lib/blog.server.ts). Ross can hide a post in Admin.
 /** Every order a store's tracking code reports, once: a reloaded thank-you page or a replayed request can't count twice. */
@@ -655,7 +655,7 @@ model GuideSlot {
   @@index([shopId, status])
 }
 
-/// Ross's Google Calendar for the book-a-call page (firstpicked.com.au/book): one row, id "booking", saved when Ross connects
+/// Ross's Google Calendar for the book-a-call page (rankwithross.com.au/book): one row, id "booking", saved when Ross connects
 /// it in Admin > System. The refresh token lets the server read his free times and add booked calls.
 model CalendarLink {
   id           String   @id
@@ -664,7 +664,7 @@ model CalendarLink {
   updatedAt    DateTime @updatedAt
 }
 
-// The 3-month giveaway at firstpicked.com.au/giveaway (Nov 2026, lib/giveaway.server.ts): one entry per store. The admin's
+// The 3-month giveaway at rankwithross.com.au/giveaway (Nov 2026, lib/giveaway.server.ts): one entry per store. The admin's
 // random draw marks the picked entry (drawnAt). Deleted 24 months after entry (retention.server.ts).
 model GiveawayEntry {
   id          String    @id @default(cuid())
@@ -688,7 +688,7 @@ model GiveawayEntry {
   @@index([ipHash, createdAt])
 }
 
-// Store reports for Ross's teardown videos (Admin > Reports, firstpicked.com.au/report/<slug>). Only admins make them.
+// Store reports for Ross's teardown videos (Admin > Reports, rankwithross.com.au/report/<slug>). Only admins make them.
 // The job that fills one is lib/store-report.server.ts; `data` is StoreReportData (lib/store-report.ts).
 model StoreReport {
   id         String    @id @default(cuid())
@@ -706,7 +706,7 @@ model StoreReport {
   @@index([createdAt])
 }
 
-// Visits to firstpicked.com.au/book and calls booked there, with the ad's tags, for the chart on the admin Overview
+// Visits to rankwithross.com.au/book and calls booked there, with the ad's tags, for the chart on the admin Overview
 // (Ross, 4 Nov 2026: "track how many people are clicking thru on my ad to the /book page"). lib/book-stats.server.ts.
 // No names, emails or IP addresses. `visitor` (a scrambled IP and browser) only stops a person counting twice in a
 // day, and is cleared after 2 days (retention.server.ts).
@@ -720,7 +720,7 @@ model BookEvent {
   utmContent  String?
   utmTerm     String?
   fbclid      Boolean  @default(false) // Facebook's click id was in the link (it came from a Facebook or Instagram ad or post)
-  referrer    String? // the site that sent them, host only (m.facebook.com, firstpicked.com.au)
+  referrer    String? // the site that sent them, host only (m.facebook.com, rankwithross.com.au)
   shopify     String? // answered and booked rows: "yes" or "no" to "Do you have a Shopify brand?"
   sales       String? // answered and booked rows: how much the store sells a month, a value from SALES (lib/booking.ts)
   createdAt   DateTime @default(now())
@@ -729,7 +729,7 @@ model BookEvent {
   @@index([visitor, createdAt])
 }
 
-// Each call booked on firstpicked.com.au/book, with the person's answers (Ross, 6 Nov 2026: "please store that
+// Each call booked on rankwithross.com.au/book, with the person's answers (Ross, 6 Nov 2026: "please store that
 // information too"). Listed in Admin > Calls; deleted 24 months after booking (retention.server.ts).
 model CallBooking {
   id          String   @id @default(cuid())
@@ -747,7 +747,7 @@ model CallBooking {
   @@index([createdAt])
 }
 
-// Ross's done-for-you clients (the agency hub at firstpicked.com.au/dash, Ross 5 Nov 2026: "the dash to be the hub for me
+// Ross's done-for-you clients (the agency hub at rankwithross.com.au/dash, Ross 5 Nov 2026: "the dash to be the hub for me
 // where i can see, add, delete, update ... my clients"). One row per store: the agency's own facts about a store it works
 // on. The store keeps its own data (questions, AI checks, guides...); this holds who to talk to, the fee, when month 1
 // started and whether the work is running. lib/clients.server.ts. Deleted with its store.
@@ -767,7 +767,7 @@ model Client {
 }
 
 // The work log's own entries: what Ross did by hand for a client (a change in their Shopify, a call, a note). What
-// FirstPicked did by itself (guides, AI checks, Reddit threads...) is read from the other tables (lib/work-log.server.ts),
+// Rank with Ross did by itself (guides, AI checks, Reddit threads...) is read from the other tables (lib/work-log.server.ts),
 // so nothing is stored twice.
 model WorkNote {
   id        String   @id @default(cuid())
@@ -784,7 +784,7 @@ model WorkNote {
 }
 
 // A report made for a client in the hub (a week or a month): a snapshot of the numbers and the work when it was made, at a
-// private link the client opens without signing in (firstpicked.com.au/client-report/<token>). lib/client-report.server.ts.
+// private link the client opens without signing in (rankwithross.com.au/client-report/<token>). lib/client-report.server.ts.
 model ClientReport {
   id        String    @id @default(cuid())
   shopId    String

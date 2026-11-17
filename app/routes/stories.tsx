@@ -12,7 +12,7 @@ import storiesCss from "../styles/stories.css?url";
 
 // Layout for the stories: /stories (the hub) and every /stories/<slug> page. One place for the fonts and
 // stylesheets (the free tools' frame, the story card shared with the home page, then stories.css), the canonical
-// host (www and the Railway address get a 301 to firstpicked.com.au), the default headers and an error page in the site's
+// host (www and the Railway address get a 301 to rankwithross.com.au), the default headers and an error page in the site's
 // frame. Each page sets its own `meta`; the meta here only fills in for the error page.
 
 export const loader = ({ request }: LoaderFunctionArgs) => {
@@ -33,7 +33,7 @@ export const headers = toolHeaders;
 
 /** Only for the error page (every page under /stories exports its own meta). */
 export const meta: MetaFunction = ({ error }) =>
-  error ? [{ title: "Something went wrong | FirstPicked" }, { name: "robots", content: "noindex" }] : [];
+  error ? [{ title: "Something went wrong | Rank with Ross" }, { name: "robots", content: "noindex" }] : [];
 
 export default function StoriesLayout() {
   return <Outlet />;

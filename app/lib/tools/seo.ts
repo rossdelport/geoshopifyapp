@@ -1,4 +1,4 @@
-// One helper for every public page's <head>: title, description, one canonical on https://firstpicked.com.au,
+// One helper for every public page's <head>: title, description, one canonical on https://rankwithross.com.au,
 // Open Graph and Twitter tags, and one JSON-LD @graph. Pure and browser-safe: React Router runs `meta`
 // on the server and in the browser, so nothing here may read env or request.url.
 // No `nosnippet` or `max-snippet` ever (AI Overviews and assistants quote snippets), and no
@@ -54,8 +54,8 @@ export function pageMeta(p: PageSeo): MetaDescriptor[] {
   return out;
 }
 
-/** "AI Overview Checker: Does Google AI Cite You? | FirstPicked" -> the part before " | FirstPicked". */
-export const stripBrand = (title: string) => title.replace(/\s*\|\s*FirstPicked$/, "");
+/** "AI Overview Checker: Does Google Cite You? | Rank with Ross" -> the part before " | Rank with Ross". */
+export const stripBrand = (title: string) => title.replace(/\s*\|\s*Rank with Ross$/, "");
 
 // ---------- JSON-LD nodes ----------
 

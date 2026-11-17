@@ -32,8 +32,8 @@ export const meta: MetaFunction<typeof loader> = ({ data: d }) =>
       })
     : pageMeta({
         path: COMPARE_HUB.path,
-        title: "We couldn't find that page | FirstPicked",
-        description: "This page doesn't exist. See every comparison of agencies, tools and FirstPicked.",
+        title: "We couldn't find that page | Rank with Ross",
+        description: "This page doesn't exist. See every comparison of agencies, tools and Rank with Ross.",
         noindex: true,
       });
 

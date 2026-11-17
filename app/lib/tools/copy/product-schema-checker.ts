@@ -415,6 +415,6 @@ export const FAQS: ToolFaqItem[] = [
 ];
 
 export const CTA = {
-  text: "See how FirstPicked fixes your product pages for AI",
+  text: "See how Rank with Ross fixes your product pages for AI",
   href: "/?ref=tool-product-schema-checker#how",
 } as const;

@@ -1,4 +1,4 @@
-// The book-a-call page's link to Ross's Google Calendar (firstpicked.com.au/book, Ross 3 Nov 2026).
+// The book-a-call page's link to Ross's Google Calendar (rankwithross.com.au/book, Ross 3 Nov 2026).
 // Ross connects his calendar once in Admin > System (route dash.admin_.calendar.tsx). After that the page shows his
 // free times (Google's free/busy) and a booked call is added to his calendar with a Google Meet link; Google emails
 // the invite to the person who booked. Needs GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET (a Google Cloud OAuth client).
@@ -22,7 +22,7 @@ const TIMEOUT = 10_000;
 
 export const googleReady = () => Boolean(env.googleClientId && env.googleClientSecret);
 
-/** Google's sign-in page, asking Ross to let FirstPicked see his free times and add calls to his calendar. */
+/** Google's sign-in page, asking Ross to let Rank with Ross see his free times and add calls to his calendar. */
 export function consentUrl(state: string): string {
   const q = new URLSearchParams({
     client_id: env.googleClientId,
@@ -171,7 +171,7 @@ export async function bookCall(input: BookInput, now = new Date()): Promise<{ st
 
   const end = new Date(Date.parse(start) + CALL.minutes * 60_000).toISOString();
   await google(token, "calendars/primary/events?conferenceDataVersion=1&sendUpdates=all", {
-    summary: `FirstPicked call: Ross and ${name}`,
+    summary: `Rank with Ross call: Ross and ${name}`,
     description: `Booked at ${SITE}/book\n\nName: ${name}\nEmail: ${email}\n${about.join("\n")}`,
     start: { dateTime: start },
     end: { dateTime: end },
@@ -200,7 +200,7 @@ export async function bookCall(input: BookInput, now = new Date()): Promise<{ st
       return `<b>${key}:</b> ${esc(rest.join(": "))}`;
     })];
     if (ad) lines.push(`<b>Came from:</b> ${esc(ad)}`);
-    await sendEmail([env.alertEmail], `New call booked: ${name}, ${rossTime(start)}`, `<p>Someone booked a call on firstpicked.com.au/book. It's in your Google Calendar with a Meet link.</p><p>${lines.join("<br>")}</p>`).catch((err) =>
+    await sendEmail([env.alertEmail], `New call booked: ${name}, ${rossTime(start)}`, `<p>Someone booked a call on rankwithross.com.au/book. It's in your Google Calendar with a Meet link.</p><p>${lines.join("<br>")}</p>`).catch((err) =>
       console.error("[book] booked, but the email to Ross failed", err),
     );
   }

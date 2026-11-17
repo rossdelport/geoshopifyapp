@@ -11,7 +11,7 @@ import reviewVideo from "../../home/eduardo-review.mp4?url";
 import reviewPoster from "../../home/eduardo-review.webp?url";
 import reviewCaptions from "../../home/eduardo-review.vtt?url";
 
-// The public home page, firstpicked.com.au (Ross, 2 Nov 2026: the new design from /newhomepage, which now sends people here).
+// The public home page, rankwithross.com.au (Ross, 2 Nov 2026: the new design from /newhomepage, which now sends people here).
 // One HTML file with its styles and scripts inline. The font is Inter (with its Display cut for big text),
 // trimmed to Latin and served from /assets with a long cache.
 // The pages in other languages (/de, /fr, /nl, /es, /it) still use the older design, built from design/overview.

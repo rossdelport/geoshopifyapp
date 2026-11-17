@@ -69,7 +69,7 @@ type Result =
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { user, shop, client } = await requireClient(request);
-  if (fromAnotherSite(request)) return { intent: "save", ok: false, error: "Please use the form on FirstPicked." } satisfies Result;
+  if (fromAnotherSite(request)) return { intent: "save", ok: false, error: "Please use the form on Rank with Ross." } satisfies Result;
   const form = await request.formData();
   const intent = form.get("intent") === "delete" ? "delete" : "save";
   if (!client) return { intent, ok: false, error: "This store isn’t one of your clients." } satisfies Result;
@@ -289,8 +289,8 @@ export default function ClientDetails() {
           <h2 id="delete-h">Delete this client</h2>
           <p className="cp-danger-text">
             {data.removesStore
-              ? `This deletes the ${what} from FirstPicked with everything made for it: guides, AI checks, notes and reports. It can’t be undone. Pages already on their website stay there.`
-              : "They have their own FirstPicked login, so their store stays with them. Only the client record goes, and the Done for you work stops."}
+              ? `This deletes the ${what} from Rank with Ross with everything made for it: guides, AI checks, notes and reports. It can’t be undone. Pages already on their website stay there.`
+              : "They have their own Rank with Ross login, so their store stays with them. Only the client record goes, and the Done for you work stops."}
           </p>
         </div>
         <Form method="post" className="cp-del">

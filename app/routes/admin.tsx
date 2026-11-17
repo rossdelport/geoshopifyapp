@@ -6,13 +6,13 @@ import { adminPassword, isAdmin, passwordSignIn } from "../lib/admin.server";
 import { clientIp, fromAnotherSite } from "../lib/public-form.server";
 import styles from "../styles/web.css?url";
 
-// firstpicked.com.au/admin: the admin area's password page (Ross, 4 Nov 2026: "have it password protected not link
+// rankwithross.com.au/admin: the admin area's password page (Ross, 4 Nov 2026: "have it password protected not link
 // protected"). The right password (GEO_ADMIN_PASSWORD on Railway) signs this browser in for 30 days and opens the
 // agency hub (or the admin page it was asked for). Signed-out visits to /dash/admin and the hub's client pages come
 // here (web-auth.server.ts).
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
-export const meta: MetaFunction = () => [{ title: "Admin · FirstPicked" }, { name: "robots", content: "noindex" }];
+export const meta: MetaFunction = () => [{ title: "Admin · Rank with Ross" }, { name: "robots", content: "noindex" }];
 
 /** Only somewhere inside the admin area or the agency hub; else the hub's front page, Ross's home (5 Nov 2026). */
 const adminNext = (raw: unknown) => {
@@ -28,7 +28,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  if (fromAnotherSite(request)) return { error: "Please use the form on the FirstPicked website." };
+  if (fromAnotherSite(request)) return { error: "Please use the form on the Rank with Ross website." };
   const form = await request.formData();
   const out = await passwordSignIn(form.get("password"), clientIp(request));
   if (!out.ok) return { error: out.error };

@@ -1,4 +1,4 @@
-// firstpicked.com.au/josh: the sample report for Ross's FirstIndex application.
+// rankwithross.com.au/josh: the sample report for Ross's FirstIndex application.
 
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";

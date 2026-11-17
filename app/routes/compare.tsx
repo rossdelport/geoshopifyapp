@@ -22,7 +22,7 @@ export const headers = toolHeaders;
 
 /** Only for the error page (every page under /compare exports its own meta). */
 export const meta: MetaFunction = ({ error }) =>
-  error ? [{ title: "Something went wrong | FirstPicked" }, { name: "robots", content: "noindex" }] : [];
+  error ? [{ title: "Something went wrong | Rank with Ross" }, { name: "robots", content: "noindex" }] : [];
 
 export default function CompareLayout() {
   return <Outlet />;

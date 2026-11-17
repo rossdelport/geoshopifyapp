@@ -31,7 +31,7 @@ describe("compare and service page content", () => {
     const targets = relatedTargets();
     for (const p of ALL) {
       expect(p.title.length, p.slug).toBeLessThanOrEqual(60);
-      expect(p.title.endsWith(" | FirstPicked")).toBe(true);
+      expect(p.title.endsWith(" | Rank with Ross")).toBe(true);
       expect(p.description.length, p.slug).toBeLessThanOrEqual(155);
       expect(p.checked).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       if (p.published) expect(p.published <= p.checked).toBe(true);
@@ -51,7 +51,7 @@ describe("compare and service page content", () => {
     for (const p of ALL) expect(allText(p), p.slug).not.toMatch(/\b40 (emails|pitches)\b|emails to websites|pitches to/i);
   });
 
-  it("states FirstPicked's price as the offer in plans.ts", () => {
+  it("states Rank with Ross's price as the offer in plans.ts", () => {
     for (const p of ALL) {
       const ours = allText(p).match(/A\$9\d\d a month/g) ?? [];
       for (const m of ours) expect(m, p.slug).toBe(OFFER.price);
@@ -62,12 +62,12 @@ describe("compare and service page content", () => {
   it("puts the FAQ in the JSON-LD, and tags the Get started link with the page", () => {
     const p = COMPARE_PAGES[0];
     expect(JSON.stringify(compareJsonLd(p))).toContain('"FAQPage"');
-    expect(bookHref("compare", p.slug)).toBe(`/book?utm_source=firstpicked&utm_medium=compare&utm_campaign=${p.slug}`);
+    expect(bookHref("compare", p.slug)).toBe(`/book?utm_source=rankwithross&utm_medium=compare&utm_campaign=${p.slug}`);
     const l = LANDING_PAGES[0];
     const graph = JSON.stringify(landingJsonLd(l));
     expect(graph).toContain('"FAQPage"');
     expect(graph).toContain('"Service"');
-    expect(graph).toContain(`"https://firstpicked.com.au/${l.slug}"`);
+    expect(graph).toContain(`"https://rankwithross.com.au/${l.slug}"`);
     const guide = LANDING_PAGES.find((g) => g.kind === "guide");
     expect(guide).toBeTruthy();
     const guideGraph = JSON.stringify(landingJsonLd(guide!));
@@ -87,11 +87,11 @@ describe("service page routes", () => {
 
   it("the loader returns the page for its address and 404s anything else", () => {
     const req = (url: string) => ({ request: new Request(url), params: {}, context: {} }) as never;
-    const got = landing.loader(req("https://firstpicked.com.au/seo-agency-perth/")) as { page: LandingPage };
+    const got = landing.loader(req("https://rankwithross.com.au/seo-agency-perth/")) as { page: LandingPage };
     expect(got.page.slug).toBe("seo-agency-perth");
     let thrown: unknown;
     try {
-      landing.loader(req("https://firstpicked.com.au/nope"));
+      landing.loader(req("https://rankwithross.com.au/nope"));
     } catch (e) {
       thrown = e;
     }
@@ -99,11 +99,11 @@ describe("service page routes", () => {
   });
 
   it("renders the Perth page with its table, the Get started link, the FAQ and the related pages", () => {
-    const loaderData = landing.loader({ request: new Request("https://firstpicked.com.au/seo-agency-perth"), params: {}, context: {} } as never);
+    const loaderData = landing.loader({ request: new Request("https://rankwithross.com.au/seo-agency-perth"), params: {}, context: {} } as never);
     const Stub = createRoutesStub([{ id: "perth", path: "/seo-agency-perth", Component: landing.default as ComponentType, loader: () => loaderData }]);
     const html = renderToStaticMarkup(createElement(Stub, { initialEntries: ["/seo-agency-perth"], hydrationData: { loaderData: { perth: loaderData } } }));
     expect(html).toContain("A Perth SEO agency for Shopify brands.");
-    expect(html).toContain('href="/book?utm_source=firstpicked&amp;utm_medium=landing&amp;utm_campaign=seo-agency-perth"');
+    expect(html).toContain('href="/book?utm_source=rankwithross&amp;utm_medium=landing&amp;utm_campaign=seo-agency-perth"');
     expect(html).toContain("Get started");
     expect(html).toContain('class="cp-table"');
     expect(html).toContain("Questions people ask");
@@ -111,12 +111,12 @@ describe("service page routes", () => {
   });
 
   it("renders a guide with the Guide tag and a Get started link tagged as a guide", () => {
-    const loaderData = landing.loader({ request: new Request("https://firstpicked.com.au/what-is-geo"), params: {}, context: {} } as never);
+    const loaderData = landing.loader({ request: new Request("https://rankwithross.com.au/what-is-geo"), params: {}, context: {} } as never);
     const Stub = createRoutesStub([{ id: "geo", path: "/what-is-geo", Component: landing.default as ComponentType, loader: () => loaderData }]);
     const html = renderToStaticMarkup(createElement(Stub, { initialEntries: ["/what-is-geo"], hydrationData: { loaderData: { geo: loaderData } } }));
     expect(html).toContain("What is GEO? Generative engine optimisation, in plain words");
     expect(html).toContain('<span class="bl-tag">Guide</span>');
-    expect(html).toContain('href="/book?utm_source=firstpicked&amp;utm_medium=guide&amp;utm_campaign=what-is-geo"');
+    expect(html).toContain('href="/book?utm_source=rankwithross&amp;utm_medium=guide&amp;utm_campaign=what-is-geo"');
   });
 });
 

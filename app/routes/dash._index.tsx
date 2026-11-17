@@ -17,7 +17,7 @@ import { AlertList } from "../components/hub";
 import { BrandCard } from "../components/brand-card";
 import hubPagesStyles from "../styles/hub-pages.css?url";
 
-// firstpicked.com.au/dash: the web app's home. While setting up: the steps and the scan's progress. Then, sales from AI
+// rankwithross.com.au/dash: the web app's home. While setting up: the steps and the scan's progress. Then, sales from AI
 // first (Ross's #1 rule), the visibility score, who AI names instead, and the questions where the store is missing.
 //
 // For admins it is the agency hub's front page instead (Ross, 5 Nov 2026: "i want the dash to be the hub for me"):
@@ -150,7 +150,7 @@ function StoreHome({ data }: { data: Exclude<Data, { view: "hub" }> }) {
           ) : null}
           {data.setupFailed ? (
             <div className="w-err" role="alert" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
-              <span>Setup stopped partway. Try again, and if it keeps stopping, email ross@firstpicked.com.au.</span>
+              <span>Setup stopped partway. Try again, and if it keeps stopping, email ross@rankwithross.com.au.</span>
               <Form method="post">
                 <button className="w-btn w-btn-sm" type="submit" name="intent" value="retry" disabled={nav.state !== "idle"}>
                   Try again

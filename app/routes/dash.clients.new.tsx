@@ -9,7 +9,7 @@ import { spotsLine } from "../lib/hub-pages";
 import { fromAnotherSite } from "../lib/public-form.server";
 import styles from "../styles/hub-pages.css?url";
 
-// firstpicked.com.au/dash/clients/new: add a client to the agency hub (Ross, 5 Nov 2026). A Shopify store is read from
+// rankwithross.com.au/dash/clients/new: add a client to the agency hub (Ross, 5 Nov 2026). A Shopify store is read from
 // its own website (like /start); any other business (Ross, 17 Nov 2026: "so i can add any business") is added from its
 // website with the town or city it works in (lib/business.ts). Then it's set up on Done for you and the client's page
 // opens. Nothing is sent to the client.
@@ -34,7 +34,7 @@ type Result = { values: Partial<Record<ClientField, string>>; errors: ClientErro
 
 export const action = async ({ request }: ActionFunctionArgs): Promise<Result> => {
   const user = await requireHubAdmin(request);
-  if (fromAnotherSite(request)) return { values: {}, errors: {}, error: "Please use the form on FirstPicked." };
+  if (fromAnotherSite(request)) return { values: {}, errors: {}, error: "Please use the form on Rank with Ross." };
   const form = await request.formData();
   // What was typed goes back with any problem, so nothing has to be typed again.
   const values = Object.fromEntries(FIELDS.map((k) => [k, String(form.get(k) ?? "").slice(0, 4000)]));

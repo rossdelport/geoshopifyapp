@@ -11,7 +11,7 @@ import { CopyButton, PageHead } from "../components/web";
 import { storeBase } from "../lib/hub-paths";
 import { isLocal } from "../lib/business";
 
-// firstpicked.com.au/dash/guides/<day> (the file's underscore keeps it out of the calendar's layout): one guide page from the calendar, as it will look on the store's site, with what it
+// rankwithross.com.au/dash/guides/<day> (the file's underscore keeps it out of the calendar's layout): one guide page from the calendar, as it will look on the store's site, with what it
 // is at and what the store can do: OK it, skip it, try again, or add it to the store (copy and paste) when the store
 // has no Shopify connection yet.
 

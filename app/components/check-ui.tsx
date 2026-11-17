@@ -139,12 +139,12 @@ export function CheckShell({
         <div className="ck-band">
           <div className="ck-band-grid" aria-hidden="true" />
           <header className="ck-top">
-            <a className="ck-logo" href="/" aria-label="FirstPicked home">
+            <a className="ck-logo" href="/" aria-label="Rank with Ross home">
               <span className="ck-mark" aria-hidden="true">
                 <i />
                 <i />
               </span>
-              <span className="ck-word">FirstPicked</span>
+              <span className="ck-word">Rank with Ross</span>
             </a>
             {lead ? <HeaderAsk /> : <span className="ck-pill">Free product check</span>}
           </header>
@@ -971,9 +971,9 @@ export function CheckReport({ view }: { view: CheckView }) {
 
       <section className="ck-cta">
         <div className="ck-cta-tx">
-          <h2 className="ck-cta-h">Let FirstPicked do this for you</h2>
+          <h2 className="ck-cta-h">Let Rank with Ross do this for you</h2>
           <p>
-            FirstPicked checks up to {PLANS.pro.questions} buying questions every day, writes buying guides and Reddit replies for
+            Rank with Ross checks up to {PLANS.pro.questions} buying questions every day, writes buying guides and Reddit replies for
             you, pitches the sites AI quotes most, and counts the orders it can trace back to AI.
           </p>
           <p className="ck-cta-price">{OFFER.line} Join the waitlist and we’ll reach out shortly.</p>
@@ -992,7 +992,7 @@ export function CheckReport({ view }: { view: CheckView }) {
       </section>
 
       <p className="ck-honest">
-        Answers change from run to run, so we ask twice. This quick check uses 3 questions. FirstPicked tracks up to{" "}
+        Answers change from run to run, so we ask twice. This quick check uses 3 questions. Rank with Ross tracks up to{" "}
         {PLANS.pro.questions} every day (asked twice on the weekly full scan).
       </p>
     </>

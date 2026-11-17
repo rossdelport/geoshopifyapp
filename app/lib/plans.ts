@@ -47,7 +47,7 @@ export interface Plan {
 export const OFFER = {
   name: "Done for you",
   price: "A$297 a month",
-  line: "FirstPicked is A$297 a month, done for you, with no lock-in contract.",
+  line: "Rank with Ross is A$297 a month, done for you, with no lock-in contract.",
 } as const;
 
 export const PLANS: Record<PlanId, Plan> = {

@@ -1,4 +1,4 @@
-// firstpicked.com.au/book, the book-a-call page (Ross, 3 Nov 2026): the free times (Ross's hours in Perth, minus his busy
+// rankwithross.com.au/book, the book-a-call page (Ross, 3 Nov 2026): the free times (Ross's hours in Perth, minus his busy
 // times), the page with and without his Google Calendar connected, and booking a call (checks, the Google Calendar
 // event with a Meet link, a time someone just took, the per-IP limit, Ross's email). Google and the database are
 // stand-ins: no network, no database.
@@ -141,11 +141,11 @@ describe("the page", () => {
 
   it("is one page with one job: book a call, in the home page's look, kept out of search", async () => {
     const html = await (await call()).text();
-    expect(html).toContain("<title>Book a call with Ross · FirstPicked</title>");
+    expect(html).toContain("<title>Book a call with Ross · Rank with Ross</title>");
     expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
     expect(html).toContain('<h1 class="h1">Book a call <b>with Ross.</b></h1>');
     expect(html).toContain('<meta name="robots" content="noindex">');
-    expect(html).toContain('<link rel="canonical" href="https://firstpicked.com.au/book">');
+    expect(html).toContain('<link rel="canonical" href="https://rankwithross.com.au/book">');
     // no menu: the only links are home, privacy, terms, texting Ross and (for stores too small to book) the free check
     const links = [...new Set([...html.matchAll(/<a [^>]*href="([^"]+)"/g)].map((m) => m[1]))].sort();
     expect(links).toEqual(["/", "/privacy", "/privacy#cookies", "/terms", "/tools/ai-visibility-checker", "sms:+61400369865"]);
@@ -258,7 +258,7 @@ describe("booking a call", () => {
     const { url, body } = h.events[0];
     expect(url).toBe("https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1&sendUpdates=all");
     expect(body).toMatchObject({
-      summary: "FirstPicked call: Ross and Jane Smith",
+      summary: "Rank with Ross call: Ross and Jane Smith",
       start: { dateTime: "2026-11-04T01:00:00.000Z" },
       end: { dateTime: "2026-11-04T01:15:00.000Z" }, // a 15-minute call
       attendees: [{ email: "jane@shopjane.com.au", displayName: "Jane Smith" }],
@@ -351,7 +351,7 @@ describe("connecting Ross's Google Calendar", () => {
   it("asks Google for a refresh token to see free times and add events, coming back to the admin page", () => {
     const u = new URL(consentUrl("state123"));
     expect(u.origin + u.pathname).toBe("https://accounts.google.com/o/oauth2/v2/auth");
-    expect(u.searchParams.get("redirect_uri")).toBe("https://firstpicked.com.au/dash/admin/calendar");
+    expect(u.searchParams.get("redirect_uri")).toBe("https://rankwithross.com.au/dash/admin/calendar");
     expect(u.searchParams.get("access_type")).toBe("offline");
     expect(u.searchParams.get("prompt")).toBe("consent");
     expect(u.searchParams.get("state")).toBe("state123");
@@ -365,7 +365,7 @@ describe("connecting Ross's Google Calendar", () => {
   });
 });
 
-// The niche pages for Ross's video ads (Ross, 17 Nov 2026: firstpicked.com.au/for/<niche>): their "Book a call" buttons
+// The niche pages for Ross's video ads (Ross, 17 Nov 2026: rankwithross.com.au/for/<niche>): their "Book a call" buttons
 // open /book?for=<slug>. Brokers, installers, agents and tradies aren't online stores, so they skip the store questions.
 describe("booking from a niche page", () => {
   const page = (url: string) => loader({ request: new Request(url), params: {}, context: {} } as unknown as LoaderFunctionArgs) as Promise<Response>;
@@ -374,7 +374,7 @@ describe("booking from a niche page", () => {
   it("drops the store questions and talks about a business, only for the local niche pages", async () => {
     const html = await (await page("https://geo.test/book?for=mortgage-brokers&utm_medium=vsl")).text();
     expect(html).toContain('<body data-for="mortgage-brokers">');
-    expect(html).toContain("We’ll chat about your business and see if FirstPicked is a good fit.");
+    expect(html).toContain("We’ll chat about your business and see if Rank with Ross is a good fit.");
     expect(html).not.toContain("chat about your store");
     expect(html).toContain('<span class="f-l">Your website</span>');
     expect(html).toContain('placeholder="yourbusiness.com.au"');
@@ -398,13 +398,13 @@ describe("booking from a niche page", () => {
     const out = await bookCall({ ...broker, ip: "203.0.113.90", ad }, NOW);
     expect(out).toEqual({ status: 200, result: { ok: true, start: broker.start, email: "sam@leefinance.com.au" } });
     expect(String(h.events[0].body.description)).toContain(
-      "Website: leefinance.com.au\nBusiness: Mortgage broker\nFrom the page: https://firstpicked.com.au/for/mortgage-brokers",
+      "Website: leefinance.com.au\nBusiness: Mortgage broker\nFrom the page: https://rankwithross.com.au/for/mortgage-brokers",
     );
     expect(String(h.events[0].body.description)).not.toContain("Shopify");
     expect(h.calls[0]).toMatchObject({ store: "leefinance.com.au", sales: "Mortgage broker page", utmContent: "brokers" });
     expect(h.counted).toEqual([expect.objectContaining({ kind: "booked", shopify: null, sales: null, utmContent: "brokers" })]);
     const html = String(h.emails[0][2]);
-    expect(html).toContain("<b>Website:</b> leefinance.com.au<br><b>Business:</b> Mortgage broker<br><b>From the page:</b> https://firstpicked.com.au/for/mortgage-brokers");
+    expect(html).toContain("<b>Website:</b> leefinance.com.au<br><b>Business:</b> Mortgage broker<br><b>From the page:</b> https://rankwithross.com.au/for/mortgage-brokers");
   });
 
   it("still asks the questions for the Shopify store page or a slug that isn't a page", async () => {

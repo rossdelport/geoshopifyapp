@@ -8,7 +8,7 @@ import { publicHostRedirect } from "../lib/tools/host.server";
 import { toolHeaders } from "../lib/tools/http";
 import { pageMeta, stripBrand } from "../lib/tools/seo";
 
-// One service page, like firstpicked.com.au/seo-agency-perth, or guide, like /what-is-geo: the answer first, the
+// One service page, like rankwithross.com.au/seo-agency-perth, or guide, like /what-is-geo: the answer first, the
 // sections, the Get started box (opens /book, tagged utm_medium=landing, or guide for a guide), the questions people
 // ask, the sources and related pages. Content in
 // app/lib/landing/pages.ts; app/routes.ts gives each slug in app/lib/landing/paths.ts its own route to this file
@@ -37,7 +37,7 @@ export const meta: MetaFunction<typeof loader> = ({ data: d, error }) =>
         imageAlt: COMPARE_HUB.ogAlt,
         jsonLd: landingJsonLd(d.page),
       })
-    : [{ title: "Something went wrong | FirstPicked" }, { name: "robots", content: "noindex" }];
+    : [{ title: "Something went wrong | Rank with Ross" }, { name: "robots", content: "noindex" }];
 
 export default function LandingPageView() {
   const { page, related } = useLoaderData<typeof loader>();

@@ -170,7 +170,7 @@ describe("each tool page (server-rendered, no JavaScript)", () => {
     expect(words).not.toMatch(/\bAEO\b/);
     expect(words).not.toMatch(/ LLM/);
     expect(words.toLowerCase()).not.toContain("generative engine optimization");
-    // "FirstPicked" only as the brand name, never as the topic.
+    // "Rank with Ross" only as the brand name, never as the topic.
     expect(words).not.toMatch(/\bGEO (tool|tools|checker|score|audit|strategy)\b/);
   });
 
@@ -178,7 +178,7 @@ describe("each tool page (server-rendered, no JavaScript)", () => {
     const loaderData = { contact: null, owner: null, inactiveYears: 2, visitIdDays: 30, uninstalledDays: 30, publicCheckDays: 30, checkIpHours: 24, reportEmailDays: 30, unsubscribedDays: 30 };
     const Stub = createRoutesStub([{ id: "privacy", path: "/privacy", Component: privacy.default as ComponentType, loader: () => loaderData }]);
     const html = renderToStaticMarkup(createElement(Stub, { initialEntries: ["/privacy"], hydrationData: { loaderData: { privacy: loaderData } } }));
-    expect(html).toContain("FirstPicked privacy policy");
+    expect(html).toContain("Rank with Ross privacy policy");
     expect(toolHrefs(footerOf(html))).toEqual(SEVEN);
     expect(footerOf(html)).toContain('href="/tools"');
   });
@@ -202,7 +202,7 @@ describe("one list of seven pages everywhere", () => {
     const sitemapLocs = [...sitemapXml().matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     expect(sitemapLocs.filter((l) => l.startsWith(`${SITE}/tools/`))).toEqual(SEVEN.map(abs));
 
-    const llmsLinks = [...siteLlmsTxt().matchAll(/\]\((https:\/\/firstpicked\.com\.au\/tools\/[a-z0-9-]+)\)/g)].map((m) => m[1]);
+    const llmsLinks = [...siteLlmsTxt().matchAll(/\]\((https:\/\/rankwithross\.com\.au\/tools\/[a-z0-9-]+)\)/g)].map((m) => m[1]);
     expect(llmsLinks).toEqual(SEVEN.map(abs));
 
     const home = read("app/home/new-home.html");
@@ -232,7 +232,7 @@ describe("one list of seven pages everywhere", () => {
 });
 
 describe("our own site files pass our own checkers", () => {
-  it("firstpicked.com.au's llms.txt passes the llms.txt Checker with no problems and no tips", () => {
+  it("rankwithross.com.au's llms.txt passes the llms.txt Checker with no problems and no tips", () => {
     const report = llmsReport(siteLlmsTxt());
     expect(report.found).toBe(true);
     expect(report.problems).toBe(0);
@@ -240,7 +240,7 @@ describe("our own site files pass our own checkers", () => {
     expect(report.checks.filter((c) => c.tone !== "info")).toEqual([]);
   });
 
-  it("firstpicked.com.au's robots.txt lets every bot the AI Crawler Checker knows read the public pages", () => {
+  it("rankwithross.com.au's robots.txt lets every bot the AI Crawler Checker knows read the public pages", () => {
     const paths = [
       { label: "the home page", path: "/" },
       ...TOOLS.map((t) => ({ label: t.name, path: t.path })),

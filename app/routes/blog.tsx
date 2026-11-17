@@ -13,7 +13,7 @@ import blogCss from "../styles/blog.css?url";
 
 // Layout for the blog: /blog (the hub) and every /blog/<slug> post. Same frame as the stories (fonts, the free
 // tools' stylesheets, the story card and reading column) plus blog.css, the canonical host (www and the Railway
-// address get a 301 to firstpicked.com.au), the default headers and an error page in the site's frame. Each page sets its
+// address get a 301 to rankwithross.com.au), the default headers and an error page in the site's frame. Each page sets its
 // own `meta`; the meta here only fills in for the error page.
 
 export const loader = ({ request }: LoaderFunctionArgs) => {
@@ -35,7 +35,7 @@ export const headers = toolHeaders;
 
 /** Only for the error page (every page under /blog exports its own meta). */
 export const meta: MetaFunction = ({ error }) =>
-  error ? [{ title: "Something went wrong | FirstPicked" }, { name: "robots", content: "noindex" }] : [];
+  error ? [{ title: "Something went wrong | Rank with Ross" }, { name: "robots", content: "noindex" }] : [];
 
 export default function BlogLayout() {
   return <Outlet />;
