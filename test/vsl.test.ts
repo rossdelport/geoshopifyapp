@@ -44,7 +44,7 @@ describe("the niche pages", () => {
 
   it("have one page for any business, whose heading is the line the ads open with, booking without the store questions", () => {
     const p = vslBySlug("business")!;
-    expect(p.h1.join(" ")).toBe("Tired of paying Google and Meta for every lead? Get ChatGPT to name you.");
+    expect(p.h1.join(" ")).toBe("Tired of paying Google and Meta for every lead? Get AIs to name you.");
     expect(p.shopify).toBeFalsy();
     expect(vslBookHref(p)).toBe("/book?for=business&utm_medium=vsl&utm_campaign=business");
     expect(bookingNiche("business")).toBe(p);

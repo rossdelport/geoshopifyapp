@@ -358,7 +358,7 @@ export const VSL_PAGES: VslPage[] = [
     description:
       "Tired of paying Google and Meta for every lead? I help ChatGPT and Google’s AI name your business. $297 a month, done for you, no lock-in.",
     hi: "G’day, business owners.",
-    h1: ["Tired of paying Google and Meta for every lead?", "Get ChatGPT to name you."],
+    h1: ["Tired of paying Google and Meta for every lead?", "Get AIs to name you."],
     problems: [
       {
         h: "We asked ChatGPT for the best plumber in Perth. It named 4.",
