@@ -330,6 +330,8 @@ html:not(.js) .cal-frame{display:none}
     var box = btn.parentNode;
     btn.addEventListener('click', function (e) {
       e.preventDefault();
+      // tells Meta someone pressed play, a step before booking that the ads can learn from (none after No thanks)
+      if (typeof window.fbq === 'function') window.fbq('track', 'ViewContent', { content_name: 'Ross video' });
       var f = document.createElement('iframe');
       f.className = 'vsl-frame';
       f.src = box.getAttribute('data-loom');

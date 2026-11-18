@@ -168,13 +168,13 @@ describe("the page", () => {
     expect(html).not.toMatch(/ – /);
   });
 
-  it("has the home page's Meta pixel and cookie notice, and tells Meta Lead when a call is booked", async () => {
+  it("has the home page's Meta pixel and cookie notice, and tells Meta Lead and Schedule when a call is booked", async () => {
     const html = await (await call()).text();
     const head = html.slice(0, html.indexOf("</head>"));
     expect(head).toContain(readFileSync(join(ROOT, "design", "overview", "pixel-head.js"), "utf8").trim());
     expect(html).toContain('<div class="ck" id="ck" role="region" aria-label="Cookies" hidden>');
     expect(html).toContain(readFileSync(join(ROOT, "design", "overview", "parts", "47-cookies.js"), "utf8").trim());
-    expect(html).toContain("if (meta()) meta()('track', 'Lead', { content_name: 'book a call' });");
+    expect(html).toContain("if (meta()) { meta()('track', 'Lead', { content_name: 'book a call' }); meta()('track', 'Schedule', { content_name: 'book a call' }); }");
     // a fit (Shopify brand, A$5,000 or more) tells Meta once a visit, so the ads can learn who books (Ross, 7 Nov 2026)
     expect(html).toContain("if (fit && !toldMeta && meta()) {");
     expect(html).toContain("meta()('track', 'SubmitApplication', { content_name: 'fits' });");

@@ -225,8 +225,8 @@ function PrivacyText() {
         notice shows again. The pixel is not part of the Rank with Ross app and never sees your store&apos;s data.
       </p>
       <p>
-        Our video pages (rankwithross.com.au/for/...) use the same pixel and cookie notice. Ross&apos;s video on them plays
-        from Loom. Nothing loads from Loom until you press play. After that, Loom may set its own cookies, as Loom&apos;s own
+        Our video pages (rankwithross.com.au/for/...) use the same pixel and cookie notice, and it also tells Meta when
+        someone presses play on Ross&apos;s video. Ross&apos;s video on them plays from Loom. Nothing loads from Loom until you press play. After that, Loom may set its own cookies, as Loom&apos;s own
         privacy policy says.
       </p>
 

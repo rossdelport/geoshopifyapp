@@ -182,12 +182,13 @@ describe("the page at /for/<niche>", () => {
     expect(VIDEO_NOTE).not.toMatch(/[—–]/);
   });
 
-  it("has the home page's Meta pixel and cookie notice", async () => {
+  it("has the home page's Meta pixel and cookie notice, and tells Meta ViewContent when Ross's video is played", async () => {
     const html = await (await open("solar-installers")).text();
     const head = html.slice(0, html.indexOf("</head>"));
     expect(head).toContain(readFileSync(join(ROOT, "design", "overview", "pixel-head.js"), "utf8").trim());
     expect(html).toContain('<div class="ck" id="ck" role="region" aria-label="Cookies" hidden>');
     expect(html).toContain(readFileSync(join(ROOT, "design", "overview", "parts", "47-cookies.js"), "utf8").trim());
+    expect(html).toContain("if (typeof window.fbq === 'function') window.fbq('track', 'ViewContent', { content_name: 'Ross video' });");
   });
 
   it("passes an ad's tags on to the calendar, keeping the niche, and grows the frame to fit it", async () => {
