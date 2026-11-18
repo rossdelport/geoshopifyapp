@@ -484,7 +484,8 @@ ul{padding:0;list-style:none}
           intro.hidden = true;
           done.hidden = false;
           done.querySelector('h2').focus();
-          if (meta()) meta()('track', 'Lead', { content_name: 'book a call' });
+          // Lead (as before) and Schedule, Meta's own event for a booked appointment, so an ad can aim for booked calls
+          if (meta()) { meta()('track', 'Lead', { content_name: 'book a call' }); meta()('track', 'Schedule', { content_name: 'book a call' }); }
           return;
         }
         if (out && Array.isArray(out.slots)) { slots = out.slots; drawDays(); back(); }
