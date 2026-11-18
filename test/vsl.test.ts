@@ -36,10 +36,20 @@ const words = (p: (typeof VSL_PAGES)[number]) =>
     ...p.faq.flatMap((f) => [f.q, f.a]),
   ].join("\n");
 
-describe("the five niche pages", () => {
-  it("are the five niches Ross picked to test (17 Nov 2026)", () => {
-    expect(VSL_SLUGS).toEqual(["mortgage-brokers", "solar-installers", "pool-spa-sauna-stores", "buyers-agents", "plumbers-electricians"]);
-    expect(new Set(VSL_SLUGS).size).toBe(5);
+describe("the niche pages", () => {
+  it("are the five niches Ross picked to test (17 Nov 2026), plus one page for every ad (18 Nov 2026)", () => {
+    expect(VSL_SLUGS).toEqual(["mortgage-brokers", "solar-installers", "pool-spa-sauna-stores", "buyers-agents", "plumbers-electricians", "business"]);
+    expect(new Set(VSL_SLUGS).size).toBe(6);
+  });
+
+  it("have one page for any business, whose heading is the line the ads open with, booking without the store questions", () => {
+    const p = vslBySlug("business")!;
+    expect(p.h1.join(" ")).toBe("Tired of paying Google and Meta for every lead? Get ChatGPT to name you.");
+    expect(p.shopify).toBeFalsy();
+    expect(vslBookHref(p)).toBe("/book?for=business&utm_medium=vsl&utm_campaign=business");
+    expect(bookingNiche("business")).toBe(p);
+    // "one extra customer" is only ever an "if", never a promise
+    expect(p.big.line).toMatch(/^If /);
   });
 
   it("show the live price", () => {
@@ -70,7 +80,7 @@ describe("the five niche pages", () => {
   it("send local businesses to /book without the store questions, and Shopify stores to the normal /book", () => {
     expect(vslBookHref(vslBySlug("mortgage-brokers")!)).toBe("/book?for=mortgage-brokers&utm_medium=vsl&utm_campaign=mortgage-brokers");
     expect(vslBookHref(vslBySlug("pool-spa-sauna-stores")!)).toBe("/book?utm_medium=vsl&utm_campaign=pool-spa-sauna-stores");
-    expect(VSL_PAGES.filter((p) => bookingNiche(p.slug)).map((p) => p.slug)).toEqual(["mortgage-brokers", "solar-installers", "buyers-agents", "plumbers-electricians"]);
+    expect(VSL_PAGES.filter((p) => bookingNiche(p.slug)).map((p) => p.slug)).toEqual(["mortgage-brokers", "solar-installers", "buyers-agents", "plumbers-electricians", "business"]);
     expect(bookingNiche("pool-spa-sauna-stores")).toBeNull();
     expect(bookingNiche("nope")).toBeNull();
     expect(bookingNiche(null)).toBeNull();

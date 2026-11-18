@@ -346,6 +346,68 @@ export const VSL_PAGES: VslPage[] = [
     ]),
     sources: [SRC.hipages, SRC.calsoPlumbers, SRC.calsoSparkies, SRC.optimising],
   },
+  // One page for every ad (Ross, 18 Nov 2026: "a generic landing page instead where i will send all the traffic. please
+  // be smart about the heading"): rankwithross.com.au/for/business, for any business owner. Same video, calendar and
+  // flow as the niche pages. Its heading repeats the line his ads open with ("If you run a business and you're tired of
+  // paying Google and Meta for every single lead..."), so the click feels like one story. It books through
+  // /book?for=business, so nobody is asked about Shopify. The numbers are the niche pages' own, with their sources.
+  {
+    slug: "business",
+    label: "Any business",
+    title: "Get your business named by AI | Rank with Ross",
+    description:
+      "Tired of paying Google and Meta for every lead? I help ChatGPT and Google’s AI name your business. $297 a month, done for you, no lock-in.",
+    hi: "G’day, business owners.",
+    h1: ["Tired of paying Google and Meta for every lead?", "Get ChatGPT to name you."],
+    problems: [
+      {
+        h: "We asked ChatGPT for the best plumber in Perth. It named 4.",
+        p: "One list it read ranks 671 Perth plumbers. So 667 got no mention.",
+        draw: "chat",
+        names: 4,
+        note: "Try it. Ask ChatGPT who’s the best in your town. Is it you?",
+      },
+      {
+        h: "Google charges about $79 for one click.",
+        p: "That’s one click on “emergency plumber”. On “mortgage broker perth” it’s $34. Then you pay again for the next one.",
+        draw: "click",
+        tag: "$79",
+      },
+      AGENCIES,
+    ],
+    big: {
+      line: "If it brings you one extra customer a month, do the maths.",
+      note: "On a $500,000 home loan, the lender pays the broker about $3,250 to $3,500 upfront. A 24 kWh battery in Perth is about $11,260 installed, after rebates.",
+    },
+    faq: [
+      {
+        q: "What kind of business is this for?",
+        a: "Businesses people ask AI to recommend: tradies, brokers, agents, installers, local services and online stores. On our call I’ll tell you straight if it fits yours.",
+      },
+      {
+        q: "What do you actually do each month?",
+        a: "Every week I check what ChatGPT, Gemini, Perplexity and Google’s AI say when people ask for a business like yours. I fix your website and Google profile, work on getting you onto the lists AI reads, and write pages that answer your customers.",
+      },
+      { q: "Do you work outside Perth?", a: "Yes. I’m in Perth, and I work with businesses all over Australia. It’s all done online." },
+      { q: "Do you work with online stores?", a: "Yes, stores on Shopify. For a store I also fix your product pages and show you the sales that came from AI." },
+      { q: "What do I have to do?", a: "One short call at the start, and access to your website and Google profile. Then I do the work." },
+      {
+        q: "How soon will I see a change?",
+        a: "In month 1, I set things up and fix the basics. AI and Google can take weeks to notice changes, so think in months, not days. I can’t promise when AI will name you.",
+      },
+      { q: "Can you promise ChatGPT will name me?", a: NO_PROMISE },
+      { q: "What will I see each week?", a: "A short report: what AI said about you, who it named, and the work I did that week." },
+      { q: "Is there a contract?", a: NO_LOCK_IN },
+      REFUND,
+      FAKE,
+      { q: "Do I need a new website?", a: "No. I work with the website you have." },
+      { q: "Do I need to stop my Google or Meta ads?", a: "No. Keep what works. This adds a way to get found that doesn’t charge you for every click or lead." },
+      ADS,
+      PRICE,
+      WHO,
+    ],
+    sources: [SRC.calsoPlumbers, SRC.hunterGalloway, SRC.solarQuotes, SRC.optimising],
+  },
 ];
 
 export const VSL_SLUGS = VSL_PAGES.map((p) => p.slug);
