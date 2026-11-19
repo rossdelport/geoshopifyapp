@@ -5,7 +5,7 @@ import db from "../db.server";
 import { deleteClient, requireClient, updateClient } from "../lib/clients.server";
 import { CLIENT_STATUSES, type ClientErrors, type ClientField, type ClientStatus, STATUS_LABEL, hubDay, isClientStatus, readClientForm } from "../lib/clients";
 import { getPlan } from "../lib/plans";
-import { isLocal } from "../lib/business";
+import { FACTS_EXAMPLE, FACTS_HINT, isLocal } from "../lib/business";
 import { fromAnotherSite } from "../lib/public-form.server";
 import { PageHead } from "../components/web";
 import { ClientActionButton, flagOf } from "../components/hub";
@@ -48,6 +48,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       startedOn: client.startedOn,
       status: (isClientStatus(client.status) ? client.status : "active") as ClientStatus,
       notes: client.notes ?? "",
+      facts: shop.facts ?? "",
     },
     store: {
       myshopify: shop.domain,
@@ -151,6 +152,7 @@ export default function ClientDetails() {
   const s = data.store;
   const flag = flagOf(s.country);
   const notesProps = inputProps("notes", errors, true);
+  const factsProps = inputProps("facts", errors, true);
   const what = data.local ? "business" : "store";
   const statusLine = (st: ClientStatus) => (data.local && st === "active" ? "The work runs: AI checks and guides." : STATUS_LINE[st]);
 
@@ -204,6 +206,10 @@ export default function ClientDetails() {
             </span>
           ) : null}
         </fieldset>
+
+        <Field name="facts" label="Facts about the business" hint={FACTS_HINT} error={errors.facts}>
+          <textarea {...factsProps} className={`${factsProps.className} cp-textarea`} defaultValue={f.facts} maxLength={3000} placeholder={FACTS_EXAMPLE} />
+        </Field>
 
         <Field name="notes" label="Notes" hint="Only you see these." error={errors.notes}>
           <textarea {...notesProps} className={`${notesProps.className} cp-textarea`} defaultValue={f.notes} maxLength={4000} />

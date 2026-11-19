@@ -54,7 +54,7 @@ const sample = (over: Partial<ClientReportData> = {}): ClientReportData => ({
   score: { now: 42, periodStart: 36, workStart: 24, byAssistant: [{ name: "ChatGPT", score: 40 }] },
   questions: { tracked: 100, checked: 96, named: 12, top: [{ text: "best beard oil australia", searches: 1900, named: true }] },
   rivals: [{ brand: "Milkman", share: 0.34 }],
-  work: { guidesWritten: ["Best beard oil for dry skin"], guidesLive: [], changes: [], calls: [], checks: 7, reddit: [], writers: [] },
+  work: { guidesWritten: ["Best beard oil for dry skin"], guidesLive: [], changes: [], calls: [], checks: 7, reddit: [], writers: [], siteFixes: [], listings: [] },
   next: [{ day: "2026-11-10", title: "Beard oil or balm?" }],
   ...over,
 });
@@ -165,12 +165,16 @@ describe("the work a client sees", () => {
     entry("ch", "change", "2026-11-02T17:30:00Z", { text: "Rewrote 4 product pages", noteId: "ch" }), // 1:30am on the 3rd in Perth
     entry("call", "call", "2026-11-04T04:00:00Z", { text: "Monthly call: plans for December", noteId: "call" }),
     entry("rr", "reddit-replied", "2026-11-04T05:00:00Z", { text: "Replied on Reddit: Best beard oil?", href: "https://www.reddit.com/r/beards/comments/abc" }),
+    entry("sfd", "site-found", "2026-11-04T05:00:00Z", { text: "Read their website and wrote 4 fixes to make" }),
+    entry("sf", "site-fix", "2026-11-04T06:00:00Z", { text: "Website fix made: page title on the home page", href: "https://beardco.com.au/" }),
+    entry("ls", "listing", "2026-11-04T07:00:00Z", { text: "Listed on yellow.com.au", href: "/dash/clients/s/listings" }),
+    entry("gl3", "guide-live", "2026-11-04T08:00:00Z", { text: "Guide live: Beard oil or balm?", href: "https://beardco.com.au/beard-oil-or-balm.html" }),
   ];
   const w = workFromLog(log, ["Stuga.com.au", "stuga.com.au", "beardguru.com.au"]);
 
   it("keeps only the kinds a client may see", () => {
     const shown = JSON.stringify(w);
-    for (const hidden of ["Private", "Paused", "Treg", "#1001", "Made the weekly report", "Found 6 Reddit"]) expect(shown).not.toContain(hidden);
+    for (const hidden of ["Private", "Paused", "Treg", "#1001", "Made the weekly report", "Found 6 Reddit", "wrote 4 fixes"]) expect(shown).not.toContain(hidden);
     expect(CLIENT_SEES.has("note")).toBe(false);
   });
 
@@ -184,7 +188,13 @@ describe("the work a client sees", () => {
     expect(w.guidesLive).toEqual([
       { title: "Best beard oil", url: "https://beardco.com.au/pages/best-beard-oil" },
       { title: "Balm guide", url: null },
+      { title: "Beard oil or balm?", url: "https://beardco.com.au/beard-oil-or-balm.html" },
     ]);
+  });
+
+  it("shows website fixes made and listing sites joined (local businesses)", () => {
+    expect(w.siteFixes).toEqual([{ day: "2026-11-04", text: "page title on the home page", url: "https://beardco.com.au/" }]);
+    expect(w.listings).toEqual([{ title: "yellow.com.au", url: null }]);
   });
 
   it("dates Ross's changes and calls by Perth day", () => {

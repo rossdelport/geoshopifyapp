@@ -18,14 +18,32 @@ export function cleanArea(raw: unknown): string | null {
 }
 
 /**
- * Guides a month for a local business: 4, about one a week (Ross, 17 Nov 2026), because each one needs a real fact from
- * the client (a price, a job photo) before Ross adds it to their website. Online stores keep their plan's number.
+ * Guides a month for a local business on Done for you: one a day (Ross, 19 Nov 2026: "lets up this to one a day please";
+ * it was 4 a month from 17 Nov). 31 is the most days a month has, so every day of every month gets one (see
+ * slotDaysForMonth). Each guide uses only facts from their website and the facts box filled in at sign-up
+ * (Shop.facts), never one that has to come from the client that day. Online stores keep their plan's number.
  */
-export const LOCAL_GUIDES_PER_MONTH = 4;
+export const LOCAL_GUIDES_PER_MONTH = 31;
 
-/** The guide pages a month this shop gets: its plan's number, and at most LOCAL_GUIDES_PER_MONTH for a local business. */
+/** The guide pages a month this shop gets: its plan's number, and one a day for a local business with guides. */
 export const guidesPerMonth = (shop: { kind?: string | null }, plan: { guidePagesPerMonth: number }) =>
-  isLocal(shop) ? Math.min(plan.guidePagesPerMonth, LOCAL_GUIDES_PER_MONTH) : plan.guidePagesPerMonth;
+  isLocal(shop) && plan.guidePagesPerMonth > 0 ? LOCAL_GUIDES_PER_MONTH : plan.guidePagesPerMonth;
+
+// The facts box's words on Add a client and a client's Details page. Typed once, never needed for a day's work.
+export const FACTS_HINT =
+  "True facts their guides and website fixes can use, like prices, hours, licence number and suburbs. Only what they’re happy to see online. Nothing waits for it.";
+export const FACTS_EXAMPLE = "Prices from $129 for a single storey home. Open Mon to Sat, 7am to 6pm. Fully insured. Covers all Perth suburbs.";
+
+/** The facts box (Ross, 19 Nov 2026: "i can enter some info when i sign a client"): plain text, at most 3,000 characters, or null. */
+export function cleanFacts(raw: unknown): string | null {
+  const s = String(raw ?? "")
+    .replace(/[<>]/g, "")
+    .replace(/\r\n?/g, "\n")
+    .replace(/[ \t]+/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+  return s ? s.slice(0, 3000) : null;
+}
 
 /** Where a local business's questions are asked: their town or city when we know it, else the country. */
 export const placeFor = (shop: { kind?: string | null; area?: string | null }, countryName: string) => (isLocal(shop) && shop.area ? shop.area : countryName);

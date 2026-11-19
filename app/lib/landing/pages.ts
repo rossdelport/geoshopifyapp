@@ -43,7 +43,7 @@ const SHOPIFY_PARTNERS = { title: "Shopify Partner Directory", url: "https://www
 
 /** What the plan does each month, the same on every service page (keep in step with the home page). */
 const MONTHLY_WORK = [
-  "Check up to 100 buying questions every day in ChatGPT, Gemini, Perplexity and Google AI Overviews, plus Claude every week. You see who gets picked.",
+  "Check up to 100 buying questions every week in ChatGPT, Gemini, Perplexity, Google AI Overviews and Claude. You see who gets picked.",
   "Make 50+ fixes to your product pages, so Google and AI can tell what you sell and who it's for.",
   "Write up to 12 buying guides a month. Each one answers a real buyer question, like \"best beard oil for dry skin in Australia\".",
   "Find the sites AI reads before it picks a brand, and show you which ones name your rivals.",
@@ -184,7 +184,7 @@ export const LANDING_PAGES: LandingPage[] = [
       {
         heading: "How you'll know it's working",
         bullets: [
-          "You see which of your buying questions name you, in each AI app, every day.",
+          "You see which of your buying questions name you, in each AI app, every week.",
           "You see who AI picks instead of you, and which sites it reads.",
           "You see the visits, orders and sales from AI. A small code you add to Shopify counts them. ChatGPT adds utm_source=chatgpt.com to its links, so those visits can be counted.",
           "Google AI Overviews can't be split from normal Google visits, so we show them as Google and say so.",
@@ -244,7 +244,7 @@ export const LANDING_PAGES: LandingPage[] = [
       },
       {
         q: "Which AI apps do you check?",
-        a: "ChatGPT, Gemini, Perplexity and Google AI Overviews every day, and Claude every week. We ask each question more than once, because answers change.",
+        a: "ChatGPT, Gemini, Perplexity, Google AI Overviews and Claude, every week. We ask each question more than once, because answers change.",
       },
       RESULTS_FAQ,
       CONTRACT_FAQ,

@@ -460,6 +460,28 @@ export async function topUpQuestions(shopId: string) {
   return written;
 }
 
+/**
+ * More buying questions to write guides about, saved switched off: a local business gets a guide a day (lib/business.ts),
+ * about 30 questions a month, while its weekly check stays at the plan's 100. Joins the business's own topics, never
+ * repeats a question it has. Returns how many were added.
+ */
+export async function addGuideQuestions(shopId: string, count: number): Promise<number> {
+  const shop = await loadShop(shopId);
+  const existing = await db.question.findMany({ where: { shopId }, select: { text: true, cluster: true } });
+  const topicCounts = new Map<string, number>();
+  for (const q of existing) if (q.cluster) topicCounts.set(q.cluster, (topicCounts.get(q.cluster) ?? 0) + 1);
+  const topics = [...topicCounts.entries()].sort((a, b) => b[1] - a[1]).map(([t]) => t);
+  const scored = await writeQuestionList(shop, count, existing.map((q) => q.text), topics);
+  let added = 0;
+  for (const q of scored) {
+    const row = await db.question
+      .create({ data: { shopId, text: q.question, keyword: q.keyword, volume: q.volume, cluster: q.cluster, longTail: q.longTail, active: false, source: "ai" } })
+      .catch(() => null); // already there (same text)
+    if (row) added++;
+  }
+  return added;
+}
+
 // Upgrade: more questions first, then the upgrade scan (queued by billing.server's onPlanChanged).
 registerJob("questions.topup", async (job) => {
   const n = await topUpQuestions(job.shopId!);

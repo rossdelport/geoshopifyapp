@@ -21,7 +21,7 @@ export type Who = "auto" | "you" | "client";
 export const WHO_LABEL: Record<Who, string> = { auto: "Auto", you: "You", client: "Client" };
 
 /** What the dashboard can see for itself, so those lines tick themselves (and can't be unticked by hand). */
-export type AutoKey = "setup" | "first-check" | "contact" | "tracking" | "crawlers" | "guide-live" | "report-sent" | "reddit" | "month-report";
+export type AutoKey = "setup" | "first-check" | "contact" | "tracking" | "crawlers" | "guide-live" | "report-sent" | "reddit" | "month-report" | "site-fix" | "listings";
 export type AutoFacts = Record<AutoKey, boolean>;
 
 /** When a line is due, counted from the day the work started. */
@@ -48,7 +48,14 @@ const SHARED = {
     text: "They add you to Google Search Console (Restricted is fine)",
     why: "It shows the searches where they are nearly on page one. Those are the fastest wins.",
   },
-  notes: { key: "notes", due: "day1", who: "you", link: "/details", text: "Start call answers saved in their notes", why: "Then every page uses the same true facts." },
+  notes: {
+    key: "notes",
+    due: "day1",
+    who: "you",
+    link: "/details",
+    text: "Start call answers saved: true facts in the facts box, the rest in their notes",
+    why: "Then every page uses the same true facts. Nothing waits for them: guides and fixes use their website until then.",
+  },
   before: { key: "before", due: "week1", who: "you", why: "Month 3 is measured against this." },
   reportSent: { key: "report-sent", due: "week1", who: "you", auto: "report-sent", link: "/reports", text: "First weekly report emailed", why: "They see the work every week." },
   nearPageOne: { key: "near-page-one", due: "week3", who: "you", text: "Improve 3 pages that sit at spots 4 to 15 in Search Console", why: "Pages that are almost on page one are the fastest win." },
@@ -98,7 +105,7 @@ export const LOCAL_CHECKLIST: CheckItem[] = [
     why: "Google and AI read the profile first. It matters most for a local business.",
   },
   { key: "gbp-replies", due: "week1", who: "you", text: "Reply to every Google review that has no reply yet", why: "It shows a real business that cares. The client OKs your first few replies." },
-  { key: "guide-live", due: "week1", who: "you", auto: "guide-live", link: "/guides", text: "First guide live on their website", why: "One useful guide a week answers what buyers ask AI." },
+  { key: "guide-live", due: "week1", who: "you", auto: "guide-live", link: "/guides", text: "First guide live on their website", why: "One useful guide a day answers what buyers ask AI." },
   SHARED.reportSent,
   {
     key: "same-details",
@@ -109,13 +116,24 @@ export const LOCAL_CHECKLIST: CheckItem[] = [
   },
   { key: "about-page", due: "week2", who: "you", text: "About page with the owner’s name and photo, licence number and the suburbs they cover", why: "It shows AI a real, licensed person is behind the business." },
   {
+    key: "site-fix",
+    due: "week2",
+    who: "you",
+    auto: "site-fix",
+    link: "/website",
+    text: "First website fix made: a page title, description or the business details",
+    why: "Clear titles and details help Google and AI see what they do and where.",
+  },
+  {
     key: "schema",
     due: "week2",
     who: "you",
+    link: "/website",
     text: "Business details code (LocalBusiness schema) on their home page, matching the Google profile",
     why: "It gives Google and AI their name, phone, area and hours in a form they read easily.",
   },
   SHARED.nearPageOne,
+  { key: "reddit", due: "week2", who: "client", auto: "reddit", link: "/reddit", text: "First honest Reddit reply posted by the owner", why: "AI often quotes Reddit. Every reply says who is writing." },
   {
     key: "reviews",
     due: "week3",
@@ -126,10 +144,11 @@ export const LOCAL_CHECKLIST: CheckItem[] = [
   SHARED.monthReport,
   {
     key: "lists",
-    due: "month2",
+    due: "week3",
     who: "you",
-    link: "/sites",
-    text: "Get them onto up to 5 lists AI quotes for their trade",
+    auto: "listings",
+    link: "/listings",
+    text: "On 5 listing sites, starting with the ones AI quotes for their trade",
     why: "In our tests, ChatGPT built its local picks from reviews, directories and “best of” lists.",
   },
 ];
@@ -350,7 +369,10 @@ export interface FlowFacts {
   nextFull: boolean; // that check is the full weekly one
   nextFullAt: string | null; // about when the next full weekly check runs, when the next one is a daily one
   costCapHit: boolean;
-  redditNextAt: string | null; // online stores: the next weekly Reddit look
+  redditNextAt: string | null; // the next weekly Reddit look
+  siteFix: { what: string; page: string } | null; // local businesses: the website fix to make today (the oldest one to do)
+  siteCheckNextAt: string | null; // local businesses: the next weekly read of their website
+  listing: { name: string } | null; // local businesses: today's listing site
   guides: GuideFact[];
   lastReportAt: string | null;
 }
@@ -378,6 +400,9 @@ const WHY = {
   full: "Asks each AI every question twice, so the weekly score is fair and you can compare week to week.",
   extra: "You pressed Check AI now.",
   reddit: "AI often quotes Reddit. Each thread gets a reply draft that says who is writing.",
+  siteFix: "Each fix helps Google and AI see what they do and where.",
+  siteCheck: "Finds this week’s website fixes, about one a day.",
+  listing: "AI builds its local picks from directories and lists like this one. Same name, phone and address every time.",
   okGuide: "Nothing goes on their site without your OK.",
   report: "They see the work every week.",
   capped: "Checks stop at the month’s cost cap, so the costs never run away.",
@@ -478,8 +503,8 @@ export function planFlow(f: FlowFacts): PlanFlow {
     // The guide calendar: written two days before its day, live on the day (on the store's own calendar).
     for (const g of f.guides) guideItems(g, f, today, add, out, site);
 
-    // Reddit: a weekly look for threads (online stores only, lib/business.ts).
-    if (!f.local && f.redditNextAt) {
+    // Reddit: a weekly look for threads.
+    if (f.redditNextAt) {
       const day = dayOf(f.redditNextAt);
       add({
         key: "reddit",
@@ -490,6 +515,27 @@ export function planFlow(f: FlowFacts): PlanFlow {
         state: day <= today ? "today" : "planned",
         href: `${f.base}/reddit`,
         sort: f.redditNextAt,
+      }, day);
+    }
+
+    // A local business: today's website fix and listing site (Ross does them), and the weekly read of their website.
+    if (f.local && f.siteFix) {
+      out.today.push({ key: "site-fix", title: `Website fix: ${f.siteFix.what.toLowerCase()}`, detail: f.siteFix.page, when: "Today", why: WHY.siteFix, who: "you", state: "you", href: `${f.base}/website`, sort: `${today}T08:00` });
+    }
+    if (f.local && f.listing) {
+      out.today.push({ key: "listing", title: `Listing site: ${f.listing.name}`, when: "Today", why: WHY.listing, who: "you", state: "you", href: `${f.base}/listings`, sort: `${today}T08:30` });
+    }
+    if (f.local && f.siteCheckNextAt) {
+      const day = dayOf(f.siteCheckNextAt);
+      add({
+        key: "site-check",
+        title: "Reading their website for fixes",
+        when: day <= today ? (f.siteCheckNextAt <= f.now ? "Starting in a minute" : `About ${perthTime(f.siteCheckNextAt)}`) : `${dayWord(day, today)}, then every week`,
+        why: WHY.siteCheck,
+        who: "auto",
+        state: day <= today ? "today" : "planned",
+        href: `${f.base}/website`,
+        sort: f.siteCheckNextAt,
       }, day);
     }
   }

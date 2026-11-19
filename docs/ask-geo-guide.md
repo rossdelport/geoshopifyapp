@@ -145,8 +145,8 @@ early access.
   competitors, and one look for Reddit threads.
 - **Done for you:** A$297 a month (Australian dollars). No lock-in contract, cancel any time. Only 5 spots. Not
   happy after the first month? Full refund, and you keep all the work (ask ross@rankwithross.com.au). No free trial.
-  - 100 buying questions, checked every day on ChatGPT, Gemini, Perplexity and Google AI Overviews, plus Claude in a
-    full check every week.
+  - 100 buying questions, checked every week on ChatGPT, Gemini, Perplexity, Google AI Overviews and Claude (each
+    question asked twice).
   - 12 guide pages a month (three a week) on the Guide calendar, written and OK'd for you (email ross@rankwithross.com.au if
     you'd rather OK each one yourself), rotating through how-to-choose guides, comparisons, use-case pages, buying
     advice and single question deep dives.

@@ -1,7 +1,7 @@
 // Any business in the agency hub (Ross, 17 Nov 2026: "so i can add any business"): the pure rules in lib/business.ts.
 
 import { describe, expect, it } from "vitest";
-import { cleanArea, guidesPerMonth, isLocal, LOCAL_GUIDES_PER_MONTH, looksLikeShopify, placeFor, siteName } from "../app/lib/business";
+import { cleanArea, cleanFacts, guidesPerMonth, isLocal, LOCAL_GUIDES_PER_MONTH, looksLikeShopify, placeFor, siteName } from "../app/lib/business";
 import { PLANS } from "../app/lib/plans";
 
 describe("a business that isn't an online store", () => {
@@ -12,13 +12,21 @@ describe("a business that isn't an online store", () => {
     expect(isLocal(null)).toBe(false);
   });
 
-  it("gets 4 guides a month, about one a week (Ross, 17 Nov 2026), while online stores keep their plan's number", () => {
-    expect(LOCAL_GUIDES_PER_MONTH).toBe(4);
-    expect(guidesPerMonth({ kind: "local" }, PLANS.pro)).toBe(4);
+  it("gets a guide a day (Ross, 19 Nov 2026; was 4 a month), while online stores keep their plan's number", () => {
+    expect(LOCAL_GUIDES_PER_MONTH).toBe(31);
+    expect(guidesPerMonth({ kind: "local" }, PLANS.pro)).toBe(31);
     expect(guidesPerMonth({ kind: "store" }, PLANS.pro)).toBe(PLANS.pro.guidePagesPerMonth);
     expect(guidesPerMonth({}, PLANS.pro)).toBe(PLANS.pro.guidePagesPerMonth);
     // Never more than the plan allows: a paused (free) business gets none.
     expect(guidesPerMonth({ kind: "local" }, PLANS.free)).toBe(0);
+  });
+
+  it("keeps the facts box as plain text with its lines, at most 3,000 characters", () => {
+    expect(cleanFacts("  Open Mon to Sat.\r\n\r\n\r\nFrom $129  a home. ")).toBe("Open Mon to Sat.\n\nFrom $129 a home.");
+    expect(cleanFacts("<script>x</script>")).toBe("scriptx/script");
+    expect(cleanFacts("")).toBeNull();
+    expect(cleanFacts(undefined)).toBeNull();
+    expect(cleanFacts("y".repeat(4000))).toHaveLength(3000);
   });
 
   it("keeps the town or city as one short line", () => {

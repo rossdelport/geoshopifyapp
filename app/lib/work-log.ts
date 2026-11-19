@@ -14,6 +14,9 @@ export type LogKind =
   | "reddit-found"
   | "reddit-replied"
   | "writer" // found the writer of a page AI trusts
+  | "site-found" // read a local business's website and wrote fixes (Ross only: the work is the fix made)
+  | "site-fix" // a website fix made
+  | "listing" // listed on a listing site
   | "sale" // an order that came from AI
   | "report" // Ross made a report for the client
   | "report-sent"
@@ -45,6 +48,9 @@ export const LOG_LABEL: Record<LogKind, string> = {
   "reddit-found": "Reddit",
   "reddit-replied": "Reddit reply",
   writer: "Writer found",
+  "site-found": "Website read",
+  "site-fix": "Website fix",
+  listing: "Listing",
   sale: "Sale from AI",
   report: "Report",
   "report-sent": "Report sent",
@@ -63,6 +69,9 @@ export const LOG_TONE: Record<LogKind, "" | "ok" | "no"> = {
   "reddit-found": "",
   "reddit-replied": "",
   writer: "",
+  "site-found": "",
+  "site-fix": "ok",
+  listing: "ok",
   sale: "ok",
   report: "",
   "report-sent": "",
@@ -72,7 +81,7 @@ export const LOG_TONE: Record<LogKind, "" | "ok" | "no"> = {
 };
 
 /** The work a client sees in their reports: no private notes, no failures, no admin chores. */
-export const CLIENT_SEES: ReadonlySet<LogKind> = new Set<LogKind>(["guide-written", "guide-live", "check", "reddit-replied", "writer", "change", "call"]);
+export const CLIENT_SEES: ReadonlySet<LogKind> = new Set<LogKind>(["guide-written", "guide-live", "check", "reddit-replied", "writer", "site-fix", "listing", "change", "call"]);
 
 export const isExternal = (href: string) => /^https?:\/\//i.test(href);
 
@@ -112,6 +121,9 @@ const SUMMARY_WORDS: [LogKind, string, string][] = [
   ["reddit-found", "Reddit thread found", "Reddit threads found"],
   ["reddit-replied", "Reddit reply", "Reddit replies"],
   ["writer", "writer found", "writers found"],
+  ["site-found", "website fix found", "website fixes found"],
+  ["site-fix", "website fix made", "website fixes made"],
+  ["listing", "listing site joined", "listing sites joined"],
   ["change", "change made", "changes made"],
   ["call", "call", "calls"],
   ["sale", "sale from AI", "sales from AI"],
@@ -140,6 +152,19 @@ export function checkText(scan: { total: number; engines: unknown; runs: number;
 
 /** Reddit threads found on one day, as one entry: "Found 6 Reddit threads to reply to". */
 export const redditFoundText = (n: number) => `Found ${plural(n, "Reddit thread", "Reddit threads")} to reply to, each with a reply drafted`;
+
+/** Website fixes found on one day, as one entry. */
+export const siteFoundText = (n: number) => `Read their website and wrote ${plural(n, "fix", "fixes")} to make`;
+
+/** The path of a page, for short lines: "https://x.com.au/about.html" -> "/about.html" (the home page is "home page"). */
+export function pagePath(url: string): string {
+  try {
+    const p = new URL(url).pathname;
+    return p === "/" || p === "" ? "home page" : p;
+  } catch {
+    return url;
+  }
+}
 
 /** Writers found on one day, as one entry. */
 export const writersText = (domains: string[]) =>

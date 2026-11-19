@@ -383,7 +383,7 @@ export const COMPARE_PAGES: ComparePage[] = [
             ["Otterly", "US$29, US$189 or US$489", "15, 100 or 400", "ChatGPT, Google AI Overviews, Perplexity and Copilot. Claude, Gemini and Google AI Mode cost extra", "You"],
             ["Peec AI", "US$95, US$245 or US$495 (15% off yearly)", "50, 150 or 350", "Pick 3 AI apps. More cost extra", "You"],
             ["Profound", "Free 7-day trial, then a custom price", "50 a day on the trial", "ChatGPT, Gemini and Google AI Overviews on the trial", "You"],
-            ["Rank with Ross", "A$297 (Australian dollars)", "Up to 100, every day", "ChatGPT, Gemini, Perplexity and Google AI Overviews daily, Claude weekly", "We do"],
+            ["Rank with Ross", "A$297 (Australian dollars)", "Up to 100, every week", "ChatGPT, Gemini, Perplexity, Google AI Overviews and Claude, weekly", "We do"],
           ],
         },
         paragraphs: [
@@ -518,7 +518,7 @@ export const COMPARE_PAGES: ComparePage[] = [
       {
         heading: "Where Rank with Ross fits",
         paragraphs: [
-          "Rank with Ross is a done-for-you service for Shopify brands. It's A$297 a month, with no lock-in and a full refund if you're not happy after the first month. Our team and AI check 100 buying questions every day and fix your product pages. We write 12 buying guides a month and show you the sales AI sends you.",
+          "Rank with Ross is a done-for-you service for Shopify brands. It's A$297 a month, with no lock-in and a full refund if you're not happy after the first month. Our team and AI check 100 buying questions every week and fix your product pages. We write 12 buying guides a month and show you the sales AI sends you.",
           "We are not a full-service SEO agency. We don't do site speed, ads or full technical SEO. If you need those, keep your SEO agency and use us alongside it.",
         ],
       },
@@ -633,7 +633,7 @@ export const COMPARE_PAGES: ComparePage[] = [
             ["Australian agency, full", "Various", "A$10,000 to A$20,000+ a month", "All of the above plus SEO, structured data and ongoing content"],
             ["Shopify GEO agency (overseas)", "Netalico (US)", "About US$3,000 a month", "Product data, schema and feed work for Shopify Plus stores"],
             ["Done for you, software only", "FirstIndex", "US$2,000 a month after a 3-month start, or US$1,500 a month on 12 months", "Daily site changes, up to 12 articles and 50+ page fixes a month"],
-            ["Done for you, Shopify brands", "Rank with Ross", "A$297 a month, no lock-in", "100 questions checked daily, 50+ page fixes, 12 guides, sales from AI, weekly reports"],
+            ["Done for you, Shopify brands", "Rank with Ross", "A$297 a month, no lock-in", "100 questions checked weekly, 50+ page fixes, 12 guides, sales from AI, weekly reports"],
           ],
         },
         paragraphs: [

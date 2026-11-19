@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- reads raw third-party JSON */
 // Reddit finder (Ross, 2026-10-15): once a week, find Reddit threads where people ask about the kind of product
-// the store sells, and draft a neutral, honest reply. The owner reads the thread, edits the reply if they like,
+// the store sells (or, for a local business, the kind of service it offers: Ross, 19 Nov 2026), and draft a neutral,
+// honest reply. The owner reads the thread, edits the reply if they like,
 // taps "Copy and open thread" and posts it themselves. Every reply says who they are ("I run X, so I'm biased")
 // and never poses as a customer: that's astroturfing and against Reddit's rules.
 
@@ -122,7 +123,13 @@ export function looksRelevant(post: RedditPost, phrase: string): boolean {
 
 const KeepSchema = z.object({ keep: z.array(z.string()) });
 
-async function relevantByAi(posts: RedditPost[], about: string, products: string, shopId: string): Promise<Set<string>> {
+const LOCAL_KEEP = `You pick Reddit posts where the owner of a local business could honestly reply. Keep a post only when all three are true:
+1. The person is choosing someone for this kind of work, or asking for advice the business knows well (what it costs, what to ask, what to watch out for).
+2. They are in or near the area the business works in, or the post doesn't say where and the advice would still help.
+3. A short, honest reply from the owner would be welcome there.
+Drop: complaints about one named business, jobs and hiring posts, people selling, memes and news, sad or personal posts, and posts from other countries when the business only works locally. When unsure, drop it. Reply with the ids to keep.`;
+
+async function relevantByAi(posts: RedditPost[], about: string, products: string, shopId: string, local = false): Promise<Set<string>> {
   const result = await askJson({
     schema: KeepSchema,
     tier: "fast",
@@ -130,12 +137,14 @@ async function relevantByAi(posts: RedditPost[], about: string, products: string
     shopId,
     style: false,
     maxTokens: 2000,
-    system: `You pick Reddit posts where a store owner could honestly reply and name one of their products. Keep a post only when all three are true:
+    system: local
+      ? LOCAL_KEEP
+      : `You pick Reddit posts where a store owner could honestly reply and name one of their products. Keep a post only when all three are true:
 1. The person is still choosing what to buy and is open to suggestions of brands, products or shops.
 2. The store sells something that genuinely fits what they want (the kind of product, the style, and roughly their budget if they give one).
 3. A short, honest reply from the owner naming one product would be welcome there.
 Drop: questions about something they already bought or picked (sizing, stock, returns, fakes, care), fan or merch communities for a band or brand, sad or personal posts, posts asking for blanks or wholesale, selling or giveaway posts, memes and news. When unsure, drop it. Reply with the ids to keep.`,
-    prompt: `The store: ${about}\nIts products (title | price):\n${products}\n\nPosts (id | subreddit | title | start of text):\n${posts
+    prompt: `${local ? "The business" : "The store"}: ${about}\n${local ? "" : `Its products (title | price):\n${products}\n`}\nPosts (id | subreddit | title | start of text):\n${posts
       .map((p) => `${p.postId} | r/${p.subreddit} | ${p.title} | ${(p.body ?? "").slice(0, 400).replace(/\s+/g, " ")}`)
       .join("\n")}`,
   });
@@ -163,8 +172,8 @@ const POSES =
   /\b(i|i've|i have|we|we've|we have)\s+(bought|purchased|ordered|paid for|got (mine|one|two|a pair|a few)|been (using|wearing|rocking)|received (mine|my order))\b|\bmy order\b|\b(happy|satisfied|long-?time|repeat) customer\b|\bas a customer\b/i;
 export const posesAsCustomer = (reply: string) => POSES.test(reply.replace(/[\u2018\u2019]/g, "'"));
 
-/** Without AI: a short, honest reply that names the best matching product once. */
-export function fallbackReply(o: { brand: string; summary: string | null; product: { title: string; price: string | null; description: string | null } | null }): string {
+/** Without AI: a short, honest reply that names the best matching product once (a local business: no product). */
+export function fallbackReply(o: { brand: string; summary: string | null; product: { title: string; price: string | null; description: string | null } | null; local?: boolean }): string {
   const first = (o.product?.description ?? "").split(/(?<=[.!?])\s+/)[0]?.trim() ?? "";
   const fact = first && first.length <= 180 ? ` ${first.replace(/[.!?]?$/, ".")}` : "";
   const what = o.product
@@ -172,7 +181,8 @@ export function fallbackReply(o: { brand: string; summary: string | null; produc
     : o.summary
       ? `${o.summary.split(/(?<=[.!?])\s+/)[0]}`
       : "";
-  return `(I run ${o.brand}, so I'm biased.) ${what} Either way, I'd compare a few options and check the sizing or details before you buy. Happy to answer any questions.`
+  const tip = o.local ? "Either way, I'd get a couple of quotes and ask what's included before you book." : "Either way, I'd compare a few options and check the sizing or details before you buy.";
+  return `(I run ${o.brand}, so I'm biased.) ${what} ${tip} Happy to answer any questions.`
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -189,19 +199,27 @@ Rules:
 - No links, no hashtags, no emojis, no sales talk ("check out", "game changer", "amazing deal").
 - 40 to 120 words, casual and friendly, like a normal Reddit comment. Write in the post's language.`;
 
-async function replyByAi(post: RedditPost, o: { brand: string; about: string; country: string; products: string }, shopId: string): Promise<string> {
+const LOCAL_REPLY_SYSTEM = `You write a Reddit reply for the owner of a local business. The owner will read it, maybe edit it, and post it themselves from their own account.
+
+Rules:
+- Say who is writing in the first line, plainly, for example "(I run Business, so I'm biased.)". Never hide it.
+- Be genuinely helpful and neutral. Answer what they asked first: what to look for, what to ask, what changes the price and what to watch out for, using common knowledge and the business's own facts.
+- Mention the business once at most, only if it really fits where they are and what they need, and say other good options exist. If it doesn't fit, just give helpful advice.
+- Never pretend to be a customer. Never invent reviews, ratings, prices, discounts, licences, awards, response times or any fact that isn't in the business details.
+- No links, no hashtags, no emojis, no sales talk ("check out", "game changer", "amazing deal").
+- 40 to 120 words, casual and friendly, like a normal Reddit comment. Write in the post's language.`;
+
+async function replyByAi(post: RedditPost, o: { brand: string; about: string; country: string; products: string; local?: boolean }, shopId: string): Promise<string> {
   const result = await askJson({
     schema: ReplySchema,
     tier: "smart",
     label: "reddit-reply",
     shopId,
     maxTokens: 1500,
-    system: REPLY_SYSTEM,
-    prompt: `The store: ${o.brand} (${o.country})
+    system: o.local ? LOCAL_REPLY_SYSTEM : REPLY_SYSTEM,
+    prompt: `${o.local ? "The business" : "The store"}: ${o.brand} (${o.country})
 About it: ${o.about}
-Its products (title | price | details):
-${o.products}
-
+${o.local ? "" : `Its products (title | price | details):\n${o.products}\n`}
 The Reddit post in r/${post.subreddit}:
 Title: ${post.title}
 Text: ${(post.body ?? "(no text, just the title)").slice(0, 2500)}
@@ -223,12 +241,16 @@ export function redditDue(shop: { plan: string; redditCheckedAt: Date | null }, 
 /** Find this week's threads for a store, keep the ones worth replying to, and draft a reply for each. */
 export async function findThreads(shopId: string, now = new Date()): Promise<number> {
   const shop = await db.shop.findUniqueOrThrow({ where: { id: shopId }, include: { profile: true } });
-  if (isLocal(shop)) return 0; // not for a business that isn't an online store yet (lib/business.ts)
+  const local = isLocal(shop); // a business that isn't an online store: threads about its kind of work, no products (lib/business.ts)
   const free = getPlan(shop.plan).id === "free";
   const questions = await db.question.findMany({ where: { shopId, active: true }, select: { text: true, volume: true } });
   const phrases = searchPhrases(questions, shop.country);
   const brand = shop.profile?.brandName ?? shop.name ?? shop.domain.split(".")[0];
-  const about = [shop.profile?.summary, shop.profile?.category, shop.profile?.audience].filter(Boolean).join(" ").slice(0, 600) || brand;
+  const about =
+    [shop.profile?.summary, shop.profile?.category, shop.profile?.audience, local && shop.area ? `Works in ${shop.area}.` : null, local ? shop.facts : null]
+      .filter(Boolean)
+      .join(" ")
+      .slice(0, local ? 1500 : 600) || brand;
 
   // Search (a year back the first time, a month after that), skipping threads we already have.
   const known = new Set((await db.redditThread.findMany({ where: { shopId }, select: { postId: true } })).map((t) => t.postId));
@@ -259,7 +281,7 @@ export async function findThreads(shopId: string, now = new Date()): Promise<num
   if (aiConfigured() && picks.length) {
     try {
       const short = products.slice(0, 25).map((p) => `${p.title} | ${p.price ?? "?"}`).join("\n");
-      byAi = await relevantByAi(picks.map((f) => f.post).slice(0, 80), about, short, shopId);
+      byAi = await relevantByAi(picks.map((f) => f.post).slice(0, 80), about, short, shopId, local);
     } catch (err) {
       console.error(`[reddit] relevance by AI failed, using word matching: ${(err as Error).message}`);
     }
@@ -278,7 +300,7 @@ export async function findThreads(shopId: string, now = new Date()): Promise<num
     let draft: string | null = null;
     if (aiConfigured()) {
       try {
-        draft = await replyByAi(post, { brand, about, country: countryName(shop.country ?? "US"), products: productList }, shopId);
+        draft = await replyByAi(post, { brand, about, country: local && shop.area ? `${shop.area}, ${countryName(shop.country)}` : countryName(shop.country ?? "US"), products: productList, local }, shopId);
         if (draft && posesAsCustomer(draft)) {
           console.warn(`[reddit] ${shop.domain}: AI reply talked like a customer, using the plain one`);
           draft = null;
@@ -288,8 +310,8 @@ export async function findThreads(shopId: string, now = new Date()): Promise<num
       }
     }
     if (!draft) {
-      const p = products[bestProductIndex(`${post.title} ${post.body ?? ""}`, products)] ?? null;
-      draft = fallbackReply({ brand, summary: shop.profile?.summary ?? null, product: p ? { title: p.title, price: p.price, description: p.description } : null });
+      const p = local ? null : products[bestProductIndex(`${post.title} ${post.body ?? ""}`, products)] ?? null;
+      draft = fallbackReply({ brand, summary: shop.profile?.summary ?? null, product: p ? { title: p.title, price: p.price, description: p.description } : null, local });
     }
     try {
       await db.redditThread.create({ data: { shopId, ...post, query: matched[0], draft: ensureDisclosure(draft, brand).slice(0, 3000) } });

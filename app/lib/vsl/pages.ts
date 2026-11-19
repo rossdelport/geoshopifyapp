@@ -103,8 +103,8 @@ const NO_PROMISE = "No. Nobody can promise what AI says, and I won’t. I do the
 const NO_LOCK_IN = "No lock-in. Pay monthly and stop any time. Not happy after month 1? Full refund, and you keep the work.";
 
 // The questions every page answers (Ross, 17 Nov 2026: "really beef out the FAQ section for each page"). Only true
-// answers: the refund is the terms page's (asked within 14 days after month 1 ends), local clients get up to 4 pages a
-// month and stores up to 12.
+// answers: the refund is the terms page's (asked within 14 days after month 1 ends), local clients get up to one page a
+// day (Ross, 19 Nov 2026; was 4 a month) and stores up to 12 a month.
 const REFUND = {
   q: "How does the refund work?",
   a: "If you’re not happy after month 1, tell me within 14 days after it ends. I refund that month in full, and you keep the work. After that, stop any time. There are no refunds for part months.",
@@ -128,7 +128,7 @@ function localFaq(who: string, extra: VslPage["faq"]): VslPage["faq"] {
   return [
     {
       q: "What do you actually do each month?",
-      a: `Every week I check what ChatGPT, Gemini, Perplexity and Google’s AI say when people ask for ${who} in Perth. I fix your Google profile and website, work on getting you onto the lists AI reads, and write up to 4 pages a month that answer your customers.`,
+      a: `Every week I check what ChatGPT, Gemini, Perplexity and Google’s AI say when people ask for ${who} in Perth. I fix your Google profile and website, work on getting you onto the lists AI reads, and write up to one new page a day that answers what your customers ask.`,
     },
     { q: "What do I have to do?", a: "One short call at the start, and access to your Google profile and website. Then I do the work." },
     {
@@ -251,7 +251,7 @@ export const VSL_PAGES: VslPage[] = [
     faq: [
       {
         q: "What do you actually do each month?",
-        a: "Every day I check up to 100 buying questions in ChatGPT, Gemini, Perplexity and Google’s AI Overviews. I make 50+ fixes to your product pages and write up to 12 buying guides a month.",
+        a: "Every week I check up to 100 buying questions in ChatGPT, Gemini, Perplexity and Google’s AI Overviews. I make 50+ fixes to your product pages and write up to 12 buying guides a month.",
       },
       { q: "What do I have to do?", a: "One short call, and I help you add a small code to your store. Then I do the work." },
       { q: "Do you only work with Shopify stores?", a: "Yes. Right now I only work with stores on Shopify." },

@@ -103,3 +103,24 @@
   .cp-table th:last-child, .cp-table td:last-child { padding-right: 12px; }
   .cp-row .w-field { flex-basis: 100%; }
 }
+
+/* Listing sites and website fixes (local businesses, 19 Nov 2026): one row or card each, done ones greyed. */
+.cp-ls-list { list-style: none; padding: 0; display: grid; }
+.cp-ls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 16px; align-items: start; padding: 14px 16px; }
+.cp-ls + .cp-ls { border-top: 1px solid var(--line); }
+.cp-ls-main { display: grid; gap: 4px; min-width: 0; }
+.cp-ls-top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.cp-ls-act { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; }
+.cp-ls-url { width: 220px; max-width: 100%; }
+.cp-ls-done { opacity: 0.72; }
+.cp-ls-detail { display: contents; }
+.cp-fx-list { list-style: none; padding: 0; display: grid; gap: 12px; }
+.cp-fx { display: grid; gap: 8px; }
+.cp-fx-before { color: var(--muted); font-size: 13.5px; overflow-wrap: anywhere; }
+.cp-fx-before span, .cp-fx-after > span { font-weight: 600; color: var(--ink-2); margin-right: 4px; }
+.cp-fx-after { display: grid; gap: 6px; justify-items: start; padding: 10px 12px; background: var(--bg-2); border-radius: 10px; }
+.cp-fx-after pre { margin: 0; max-width: 100%; overflow-x: auto; font-size: 12.5px; white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 720px) {
+  .cp-ls { grid-template-columns: minmax(0, 1fr); }
+  .cp-ls-act { justify-content: flex-start; }
+}

@@ -139,6 +139,7 @@ async function startClient(
   if (shop.status !== "installed") return { ok: false, error: "That business was removed from Rank with Ross. Please ask Claude to bring it back." };
   try {
     await db.client.create({ data: { shopId: shop.id, status: input.status, ...fields(input) } });
+    if (input.facts) await db.shop.update({ where: { id: shop.id }, data: { facts: input.facts } }); // before setup, so the first guides use them
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") return { ok: false, error: "That business is already one of your clients." };
     throw err;
@@ -156,7 +157,7 @@ export async function updateClient(shopId: string, input: ClientInput, by: strin
     db.client.findUniqueOrThrow({ where: { shopId } }),
     db.shop.findUniqueOrThrow({ where: { id: shopId }, select: { kind: true } }),
   ]);
-  const shopData = { ...(input.name ? { name: input.name } : {}), ...(isLocal(shop) ? { area: input.area } : {}) };
+  const shopData = { ...(input.name ? { name: input.name } : {}), ...(isLocal(shop) ? { area: input.area } : {}), facts: input.facts };
   await db.$transaction([
     db.client.update({ where: { shopId }, data: fields(input) }),
     ...(Object.keys(shopData).length ? [db.shop.update({ where: { id: shopId }, data: shopData })] : []),

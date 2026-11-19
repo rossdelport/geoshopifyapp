@@ -56,6 +56,7 @@ const input = (over: Record<string, unknown> = {}) => ({
   status: "active" as const,
   notes: "Likes email",
   area: null,
+  facts: null,
   ...over,
 });
 
@@ -187,7 +188,7 @@ describe.skipIf(!url)("the agency hub (needs TEST_DATABASE_URL)", () => {
     const entries = await log.workLog([peaceId], "2026-11-05", "2026-11-05");
     expect(entries.map((e) => e.kind).sort()).toEqual(["change", "check", "client", "guide-live", "guide-written", "reddit-found", "sale"]);
     expect(entries.find((e) => e.kind === "client")?.text).toBe("Became a client");
-    expect(entries.find((e) => e.kind === "guide-live")).toMatchObject({ text: "Guide live on their store: Indoor plants for low light", href: "https://peacelily.com.au/pages/low-light" });
+    expect(entries.find((e) => e.kind === "guide-live")).toMatchObject({ text: "Guide live: Indoor plants for low light", href: "https://peacelily.com.au/pages/low-light" });
     expect(entries.find((e) => e.kind === "check")?.text).toBe("Checked 1 buying question on 2 AI assistants. Score 31.");
     expect(entries.find((e) => e.kind === "reddit-found")?.text).toBe("Found 2 Reddit threads to reply to, each with a reply drafted");
     expect(entries.find((e) => e.kind === "change")?.noteId).toBeTruthy();

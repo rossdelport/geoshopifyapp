@@ -970,7 +970,7 @@ export function CheckReport({ view }: { view: CheckView }) {
         <div className="ck-cta-tx">
           <h2 className="ck-cta-h">Let Rank with Ross do this for you</h2>
           <p>
-            Rank with Ross checks up to {PLANS.pro.questions} buying questions every day, writes buying guides and Reddit replies for
+            Rank with Ross checks up to {PLANS.pro.questions} buying questions every week, writes buying guides and Reddit replies for
             you, pitches the sites AI quotes most, and counts the orders it can trace back to AI.
           </p>
           <p className="ck-cta-price">{OFFER.line} Join the waitlist and we’ll reach out shortly.</p>
@@ -990,7 +990,7 @@ export function CheckReport({ view }: { view: CheckView }) {
 
       <p className="ck-honest">
         Answers change from run to run, so we ask twice. This quick check uses 3 questions. Rank with Ross tracks up to{" "}
-        {PLANS.pro.questions} every day (asked twice on the weekly full scan).
+        {PLANS.pro.questions} every week, asking each one twice.
       </p>
     </>
   );

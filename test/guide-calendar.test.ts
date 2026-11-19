@@ -37,6 +37,10 @@ describe("days and months", () => {
     expect(feb).toHaveLength(12);
     expect(feb.every((d) => d >= "2027-02-03" && d <= "2027-02-28")).toBe(true);
     expect(slotDaysForMonth("2026-10", 0)).toEqual([]);
+    // One a day (a local business, lib/business.ts): every day, the 1st and 2nd too.
+    expect(slotDaysForMonth("2026-11", 31)).toHaveLength(30);
+    expect(slotDaysForMonth("2026-12", 31)[0]).toBe("2026-12-01");
+    expect(slotDaysForMonth("2027-02", 31)).toHaveLength(28);
   });
 
   it("adds days across month and year ends, and writes two days before", () => {

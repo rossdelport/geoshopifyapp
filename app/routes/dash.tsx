@@ -50,7 +50,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     base: storeBase(pathname),
     shopId: shop.id,
     clientStatus: client?.status ?? null,
-    local: isLocal(shop), // a business that isn't an online store: no Reddit or tracking code yet (lib/business.ts)
+    local: isLocal(shop), // a business that isn't an online store: no tracking code yet (lib/business.ts)
     store: shop.name || shop.primaryDomain || shop.domain,
     host: shop.primaryDomain || shop.domain,
     country: shop.country,
@@ -199,7 +199,11 @@ export default function Dash() {
           ]}
         />
         {data.local ? (
-          <NavGroup label="Their business" navClass={navClass} items={storeTools(b).filter((n) => !n.to.endsWith("/reddit"))} />
+          <NavGroup
+            label="Their business"
+            navClass={navClass}
+            items={[...storeTools(b), { to: `${b}/website`, label: "Website", d: ICONS.out }, { to: `${b}/listings`, label: "Listing sites", d: ICONS.spark }]}
+          />
         ) : (
           <NavGroup label="Their store" navClass={navClass} items={[...storeTools(b), { to: `${b}/tracking`, label: "Tracking code", d: ICONS.code }]} />
         )}

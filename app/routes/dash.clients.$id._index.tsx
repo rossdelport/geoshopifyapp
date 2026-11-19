@@ -8,7 +8,7 @@ import { workLog } from "../lib/work-log.server";
 import { byDay } from "../lib/work-log";
 import { activeScan, topCompetitors } from "../lib/dashboard.server";
 import { scanHasWorker } from "../lib/scan.server";
-import { shopifyConnected } from "../lib/guide-calendar.server";
+import { publishRoute } from "../lib/guide-calendar.server";
 import { STATE_LABEL, STATE_TONE, dayLabel, localDay, slotState } from "../lib/guide-calendar";
 import { type ClientStatus, STATUS_LABEL, formatFee, hubDay, isClientStatus, monthOneEnds, monthStartDay, refundUntil } from "../lib/clients";
 import { ENGINE_LABELS, type Engine, getPlan } from "../lib/plans";
@@ -76,7 +76,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       select: { id: true, day: true, status: true, approvedAt: true, question: { select: { text: true } }, fix: { select: { targetTitle: true } } },
     }),
     topCompetitors(shop.id, 5),
-    shopifyConnected(shop),
+    publishRoute(shop).then(Boolean),
     activeScan(shop.id).then(async (s) => (s && (await scanHasWorker(s.id)) ? s : null)),
     // All their sales this month, for the share from AI (the daily totals are saved by UTC day).
     db.orderDay.aggregate({ where: { shopId: shop.id, date: { gte: new Date(`${monthStartDay(today)}T00:00:00Z`) } }, _sum: { revenue: true } }),
