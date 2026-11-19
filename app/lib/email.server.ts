@@ -12,6 +12,8 @@ export interface EmailAttachment {
 
 export interface EmailMessage {
   to: string[];
+  /** Who it's from, when not the usual GEO_EMAIL_FROM (e.g. the booking alerts, from Ross's own address). */
+  from?: string;
   subject: string;
   html: string;
   text?: string;
@@ -60,7 +62,7 @@ export interface SendResult {
 
 export async function sendEmailMessage(msg: EmailMessage): Promise<SendResult> {
   if (!emailConfigured()) throw new Error("Email is not set up (RESEND_API_KEY / GEO_EMAIL_FROM)");
-  const body: Record<string, unknown> = { from: env.emailFrom, to: msg.to, subject: msg.subject, html: msg.html };
+  const body: Record<string, unknown> = { from: msg.from || env.emailFrom, to: msg.to, subject: msg.subject, html: msg.html };
   if (msg.text) body.text = msg.text;
   if (msg.replyTo) body.reply_to = msg.replyTo;
   if (msg.headers && Object.keys(msg.headers).length) body.headers = msg.headers;

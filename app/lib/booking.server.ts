@@ -6,7 +6,7 @@
 import { randomUUID } from "node:crypto";
 import db from "../db.server";
 import { env } from "./env.server";
-import { emailConfigured, sendEmail } from "./email.server";
+import { emailConfigured, sendEmailMessage } from "./email.server";
 import { normalizeEmail } from "./check-lead.server";
 import { hashIp } from "./public-form.server";
 import { SITE } from "./tools/site";
@@ -17,6 +17,8 @@ import type { AdTags } from "./book-stats";
 
 const ROW = "booking"; // the one CalendarLink row
 export const CALENDAR_REDIRECT = `${SITE}/dash/admin/calendar`;
+// Ross (19 Nov 2026): the booking page's emails to him come from his own address, not hello@.
+export const BOOKING_FROM = "Rank with Ross <ross@rankwithross.com.au>";
 const SCOPES = "openid email https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.freebusy";
 const TIMEOUT = 10_000;
 
@@ -123,7 +125,7 @@ async function calendarDown(err: unknown, now: Date) {
     `<p>Your booking calendar (${SITE}/book and the calendar on your /for pages) can't read your Google Calendar right now, so it says "Text Ross to pick a time" instead of showing your free times. Nobody can book online until it's fixed.</p>` +
     `<p>To fix it, open <a href="${SITE}/dash/admin/system">Admin, System</a> and press Connect again.</p>` +
     `<p>What Google said: ${why}</p>`;
-  await sendEmail([env.alertEmail], "Your booking page can't see your calendar", html).catch((e) => console.error("[book] could not email Ross about his calendar", e));
+  await sendEmailMessage({ to: [env.alertEmail], from: BOOKING_FROM, subject: "Your booking page can't see your calendar", html }).catch((e) => console.error("[book] could not email Ross about his calendar", e));
 }
 
 /** Trimmed, spaces squeezed, no control characters or angle brackets. */
@@ -216,7 +218,12 @@ export async function bookCall(input: BookInput, now = new Date()): Promise<{ st
       return `<b>${key}:</b> ${esc(rest.join(": "))}`;
     })];
     if (ad) lines.push(`<b>Came from:</b> ${esc(ad)}`);
-    await sendEmail([env.alertEmail], `New call booked: ${name}, ${rossTime(start)}`, `<p>Someone booked a call on rankwithross.com.au/book. It's in your Google Calendar with a Meet link.</p><p>${lines.join("<br>")}</p>`).catch((err) =>
+    await sendEmailMessage({
+      to: [env.alertEmail],
+      from: BOOKING_FROM,
+      subject: `New call booked: ${name}, ${rossTime(start)}`,
+      html: `<p>Someone booked a call on rankwithross.com.au/book. It's in your Google Calendar with a Meet link.</p><p>${lines.join("<br>")}</p>`,
+    }).catch((err) =>
       console.error("[book] booked, but the email to Ross failed", err),
     );
   }
