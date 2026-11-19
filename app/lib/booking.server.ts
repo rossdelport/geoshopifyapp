@@ -6,7 +6,7 @@
 import { randomUUID } from "node:crypto";
 import db from "../db.server";
 import { env } from "./env.server";
-import { emailConfigured, sendEmail } from "./email.server";
+import { emailConfigured, sendEmailMessage } from "./email.server";
 import { normalizeEmail } from "./check-lead.server";
 import { hashIp } from "./public-form.server";
 import { SITE } from "./tools/site";
@@ -17,6 +17,8 @@ import type { AdTags } from "./book-stats";
 
 const ROW = "booking"; // the one CalendarLink row
 export const CALENDAR_REDIRECT = `${SITE}/dash/admin/calendar`;
+// Ross (19 Nov 2026): the booking page's emails to him come from his own address, not hello@.
+export const BOOKING_FROM = "Rank with Ross <ross@rankwithross.com.au>";
 const SCOPES = "openid email https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.freebusy";
 const TIMEOUT = 10_000;
 
@@ -106,8 +108,24 @@ export async function freeSlots(now = new Date()): Promise<string[] | null> {
     return token ? openSlots(now, await busyTimes(token, now)) : null;
   } catch (err) {
     console.error("[book] could not read Ross's calendar", err);
+    await calendarDown(err, now);
     return null;
   }
+}
+
+// Ross (19 Nov 2026, A$100 a day of ads going to the calendar): when the page can't read his calendar it quietly says
+// "Text Ross" instead of showing times, so he gets an email, at most once every 6 hours. The usual cause is Google
+// ending the link (a consent screen left in "Testing" ends it 7 days after connecting). First written in PR #50.
+let lastAlert = 0;
+async function calendarDown(err: unknown, now: Date) {
+  if (!env.alertEmail || !emailConfigured() || now.getTime() - lastAlert < 6 * 3_600_000) return;
+  lastAlert = now.getTime();
+  const why = clean(err instanceof Error ? err.message : err, 300).replace(/&/g, "&amp;");
+  const html =
+    `<p>Your booking calendar (${SITE}/book and the calendar on your /for pages) can't read your Google Calendar right now, so it says "Text Ross to pick a time" instead of showing your free times. Nobody can book online until it's fixed.</p>` +
+    `<p>To fix it, open <a href="${SITE}/dash/admin/system">Admin, System</a> and press Connect again.</p>` +
+    `<p>What Google said: ${why}</p>`;
+  await sendEmailMessage({ to: [env.alertEmail], from: BOOKING_FROM, subject: "Your booking page can't see your calendar", html }).catch((e) => console.error("[book] could not email Ross about his calendar", e));
 }
 
 /** Trimmed, spaces squeezed, no control characters or angle brackets. */
@@ -200,7 +218,12 @@ export async function bookCall(input: BookInput, now = new Date()): Promise<{ st
       return `<b>${key}:</b> ${esc(rest.join(": "))}`;
     })];
     if (ad) lines.push(`<b>Came from:</b> ${esc(ad)}`);
-    await sendEmail([env.alertEmail], `New call booked: ${name}, ${rossTime(start)}`, `<p>Someone booked a call on rankwithross.com.au/book. It's in your Google Calendar with a Meet link.</p><p>${lines.join("<br>")}</p>`).catch((err) =>
+    await sendEmailMessage({
+      to: [env.alertEmail],
+      from: BOOKING_FROM,
+      subject: `New call booked: ${name}, ${rossTime(start)}`,
+      html: `<p>Someone booked a call on rankwithross.com.au/book. It's in your Google Calendar with a Meet link.</p><p>${lines.join("<br>")}</p>`,
+    }).catch((err) =>
       console.error("[book] booked, but the email to Ross failed", err),
     );
   }

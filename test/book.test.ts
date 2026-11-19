@@ -44,6 +44,10 @@ vi.mock("../app/lib/email.server", async (importOriginal) => ({
   sendEmail: vi.fn(async (...args: unknown[]) => {
     h.emails.push(args);
   }),
+  sendEmailMessage: vi.fn(async (m: { to: string[]; subject: string; html: string; from?: string }) => {
+    h.emails.push([m.to, m.subject, m.html, m.from]);
+    return { duplicate: false };
+  }),
 }));
 
 import { CALL, SALES, fitSales, openSlots, rossTime } from "../app/lib/booking";
@@ -230,6 +234,18 @@ describe("the page", () => {
     vi.mocked(fetch).mockImplementationOnce(async () => Response.json({ error: "invalid_grant" }, { status: 400 }));
     vi.spyOn(console, "error").mockImplementationOnce(() => {});
     expect(await freeSlots(NOW)).toBeNull();
+    // Ross hears about it (19 Nov 2026), once every 6 hours at most
+    expect(h.emails).toHaveLength(1);
+    const [to, subject, html, from] = h.emails[0] as [string[], string, string, string];
+    expect(to).toEqual(["ross@geo.test"]);
+    expect(from).toBe("Rank with Ross <ross@rankwithross.com.au>");
+    expect(subject).toBe("Your booking page can't see your calendar");
+    expect(html).toContain("/dash/admin/system");
+    expect(html).toContain("invalid_grant");
+    vi.mocked(fetch).mockImplementationOnce(async () => Response.json({ error: "invalid_grant" }, { status: 400 }));
+    vi.spyOn(console, "error").mockImplementationOnce(() => {});
+    expect(await freeSlots(new Date(NOW.getTime() + 3_600_000))).toBeNull();
+    expect(h.emails).toHaveLength(1);
   });
 });
 
@@ -268,8 +284,9 @@ describe("booking a call", () => {
     // the ad tags go to Ross only, not into the invite the person sees
     expect(String(body.description)).not.toContain("facebook");
     expect(h.emails).toHaveLength(1);
-    const [to, subject, html] = h.emails[0] as [string[], string, string];
+    const [to, subject, html, from] = h.emails[0] as [string[], string, string, string];
     expect(to).toEqual(["ross@geo.test"]);
+    expect(from).toBe("Rank with Ross <ross@rankwithross.com.au>"); // Ross's own address (19 Nov 2026)
     expect(subject).toBe("New call booked: Jane Smith, Wednesday 4 November, 9:00 am");
     expect(html).toContain("utm_source=facebook, utm_campaign=waitlist");
     expect(html).toContain("<b>Shopify brand:</b> Yes<br><b>Sells a month:</b> A$20,000 to A$50,000");
