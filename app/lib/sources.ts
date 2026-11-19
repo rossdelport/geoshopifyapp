@@ -121,6 +121,11 @@ export const REVIEW_PLATFORMS = ["trustpilot.com", "productreview.com.au", "site
 const DIRECTORIES = [
   ...REVIEW_PLATFORMS, "yellowpages", "yell.com", "truelocal.com.au", "hotfrog.", "cylex.", "brownbook.net", "manta.com",
   "foursquare.com", "crunchbase.com", "producthunt.com", "goodonyou.eco", "buyaustralianmade.com.au", "madeinnz.",
+  // Australian listing and quote sites for local businesses (Ross, 19 Nov 2026: AI cited hipages, Airtasker,
+  // CleaningSearch and GoingRate for Perth Solar Panel Cleaners): a profile to set up, not an article to pitch.
+  "yellow.com.au", "localsearch.com.au", "startlocal.com.au", "wordofmouth.com.au", "whitepages.com.au", "aussieweb.com.au",
+  "purelocal.com.au", "hipages.com.au", "oneflare.com.au", "serviceseeking.com.au", "airtasker.com", "bark.com",
+  "cleaningsearch.com.au", "goingrate.com.au", "thequoteyard.com.au", "starofservice.", "nextdoor.",
 ];
 // Blogs on shared platforms: articles with an author to contact, whatever the source type says.
 const BLOG_PLATFORMS = ["medium.com", "substack.com", "wordpress.com", "blogspot.com", "ghost.io"];

@@ -6,6 +6,7 @@ import { PageHead } from "../components/web";
 import { addClient, requireHubAdmin } from "../lib/clients.server";
 import { type ClientErrors, type ClientField, DEFAULT_FEE, hubDay, readClientForm } from "../lib/clients";
 import { spotsLine } from "../lib/hub-pages";
+import { FACTS_EXAMPLE, FACTS_HINT } from "../lib/business";
 import { fromAnotherSite } from "../lib/public-form.server";
 import styles from "../styles/hub-pages.css?url";
 
@@ -28,7 +29,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 /** The form's fields, in the order they show (the first one with a problem gets the focus). */
-const FIELDS: ClientField[] = ["store", "name", "area", "contactName", "email", "phone", "feeAud", "startedOn", "status", "notes"];
+const FIELDS: ClientField[] = ["store", "name", "area", "contactName", "email", "phone", "feeAud", "startedOn", "status", "facts", "notes"];
 
 type Result = { values: Partial<Record<ClientField, string>>; errors: ClientErrors; error?: string };
 
@@ -218,6 +219,9 @@ export default function AddClient() {
           </section>
 
           <section className="hp-form-sec">
+            <Field id="facts" label="Facts about the business" optional hint={FACTS_HINT} error={err.facts}>
+              <textarea className="w-input hp-textarea" id="facts" name="facts" rows={4} maxLength={3000} placeholder={FACTS_EXAMPLE} defaultValue={v.facts} {...aria("facts", true)} />
+            </Field>
             <Field id="notes" label="Notes" optional hint="Only you see these." error={err.notes}>
               <textarea className="w-input hp-textarea" id="notes" name="notes" rows={4} maxLength={4000} defaultValue={v.notes} {...aria("notes", true)} />
             </Field>

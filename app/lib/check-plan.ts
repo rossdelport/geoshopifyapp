@@ -217,7 +217,7 @@ function geoStep(joinUrl: string): PlanStep {
   return {
     kind: "geo",
     title: "Let Rank with Ross do this for you",
-    body: `Rank with Ross checks up to ${plan.questions} buying questions every day on ChatGPT, Gemini, Perplexity and Google AI Overviews, writes buying guides and Reddit replies for you, and our team pitches the sites AI quotes most.`,
+    body: `Rank with Ross checks up to ${plan.questions} buying questions every week on ChatGPT, Gemini, Perplexity and Google AI Overviews, writes buying guides and Reddit replies for you, and our team pitches the sites AI quotes most.`,
     items: [
       {
         label: "Join the Rank with Ross waitlist",

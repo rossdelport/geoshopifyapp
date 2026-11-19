@@ -124,6 +124,10 @@ describe("Reddit finder: the pure parts", () => {
       "(I run sunday, so I'm biased.) For what you're after, our Flare Trackies (120.00 AUD) might be worth a look. Heavyweight fleece. Either way, I'd compare a few options and check the sizing or details before you buy. Happy to answer any questions.",
     );
     expect(plain).not.toMatch(/I bought|I've been using|—/);
+    // A local business (19 Nov 2026): no product, advice about booking.
+    expect(rd.fallbackReply({ brand: "Perth Solar Panel Cleaners", summary: "Solar panel cleaning in Perth.", product: null, local: true })).toBe(
+      "(I run Perth Solar Panel Cleaners, so I'm biased.) Solar panel cleaning in Perth. Either way, I'd get a couple of quotes and ask what's included before you book. Happy to answer any questions.",
+    );
   });
 
   it("looks the first time for every store, then weekly on paid plans only", () => {

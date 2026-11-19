@@ -28,6 +28,8 @@ const NONE: AutoFacts = {
   "report-sent": false,
   reddit: false,
   "month-report": false,
+  "site-fix": false,
+  listings: false,
 };
 const BASE = "/dash/clients/abc";
 
@@ -54,9 +56,12 @@ describe("the checklists", () => {
   it("covers the bare minimum for a local business: Google profile, their website, the lists AI quotes, same details everywhere", () => {
     const keys = LOCAL_CHECKLIST.map((i) => i.key);
     for (const k of ["gbp-access", "gbp-fix", "guide-live", "lists", "same-details", "reviews"]) expect(keys).toContain(k);
-    // A local business has no tracking code or Reddit yet (lib/business.ts), so they aren't on its list.
+    // A local business has no tracking code yet (lib/business.ts). Since 19 Nov 2026 it has Reddit, website fixes and
+    // listing sites, and the lists line ticks itself once they're on 5.
     expect(keys).not.toContain("tracking");
-    expect(keys).not.toContain("reddit");
+    for (const k of ["reddit", "site-fix", "schema"]) expect(keys).toContain(k);
+    expect(LOCAL_CHECKLIST.find((i) => i.key === "lists")).toMatchObject({ auto: "listings", link: "/listings" });
+    expect(LOCAL_CHECKLIST.find((i) => i.key === "site-fix")).toMatchObject({ auto: "site-fix", link: "/website" });
   });
 
   it("has the tracking code and Shopify access for an online store, and no Google Business Profile", () => {
@@ -159,6 +164,9 @@ const facts = (over: Partial<FlowFacts> = {}): FlowFacts => ({
   nextFullAt: null,
   costCapHit: false,
   redditNextAt: null,
+  siteFix: null,
+  siteCheckNextAt: null,
+  listing: null,
   guides: [],
   lastReportAt: "2026-11-16T03:00:00.000Z",
   ...over,
@@ -243,9 +251,20 @@ describe("what runs for a client", () => {
     expect(live.today.find((i) => i.key === "gr-b")).toMatchObject({ state: "today", who: "auto" });
   });
 
-  it("looks for Reddit threads for online stores only", () => {
+  it("looks for Reddit threads for stores and local businesses", () => {
     expect(keys(planFlow(facts({ redditNextAt: "2026-11-20T02:00:00.000Z" })).next)).toContain("reddit");
-    expect(keys([...planFlow(facts({ local: true, redditNextAt: NOW })).today])).not.toContain("reddit");
+    expect(keys(planFlow(facts({ local: true, redditNextAt: NOW })).today)).toContain("reddit");
+  });
+
+  it("gives a local business today's website fix and listing site, and the weekly read of its website", () => {
+    const flow = planFlow(
+      facts({ local: true, siteFix: { what: "Page title", page: "https://x.com.au/" }, listing: { name: "Bing Places" }, siteCheckNextAt: "2026-11-20T02:00:00.000Z" }),
+    );
+    expect(flow.today.find((i) => i.key === "site-fix")).toMatchObject({ title: "Website fix: page title", state: "you", href: `${BASE}/website` });
+    expect(flow.today.find((i) => i.key === "listing")).toMatchObject({ title: "Listing site: Bing Places", state: "you", href: `${BASE}/listings` });
+    expect(keys(flow.next)).toContain("site-check");
+    // An online store has none of these.
+    expect(keys(planFlow(facts({ siteFix: { what: "Page title", page: "https://x.com/" }, listing: { name: "Yelp" } })).today)).not.toContain("site-fix");
   });
 
   it("keeps the reports in view: the weekly one, the end of month 1 and the 3 month report", () => {

@@ -196,10 +196,10 @@ describe("home page", () => {
     expect(price).toContain('<p class="plan-r-h">Each month, up to:</p>');
     // Ross (4 Nov 2026): no writers found and no emails to sites in the price list, "Fixes to your pages 50+" instead
     expect([...price.matchAll(/<li(?: class="p-stat")?><span>([^<]+)<\/span>/g)].map((m) => m[1])).toEqual([
-      "Buying questions checked every day",
+      "Buying questions checked every week",
       "Buying guides written for you",
       "Fixes to your pages",
-      "ChatGPT, Gemini, Perplexity and Google AI Overviews, plus Claude every week",
+      "ChatGPT, Gemini, Perplexity, Google AI Overviews and Claude",
       "See the sales AI sends you",
       "Weekly reports",
     ]);

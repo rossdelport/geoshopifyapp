@@ -139,6 +139,7 @@ describe("the client form", () => {
         status: "active",
         notes: null,
         area: null,
+        facts: null,
       },
     });
   });
@@ -245,8 +246,9 @@ describe("what needs Ross", () => {
     expect(local.find((a) => a.key === "guides-add")?.text).toBe("1 guide is ready to add to their website");
   });
 
-  it("asks for an AI check after 3 days without one, but not while one runs", () => {
-    expect(clientAlerts(facts({ lastScanAt: ago(80) }), TODAY, NOW)[0]).toMatchObject({ key: "check", text: "No AI check for 3 days", intent: { name: "check-now" } });
+  it("asks for an AI check after 8 days without one (checks are weekly), but not while one runs", () => {
+    expect(clientAlerts(facts({ lastScanAt: ago(80) }), TODAY, NOW).some((a) => a.key === "check")).toBe(false);
+    expect(clientAlerts(facts({ lastScanAt: ago(200) }), TODAY, NOW)[0]).toMatchObject({ key: "check", text: "No AI check for 8 days", intent: { name: "check-now" } });
     expect(clientAlerts(facts({ lastScanAt: null }), TODAY, NOW)[0]).toMatchObject({ text: "No AI check yet" });
     expect(clientAlerts(facts({ lastScanAt: ago(80), scanRunning: true }), TODAY, NOW)).toEqual([]);
     expect(clientAlerts(facts({ lastScanFailed: true, scanRunning: true }), TODAY, NOW)).toEqual([]);

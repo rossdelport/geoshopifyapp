@@ -248,6 +248,8 @@ function Work({ r }: { r: ClientReportData }) {
     { n: w.checks, one: "AI check", many: "AI checks" },
     { n: w.reddit.length, one: "Reddit reply", many: "Reddit replies" },
     { n: w.writers.length, one: "Writer found", many: "Writers found" },
+    { n: w.siteFixes.length, one: "Website fix", many: "Website fixes" },
+    { n: w.listings.length, one: "Listing site joined", many: "Listing sites joined" },
     { n: w.calls.length, one: "Call", many: "Calls" },
   ].filter((t) => t.n > 0);
   return (
@@ -271,7 +273,7 @@ function Work({ r }: { r: ClientReportData }) {
           </WorkPart>
         ) : null}
         {w.guidesLive.length ? (
-          <WorkPart title="Guides now live on your store">
+          <WorkPart title="Guides now live">
             <ul className="cr-list">
               {w.guidesLive.map((g, i) => (
                 <li key={`${g.title}-${i}`}>
@@ -321,6 +323,40 @@ function Work({ r }: { r: ClientReportData }) {
             <p>
               We found who writes for {w.writers.length === 1 ? "this site" : "these sites"} AI trusts: {w.writers.join(", ")}.
             </p>
+          </WorkPart>
+        ) : null}
+        {w.siteFixes.length ? (
+          <WorkPart title="Fixes to your website">
+            <ul className="cr-list">
+              {w.siteFixes.map((f, i) => (
+                <li key={`${f.text}-${i}`}>
+                  {f.url ? (
+                    <a href={f.url} target="_blank" rel="noreferrer">
+                      {f.text} ↗
+                    </a>
+                  ) : (
+                    f.text
+                  )}
+                </li>
+              ))}
+            </ul>
+          </WorkPart>
+        ) : null}
+        {w.listings.length ? (
+          <WorkPart title="Listing sites you’re now on">
+            <ul className="cr-list">
+              {w.listings.map((l, i) => (
+                <li key={`${l.title}-${i}`}>
+                  {l.url ? (
+                    <a href={l.url} target="_blank" rel="noreferrer">
+                      {l.title} ↗
+                    </a>
+                  ) : (
+                    l.title
+                  )}
+                </li>
+              ))}
+            </ul>
           </WorkPart>
         ) : null}
         {w.calls.length ? (

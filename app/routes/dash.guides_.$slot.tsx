@@ -117,10 +117,12 @@ export default function GuideDay() {
             {d.state === "scheduled" ? (
               d.connected ? (
                 <p>
-                  {d.day <= d.today ? "Going live shortly through your Shopify connection." : `Approved. It goes live on ${dayLabel(d.day, "long")}, in the morning, through your Shopify connection.`}
+                  {d.day <= d.today
+                    ? `Going live shortly ${d.local ? "on the website, by itself" : "through your Shopify connection"}.`
+                    : `Approved. It goes live on ${dayLabel(d.day, "long")}, in the morning, ${d.local ? "on the website by itself" : "through your Shopify connection"}.`}
                 </p>
               ) : (
-                <p>Approved. On {dayLabel(d.day, "long")} this page shows the two-minute steps to add it to your store.</p>
+                <p>Approved. On {dayLabel(d.day, "long")} this page shows the two-minute steps to add it to your {d.local ? "website" : "store"}.</p>
               )
             ) : null}
             {d.state === "add" ? <p>Its day is here. Follow the steps below to put it on your site, then press “I’ve added it”.</p> : null}
@@ -159,7 +161,9 @@ export default function GuideDay() {
               <div className="w-sec-head">
                 <h2>Add it to your {d.local ? "website" : "store"} (about two minutes)</h2>
                 <p>
-                  {d.local ? "You paste the page into your website yourself." : "Until your store is connected to Shopify, you paste the page in yourself."}
+                  {d.local
+                    ? "The website isn’t connected, so the page is pasted in by hand. A WordPress or GitHub website can be connected on the client’s Website page, then guides go live by themselves."
+                    : "Until your store is connected to Shopify, you paste the page in yourself."}
                 </p>
               </div>
               <ol className="w-ol">
@@ -169,10 +173,27 @@ export default function GuideDay() {
                 <li>
                   Copy the page content. <CopyButton text={d.bodyHtml} label="Copy content" />
                 </li>
+                {d.local && d.handle ? (
+                  <li>
+                    Copy the page address ending. <CopyButton text={d.handle} label="Copy address ending" /> <code>{d.handle}</code>
+                  </li>
+                ) : null}
                 {d.local ? (
                   <li>
-                    Add a new page on your website and paste the title. Paste the content where the page takes HTML (in WordPress, a Custom HTML block), then
-                    publish it.
+                    Add a new page on the website:
+                    <ul>
+                      <li>
+                        <b>Squarespace:</b> Pages, then the <b>+</b> button, then Blank page. Paste the title as the page name. Add a <b>Code</b> block, paste the
+                        content and turn off “Display source”. In the page’s Settings, paste the address ending into URL slug. Save, then make the page public.
+                      </li>
+                      <li>
+                        <b>WordPress:</b> Pages, then Add New. Paste the title. Add a <b>Custom HTML</b> block and paste the content. Under Permalink or URL,
+                        paste the address ending. Publish.
+                      </li>
+                      <li>
+                        <b>Any other website:</b> add a page that takes HTML, paste the title and the content, set its address to the ending, and publish it.
+                      </li>
+                    </ul>
                   </li>
                 ) : (
                   <li>
@@ -188,7 +209,7 @@ export default function GuideDay() {
               </ol>
               <fetcher.Form method="post" className="w-form">
                 <label className="w-field">
-                  <span className="w-label">The page’s address (optional)</span>
+                  <span className="w-label">The page’s address {d.local ? "(paste the live address, so reports link to it)" : "(optional)"}</span>
                   <input className="w-input" type="url" name="url" placeholder={`https://${d.store}/${d.local ? "" : "pages/"}${d.handle ?? ""}`} />
                 </label>
                 <div>{act("added", "I’ve added it")}</div>

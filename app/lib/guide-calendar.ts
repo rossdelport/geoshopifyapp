@@ -120,10 +120,13 @@ export function monthsApart(a: string, b: string): number {
 
 /**
  * The days of a month that get a guide: `count` days spread evenly through the month (4 a month is about one a
- * week, 12 is three a week), never before the 3rd.
+ * week, 12 is three a week), never before the 3rd. A count of a whole month or more (a local business: one a day,
+ * lib/business.ts) is every day, the 1st and 2nd too: their guides are written on the last two days of the month
+ * before, so each month still writes one guide per day it has.
  */
 export function slotDaysForMonth(month: string, count: number): string[] {
   const dim = daysInMonth(month);
+  if (count >= dim) return Array.from({ length: dim }, (_, i) => `${month}-${String(i + 1).padStart(2, "0")}`);
   const out: string[] = [];
   for (let i = 0; i < count; i++) {
     const d = Math.min(dim, Math.max(EARLIEST_DAY, Math.round(((i + 0.5) * dim) / count)));

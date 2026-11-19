@@ -169,9 +169,14 @@ export default function Guides() {
             <h2>How a page gets onto your site</h2>
           </div>
           {local ? (
-            <p>
-              On its day, a guide shows two-minute steps: copy the title, copy the content, add them as a new page on your website and click “I’ve added it”.
-            </p>
+            connected ? (
+              <p>Their website is connected, so each guide goes live by itself on its day, as a new page on it.</p>
+            ) : (
+              <p>
+                On its day, a guide shows two-minute steps: copy the title, copy the content, add them as a new page on the website and click “I’ve added it”. A
+                WordPress or GitHub website can be connected on the client’s Website page, then guides go live by themselves.
+              </p>
+            )
           ) : connected ? (
             <p>Your store is connected to Shopify, so each guide goes live by itself on its day, as a page on your Online Store.</p>
           ) : (

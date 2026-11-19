@@ -66,7 +66,7 @@ describe("plans", () => {
       trialDays: 7,
       questions: 100,
       engines: ["chatgpt", "gemini", "perplexity", "aio", "claude"],
-      scanEveryDays: 1,
+      scanEveryDays: 7, // weekly since 19 Nov 2026 (Ross: cost); was daily
       runsPerScan: 2,
       manualCheckEveryDays: 3,
       products: 2000,

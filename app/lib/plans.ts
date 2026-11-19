@@ -120,7 +120,7 @@ export const PLANS: Record<PlanId, Plan> = {
     trialDays: 7,
     questions: 100,
     engines: ["chatgpt", "gemini", "perplexity", "aio", "claude"],
-    scanEveryDays: 1,
+    scanEveryDays: 7, // weekly (Ross, 19 Nov 2026: "can we change this to weekly please... otherwise it will get expensive FAST"; was daily)
     runsPerScan: 2,
     manualCheckEveryDays: 3,
     products: 2000,
@@ -135,7 +135,7 @@ export const PLANS: Record<PlanId, Plan> = {
     costCapUsd: 150,
     blurb: "AI does the work, and we handle outreach by hand.",
     features: [
-      "100 buying questions, checked every day",
+      "100 buying questions, checked every week",
       "Everything in Standard, plus Claude",
       "Fixes applied for you. Ones that need your input wait. Switch off or undo any time",
       "2,000 products optimised",
@@ -259,8 +259,8 @@ export function getPlan(id: string | null | undefined): Plan {
 }
 
 /**
- * Light scans (1 run, no Claude) keep costs inside the plan's budget: Done-for-you's daily check and every
- * "check AI now". The weekly scan, the first scan and the scan after an upgrade use 2 runs (+ Claude on
+ * Light scans (1 run, no Claude) keep costs inside the plan's budget: every "check AI now" (and Done-for-you's
+ * daily check, back when it had one: it is weekly since 19 Nov 2026). The weekly scan, the first scan and the scan after an upgrade use 2 runs (+ Claude on
  * Done-for-you), and the reports average them.
  */
 export function scanSettings(

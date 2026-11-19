@@ -5,7 +5,7 @@
 
 import { OFFER } from "./plans";
 import { addDays, dayLabel, isDay } from "./guide-calendar";
-import { cleanArea } from "./business";
+import { cleanArea, cleanFacts } from "./business";
 
 /** Ross's own calendar: Perth, UTC+8 all year (no daylight saving), so a day's start is a fixed offset. */
 export const HUB_TZ = "Australia/Perth";
@@ -92,6 +92,7 @@ export interface ClientInput {
   status: ClientStatus;
   notes: string | null;
   area: string | null; // a business that isn't an online store: the town or city they work in ("Perth")
+  facts: string | null; // the facts box: true facts about the business for their guides and website fixes (Shop.facts)
 }
 
 export type ClientField = keyof ClientInput | "store";
@@ -169,6 +170,7 @@ export function readClientForm(form: FormLike, today: string): { ok: true; value
       status: statusRaw as ClientStatus,
       notes: cleanNotes(form.get("notes")),
       area: cleanArea(form.get("area")),
+      facts: cleanFacts(form.get("facts")),
     },
   };
 }
@@ -267,7 +269,8 @@ export function clientAlerts(f: ClientFacts, today: string, now = new Date()): A
     });
   }
   if (f.lastScanFailed && !f.scanRunning) out.push({ key: "check", tone: "no", text: "The last AI check failed", label: "Check again", intent: { name: "check-now" } });
-  else if (!f.scanRunning && hoursSince(f.lastScanAt) > 72) {
+  else if (!f.scanRunning && hoursSince(f.lastScanAt) > 8 * 24) {
+    // Checks are weekly (Ross, 19 Nov 2026), so a day late is a sign something stopped.
     const days = f.lastScanAt ? Math.floor(hoursSince(f.lastScanAt) / 24) : null;
     out.push({ key: "check", tone: "warn", text: days ? `No AI check for ${days} days` : "No AI check yet", label: "Check now", intent: { name: "check-now" } });
   }

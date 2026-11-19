@@ -12,9 +12,11 @@ import { enqueue, registerJob } from "./jobs.server";
 import { getPlan, type Plan } from "./plans";
 import { applyFix, clearForAutopilot, rejectFix, storeUrl, writeGuide, type LostQuestion } from "./fixes.server";
 import { adminFor } from "./onboard-job.server";
+import { addGuideQuestions } from "./onboarding.server";
 import { questionRows } from "./question-stats.server";
 import { countGuidePagesThisMonth } from "./usage.server";
 import { guidesPerMonth, isLocal } from "./business";
+import { publishToSite, siteLinked } from "./site-publish.server";
 import {
   PUBLISH_FROM_HOUR,
   WRITE_DAYS_AHEAD,
@@ -46,7 +48,7 @@ export interface GuideAfter {
   kind?: string;
 }
 
-type ShopLite = Pick<Shop, "id" | "source" | "status" | "onboarding" | "plan" | "country" | "domain" | "primaryDomain" | "shopifyConnectedAt">;
+type ShopLite = Pick<Shop, "id" | "kind" | "source" | "status" | "onboarding" | "plan" | "country" | "domain" | "primaryDomain" | "shopifyConnectedAt">;
 
 /** The calendar runs for web app stores on a plan with guide pages, once they are set up. */
 export function calendarOn(shop: Pick<Shop, "source" | "status" | "onboarding">, plan: Plan): boolean {
@@ -65,6 +67,15 @@ export async function shopifyConnected(shop: Pick<Shop, "domain" | "shopifyConne
 }
 
 /**
+ * How guides go live by themselves: through the store's Shopify connection, or (a local business, since 19 Nov 2026)
+ * through its connected WordPress or GitHub website (lib/site-publish.server.ts). Null: copy and paste.
+ */
+export async function publishRoute(shop: Pick<Shop, "id" | "kind" | "domain" | "shopifyConnectedAt">): Promise<"shopify" | "website" | null> {
+  if (isLocal(shop)) return (await siteLinked(shop.id)) ? "website" : null;
+  return (await shopifyConnected(shop)) ? "shopify" : null;
+}
+
+/**
  * Plan the rest of this month and next month: a day for each guide the plan allows that isn't planned yet, from the
  * day after tomorrow (a guide is written two days ahead), each with the buying question it will answer. A day skipped
  * before it was written earns one replacement day. Safe to run any time; it only adds what is missing. Returns how
@@ -74,13 +85,16 @@ export async function autofillCalendar(shopId: string, now = new Date()): Promis
   const shop = await db.shop.findUniqueOrThrow({ where: { id: shopId } });
   const plan = getPlan(shop.plan);
   if (!calendarOn(shop, plan)) return 0;
-  const perMonth = guidesPerMonth(shop, plan); // 4 for a local business (lib/business.ts)
+  const perMonth = guidesPerMonth(shop, plan); // one a day for a local business (lib/business.ts)
+  const local = isLocal(shop);
   const today = localDay(now, shop.country);
   const earliest = addDays(today, WRITE_DAYS_AHEAD);
   const [slots, guideFixes, rows, writtenThisMonth] = await Promise.all([
     db.guideSlot.findMany({ where: { shopId }, select: { day: true, questionId: true, cluster: true, status: true, fixId: true }, orderBy: { day: "asc" } }),
     db.fix.findMany({ where: { shopId, type: "guide_page", refreshOfId: null, status: { not: "rejected" } }, select: { questionIds: true } }),
-    questionRows(shopId, { activeOnly: true }),
+    // A local business's guide a day also uses the questions that aren't checked (the spares, and the guide topics
+    // written when they run low), so the checks stay at 100 questions while the guides keep going.
+    questionRows(shopId, { activeOnly: !local }),
     countGuidePagesThisMonth(shopId, localMonthStart(now, shop.country)),
   ]);
   // No question gets two guides: not one on another day, not one written already.
@@ -130,8 +144,23 @@ export async function autofillCalendar(shopId: string, now = new Date()): Promis
       made++;
     }
   }
+  // One a day uses about 30 questions a month: when fewer than two weeks' worth are left, write more guide topics.
+  if (local && rows.questions.filter((q) => !used.has(q.id)).length < GUIDE_TOPICS_LOW) {
+    await enqueue("guide.topics", {}, { shopId, dedupeKey: `guide-topics:${shopId}`, ifFailedWaitMs: RETRY_MS });
+  }
   return made;
 }
+
+const GUIDE_TOPICS_LOW = 14;
+
+// More questions for a local business's daily guides (lib/onboarding.server.ts addGuideQuestions): saved switched off,
+// so they are guide topics only and the weekly check doesn't grow (or cost more).
+registerJob("guide.topics", async (job) => {
+  if (!job.shopId) return;
+  const n = await addGuideQuestions(job.shopId, 30);
+  console.log(`[guides] ${n} new guide topics for shop ${job.shopId}`);
+  if (n) await autofillCalendar(job.shopId);
+});
 
 const lookedAt = new Map<string, number>(); // per process: the worker runs every minute, this needs an hourly look
 
@@ -152,7 +181,7 @@ export async function queueGuideWork(shop: ShopLite, plan: Plan, now = new Date(
     where: { shopId: shop.id, status: { in: ["planned", "failed", "ready", "writing"] }, day: { lte: addDays(today, WRITE_DAYS_AHEAD) } },
   });
   const dueLive = slots.filter((s) => s.status === "ready" && s.approvedAt && s.day <= today);
-  const connected = dueLive.length && localHour(now, shop.country) >= PUBLISH_FROM_HOUR ? await shopifyConnected(shop) : false;
+  const connected = dueLive.length && localHour(now, shop.country) >= PUBLISH_FROM_HOUR ? Boolean(await publishRoute(shop)) : false;
   for (const s of slots) {
     const retry = s.status === "failed" && now.getTime() - s.updatedAt.getTime() >= RETRY_MS && s.day >= today;
     const abandoned = s.status === "writing" && now.getTime() - s.updatedAt.getTime() >= STALE_WRITE_MS;
@@ -191,7 +220,7 @@ async function writeSlot(slot: SlotForWriting, plan: Plan): Promise<{ ok: true; 
   if (!shop.profile) return { ok: false, reason: "We don’t have your store’s profile yet." };
   const [products, rows, used] = await Promise.all([
     db.product.findMany({ where: { shopId: shop.id, NOT: { status: "DELETED" } }, orderBy: { syncedAt: "desc" }, take: 200 }),
-    questionRows(shop.id, { activeOnly: true }),
+    questionRows(shop.id, { activeOnly: !isLocal(shop) }),
     usedQuestionIds(shop.id, slot.id),
   ]);
   // A business that isn't an online store has no products: its guides answer the questions without any.
@@ -199,9 +228,10 @@ async function writeSlot(slot: SlotForWriting, plan: Plan): Promise<{ ok: true; 
   const main = rows.questions.find((q) => q.id === question.id);
   // The guide answers its question and, when the topic has them, up to two more questions on it that AI loses and
   // that no other day or guide covers (so two guides on one topic never answer the same things).
-  const more = rows.questions
-    .filter((q) => q.id !== question.id && !used.has(q.id) && q.cluster && q.cluster === question.cluster && (q.rate ?? 0) < 0.5)
-    .slice(0, 2);
+  // A local business gets one guide a day, so each answers its own question (the questions then last).
+  const more = isLocal(shop)
+    ? []
+    : rows.questions.filter((q) => q.id !== question.id && !used.has(q.id) && q.cluster && q.cluster === question.cluster && (q.rate ?? 0) < 0.5).slice(0, 2);
   const first = main ?? { id: question.id, text: question.text, volume: question.volume, cluster: question.cluster, longTail: question.longTail, rate: null, winners: [] as string[] };
   const lost: LostQuestion[] = [first, ...more].map((q, index) => ({
     index,
@@ -279,8 +309,17 @@ export async function publishSlot(slotId: string, shopId?: string): Promise<Guid
   const slot = await db.guideSlot.findFirstOrThrow({ where: { id: slotId, ...(shopId ? { shopId } : {}) }, include: { shop: true } });
   if (slot.status === "published") return slot;
   if (slot.status !== "ready" || !slot.approvedAt || !slot.fixId) throw new Error("This guide isn’t ready to publish.");
-  if (!(await shopifyConnected(slot.shop))) throw new Error("Your store isn’t connected to Shopify yet. Follow the steps on the page to add it yourself.");
+  const route = await publishRoute(slot.shop);
+  if (!route) throw new Error(isLocal(slot.shop) ? "Their website isn’t connected yet. Follow the steps on the page to add it." : "Your store isn’t connected to Shopify yet. Follow the steps on the page to add it yourself.");
   if (slot.day > localDay(new Date(), slot.shop.country)) throw new Error(`This guide goes live on ${dayLabel(slot.day, "long")}.`);
+  if (route === "website") {
+    const fix = await db.fix.findUniqueOrThrow({ where: { id: slot.fixId } });
+    if (fix.status === "applied" && fix.resultUrl) return db.guideSlot.update({ where: { id: slot.id }, data: { status: "published", publishedAt: fix.appliedAt ?? new Date(), error: null } });
+    const now = new Date();
+    const url = await publishToSite(slot.shop, fix, now);
+    await db.fix.update({ where: { id: fix.id }, data: { status: "applied", appliedAt: now, revertedAt: null, error: null, resultUrl: url } });
+    return db.guideSlot.update({ where: { id: slot.id }, data: { status: "published", publishedAt: now, error: null } });
+  }
   const admin = await adminFor(slot.shop.domain);
   const applied = await applyFix(slot.fixId, admin);
   return db.guideSlot.update({ where: { id: slot.id }, data: { status: "published", publishedAt: applied.appliedAt ?? new Date(), error: null } });
@@ -293,7 +332,7 @@ registerJob("guide.publish", async (job) => {
     await publishSlot(slotId);
   } catch (err) {
     // The day says why, and offers the copy and paste steps meanwhile; the job retries later.
-    await db.guideSlot.updateMany({ where: { id: slotId, status: "ready" }, data: { error: `Shopify didn’t accept the page: ${(err as Error).message}`.slice(0, 300) } });
+    await db.guideSlot.updateMany({ where: { id: slotId, status: "ready" }, data: { error: `The page couldn’t go live: ${(err as Error).message}`.slice(0, 300) } });
     throw err;
   }
 });
@@ -370,7 +409,7 @@ export async function monthView(shop: ShopLite, month: string, now = new Date())
       include: { question: { select: { text: true, volume: true } }, fix: { select: { after: true } } },
       orderBy: { day: "asc" },
     }),
-    shopifyConnected(shop),
+    publishRoute(shop).then(Boolean),
   ]);
   const cards: SlotCard[] = slots.map((s) => {
     const after = (s.fix?.after ?? {}) as GuideAfter;
@@ -383,7 +422,7 @@ export async function monthView(shop: ShopLite, month: string, now = new Date())
 export async function slotView(shop: ShopLite, slotId: string, now = new Date()) {
   const [slot, connected] = await Promise.all([
     db.guideSlot.findFirst({ where: { id: slotId, shopId: shop.id }, include: { question: true, fix: true } }),
-    shopifyConnected(shop),
+    publishRoute(shop).then(Boolean),
   ]);
   if (!slot) return null;
   const today = localDay(now, shop.country);

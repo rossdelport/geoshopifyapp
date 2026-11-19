@@ -60,7 +60,7 @@ export async function clientCards(opts: { shopId?: string } = {}, now = new Date
   const firstStart = clients.map((c) => c.startedOn).sort()[0];
   const scoresFrom = dayStartsAt(addDays(firstStart < today ? firstStart : today, -45));
 
-  const [snaps, sales, visits, written, live, checks, reddit, changes, onboardJobs, latestScans, slots, upcoming, reports, ticks, everLive, sentReports, replied] = await Promise.all([
+  const [snaps, sales, visits, written, live, checks, reddit, changes, onboardJobs, latestScans, slots, upcoming, reports, ticks, everLive, sentReports, replied, fixesMade, listed] = await Promise.all([
     db.visibilitySnapshot.findMany({ where: { shopId, date: { gte: scoresFrom } }, select: { shopId: true, score: true, date: true }, orderBy: { date: "asc" } }),
     db.aiOrder.groupBy({ by: ["shopId"], where: { shopId, orderedAt: { gte: monthStart } }, _sum: { revenue: true }, _count: true }),
     db.aiSession.groupBy({ by: ["shopId"], where: { shopId, occurredAt: { gte: monthStart }, engine: { not: "ours" } }, _count: true }),
@@ -84,6 +84,8 @@ export async function clientCards(opts: { shopId?: string } = {}, now = new Date
     db.guideSlot.groupBy({ by: ["shopId"], where: { shopId, status: "published" }, _count: true }),
     db.clientReport.groupBy({ by: ["shopId", "kind"], where: { shopId, sentAt: { not: null } }, _count: true }),
     db.redditThread.groupBy({ by: ["shopId"], where: { shopId, repliedAt: { not: null } }, _count: true }),
+    db.siteFix.groupBy({ by: ["shopId"], where: { shopId, status: "done" }, _count: true }),
+    db.listing.groupBy({ by: ["shopId"], where: { shopId, status: "listed" }, _count: true }),
   ]);
 
   // A check that's queued or running only finishes if its job is still waiting or working.
@@ -94,7 +96,7 @@ export async function clientCards(opts: { shopId?: string } = {}, now = new Date
   const working = new Set(runJobs.filter((j) => j.status === "queued" || j.status === "running").map((j) => j.dedupeKey));
 
   const count = (rows: { shopId: string; _count: number }[]) => new Map(rows.map((r) => [r.shopId, r._count]));
-  const [writtenBy, liveBy, checksBy, redditBy, changesBy, visitsBy, everLiveBy, repliedBy] = [written, live, checks, reddit, changes, visits, everLive, replied].map(count);
+  const [writtenBy, liveBy, checksBy, redditBy, changesBy, visitsBy, everLiveBy, repliedBy, fixesBy, listedBy] = [written, live, checks, reddit, changes, visits, everLive, replied, fixesMade, listed].map(count);
   const sent = (shopId: string, kind?: string) => sentReports.some((r) => r.shopId === shopId && (!kind || r.kind === kind));
   const salesBy = new Map(sales.map((s) => [s.shopId, { revenue: s._sum.revenue ?? 0, orders: s._count }]));
   const reportBy = new Map(reports.map((r) => [r.shopId, r._max.createdAt]));
@@ -179,6 +181,8 @@ export async function clientCards(opts: { shopId?: string } = {}, now = new Date
           "report-sent": sent(c.shopId),
           reddit: (repliedBy.get(c.shopId) ?? 0) > 0,
           "month-report": sent(c.shopId, "month"),
+          "site-fix": (fixesBy.get(c.shopId) ?? 0) > 0,
+          listings: (listedBy.get(c.shopId) ?? 0) >= 5,
         },
       ),
       alerts,

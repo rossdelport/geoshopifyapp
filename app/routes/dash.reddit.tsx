@@ -7,8 +7,10 @@ import { getPlan } from "../lib/plans";
 import { formatNumber, timeAgo } from "../lib/format";
 import { Icon, ICONS, PageHead, Tabs } from "../components/web";
 import { storeBase } from "../lib/hub-paths";
+import { isLocal } from "../lib/business";
 
-// rankwithross.com.au/dash/reddit: Reddit threads where people ask about the store's kind of product (found weekly,
+// rankwithross.com.au/dash/reddit: Reddit threads where people ask about the store's kind of product, or a local
+// business's kind of work (found weekly,
 // lib/reddit.server.ts). Left: every thread. Right: the post and a neutral reply written as the owner, which
 // they copy, then post themselves in the thread. We never post for them.
 
@@ -37,6 +39,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     counts: { all: all.length, todo: all.filter((t) => t.status === "new").length, replied: all.filter((t) => t.status === "replied").length },
     checkedAt: shop.redditCheckedAt?.toISOString() ?? null,
     weekly: getPlan(shop.plan).id !== "free",
+    local: isLocal(shop),
     list: list.map((t) => ({
       id: t.id,
       subreddit: t.subreddit,
@@ -234,7 +237,11 @@ export default function Reddit() {
     <>
       <PageHead
         title="Reddit threads"
-        intro="ChatGPT, Google and the other AI assistants quote Reddit a lot when they recommend products. Helpful replies from you on threads like these get your brand seen there, so AI is more likely to name you. Check the reply we wrote, then copy it and post it yourself."
+        intro={
+          data.local
+            ? "ChatGPT, Google and the other AI assistants quote Reddit a lot when they recommend a business. Helpful replies from you on threads like these get the business seen there, so AI is more likely to name you. Check the reply we wrote, then copy it and post it yourself."
+            : "ChatGPT, Google and the other AI assistants quote Reddit a lot when they recommend products. Helpful replies from you on threads like these get your brand seen there, so AI is more likely to name you. Check the reply we wrote, then copy it and post it yourself."
+        }
         right={
           <>
             <span className={`w-chip ${data.counts.todo ? "warn" : "ok"}`}>{data.counts.todo} to reply</span>
@@ -275,7 +282,7 @@ export default function Reddit() {
           ) : (
             <p className="w-empty">
               {waiting
-                ? "We’re looking through Reddit for people asking about products like yours. This takes a few minutes."
+                ? `We’re looking through Reddit for people asking about ${data.local ? "work" : "products"} like yours. This takes a few minutes.`
                 : data.show === "all"
                   ? data.weekly
                     ? "No threads found yet. We look again every week."

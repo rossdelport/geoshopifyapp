@@ -80,6 +80,8 @@ export interface ReportWork {
   checks: number; // AI checks that read their answers
   reddit: { title: string; url: string | null }[]; // Reddit threads replied to
   writers: string[]; // sites AI trusts whose writer we found
+  siteFixes: { day: string; text: string; url: string | null }[]; // website fixes made (local businesses, 19 Nov 2026)
+  listings: { title: string; url: string | null }[]; // listing sites joined
 }
 
 /**
@@ -150,6 +152,8 @@ export function readReportData(json: unknown): ClientReportData | null {
       checks: Number(work.checks) || 0,
       reddit: arr(work.reddit),
       writers: arr(work.writers),
+      siteFixes: arr(work.siteFixes), // reports made before 19 Nov 2026 have none
+      listings: arr(work.listings),
     },
     next: arr(json.next),
   };
@@ -176,8 +180,10 @@ export function readReportNote(raw: unknown): { ok: true; note: string | null } 
 // The log's wording for these kinds starts with what happened ("Guide written: ..."); the report has its own headings.
 const PREFIX: Partial<Record<LogKind, RegExp>> = {
   "guide-written": /^Guide written:\s*/,
-  "guide-live": /^Guide live on their store:\s*/,
+  "guide-live": /^Guide live(?: on their store)?:\s*/,
   "reddit-replied": /^Replied on Reddit:\s*/,
+  "site-fix": /^Website fix made:\s*/,
+  listing: /^Listed on\s*/,
 };
 
 /**
@@ -200,12 +206,16 @@ export function workFromLog(entries: LogEntry[], writers: string[] = []): Report
     checks: of("check").length,
     reddit: of("reddit-replied").map((e) => ({ title: title(e, "A Reddit thread"), url: link(e) })),
     writers: [...new Set(writers.map((w) => w.trim().toLowerCase()).filter(Boolean))],
+    siteFixes: of("site-fix").map((e) => ({ day: dayOf(e.at), text: title(e, "A website fix"), url: link(e) })),
+    listings: of("listing").map((e) => ({ title: title(e, "A listing site"), url: link(e) })),
   };
 }
 
 /** True when the period has any work to show. */
 export const hasWork = (w: ReportWork) =>
-  Boolean(w.guidesWritten.length || w.guidesLive.length || w.changes.length || w.calls.length || w.checks || w.reddit.length || w.writers.length);
+  Boolean(
+    w.guidesWritten.length || w.guidesLive.length || w.changes.length || w.calls.length || w.checks || w.reddit.length || w.writers.length || w.siteFixes.length || w.listings.length,
+  );
 
 type Scored = { score: number; date: Date | string };
 

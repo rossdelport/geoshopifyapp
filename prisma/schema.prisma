@@ -34,54 +34,61 @@ model Session {
 }
 
 model Shop {
-  id                String         @id @default(cuid())
-  domain            String         @unique // my-store.myshopify.com
-  name              String?
-  email             String?
-  primaryDomain     String? // www.mystore.com.au
-  currency          String         @default("AUD")
-  country           String         @default("AU")
-  plan              String         @default("free") // free | core | pro
-  status            String         @default("installed") // installed | uninstalled
-  onboarding        String         @default("new") // new | profiling | questions | scanning | done
-  installedAt       DateTime       @default(now())
-  uninstalledAt     DateTime?
-  baselineDate      DateTime?
-  freeScanUsedAt    DateTime?
-  lastScanAt        DateTime?
-  /** The last weekly, daily or first scan: the schedule runs from this, so a manual "check AI now" never postpones it. */
+  id                  String          @id @default(cuid())
+  domain              String          @unique // my-store.myshopify.com
+  name                String?
+  email               String?
+  primaryDomain       String? // www.mystore.com.au
+  currency            String          @default("AUD")
+  country             String          @default("AU")
+  plan                String          @default("free") // free | core | pro
+  status              String          @default("installed") // installed | uninstalled
+  onboarding          String          @default("new") // new | profiling | questions | scanning | done
+  installedAt         DateTime        @default(now())
+  uninstalledAt       DateTime?
+  baselineDate        DateTime?
+  freeScanUsedAt      DateTime?
+  lastScanAt          DateTime?
+  /**
+   * The last weekly, daily or first scan: the schedule runs from this, so a manual "check AI now" never postpones it.
+   */
   lastScheduledScanAt DateTime?
-  pixelOrders       PixelOrder[]
-  lastReportAt      DateTime?
-  autopilot         Boolean        @default(false)
-  autopilotOptOut   Boolean        @default(false) // the store switched autopilot off: keep it off across plan changes
-  trialEndsAt       DateTime? // end of the store's one free trial, saved when it first starts (never cleared)
-  devStore          Boolean        @default(false) // a Shopify development (test) store: only ever test charges, so it uses the app free
-  crawlers          Json? // last AI crawler check of the store's robots.txt (see lib/robots.ts): which AI bots are blocked
-  crawlersCheckedAt DateTime?
-  reportEmails      String? // comma separated
-  pixelId           String?
-  costMonth         String? // "2026-10"
-  costThisMonth     Float          @default(0)
-  costAlertedAt     DateTime?
-  source            String         @default("shopify") // shopify: installed from Shopify | web: added on the GEO web app
-  kind              String         @default("store") // store: an online store (Shopify) | local: any other business (a broker, an installer, a tradie), added in the hub (Ross, 17 Nov 2026)
-  area              String? // local: the town or city they work in ("Perth"), for their buying questions
-  userId            String? // web: the GEO account that added it
-  trackKey          String?        @unique // web: the key in the store's tracking code (custom pixel), so only its own code can send orders
-  shopifyConnectedAt DateTime? // web: when this account connected the store's Shopify (set only by a connect flow started from the signed-in session; never from an app install alone)
-  user              User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
-  siteWriters       SiteWriter[]
-  redditThreads     RedditThread[]
-  supportFlags      SupportFlag[]
-  guideSlots        GuideSlot[]
-  client            Client? // an agency client of Ross's done-for-you service (the hub at /dash)
-  workNotes         WorkNote[]
-  clientReports     ClientReport[]
-  checklistTicks    ChecklistTick[]
-  redditCheckedAt   DateTime? // last weekly look for Reddit threads (lib/reddit.server.ts)
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+  pixelOrders         PixelOrder[]
+  lastReportAt        DateTime?
+  autopilot           Boolean         @default(false)
+  autopilotOptOut     Boolean         @default(false) // the store switched autopilot off: keep it off across plan changes
+  trialEndsAt         DateTime? // end of the store's one free trial, saved when it first starts (never cleared)
+  devStore            Boolean         @default(false) // a Shopify development (test) store: only ever test charges, so it uses the app free
+  crawlers            Json? // last AI crawler check of the store's robots.txt (see lib/robots.ts): which AI bots are blocked
+  crawlersCheckedAt   DateTime?
+  reportEmails        String? // comma separated
+  pixelId             String?
+  costMonth           String? // "2026-10"
+  costThisMonth       Float           @default(0)
+  costAlertedAt       DateTime?
+  source              String          @default("shopify") // shopify: installed from Shopify | web: added on the GEO web app
+  kind                String          @default("store") // store: an online store (Shopify) | local: any other business (a broker, an installer, a tradie), added in the hub (Ross, 17 Nov 2026)
+  area                String? // local: the town or city they work in ("Perth"), for their buying questions
+  facts               String? // the facts box (Ross, 19 Nov 2026): true facts about the business, typed once at sign-up, used in guides and website fixes
+  userId              String? // web: the GEO account that added it
+  trackKey            String?         @unique // web: the key in the store's tracking code (custom pixel), so only its own code can send orders
+  shopifyConnectedAt  DateTime? // web: when this account connected the store's Shopify (set only by a connect flow started from the signed-in session; never from an app install alone)
+  user                User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  siteWriters         SiteWriter[]
+  redditThreads       RedditThread[]
+  supportFlags        SupportFlag[]
+  guideSlots          GuideSlot[]
+  client              Client? // an agency client of Ross's done-for-you service (the hub at /dash)
+  workNotes           WorkNote[]
+  clientReports       ClientReport[]
+  checklistTicks      ChecklistTick[]
+  listings            Listing[] // listing sites joined or skipped (local businesses, lib/listings.ts)
+  siteLink            SiteLink? // how guides go live on a website that isn't Shopify (WordPress or GitHub, lib/site-publish.server.ts)
+  siteFixes           SiteFix[] // fixes for a local business's own website (lib/site-fixes.server.ts)
+  siteCheckedAt       DateTime? // last weekly read of a local business's website for fixes
+  redditCheckedAt     DateTime? // last weekly look for Reddit threads (lib/reddit.server.ts)
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
 
   profile     BrandProfile?
   products    Product[]
@@ -258,19 +265,19 @@ model VisibilitySnapshot {
 }
 
 model Fix {
-  id          String    @id @default(cuid())
+  id          String     @id @default(cuid())
   shopId      String
-  shop        Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  shop        Shop       @relation(fields: [shopId], references: [id], onDelete: Cascade)
   type        String // product_description | product_title | product_seo | product_faq | product_type | guide_page
   targetGid   String? // product gid (null for new pages)
   targetTitle String
   before      Json? // previous values, used for undo
   after       Json // new values to push
   reason      String
-  impact      String    @default("medium") // high | medium | low
-  questionIds Json      @default("[]")
+  impact      String     @default("medium") // high | medium | low
+  questionIds Json       @default("[]")
   missingInfo String? // questions for the merchant instead of inventing facts
-  status      String    @default("pending") // pending | applied | rejected | reverted | failed
+  status      String     @default("pending") // pending | applied | rejected | reverted | failed
   error       String?
   resultGid   String? // e.g. created page gid
   resultUrl   String?
@@ -281,7 +288,7 @@ model Fix {
   refreshOfId String? // a refresh of an applied fix (freshness cycle): the fix it updates
   refreshedAt DateTime? // when this applied fix was last refreshed (or a refresh of it was applied)
   slot        GuideSlot? // the guide calendar day this guide was written for (web app stores)
-  createdAt   DateTime  @default(now())
+  createdAt   DateTime   @default(now())
 
   @@index([shopId, status])
 }
@@ -330,10 +337,10 @@ model AiSession {
 
 // All storefront visits per day (for "x% of visits came from AI").
 model TrafficDay {
-  id         String   @id @default(cuid())
-  shopId     String
-  shop       Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  date       DateTime @db.Date
+  id             String   @id @default(cuid())
+  shopId         String
+  shop           Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  date           DateTime @db.Date
   sessions       Int      @default(0)
   aiSessions     Int      @default(0)
   searchSessions Int      @default(0) // visits from Google, Bing and other search engines (SEO traffic)
@@ -361,10 +368,10 @@ model AiOrder {
 
 // Every order per day (AI or not) so we can show AI as a share of sales.
 model OrderDay {
-  id      String   @id @default(cuid())
-  shopId  String
-  shop    Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  date    DateTime @db.Date
+  id            String   @id @default(cuid())
+  shopId        String
+  shop          Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  date          DateTime @db.Date
   orders        Int      @default(0)
   revenue       Float    @default(0)
   searchOrders  Int      @default(0) // orders whose last (else first) visit came from a search engine
@@ -604,7 +611,9 @@ model SupportFlag {
 // GEO's own blog at rankwithross.com.au/blog (Ross, 2026-10-15: practise what we preach). Written by Claude from the
 // knowledge pack (docs/facts.md, docs/geo-research.md, the stories, docs/ask-geo-guide.md), fact-checked, and
 // published on its own three times a week (lib/blog.server.ts). Ross can hide a post in Admin.
-/** Every order a store's tracking code reports, once: a reloaded thank-you page or a replayed request can't count twice. */
+/**
+ * Every order a store's tracking code reports, once: a reloaded thank-you page or a replayed request can't count twice.
+ */
 model PixelOrder {
   id        String   @id @default(cuid())
   shopId    String
@@ -816,4 +825,60 @@ model ClientReport {
   createdAt DateTime  @default(now())
 
   @@index([shopId, createdAt])
+}
+
+// The listing sites a local business is on (Ross, 19 Nov 2026: "listing sites to join ... needs to be added now"): one row
+// per site Ross marked listed or not for them; a site with no row is still to do. lib/listings.ts has the sites.
+model Listing {
+  id        String   @id @default(cuid())
+  shopId    String
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  domain    String // the listing site, "yellow.com.au"
+  status    String // listed | skip
+  url       String? // their page on that site, once listed
+  createdBy String? // the admin's email
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([shopId, domain])
+}
+
+// Fixes for a local business's own website (Ross, 19 Nov 2026): found by reading their pages each week
+// (lib/site-check.ts, lib/site-fixes.server.ts). Ross, or the client, makes the change and marks it done.
+model SiteFix {
+  id        String    @id @default(cuid())
+  shopId    String
+  shop      Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  page      String // the page's address
+  kind      String // title | description | h1 | schema | faq
+  what      String // the line shown: "New page title"
+  before    String? // what the page has now
+  after     String // what to put there (words, or code for the business details)
+  why       String
+  status    String    @default("todo") // todo | done | skip
+  doneAt    DateTime?
+  doneBy    String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([shopId, page, kind])
+  @@index([shopId, status])
+}
+
+// How the guide calendar puts guides live on a website that isn't Shopify (Ross, 19 Nov 2026: "this ALSO needs to be FULLY
+// AUTOMATED"): WordPress with an application password, or a site kept on GitHub with an access key. lib/site-publish.server.ts.
+model SiteLink {
+  id        String    @id @default(cuid())
+  shopId    String    @unique
+  shop      Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  kind      String // wordpress | github
+  address   String // wordpress: the site's address (https://example.com.au); github: owner/repo
+  login     String? // wordpress: the username; github: the branch (default: the repo's own)
+  folder    String? // github: the folder new pages go in ("" for the top)
+  secret    String // locked with the server's key: the application password or the access key
+  checkedAt DateTime? // last time it worked
+  error     String? // why the last try failed
+  createdBy String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }

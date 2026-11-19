@@ -8,9 +8,11 @@ import { getPlan } from "./plans";
 import { activeScan } from "./dashboard.server";
 import { scanHasWorker } from "./scan.server";
 import { questionRows } from "./question-stats.server";
-import { shopifyConnected } from "./guide-calendar.server";
+import { publishRoute } from "./guide-calendar.server";
 import { addDays, localDay } from "./guide-calendar";
 import { isLocal } from "./business";
+import { listingsFor } from "./listings.server";
+import { nextListing } from "./listings";
 import { type ClientStatus, clientMonth, daysWindow, hubDay, isClientStatus } from "./clients";
 import { type AutoFacts, type FlowFacts, type GuideFact, checklistFor, checklistView, crawlersOk, isTickable, planFlow } from "./client-plan";
 
@@ -25,7 +27,7 @@ export async function clientPlan(shop: Shop, client: Client | null, now = new Da
   const base = `/dash/clients/${shop.id}`;
   const setup = shop.onboarding !== "done";
 
-  const [ticks, checksToday, lastDeep, running, onboard, slots, rows, reports, live, replied, connected] = await Promise.all([
+  const [ticks, checksToday, lastDeep, running, onboard, slots, rows, reports, live, replied, connected, siteFix, fixesMade, listings] = await Promise.all([
     db.checklistTick.findMany({ where: { shopId: shop.id }, select: { key: true, doneAt: true } }),
     db.scan.findMany({ where: { shopId: shop.id, status: "done", finishedAt: daysWindow(today, today) }, select: { kind: true, finishedAt: true, score: true }, orderBy: { finishedAt: "asc" } }),
     db.scan.findFirst({ where: { shopId: shop.id, kind: { in: ["weekly", "baseline"] }, status: "done" }, orderBy: { startedAt: "desc" }, select: { startedAt: true } }),
@@ -47,8 +49,11 @@ export async function clientPlan(shop: Shop, client: Client | null, now = new Da
     setup ? null : questionRows(shop.id),
     db.clientReport.findMany({ where: { shopId: shop.id }, select: { kind: true, createdAt: true, sentAt: true }, orderBy: { createdAt: "desc" }, take: 60 }),
     db.guideSlot.count({ where: { shopId: shop.id, status: "published" } }),
-    local ? 0 : db.redditThread.count({ where: { shopId: shop.id, repliedAt: { not: null } } }),
-    shopifyConnected(shop),
+    db.redditThread.count({ where: { shopId: shop.id, repliedAt: { not: null } } }),
+    publishRoute(shop).then(Boolean),
+    local ? db.siteFix.findFirst({ where: { shopId: shop.id, status: "todo" }, orderBy: { createdAt: "asc" }, select: { what: true, page: true } }) : null,
+    local ? db.siteFix.count({ where: { shopId: shop.id, status: "done" } }) : 0,
+    local && !setup ? listingsFor(shop.id) : [],
   ]);
 
   const status: ClientStatus = client && isClientStatus(client.status) ? client.status : "active";
@@ -63,20 +68,23 @@ export async function clientPlan(shop: Shop, client: Client | null, now = new Da
     "report-sent": reports.some((r) => r.sentAt),
     reddit: replied > 0,
     "month-report": reports.some((r) => r.kind === "month" && r.sentAt),
+    "site-fix": fixesMade > 0,
+    listings: listings.filter((l) => l.status === "listed").length >= 5,
   };
 
   // The next scheduled AI check, timed like the worker (lib/worker.server.ts): from the last scheduled one.
   const every = plan.scanEveryDays;
   const last = shop.lastScheduledScanAt ?? shop.lastScanAt;
   const nextCheck = every ? (last ? new Date(Math.max(last.getTime() + every * DAY - 3_600_000, now.getTime())) : now) : null;
-  // Done for you: the daily check is the light one, and one a week is the full one (7 days after the last full one).
-  const fullDue = (at: Date) => plan.id !== "pro" || !lastDeep || at.getTime() - lastDeep.startedAt.getTime() >= 7 * DAY;
+  // Done for you checks weekly since 19 Nov 2026, so every check is the full one. (When it checked daily, the daily check
+  // was the light one and one a week was the full one, 7 days after the last full one.)
+  const fullDue = (at: Date) => plan.id !== "pro" || (every ?? 0) >= 7 || !lastDeep || at.getTime() - lastDeep.startedAt.getTime() >= 7 * DAY;
   let nextFullAt: Date | null = null;
   if (nextCheck && every && !fullDue(nextCheck)) {
     nextFullAt = nextCheck;
     for (let i = 0; i < 8 && !fullDue(nextFullAt); i++) nextFullAt = new Date(nextFullAt.getTime() + every * DAY);
   }
-  const reddit = !local && plan.id !== "free" ? (shop.redditCheckedAt ? new Date(Math.max(shop.redditCheckedAt.getTime() + 7 * DAY - 3_600_000, now.getTime())) : now) : null;
+  const reddit = plan.id !== "free" ? (shop.redditCheckedAt ? new Date(Math.max(shop.redditCheckedAt.getTime() + 7 * DAY - 3_600_000, now.getTime())) : now) : null;
   const rates = new Map((rows?.questions ?? []).map((q) => [q.id, q.rate]));
 
   const guides: GuideFact[] = slots.map((s) => ({
@@ -109,6 +117,12 @@ export async function clientPlan(shop: Shop, client: Client | null, now = new Da
     nextFullAt: nextFullAt?.toISOString() ?? null,
     costCapHit: shop.costMonth === now.toISOString().slice(0, 7) && shop.costThisMonth >= plan.costCapUsd,
     redditNextAt: reddit?.toISOString() ?? null,
+    siteFix: siteFix ? { what: siteFix.what, page: siteFix.page } : null,
+    siteCheckNextAt: local && plan.id === "pro" ? new Date(shop.siteCheckedAt ? Math.max(shop.siteCheckedAt.getTime() + 7 * DAY - 3_600_000, now.getTime()) : now.getTime()).toISOString() : null,
+    listing: (() => {
+      const l = nextListing(listings);
+      return l ? { name: l.name } : null;
+    })(),
     guides,
     lastReportAt: reports[0]?.createdAt.toISOString() ?? null,
   };

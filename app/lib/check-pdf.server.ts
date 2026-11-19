@@ -588,7 +588,7 @@ function drawQuestions(pdf: Pdf, input: PdfReportInput) {
     pdf.y += 8;
   });
   pdf.y += pdf.write(
-    `This quick check used ${input.questions.length} questions. Rank with Ross tracks up to ${PLANS.pro.questions} every day.`,
+    `This quick check used ${input.questions.length} questions. Rank with Ross tracks up to ${PLANS.pro.questions} every week.`,
     M,
     pdf.y,
     { size: 8.5, color: C.muted },
@@ -599,7 +599,7 @@ function drawQuestions(pdf: Pdf, input: PdfReportInput) {
 function drawCta(pdf: Pdf, input: PdfReportInput) {
   const plan = PLANS.pro;
   const heading = "Let Rank with Ross track this and do the work for you";
-  const body = `Rank with Ross checks up to ${plan.questions} buying questions every day, writes buying guides and Reddit replies for you, pitches the sites AI quotes most, and counts the orders it can trace back to AI.`;
+  const body = `Rank with Ross checks up to ${plan.questions} buying questions every week, writes buying guides and Reddit replies for you, pitches the sites AI quotes most, and counts the orders it can trace back to AI.`;
   const price = `${OFFER.line} Join the waitlist and we’ll reach out shortly.`;
   const iw = CW - 48;
   const online = input.checkUrl ? `See this report online: ${shortUrl(input.checkUrl, 90)}` : "";

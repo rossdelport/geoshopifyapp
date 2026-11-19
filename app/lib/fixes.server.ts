@@ -13,7 +13,7 @@ import { countGuidePagesThisMonth, getUsageFor } from "./usage.server";
 import { assertNoUserErrors, gql, type AdminClient } from "./shopify-gql.server";
 import { enqueue, registerJob } from "./jobs.server";
 import { adminFor } from "./onboard-job.server";
-import { countryName, syncCatalog } from "./onboarding.server";
+import { countryName, readHomepage, syncCatalog } from "./onboarding.server";
 import { parseFaq } from "./faq";
 import { costThisMonth } from "./cost.server";
 import { mainCluster, rankLost } from "./clusters";
@@ -482,6 +482,7 @@ export async function writeGuide(
     country: string;
     kind?: string | null;
     area?: string | null;
+    facts?: string | null;
     profile: { brandName: string; summary: string } | null;
   },
   products: Product[],
@@ -524,6 +525,14 @@ export async function writeGuide(
   const shortlist = products.slice(0, 15);
   const links: GuideProductLink[] = shortlist.map((p) => ({ title: p.title, url: trackedProductUrl(shop, p.handle, "ai-guide", slug) }));
   const allowed = guideSourceUrls(shop, shortlist);
+  // A local business gets a guide a day (lib/business.ts), so each one is told what its website says today, the facts
+  // box filled in at sign-up, and the guides already written, so it uses true facts and doesn't repeat an earlier one.
+  const [siteText, earlier] = local
+    ? await Promise.all([
+        readHomepage(shop.primaryDomain ?? shop.domain, true),
+        db.fix.findMany({ where: { shopId: shop.id, type: "guide_page", refreshOfId: null, status: { not: "rejected" } }, orderBy: { createdAt: "desc" }, take: 60, select: { targetTitle: true } }),
+      ])
+    : ["", [] as { targetTitle: string }[]];
 
   const out = await askJson({
     schema: GuideSchema,
@@ -535,7 +544,7 @@ export async function writeGuide(
       ? {
           system: `You write helpful, honest guides for a local business's own website, in strict question-and-answer form, so AI assistants can quote any part on its own. It must be genuinely useful even to someone who doesn't become a customer.\n${guardrails(shop.country)}\n- Never invent licences, fees, rates, prices, timeframes or reviews. For costs, explain what changes the price unless the business info gives one.\n- Plain text only: no HTML, no markdown, no links or URLs in any answer.\n- Never use an em dash or a spaced en dash.`,
           prompt: `Business: ${shop.profile?.brandName} (${where}). ${shop.profile?.summary}
-
+${shop.facts ? `\nFacts about the business (true, from the owner; use any that help):\n"""\n${shop.facts}\n"""\n` : ""}${siteText ? `\nTheir website says (true; use any that help):\n"""\n${siteText.slice(0, 4000)}\n"""\n` : ""}${earlier.length ? `\nGuides already on their website (write a different page; don't repeat these):\n${earlier.map((e) => `- ${e.targetTitle}`).join("\n")}\n` : ""}
 Write one guide page (400-700 words) that answers these customer questions:
 ${questions.map((q) => `- ${q.text}`).join("\n")}
 ${roleNote}
@@ -547,6 +556,7 @@ Structure:
 - sections: 4 to 6 real questions people ask before choosing (how to choose, what to ask, what it costs and why, how long it takes, what to watch out for) each answered in one self-contained paragraph. One may say how ${shop.profile?.brandName} helps, using only facts from the business info above. Never refer to other sections ("as mentioned above", "see below").
 - picks: leave empty (this business has no products to list).
 - source_urls: only URLs copied exactly from "Allowed sources" whose facts you used. Never any other URL.
+- missing_info: leave empty. When a fact about the business isn't given above, write around it with honest general advice instead (this page goes live without waiting for anyone).
 
 Allowed sources (the only URLs you may list):
 ${allowed.map((a) => `- ${a.url}`).join("\n")}`,
@@ -607,7 +617,9 @@ ${allowed.map((a) => `- ${a.url}`).join("\n")}`,
   // Sources: only the store's own pages we know about. Anything else Claude listed is dropped.
   const sources = filterSourceLinks(draft.sources, buildAllowlist(allowed));
   const bodyHtml = buildGuideHtml(draft, links, sources);
-  const missing = [claimsNote, ...problems.notes, ...out.missing_info].filter(Boolean).join("\n");
+  // A local business's guide goes live by itself (one a day), so only the claims check can hold it back; the style
+  // notes and anything Claude wished it knew don't wait for a person.
+  const missing = (local ? [claimsNote] : [claimsNote, ...problems.notes, ...out.missing_info]).filter(Boolean).join("\n");
   if (missing && skipIfHeld) return null;
   return db.fix.create({
     data: {
@@ -715,6 +727,11 @@ async function relatedFor(fix: Pick<Fix, "id" | "shopId" | "cluster" | "hubFixId
  * Shopify right before the write and only our block changes. Best effort: a page we can't update keeps
  * its old links until the next change.
  */
+/** A guide's page as it goes live: the "Updated <Month Year>" line and links to the guides on its topic that are live. */
+export async function liveGuideBody(fix: Pick<Fix, "id" | "shopId" | "cluster" | "hubFixId" | "after">, now = new Date()): Promise<string> {
+  return setUpdatedLine(setRelatedBlock((fix.after as FixAfter).bodyHtml ?? "", await relatedFor(fix)), now);
+}
+
 async function updateLinkedPages(fix: Pick<Fix, "id" | "shopId" | "cluster" | "hubFixId">, admin: AdminClient) {
   const others = fix.hubFixId
     ? await db.fix.findMany({ where: { id: fix.hubFixId } })

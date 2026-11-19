@@ -5,7 +5,7 @@ import db from "../db.server";
 import { AI_ENGINE_LABELS } from "./attribution";
 import { formatMoney } from "./format";
 import { daysWindow } from "./clients";
-import { type LogEntry, bunchByDay, checkText, newestFirst, redditFoundText, writersText } from "./work-log";
+import { type LogEntry, bunchByDay, checkText, newestFirst, pagePath, redditFoundText, siteFoundText, writersText } from "./work-log";
 
 const KIND_NAME: Record<string, string> = { week: "weekly", month: "monthly" };
 
@@ -14,7 +14,7 @@ export async function workLog(shopIds: string[], from: string, to: string): Prom
   if (!shopIds.length) return [];
   const at = daysWindow(from, to);
   const shopId = { in: shopIds };
-  const [guides, live, scans, found, replied, writers, sales, made, sent, notes, joined] = await Promise.all([
+  const [guides, live, scans, found, replied, writers, sales, made, sent, notes, joined, siteFound, siteMade, listed] = await Promise.all([
     db.fix.findMany({
       where: { shopId, type: "guide_page", refreshOfId: null, createdAt: at },
       select: { id: true, shopId: true, targetTitle: true, createdAt: true, slot: { select: { id: true } } },
@@ -38,6 +38,9 @@ export async function workLog(shopIds: string[], from: string, to: string): Prom
     db.clientReport.findMany({ where: { shopId, sentAt: at }, select: { id: true, shopId: true, kind: true, token: true, sentAt: true, sentTo: true, createdBy: true } }),
     db.workNote.findMany({ where: { shopId, doneAt: at }, select: { id: true, shopId: true, kind: true, text: true, doneAt: true, createdBy: true } }),
     db.client.findMany({ where: { shopId, createdAt: at }, select: { shopId: true, createdAt: true } }),
+    db.siteFix.findMany({ where: { shopId, createdAt: at }, select: { shopId: true, createdAt: true } }),
+    db.siteFix.findMany({ where: { shopId, status: "done", doneAt: at }, select: { id: true, shopId: true, what: true, page: true, doneAt: true, doneBy: true } }),
+    db.listing.findMany({ where: { shopId, status: "listed", updatedAt: at }, select: { id: true, shopId: true, domain: true, url: true, updatedAt: true, createdBy: true } }),
   ]);
 
   const base = (id: string) => `/dash/clients/${id}`;
@@ -58,7 +61,7 @@ export async function workLog(shopIds: string[], from: string, to: string): Prom
       shopId: s.shopId,
       at: s.publishedAt!.toISOString(),
       kind: "guide-live",
-      text: `Guide live on their store: ${s.fix?.targetTitle ?? "guide page"}`,
+      text: `Guide live: ${s.fix?.targetTitle ?? "guide page"}`,
       href: s.fix?.resultUrl || `${base(s.shopId)}/guides/${s.id}`,
     });
   }
@@ -81,6 +84,15 @@ export async function workLog(shopIds: string[], from: string, to: string): Prom
   }
   for (const g of bunchByDay(writers.map((w) => ({ shopId: w.shopId, at: w.createdAt, domain: w.domain })))) {
     out.push({ id: `wr-${g.shopId}-${g.day}`, shopId: g.shopId, at: g.at, kind: "writer", text: writersText(g.rows.map((w) => w.domain)), href: `${base(g.shopId)}/sites`, count: g.rows.length });
+  }
+  for (const g of bunchByDay(siteFound.map((f) => ({ shopId: f.shopId, at: f.createdAt })))) {
+    out.push({ id: `sf-${g.shopId}-${g.day}`, shopId: g.shopId, at: g.at, kind: "site-found", text: siteFoundText(g.rows.length), href: `${base(g.shopId)}/website`, count: g.rows.length });
+  }
+  for (const f of siteMade) {
+    out.push({ id: `sm-${f.id}`, shopId: f.shopId, at: f.doneAt!.toISOString(), kind: "site-fix", text: `Website fix made: ${f.what.toLowerCase()} on ${pagePath(f.page) === "home page" ? "the home page" : pagePath(f.page)}`, href: f.page, by: f.doneBy });
+  }
+  for (const l of listed) {
+    out.push({ id: `ls-${l.id}`, shopId: l.shopId, at: l.updatedAt.toISOString(), kind: "listing", text: `Listed on ${l.domain}`, href: l.url ?? `${base(l.shopId)}/listings`, by: l.createdBy });
   }
   for (const o of sales) {
     const from = AI_ENGINE_LABELS[o.engine as keyof typeof AI_ENGINE_LABELS] ?? "AI";
