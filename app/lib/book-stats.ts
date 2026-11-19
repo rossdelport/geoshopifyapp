@@ -78,11 +78,13 @@ export type BookRow = Pick<AdTags, "utmSource" | "utmCampaign" | "utmContent" | 
 };
 
 export const NOT_SHOPIFY = "Not a Shopify brand";
+/** Said Yes to Shopify, then didn't pick what they sell (Ross, 8 Nov 2026: to see who stops after the first question). */
+export const YES_ONLY = "Shopify brand, no sales answer";
 
-/** The answer a row counts under: "Not a Shopify brand", a sales band ("A$5,000 to A$20,000"), or null (no answer). */
+/** The answer a row counts under: "Not a Shopify brand", a sales band ("A$5,000 to A$20,000"), a Yes on its own, or null. */
 export function answerLabel(shopify: string | null | undefined, sales: string | null | undefined): string | null {
   if (shopify === "no") return NOT_SHOPIFY;
-  return SALES.find((s) => s.value === sales)?.label ?? null;
+  return SALES.find((s) => s.value === sales)?.label ?? (shopify === "yes" ? YES_ONLY : null);
 }
 
 export interface BookDay {
@@ -108,7 +110,7 @@ export function summarise(rows: BookRow[], days: string[]): BookStats {
   const byDay = new Map(days.map((day) => [day, { day, people: 0, booked: 0 }]));
   const byAd = new Map<string, { name: string; people: number; booked: number }>();
   const totals = { people: 0, booked: 0 };
-  const answers = new Map([NOT_SHOPIFY, ...SALES.map((s) => s.label)].map((label) => [label, { label, people: 0, booked: 0 }]));
+  const answers = new Map([NOT_SHOPIFY, YES_ONLY, ...SALES.map((s) => s.label)].map((label) => [label, { label, people: 0, booked: 0 }]));
   for (const r of rows) {
     const d = byDay.get(r.day);
     if (!d) continue;

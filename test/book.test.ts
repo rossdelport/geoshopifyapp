@@ -230,6 +230,17 @@ describe("the page", () => {
     vi.mocked(fetch).mockImplementationOnce(async () => Response.json({ error: "invalid_grant" }, { status: 400 }));
     vi.spyOn(console, "error").mockImplementationOnce(() => {});
     expect(await freeSlots(NOW)).toBeNull();
+    // Ross hears about it (8 Nov 2026), once every 6 hours at most
+    expect(h.emails).toHaveLength(1);
+    const [to, subject, html] = h.emails[0] as [string[], string, string];
+    expect(to).toEqual(["ross@geo.test"]);
+    expect(subject).toBe("Your booking page can't see your calendar");
+    expect(html).toContain("/dash/admin/system");
+    expect(html).toContain("invalid_grant");
+    vi.mocked(fetch).mockImplementationOnce(async () => Response.json({ error: "invalid_grant" }, { status: 400 }));
+    vi.spyOn(console, "error").mockImplementationOnce(() => {});
+    expect(await freeSlots(new Date(NOW.getTime() + 3_600_000))).toBeNull();
+    expect(h.emails).toHaveLength(1);
   });
 });
 
