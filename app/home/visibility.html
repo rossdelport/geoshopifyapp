@@ -211,12 +211,6 @@ ul,ol{padding:0;list-style:none}
 .foot .wrap{display:flex;gap:20px}
 .foot a:hover{color:var(--ink)}
 
-/* Cookie notice for the Meta pixel in the head (the same as the home page's) */
-.ck{position:fixed;z-index:60;left:16px;bottom:16px;max-width:440px;display:flex;align-items:center;gap:16px;padding:12px 12px 12px 18px;border-radius:16px;background:#fff;box-shadow:0 0 0 1px rgba(18,18,40,.08),0 18px 40px -16px rgba(18,18,40,.35)}
-.ck-tx{font-size:14px;line-height:1.45;color:var(--ink)}
-.ck-tx a{color:var(--text);text-decoration:underline;text-underline-offset:2px}
-.ck-btns{display:flex;gap:8px;flex:none}
-@media (max-width:600px){.ck{left:12px;right:12px;bottom:12px;max-width:none;flex-direction:column;align-items:stretch;gap:10px;padding:14px}.ck-btns>*{flex:1}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
 <!-- META_PIXEL -->
@@ -364,18 +358,9 @@ ul,ol{padding:0;list-style:none}
   <div class="wrap"><span>© 2026 Rank with Ross</span><a href="/">Home</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
 </footer>
 
-<!-- Cookie notice for the Meta pixel in the head (the same as the home page's) -->
-<div class="ck" id="ck" role="region" aria-label="Cookies" hidden>
-  <p class="ck-tx"><span class="ck-q">We use cookies to see which of our ads work.</span> <a href="/privacy#cookies">Privacy</a></p>
-  <div class="ck-btns">
-    <button class="btn btn-sec btn-sm ck-no" type="button">No thanks</button>
-    <button class="btn btn-pri btn-sm ck-ok" type="button">OK</button>
-  </div>
-</div>
 
 <!-- A check opened by its link (/visibility?r=<id>), or null -->
 <script type="application/json" id="check">__CHECK__</script>
-<!-- COOKIE_SCRIPT -->
 <script>
 // The picture beside the form: a soft map with 49 dots, green in the middle and red at the edges. It is a drawing of
 // the idea, with no numbers and no business in it.

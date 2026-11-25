@@ -6,9 +6,9 @@ import { readAdTags } from "../lib/book-stats";
 import { clientIp, fromAnotherSite, readSmallForm } from "../lib/public-form.server";
 import font from "../fonts/inter-geo.woff2?url";
 import rossPhoto from "../home/ross.webp?url";
-// The home page's Meta pixel and cookie notice, from the same files the home page copies.
+// The home page's Meta pixel. No cookie pop-up here (Ross, 25 Nov 2026: "please remove the cookie pop up"): visitors in
+// Europe and the UK, who would have to be asked first, simply never get the pixel on this page.
 import pixelHead from "../../design/overview/pixel-head.js?raw";
-import cookieScript from "../../design/overview/parts/47-cookies.js?raw";
 import raw from "../home/visibility.html?raw";
 
 // rankwithross.com.au/visibility: the free Google Maps check (Ross, 25 Nov 2026: "people type in their first name, phone number
@@ -27,8 +27,7 @@ import raw from "../home/visibility.html?raw";
 const page = raw
   .replaceAll("__FONT_URL__", () => font)
   .replaceAll("__ROSS_PHOTO__", () => rossPhoto)
-  .replace("<!-- META_PIXEL -->", () => `<script>\n${pixelHead.trim()}\n</script>`)
-  .replace("<!-- COOKIE_SCRIPT -->", () => `<script>\n${cookieScript.trim()}\n</script>`);
+  .replace("<!-- META_PIXEL -->", () => `<script>\n${pixelHead.trim()}\n</script>`);
 
 const PRIVATE = { "Cache-Control": "no-store", "X-Robots-Tag": "noindex" };
 
