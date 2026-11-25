@@ -565,7 +565,6 @@ ul,ol{padding:0;list-style:none}
       showErr((out && out.error) || GENERIC);
       return;
     }
-    lead();
     if (out.state === 'pick') return showPick(out);
     id = out.id;
     fresh = true;
@@ -581,6 +580,9 @@ ul,ol{padding:0;list-style:none}
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     if (busy) return;
+    // Ross, 25 Nov 2026: "every person that clicks scan is a YES to facebook ... its a lead". Told on the press, once a
+    // visit, whatever the server says next (not found, limit reached), so the ads learn from everyone who asked.
+    lead();
     showErr('');
     setBusy(true);
     var body = withAd({});
