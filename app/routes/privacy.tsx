@@ -208,6 +208,19 @@ function PrivacyText() {
         entered, or sooner if you ask.
       </p>
 
+      <h2 style={h2} id="forms">
+        Forms in our Facebook and Instagram ads
+      </h2>
+      <p>
+        If you fill in a form in one of our Facebook or Instagram ads, Meta sends us what you typed, like your name,
+        phone number, email address and your business&apos;s name, website and town. Meta keeps a copy too, as
+        Meta&apos;s own privacy policy says.
+      </p>
+      <p>
+        Ross uses it to check what AI says about your business, send you what he finds and talk with you about Rank
+        with Ross. We delete it {callMonths} months after you sent the form, or sooner if you ask.
+      </p>
+
       <h2 style={h2} id="cookies">
         Ads and cookies on our home page, giveaway page and booking page
       </h2>
@@ -249,6 +262,9 @@ function PrivacyText() {
       <p>
         <b>Giveaway:</b> to run the draw and to contact you about Rank with Ross.
       </p>
+      <p>
+        <b>Forms in our ads:</b> to send you the free check you asked for and to talk with you about Rank with Ross.
+      </p>
 
       <h2 style={h2}>Shoppers&apos; choices</h2>
       <p>
@@ -276,7 +292,7 @@ function PrivacyText() {
       <h2 style={h2}>Services we use</h2>
       <ul>
         <li>Railway (Singapore): runs the app.</li>
-        <li>Meta (Facebook and Instagram): our own ads, and the pixel on our home page, giveaway page and booking page described above.</li>
+        <li>Meta (Facebook and Instagram): our own ads, the forms in them, and the pixel on our home page, giveaway page and booking page described above.</li>
         <li>Google: Google Calendar and Google Meet, for calls booked on our website.</li>
         <li>Loom: plays Ross&apos;s video on our video pages, only after you press play.</li>
         <li>Supabase (Tokyo): stores the data.</li>
@@ -303,7 +319,7 @@ function PrivacyText() {
       <p>
         If you asked for a free check report by email, you can ask us for the email address we hold about you, or ask us
         to delete it. Do it the same way, or reply to any of our emails. If you joined the waitlist, entered the
-        giveaway or booked a call, you can ask us for your details or ask us to delete them the same way.
+        giveaway, booked a call or filled in a form in our ads, you can ask us for your details or ask us to delete them the same way.
       </p>
     </main>
   );

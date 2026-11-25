@@ -255,7 +255,7 @@ describe("/privacy after the free tools", () => {
     expect(text).toContain("Crawl4AI, or AnyAPI as a backup");
     expect(text).toContain("We hold it in memory and clear it within a day.");
     expect(text).toContain("We record what each search cost us, without your IP address or your search.");
-    expect(text).toContain("Last updated 17 November 2026");
+    expect(text).toContain("Last updated 25 November 2026");
     // the video pages: Ross's video plays from Loom only after play (17 Nov 2026)
     expect(text).toContain("Nothing loads from Loom until you press play.");
     // the two questions on the booking page (Ross, 6 Nov 2026): answers kept with a booked call, and counted without a name
