@@ -19,6 +19,7 @@ import { emailConfigured, sendEmail } from "./email.server";
 import { httpGet, type RawResponse } from "./http-get.server";
 import { pool } from "./pool";
 import { hashIp } from "./public-form.server";
+import { HEATMAP_ENDPOINTS } from "./heatmap";
 import { buildActionPlan } from "./check-plan";
 import { CHECK_STALE_MS, JOIN_PATH, leadStateFor, queueReportEmails, skipReportEmails } from "./check-lead.server";
 import {
@@ -102,7 +103,8 @@ function envNumber(name: string, fallback: number): number {
 
 /** What we spent on work that belongs to no shop (free checks) since `since`, in US$. */
 async function platformSpend(since: Date, client: Pick<Prisma.TransactionClient, "apiCost"> = db): Promise<number> {
-  const sum = await client.apiCost.aggregate({ _sum: { usd: true }, where: { shopId: null, createdAt: { gte: since } } });
+  // The free Google Maps check has its own daily budget (lib/heatmap.server.ts), so its spend never pauses these checks.
+  const sum = await client.apiCost.aggregate({ _sum: { usd: true }, where: { shopId: null, endpoint: { notIn: HEATMAP_ENDPOINTS }, createdAt: { gte: since } } });
   return sum._sum.usd ?? 0;
 }
 
