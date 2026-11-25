@@ -16,7 +16,7 @@ export const HOME_LANGS_UPDATED = "2026-10-23";
 export const HOME_LANGS = ["de", "fr", "nl", "es", "it"] as const;
 export type HomeLang = (typeof HOME_LANGS)[number];
 /** The last edit of the privacy page (routes/privacy.tsx). Sitemap lastmod for "/privacy". */
-export const PRIVACY_UPDATED = "2026-11-17";
+export const PRIVACY_UPDATED = "2026-11-25";
 /** The last edit of the terms of service (routes/terms.tsx). Sitemap lastmod for "/terms". */
 export const TERMS_UPDATED = "2026-11-16";
 
