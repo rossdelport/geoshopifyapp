@@ -1,7 +1,7 @@
 // The niche pages for Ross's video ads (Ross, 17 Nov 2026: "custom landing pages for EACH, speaking directly to them in
 // their language, referencing exactly how much they are spending and how i can help them for a much better price.
 // its going to be a VSL landing page with context and info underneath with a book a call button under the VSL").
-// One page per niche in the niche test (doc "Niches to test the A$297 offer", 17 Nov 2026), at
+// One page per niche in the niche test (doc "Niches to test the A$297 offer", 17 Nov 2026; A$397 since 25 Nov), at
 // rankwithross.com.au/for/<slug>, drawn by ./render.ts into app/home/vsl.html and served by app/routes/for.$niche.tsx.
 // Pure and browser-safe.
 //
@@ -61,7 +61,10 @@ export interface VslPage {
 
 // Plain "$" on these pages (Ross, 17 Nov 2026: "drop the A from the $ on every page. i will only be targeting
 // australia anyway"). The rest of the site keeps "A$" from OFFER in app/lib/plans.ts.
-export const VSL_PRICE = "$297";
+export const VSL_PRICE = "$397";
+// The big lines below are sums on this price, so redo them when it changes ($397, 25 Nov 2026): a $3,250 broker
+// payment is about 8 months, an $11,260 battery about 28 times, a $6,000 buyers agent fee about 15 months, and 5
+// clicks on "emergency plumber" ($79.17 each, DataForSEO) are $396.
 
 /** What Australian agencies charge a month (Optimising's price guide), for the third problem and the table. */
 export const AGENCY_PRICE = "$2,000 to $20,000+";
@@ -114,7 +117,7 @@ const FAKE = {
   a: "Never. Fake reviews break Australian law and Google’s rules, and they can be taken down. I only use real facts about your business.",
 };
 const PRICE = {
-  q: "Why only $297 when agencies charge so much more?",
+  q: "Why only $397 when agencies charge so much more?",
   a: "I use software for the checking and the first drafts, and I do the rest myself. No big office and no sales team. So it costs a lot less to run.",
 };
 const WHO = { q: "Who will I talk to?", a: "Me, Ross. I’m in Perth. Text me any time on 0400 369 865." };
@@ -157,7 +160,7 @@ export const VSL_PAGES: VslPage[] = [
     label: "Mortgage broker",
     title: "Perth mortgage brokers: get picked by AI | Rank with Ross",
     description:
-      "ChatGPT named 5 mortgage brokers in Perth. I help you be one of them. $297 a month, done for you, no lock-in. Book a free 15 minute call.",
+      "ChatGPT named 5 mortgage brokers in Perth. I help you be one of them. $397 a month, done for you, no lock-in. Book a free 15 minute call.",
     hi: "G’day, Perth mortgage brokers.",
     h1: ["Home buyers ask ChatGPT which broker to use.", "Make it name you."],
     problems: [
@@ -176,7 +179,7 @@ export const VSL_PAGES: VslPage[] = [
       AGENCIES,
     ],
     big: {
-      line: "One extra loan pays for about 11 months of this.",
+      line: "One extra loan pays for about 8 months of this.",
       note: "On a $500,000 loan, the lender pays the broker about $3,250 to $3,500 upfront.",
     },
     faq: localFaq("a mortgage broker", [
@@ -192,7 +195,7 @@ export const VSL_PAGES: VslPage[] = [
     label: "Solar and battery installer",
     title: "Perth solar installers: get picked by AI | Rank with Ross",
     description:
-      "ChatGPT named 5 battery installers in Perth. I help you be one of them. $297 a month, done for you, no lock-in. Book a free 15 minute call.",
+      "ChatGPT named 5 battery installers in Perth. I help you be one of them. $397 a month, done for you, no lock-in. Book a free 15 minute call.",
     hi: "G’day, Perth solar installers.",
     h1: ["Perth homeowners ask ChatGPT who to buy a battery from.", "Make it name you."],
     problems: [
@@ -211,7 +214,7 @@ export const VSL_PAGES: VslPage[] = [
       AGENCIES,
     ],
     big: {
-      line: "One battery job is a sale about 38 times our monthly fee.",
+      line: "One battery job is a sale about 28 times our monthly fee.",
       note: "A 24 kWh battery costs about $11,260 installed in Perth after rebates.",
     },
     faq: localFaq("a battery or solar installer", [
@@ -226,7 +229,7 @@ export const VSL_PAGES: VslPage[] = [
     shopify: true,
     title: "Pool, spa and sauna stores: be picked by AI | Rank with Ross",
     description:
-      "Shoppers ask ChatGPT which plunge pool, spa or sauna to buy. I help your Shopify store get picked. $297 a month, done for you, no lock-in.",
+      "Shoppers ask ChatGPT which plunge pool, spa or sauna to buy. I help your Shopify store get picked. $397 a month, done for you, no lock-in.",
     hi: "G’day, pool, spa and sauna stores.",
     h1: ["Shoppers ask ChatGPT which plunge pool to buy.", "Make it pick yours."],
     problems: [
@@ -283,7 +286,7 @@ export const VSL_PAGES: VslPage[] = [
     label: "Buyers agent",
     title: "Perth buyers agents: get picked by ChatGPT | Rank with Ross",
     description:
-      "ChatGPT named 5 buyers agents in Perth. I help you be one of them. $297 a month, done for you, no lock-in. Book a free 15 minute call.",
+      "ChatGPT named 5 buyers agents in Perth. I help you be one of them. $397 a month, done for you, no lock-in. Book a free 15 minute call.",
     hi: "G’day, Perth buyers agents.",
     h1: ["Perth home buyers ask ChatGPT which buyers agent to use.", "Make it name you."],
     problems: [
@@ -302,7 +305,7 @@ export const VSL_PAGES: VslPage[] = [
       AGENCIES,
     ],
     big: {
-      line: "One new client pays for about 20 months of this.",
+      line: "One new client pays for about 15 months of this.",
       note: "Perth buyers agents charge about $6,000 to $18,000 for a full search on a home under about $1 million.",
     },
     faq: localFaq("a buyers agent", [
@@ -318,7 +321,7 @@ export const VSL_PAGES: VslPage[] = [
     label: "Plumber or electrician",
     title: "Perth plumbers and sparkies: get on ChatGPT | Rank with Ross",
     description:
-      "One Google click on “emergency plumber” costs about $79. I help ChatGPT name your business instead. $297 a month, done for you, no lock-in.",
+      "One Google click on “emergency plumber” costs about $79. I help ChatGPT name your business instead. $397 a month, done for you, no lock-in.",
     hi: "G’day, Perth plumbers and sparkies.",
     h1: ["One Google click on “emergency plumber” costs about $79.", "ChatGPT names plumbers for free."],
     problems: [
@@ -337,7 +340,7 @@ export const VSL_PAGES: VslPage[] = [
       AGENCIES,
     ],
     big: {
-      line: "$297 a month is less than 4 clicks on “emergency plumber”.",
+      line: "$397 a month is about the price of 5 clicks on “emergency plumber”.",
       note: "When ChatGPT names you, nobody charges you for the call.",
     },
     faq: localFaq("a plumber or electrician", [
@@ -356,7 +359,7 @@ export const VSL_PAGES: VslPage[] = [
     label: "Any business",
     title: "Get your business named by AI | Rank with Ross",
     description:
-      "Tired of paying Google and Meta for every lead? I help ChatGPT and Google’s AI name your business. $297 a month, done for you, no lock-in.",
+      "Tired of paying Google and Meta for every lead? I help ChatGPT and Google’s AI name your business. $397 a month, done for you, no lock-in.",
     hi: "G’day, business owners.",
     h1: ["Tired of paying Google and Meta for every lead?", "Get AIs to name you."],
     problems: [

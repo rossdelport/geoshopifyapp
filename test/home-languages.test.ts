@@ -17,7 +17,7 @@ const ROUTES = { de, fr, nl, es, it: it_ };
 const get = async (route: { loader: (a: LoaderFunctionArgs) => Promise<Response> }, url: string) =>
   route.loader({ request: new Request(url), params: {}, context: {} } as unknown as LoaderFunctionArgs);
 
-const PRICES: Record<string, string> = { de: "297 A$", fr: "297 A$", nl: "A$ 297", es: "297 A$", it: "297 A$" };
+const PRICES: Record<string, string> = { de: "397 A$", fr: "397 A$", nl: "A$ 397", es: "397 A$", it: "397 A$" };
 const LEGAL: Record<string, string> = { de: "Impressum", fr: "Mentions légales", nl: "Bedrijfsgegevens", es: "Aviso legal", it: "Note legali" };
 
 describe("home page in other languages", () => {
@@ -41,8 +41,8 @@ describe("home page in other languages", () => {
       }
       // the one price, in Australian dollars written the local way
       expect(html).toContain(`>${PRICES[lang]}<`);
-      expect(html).not.toContain(">A$297<");
-      expect(html).not.toMatch(/>(945 A\$|A\$ 945)</);
+      expect(html).not.toContain(">A$397<");
+      expect(html).not.toMatch(/>(297 A\$|A\$ 297|945 A\$|A\$ 945)</);
       // the company details line, with the real address and email
       expect(html).toContain(`<p class="foot-legal">${LEGAL[lang]}: Rank with Ross, 237 Adelaide Terrace, East Perth WA 6000,`);
       expect(html).toContain('<a href="mailto:ross@rankwithross.com.au">ross@rankwithross.com.au</a>');

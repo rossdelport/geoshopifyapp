@@ -69,12 +69,12 @@ export const LANDING_PAGES: LandingPage[] = [
     city: "Perth",
     title: "Perth SEO agency for Shopify brands | Rank with Ross",
     description:
-      "A Perth team that gets Shopify brands found on Google and picked by ChatGPT. A$297 a month, done for you, no lock-in. Free 15 minute call.",
+      "A Perth team that gets Shopify brands found on Google and picked by ChatGPT. A$397 a month, done for you, no lock-in. Free 15 minute call.",
     short: "Get your Shopify store found on Google and picked by AI, from a Perth team.",
     h1: "A Perth SEO agency for Shopify brands. Get found on Google and picked by AI.",
     intro: [
       "Rank with Ross is run from Perth by its founder, Ross Delport. We help Shopify brands sell more from Google and from AI apps like ChatGPT. We only work with online stores.",
-      "It's A$297 a month, done for you, with no lock-in contract. If you're not happy after the first month, you get a full refund and keep all the work.",
+      "It's A$397 a month, done for you, with no lock-in contract. If you're not happy after the first month, you get a full refund and keep all the work.",
     ],
     checked: "2026-11-08",
     published: "2026-11-08",
@@ -106,7 +106,7 @@ export const LANDING_PAGES: LandingPage[] = [
       {
         heading: "What it costs",
         paragraphs: [
-          "A$297 a month. There's no lock-in contract, and you can stop any time. If you're not happy after the first month, you get a full refund and keep all the work.",
+          "A$397 a month. There's no lock-in contract, and you can stop any time. If you're not happy after the first month, you get a full refund and keep all the work.",
           "Most Perth SEO agencies don't show a price on their website. One that does, The SEO Room, lists retainers from A$1,500 to A$5,000 + GST a month. Our list of the best SEO agencies in Perth for online stores compares seven of them.",
         ],
       },
@@ -163,12 +163,12 @@ export const LANDING_PAGES: LandingPage[] = [
     tag: "AI SEO",
     title: "AI SEO agency for Australian Shopify brands | Rank with Ross",
     description:
-      "AI SEO for Australian Shopify brands: get named by ChatGPT, Gemini and Google's AI, and see the sales. A$297 a month, done for you, no lock-in.",
+      "AI SEO for Australian Shopify brands: get named by ChatGPT, Gemini and Google's AI, and see the sales. A$397 a month, done for you, no lock-in.",
     short: "AI SEO for Shopify brands: get picked by ChatGPT and Google's AI, and see the sales.",
     h1: "An AI SEO agency for Australian Shopify brands. Get picked by ChatGPT, and see the sales.",
     intro: [
       "Rank with Ross is an AI SEO agency for Shopify brands. Some people call it GEO or AEO. It's all the same goal: when a shopper asks ChatGPT, Gemini, Perplexity or Google's AI what to buy, your products get named.",
-      "It's A$297 a month, done for you, with no lock-in contract. If you're not happy after the first month, you get a full refund and keep all the work.",
+      "It's A$397 a month, done for you, with no lock-in contract. If you're not happy after the first month, you get a full refund and keep all the work.",
     ],
     checked: "2026-11-08",
     published: "2026-11-08",
@@ -214,7 +214,7 @@ export const LANDING_PAGES: LandingPage[] = [
         heading: "What AI SEO costs in Australia",
         paragraphs: [
           "Optimising's Australian price guide puts agency GEO at about A$2,000 to A$20,000 or more a month. Tools that only track AI answers cost less, but you do the work.",
-          "Rank with Ross is A$297 a month, done for you. There's no lock-in, and you can stop any time.",
+          "Rank with Ross is A$397 a month, done for you. There's no lock-in, and you can stop any time.",
         ],
       },
       {
@@ -257,12 +257,12 @@ export const LANDING_PAGES: LandingPage[] = [
     tag: "Shopify SEO",
     title: "Shopify SEO agency for Google and AI search | Rank with Ross",
     description:
-      "Shopify SEO, done for you: product page fixes, buying guides and sales tracking, so Google and ChatGPT find your products. A$297 a month, no lock-in.",
+      "Shopify SEO, done for you: product page fixes, buying guides and sales tracking, so Google and ChatGPT find your products. A$397 a month, no lock-in.",
     short: "Shopify SEO done for you: found on Google, named by AI, with the sales tracked.",
     h1: "Shopify SEO, done for you. Get your products found on Google and named by AI.",
     intro: [
       "Rank with Ross is an SEO agency that only works with Shopify stores. We fix your product pages, write buying guides and track your sales, so Google and AI apps like ChatGPT can find your products and suggest them.",
-      "It's A$297 a month, with no lock-in contract. If you're not happy after the first month, you get a full refund and keep all the work.",
+      "It's A$397 a month, with no lock-in contract. If you're not happy after the first month, you get a full refund and keep all the work.",
     ],
     checked: "2026-11-08",
     published: "2026-11-08",
@@ -308,7 +308,7 @@ export const LANDING_PAGES: LandingPage[] = [
       {
         heading: "What it costs",
         paragraphs: [
-          "A$297 a month. There's no lock-in contract, and you can stop any time. If you're not happy after the first month, you get a full refund and keep all the work.",
+          "A$397 a month. There's no lock-in contract, and you can stop any time. If you're not happy after the first month, you get a full refund and keep all the work.",
           "Most ecommerce SEO agencies in Australia quote each store on its own. Our list of the best SEO agencies in Perth shows the prices that are public.",
         ],
       },

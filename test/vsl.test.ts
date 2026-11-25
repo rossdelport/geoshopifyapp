@@ -56,7 +56,8 @@ describe("the niche pages", () => {
     // the same price as the rest of the site, with a plain "$" (Ross, 17 Nov 2026: his ads only target Australia)
     expect(OFFER.price.startsWith(`A${VSL_PRICE}`)).toBe(true);
     for (const p of VSL_PAGES) {
-      expect(words(p)).toContain("$297 a month");
+      expect(words(p)).toContain("$397 a month");
+      expect(words(p), p.slug).not.toContain("$297"); // the old price (A$397 since 25 Nov 2026)
       expect(words(p), p.slug).not.toContain("A$");
     }
   });

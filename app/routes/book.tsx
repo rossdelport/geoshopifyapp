@@ -46,7 +46,7 @@ function forNiche(html: string, slug: string): string {
     .replaceAll("We’ll chat about your store and see", "We’ll chat about your business and see")
     .replaceAll("Your store’s website", "Your website")
     // plain "$" like the niche pages (Ross, 17 Nov 2026: his ads only target Australia)
-    .replaceAll(">A$297 a month", ">$297 a month")
+    .replaceAll(">A$397 a month", ">$397 a month")
     .replace('placeholder="you@yourstore.com"', 'placeholder="you@yourbusiness.com.au"')
     .replace('placeholder="yourstore.com.au"', 'placeholder="yourbusiness.com.au"');
 }
