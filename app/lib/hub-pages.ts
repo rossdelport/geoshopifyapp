@@ -32,7 +32,7 @@ export function setupStep(onboarding: string, local = false): { step: number; of
 /** "Thu 12 Nov", with the year when it isn't this year's. */
 const dayWithYear = (day: string, today: string) => `${dayLabel(day)}${day.slice(0, 4) !== today.slice(0, 4) ? ` ${day.slice(0, 4)}` : ""}`;
 
-/** The muted line under a brand's name: "Month 2 · A$297 a month", "Starts Thu 12 Nov · A$297 a month", "Started Mon 12 Oct". */
+/** The muted line under a brand's name: "Month 2 · A$397 a month", "Starts Thu 12 Nov · A$397 a month", "Started Mon 12 Oct". */
 export function termLine(card: Pick<ClientCard, "status" | "month" | "startedOn" | "feeAud">, today: string): string {
   if (card.status === "ended") return `Started ${dayWithYear(card.startedOn, today)}`; // no fee: they don't pay any more
   const when = card.month > 0 ? `Month ${card.month}` : `Starts ${card.startedOn === addDays(today, 1) ? "tomorrow" : dayWithYear(card.startedOn, today)}`;

@@ -18,7 +18,7 @@ export const isClientStatus = (s: unknown): s is ClientStatus => typeof s === "s
 /** The plan a status runs on: the work only runs while a client is active. */
 export const planForStatus = (s: ClientStatus) => (s === "active" ? "pro" : "free");
 
-/** "A$297 a month" -> 297: the website's price, the fee a new client starts on (it follows OFFER when the price changes). */
+/** "A$397 a month" -> 397: the website's price, the fee a new client starts on (it follows OFFER when the price changes). */
 export function offerFee(price: string = OFFER.price): number {
   const n = Number(/\d[\d,]*(\.\d+)?/.exec(price)?.[0]?.replace(/,/g, ""));
   return Number.isFinite(n) && n > 0 ? Math.round(n) : 0;
@@ -28,7 +28,7 @@ export const DEFAULT_FEE = offerFee();
 /** How many clients the offer takes at once (the home page: "5 spots"). */
 export const CLIENT_SPOTS = 5;
 
-/** "A$297", "A$2,835": fees are always Australian dollars. */
+/** "A$397", "A$2,835": fees are always Australian dollars. */
 export const formatFee = (n: number) => `A$${Math.round(n).toLocaleString("en-US")}`;
 
 // ---------- Days on Ross's calendar ----------
@@ -151,7 +151,7 @@ export function readClientForm(form: FormLike, today: string): { ok: true; value
   const phone = cleanPhone(form.get("phone"));
   if (phone === false) errors.phone = "Please enter a phone number, like 0400 123 456.";
   const fee = cleanFee(form.get("feeAud"));
-  if (fee === false) errors.feeAud = "Please enter the monthly fee in dollars, like 297.";
+  if (fee === false) errors.feeAud = "Please enter the monthly fee in dollars, like 397.";
   const startRaw = String(form.get("startedOn") ?? "").trim();
   const startedOn = startRaw || today;
   if (!isDay(startedOn) || Math.abs(daysSince(startedOn, today)) > 730) errors.startedOn = "Please pick the day the work started.";

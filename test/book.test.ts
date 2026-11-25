@@ -167,7 +167,7 @@ describe("the page", () => {
     expect(html).toContain("</svg>15 minutes</span>");
     expect(html).not.toContain("30 minutes");
     expect(html).not.toContain("Can’t find a time");
-    expect(html).toContain("A$297 a month, and we do the work");
+    expect(html).toContain("A$397 a month, and we do the work");
     expect(html).not.toContain("—");
     expect(html).not.toMatch(/ – /);
   });
@@ -433,8 +433,8 @@ describe("booking from a niche page", () => {
     expect(html).toContain('<span class="f-l">Your website</span>');
     expect(html).toContain('placeholder="yourbusiness.com.au"');
     // plain "$" like the niche pages (Ross, 17 Nov 2026)
-    expect(html).toContain(">$297 a month, and we do the work</li>");
-    expect(html).not.toContain("A$297");
+    expect(html).toContain(">$397 a month, and we do the work</li>");
+    expect(html).not.toContain("A$397");
     // the page's script skips the questions and sends the slug with the booking
     expect(html).toContain("var niche = document.body.getAttribute('data-for') || '';");
     expect(html).toContain("withAd(niche ? { start: chosen, for: niche }");
@@ -443,7 +443,7 @@ describe("booking from a niche page", () => {
       const normal = await (await page(`https://geo.test/book?for=${slug}`)).text();
       expect(normal).toContain("<body>\n");
       expect(normal).toContain("We’ll chat about your store and see");
-      expect(normal).toContain(">A$297 a month, and we do the work</li>");
+      expect(normal).toContain(">A$397 a month, and we do the work</li>");
     }
   });
 
