@@ -107,6 +107,21 @@ ul,ol{padding:0;list-style:none}
 .f-i:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-ring)}
 .f-i[aria-invalid="true"]{border-color:#dc2626}
 .f-h{display:block;margin-top:6px;font-size:13px;color:var(--soft)}
+/* The business box: the Google profiles that match show under it as they type */
+.ac{position:relative}
+.ac .f-i{padding-right:42px}
+.ac-spin{position:absolute;right:14px;top:16px;width:16px;height:16px;border-radius:50%;border:2px solid #dedee6;border-top-color:var(--accent);animation:spin .7s linear infinite}
+.ac-list{position:absolute;z-index:5;left:0;right:0;top:calc(100% + 6px);padding:6px;border-radius:14px;border:1px solid #e3e3ea;background:#fff;box-shadow:0 18px 40px -16px rgba(24,20,60,.4)}
+.ac-o{padding:9px 10px;border-radius:10px;cursor:pointer}
+.ac-o b{display:block;font-size:15px;line-height:1.3;font-weight:600;color:var(--ink)}
+.ac-o span{display:block;overflow:hidden;font-size:13px;line-height:1.4;white-space:nowrap;text-overflow:ellipsis;color:var(--text)}
+.ac-o span + span{color:var(--soft)}
+.ac.open + .f-h{visibility:hidden}
+.ac-o:hover,.ac-o[aria-selected="true"]{background:var(--accent-50)}
+.ac-none{padding:9px 10px;font-size:14px;line-height:1.45;color:var(--text)}
+.ac-by{padding:6px 10px 2px;font-size:11.5px;text-align:right;color:var(--soft)}
+.chosen{display:flex;gap:8px;align-items:flex-start;margin-top:8px;font-size:13.5px;line-height:1.45;color:var(--head)}
+.chosen svg{flex:none;width:18px;height:18px;margin-top:1px;color:var(--top)}
 .two{display:grid;gap:0 12px}
 @media (min-width:480px){.two{grid-template-columns:1fr 1fr}}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
@@ -233,8 +248,21 @@ ul,ol{padding:0;list-style:none}
             <label class="f"><span class="f-l">First name</span><input class="f-i" name="first" autocomplete="given-name" required maxlength="40"></label>
             <label class="f"><span class="f-l">Mobile number</span><input class="f-i" type="tel" name="phone" autocomplete="tel" inputmode="tel" required maxlength="30" placeholder="0400 123 456"></label>
           </div>
-          <label class="f"><span class="f-l">Business name and suburb</span><input class="f-i" name="business" autocomplete="organization" required maxlength="120" placeholder="Smith Plumbing Joondalup"></label>
-          <label class="f"><span class="f-l">What do customers search for?</span><input class="f-i" name="keyword" autocomplete="off" autocapitalize="none" required maxlength="60" placeholder="emergency plumber"><span class="f-h">Just the job. Leave the suburb out.</span></label>
+          <!-- As they type, the Google profiles that match show under the box. A tap picks the exact one. -->
+          <div class="f">
+            <label class="f-l" for="biz">Your business</label>
+            <div class="ac">
+              <input class="f-i" id="biz" name="business" autocomplete="off" autocapitalize="words" spellcheck="false" required maxlength="120" placeholder="Start typing your business name" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="biz-list" aria-describedby="biz-hint">
+              <span class="ac-spin" data-biz-spin aria-hidden="true" hidden></span>
+              <div class="ac-list" id="biz-list" role="listbox" aria-label="Businesses on Google Maps" hidden></div>
+            </div>
+            <span class="f-h" id="biz-hint" data-biz-hint>Tap your business when it shows up. Can’t see it? Add your suburb.</span>
+            <p class="chosen" data-chosen hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span></span></p>
+            <span class="sr" role="status" data-biz-status></span>
+          </div>
+          <input type="hidden" name="cid"><input type="hidden" name="asked">
+          <!-- We pick the search word for them. This box only shows after "Try another search word". -->
+          <label class="f" data-kw-field hidden><span class="f-l">Search word</span><input class="f-i" name="keyword" autocomplete="off" autocapitalize="none" maxlength="60" placeholder="emergency plumber"><span class="f-h">The job customers search for. Leave the suburb out.</span></label>
           <label class="hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
           <button class="btn btn-pri go" type="submit">Show my map</button>
           <p class="small">Ross will call or text you about your result. By pressing the button you agree to that. <a href="/privacy#maps">Privacy</a></p>
@@ -267,7 +295,7 @@ ul,ol{padding:0;list-style:none}
   <section class="res" data-res hidden>
     <p class="eyebrow">Your Google Maps check</p>
     <h1 class="res-h" data-biz tabindex="-1"></h1>
-    <p class="res-sub"><span data-biz-sub></span> Search word: <b data-kw></b></p>
+    <p class="res-sub"><span data-biz-sub></span><span data-kw-line hidden> Search word: <b data-kw></b></span></p>
 
     <div class="res-grid">
       <div>
@@ -312,7 +340,7 @@ ul,ol{padding:0;list-style:none}
             <ol class="rivals"></ol>
           </div>
           <p class="when" data-when></p>
-          <button class="btn btn-sec btn-sm again" type="button" data-again>Try another search word</button>
+          <button class="btn btn-sec btn-sm again" type="button" data-again="word">Try another search word</button>
         </div>
 
         <!-- Something stopped the map -->
@@ -374,8 +402,10 @@ ul,ol{padding:0;list-style:none}
 })();
 </script>
 <script>
-// The check itself. The form posts to /visibility: the answer is "running" (the 49 searches have started), "pick"
-// (Google Maps has a few businesses like that: tap yours), "capped" (today's limit: Ross sends the map) or an error.
+// The check itself. As they type their business, the page asks /visibility (intent=find) for the Google profiles that
+// match and shows them under the box; a tap picks the exact one. The form posts to /visibility: the answer is
+// "running" (the 49 searches have started), "pick" (they didn't tap one and Google Maps has a few like that: tap
+// yours), "capped" (today's limit: Ross sends the map) or an error. We pick the search word ourselves.
 // While a map runs the page asks /visibility?poll=<id> for the ranks so far and fills the dots in. A finished map can
 // be opened again from its link (/visibility?r=<id>). Starting a check tells Meta "Lead" (no name or phone).
 (function () {
@@ -384,7 +414,7 @@ ul,ol{padding:0;list-style:none}
   var go = form.querySelector('.go'), opts = pick.querySelector('.opts');
   var mapEl = $('[data-map]'), tilesEl = $('[data-tiles]'), pinsEl = $('[data-pins]');
   var run = $('[data-run]'), done = $('[data-done]'), stop = $('[data-stop]'), cta = $('[data-cta]');
-  var busy = false, id = null, fresh = false, toldMeta = false, started = 0, timer = null, drawn = '', pins = [], lastRanks = [];
+  var busy = false, id = null, fresh = false, toldMeta = false, started = 0, timer = null, drawn = '', pins = [], lastRanks = [], last = null;
   var SPOTS = 49, GIVE_UP_MS = 180000;
 
   var saved = null;
@@ -427,12 +457,125 @@ ul,ol{padding:0;list-style:none}
   }
   var GENERIC = 'Something went wrong. Please try again, or text Ross on 0400 369 865.';
 
+  /** "4.8 stars from 37 reviews · Plumber", as far as Google has them. */
+  function about(c) {
+    var bits = [];
+    if (c.rating != null) bits.push(c.rating + ' stars' + (c.reviews != null ? ' from ' + c.reviews + (c.reviews === 1 ? ' review' : ' reviews') : ''));
+    if (c.category) bits.push(c.category);
+    return bits;
+  }
+
+  // ---------- The business box: Google profiles show under it as they type ----------
+
+  var biz = form.elements.business, cidEl = form.elements.cid, askedEl = form.elements.asked;
+  var listEl = $('#biz-list'), spinEl = $('[data-biz-spin]'), hintEl = $('[data-biz-hint]'), chosenEl = $('[data-chosen]'), statusEl = $('[data-biz-status]');
+  var seq = 0, typing = null, found = [], foundFor = '', active = -1;
+
+  function closeList() {
+    listEl.hidden = true;
+    listEl.parentNode.classList.remove('open');
+    active = -1;
+    biz.setAttribute('aria-expanded', 'false');
+    biz.removeAttribute('aria-activedescendant');
+  }
+  function mark(i) {
+    var rows = listEl.querySelectorAll('.ac-o');
+    Array.prototype.forEach.call(rows, function (o, n) { o.setAttribute('aria-selected', n === i ? 'true' : 'false'); });
+    active = i;
+    if (rows[i]) biz.setAttribute('aria-activedescendant', rows[i].id); else biz.removeAttribute('aria-activedescendant');
+  }
+  // On a phone the keyboard covers the bottom half: move the box up so the list can be seen.
+  function reveal() {
+    var vv = window.visualViewport, bottom = vv ? vv.height + vv.offsetTop : window.innerHeight;
+    var over = listEl.getBoundingClientRect().bottom - bottom + 12, room = biz.parentNode.parentNode.getBoundingClientRect().top - 12;
+    if (over > 0 && room > 0) window.scrollBy(0, Math.min(over, room));
+  }
+  function openList(list, typed) {
+    found = list.slice(0, 6);
+    foundFor = typed;
+    listEl.innerHTML = '';
+    found.forEach(function (c, i) {
+      var o = document.createElement('div'), name = document.createElement('b'), where = document.createElement('span'), more = document.createElement('span');
+      o.className = 'ac-o';
+      o.id = 'biz-o' + i;
+      o.setAttribute('role', 'option');
+      o.setAttribute('aria-selected', 'false');
+      name.textContent = c.name;
+      where.textContent = c.address || 'No street address on Google';
+      more.textContent = about(c).join(' · ');
+      o.appendChild(name); o.appendChild(where); if (more.textContent) o.appendChild(more);
+      o.addEventListener('mousedown', function (e) { e.preventDefault(); }); // the box keeps the cursor, so the list stays open for the tap
+      o.addEventListener('click', function () { choose(c); });
+      listEl.appendChild(o);
+    });
+    var foot = document.createElement('p');
+    foot.className = found.length ? 'ac-by' : 'ac-none';
+    foot.textContent = found.length ? 'From Google Maps' : 'No match yet. Keep typing, or add your suburb.';
+    listEl.appendChild(foot);
+    listEl.hidden = false;
+    listEl.parentNode.classList.add('open');
+    active = -1;
+    biz.setAttribute('aria-expanded', 'true');
+    biz.removeAttribute('aria-activedescendant');
+    statusEl.textContent = found.length ? found.length + (found.length === 1 ? ' business' : ' businesses') + ' on Google Maps. Tap yours.' : 'No match yet.';
+    reveal();
+  }
+  function choose(c) {
+    biz.value = c.name;
+    cidEl.value = c.cid;
+    askedEl.value = foundFor;
+    chosenEl.lastChild.textContent = [c.address || 'No street address on Google'].concat(about(c)).join(' · ');
+    chosenEl.hidden = false;
+    hintEl.hidden = true;
+    biz.removeAttribute('aria-invalid');
+    statusEl.textContent = c.name + ' picked.';
+    closeList();
+  }
+  function unchoose() {
+    cidEl.value = '';
+    askedEl.value = '';
+    chosenEl.hidden = true;
+    hintEl.hidden = false;
+  }
+  biz.addEventListener('input', function () {
+    unchoose();
+    clearTimeout(typing);
+    var mine = ++seq, typed = biz.value.trim();
+    if (typed.length < 3) { spinEl.hidden = true; closeList(); return; }
+    typing = setTimeout(function () {
+      spinEl.hidden = false;
+      post(new URLSearchParams({ intent: 'find', q: typed }))
+        .then(function (out) { if (mine === seq && out && out.ok && document.activeElement === biz) openList(out.list || [], typed); })
+        .catch(function () { /* no list: the button still finds them */ })
+        .then(function () { if (mine === seq) spinEl.hidden = true; });
+    }, 300);
+  });
+  biz.addEventListener('keydown', function (e) {
+    if (listEl.hidden || !found.length) return;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      mark((active + (e.key === 'ArrowDown' ? 1 : found.length - (active < 0 ? 0 : 1))) % found.length);
+    } else if (e.key === 'Enter') {
+      e.preventDefault(); // Enter picks the one marked, or the first: they see which before the map starts
+      choose(found[active < 0 ? 0 : active]);
+    } else if (e.key === 'Escape') {
+      closeList();
+    }
+  });
+  biz.addEventListener('blur', function () {
+    seq++;
+    spinEl.hidden = true;
+    clearTimeout(typing);
+    setTimeout(function () { if (document.activeElement !== biz) closeList(); }, 150); // a tap on the list lands first
+  });
+  biz.addEventListener('focus', function () { if (!cidEl.value && foundFor && foundFor === biz.value.trim()) openList(found, foundFor); });
+
   // ---------- The form and "Which one is yours?" ----------
 
   function answer(out) {
     if (!out || !out.ok) {
       Array.prototype.forEach.call(form.querySelectorAll('.f-i'), function (i) { i.removeAttribute('aria-invalid'); });
-      var names = { name: 'first', phone: 'phone', business: 'business', keyword: 'keyword' };
+      var names = { name: 'first', phone: 'phone', business: 'business' };
       showForm();
       if (out && out.field && form.elements[names[out.field]]) { form.elements[names[out.field]].setAttribute('aria-invalid', 'true'); form.elements[names[out.field]].focus(); }
       showErr((out && out.error) || GENERIC);
@@ -457,7 +600,8 @@ ul,ol{padding:0;list-style:none}
     showErr('');
     setBusy(true);
     var body = withAd({});
-    ['first', 'phone', 'business', 'keyword', 'website'].forEach(function (k) { body.set(k, form.elements[k].value); });
+    ['first', 'phone', 'business', 'cid', 'asked', 'keyword', 'website'].forEach(function (k) { body.set(k, form.elements[k].value); });
+    closeList();
     post(body).then(answer).catch(function () { showErr(GENERIC); }).then(function () { setBusy(false); });
   });
 
@@ -473,9 +617,7 @@ ul,ol{padding:0;list-style:none}
       b.className = 'opt';
       name.textContent = c.name;
       where.textContent = c.address || 'No street address on Google';
-      var bits = [];
-      if (c.rating != null) bits.push(c.rating + ' stars' + (c.reviews != null ? ' from ' + c.reviews + (c.reviews === 1 ? ' review' : ' reviews') : ''));
-      if (c.category) bits.push(c.category);
+      var bits = about(c);
       more.textContent = bits.join(' · ');
       b.appendChild(name); b.appendChild(where); if (bits.length) b.appendChild(more);
       b.addEventListener('click', function () {
@@ -570,7 +712,9 @@ ul,ol{padding:0;list-style:none}
       if (b.rating != null) sub.push(b.rating + ' stars' + (b.reviews != null ? ' from ' + b.reviews + (b.reviews === 1 ? ' review.' : ' reviews.') : '.'));
     }
     $('[data-biz-sub]').textContent = sub.join(' ');
+    last = c;
     $('[data-kw]').textContent = c.keyword || '';
+    $('[data-kw-line]').hidden = !c.keyword;
     $('[data-me]').textContent = b && !b.address ? 'The ringed dot is the middle of your area.' : 'The ringed dot is your business.';
     // No map was made (today's limit, or a link that's gone): the empty grid would only confuse.
     mapEl.parentNode.hidden = c.status === 'capped' || c.status === 'gone';
@@ -674,7 +818,16 @@ ul,ol{padding:0;list-style:none}
       hero.hidden = false;
       showErr('');
       showForm();
-      (form.elements.first.value ? form.elements.keyword : form.elements.first).focus();
+      // The business they checked stays in the box (opened from a link, the box starts empty).
+      if (!biz.value && last && last.business) biz.value = last.business.name;
+      var kw = form.elements.keyword;
+      if (b.getAttribute('data-again') === 'word') {
+        // "Try another search word": the box for it shows, with the word we used in it.
+        kw.parentNode.hidden = false;
+        if (last && last.keyword) kw.value = last.keyword;
+      }
+      (!form.elements.first.value ? form.elements.first : kw.parentNode.hidden ? biz : kw).focus();
+      if (document.activeElement === kw) kw.select();
       window.scrollTo(0, 0);
     });
   });

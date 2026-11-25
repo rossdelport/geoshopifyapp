@@ -1,7 +1,7 @@
 // The free Google Maps check at rankwithross.com.au/visibility (Ross, 25 Nov 2026), server side (app/lib/heatmap.server.ts):
-// saving everyone who uses it, finding their business, "Which one is yours?", the limits, the 49 searches, a business
-// that hides its address, and Ross's email. The database, Treg (Google Maps) and the email sender are stand-ins: no
-// network, no database.
+// the Google profiles that show while they type, saving everyone who uses it, finding their business, "Which one is
+// yours?", the search word we pick for them, the limits, the 49 searches, a business that hides its address, and
+// Ross's email. The database, Treg (Google Maps), Claude and the email sender are stand-ins: no network, no database.
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -21,6 +21,9 @@ const h = vi.hoisted(() => {
     info: null as unknown,
     spot: (_keyword: string, _where: string): unknown => null,
     calls: [] as { endpoint: string; body: unknown }[],
+    // Claude's pick of the search word: null means no AI is set up, an Error means it failed
+    ai: null as unknown,
+    asked: [] as { label: string; system: string; prompt: string; shopId: unknown }[],
   };
 });
 
@@ -102,7 +105,26 @@ vi.mock("../app/lib/treg.server", () => ({
   }),
 }));
 
-import { getPublicCheck, heatmapNoticeEmail, pickBusiness, rerunCheck, runCheck, startCheck, type StartInput } from "../app/lib/heatmap.server";
+vi.mock("../app/lib/ai.server", () => ({
+  aiConfigured: () => h.ai !== null,
+  askJson: vi.fn(async (opts: { label: string; system: string; prompt: string; shopId: unknown }) => {
+    h.asked.push({ label: opts.label, system: opts.system, prompt: opts.prompt, shopId: opts.shopId });
+    if (h.ai instanceof Error) throw h.ai;
+    return h.ai;
+  }),
+}));
+
+import {
+  forgetLookups,
+  getPublicCheck,
+  heatmapNoticeEmail,
+  pickBusiness,
+  rerunCheck,
+  runCheck,
+  startCheck,
+  suggestBusinesses,
+  type StartInput,
+} from "../app/lib/heatmap.server";
 import { HEATMAP_CONSENT, HEATMAP_ERRORS } from "../app/lib/heatmap";
 
 const NO_AD = { utmSource: null, utmMedium: null, utmCampaign: null, utmContent: null, utmTerm: null, fbclid: false, referrer: null };
@@ -135,13 +157,62 @@ beforeEach(() => {
   h.queued.length = 0;
   h.emails.length = 0;
   h.calls.length = 0;
+  h.asked.length = 0;
   h.spend = 0;
   h.emailFails = false;
   h.places = { places: [PSPC, OTHER, HIDDEN] };
   h.info = null;
+  h.ai = null;
   h.spot = () => answer(1);
   delete process.env.GEO_HEATMAPS_PER_DAY;
   delete process.env.GEO_HEATMAP_USD_PER_DAY;
+  delete process.env.GEO_HEATMAP_LOOKUPS_PER_DAY;
+  forgetLookups();
+});
+
+describe("the business box, while they type", () => {
+  it("gives the Google profiles that match, without where they are, and pays once for the same words", async () => {
+    const list = await suggestBusinesses("  perth solar panel clean ", "1.2.3.4");
+    expect(list.map((c) => c.name)).toEqual(["Perth Solar Panel Cleaners", "Perth Solar Panel Cleaning", "A1 Solar Cleaning"]);
+    expect(list[0]).toEqual({ cid: "111", name: "Perth Solar Panel Cleaners", address: "237 Adelaide Terrace, East Perth WA 6000", rating: 5, reviews: 37, category: "House cleaning service" });
+    expect(h.calls).toEqual([{ endpoint: "serper.google.serp.places", body: { q: "perth solar panel clean", gl: "au", hl: "en" } }]);
+    // the same words again (any letter case, any visitor) come from memory
+    expect(await suggestBusinesses("Perth Solar Panel Clean", "5.6.7.8")).toHaveLength(3);
+    expect(h.calls).toHaveLength(1);
+    // ten minutes on, Google is asked again
+    await suggestBusinesses("perth solar panel clean", "1.2.3.4", Date.now() + 11 * 60_000);
+    expect(h.calls).toHaveLength(2);
+  });
+
+  it("waits for 3 letters, and shows nothing when Google doesn't answer", async () => {
+    expect(await suggestBusinesses("pe", "1.2.3.4")).toEqual([]);
+    expect(await suggestBusinesses(null, "1.2.3.4")).toEqual([]);
+    expect(await suggestBusinesses({ evil: 1 }, "1.2.3.4")).toEqual([]);
+    expect(h.calls).toHaveLength(0);
+    h.places = new Error("timeout");
+    expect(await suggestBusinesses("smith plumbing", "1.2.3.4")).toEqual([]);
+    // a failed look-up isn't remembered
+    h.places = { places: [PSPC] };
+    expect(await suggestBusinesses("smith plumbing", "1.2.3.4")).toHaveLength(1);
+  });
+
+  it("stops one visitor after 80 look-ups an hour, and everyone at the day's limit", async () => {
+    for (let i = 0; i < 80; i++) await suggestBusinesses(`plumber ${i}`, "3.3.3.3");
+    expect(h.calls).toHaveLength(80);
+    expect(await suggestBusinesses("plumber 80", "3.3.3.3")).toEqual([]);
+    expect(h.calls).toHaveLength(80);
+    // words already looked up still show, and another visitor carries on
+    expect(await suggestBusinesses("plumber 5", "3.3.3.3")).toHaveLength(3);
+    expect(await suggestBusinesses("plumber 80", "4.4.4.4")).toHaveLength(3);
+    // an hour later the first visitor can look again
+    expect(await suggestBusinesses("plumber 81", "3.3.3.3", Date.now() + 61 * 60_000)).toHaveLength(3);
+
+    forgetLookups();
+    process.env.GEO_HEATMAP_LOOKUPS_PER_DAY = "2";
+    expect(await suggestBusinesses("sparky one", "5.5.5.1")).toHaveLength(3);
+    expect(await suggestBusinesses("sparky two", "5.5.5.2")).toHaveLength(3);
+    expect(await suggestBusinesses("sparky three", "5.5.5.3")).toEqual([]);
+  });
 });
 
 describe("the form", () => {
@@ -186,7 +257,6 @@ describe("the form", () => {
       [{ firstName: " " }, HEATMAP_ERRORS.name, "name"],
       [{ phone: "12" }, HEATMAP_ERRORS.phone, "phone"],
       [{ business: "" }, HEATMAP_ERRORS.business, "business"],
-      [{ keyword: "" }, HEATMAP_ERRORS.keyword, "keyword"],
     ] as const) {
       const out = await startCheck(input(over));
       expect(out.status).toBe(422);
@@ -195,6 +265,37 @@ describe("the form", () => {
     expect((await startCheck(input({ honeypot: "http://spam.example" }))).result.ok).toBe(false);
     expect(h.rows).toHaveLength(0);
     expect(h.calls).toHaveLength(0);
+  });
+
+  it("starts the map for the Google profile they tapped, with one look-up for the typing and the button together", async () => {
+    await suggestBusinesses("solar panel clean", "1.2.3.4");
+    // they tapped the second one in the list; no search word is typed any more
+    const out = await startCheck(input({ business: "Perth Solar Panel Cleaning", cid: "222", asked: "solar panel clean", keyword: "" }));
+    expect(out.result).toMatchObject({ ok: true, state: "running" });
+    const id = (out.result as { id: string }).id;
+    expect(row(id)).toMatchObject({ status: "queued", cid: "222", business: "Perth Solar Panel Cleaning", query: "Perth Solar Panel Cleaning", keyword: "", lat: -31.960388 });
+    expect(h.calls).toHaveLength(1);
+    expect((await getPublicCheck(id))?.keyword).toBe("");
+  });
+
+  it("only trusts its own look-up: a tapped profile that isn't in it is found from the name, or asked about", async () => {
+    // the list they saw is too old to be remembered, and Google's answer for those words has changed
+    h.places = { places: [OTHER] };
+    await suggestBusinesses("old words", "1.2.3.4");
+    h.places = { places: [PSPC, OTHER] };
+    const out = await startCheck(input({ cid: "111", asked: "old words" }));
+    expect(out.result).toMatchObject({ ok: true, state: "running" });
+    expect(row((out.result as { id: string }).id)).toMatchObject({ cid: "111", business: "Perth Solar Panel Cleaners" });
+    expect(h.calls.map((c) => (c.body as { q: string }).q)).toEqual(["old words", "Perth Solar Panel Cleaners"]);
+
+    // a made-up profile never starts a map of its own: the usual question comes back
+    const fake = await startCheck(input({ phone: "0400 999 888", business: "solar panel cleaning perth", cid: "999", asked: "solar panel cleaning perth" }));
+    expect(fake.result).toMatchObject({ ok: true, state: "pick" });
+    expect(row((fake.result as { id: string }).id)).toMatchObject({ status: "pick", cid: null });
+    for (const cid of [{ evil: 1 }, "1 or 1=1", "x".repeat(60)]) {
+      forgetLookups();
+      expect((await startCheck(input({ phone: "0400 999 777", business: "solar panel cleaning perth", cid }))).result).toMatchObject({ state: "pick" });
+    }
   });
 
   it("asks which business is theirs when Google has a few, without giving away where they are", async () => {
@@ -333,6 +434,49 @@ describe("the 49 searches", () => {
     expect(h.calls).toHaveLength(0);
   });
 
+  it("picks the search word for them from the business name and Google's category, and tells the page", async () => {
+    h.ai = { search: " Solar Panel Cleaning " };
+    const id = await start({ keyword: "", cid: "111", asked: "Perth Solar Panel Cleaners" });
+    expect(row(id).keyword).toBe("");
+    h.calls.length = 0;
+    await runCheck(id);
+    expect(h.asked).toHaveLength(1);
+    expect(h.asked[0]).toMatchObject({ label: "heatmap.keyword", shopId: null });
+    expect(h.asked[0].prompt).toContain("Business name: Perth Solar Panel Cleaners");
+    expect(h.asked[0].prompt).toContain("Google's category for it: House cleaning service");
+    // nothing about the person goes to the AI
+    expect(JSON.stringify(h.asked[0])).not.toMatch(/Sam|0400/);
+    expect(row(id)).toMatchObject({ status: "done", keyword: "solar panel cleaning" });
+    expect(h.calls).toHaveLength(49);
+    expect(h.calls.every((c) => (c.body as { keyword: string }[])[0].keyword === "solar panel cleaning")).toBe(true);
+    expect((await getPublicCheck(id))?.keyword).toBe("solar panel cleaning");
+    expect(h.emails[0].html).toContain("<p><b>Search word:</b> solar panel cleaning</p>");
+  });
+
+  it("falls back to Google's category when the AI is off, fails, or answers with the business's own name", async () => {
+    for (const [n, ai] of [null, new Error("credit balance is too low"), { search: "Perth Solar Panel Cleaners" }, { search: "" }, { nope: 1 }].entries()) {
+      h.ai = ai;
+      const id = await start({ keyword: "", phone: `0400 555 00${n}`, ip: `6.6.6.${n}` });
+      await runCheck(id);
+      expect(row(id)).toMatchObject({ status: "done", keyword: "house cleaning" });
+    }
+    // no category on Google either: the trade words of the name
+    h.ai = null;
+    h.places = { places: [{ title: "Joondalup Mobile Mechanics", address: "1 Grand Blvd, Joondalup WA 6027", latitude: -31.74, longitude: 115.77, cid: "444" }] };
+    const bare = await start({ keyword: "", business: "Joondalup Mobile Mechanics", phone: "0400 555 100", ip: "6.6.7.1" });
+    h.spot = () => answer(1, "444");
+    await runCheck(bare);
+    expect(row(bare)).toMatchObject({ status: "done", keyword: "mobile mechanics" });
+  });
+
+  it("keeps the search word they typed themselves (Try another search word), without asking the AI", async () => {
+    h.ai = { search: "house cleaning" };
+    const id = await start({ keyword: "Solar Panel Cleaning" });
+    await runCheck(id);
+    expect(h.asked).toHaveLength(0);
+    expect(row(id).keyword).toBe("solar panel cleaning");
+  });
+
   it("centres a business that hides its address on a spot rounded to about 1 km", async () => {
     const id = await start({ business: "A1 Solar Cleaning Perth" });
     expect(row(id)).toMatchObject({ cid: "333", address: null, lat: null, lng: null });
@@ -419,5 +563,7 @@ describe("Ross's email", () => {
     expect(html).toContain("&lt;img&gt; (1 spot)");
     expect(html).toContain("Wed, 25 Nov, 1:00 pm, Perth time");
     expect(html).toContain("<b>Came from:</b> Not from an ad");
+    // before a search word is picked, the email has no empty line for it
+    expect(heatmapNoticeEmail({ ...base, keyword: "", status: "pick" } as never).html).not.toContain("Search word");
   });
 });
