@@ -394,6 +394,11 @@ describe("rankwithross.com.au/visibility, the page", () => {
     expect(html).not.toContain("ck-ok");
     expect(html).toContain("window.GEO_ASK_FIRST");
     expect(html).toContain("window.fbq('track', 'Lead', { content_name: 'maps check' });");
+    // Ross, 25 Nov 2026: every press of the button is a lead, so Meta is told on the press, before the server answers
+    const submit = html.slice(html.indexOf("form.addEventListener('submit'"));
+    expect(submit.indexOf("lead();")).toBeGreaterThan(-1);
+    expect(submit.indexOf("lead();")).toBeLessThan(submit.indexOf("post(body)"));
+    expect(html.match(/\blead\(\);/g)).toHaveLength(1);
   });
 
   it("opens a map again from its link, never cached or listed, and safe to put in the page", async () => {
