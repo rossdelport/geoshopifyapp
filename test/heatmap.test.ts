@@ -384,13 +384,15 @@ describe("rankwithross.com.au/visibility, the page", () => {
     expect(html).toContain(`The dots are ${GRID.stepKm} km apart.`);
   });
 
-  it("loads Rank with Ross's Meta pixel and cookie notice like the home page, and tells Meta about a check without any details", async () => {
+  it("loads Rank with Ross's Meta pixel with no cookie pop-up, and tells Meta about a check without any details", async () => {
     const { text: html } = await get();
     const head = html.slice(0, html.indexOf("</head>"));
     expect(head).toContain(readFileSync(join(ROOT, "design", "overview", "pixel-head.js"), "utf8").trim());
     expect(html.match(/28710910728563304/g)).toHaveLength(1);
-    expect(html).toContain('<div class="ck" id="ck" role="region" aria-label="Cookies" hidden>');
-    expect(html).toContain(readFileSync(join(ROOT, "design", "overview", "parts", "47-cookies.js"), "utf8").trim());
+    // Ross, 25 Nov 2026: no cookie pop-up on this page (Europe and the UK never get the pixel here, as nobody asks them)
+    expect(html).not.toContain('id="ck"');
+    expect(html).not.toContain("ck-ok");
+    expect(html).toContain("window.GEO_ASK_FIRST");
     expect(html).toContain("window.fbq('track', 'Lead', { content_name: 'maps check' });");
   });
 
