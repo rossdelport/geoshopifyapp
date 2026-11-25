@@ -14,6 +14,7 @@ vi.mock("../app/lib/heatmap.server", () => ({
   getPublicCheck: vi.fn(async (id: string | null) => (id === "abc12345" ? { id, status: "done", keyword: "plumber </script>" } : null)),
   startCheck: vi.fn(async () => ({ status: 200, result: { ok: true, state: "running", id: "abc12345" } })),
   pickBusiness: vi.fn(async () => ({ status: 200, result: { ok: true, state: "running", id: "abc12345" } })),
+  suggestBusinesses: vi.fn(async () => [{ cid: "99", name: "Smith Plumbing", address: "1 High St, Joondalup WA 6027", rating: 4.8, reviews: 12, category: "Plumber" }]),
 }));
 
 import {
@@ -23,7 +24,9 @@ import {
   cleanBusiness,
   cleanFirstName,
   cleanKeyword,
+  cleanPickedKeyword,
   coordinate,
+  fallbackKeyword,
   gridPoints,
   headline,
   mapView,
@@ -40,7 +43,7 @@ import {
   type MapItem,
   type Rank,
 } from "../app/lib/heatmap";
-import { pickBusiness, startCheck } from "../app/lib/heatmap.server";
+import { pickBusiness, startCheck, suggestBusinesses } from "../app/lib/heatmap.server";
 import { action, loader } from "../app/routes/visibility";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
@@ -88,6 +91,24 @@ describe("the form", () => {
     expect(cleanKeyword("a".repeat(100))).toHaveLength(60);
     expect(cleanKeyword("  ")).toBeNull();
     expect(cleanKeyword("24/7")).toBeNull();
+  });
+
+  it("only takes a search word from the AI when it is a few plain words and not the business's own name", () => {
+    expect(cleanPickedKeyword(" Solar Panel Cleaning. ", "Perth Solar Panel Cleaners")).toBe("solar panel cleaning");
+    expect(cleanPickedKeyword("“emergency plumber”", "Smith Plumbing")).toBe("emergency plumber");
+    expect(cleanPickedKeyword("Perth Solar Panel Cleaners", "Perth Solar Panel Cleaners")).toBeNull();
+    expect(cleanPickedKeyword("the best and cheapest plumber near me today", "Smith Plumbing")).toBeNull();
+    expect(cleanPickedKeyword("x", "Smith Plumbing")).toBeNull();
+    expect(cleanPickedKeyword("<script>alert(1)</script> plumber", "Smith Plumbing")).toBe("script alert 1 script plumber");
+    for (const bad of ["", "   ", null, undefined, 42, { search: "plumber" }]) expect(cleanPickedKeyword(bad, "Smith Plumbing")).toBeNull();
+  });
+
+  it("without the AI, uses Google's category, or else the trade words in the name", () => {
+    expect(fallbackKeyword("Smith & Sons", "Plumber", "1 High St, Joondalup WA 6027")).toBe("plumber");
+    expect(fallbackKeyword("Perth Solar Panel Cleaners", "House cleaning service", null)).toBe("house cleaning");
+    expect(fallbackKeyword("Sunny Co", "Solar energy company", null)).toBe("solar energy");
+    expect(fallbackKeyword("Joondalup Mobile Mechanics Pty Ltd", null, "1 Grand Blvd, Joondalup WA 6027")).toBe("mobile mechanics");
+    expect(fallbackKeyword("Joondalup", null, "1 Grand Blvd, Joondalup WA 6027")).toBe("joondalup");
   });
 });
 
@@ -324,7 +345,7 @@ describe("rankwithross.com.au/visibility, the page", () => {
       context: {},
     } as unknown as ActionFunctionArgs) as Promise<Response>;
 
-  it("is one HTML page with the four boxes, kept out of search, in the site's own words", async () => {
+  it("is one HTML page with three boxes (name, mobile, business), kept out of search, in the site's own words", async () => {
     const { res, text: html } = await get();
     expect(res.status).toBe(200);
     expect(res.headers.get("content-type")).toContain("text/html");
@@ -336,7 +357,17 @@ describe("rankwithross.com.au/visibility, the page", () => {
     // the route filled in the font, Ross's photo and the check (none on a plain visit)
     expect(html).not.toMatch(/__[A-Z_]+__/);
     expect(html).toContain('<script type="application/json" id="check">null</script>');
-    for (const name of ["first", "phone", "business", "keyword", "website"]) expect(html).toContain(`name="${name}"`);
+    for (const name of ["first", "phone", "business", "cid", "asked", "keyword", "website"]) expect(html).toContain(`name="${name}"`);
+    // the business box shows Google's matches under it as they type; the search word box is tucked away
+    expect(html).toContain('name="business" autocomplete="off"');
+    expect(html).toContain('role="combobox"');
+    expect(html).toContain('<div class="ac-list" id="biz-list" role="listbox" aria-label="Businesses on Google Maps" hidden></div>');
+    expect(html).toContain("intent: 'find'");
+    expect(html).toContain("From Google Maps");
+    expect(html).toContain('<label class="f" data-kw-field hidden>');
+    expect(html).not.toMatch(/name="keyword"[^>]*required/);
+    expect(html).not.toContain("What do customers search for?");
+    expect(html).toContain('data-again="word">Try another search word</button>');
     // the words saved with every check are the words under the button
     expect(html).toContain(HEATMAP_CONSENT);
     expect(html).toContain('<a href="/privacy#maps">Privacy</a>');
@@ -395,6 +426,17 @@ describe("rankwithross.com.au/visibility, the page", () => {
     });
     await send({ intent: "pick", id: "abc12345", cid: "99" });
     expect(vi.mocked(pickBusiness).mock.calls.at(-1)).toEqual(["abc12345", "99"]);
+    // the profile they tapped in the list, and the words that brought it up, go along
+    await send({ first: "Sam", phone: "0400 123 456", business: "Smith Plumbing", cid: "99", asked: "smith plumb" });
+    expect(vi.mocked(startCheck).mock.calls.at(-1)![0]).toMatchObject({ business: "Smith Plumbing", cid: "99", asked: "smith plumb", keyword: null });
+
+    // while they type: the matching Google profiles, to our own page only
+    const typing = await send({ intent: "find", q: "smith plumb" }, { "x-real-ip": "1.2.3.4" });
+    expect(await typing.json()).toEqual({ ok: true, list: [{ cid: "99", name: "Smith Plumbing", address: "1 High St, Joondalup WA 6027", rating: 4.8, reviews: 12, category: "Plumber" }] });
+    expect(typing.headers.get("cache-control")).toBe("no-store");
+    expect(vi.mocked(suggestBusinesses).mock.calls.at(-1)).toEqual(["smith plumb", "1.2.3.4"]);
+    expect((await send({ intent: "find", q: "smith plumb" }, { origin: "https://evil.example" })).status).toBe(403);
+    expect(vi.mocked(suggestBusinesses)).toHaveBeenCalledTimes(1);
 
     const other = await send({ first: "Sam" }, { origin: "https://evil.example" });
     expect(other.status).toBe(403);
@@ -412,6 +454,9 @@ describe("the privacy page and the admin menu know about it", () => {
     expect(privacy).toContain("Free Google Maps check");
     expect(privacy).toContain("{heatmapMonths} months");
     expect(privacy).toContain("OpenStreetMap");
+    // it says what happens while they type, and how the search words are picked
+    expect(privacy).toContain("As you type in the business box");
+    expect(privacy).toContain("with help from an AI service (Anthropic)");
   });
   it("is a tab in Admin", () => {
     expect(readFileSync(join(ROOT, "app", "routes", "dash.admin.tsx"), "utf8")).toContain('{ to: "/dash/admin/maps", label: "Map checks" }');

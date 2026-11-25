@@ -1,14 +1,19 @@
-// The free Google Maps check at rankwithross.com.au/visibility (Ross, 25 Nov 2026). Someone types their first name, phone,
-// business and what customers search for. We save them (Ross calls everyone who uses it), find the business on
-// Google Maps, search Google Maps from 49 spots around it (the `heatmap.run` job, about 20 seconds and US$0.10), show
-// the map on the page, and email Ross. The rules with no database in them are in lib/heatmap.ts.
+// The free Google Maps check at rankwithross.com.au/visibility (Ross, 25 Nov 2026). Someone types their first name, phone
+// and business. As they type the business, the matching Google profiles show under the box and they tap theirs
+// (`suggestBusinesses`). We save them (Ross calls everyone who uses it), pick the search word a customer would use
+// (`pickKeyword`; they can type their own with "Try another search word"), search Google Maps from 49 spots around the
+// business (the `heatmap.run` job, about 30 seconds and US$0.10), show the map on the page, and email Ross. The rules
+// with no database in them are in lib/heatmap.ts.
 //
-// Limits, so it can't be abused or run up a bill: 8 tries a day per visitor, 4 maps a day per phone number, and for
+// Limits, so it can't be abused or run up a bill: 8 tries a day per visitor, 80 look-ups an hour per visitor while
+// typing (GEO_HEATMAP_LOOKUPS_PER_DAY for everyone, default 5,000, about US$5), 4 maps a day per phone number, and for
 // everyone together GEO_HEATMAPS_PER_DAY maps (default 200) and GEO_HEATMAP_USD_PER_DAY dollars (default US$20) in
 // 24 hours. Past those the person is still saved and Ross is told, so he can run their map himself (Admin > Map checks).
 
 import { Prisma, type HeatmapCheck } from "@prisma/client";
+import { z } from "zod";
 import db from "../db.server";
+import { aiConfigured, askJson } from "./ai.server";
 import { env } from "./env.server";
 import { MAX_ATTEMPTS, enqueue, registerJob } from "./jobs.server";
 import { emailConfigured, sendEmail } from "./email.server";
@@ -29,7 +34,9 @@ import {
   cleanBusiness,
   cleanFirstName,
   cleanKeyword,
+  cleanPickedKeyword,
   coordinate,
+  fallbackKeyword,
   gridPoints,
   parseInfo,
   parseMapItems,
@@ -50,6 +57,9 @@ import {
 } from "./heatmap";
 
 const DAY = 86_400_000;
+const HOUR = 3_600_000;
+const MAX_SUGGESTS_PER_IP = 80; // look-ups while typing, per visitor per hour (kept in memory)
+const FIND_KEEP_MS = 10 * 60_000; // how long one look-up's answer is reused
 const MAX_PER_IP = 8; // people saved per visitor per 24 h
 const MAX_FINDS_PER_IP = 20; // business lookups per visitor per 24 h (kept in memory)
 const MAX_PER_PHONE = 4; // maps per phone number per 24 h
@@ -65,7 +75,7 @@ function envNumber(name: string, fallback: number): number {
   return Number.isFinite(n) && n >= 0 ? n : fallback;
 }
 
-type Field = "name" | "phone" | "business" | "keyword";
+type Field = "name" | "phone" | "business";
 /** A business to choose from, as the page shows it (no map position). */
 export type PublicCandidate = Pick<Candidate, "cid" | "name" | "address" | "rating" | "reviews" | "category">;
 export type StartResult =
@@ -80,7 +90,11 @@ export interface StartInput {
   firstName: unknown;
   phone: unknown;
   business: unknown;
-  keyword: unknown;
+  /** The search word, only when they chose their own ("Try another search word"). Empty: we pick it. */
+  keyword?: unknown;
+  /** The Google profile they tapped in the list under the box, and the words that brought that list up. */
+  cid?: unknown;
+  asked?: unknown;
   honeypot?: string | null;
   ad: AdTags;
   ip: string | null;
@@ -96,6 +110,61 @@ function tooManyFinds(key: string, now: number): boolean {
   return false;
 }
 
+// ---------- Finding the business on Google Maps ----------
+
+const found = new Map<string, { at: number; list: Candidate[] }>();
+const kept = (typed: string, now: number) => {
+  const hit = found.get(typed.toLowerCase());
+  return hit && now - hit.at < FIND_KEEP_MS ? hit.list : null;
+};
+
+/** Google Maps' businesses for the words typed. An answer is reused for 10 minutes, so typing and then pressing the button pays once. */
+async function findBusinesses(typed: string, now: number): Promise<Candidate[]> {
+  const have = kept(typed, now);
+  if (have) return have;
+  const list = parsePlaces(await tregCall(FIND_ENDPOINT, { body: { q: typed, gl: "au", hl: "en" }, timeoutMs: 15_000, shopId: null }));
+  if (found.size > 2000) found.clear(); // never grows without end
+  found.set(typed.toLowerCase(), { at: now, list });
+  return list;
+}
+
+// Look-ups while typing: per visitor in the last hour, and for everyone in the last day (in memory; a deploy starts again).
+const suggests = new Map<string, number[]>();
+let suggestDay = { start: 0, n: 0 };
+function tooManySuggests(key: string, now: number): boolean {
+  if (now - suggestDay.start > DAY) suggestDay = { start: now, n: 0 };
+  if (suggestDay.n >= envNumber("GEO_HEATMAP_LOOKUPS_PER_DAY", 5000)) return true;
+  const times = (suggests.get(key) ?? []).filter((t) => now - t < HOUR);
+  if (times.length >= MAX_SUGGESTS_PER_IP) return true;
+  suggests.set(key, [...times, now]);
+  if (suggests.size > 5000) suggests.clear();
+  suggestDay.n++;
+  return false;
+}
+
+/** Forget every look-up and count kept in memory (the tests start clean with this). */
+export function forgetLookups() {
+  found.clear();
+  finds.clear();
+  suggests.clear();
+  suggestDay = { start: 0, n: 0 };
+}
+
+const toPublic = ({ cid, name, address, rating, reviews, category }: Candidate): PublicCandidate => ({ cid, name, address, rating, reviews, category });
+
+/** The list under the business box: the Google profiles that match what they have typed so far. Empty when unsure or over a limit. */
+export async function suggestBusinesses(typed: unknown, ip: string | null, now = Date.now()): Promise<PublicCandidate[]> {
+  const q = typeof typed === "string" ? cleanBusiness(typed) : null;
+  if (!q || q.length < 3) return [];
+  if (!kept(q, now) && tooManySuggests(hashIp(ip), now)) return [];
+  try {
+    return (await findBusinesses(q, now)).map(toPublic);
+  } catch (err) {
+    console.warn("[heatmap] a look-up while typing failed:", (err as Error).message);
+    return [];
+  }
+}
+
 /** The form: save the person, find their business on Google Maps, and start the map (or ask which business is theirs). */
 export async function startCheck(input: StartInput, now = new Date()): Promise<Out> {
   if (input.honeypot?.trim()) return bad(HEATMAP_ERRORS.generic);
@@ -105,8 +174,9 @@ export async function startCheck(input: StartInput, now = new Date()): Promise<O
   if (!phone) return bad(HEATMAP_ERRORS.phone, 422, "phone");
   const query = cleanBusiness(input.business);
   if (!query) return bad(HEATMAP_ERRORS.business, 422, "business");
-  const keyword = cleanKeyword(input.keyword);
-  if (!keyword) return bad(HEATMAP_ERRORS.keyword, 422, "keyword");
+  const keyword = cleanKeyword(input.keyword) ?? ""; // empty: picked for them when the map starts
+  const cid = typeof input.cid === "string" && /^[\w-]{1,40}$/.test(input.cid) ? input.cid : null;
+  const asked = cid ? cleanBusiness(input.asked) : null;
 
   const since = new Date(now.getTime() - DAY);
   const ipHash = hashIp(input.ip);
@@ -141,8 +211,15 @@ export async function startCheck(input: StartInput, now = new Date()): Promise<O
   await enqueue("heatmap.notice", { id: row.id }, { runAfter: new Date(now.getTime() + NOTICE_AFTER_MS), dedupeKey: `heatmap-notice:${row.id}` });
 
   let list: Candidate[];
+  let chosen: Candidate | undefined;
   try {
-    list = parsePlaces(await tregCall(FIND_ENDPOINT, { body: { q: query, gl: "au", hl: "en" }, timeoutMs: 15_000, shopId: null }));
+    // The profile they tapped comes from the list their own typing brought up. We only ever trust our own look-up.
+    list = await findBusinesses(asked ?? query, now.getTime());
+    chosen = cid ? list.find((c) => c.cid === cid) : undefined;
+    if (cid && !chosen && asked && asked !== query) {
+      list = await findBusinesses(query, now.getTime());
+      chosen = list.find((c) => c.cid === cid);
+    }
   } catch (err) {
     console.error("[heatmap] could not look up a business:", (err as Error).message);
     await db.heatmapCheck.update({ where: { id: row.id }, data: { status: "nomatch", error: "The Google Maps lookup failed." } });
@@ -152,12 +229,12 @@ export async function startCheck(input: StartInput, now = new Date()): Promise<O
     await db.heatmapCheck.update({ where: { id: row.id }, data: { status: "nomatch", error: "Google Maps found no business for what they typed." } });
     return bad(HEATMAP_ERRORS.notFound, 422, "business");
   }
-  const sure = sureMatch(query, list);
+  const sure = chosen ?? sureMatch(query, list);
   if (sure) return launch(row.id, sure, phone, now);
   await db.heatmapCheck.update({ where: { id: row.id }, data: { status: "pick", candidates: list as unknown as Prisma.InputJsonValue } });
   return {
     status: 200,
-    result: { ok: true, state: "pick", id: row.id, candidates: list.map(({ cid, name, address, rating, reviews, category }) => ({ cid, name, address, rating, reviews, category })) },
+    result: { ok: true, state: "pick", id: row.id, candidates: list.map(toPublic) },
   };
 }
 
@@ -249,18 +326,66 @@ async function fail(id: string, why: string) {
   await sendNotice(id).catch((err) => console.error("[heatmap] could not email Ross:", (err as Error).message));
 }
 
+/**
+ * The Google Maps search a customer would type to find this business, for when the person didn't type one. Claude
+ * reads the business name and Google's category (the name often says the trade better: Perth Solar Panel Cleaners is
+ * filed under "House cleaning service"). With no AI, or an answer that won't do: the category, else the name.
+ */
+async function pickKeyword(row: Pick<HeatmapCheck, "business" | "query" | "category" | "address">): Promise<string> {
+  const name = row.business ?? row.query;
+  if (aiConfigured()) {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const out = await Promise.race([
+        askJson({
+          tier: "fast",
+          label: "heatmap.keyword",
+          shopId: null,
+          maxTokens: 1000,
+          style: false,
+          system:
+            "You pick the words a customer types into Google Maps to find a business like this one. Give the service or trade only: 1 to 4 everyday words, lower case, Australian spelling. Never a business name, a place name, \"near me\" or \"best\". " +
+            "Examples: Perth Solar Panel Cleaners (House cleaning service): solar panel cleaning. Smith & Sons (Plumber): plumber. Bright Smiles Joondalup (Dental clinic): dentist. Loan Market Subiaco (Mortgage broker): mortgage broker.",
+          prompt: `Business name: ${name}\nGoogle's category for it: ${row.category ?? "none"}\n\nThe name often says the real trade better than Google's category does.`,
+          schema: z.object({ search: z.string() }),
+        }),
+        // The person is watching the page: past 20 seconds the map starts with Google's category instead.
+        new Promise<never>((_, no) => {
+          timer = setTimeout(() => no(new Error("took too long")), 20_000);
+        }),
+      ]);
+      const picked = cleanPickedKeyword(out.search, name);
+      if (picked) return picked;
+    } catch (err) {
+      console.warn("[heatmap] the AI could not pick a search word:", (err as Error).message);
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+  return fallbackKeyword(name, row.category, row.address);
+}
+
 export async function runCheck(id: string): Promise<void> {
   const row = await db.heatmapCheck.findUnique({ where: { id } });
   if (!row?.cid || (row.status !== "queued" && row.status !== "running")) return;
   let { lat, lng, placeId } = row;
-  if (lat === null || lng === null) {
+  const hidden = lat === null || lng === null;
+  const [keyword, info] = await Promise.all([
+    row.keyword || pickKeyword(row),
     // A business that hides its address: Google's profile still says roughly where it is.
-    const raw = await tregCall(INFO_ENDPOINT, { body: [{ keyword: `cid:${row.cid}`, location_code: AUSTRALIA, language_code: "en" }], timeoutMs: 60_000, shopId: null }).catch(() => null);
-    const info = parseInfo(raw);
+    hidden
+      ? tregCall(INFO_ENDPOINT, { body: [{ keyword: `cid:${row.cid}`, location_code: AUSTRALIA, language_code: "en" }], timeoutMs: 60_000, shopId: null })
+          .then(parseInfo)
+          .catch(() => null)
+      : null,
+  ]);
+  if (keyword !== row.keyword) await db.heatmapCheck.update({ where: { id }, data: { keyword } });
+  if (hidden) {
     if (!info) return fail(id, "Google didn't say where this business is (it hides its address).");
     ({ lat, lng } = roundCentre(info.lat, info.lng));
     placeId = info.placeId;
   }
+  if (lat === null || lng === null) return;
   await db.heatmapCheck.update({ where: { id }, data: { status: "running", lat, lng, placeId, done: 0, points: Prisma.DbNull } });
 
   const spots = gridPoints(lat, lng);
@@ -274,7 +399,7 @@ export async function runCheck(id: string): Promise<void> {
   const worker = async () => {
     while (next < spots.length) {
       const i = next++;
-      const items = await searchSpot(row.keyword, spots[i]);
+      const items = await searchSpot(keyword, spots[i]);
       lists[i] = items;
       ranks[i] = items ? rankOf(items, row.cid, placeId) : -1;
       done++;
@@ -363,7 +488,7 @@ export function heatmapNoticeEmail(row: HeatmapCheck): { subject: string; html: 
     `<p><b>Call:</b> ${esc(row.firstName)}, <a href="tel:${esc(row.phone.replace(/[^\d+]/g, ""))}">${esc(row.phone)}</a></p>`,
     row.business ? `<p><b>Business:</b> ${esc(row.business)}${row.address ? `, ${esc(row.address)}` : " (no street address on Google)"}${esc(stars)}${row.category ? `, ${esc(row.category)}` : ""}</p>` : "",
     `<p><b>They typed:</b> ${esc(row.query)}</p>`,
-    `<p><b>Search word:</b> ${esc(row.keyword)}</p>`,
+    row.keyword ? `<p><b>Search word:</b> ${esc(row.keyword)}</p>` : "",
     `<p><b>Result:</b> ${esc(note)}</p>`,
     rivals.length ? `<p><b>In the top 3 most:</b> ${rivals.map((r) => `${esc(r.name)} (${r.spots} ${r.spots === 1 ? "spot" : "spots"})`).join(", ")}</p>` : "",
     row.business && row.status !== "capped" ? `<p><a href="${SITE}/visibility?r=${row.id}">Open their map</a></p>` : "",

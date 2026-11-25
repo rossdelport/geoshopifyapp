@@ -202,15 +202,18 @@ function PrivacyText() {
       </h2>
       <p>
         If you run our free Google Maps check (rankwithross.com.au/visibility), we keep your first name, your phone number,
-        the business name and the search words you typed, the business Google Maps found, where it came up in each
-        spot, the words shown under the form and when you ran it. If you came from an ad or another website, we keep
+        the business name you typed, the business you picked on Google Maps, the search words used for your map, where
+        the business came up in each spot, the words shown under the form and when you ran it. If you came from an ad or another website, we keep
         the ad&apos;s tracking tags in the page address and the name of that website. To stop abuse, we keep a scrambled
         (hashed) copy of your IP address for a day.
       </p>
       <p>
         We email these details to Ross, so he can call or text you about your result. That is what you agree to when
-        you press the button. To make your map we send the business name and the search words to our data suppliers,
-        who search Google Maps for us. We never send them your name or phone number. The map picture comes from
+        you press the button. As you type in the business box, we send what you have typed so far to our data supplier,
+        who looks it up on Google Maps so we can show you the matching businesses. We pick the search words for your map
+        from the business&apos;s public Google details, with help from an AI service (Anthropic), unless you type your own.
+        To make your map we send the business and the search words to our data suppliers, who search Google Maps for
+        us. We never send any of them your name or phone number. The map picture comes from
         OpenStreetMap, so its servers see your IP address when the picture loads, like any website you visit.
       </p>
       <p>

@@ -1,7 +1,7 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { serveHome } from "../lib/home-page.server";
 import { HEATMAP_ERRORS } from "../lib/heatmap";
-import { getPublicCheck, pickBusiness, startCheck, type StartResult } from "../lib/heatmap.server";
+import { getPublicCheck, pickBusiness, startCheck, suggestBusinesses, type StartResult } from "../lib/heatmap.server";
 import { readAdTags } from "../lib/book-stats";
 import { clientIp, fromAnotherSite, readSmallForm } from "../lib/public-form.server";
 import font from "../fonts/inter-geo.woff2?url";
@@ -17,9 +17,12 @@ import raw from "../home/visibility.html?raw";
 // GET: the page (app/home/visibility.html). GET ?r=<id>: the page with that check on it (a finished map can be opened
 // again by its link; it shows the business's public Google details and ranks, never the name or phone typed).
 // GET ?poll=<id>: that check as JSON, asked every second or two while the 49 searches run.
-// POST: urlencoded `first`, `phone`, `business`, `keyword`, `website` (honeypot) and the ad's tags; JSON reply
-// StartResult ("running", "pick" with the businesses to choose from, "capped", or an error). POST `intent=pick` with
-// `id` and `cid`: the business they tapped. All the work is in app/lib/heatmap.server.ts.
+// POST `intent=find` with `q`: the Google profiles that match what they have typed in the business box so far
+// ({ ok, list }), shown under the box to tap. POST: urlencoded `first`, `phone`, `business`, `cid` and `asked` (the
+// profile they tapped and the words that brought it up), `keyword` (only when they chose their own search word),
+// `website` (honeypot) and the ad's tags; JSON reply StartResult ("running", "pick" with the businesses to choose
+// from, "capped", or an error). POST `intent=pick` with `id` and `cid`: the business they tapped on "Which one is
+// yours?". All the work is in app/lib/heatmap.server.ts.
 
 const page = raw
   .replaceAll("__FONT_URL__", () => font)
@@ -47,6 +50,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (fromAnotherSite(request)) return reply({ ok: false, error: HEATMAP_ERRORS.crossSite }, 403);
   const form = await readSmallForm(request);
   if (!form) return reply({ ok: false, error: HEATMAP_ERRORS.generic }, 413);
+  if (form.get("intent") === "find") {
+    const list = await suggestBusinesses(form.get("q"), clientIp(request));
+    return Response.json({ ok: true, list }, { headers: { "Cache-Control": "no-store" } });
+  }
   try {
     const out =
       form.get("intent") === "pick"
@@ -56,6 +63,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             phone: form.get("phone"),
             business: form.get("business"),
             keyword: form.get("keyword"),
+            cid: form.get("cid"),
+            asked: form.get("asked"),
             honeypot: form.get("website"),
             ad: readAdTags(form),
             ip: clientIp(request),

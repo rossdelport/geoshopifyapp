@@ -96,7 +96,7 @@ export default function AdminMaps() {
                   {r.business}
                   <div style={{ color: "var(--muted, #6b6f76)", fontSize: 13 }}>{r.address}</div>
                 </td>
-                <td>{r.keyword}</td>
+                <td>{r.keyword || "Picked when the map runs"}</td>
                 <td>
                   {r.result}
                   {r.hasMap ? (

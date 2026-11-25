@@ -32,8 +32,7 @@ export const HEATMAP_ERRORS = {
   crossSite: "Please run the check from rankwithross.com.au/visibility.",
   name: "Please type your first name.",
   phone: "Please type a phone number we can call, like 0400 123 456.",
-  business: "Please type your business name and suburb.",
-  keyword: "Please type what customers search for, like emergency plumber.",
+  business: "Please type your business name and pick it from the list.",
   notFound: "We couldn’t find that business on Google Maps. Check the spelling and add your suburb. Not on Google Maps yet? Text Ross on 0400 369 865.",
   google: "Google Maps didn’t answer. Please try again in a minute.",
   tooMany: "That’s a lot of checks for one day. Please come back tomorrow, or text Ross on 0400 369 865.",
@@ -136,6 +135,33 @@ export function sureMatch(typed: string, list: Candidate[]): Candidate | null {
     return w.length > 0 && have.includes(` ${w.join(" ")} `);
   });
   return hits.length === 1 ? hits[0] : null;
+}
+
+// ---------- The search word, when they didn't type one ----------
+
+/** The search word the AI picked, tidied: 1 to 5 plain words, never the business's own name. Null when it won't do. */
+export function cleanPickedKeyword(raw: unknown, businessName: string): string | null {
+  const k = cleanKeyword(typeof raw === "string" ? raw.replace(/[^\p{L}\p{N}&' -]/gu, " ") : "");
+  if (!k || k.length > 40) return null;
+  const w = words(k);
+  if (w.length < 1 || w.length > 5 || w.join(" ") === words(businessName).join(" ")) return null;
+  return k;
+}
+
+const NOT_A_TRADE = new Set(["pty", "ltd", "the", "and", "co", "company", "group", "wa", "nsw", "vic", "qld", "sa", "tas", "nt", "act", "australia"]);
+
+/**
+ * The search word with no AI to ask: Google's own category for the business ("House cleaning service" gives
+ * "house cleaning"), else the business name without its place words ("Perth Solar Panel Cleaners" in East Perth
+ * gives "solar panel cleaners").
+ */
+export function fallbackKeyword(name: string, category: string | null, address: string | null): string {
+  const fromCategory = cleanKeyword((category ?? "").replace(/\s+(services?|company|contractor)$/i, ""));
+  if (fromCategory) return fromCategory;
+  const place = new Set(words(address ?? ""));
+  const all = words(name);
+  const kept = all.filter((w) => !place.has(w) && !NOT_A_TRADE.has(w) && !/^\d+$/.test(w));
+  return (kept.length ? kept : all).join(" ").slice(0, 60) || name.toLowerCase().slice(0, 60);
 }
 
 /** The business's own spot from Google's profile answer (DataForSEO), for a business that hides its address. */
