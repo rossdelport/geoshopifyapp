@@ -882,3 +882,52 @@ model SiteLink {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
+
+// The free Google Maps check at rankwithross.com.au/visibility (Ross, 25 Nov 2026: "people type in their first name, phone
+// number and business ... runs a heat map and gives it to them there on the screen. i will then call anyone that uses
+// it, so please save to a database"). One row per person and business checked: who to call, the business Google found,
+// and where it ranked in each of the 49 spots. lib/heatmap.ts (rules), lib/heatmap.server.ts. Deleted after 24 months.
+model HeatmapCheck {
+  id          String    @id @default(cuid())
+  firstName   String
+  phone       String // as typed, tidied
+  query       String // the business name and suburb they typed
+  keyword     String // what customers search for, e.g. "emergency plumber"
+  status      String    @default("finding") // finding | nomatch | pick | queued | running | done | failed | capped
+  candidates  Json? // the businesses Google found for the name, while they pick theirs (Candidate[] in lib/heatmap.ts)
+  cid         String? // Google's id for the business
+  placeId     String?
+  business    String? // its name on Google
+  address     String? // null when the business hides its address
+  category    String?
+  rating      Float?
+  reviews     Int?
+  lat         Float? // the middle of the map (rounded to about 1 km for a business that hides its address)
+  lng         Float?
+  points      Json? // 49 ranks: 1 to 20, 0 = not in the first 20, -1 = couldn't check, null = not checked yet
+  done        Int       @default(0) // spots checked so far
+  top3        Int? // spots in the top 3, once finished
+  found       Int? // spots in the first 20
+  avgRank     Float?
+  rivals      Json? // who Google had in the top 3 most (Rival[] in lib/heatmap.ts)
+  error       String? // plain English, for Ross
+  consentText String // the exact words shown under the form
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmContent  String?
+  utmTerm     String?
+  fbclid      Boolean   @default(false) // the link had Facebook's click id
+  referrer    String? // the site that sent them, host only
+  ipHash      String? // scrambled, cleared after a day
+  emailedAt   DateTime? // when Ross was emailed about it
+  startedAt   DateTime? // when the 49 searches were queued
+  finishedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([createdAt])
+  @@index([phone, createdAt])
+  @@index([ipHash, createdAt])
+  @@index([startedAt])
+}

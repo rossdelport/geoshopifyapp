@@ -26,6 +26,8 @@ export const RETENTION = {
   bookVisitorDays: 2,
   /** Calls booked on the booking page (name, email, store, answers, where they came from): deleted this long after booking. */
   callMonths: 24,
+  /** Free Google Maps checks (first name, phone, business, the result, where they came from): deleted this long after the check. */
+  heatmapMonths: 24,
 };
 
 /**
@@ -105,6 +107,14 @@ export async function purgeOldData(now = new Date()) {
   const calls = await db.callBooking.deleteMany({
     where: { createdAt: { lt: new Date(now.getTime() - RETENTION.callMonths * 30.44 * DAY) } },
   });
+  // Free Google Maps checks: the hashed IP after a day, the check 24 months after it was made.
+  await db.heatmapCheck.updateMany({
+    where: { ipHash: { not: null }, createdAt: { lt: new Date(now.getTime() - RETENTION.checkIpHours * 3_600_000) } },
+    data: { ipHash: null },
+  });
+  const heatmaps = await db.heatmapCheck.deleteMany({
+    where: { createdAt: { lt: new Date(now.getTime() - RETENTION.heatmapMonths * 30.44 * DAY) } },
+  });
   if (visits.count || shops.count || checks.count || reportEmails.count || subscribers.count) {
     console.log(
       `[retention] cleared ${visits.count} old visit ids, deleted ${shops.count} uninstalled shops, ${checks.count} free checks, ${reportEmails.count} report emails and ${subscribers.count} unsubscribed or inactive addresses`,
@@ -121,5 +131,6 @@ export async function purgeOldData(now = new Date()) {
     waitlist: waitlist.count,
     giveaway: giveaway.count,
     calls: calls.count,
+    heatmaps: heatmaps.count,
   };
 }

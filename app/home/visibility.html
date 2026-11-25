@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Free Google Maps check | Rank with Ross</title>
+<meta name="description" content="Type your business. We search Google Maps from 49 spots around you and show where you come up in each one. Free, and it takes about a minute.">
+<!-- rankwithross.com.au/visibility (served by app/routes/visibility.tsx): the free Google Maps check (Ross, 25 Nov 2026: "people
+     type in their first name, phone number and business, google grabs their business profile, runs a heat map and gives
+     it to them there on the screen. i will then call anyone that uses it"). The form posts to /visibility, which saves
+     the person, finds the business on Google Maps and starts the 49 searches (app/lib/heatmap.server.ts); this page then
+     asks /visibility?poll=<id> every second or two and fills the dots in. Ross's ads send people here, so it is kept
+     out of search results. -->
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://rankwithross.com.au/visibility">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Rank with Ross">
+<meta property="og:title" content="Free Google Maps check | Rank with Ross">
+<meta property="og:description" content="See where your business comes up on Google Maps in 49 spots around you. Free, and it takes about a minute.">
+<meta property="og:url" content="https://rankwithross.com.au/visibility">
+<meta property="og:image" content="https://rankwithross.com.au/og/home.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preload" href="__FONT_URL__" as="font" type="font/woff2" crossorigin>
+<style>
+/* The same font, colours and buttons as the home page (app/home/new-home.html) and the booking page */
+@font-face{font-family:Inter;src:url(__FONT_URL__) format("woff2");font-weight:400 700;font-style:normal;font-display:swap}
+@font-face{font-family:"Inter Fallback";src:local("Arial");ascent-override:93.51%;descent-override:23.28%;line-gap-override:0%;size-adjust:103.6%}
+@font-face{font-family:"Inter Display Fallback";src:local("Arial");font-weight:400 500;ascent-override:98.85%;descent-override:24.61%;line-gap-override:0%;size-adjust:98%}
+@font-face{font-family:"Inter Display Fallback";src:local("Arial Bold"),local("Arial-BoldMT");font-weight:600 700;ascent-override:104.17%;descent-override:25.94%;line-gap-override:0%;size-adjust:93%}
+
+:root{
+  --ink:#0e0e13;--ink-2:#53565f;--head:#25272e;--text:#666972;--soft:#6e717a;
+  --line:#ececf0;--bg-2:#f6f6f9;
+  --accent:#6c5cf2;--accent-hi:#8476f7;--accent-lo:#5a49e6;--accent-ink:#5442df;
+  --accent-50:#f2f0fe;--accent-100:#e4e0fd;--accent-ring:rgba(108,92,242,.35);
+  --t1:#aba3f4;--t2:#bbb4f6;--t3:#dcd9fc;
+  /* The dots: top 3, 4 to 10, 11 to 20, not in the first 20 */
+  --top:#15803d;--mid:#f5a524;--low:#dc2626;--out:#3b3d46;
+  --font:Inter,"Inter Fallback",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --disp:Inter,"Inter Display Fallback",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --gut:16px;
+}
+@media (min-width:640px){:root{--gut:24px}}
+@media (min-width:1024px){:root{--gut:40px}}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:#fff;color:var(--text);font-family:var(--font);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:clip}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+h1,h2,h3,p,ul,ol{margin:0}
+ul,ol{padding:0;list-style:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+::selection{background:var(--accent-100);color:var(--ink)}
+[hidden]{display:none!important}
+.wrap{max-width:1200px;margin:0 auto;padding:0 var(--gut)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+.eyebrow{display:inline-flex;align-items:center;gap:7px;margin-bottom:16px;padding:5px 12px;border-radius:999px;background:var(--accent-50);font-size:13px;font-weight:600;color:var(--accent-ink)}
+.h1{font-family:var(--disp);color:var(--ink-2);font-weight:450;font-size:clamp(2.2rem,1.4rem + 2.6vw,3.3rem);line-height:1.06;letter-spacing:-.04em;text-wrap:balance}
+.h1 b{display:block;color:var(--ink);font-weight:600}
+.lead{font-size:clamp(1.04rem,1rem + .25vw,1.2rem);line-height:1.55;letter-spacing:-.01em;text-wrap:pretty}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 20px;border-radius:11px;font-size:15px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:transform .15s ease,box-shadow .2s ease,background .2s ease}
+.btn:active{transform:scale(.97)}
+.btn-pri{color:#fff;background:linear-gradient(180deg,#7262f4,#5f4feb);border:1px solid var(--accent-lo);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 1px 2px rgba(60,40,190,.25),0 8px 20px -8px rgba(108,92,242,.7)}
+.btn-pri:hover{background:linear-gradient(180deg,#6a5af1,#5544e3)}
+.btn-pri[aria-disabled="true"]{opacity:.7;cursor:default}
+.btn-sec{color:var(--head);background:#fff;border:1px solid #e2e2e8;box-shadow:0 1px 2px rgba(18,18,40,.06)}
+.btn-sec:hover{border-color:#cfcfd8}
+.btn-sm{height:38px;padding:0 15px;font-size:14px;border-radius:9px}
+
+.top{display:flex;align-items:center;height:64px}
+.logo{display:inline-flex;align-items:center;gap:9px;font-size:21px;font-weight:650;letter-spacing:-.03em;color:var(--ink)}
+.mark{flex:none;width:28px;height:28px;border-radius:50%;background:#6c5cf2 url(/brand/ross-mark.webp) center/cover}
+
+/* The first screen: words on the left, the form on the right. On phones: words, the form, then the rest. */
+.vis{display:grid;gap:26px;padding-top:clamp(8px,3vw,40px);padding-bottom:clamp(48px,8vw,96px);grid-template-areas:"tx" "form" "more"}
+@media (min-width:1000px){.vis{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"tx form" "more form";grid-template-rows:auto 1fr;column-gap:64px;row-gap:28px;align-items:start}.vis-tx{padding-top:36px}}
+.vis-tx{grid-area:tx}
+.vis-form{grid-area:form}
+.vis-more{grid-area:more}
+.vis .lead{margin-top:18px;max-width:31em}
+.ticks{display:grid;gap:12px}
+.ticks li{display:flex;align-items:center;gap:10px;font-size:15.5px;font-weight:500;color:var(--head)}
+.ticks svg{flex:none;width:22px;height:22px;padding:4px;border-radius:50%;background:var(--accent-50);color:var(--accent-ink)}
+/* A small picture of what you get: coloured dots on a map. It shows nobody's real result. */
+.demo{display:none;position:relative;width:min(100%,340px);aspect-ratio:1;margin-top:30px;border-radius:20px;overflow:hidden;background:#eeedf6;box-shadow:0 0 0 1px rgba(18,18,40,.07),0 24px 46px -28px rgba(45,30,140,.5)}
+@media (min-width:1000px){.demo{display:block}}
+.demo svg{width:100%;height:100%}
+
+/* The form: a white card on the purple panel the home page's pictures use */
+.stage{border-radius:22px;padding:clamp(8px,3vw,32px);background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,0) 16%),radial-gradient(62% 48% at 50% 112%,rgba(255,255,255,.95),rgba(255,255,255,0) 72%),linear-gradient(180deg,var(--t1),var(--t2) 64%,var(--t3))}
+.card{padding:clamp(18px,3vw,28px);border-radius:18px;background:#fff;box-shadow:0 0 0 6px rgba(255,255,255,.3),0 30px 60px -24px rgba(45,30,140,.55)}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:var(--bg-2);font-size:13px;font-weight:500;color:var(--head)}
+.pill svg{width:15px;height:15px;color:var(--accent-ink)}
+.f{display:block;margin-top:16px}
+.f-l{display:block;margin-bottom:6px;font-size:14px;font-weight:600;color:var(--head)}
+.f-i{width:100%;height:48px;padding:0 14px;border-radius:12px;border:1px solid #dedee6;background:#fff;font:inherit;font-size:16px;color:var(--ink);transition:border-color .2s,box-shadow .2s}
+.f-i::placeholder{color:#a5a7b0}
+.f-i:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-ring)}
+.f-i[aria-invalid="true"]{border-color:#dc2626}
+.f-h{display:block;margin-top:6px;font-size:13px;color:var(--soft)}
+.two{display:grid;gap:0 12px}
+@media (min-width:480px){.two{grid-template-columns:1fr 1fr}}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.go{width:100%;height:50px;margin-top:22px;font-size:16px}
+.small{margin-top:12px;font-size:12.5px;line-height:1.5;text-align:center;color:var(--soft)}
+.small a{text-decoration:underline;text-underline-offset:2px}
+.err{margin-bottom:4px;padding:10px 14px;border-radius:12px;background:#fdecec;font-size:14px;color:#b91c1c}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* "Which one is yours?" */
+.pick-h{font-size:20px;line-height:1.2;font-weight:600;letter-spacing:-.03em;color:var(--ink);outline:none}
+.pick-p{margin-top:4px;font-size:14.5px}
+.opts{display:grid;gap:8px;margin-top:16px}
+.opt{display:block;width:100%;padding:12px 14px;border-radius:13px;border:1px solid #e3e3ea;background:#fff;text-align:left;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--accent);background:var(--accent-50)}
+.opt b{display:block;font-size:15.5px;font-weight:600;color:var(--ink)}
+.opt span{display:block;font-size:13.5px;line-height:1.45;color:var(--text)}
+.opt[aria-disabled="true"]{opacity:.6;cursor:default}
+.back{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:14px;font-weight:500;color:var(--soft)}
+.back:hover{color:var(--ink)}
+.back svg{width:16px;height:16px}
+
+/* The result: the map on the left, the counts on the right; stacked on phones */
+.res{padding-top:clamp(4px,2vw,28px);padding-bottom:clamp(48px,8vw,96px)}
+.res-h{font-family:var(--disp);font-size:clamp(1.7rem,1.2rem + 1.6vw,2.4rem);line-height:1.1;font-weight:600;letter-spacing:-.035em;color:var(--ink);text-wrap:balance;outline:none}
+.res-sub{margin-top:8px;font-size:15px}
+.res-sub b{font-weight:600;color:var(--head)}
+.res-grid{display:grid;gap:24px;margin-top:24px}
+@media (min-width:960px){.res-grid{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:40px;align-items:start}}
+
+.map{position:relative;overflow:hidden;aspect-ratio:1;border-radius:18px;background:#eceaf4;container-type:inline-size;box-shadow:0 0 0 1px rgba(18,18,40,.09),0 26px 52px -30px rgba(45,30,140,.55)}
+.map-in{position:absolute;left:0;top:0;transform-origin:0 0;filter:saturate(.55) brightness(1.04)}
+.map-in img{position:absolute;width:256px;height:256px;max-width:none}
+.map-c{position:absolute;right:0;bottom:0;padding:1px 7px;border-top-left-radius:8px;background:rgba(255,255,255,.82);font-size:10.5px;line-height:1.5;color:#444}
+.pin{position:absolute;display:grid;place-items:center;width:clamp(24px,8.4cqw,46px);aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);font-size:clamp(10.5px,3.4cqw,17px);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1;color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.92),0 3px 8px rgba(18,18,40,.3)}
+.pin.w{width:clamp(10px,3.2cqw,16px);background:rgba(255,255,255,.9);box-shadow:0 0 0 1.5px rgba(83,86,95,.45)}
+.pin.t{background:var(--top)}
+.pin.m{background:var(--mid);color:#2c1c00}
+.pin.l{background:var(--low)}
+.pin.o{background:var(--out);font-size:clamp(9px,2.7cqw,13.5px)}
+.pin.f{background:#c9cad3;color:#3b3d46}
+.pin.me{box-shadow:0 0 0 2px #fff,0 0 0 4.5px var(--ink),0 3px 8px rgba(18,18,40,.3)}
+.pin.in{animation:pop .28s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes pop{from{opacity:0;transform:translate(-50%,-50%) scale(.4)}}
+
+.key{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:14px;font-size:13.5px;color:var(--head)}
+.key li{display:inline-flex;align-items:center;gap:7px}
+.dot{flex:none;width:12px;height:12px;border-radius:50%}
+.dot.t{background:var(--top)}.dot.m{background:var(--mid)}.dot.l{background:var(--low)}.dot.o{background:var(--out)}.dot.f{background:#c9cad3}
+.how{margin-top:10px;font-size:13.5px;line-height:1.55}
+
+.panel{padding:clamp(18px,2.6vw,26px);border-radius:18px;background:#fff;box-shadow:0 0 0 1px rgba(18,18,40,.08),0 20px 44px -30px rgba(45,30,140,.45)}
+.res-grid > div:last-child{display:grid;gap:16px;align-content:start}
+.p-h{font-family:var(--disp);font-size:clamp(1.3rem,1.1rem + .7vw,1.6rem);line-height:1.15;font-weight:600;letter-spacing:-.03em;color:var(--ink);text-wrap:balance;outline:none}
+.p-p{margin-top:8px;font-size:15px}
+.bar{height:8px;margin-top:16px;border-radius:999px;background:var(--bg-2);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent-hi),var(--accent));transform-origin:0 50%;transform:scaleX(0);transition:transform .5s ease}
+.split{display:flex;height:12px;margin-top:18px;border-radius:999px;overflow:hidden;background:var(--bg-2)}
+.split i{display:block;height:100%}
+.counts{display:grid;gap:9px;margin-top:16px}
+.counts li{display:flex;align-items:center;gap:9px;font-size:15px;color:var(--head)}
+.counts b{margin-left:auto;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.avg{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:14.5px}
+.avg b{color:var(--ink)}
+.p-h3{margin-top:22px;padding-top:20px;border-top:1px solid var(--line);font-size:15.5px;font-weight:600;color:var(--ink)}
+.rivals{display:grid;gap:10px;margin-top:12px;counter-reset:r}
+.rivals li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:2px 10px;align-items:baseline;font-size:14.5px;counter-increment:r}
+.rivals li::before{content:counter(r);font-size:13px;font-weight:600;color:var(--soft)}
+.rivals b{font-weight:600;color:var(--head);overflow-wrap:anywhere}
+.rivals em{font-style:normal;font-size:13px;white-space:nowrap;color:var(--soft)}
+.rivals span{grid-column:2/4;font-size:13px;color:var(--soft)}
+.when{margin-top:18px;font-size:13px;line-height:1.5;color:var(--soft)}
+.again{margin-top:16px}
+
+.cta{background:linear-gradient(180deg,#f6f4ff,#fff 70%)}
+.cta-who{display:flex;align-items:center;gap:12px}
+.cta-who img{flex:none;width:48px;height:48px;border-radius:13px;object-fit:cover;background:#eceae6;box-shadow:0 0 0 1px rgba(18,18,40,.08),0 8px 18px -8px rgba(40,25,130,.45)}
+.cta-who b{display:block;font-size:17px;line-height:1.25;font-weight:600;letter-spacing:-.02em;color:var(--ink)}
+.cta p{margin-top:12px;font-size:15px}
+.cta .btn{width:100%;margin-top:16px}
+.cta-txt{margin-top:12px;font-size:14px;text-align:center}
+.cta-txt a{color:var(--accent-ink);font-weight:600;white-space:nowrap}
+.cta-txt a:hover{text-decoration:underline}
+
+.foot{border-top:1px solid var(--line);padding:22px 0;font-size:13.5px;color:var(--soft)}
+.foot .wrap{display:flex;gap:20px}
+.foot a:hover{color:var(--ink)}
+
+/* Cookie notice for the Meta pixel in the head (the same as the home page's) */
+.ck{position:fixed;z-index:60;left:16px;bottom:16px;max-width:440px;display:flex;align-items:center;gap:16px;padding:12px 12px 12px 18px;border-radius:16px;background:#fff;box-shadow:0 0 0 1px rgba(18,18,40,.08),0 18px 40px -16px rgba(18,18,40,.35)}
+.ck-tx{font-size:14px;line-height:1.45;color:var(--ink)}
+.ck-tx a{color:var(--text);text-decoration:underline;text-underline-offset:2px}
+.ck-btns{display:flex;gap:8px;flex:none}
+@media (max-width:600px){.ck{left:12px;right:12px;bottom:12px;max-width:none;flex-direction:column;align-items:stretch;gap:10px;padding:14px}.ck-btns>*{flex:1}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+<!-- META_PIXEL -->
+</head>
+<body>
+<header class="wrap top">
+  <a class="logo" href="/" aria-label="Rank with Ross home page"><span class="mark" aria-hidden="true"></span>Rank with Ross</a>
+</header>
+
+<main class="wrap">
+  <!-- The first screen: the words and the form -->
+  <section class="vis" data-hero>
+    <div class="vis-tx">
+      <p class="eyebrow">Free check</p>
+      <h1 class="h1">Can customers near you <b>find you on Google Maps?</b></h1>
+      <p class="lead">Type your business. We search Google Maps from 49 spots around you and show where you come up in each one. It takes about a minute.</p>
+    </div>
+
+    <div class="vis-form stage">
+      <div class="card">
+        <p class="err" role="alert" hidden></p>
+
+        <form class="vf" method="post" action="/visibility" novalidate>
+          <p class="pills">
+            <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>About a minute</span>
+            <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.400 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>49 spots around you</span>
+          </p>
+          <div class="two">
+            <label class="f"><span class="f-l">First name</span><input class="f-i" name="first" autocomplete="given-name" required maxlength="40"></label>
+            <label class="f"><span class="f-l">Mobile number</span><input class="f-i" type="tel" name="phone" autocomplete="tel" inputmode="tel" required maxlength="30" placeholder="0400 123 456"></label>
+          </div>
+          <label class="f"><span class="f-l">Business name and suburb</span><input class="f-i" name="business" autocomplete="organization" required maxlength="120" placeholder="Smith Plumbing Joondalup"></label>
+          <label class="f"><span class="f-l">What do customers search for?</span><input class="f-i" name="keyword" autocomplete="off" autocapitalize="none" required maxlength="60" placeholder="emergency plumber"><span class="f-h">Just the job. Leave the suburb out.</span></label>
+          <label class="hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
+          <button class="btn btn-pri go" type="submit">Show my map</button>
+          <p class="small">Ross will call or text you about your result. By pressing the button you agree to that. <a href="/privacy#maps">Privacy</a></p>
+        </form>
+
+        <!-- Shown when Google Maps has more than one business like the name typed -->
+        <div data-pick hidden>
+          <h2 class="pick-h" tabindex="-1">Which one is yours?</h2>
+          <p class="pick-p">Google Maps has a few like that. Tap yours.</p>
+          <div class="opts"></div>
+          <button class="back" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>None of these</button>
+        </div>
+
+        <noscript><p class="small">This check needs JavaScript. Or text Ross on 0400 369 865 and he will run it for you.</p></noscript>
+      </div>
+    </div>
+
+    <div class="vis-more">
+      <ul class="ticks">
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Free. No card.</li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Real Google Maps searches, done while you wait</li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>See who shows up above you</li>
+      </ul>
+      <!-- A picture of the idea, drawn by the script below: green dots near the middle, red at the edges. Nobody's real result. -->
+      <div class="demo" aria-hidden="true"><svg viewBox="0 0 340 340" data-demo></svg></div>
+    </div>
+  </section>
+
+  <!-- The result: shown once a check has started, the dots fill in as each spot is searched -->
+  <section class="res" data-res hidden>
+    <p class="eyebrow">Your Google Maps check</p>
+    <h1 class="res-h" data-biz tabindex="-1"></h1>
+    <p class="res-sub"><span data-biz-sub></span> Search word: <b data-kw></b></p>
+
+    <div class="res-grid">
+      <div>
+        <div class="map" data-map role="img" aria-label="A map with 49 dots around the business">
+          <div class="map-in" data-tiles></div>
+          <div data-pins></div>
+          <a class="map-c" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a>
+        </div>
+        <ul class="key">
+          <li><span class="dot t"></span>Top 3</li>
+          <li><span class="dot m"></span>4 to 10</li>
+          <li><span class="dot l"></span>11 to 20</li>
+          <li><span class="dot o"></span>Not in the top 20</li>
+        </ul>
+        <p class="how">Each dot is one Google Maps search, made from that spot. The number is the place your business came up. The dots are 2 km apart. <span data-me>The ringed dot is your business.</span></p>
+      </div>
+
+      <div>
+        <!-- While the 49 searches run -->
+        <div class="panel" data-run aria-live="polite">
+          <h2 class="p-h">Searching Google Maps…</h2>
+          <p class="p-p"><span data-run-tx>Finding you on the map.</span></p>
+          <div class="bar" aria-hidden="true"><i data-run-bar></i></div>
+          <p class="when">Keep this page open. Your dots fill in as we go.</p>
+        </div>
+
+        <!-- The counts -->
+        <div class="panel" data-done hidden>
+          <h2 class="p-h" data-head tabindex="-1"></h2>
+          <p class="p-p" data-what></p>
+          <div class="split" aria-hidden="true" data-split></div>
+          <ul class="counts">
+            <li><span class="dot t"></span>Top 3<b data-n="top3"></b></li>
+            <li><span class="dot m"></span>4 to 10<b data-n="mid"></b></li>
+            <li><span class="dot l"></span>11 to 20<b data-n="low"></b></li>
+            <li><span class="dot o"></span>Not in the top 20<b data-n="out"></b></li>
+            <li data-failed hidden><span class="dot f"></span>Couldn’t check<b data-n="failed"></b></li>
+          </ul>
+          <p class="avg" data-avg hidden></p>
+          <div data-rivals hidden>
+            <h3 class="p-h3">Who Google shows in the top 3 most</h3>
+            <ol class="rivals"></ol>
+          </div>
+          <p class="when" data-when></p>
+          <button class="btn btn-sec btn-sm again" type="button" data-again>Try another search word</button>
+        </div>
+
+        <!-- Something stopped the map -->
+        <div class="panel" data-stop hidden>
+          <h2 class="p-h" data-stop-h tabindex="-1"></h2>
+          <p class="p-p" data-stop-p></p>
+          <button class="btn btn-sec btn-sm again" type="button" data-again>Start again</button>
+        </div>
+
+        <div class="panel cta" data-cta hidden>
+          <p class="cta-who"><img src="__ROSS_PHOTO__" alt="" width="48" height="48" decoding="async"><b data-cta-h>Want help with this?</b></p>
+          <p>Want to show up in more spots? That’s the kind of work we do for you. Pick a time for a free 15 minute call.</p>
+          <a class="btn btn-pri" href="/book?for=business" data-book>Book a call with Ross</a>
+          <p class="cta-txt">Or text Ross: <a href="sms:+61400369865">0400 369 865</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap"><span>© 2026 Rank with Ross</span><a href="/">Home</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
+</footer>
+
+<!-- Cookie notice for the Meta pixel in the head (the same as the home page's) -->
+<div class="ck" id="ck" role="region" aria-label="Cookies" hidden>
+  <p class="ck-tx"><span class="ck-q">We use cookies to see which of our ads work.</span> <a href="/privacy#cookies">Privacy</a></p>
+  <div class="ck-btns">
+    <button class="btn btn-sec btn-sm ck-no" type="button">No thanks</button>
+    <button class="btn btn-pri btn-sm ck-ok" type="button">OK</button>
+  </div>
+</div>
+
+<!-- A check opened by its link (/visibility?r=<id>), or null -->
+<script type="application/json" id="check">__CHECK__</script>
+<!-- COOKIE_SCRIPT -->
+<script>
+// The picture beside the form: a soft map with 49 dots, green in the middle and red at the edges. It is a drawing of
+// the idea, with no numbers and no business in it.
+(function () {
+  var svg = document.querySelector('[data-demo]');
+  if (!svg) return;
+  var ns = 'http://www.w3.org/2000/svg', html = '';
+  function el(tag, attrs) { var s = '<' + tag; for (var k in attrs) s += ' ' + k + '="' + attrs[k] + '"'; return s + '/>'; }
+  html += el('rect', { width: 340, height: 340, fill: '#eeedf6' });
+  // a few roads and a river, so it reads as a map
+  html += el('path', { d: 'M-10 250 C 80 230, 120 300, 350 270', fill: 'none', stroke: '#d6e4f5', 'stroke-width': 26, 'stroke-linecap': 'round' });
+  ['M-10 70 L350 110', 'M-10 190 L350 160', 'M90 -10 L60 350', 'M230 -10 L260 350', 'M-10 20 L350 330'].forEach(function (d) {
+    html += el('path', { d: d, fill: 'none', stroke: '#fff', 'stroke-width': 7, 'stroke-linecap': 'round' });
+  });
+  var colours = { t: '#15803d', m: '#f5a524', l: '#dc2626', o: '#3b3d46' };
+  for (var r = 0; r < 7; r++) for (var c = 0; c < 7; c++) {
+    var d = Math.sqrt(Math.pow(r - 3, 2) + Math.pow(c - 2.6, 2));
+    var k = d < 1.7 ? 't' : d < 2.9 ? 'm' : d < 3.9 ? 'l' : 'o';
+    html += el('circle', { cx: 38 + c * 44, cy: 38 + r * 44, r: 14, fill: colours[k], stroke: '#fff', 'stroke-width': 2.5 });
+  }
+  svg.innerHTML = html;
+  void ns;
+})();
+</script>
+<script>
+// The check itself. The form posts to /visibility: the answer is "running" (the 49 searches have started), "pick"
+// (Google Maps has a few businesses like that: tap yours), "capped" (today's limit: Ross sends the map) or an error.
+// While a map runs the page asks /visibility?poll=<id> for the ranks so far and fills the dots in. A finished map can
+// be opened again from its link (/visibility?r=<id>). Starting a check tells Meta "Lead" (no name or phone).
+(function () {
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  var hero = $('[data-hero]'), res = $('[data-res]'), form = $('.vf'), pick = $('[data-pick]'), err = $('.err');
+  var go = form.querySelector('.go'), opts = pick.querySelector('.opts');
+  var mapEl = $('[data-map]'), tilesEl = $('[data-tiles]'), pinsEl = $('[data-pins]');
+  var run = $('[data-run]'), done = $('[data-done]'), stop = $('[data-stop]'), cta = $('[data-cta]');
+  var busy = false, id = null, fresh = false, toldMeta = false, started = 0, timer = null, drawn = '', pins = [], lastRanks = [];
+  var SPOTS = 49, GIVE_UP_MS = 180000;
+
+  var saved = null;
+  try { saved = JSON.parse(document.getElementById('check').textContent); } catch (e) { saved = null; }
+
+  // What the page sends with the form: the ad's tags and the site that sent them (the booking page does the same).
+  function withAd(fields) {
+    var body = new URLSearchParams(fields), q = new URLSearchParams(location.search);
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) { if (q.get(k)) body.set(k, q.get(k).slice(0, 200)); });
+    if (q.get('fbclid')) body.set('fb', '1');
+    if (document.referrer) body.set('ref', document.referrer.slice(0, 300));
+    return body;
+  }
+  // The booking button keeps the ad's tags, so a booked call still shows which ad it came from.
+  (function () {
+    var q = new URLSearchParams(location.search), to = new URLSearchParams({ for: 'business' }), any = false;
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid'].forEach(function (k) { if (q.get(k)) { to.set(k, q.get(k)); any = true; } });
+    if (!any) { to.set('utm_source', 'visibility'); to.set('utm_medium', 'tool'); }
+    $('[data-book]').href = '/book?' + to.toString();
+  })();
+
+  function showErr(msg) {
+    err.textContent = '';
+    err.hidden = !msg;
+    if (msg) setTimeout(function () { err.textContent = msg; }, 30);
+  }
+  function setBusy(on) {
+    busy = on;
+    if (on) { go.setAttribute('aria-disabled', 'true'); go.innerHTML = '<span class="spin" aria-hidden="true"></span>Finding your business…'; }
+    else { go.removeAttribute('aria-disabled'); go.textContent = 'Show my map'; }
+    Array.prototype.forEach.call(opts.children, function (b) { if (on) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled'); });
+  }
+  function post(body) {
+    return fetch('/visibility', { method: 'POST', body: body, headers: { Accept: 'application/json' }, credentials: 'same-origin' }).then(function (r) { return r.json(); });
+  }
+  function lead() {
+    if (toldMeta || typeof window.fbq !== 'function') return;
+    toldMeta = true;
+    window.fbq('track', 'Lead', { content_name: 'maps check' });
+  }
+  var GENERIC = 'Something went wrong. Please try again, or text Ross on 0400 369 865.';
+
+  // ---------- The form and "Which one is yours?" ----------
+
+  function answer(out) {
+    if (!out || !out.ok) {
+      Array.prototype.forEach.call(form.querySelectorAll('.f-i'), function (i) { i.removeAttribute('aria-invalid'); });
+      var names = { name: 'first', phone: 'phone', business: 'business', keyword: 'keyword' };
+      showForm();
+      if (out && out.field && form.elements[names[out.field]]) { form.elements[names[out.field]].setAttribute('aria-invalid', 'true'); form.elements[names[out.field]].focus(); }
+      showErr((out && out.error) || GENERIC);
+      return;
+    }
+    lead();
+    if (out.state === 'pick') return showPick(out);
+    id = out.id;
+    fresh = true;
+    var u = new URL(location.href);
+    u.searchParams.set('r', id);
+    try { history.replaceState(null, '', u.pathname + u.search); } catch (e) { /* the link stays as it was */ }
+    if (out.state === 'capped') return show({ status: 'capped', keyword: form.elements.keyword.value.trim().toLowerCase(), business: null, ranks: [], summary: {}, rivals: [], map: null });
+    started = Date.now();
+    show({ status: 'queued', keyword: form.elements.keyword.value.trim().toLowerCase(), business: null, ranks: [], summary: {}, rivals: [], map: null });
+    tick(600);
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (busy) return;
+    showErr('');
+    setBusy(true);
+    var body = withAd({});
+    ['first', 'phone', 'business', 'keyword', 'website'].forEach(function (k) { body.set(k, form.elements[k].value); });
+    post(body).then(answer).catch(function () { showErr(GENERIC); }).then(function () { setBusy(false); });
+  });
+
+  function showForm() {
+    pick.hidden = true;
+    form.hidden = false;
+  }
+  function showPick(out) {
+    opts.innerHTML = '';
+    out.candidates.forEach(function (c) {
+      var b = document.createElement('button'), name = document.createElement('b'), where = document.createElement('span'), more = document.createElement('span');
+      b.type = 'button';
+      b.className = 'opt';
+      name.textContent = c.name;
+      where.textContent = c.address || 'No street address on Google';
+      var bits = [];
+      if (c.rating != null) bits.push(c.rating + ' stars' + (c.reviews != null ? ' from ' + c.reviews + (c.reviews === 1 ? ' review' : ' reviews') : ''));
+      if (c.category) bits.push(c.category);
+      more.textContent = bits.join(' · ');
+      b.appendChild(name); b.appendChild(where); if (bits.length) b.appendChild(more);
+      b.addEventListener('click', function () {
+        if (busy) return;
+        showErr('');
+        setBusy(true);
+        post(withAd({ intent: 'pick', id: out.id, cid: c.cid })).then(answer).catch(function () { showErr(GENERIC); }).then(function () { setBusy(false); });
+      });
+      opts.appendChild(b);
+    });
+    form.hidden = true;
+    pick.hidden = false;
+    pick.querySelector('.pick-h').focus();
+  }
+  pick.querySelector('.back').addEventListener('click', function () {
+    showErr('');
+    showForm();
+    form.elements.business.focus();
+  });
+
+  // ---------- The map ----------
+
+  // Until Google says where the business is, the 49 waiting dots sit in an even grid.
+  function evenPins() {
+    var out = [], m = 1.6, total = 15.2;
+    for (var r = 0; r < 7; r++) for (var c = 0; c < 7; c++) out.push({ left: ((m + c * 2) / total) * 100, top: ((m + r * 2) / total) * 100 });
+    return out;
+  }
+  function fit() {
+    var w = Number(tilesEl.getAttribute('data-w'));
+    if (w) tilesEl.style.transform = 'scale(' + mapEl.clientWidth / w + ')';
+  }
+  function drawMap(map) {
+    var key = map ? map.zoom + ':' + (map.tiles[0] ? map.tiles[0].x + ',' + map.tiles[0].y : '') : 'even';
+    if (key === drawn) return;
+    drawn = key;
+    tilesEl.innerHTML = '';
+    tilesEl.removeAttribute('data-w');
+    if (map) {
+      mapEl.style.aspectRatio = map.width + ' / ' + map.height;
+      tilesEl.style.width = map.width + 'px';
+      tilesEl.style.height = map.height + 'px';
+      tilesEl.setAttribute('data-w', map.width);
+      map.tiles.forEach(function (t) {
+        var img = new Image();
+        img.alt = '';
+        img.decoding = 'async';
+        img.style.left = t.left + 'px';
+        img.style.top = t.top + 'px';
+        img.onerror = function () { img.remove(); }; // no map picture: the dots still show on the plain panel
+        img.src = 'https://tile.openstreetmap.org/' + map.zoom + '/' + t.x + '/' + t.y + '.png';
+        tilesEl.appendChild(img);
+      });
+      fit();
+    }
+    var at = map ? map.pins : evenPins();
+    if (!pins.length) {
+      for (var i = 0; i < SPOTS; i++) {
+        var p = document.createElement('span');
+        p.className = 'pin w' + (i === 24 ? ' me' : '');
+        p.setAttribute('aria-hidden', 'true');
+        pinsEl.appendChild(p);
+        pins.push(p);
+      }
+    }
+    pins.forEach(function (p, i) { p.style.left = at[i].left + '%'; p.style.top = at[i].top + '%'; });
+  }
+  window.addEventListener('resize', fit);
+  if ('ResizeObserver' in window) new ResizeObserver(fit).observe(mapEl);
+
+  function drawPins(ranks) {
+    pins.forEach(function (p, i) {
+      var r = ranks[i];
+      if (r === lastRanks[i]) return;
+      var k = r == null ? 'w' : r === -1 ? 'f' : r === 0 ? 'o' : r <= 3 ? 't' : r <= 10 ? 'm' : 'l';
+      p.className = 'pin ' + k + (i === 24 ? ' me' : '') + (r != null && lastRanks.length ? ' in' : '');
+      p.textContent = r == null ? '' : r === -1 ? '?' : r === 0 ? '20+' : String(r);
+    });
+    lastRanks = ranks.slice();
+  }
+
+  // ---------- Showing a check ----------
+
+  function show(c) {
+    hero.hidden = true;
+    res.hidden = false;
+    var b = c.business;
+    $('[data-biz]').textContent = b ? b.name : (form.elements.business.value || 'Your business');
+    var sub = [];
+    if (b) {
+      if (b.address) sub.push(b.address + '.');
+      if (b.rating != null) sub.push(b.rating + ' stars' + (b.reviews != null ? ' from ' + b.reviews + (b.reviews === 1 ? ' review.' : ' reviews.') : '.'));
+    }
+    $('[data-biz-sub]').textContent = sub.join(' ');
+    $('[data-kw]').textContent = c.keyword || '';
+    $('[data-me]').textContent = b && !b.address ? 'The ringed dot is the middle of your area.' : 'The ringed dot is your business.';
+    // No map was made (today's limit, or a link that's gone): the empty grid would only confuse.
+    mapEl.parentNode.hidden = c.status === 'capped' || c.status === 'gone';
+    drawMap(c.map);
+    drawPins(c.ranks || []);
+
+    var s = c.summary || {}, working = c.status === 'queued' || c.status === 'running';
+    run.hidden = !working;
+    done.hidden = c.status !== 'done';
+    stop.hidden = working || c.status === 'done';
+    cta.hidden = working;
+    $('[data-cta-h]').textContent = fresh ? 'Ross will call you about your map.' : 'Want help with this?';
+
+    if (working) {
+      var n = (s.checked || 0) + (s.failed || 0);
+      $('[data-run-tx]').textContent = c.map ? 'Spot ' + Math.min(n + 1, SPOTS) + ' of ' + SPOTS + '.' : 'Finding you on the map.';
+      $('[data-run-bar]').style.transform = 'scaleX(' + Math.max(0.04, n / SPOTS) + ')';
+      return;
+    }
+    if (c.status === 'done') {
+      $('[data-head]').textContent = c.headline;
+      mapEl.setAttribute('aria-label', 'A map with 49 dots around the business. ' + c.headline);
+      $('[data-what]').textContent = 'We searched Google Maps for “' + c.keyword + '” from ' + c.spots + ' spots, ' + c.stepKm + ' km apart.';
+      ['top3', 'mid', 'low', 'out', 'failed'].forEach(function (k) {
+        var v = s[k] || 0;
+        $('[data-n="' + k + '"]').textContent = v + (v === 1 ? ' spot' : ' spots');
+      });
+      $('[data-failed]').hidden = !s.failed;
+      var split = $('[data-split]');
+      split.innerHTML = '';
+      [['top3', 'var(--top)'], ['mid', 'var(--mid)'], ['low', 'var(--low)'], ['out', 'var(--out)'], ['failed', '#c9cad3']].forEach(function (x) {
+        if (!s[x[0]]) return;
+        var i = document.createElement('i');
+        i.style.width = (s[x[0]] / c.spots) * 100 + '%';
+        i.style.background = x[1];
+        split.appendChild(i);
+      });
+      var avg = $('[data-avg]');
+      avg.hidden = s.avg == null;
+      if (s.avg != null) { avg.textContent = 'Where you showed up, your average place was '; var ab = document.createElement('b'); ab.textContent = s.avg; avg.appendChild(ab); avg.appendChild(document.createTextNode('.')); }
+      var box = $('[data-rivals]'), list = box.querySelector('ol');
+      list.innerHTML = '';
+      (c.rivals || []).forEach(function (r) {
+        var li = document.createElement('li'), name = document.createElement('b'), n2 = document.createElement('em');
+        name.textContent = r.name;
+        n2.textContent = 'Top 3 in ' + r.spots + (r.spots === 1 ? ' spot' : ' spots');
+        li.appendChild(name); li.appendChild(n2);
+        if (r.rating != null) { var st = document.createElement('span'); st.textContent = r.rating + ' stars' + (r.reviews != null ? ' from ' + r.reviews + (r.reviews === 1 ? ' review' : ' reviews') : ''); li.appendChild(st); }
+        list.appendChild(li);
+      });
+      box.hidden = !(c.rivals || []).length;
+      var when = '';
+      try { when = new Intl.DateTimeFormat('en-AU', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(c.checkedAt)); } catch (e) { when = ''; }
+      $('[data-when]').textContent = (when ? 'Checked ' + when + '. ' : '') + 'Google’s results change through the day, so this is a snapshot.';
+      return;
+    }
+    var h = $('[data-stop-h]'), p = $('[data-stop-p]');
+    if (c.status === 'capped') {
+      h.textContent = 'You’re on the list.';
+      p.textContent = 'Lots of people ran the check today, so new maps are paused until tomorrow. Ross has your details and will send you your map.';
+    } else if (c.status === 'slow') {
+      h.textContent = 'This is taking longer than it should.';
+      p.textContent = fresh ? 'You can come back to this page later: your map will be here when it is done. Ross has your details too.' : 'Please open this page again in a few minutes.';
+    } else if (c.status === 'failed') {
+      h.textContent = 'Sorry, we couldn’t finish your map.';
+      p.textContent = 'Google Maps didn’t answer in enough spots. Please try again in a minute.' + (fresh ? ' Ross has your details and will call you.' : '');
+    } else {
+      h.textContent = 'We couldn’t find that check.';
+      p.textContent = 'Please start again.';
+    }
+  }
+
+  function tick(wait) {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      fetch('/visibility?poll=' + encodeURIComponent(id), { headers: { Accept: 'application/json' }, credentials: 'same-origin' })
+        .then(function (r) { return r.json(); })
+        .then(function (c) {
+          if (!c || c.missing) return show({ status: 'gone', ranks: [], summary: {}, rivals: [], map: null });
+          var working = c.status === 'queued' || c.status === 'running';
+          if (working && Date.now() - started > GIVE_UP_MS) { c.status = 'slow'; show(c); return; }
+          show(c);
+          if (working) tick(1500);
+          else if (c.status === 'done') $('[data-head]').focus({ preventScroll: true });
+        })
+        .catch(function () { if (Date.now() - started > GIVE_UP_MS) show({ status: 'slow', ranks: lastRanks, summary: {}, rivals: [], map: null }); else tick(3000); });
+    }, wait);
+  }
+
+  // "Try another search word" and "Start again": back to the form, with what they typed still in it.
+  Array.prototype.forEach.call(document.querySelectorAll('[data-again]'), function (b) {
+    b.addEventListener('click', function () {
+      clearTimeout(timer);
+      id = null;
+      lastRanks = [];
+      pins.forEach(function (p, i) { p.className = 'pin w' + (i === 24 ? ' me' : ''); p.textContent = ''; });
+      var u = new URL(location.href);
+      u.searchParams.delete('r');
+      try { history.replaceState(null, '', u.pathname + u.search); } catch (e) { /* the link stays as it was */ }
+      res.hidden = true;
+      hero.hidden = false;
+      showErr('');
+      showForm();
+      (form.elements.first.value ? form.elements.keyword : form.elements.first).focus();
+      window.scrollTo(0, 0);
+    });
+  });
+
+  // Opened by its link.
+  if (saved && saved.id && ['queued', 'running', 'done', 'failed', 'capped'].indexOf(saved.status) > -1) {
+    id = saved.id;
+    started = Date.now();
+    show(saved);
+    if (saved.status === 'queued' || saved.status === 'running') tick(1200);
+  }
+})();
+</script>
+</body>
+</html>

@@ -19,6 +19,7 @@ import "./billing.server";
 import "./check.server";
 import "./waitlist.server";
 import "./giveaway.server";
+import "./heatmap.server";
 import "./store-report.server";
 import "./install.server";
 import "./trusted-sites.server";
@@ -36,8 +37,13 @@ const MAX_RUNNING = 4; // store jobs: onboarding, scans, orders, fixes...
 // stores' jobs (and stores' jobs never stall a visitor's check).
 const CHECK_JOB = "check.run";
 const MAX_CHECKS = 2;
+// The free Google Maps check (rankwithross.com.au/visibility) has its own share too: someone is watching the page while
+// their 49 searches run (about 20 seconds), so it never waits behind a store's long scan.
+const MAP_JOB = "heatmap.run";
+const MAX_MAPS = 3;
 let running = 0;
 let runningChecks = 0;
+let runningMaps = 0;
 let started = false;
 // Set when Railway asks this server to stop (a new version is live): take no new jobs, let the running
 // ones finish (a free check takes a few minutes), then exit. RAILWAY_DEPLOYMENT_DRAINING_SECONDS on the
@@ -66,7 +72,7 @@ async function tick() {
   if (draining) return;
   try {
     if (running < MAX_RUNNING) {
-      for (const job of await claimJobs(MAX_RUNNING - running, { notTypes: [CHECK_JOB] })) {
+      for (const job of await claimJobs(MAX_RUNNING - running, { notTypes: [CHECK_JOB, MAP_JOB] })) {
         running++;
         runJob(job)
           .catch((err) => console.error(`[worker] job ${job.id} could not be finished:`, (err as Error).message))
@@ -79,6 +85,14 @@ async function tick() {
         runJob(job)
           .catch((err) => console.error(`[worker] job ${job.id} could not be finished:`, (err as Error).message))
           .finally(() => runningChecks--);
+      }
+    }
+    if (runningMaps < MAX_MAPS) {
+      for (const job of await claimJobs(MAX_MAPS - runningMaps, { types: [MAP_JOB] })) {
+        runningMaps++;
+        runJob(job)
+          .catch((err) => console.error(`[worker] job ${job.id} could not be finished:`, (err as Error).message))
+          .finally(() => runningMaps--);
       }
     }
   } catch (err) {
@@ -170,9 +184,9 @@ function drainAndExit(signal: string) {
   if (draining) return;
   draining = true;
   const startedAt = Date.now();
-  console.log(`[worker] ${signal}: finishing ${running + runningChecks} running job(s) before stopping`);
+  console.log(`[worker] ${signal}: finishing ${running + runningChecks + runningMaps} running job(s) before stopping`);
   const wait = setInterval(() => {
-    const busy = running + runningChecks;
+    const busy = running + runningChecks + runningMaps;
     if (busy === 0 || Date.now() - startedAt > DRAIN_MAX_MS) {
       clearInterval(wait);
       if (busy) console.warn(`[worker] stopping with ${busy} job(s) still running`);

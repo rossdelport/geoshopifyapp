@@ -42,6 +42,7 @@ const privacyData = () => ({
   giveawayMonths: RETENTION.giveawayMonths,
   bookVisitorDays: RETENTION.bookVisitorDays,
   callMonths: RETENTION.callMonths,
+  heatmapMonths: RETENTION.heatmapMonths,
 });
 
 const page = { maxWidth: 720, margin: "0 auto", padding: "48px 20px 80px", fontFamily: "Inter, system-ui, sans-serif", color: "#30313d", lineHeight: 1.7 };
@@ -58,7 +59,7 @@ export default function Privacy() {
 }
 
 function PrivacyText() {
-  const { contact, owner, inactiveYears, visitIdDays, uninstalledDays, publicCheckDays, checkIpHours, reportEmailDays, unsubscribedDays, waitlistMonths, giveawayMonths, bookVisitorDays, callMonths } =
+  const { contact, owner, inactiveYears, visitIdDays, uninstalledDays, publicCheckDays, checkIpHours, reportEmailDays, unsubscribedDays, waitlistMonths, giveawayMonths, bookVisitorDays, callMonths, heatmapMonths } =
     useLoaderData<typeof loader>();
   return (
     <main style={page}>
@@ -196,6 +197,27 @@ function PrivacyText() {
         after you booked, or sooner if you ask.
       </p>
 
+      <h2 style={h2} id="maps">
+        Free Google Maps check
+      </h2>
+      <p>
+        If you run our free Google Maps check (rankwithross.com.au/visibility), we keep your first name, your phone number,
+        the business name and the search words you typed, the business Google Maps found, where it came up in each
+        spot, the words shown under the form and when you ran it. If you came from an ad or another website, we keep
+        the ad&apos;s tracking tags in the page address and the name of that website. To stop abuse, we keep a scrambled
+        (hashed) copy of your IP address for a day.
+      </p>
+      <p>
+        We email these details to Ross, so he can call or text you about your result. That is what you agree to when
+        you press the button. To make your map we send the business name and the search words to our data suppliers,
+        who search Google Maps for us. We never send them your name or phone number. The map picture comes from
+        OpenStreetMap, so its servers see your IP address when the picture loads, like any website you visit.
+      </p>
+      <p>
+        Anyone with the link to a map can open it. It shows the business&apos;s public Google details and where it came up,
+        never your name or phone number. We delete a check {heatmapMonths} months after you ran it, or sooner if you ask.
+      </p>
+
       <h2 style={h2}>Giveaway</h2>
       <p>
         If you enter our giveaway, we keep your store&apos;s website, your name, email address, what your store sells
@@ -229,6 +251,10 @@ function PrivacyText() {
         someone presses play on Ross&apos;s video. Ross&apos;s video on them plays from Loom. Nothing loads from Loom until you press play. After that, Loom may set its own cookies, as Loom&apos;s own
         privacy policy says.
       </p>
+      <p>
+        Our free Google Maps check page uses the same pixel and cookie notice. If you run the check, it tells Meta that
+        someone did. It never sends your name or phone number.
+      </p>
 
       <h2 style={h2}>Why we use it</h2>
       <p>
@@ -248,6 +274,10 @@ function PrivacyText() {
       </p>
       <p>
         <b>Giveaway:</b> to run the draw and to contact you about Rank with Ross.
+      </p>
+      <p>
+        <b>Free Google Maps check:</b> to make your map, and so Ross can call or text you about your result and about
+        Rank with Ross.
       </p>
 
       <h2 style={h2}>Shoppers&apos; choices</h2>
@@ -280,7 +310,11 @@ function PrivacyText() {
         <li>Google: Google Calendar and Google Meet, for calls booked on our website.</li>
         <li>Loom: plays Ross&apos;s video on our video pages, only after you press play.</li>
         <li>Supabase (Tokyo): stores the data.</li>
-        <li>Treg: gets public AI answers to buying questions. It gets the questions only, never customer data.</li>
+        <li>
+          Treg: gets public AI answers to buying questions, and Google Maps results for the free Google Maps check. It
+          gets the questions, or the business name and search words, never customer data or your name or phone number.
+        </li>
+        <li>OpenStreetMap: the map picture on the free Google Maps check.</li>
         <li>Anthropic (Claude): reads AI answers and writes draft fixes from your product details. It never gets customer data.</li>
         <li>
           Resend: sends your monthly email report and free check reports (and tips, for people who asked for them). It
@@ -303,7 +337,8 @@ function PrivacyText() {
       <p>
         If you asked for a free check report by email, you can ask us for the email address we hold about you, or ask us
         to delete it. Do it the same way, or reply to any of our emails. If you joined the waitlist, entered the
-        giveaway or booked a call, you can ask us for your details or ask us to delete them the same way.
+        giveaway, booked a call or ran the free Google Maps check, you can ask us for your details or ask us to delete
+        them the same way.
       </p>
     </main>
   );

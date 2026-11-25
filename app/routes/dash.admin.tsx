@@ -17,6 +17,7 @@ export const shouldRevalidate = () => false;
 const TABS = [
   { to: "/dash/admin", label: "Overview", end: true },
   { to: "/dash/admin/calls", label: "Calls" },
+  { to: "/dash/admin/maps", label: "Map checks" },
   { to: "/dash/admin/reports", label: "Reports" },
   { to: "/dash/admin/usage", label: "Usage" },
   { to: "/dash/admin/users", label: "Users" },

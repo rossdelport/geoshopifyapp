@@ -33,6 +33,10 @@ const PRICES: Record<string, number> = {
   "tomba.people.email.find.author": 0.0089,
   "scrapecreators.reddit.search.posts": 0.00188,
   "anyapi.reddit.search": 0.0012,
+  // The free Google Maps check (lib/heatmap.server.ts): finding the business, one search per spot, a hidden address.
+  "serper.google.serp.places": 0.001,
+  "dataforseo.x.serp-google-maps-live-advanced": 0.002,
+  "dataforseo.x.business-data-google-my-business-info-live": 0.0054,
 };
 
 export class TregError extends Error {
